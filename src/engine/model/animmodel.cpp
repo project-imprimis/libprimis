@@ -108,11 +108,11 @@ void animmodel::AnimPos::setframes(const animinfo &info)
     }
     else
     {
-        int time = info.anim & Anim_SetTime ? info.basetime : lastmillis - info.basetime;
+        int time = info.anim & EntAnim::SetTime ? info.basetime : lastmillis - info.basetime;
         fr1 = static_cast<int>(time/info.speed); // round to full frames
         t = (time-fr1*info.speed)/info.speed; // progress of the frame, value from 0.0f to 1.0f
     }
-    if(info.anim & Anim_Loop)
+    if(info.anim & EntAnim::Loop)
     {
         fr1 = fr1%info.range+info.frame;
         fr2 = fr1+1;
@@ -126,7 +126,7 @@ void animmodel::AnimPos::setframes(const animinfo &info)
         fr1 = std::min(fr1, info.range-1)+info.frame;
         fr2 = std::min(fr1+1, info.frame+info.range-1);
     }
-    if(info.anim & Anim_Reverse)
+    if(info.anim & EntAnim::Reverse)
     {
         fr1 = (info.frame+info.range-1)-(fr1-info.frame);
         fr2 = (info.frame+info.range-1)-(fr2-info.frame);
@@ -236,7 +236,7 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
     }
     else
     {
-        LOCALPARAMF(fullbright, 1.0f, as->cur.anim & Anim_FullBright ? 0.5f * fullbrightmodels / 100.0f : 0.0f);
+        LOCALPARAMF(fullbright, 1.0f, as->cur.anim & EntAnim::FullBright ? 0.5f * fullbrightmodels / 100.0f : 0.0f);
     }
     float curglow = glow;
     if(glowpulse > 0)
@@ -363,7 +363,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
         enablecullface = false;
     }
 
-    if(as->cur.anim & Anim_NoSkin)
+    if(as->cur.anim & EntAnim::NoSkin)
     {
         if(alphatested() && owner->model->alphashadow)
         {
@@ -792,8 +792,8 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
     info.anim = anim;
     info.basetime = basetime;
     info.varseed = varseed;
-    info.speed = anim & Anim_SetSpeed ? basetime2 : 100.0f;
-    if((anim & Anim_Index) == Anim_All)
+    info.speed = anim & EntAnim::SetSpeed ? basetime2 : 100.0f;
+    if((anim & EntAnim::Index) == EntAnim::All)
     {
         info.frame = 0;
         info.range = meshes->totalframes();
@@ -803,21 +803,21 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         animspec *spec = nullptr;
         if(anims[animpart])
         {
-            vector<animspec> &primary = anims[animpart][anim & Anim_Index];
+            vector<animspec> &primary = anims[animpart][anim & EntAnim::Index];
             if(primary.length())
             {
                 spec = &primary[static_cast<uint>(varseed + basetime)%primary.length()];
             }
-            if((anim >> Anim_Secondary) & (Anim_Index | Anim_Dir))
+            if((anim >> EntAnim::Secondary) & (EntAnim::Index | EntAnim::Dir))
             {
-                vector<animspec> &secondary = anims[animpart][(anim >> Anim_Secondary) & Anim_Index];
+                vector<animspec> &secondary = anims[animpart][(anim >> EntAnim::Secondary) & EntAnim::Index];
                 if(secondary.length())
                 {
                     animspec &spec2 = secondary[static_cast<uint>(varseed + basetime2)%secondary.length()];
                     if(!spec || spec2.priority > spec->priority)
                     {
                         spec = &spec2;
-                        info.anim >>= Anim_Secondary;
+                        info.anim >>= EntAnim::Secondary;
                         info.basetime = basetime2;
                     }
                 }
@@ -838,18 +838,18 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         }
     }
 
-    info.anim &= (1 << Anim_Secondary) - 1;
-    info.anim |= anim & Anim_Flags;
-    if(info.anim & Anim_Loop)
+    info.anim &= (1 << EntAnim::Secondary) - 1;
+    info.anim |= anim & EntAnim::Flags;
+    if(info.anim & EntAnim::Loop)
     {
-        info.anim &= ~Anim_SetTime;
+        info.anim &= ~EntAnim::SetTime;
         if(!info.basetime)
         {
             info.basetime = -(static_cast<int>(reinterpret_cast<size_t>(d)) & 0xFFF);
         }
-        if(info.anim & Anim_Clamp)
+        if(info.anim & EntAnim::Clamp)
         {
-            if(info.anim & Anim_Reverse)
+            if(info.anim & EntAnim::Reverse)
             {
                 info.frame += info.range-1;
             }
@@ -869,7 +869,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
     if(d && interp>=0)
     {
         animinterpinfo &animationinterpolation = d->animinterp[interp];
-        if((info.anim&(Anim_Loop | Anim_Clamp)) == Anim_Clamp)
+        if((info.anim&(EntAnim::Loop | EntAnim::Clamp)) == EntAnim::Clamp)
         {
             animinterptime = std::min(animinterptime, static_cast<int>(info.range*info.speed*0.5e-3f));
         }
@@ -893,7 +893,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
             animationinterpolation.cur = info;
             animationinterpolation.lastswitch = lastmillis;
         }
-        else if(info.anim & Anim_SetTime)
+        else if(info.anim & EntAnim::SetTime)
         {
             animationinterpolation.cur.basetime = info.basetime;
         }
@@ -910,7 +910,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
 
 void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as)
 {
-    if((anim & Anim_Reuse) != Anim_Reuse)
+    if((anim & EntAnim::Reuse) != EntAnim::Reuse)
     {
         for(int i = 0; i < numanimparts; ++i)
         {
@@ -946,9 +946,9 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     {
         pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
     }
-    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
+    if(as->cur.anim & EntAnim::NoPitch || (as->interp < 1 && as->prev.anim & EntAnim::NoPitch))
     {
-        pitchamount *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
+        pitchamount *= (as->cur.anim & EntAnim::NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & EntAnim::NoPitch ? 0 : 1 - as->interp);
     }
     if(pitchamount)
     {
@@ -973,7 +973,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     intersectscale = resize;
     meshes->intersect(as, pitch, oaxis, oforward, d, this, oo, oray);
 
-    if((anim & Anim_Reuse) != Anim_Reuse)
+    if((anim & EntAnim::Reuse) != EntAnim::Reuse)
     {
         for(int i = 0; i < links.length(); i++)
         {
@@ -992,7 +992,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
                 nbasetime2 = basetime2;
             if(link.anim>=0)
             {
-                nanim = link.anim | (anim & Anim_Flags);
+                nanim = link.anim | (anim & EntAnim::Flags);
                 nbasetime = link.basetime;
                 nbasetime2 = 0;
             }
@@ -1013,7 +1013,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
 void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as)
 {
-    if((anim & Anim_Reuse) != Anim_Reuse)
+    if((anim & EntAnim::Reuse) != EntAnim::Reuse)
     {
         for(int i = 0; i < numanimparts; ++i)
         {
@@ -1048,9 +1048,9 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
     {
         pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
     }
-    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
+    if(as->cur.anim & EntAnim::NoPitch || (as->interp < 1 && as->prev.anim & EntAnim::NoPitch))
     {
-        pitchamount *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
+        pitchamount *= (as->cur.anim & EntAnim::NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & EntAnim::NoPitch ? 0 : 1 - as->interp);
     }
     if(pitchamount)
     {
@@ -1069,7 +1069,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
     }
     matrixstack[matrixpos].transposedtransformnormal(forward, oforward);
 
-    if(!(anim & Anim_NoRender))
+    if(!(anim & EntAnim::NoRender))
     {
         matrix4 modelmatrix;
         modelmatrix.mul(shadowmapping ? shadowmatrix : camprojmatrix, matrixstack[matrixpos]);
@@ -1078,7 +1078,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
             modelmatrix.scale(resize);
         }
         GLOBALPARAM(modelmatrix, modelmatrix);
-        if(!(anim & Anim_NoSkin))
+        if(!(anim & EntAnim::NoSkin))
         {
             GLOBALPARAM(modelworld, matrix3(matrixstack[matrixpos]));
 
@@ -1091,7 +1091,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
     meshes->render(as, pitch, oaxis, oforward, d, this);
 
-    if((anim & Anim_Reuse) != Anim_Reuse)
+    if((anim & EntAnim::Reuse) != EntAnim::Reuse)
     {
         for(int i = 0; i < links.length(); i++)
         {
@@ -1113,7 +1113,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
                 nbasetime2 = basetime2;
             if(link.anim>=0)
             {
-                nanim = link.anim | (anim & Anim_Flags);
+                nanim = link.anim | (anim & EntAnim::Flags);
                 nbasetime = link.basetime;
                 nbasetime2 = 0;
             }
@@ -1217,7 +1217,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
                 break;
 
             case Link_Reuse:
-                p->intersect(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
+                p->intersect(anim | EntAnim::Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
                 break;
         }
     }
@@ -1252,7 +1252,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
                 }
                 case Link_Reuse:
                 {
-                    p->intersect(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
+                    p->intersect(anim | EntAnim::Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
                     break;
                 }
             }
@@ -1372,7 +1372,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
             }
             case Link_Reuse:
             {
-                p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                p->render(anim | EntAnim::Reuse, basetime, basetime2, pitch, axis, forward, d, as);
                 break;
             }
         }
@@ -1411,7 +1411,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
                 }
                 case Link_Reuse:
                 {
-                    p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                    p->render(anim | EntAnim::Reuse, basetime, basetime2, pitch, axis, forward, d, as);
                     break;
                 }
             }
@@ -1466,7 +1466,7 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
 
     sizescale = size;
 
-    if(anim & Anim_NoRender)
+    if(anim & EntAnim::NoRender)
     {
         render(anim, basetime, basetime2, pitch, axis, forward, d, a);
         if(d)
@@ -1476,7 +1476,7 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         return;
     }
 
-    if(!(anim & Anim_NoSkin))
+    if(!(anim & EntAnim::NoSkin))
     {
         if(colorscale != color)
         {

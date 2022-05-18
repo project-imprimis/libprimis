@@ -150,6 +150,6 @@ void clearmainmenu()
 
 void initmenuscmds()
 {
-    addcommand("applychanges", reinterpret_cast<identfun>(applychanges), "", Id_Command);
+    addcommand("applychanges", reinterpret_cast<identfun>(applychanges));
     addcommand("pendingchanges", reinterpret_cast<identfun>(pendingchanges), "b", Id_Command); 
 }

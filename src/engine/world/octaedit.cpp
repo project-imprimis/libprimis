@@ -1814,10 +1814,10 @@ void initoctaeditcmds()
     //unary + operator converts to function pointer
     addcommand("moving",        reinterpret_cast<identfun>(+movingcmd), "b", Id_Command);
 
-    addcommand("entcancel",     reinterpret_cast<identfun>(entcancel), "", Id_Command); ///
-    addcommand("cubecancel",    reinterpret_cast<identfun>(cubecancel), "", Id_Command); ///
-    addcommand("cancelsel",     reinterpret_cast<identfun>(cancelsel), "", Id_Command); ///
-    addcommand("reorient",      reinterpret_cast<identfun>(reorient), "", Id_Command); ///
+    addcommand("entcancel",     reinterpret_cast<identfun>(entcancel)); ///
+    addcommand("cubecancel",    reinterpret_cast<identfun>(cubecancel)); ///
+    addcommand("cancelsel",     reinterpret_cast<identfun>(cancelsel)); ///
+    addcommand("reorient",      reinterpret_cast<identfun>(reorient)); ///
 
     static auto selextend = [] ()
     {
@@ -1838,7 +1838,7 @@ void initoctaeditcmds()
             }
         }
     };
-    addcommand("selextend",     reinterpret_cast<identfun>(+selextend), "", Id_Command);
+    addcommand("selextend",     reinterpret_cast<identfun>(+selextend));
 
     static auto selmoved = [] ()
     {
@@ -1876,17 +1876,17 @@ void initoctaeditcmds()
         std::swap(sel, savedsel);
     };
 
-    addcommand("selmoved",      reinterpret_cast<identfun>(+selmoved), "", Id_Command);
-    addcommand("selsave",       reinterpret_cast<identfun>(+selsave), "", Id_Command);
-    addcommand("selrestore",    reinterpret_cast<identfun>(+selrestore), "", Id_Command);
-    addcommand("selswap",       reinterpret_cast<identfun>(+selswap), "", Id_Command);
+    addcommand("selmoved",      reinterpret_cast<identfun>(+selmoved));
+    addcommand("selsave",       reinterpret_cast<identfun>(+selsave));
+    addcommand("selrestore",    reinterpret_cast<identfun>(+selrestore));
+    addcommand("selswap",       reinterpret_cast<identfun>(+selswap));
 
     static auto haveselcmd = [] ()
     {
         intret(havesel ? selchildcount : 0);
     };
 
-    addcommand("havesel",       reinterpret_cast<identfun>(+haveselcmd), "", Id_Command);
+    addcommand("havesel",       reinterpret_cast<identfun>(+haveselcmd));
 
 
     static auto selchildcountcmd = [] ()
@@ -1900,7 +1900,7 @@ void initoctaeditcmds()
             intret(selchildcount);
         }
     };
-    addcommand("selchildnum", reinterpret_cast<identfun>(+selchildcountcmd), "", Id_Command);
+    addcommand("selchildnum", reinterpret_cast<identfun>(+selchildcountcmd));
 
 
     static auto selchildmatcmd = [] (char *prefix)
@@ -1916,7 +1916,7 @@ void initoctaeditcmds()
     {
         pruneundos(0);
     };
-    addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos), "", Id_Command); //run pruneundos but with a cache size of zero
+    addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos)); //run pruneundos but with a cache size of zero
     
     static auto delprefab = [] (char *name)
     {
@@ -2016,7 +2016,7 @@ void initoctaeditcmds()
             if(prevstat == curstat) curstat = (val); \
             intret(curstat); \
         }; \
-        addcommand(#name, reinterpret_cast<identfun>(+name), "", Id_Command);
+        addcommand(#name, reinterpret_cast<identfun>(+name));
 
     EDITSTAT(wtr, wtris);
     EDITSTAT(vtr, (vtris*100)/std::max(wtris, 1));

@@ -2506,5 +2506,5 @@ void cubeworld::allchanged(bool load)
 
 void initoctarendercmds()
 {
-    addcommand("recalc", reinterpret_cast<identfun>(+[](){rootworld.allchanged(true);}), "", Id_Command);
+    addcommand("recalc", reinterpret_cast<identfun>(+[](){rootworld.allchanged(true);}));
 }

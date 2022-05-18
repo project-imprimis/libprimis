@@ -713,13 +713,13 @@ static void renderbatchedmodel(model *m, const batchedmodel &b)
     int anim = b.anim;
     if(shadowmapping > ShadowMap_Reflect)
     {
-        anim |= Anim_NoSkin;
+        anim |= EntAnim::NoSkin;
     }
     else
     {
         if(b.flags&Model_FullBright)
         {
-            anim |= Anim_FullBright;
+            anim |= EntAnim::FullBright;
         }
     }
 
@@ -1229,7 +1229,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
     {
         if(d->ragdoll)
         {
-            if(anim & Anim_Ragdoll && d->ragdoll->millis >= basetime)
+            if(anim & EntAnim::Ragdoll && d->ragdoll->millis >= basetime)
             {
                 radius = std::max(radius, d->ragdoll->radius);
                 center = d->ragdoll->center;
@@ -1241,7 +1241,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
                 d->ragdoll = nullptr;
             }
         }
-        if(anim & Anim_Ragdoll)
+        if(anim & EntAnim::Ragdoll)
         {
             flags &= ~(Model_CullVFC | Model_CullOccluded | Model_CullQuery);
         }
@@ -1262,7 +1262,7 @@ hasboundbox:
 
     if(flags&Model_NoRender)
     {
-        anim |= Anim_NoRender;
+        anim |= EntAnim::NoRender;
     }
 
     if(a)
@@ -1310,7 +1310,7 @@ hasboundbox:
         setaamask(true);
         if(flags&Model_FullBright)
         {
-            anim |= Anim_FullBright;
+            anim |= EntAnim::FullBright;
         }
         m->render(anim, basetime, basetime2, o, yaw, pitch, roll, d, a, size, color);
         m->endrender();
@@ -1360,7 +1360,7 @@ int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float p
     {
         return -1;
     }
-    if(d && d->ragdoll && (!(anim & Anim_Ragdoll) || d->ragdoll->millis < basetime))
+    if(d && d->ragdoll && (!(anim & EntAnim::Ragdoll) || d->ragdoll->millis < basetime))
     {
         if(d->ragdoll)
         {
@@ -1502,7 +1502,7 @@ void initrendermodelcmds()
     addcommand("mdlalphashadow", reinterpret_cast<identfun>(mdlalphashadow), "i", Id_Command);
     addcommand("mdlbb", reinterpret_cast<identfun>(mdlbb), "fff", Id_Command);
     addcommand("mdlextendbb", reinterpret_cast<identfun>(mdlextendbb), "fff", Id_Command);
-    addcommand("mdlname", reinterpret_cast<identfun>(mdlname), "", Id_Command);
+    addcommand("mdlname", reinterpret_cast<identfun>(mdlname));
     addcommand("rdvert", reinterpret_cast<identfun>(rdvert), "ffff", Id_Command);
     addcommand("rdeye", reinterpret_cast<identfun>(rdeye), "i", Id_Command);
     addcommand("rdtri", reinterpret_cast<identfun>(rdtri), "iii", Id_Command);
@@ -1514,7 +1514,7 @@ void initrendermodelcmds()
     addcommand("mapmodel", reinterpret_cast<identfun>(mapmodel), "s", Id_Command);
     addcommand("mapmodelname", reinterpret_cast<identfun>(mapmodelnamecmd), "ii", Id_Command);
     addcommand("mapmodelloaded", reinterpret_cast<identfun>(mapmodelloaded), "i", Id_Command);
-    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels), "", Id_Command);
+    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels));
     addcommand("clearmodel", reinterpret_cast<identfun>(clearmodel), "s", Id_Command);
     addcommand("findanims", reinterpret_cast<identfun>(findanimscmd), "s", Id_Command);
 }

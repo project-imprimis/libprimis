@@ -1085,7 +1085,7 @@ void initsoundcmds()
 
     addcommand("music", reinterpret_cast<identfun>(startmusic), "ss", Id_Command);
     addcommand("playsound", reinterpret_cast<identfun>(playsound), "i", Id_Command); //i: the index of the sound to be played
-    addcommand("resetsound", reinterpret_cast<identfun>(resetsound), "", Id_Command); //stop all sounds and re-play background music
+    addcommand("resetsound", reinterpret_cast<identfun>(resetsound)); //stop all sounds and re-play background music
 
     static auto registersound = [] (char *name, int *vol)
     {
@@ -1131,9 +1131,9 @@ void initsoundcmds()
     addcommand("mapsound", reinterpret_cast<identfun>(+mapsound), "sii", Id_Command);
     addcommand("altsound", reinterpret_cast<identfun>(+altsound), "si", Id_Command);
     addcommand("altmapsound", reinterpret_cast<identfun>(+altmapsound), "si", Id_Command);
-    addcommand("numsounds", reinterpret_cast<identfun>(+numsounds), "", Id_Command);
-    addcommand("nummapsounds", reinterpret_cast<identfun>(+nummapsounds), "", Id_Command);
-    addcommand("soundreset", reinterpret_cast<identfun>(+soundreset), "", Id_Command);
-    addcommand("mapsoundreset", reinterpret_cast<identfun>(+mapsoundreset), "", Id_Command);
+    addcommand("numsounds", reinterpret_cast<identfun>(+numsounds));
+    addcommand("nummapsounds", reinterpret_cast<identfun>(+nummapsounds));
+    addcommand("soundreset", reinterpret_cast<identfun>(+soundreset));
+    addcommand("mapsoundreset", reinterpret_cast<identfun>(+mapsoundreset));
 
 }

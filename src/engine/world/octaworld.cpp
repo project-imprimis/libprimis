@@ -1850,5 +1850,5 @@ void invalidatemerges(cube &c)
 
 void initoctaworldcmds()
 {
-    addcommand("printcube", reinterpret_cast<identfun>(printcube), "", Id_Command);
+    addcommand("printcube", reinterpret_cast<identfun>(printcube));
 }

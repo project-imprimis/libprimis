@@ -743,6 +743,6 @@ void getfpscmd(int *raw)
 void initrenderwindowcmds()
 {
     addcommand("getfps", reinterpret_cast<identfun>(getfpscmd), "i", Id_Command);
-    addcommand("resetgl", reinterpret_cast<identfun>(resetgl), "", Id_Command);
+    addcommand("resetgl", reinterpret_cast<identfun>(resetgl));
     addcommand("screenres", reinterpret_cast<identfun>(screenres), "ii", Id_Command);
 }

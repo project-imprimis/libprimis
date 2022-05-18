@@ -1411,7 +1411,7 @@ void initcontrolcmds()
     addcommand("escape", reinterpret_cast<identfun>(escapecmd), "s", Id_Command);
     addcommand("unescape", reinterpret_cast<identfun>(unescapecmd), "s", Id_Command);
     addcommand("writecfg", reinterpret_cast<identfun>(writecfg), "s", Id_Command);
-    addcommand("changedvars", reinterpret_cast<identfun>(changedvars), "", Id_Command);
+    addcommand("changedvars", reinterpret_cast<identfun>(changedvars));
     addcommand("doargs", reinterpret_cast<identfun>(doargs), "e", Id_DoArgs);
 
     addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
