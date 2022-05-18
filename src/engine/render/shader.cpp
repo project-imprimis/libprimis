@@ -2202,8 +2202,8 @@ void initshadercmds()
     addcommand("isshaderdefined", reinterpret_cast<identfun>(+[](const char* name){intret(lookupshaderbyname(name) ? 1 : 0);}), "s", Id_Command);
     addcommand("setshaderparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w);}), "sfFFf", Id_Command);
     addcommand("reuseuniformparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);}), "sfFFf", Id_Command);
-    addcommand("clearpostfx", reinterpret_cast<identfun>(clearpostfx), "", Id_Command);
+    addcommand("clearpostfx", reinterpret_cast<identfun>(clearpostfx));
     addcommand("addpostfx", reinterpret_cast<identfun>(addpostfxcmd), "siisffff", Id_Command);
     addcommand("setpostfx", reinterpret_cast<identfun>(setpostfx), "sffff", Id_Command);
-    addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders), "", Id_Command);
+    addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders));
 }

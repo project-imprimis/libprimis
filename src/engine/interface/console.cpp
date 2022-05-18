@@ -1201,7 +1201,7 @@ void writecompletions(stream *f)
 void initconsolecmds()
 {
     addcommand("fullconsole", reinterpret_cast<identfun>(fullconsole), "iN$", Id_Command);
-    addcommand("toggleconsole", reinterpret_cast<identfun>(toggleconsole), "", Id_Command);
+    addcommand("toggleconsole", reinterpret_cast<identfun>(toggleconsole));
 
     static auto conskipcmd = [] (int *n)
     {
@@ -1216,7 +1216,7 @@ void initconsolecmds()
     };
     addcommand("miniconskip", reinterpret_cast<identfun>(+miniconskipcmd), "i", Id_Command);
 
-    addcommand("clearconsole", reinterpret_cast<identfun>(clearconsole), "", Id_Command);
+    addcommand("clearconsole", reinterpret_cast<identfun>(clearconsole));
     addcommand("keymap", reinterpret_cast<identfun>(keymap), "is", Id_Command);
 
     static auto bind = [] (char *key, char *action)
@@ -1277,25 +1277,25 @@ void initconsolecmds()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
     };
-    addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
+    addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds));
 
     static auto clearspecbinds = [] ()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
     };
-    addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
+    addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds));
 
     static auto cleareditbinds = [] ()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
     };
-    addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
+    addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds));
 
     static auto clearallbinds = [] ()
     {
         ENUMERATE(keyms, KeyM, km, km.clear());
     };
-    addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
+    addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds));
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
     addcommand("saycommand", reinterpret_cast<identfun>(saycommand), "C", Id_Command);
     addcommand("history", reinterpret_cast<identfun>(historycmd), "i", Id_Command);

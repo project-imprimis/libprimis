@@ -4199,5 +4199,5 @@ void cleanuplights()
 
 void initrenderlightscmds() 
 {
-    addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}), "", Id_Command);
+    addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}));
 }

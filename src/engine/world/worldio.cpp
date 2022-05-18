@@ -1171,5 +1171,5 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
 
 void initworldiocmds()
 {
-    addcommand("mapcfgname", reinterpret_cast<identfun>(mapcfgname), "", Id_Command);
+    addcommand("mapcfgname", reinterpret_cast<identfun>(mapcfgname));
 }

@@ -533,8 +533,8 @@ namespace hmap
 
 void initheightmapcmds()
 {
-    addcommand("hmapcancel", reinterpret_cast<identfun>(hmap::cancel), "", Id_Command);
-    addcommand("hmapselect", reinterpret_cast<identfun>(hmap::hmapselect), "", Id_Command);
-    addcommand("clearhbrush", reinterpret_cast<identfun>(hmap::clearhbrush), "", Id_Command);
+    addcommand("hmapcancel", reinterpret_cast<identfun>(hmap::cancel));
+    addcommand("hmapselect", reinterpret_cast<identfun>(hmap::hmapselect));
+    addcommand("clearhbrush", reinterpret_cast<identfun>(hmap::clearhbrush));
     addcommand("hbrushvert", reinterpret_cast<identfun>(hmap::hbrushvert), "iii", Id_Command);
 }
