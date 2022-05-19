@@ -5,7 +5,7 @@ var command_8h =
     [ "identstack", "structidentstack.html", null ],
     [ "ident", "structident.html", "structident" ],
     [ "ident::identvalptr", "unionident_1_1identvalptr.html", null ],
-    [ "addcommand", "command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07", null ],
+    [ "addcommand", "command_8h.html#a843cea4bbdaf36111b913f0fb86a5662", null ],
     [ "checksleep", "command_8h.html#ad97d745d2a01ec6f7b780d792e082e08", null ],
     [ "clampvar", "command_8h.html#a8e8bc55a9398bb67e53e15a0cde66e08", null ],
     [ "escapestring", "command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2", null ],

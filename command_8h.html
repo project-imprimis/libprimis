@@ -360,9 +360,9 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>floatstr</b> 
 <tr class="memitem:a63fd92ba10830b3f0d68bdb43c312441"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a63fd92ba10830b3f0d68bdb43c312441">setsvar</a> (const char *name, const char *str, bool dofunc=true)</td></tr>
 <tr class="memdesc:a63fd92ba10830b3f0d68bdb43c312441"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a Cubescript string value to the given value.  <a href="command_8h.html#a63fd92ba10830b3f0d68bdb43c312441">More...</a><br /></td></tr>
 <tr class="separator:a63fd92ba10830b3f0d68bdb43c312441"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a> (const char *name, identfun fun, const char *narg, int type=Id_Command)</td></tr>
-<tr class="memdesc:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a command in the Cubescript ident table.  <a href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">More...</a><br /></td></tr>
-<tr class="separator:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a843cea4bbdaf36111b913f0fb86a5662"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a843cea4bbdaf36111b913f0fb86a5662">addcommand</a> (const char *name, identfun fun, const char *narg=&quot;&quot;, int type=Id_Command)</td></tr>
+<tr class="memdesc:a843cea4bbdaf36111b913f0fb86a5662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a command in the Cubescript ident table.  <a href="command_8h.html#a843cea4bbdaf36111b913f0fb86a5662">More...</a><br /></td></tr>
+<tr class="separator:a843cea4bbdaf36111b913f0fb86a5662"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3b67523a00aa5e380ecd5408a919a3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f">getident</a> (const char *name)</td></tr>
 <tr class="memdesc:ad3b67523a00aa5e380ecd5408a919a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the pointer to the ident object with the given CS alias.  <a href="command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f">More...</a><br /></td></tr>
 <tr class="separator:ad3b67523a00aa5e380ecd5408a919a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -423,8 +423,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></t
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Script binding functionality. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a33b3afb43fea6dd2a1d8b223c2752e07" name="a33b3afb43fea6dd2a1d8b223c2752e07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33b3afb43fea6dd2a1d8b223c2752e07">&#9670;&nbsp;</a></span>addcommand()</h2>
+<a id="a843cea4bbdaf36111b913f0fb86a5662" name="a843cea4bbdaf36111b913f0fb86a5662"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a843cea4bbdaf36111b913f0fb86a5662">&#9670;&nbsp;</a></span>addcommand()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -445,7 +445,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></t
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>narg</em>, </td>
+          <td class="paramname"><em>narg</em> = <code>&quot;&quot;</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -467,7 +467,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></t
   <table class="params">
     <tr><td class="paramname">name</td><td>of the command in Cubescript </td></tr>
     <tr><td class="paramname">fun</td><td>a function pointer to be called when the command is executed </td></tr>
-    <tr><td class="paramname">a</td><td>string containing the arguments of the function </td></tr>
+    <tr><td class="paramname">narg</td><td>string containing the arguments of the function </td></tr>
     <tr><td class="paramname">type</td><td>the type of the command to create </td></tr>
   </table>
   </dd>
