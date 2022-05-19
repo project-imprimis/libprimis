@@ -402,7 +402,7 @@ class animmodel : public model
                 animmodel *model;
                 int index;
                 meshgroup *meshes;
-                vector<linkedpart> links;
+                std::vector<linkedpart> links;
                 std::vector<skin> skins;
                 int numanimparts;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;

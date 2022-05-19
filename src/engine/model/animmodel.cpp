@@ -641,7 +641,7 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     matrix4x3 t = m;
     t.scale(model->scale);
     meshes->calcbb(bbmin, bbmax, t);
-    for(int i = 0; i < links.length(); i++)
+    for(uint i = 0; i < links.size(); i++)
     {
         matrix4x3 n;
         meshes->concattagtransform(this, links[i].tag, m, n);
@@ -655,7 +655,7 @@ void animmodel::part::genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m)
     matrix4x3 t = m;
     t.scale(model->scale);
     meshes->genBIH(skins, bih, t);
-    for(int i = 0; i < links.length(); i++)
+    for(uint i = 0; i < links.size(); i++)
     {
         matrix4x3 n;
         meshes->concattagtransform(this, links[i].tag, m, n);
@@ -669,7 +669,7 @@ void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3
     matrix4x3 t = m;
     t.scale(model->scale);
     meshes->genshadowmesh(tris, t);
-    for(int i = 0; i < links.length(); i++)
+    for(uint i = 0; i < links.size(); i++)
     {
         matrix4x3 n;
         meshes->concattagtransform(this, links[i].tag, m, n);
@@ -683,7 +683,7 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
     int i = meshes ? meshes->findtag(tag) : -1;
     if(i<0)
     {
-        for(int i = 0; i < links.length(); i++)
+        for(uint i = 0; i < links.size(); i++)
         {
             if(links[i].p && links[i].p->link(p, tag, translate, anim, basetime, pos))
             {
@@ -692,7 +692,8 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
         }
         return false;
     }
-    linkedpart &l = links.add();
+    links.emplace_back();
+    linkedpart &l = links.back();
     l.p = p;
     l.tag = i;
     l.anim = anim;
@@ -704,15 +705,15 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
 
 bool animmodel::part::unlink(part *p)
 {
-    for(int i = links.length(); --i >=0;) //note reverse iteration
+    for(int i = links.size(); --i >=0;) //note reverse iteration
     {
         if(links[i].p==p)
         {
-            links.remove(i, 1);
+            links.erase(links.begin() + i);
             return true;
         }
     }
-    for(int i = 0; i < links.length(); i++)
+    for(uint i = 0; i < links.size(); i++)
     {
         if(links[i].p && links[i].p->unlink(p))
         {
@@ -975,7 +976,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
-        for(int i = 0; i < links.length(); i++)
+        for(uint i = 0; i < links.size(); i++)
         {
             linkedpart &link = links[i];
             if(!link.p)
@@ -1093,7 +1094,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
-        for(int i = 0; i < links.length(); i++)
+        for(uint i = 0; i < links.size(); i++)
         {
             linkedpart &link = links[i];
             link.matrix.translate(link.translate, resize);

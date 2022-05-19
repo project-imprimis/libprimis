@@ -794,7 +794,7 @@ void skelmodel::skeleton::concattagtransform(part *p, int i, const matrix4x3 &m,
 
 void skelmodel::skeleton::calctags(part *p, skelcacheentry *sc)
 {
-    for(int i = 0; i < p->links.length(); i++)
+    for(uint i = 0; i < p->links.size(); i++)
     {
         linkedpart &l = p->links[i];
         tag &t = tags[l.tag];
