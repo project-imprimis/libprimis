@@ -353,7 +353,6 @@ extern void setfvarchecked(ident *id, float val);
 extern void setsvarchecked(ident *id, const char *val);
 
 extern const char *escapeid(const char *s);
-inline const char *escapeid(ident &id) { return escapeid(id.name); }
 
 extern void printvar(ident *id);
 extern void printvar(ident *id, int i);

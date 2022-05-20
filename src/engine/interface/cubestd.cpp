@@ -155,6 +155,11 @@ bool validateblock(const char *s)
     return brakdepth == 0;
 }
 
+static const char *escapeid(ident &id)
+{
+    return escapeid(id.name);
+}
+
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
     stream *f = openutf8file(copypath(name && name[0] ? name : savedconfig), "w");
