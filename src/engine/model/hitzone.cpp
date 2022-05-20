@@ -807,7 +807,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         return;
     }
     hashset<skelzoneinfo> infomap(256);
-    vector<skelzoneinfo *> info;
+    std::vector<skelzoneinfo *> info;
     skelzonebounds *bounds = new skelzonebounds[g->skel->numbones];
     numblends = g->blendcombos.length();
     for(int i = 0; i < g->blendcombos.length(); i++)
@@ -841,10 +841,11 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             skelzoneinfo &zi = infomap.access(key, key);
             if(key.blend >= numblends && zi.index < 0)
             {
-                bounds[key.bones[0]].owner = zi.index = info.length();
-                info.add(&zi);
+                bounds[key.bones[0]].owner = zi.index = info.size();
+                info.push_back(&zi);
             }
-            skelhitzone::tri &zt = zi.tris.add();
+            zi.tris.emplace_back();
+            skelhitzone::tri &zt = zi.tris.back();
             zt.Mesh = i;
             zt.id = chooseid(g, m, t, ids);
             std::memcpy(zt.vert, t.vert, sizeof(zt.vert));
@@ -858,30 +859,30 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         }
         skelzonekey key(i);
         skelzoneinfo &zi = infomap.access(key, key);
-        zi.index = info.length();
-        info.add(&zi);
+        zi.index = info.size();
+        info.push_back(&zi);
     }
-    int leafzones = info.length();
+    int leafzones = info.size();
     ENUMERATE(infomap, skelzoneinfo, zi,
     {
         if(zi.index < 0)
         {
-            info.add(&zi);
+            info.push_back(&zi);
         }
     });
-    for(int i = leafzones; i < info.length(); i++)
+    for(uint i = leafzones; i < info.size(); i++)
     {
         skelzoneinfo &zi = *info[i];
         if(zi.key.blend >= 0)
         {
             continue;
         }
-        for(int j = 0; j < info.length(); j++)
+        for(uint j = 0; j < info.size(); j++)
         {
             if(i != j && zi.key.includes(info[j]->key))
             {
                 skelzoneinfo &zj = *info[j];
-                for(int k = 0; k< zi.children.length(); k++)
+                for(uint k = 0; k< zi.children.size(); k++)
                 {
                     skelzoneinfo &zk = *zi.children[k];
                     if(zk.key.includes(zj.key))
@@ -893,24 +894,25 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
                         zk.parents--;
                         zj.parents++;
                         zi.children[k] = &zj;
-                        while(++k < zi.children.length())
+                        while(++k < zi.children.size())
                         {
                             if(zj.key.includes(zi.children[k]->key))
                             {
                                 zi.children[k]->parents--;
-                                zi.children.removeunordered(k--);
+                                zi.children.erase(zi.children.begin() + k);
+                                k--;
                             }
                         }
                         goto nextzone; //basically `continue` except for the top level loop
                     }
                 }
                 zj.parents++;
-                zi.children.add(&zj);
+                zi.children.push_back(&zj);
             nextzone:;
             }
         }
         skelzonekey deps = zi.key;
-        for(int j = 0; j < zi.children.length(); j++)
+        for(uint j = 0; j < zi.children.size(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
             if(zj.key.blend < 0 || zj.key.blend >= numblends)
@@ -927,57 +929,56 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             skelzonekey dep(deps.bones[j]);
             skelzoneinfo &zj = infomap.access(dep, dep);
             zj.parents++;
-            zi.children.add(&zj);
+            zi.children.push_back(&zj);
         }
     }
-    for(int i = leafzones; i < info.length(); i++)
+    for(uint i = leafzones; i < info.size(); i++)
     {
         skelzoneinfo &zi = *info[i];
-        for(int j = 0; j < zi.children.length(); j++)
+        for(uint j = 0; j < zi.children.size(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
-            if(zj.tris.length() <= 2 && zj.parents == 1)
+            if(zj.tris.size() <= 2 && zj.parents == 1)
             {
-                zi.tris.put(zj.tris.getbuf(), zj.tris.length());
-                zj.tris.setsize(0);
+                zj.tris.clear();
                 if(zj.index < 0)
                 {
                     zj.parents = 0;
-                    zi.children.removeunordered(j--);
+                    zi.children.erase(zi.children.begin() + j);
+                    j--;
                 }
-                zi.children.put(zj.children.getbuf(), zj.children.length());
-                zj.children.setsize(0);
+                zj.children.clear();
             }
         }
     }
     int numlinks = 0,
         numtris = 0;
-    for(int i = info.length(); --i >=0;) //note reverse iteration
+    for(int i = info.size(); --i >=0;) //note reverse iteration
     {
         skelzoneinfo &zi = *info[i];
         if(zi.parents || zi.tris.empty())
         {
-            info.removeunordered(i);
+            info.erase(info.begin() + i);
         }
         zi.conflicts = zi.parents;
-        numlinks += zi.parents + zi.children.length();
-        numtris += zi.tris.length();
+        numlinks += zi.parents + zi.children.size();
+        numtris += zi.tris.size();
     }
-    rootzones = info.length();
-    for(int i = 0; i < info.length(); i++)
+    rootzones = info.size();
+    for(uint i = 0; i < info.size(); i++)
     {
         skelzoneinfo &zi = *info[i];
         zi.index = i;
-        for(int j = 0; j < zi.children.length(); j++)
+        for(uint j = 0; j < zi.children.size(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
             if(!--zj.conflicts)
             {
-                info.add(&zj);
+                info.push_back(&zj);
             }
         }
     }
-    numzones = info.length();
+    numzones = info.size();
     zones = new skelhitzone[numzones];
     links = numlinks ? new skelhitzone *[numlinks] : nullptr;
     tris = new skelhitzone::tri[numtris];
@@ -986,14 +987,14 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = 0; i < numzones; ++i)
     {
         skelhitzone &z = zones[i];
-        skelzoneinfo &zi = *info[info.length()-1 - i];
-        std::memcpy(curtris, zi.tris.getbuf(), zi.tris.length()*sizeof(skelhitzone::tri));
+        skelzoneinfo &zi = *info[info.size()-1 - i];
+        std::memcpy(curtris, zi.tris.data(), zi.tris.size()*sizeof(skelhitzone::tri));
         if(zi.key.blend >= numblends)
         {
             z.blend = zi.key.bones[0] + numblends;
-            if(zi.tris.length())
+            if(zi.tris.size())
             {
-                z.bih = new skelbih(g, zi.tris.length(), curtris);
+                z.bih = new skelbih(g, zi.tris.size(), curtris);
             }
             const skelzonebounds &b = bounds[zi.key.bones[0]];
             z.center = b.calccenter();
@@ -1002,25 +1003,25 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         else if(zi.key.blend >= 0)
         {
             z.blend = zi.key.blend;
-            z.bih = new skelbih(g, zi.tris.length(), curtris);
+            z.bih = new skelbih(g, zi.tris.size(), curtris);
             z.center = z.bih->calccenter();
             z.radius = z.bih->calcradius();
         }
         else
         {
-            z.numtris = zi.tris.length();
+            z.numtris = zi.tris.size();
             z.tris = curtris;
         }
-        curtris += zi.tris.length();
+        curtris += zi.tris.size();
         z.parents = curlink;
         curlink += zi.parents;
-        z.numchildren = zi.children.length();
+        z.numchildren = zi.children.size();
         z.children = curlink;
-        for(int j = 0; j < zi.children.length(); j++)
+        for(uint j = 0; j < zi.children.size(); j++)
         {
-            z.children[j] = &zones[info.length()-1 - zi.children[j]->index];
+            z.children[j] = &zones[info.size()-1 - zi.children[j]->index];
         }
-        curlink += zi.children.length();
+        curlink += zi.children.size();
     }
     for(int i = 0; i < numzones; ++i)
     {
