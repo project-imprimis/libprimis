@@ -604,11 +604,6 @@ static void debugcodeline(const char *p, const char *fmt, ...)
     dodebugalias();
 }
 
-void addident(ident *id)
-{
-    addident(*id);
-}
-
 void pusharg(ident &id, const tagval &v, identstack &stack)
 {
     stack.val = id.val;
