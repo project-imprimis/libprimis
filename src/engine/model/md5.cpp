@@ -174,7 +174,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                     basejoints.push_back(j);
                 }
             }
-            if(basejoints.size()!=skel->numbones)
+            if(static_cast<int>(basejoints.size()) != skel->numbones)
             {
                 delete f;
                 if(animdata)
@@ -247,7 +247,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                     j.orient.restorew();
                 }
                 dualquat dq(j.orient, j.pos);
-                if(static_cast<int>(adjustments.size()) > i)
+                if(adjustments.size() > i)
                 {
                     adjustments[i].adjust(dq);
                 }
@@ -359,7 +359,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
                     j.pos.y = -j.pos.y;
                     j.orient.x = -j.orient.x;
                     j.orient.z = -j.orient.z;
-                    if(basejoints.size()<skel->numbones)
+                    if(static_cast<int>(basejoints.size()) < skel->numbones)
                     {
                         if(!skel->bones[basejoints.size()].name)
                         {
@@ -371,7 +371,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
                     basejoints.push_back(j);
                 }
             }
-            if(basejoints.size()!=skel->numbones)
+            if(static_cast<int>(basejoints.size()) != skel->numbones)
             {
                 delete f;
                 return false;
