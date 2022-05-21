@@ -489,7 +489,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                         } \
                         continue; \
                     } \
-                    if(!(curfont->chars.size() > c-curfont->charoffset)) \
+                    if(!(curfont->chars.size() > static_cast<int>(c-curfont->charoffset))) \
                     { \
                         break; \
                     } \
