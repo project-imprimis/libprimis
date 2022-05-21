@@ -226,7 +226,7 @@ int finddynlights()
  */
 bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
-    if(!closedynlights.size() > n)
+    if(!(closedynlights.size() > n))
     {
         return false;
     }
