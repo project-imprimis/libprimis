@@ -38,23 +38,24 @@ struct timer
 //locally relevant functionality
 namespace
 {
-    static vector<timer> timers;
-    static vector<int> timerorder;
-    static int timercycle = 0;
+    std::vector<timer> timers;
+    std::vector<int> timerorder;
+    int timercycle = 0;
 
     timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
     {
-        for(int i = 0; i < timers.length(); i++)
+        for(uint i = 0; i < timers.size(); i++)
         {
             if(!std::strcmp(timers[i].name, name) && timers[i].gpu == gpu)
             {
-                timerorder.removeobj(i);
-                timerorder.add(i);
+                timerorder.erase(std::find(timerorder.begin(), timerorder.end(), i));
+                timerorder.push_back(i);
                 return &timers[i];
             }
         }
-        timerorder.add(timers.length());
-        timer &t = timers.add();
+        timerorder.push_back(timers.size());
+        timers.emplace_back();
+        timer &t = timers.back();
         t.name = name;
         t.gpu = gpu;
         std::memset(t.query, 0, sizeof(t.query));
@@ -127,7 +128,7 @@ void synctimers()
 {
     timercycle = (timercycle + 1) % timer::Timer_MaxQuery;
 
-    for(int i = 0; i < timers.length(); i++)
+    for(uint i = 0; i < timers.size(); i++)
     {
         timer &t = timers[i];
         if(t.waiting&(1<<timercycle))
@@ -157,7 +158,7 @@ void synctimers()
  */
 void cleanuptimers()
 {
-    for(int i = 0; i < timers.length(); i++)
+    for(uint i = 0; i < timers.size(); i++)
     {
         timer &t = timers[i];
         if(t.gpu)
@@ -165,8 +166,8 @@ void cleanuptimers()
             glDeleteQueries(timer::Timer_MaxQuery, t.query);
         }
     }
-    timers.shrink(0);
-    timerorder.shrink(0);
+    timers.clear();
+    timerorder.clear();
 }
 
 /*
@@ -195,7 +196,7 @@ void printtimers(int conw, int conh, int framemillis)
     }
     if(usetimers)
     {
-        for(int i = 0; i < timerorder.length(); i++)
+        for(uint i = 0; i < timerorder.size(); i++)
         {
             timer &t = timers[timerorder[i]];
             if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200)
