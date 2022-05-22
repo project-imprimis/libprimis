@@ -880,7 +880,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         c.pitchmax = *pitchmax;
         c.pitchscale = *scale;
         uint pos = skel->pitchcorrects.size();
-        for(int i = 0; i < skel->pitchcorrects.size(); i++)
+        for(uint i = 0; i < skel->pitchcorrects.size(); i++)
         {
             if(bone <= skel->pitchcorrects[i].bone)
             {
