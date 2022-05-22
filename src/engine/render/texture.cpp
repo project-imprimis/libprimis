@@ -1164,7 +1164,7 @@ vector<Slot *> slots;
 MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
-vector<DecalSlot *> decalslots;
+std::vector<DecalSlot *> decalslots;
 DecalSlot dummydecalslot;
 Slot *defslot = nullptr;
 
@@ -1235,7 +1235,11 @@ void decalreset(int *n)
     }
     defslot = nullptr;
     resetslotshader();
-    decalslots.deletecontents(*n);
+    for(uint i = *n; i < decalslots.size(); ++i)
+    {
+        delete decalslots.at(i);
+    }
+    decalslots.resize(*n);
 }
 
 static int compactedvslots = 0,
@@ -1253,7 +1257,7 @@ void clearslots()
     {
         materialslots[i].reset();
     }
-    decalslots.deletecontents();
+    decalslots.clear();
     clonedvslots = 0;
 }
 
@@ -1987,12 +1991,13 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
     }
     else if(!std::strcmp(type, "decal"))
     {
-        if(decalslots.length() >= 0x10000)
+        if(decalslots.size() >= 0x10000)
         {
             return;
         }
         tnum = Tex_Diffuse;
-        defslot = decalslots.add(new DecalSlot(decalslots.length()));
+        decalslots.push_back(new DecalSlot(decalslots.size()));
+        defslot = decalslots.back();
     }
     else if((matslot = findmaterial(type)) >= 0)
     {
@@ -2416,9 +2421,9 @@ VSlot &lookupvslot(int index, bool load)
     return s;
 }
 
-DecalSlot &lookupdecalslot(int index, bool load)
+DecalSlot &lookupdecalslot(uint index, bool load)
 {
-    DecalSlot &s = decalslots.inrange(index) ? *decalslots[index] : dummydecalslot;
+    DecalSlot &s = (decalslots.size() > index) ? *decalslots[index] : dummydecalslot;
     if(load && !s.linked)
     {
         if(!s.loaded)
@@ -2455,7 +2460,7 @@ void linkslotshaders()
             linkvslotshader(materialslots[i]);
         }
     }
-    for(int i = 0; i < decalslots.length(); i++)
+    for(uint i = 0; i < decalslots.size(); i++)
     {
         if(decalslots[i]->loaded)
         {
@@ -2624,7 +2629,7 @@ void cleanuptextures()
     {
         materialslots[i].cleanup();
     }
-    for(int i = 0; i < decalslots.length(); i++)
+    for(uint i = 0; i < decalslots.size(); i++)
     {
         decalslots[i]->cleanup();
     }
