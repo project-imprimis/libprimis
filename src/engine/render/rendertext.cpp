@@ -467,7 +467,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 TEXTCOLOR(i) /*textcolor *must* be defined before runtime, it is not defined above here*/ \
             } \
         }\
-        else if(curfont->chars.size() > c-curfont->charoffset)\
+        else if(curfont->chars.size() > static_cast<uint>(c-curfont->charoffset))\
         {\
             float cw = scale*curfont->chars[c-curfont->charoffset].advance;\
             if(cw <= 0) \
