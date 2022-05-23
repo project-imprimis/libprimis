@@ -109,7 +109,8 @@ struct SoundChannel
         dirty  = false;
     }
 };
-vector<SoundChannel> channels;
+
+static std::vector<SoundChannel> channels;
 int maxchannels = 0;
 
 //creates a new SoundChannel object with passed properties
@@ -120,9 +121,9 @@ SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, exten
         loc = &ent->o;
         ent->flags |= EntFlag_Sound;
     }
-    while(!channels.inrange(n))
+    while(!(channels.size() >n))
     {
-        channels.add(channels.length());
+        channels.push_back(channels.size());
     }
     SoundChannel &chan = channels[n];
     chan.reset();
@@ -141,7 +142,7 @@ SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, exten
 //sets a channel as not being in use
 void freechannel(int n)
 {
-    if(!channels.inrange(n) || !channels[n].inuse)
+    if(!(channels.size() > n) || !channels[n].inuse)
     {
         return;
     }
@@ -169,7 +170,7 @@ void syncchannel(SoundChannel &chan)
 
 void stopchannels()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(!chan.inuse) //don't clear channels that are already flagged as unused
@@ -545,7 +546,7 @@ static struct SoundType
         // soundslots.add() may relocate slot pointers
         if(slots.getbuf() != oldslots)
         {
-            for(int i = 0; i < channels.length(); i++)
+            for(uint i = 0; i < channels.size(); i++)
             {
                 SoundChannel &chan = channels[i];
                 if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
@@ -583,7 +584,7 @@ static struct SoundType
     }
     void reset() //cleanup each channel
     {
-        for(int i = 0; i < channels.length(); i++)
+        for(uint i = 0; i < channels.size(); i++)
         {
             SoundChannel &chan = channels[i];
             if(chan.inuse && slots.inbuf(chan.slot))
@@ -626,14 +627,14 @@ static struct SoundType
 //free all channels
 void resetchannels()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse)
         {
             freechannel(i);
         }
     }
-    channels.shrink(0);
+    channels.clear();
 }
 
 void clear_sound()
@@ -652,7 +653,7 @@ void clear_sound()
 
 void stopmapsound(extentity *e)
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && chan.ent == e)
@@ -721,7 +722,7 @@ bool updatechannel(SoundChannel &chan)
 //free channels that are not playing sounds
 void reclaimchannels()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && !Mix_Playing(i))
@@ -733,7 +734,7 @@ void reclaimchannels()
 
 void syncchannels()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && chan.hasloc() && updatechannel(chan))
@@ -794,7 +795,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         int rad = radius > 0 ? (maxsoundradius ? std::min(maxsoundradius, radius) : radius) : maxsoundradius;
         if(camera1->o.dist(*loc) > 1.5f*rad)
         {
-            if(channels.inrange(chanid) && sounds.playing(channels[chanid], config))
+            if(channels.size() > chanid && sounds.playing(channels[chanid], config))
             {
                 Mix_HaltChannel(chanid);
                 freechannel(chanid);
@@ -807,7 +808,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         if(config.maxuses)
         {
             int uses = 0;
-            for(int i = 0; i < channels.length(); i++)
+            for(uint i = 0; i < channels.size(); i++)
             {
                 if(sounds.playing(channels[i], config) && ++uses >= config.maxuses)
                 {
@@ -832,7 +833,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
             return -1;
         }
     }
-    if(channels.inrange(chanid))
+    if(channels.size() > chanid)
     {
         SoundChannel &chan = channels[chanid];
         if(sounds.playing(chan, config))
@@ -862,7 +863,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         conoutf("sound: %s%s", sounds.dir, slot.sample->name);
     }
     chanid = -1;
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         if(!channels[i].inuse)
         {
@@ -870,13 +871,13 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
             break;
         }
     }
-    if(chanid < 0 && channels.length() < maxchannels)
+    if(chanid < 0 && channels.size() < maxchannels)
     {
-        chanid = channels.length();
+        chanid = channels.size();
     }
     if(chanid < 0)
     {
-        for(int i = 0; i < channels.length(); i++)
+        for(uint i = 0; i < channels.size(); i++)
         {
             if(!channels[i].volume)
             {
@@ -921,7 +922,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
 
 bool stopsound(int n, int chanid, int fade)
 {
-    if(!(gamesounds.configs.size() > n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
+    if(!(gamesounds.configs.size() > n) || !(channels.size() > chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
     {
         return false;
     }
@@ -939,7 +940,7 @@ bool stopsound(int n, int chanid, int fade)
 
 void stopmapsounds()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse && channels[i].ent)
         {
@@ -976,7 +977,7 @@ void checkmapsounds()
 
 void stopsounds()
 {
-    for(int i = 0; i < channels.length(); i++)
+    for(uint i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse)
         {
