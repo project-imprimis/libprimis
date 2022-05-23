@@ -1164,7 +1164,7 @@ vector<Slot *> slots;
 MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
-std::vector<DecalSlot *> decalslots;
+static std::vector<DecalSlot *> decalslots;
 DecalSlot dummydecalslot;
 Slot *defslot = nullptr;
 
@@ -2421,7 +2421,7 @@ VSlot &lookupvslot(int index, bool load)
     return s;
 }
 
-DecalSlot &lookupdecalslot(uint index, bool load)
+DecalSlot &lookupdecalslot(int index, bool load)
 {
     DecalSlot &s = (decalslots.size() > index) ? *decalslots[index] : dummydecalslot;
     if(load && !s.linked)
