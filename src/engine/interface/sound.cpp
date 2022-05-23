@@ -510,12 +510,12 @@ static struct SoundType
 {
     hashnameset<SoundSample> samples;
     vector<soundslot> slots;
-    vector<SoundConfig> configs;
+    std::vector<SoundConfig> configs;
     const char *dir;
     SoundType(const char *dir) : dir(dir) {}
     int findsound(const char *name, int vol)
     {
-        for(int i = 0; i < configs.length(); i++)
+        for(uint i = 0; i < configs.size(); i++)
         {
             SoundConfig &s = configs[i];
             for(int j = 0; j < s.numslots; ++j)
@@ -560,11 +560,12 @@ static struct SoundType
     }
     int addsound(const char *name, int vol, int maxuses = 0)
     {
-        SoundConfig &s = configs.add();
+        configs.emplace_back();
+        SoundConfig &s = configs.back();
         s.slots = addslot(name, vol);
         s.numslots = 1;
         s.maxuses = maxuses;
-        return configs.length()-1;
+        return configs.size()-1;
     }
     void addalt(const char *name, int vol)
     {
@@ -573,12 +574,12 @@ static struct SoundType
             return;
         }
         addslot(name, vol);
-        configs.last().numslots++;
+        configs.back().numslots++;
     }
     void clear()
     {
         slots.setsize(0);
-        configs.setsize(0);
+        configs.clear();
     }
     void reset() //cleanup each channel
     {
@@ -601,12 +602,12 @@ static struct SoundType
     {
         cleanupsamples();
         slots.setsize(0);
-        configs.setsize(0);
+        configs.clear();
         samples.clear();
     }
     void preloadsound(int n)
     {
-        if(nosound || !configs.inrange(n))
+        if(nosound || !(configs.size() > n))
         {
             return;
         }
@@ -780,7 +781,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         return -1;
     }
     SoundType &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
-    if(!sounds.configs.inrange(n)) //sound isn't within index
+    if(!(sounds.configs.size() > n)) //sound isn't within index
     {
         conoutf(Console_Warn, "unregistered sound: %d", n);
         return -1;
@@ -920,7 +921,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
 
 bool stopsound(int n, int chanid, int fade)
 {
-    if(!gamesounds.configs.inrange(n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
+    if(!(gamesounds.configs.size() > n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
     {
         return false;
     }
@@ -1109,12 +1110,12 @@ void initsoundcmds()
 
     static auto numsounds = [] ()
     {
-        intret(gamesounds.configs.length());
+        intret(gamesounds.configs.size());
     };
 
     static auto nummapsounds = [] ()
     {
-        intret(mapsounds.configs.length());
+        intret(mapsounds.configs.size());
     };
 
     static auto soundreset = [] ()
