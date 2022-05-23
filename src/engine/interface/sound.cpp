@@ -52,9 +52,9 @@ struct SoundConfig
     int slots, numslots;
     int maxuses;
 
-    bool hasslot(const soundslot *p, const vector<soundslot> &v) const
+    bool hasslot(const soundslot *p, const std::vector<soundslot> &v) const
     {
-        return p >= v.getbuf() + slots && p < v.getbuf() + slots+numslots && slots+numslots < v.length();
+        return p >= v.data() + slots && p < v.data() + slots+numslots && slots+numslots < v.size();
     }
 
     int chooseslot(int flags) const
@@ -510,7 +510,7 @@ bool SoundSample::load(const char *dir)
 static struct SoundType
 {
     hashnameset<SoundSample> samples;
-    vector<soundslot> slots;
+    std::vector<soundslot> slots;
     std::vector<SoundConfig> configs;
     const char *dir;
     SoundType(const char *dir) : dir(dir) {}
@@ -540,11 +540,12 @@ static struct SoundType
             s->name = n;
             s->chunk = nullptr;
         }
-        soundslot *oldslots = slots.getbuf();
-        int oldlen = slots.length();
-        soundslot &slot = slots.add();
+        soundslot *oldslots = slots.data();
+        int oldlen = slots.size();
+        slots.emplace_back();
+        soundslot &slot = slots.back();
         // soundslots.add() may relocate slot pointers
-        if(slots.getbuf() != oldslots)
+        if(slots.data() != oldslots)
         {
             for(uint i = 0; i < channels.size(); i++)
             {
@@ -579,7 +580,7 @@ static struct SoundType
     }
     void clear()
     {
-        slots.setsize(0);
+        slots.clear();
         configs.clear();
     }
     void reset() //cleanup each channel
@@ -587,7 +588,10 @@ static struct SoundType
         for(uint i = 0; i < channels.size(); i++)
         {
             SoundChannel &chan = channels[i];
-            if(chan.inuse && slots.inbuf(chan.slot))
+            soundslot * array = slots.data();
+            uint size = slots.size();
+            bool inbuf = chan.slot >= array + size && chan.slot < array; //within bounds of utilized vector spaces
+            if(chan.inuse && inbuf)
             {
                 Mix_HaltChannel(i);
                 freechannel(i);
@@ -602,7 +606,7 @@ static struct SoundType
     void cleanup()
     {
         cleanupsamples();
-        slots.setsize(0);
+        slots.clear();
         configs.clear();
         samples.clear();
     }
