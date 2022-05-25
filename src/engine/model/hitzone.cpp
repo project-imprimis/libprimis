@@ -809,8 +809,8 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     hashset<skelzoneinfo> infomap(256);
     std::vector<skelzoneinfo *> info;
     skelzonebounds *bounds = new skelzonebounds[g->skel->numbones];
-    numblends = g->blendcombos.length();
-    for(int i = 0; i < g->blendcombos.length(); i++)
+    numblends = g->blendcombos.size();
+    for(uint i = 0; i < g->blendcombos.size(); i++)
     {
         if(!g->blendcombos[i].weights[1])
         {
@@ -1060,7 +1060,7 @@ void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmode
         bc.owner = owner;
         bc.millis = lastmillis;
         (animcacheentry &)bc = sc;
-        blendbones(sc.bdata, bc.bdata, blendcombos.getbuf(), z->numblends);
+        blendbones(sc.bdata, bc.bdata, blendcombos.data(), z->numblends);
         z->propagate(this, sc.bdata, bc.bdata);
     }
     z->intersect(this, p->skins.data(), sc.bdata, bc.bdata, o, ray);

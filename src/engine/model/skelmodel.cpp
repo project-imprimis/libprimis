@@ -229,7 +229,7 @@ void skelmodel::skeleton::remapbones()
     for(uint i = 0; i < users.size(); i++)
     {
         skelmeshgroup *group = users[i];
-        for(int j = 0; j < group->blendcombos.length(); j++) //loop j
+        for(uint j = 0; j < group->blendcombos.size(); j++) //loop j
         {
             blendcombo &c = group->blendcombos[j];
             for(int k = 0; k < 4; ++k) //loop k
@@ -1018,7 +1018,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
     if(skel->numframes && !skel->usegpuskel)
     {
         vweights = 1;
-        for(int i = 0; i < blendcombos.length(); i++)
+        for(uint i = 0; i < blendcombos.size(); i++)
         {
             blendcombo &c = blendcombos[i];
             c.interpindex = c.weights[1] ? skel->numgpubones + vblends++ : -1;
@@ -1043,7 +1043,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             {
                 availbones -= numblends[--vweights];
             }
-            for(int i = 0; i < blendcombos.length(); i++)
+            for(uint i = 0; i < blendcombos.size(); i++)
             {
                 blendcombo &c = blendcombos[i];
                 c.interpindex = c.size() > vweights ? skel->numgpubones + vblends++ : -1;
@@ -1052,7 +1052,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         else
         {
             vweights = 0;
-            for(int i = 0; i < blendcombos.length(); i++)
+            for(uint i = 0; i < blendcombos.size(); i++)
             {
                 blendcombos[i].interpindex = -1;
             }
@@ -1507,7 +1507,7 @@ void skelmodel::skelmeshgroup::concattagtransform(part *p, int i, const matrix4x
 
 int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
 {
-    for(int i = 0; i < blendcombos.length(); i++)
+    for(uint i = 0; i < blendcombos.size(); i++)
     {
         if(blendcombos[i]==c)
         {
@@ -1516,15 +1516,16 @@ int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
         }
     }
     numblends[c.size()-1]++;
-    blendcombo &a = blendcombos.add(c);
-    return a.interpindex = blendcombos.length()-1;
+    blendcombos.push_back(c);
+    blendcombo &a = blendcombos.back();
+    return a.interpindex = blendcombos.size()-1;
 }
 
 void skelmodel::skelmeshgroup::sortblendcombos()
 {
-    blendcombos.sort(blendcombo::sortcmp);
-    int *remap = new int[blendcombos.length()];
-    for(int i = 0; i < blendcombos.length(); i++)
+    std::sort(blendcombos.begin(), blendcombos.end(), blendcombo::sortcmp);
+    int *remap = new int[blendcombos.size()];
+    for(int i = 0; i < blendcombos.size(); i++)
     {
         remap[blendcombos[i].interpindex] = i;
     }
@@ -1569,7 +1570,7 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
     }
     dualquat *dst = bc.bdata - skel->numgpubones;
     bool normalize = !skel->usegpuskel || vweights<=1;
-    for(int i = 0; i < blendcombos.length(); i++)
+    for(uint i = 0; i < blendcombos.size(); i++)
     {
         const blendcombo &c = blendcombos[i];
         if(c.interpindex<0)

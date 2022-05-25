@@ -447,7 +447,7 @@ struct skelmodel : animmodel
     {
         skeleton *skel;
 
-        vector<blendcombo> blendcombos;
+        std::vector<blendcombo> blendcombos;
         int numblends[4];
 
         static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
@@ -856,7 +856,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             return;
         }
-        int targetbone = skel->findbone(targetname), target = -1;
+        int targetbone = skel->findbone(targetname),
+            target = -1;
         if(targetbone >= 0)
         {
             for(uint i = 0; i < skel->pitchtargets.size(); i++)
