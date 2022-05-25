@@ -99,8 +99,8 @@ void matrix3::transposemul(const matrix3 &n)
 
 void matrix3::transpose()
 {
-    swap(a.y, b.x); swap(a.z, c.x);
-    swap(b.z, c.y);
+    std::swap(a.y, b.x); std::swap(a.z, c.x);
+    std::swap(b.z, c.y);
 }
 
 void matrix3::transpose(const matrix3 &m)
@@ -648,9 +648,9 @@ void matrix4::jitter(float x, float y)
 
 void matrix4::transpose()
 {
-    swap(a.y, b.x); swap(a.z, c.x); swap(a.w, d.x);
-    swap(b.z, c.y); swap(b.w, d.y);
-    swap(c.w, d.z);
+    std::swap(a.y, b.x); std::swap(a.z, c.x); std::swap(a.w, d.x);
+    std::swap(b.z, c.y); std::swap(b.w, d.y);
+    std::swap(c.w, d.z);
 }
 
 void matrix4::transpose(const matrix4 &m)
@@ -934,8 +934,8 @@ void matrix4x3::mul(const matrix3 &rot, const vec &trans, const matrix4x3 &n)
 void matrix4x3::transpose()
 {
     d = vec(a.dot(d), b.dot(d), c.dot(d)).neg();
-    swap(a.y, b.x); swap(a.z, c.x);
-    swap(b.z, c.y);
+    std::swap(a.y, b.x); std::swap(a.z, c.x);
+    std::swap(b.z, c.y);
 }
 
 void matrix4x3::transpose(const matrix4x3 &o)
