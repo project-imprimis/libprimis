@@ -197,9 +197,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a15a5e04878f77f49540e149c9f8d427f"><td class="memItemLeft" align="right" valign="top">const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a15a5e04878f77f49540e149c9f8d427f">getbuf</a> () const</td></tr>
 <tr class="memdesc:a15a5e04878f77f49540e149c9f8d427f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to const for the vector's internal array.  <a href="structvector.html#a15a5e04878f77f49540e149c9f8d427f">More...</a><br /></td></tr>
 <tr class="separator:a15a5e04878f77f49540e149c9f8d427f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1597d5f5683b5666dca9edf2365c6c27"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a1597d5f5683b5666dca9edf2365c6c27">inbuf</a> (const T *e) const</td></tr>
-<tr class="memdesc:a1597d5f5683b5666dca9edf2365c6c27"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns whether the pointer is inside the vector's internal array  <a href="structvector.html#a1597d5f5683b5666dca9edf2365c6c27">More...</a><br /></td></tr>
-<tr class="separator:a1597d5f5683b5666dca9edf2365c6c27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8ed3bcb552484154fb959aa1f02a3a0"><td class="memTemplParams" colspan="2">template&lt;class F &gt; </td></tr>
 <tr class="memitem:aa8ed3bcb552484154fb959aa1f02a3a0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0">sort</a> (F fun, int i=0, int n=-1)</td></tr>
 <tr class="memdesc:aa8ed3bcb552484154fb959aa1f02a3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts using the passed function between passed indices.  <a href="structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0">More...</a><br /></td></tr>
@@ -485,7 +482,8 @@ template&lt;class T &gt; </div>
 
 <p>Adds a reference to the back of the array, with assigned value. </p>
 <p >Adds a reference to a new element located at the back of the vector. Dynamically constructs a new object on the heap (using the value passed to construct it) and returns the reference to the newly created element.</p>
-<p >This function's closest equivalents in std::vector&lt;&gt; are push_back() and emplace_back(). However, these functions do not return a reference to the newly created value. Manually allocating the pointer on the heap and pushing it into an array of pointers or references, or using iterators, can work around this difference in architecture.</p>
+<p >This function's closest equivalents in std::vector&lt;&gt; are push_back() and emplace_back(). However, these functions do not return a reference to the newly created value.</p>
+<p >The easiest way to replicate this behavior in std::vector is to create the new item at the back of the vector with emplace_back() followed by using back() to get a reference to the newly created vector.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>the value to assign to the newly created value</td></tr>
@@ -984,7 +982,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Returns a pointer to the vector's internal array. </p>
-<p >Returns the address of the vector's internal array. If the vector's size changes, this pointer will become invalidated.</p>
+<p >Returns the address of the vector's internal array. If the vector's size changes, this pointer will become invalidated. The std::vector equivalent to this is data().</p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the vector's internal array. </dd></dl>
 
 </div>
@@ -1168,46 +1166,6 @@ template&lt;class K &gt; </div>
 <li>GLuint</li>
 </ul>
 <dl class="section return"><dt>Returns</dt><dd>the index of the element if it exists; -1 otherwise </dd></dl>
-
-</div>
-</div>
-<a id="a1597d5f5683b5666dca9edf2365c6c27" name="a1597d5f5683b5666dca9edf2365c6c27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1597d5f5683b5666dca9edf2365c6c27">&#9670;&nbsp;</a></span>inbuf()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="structvector.html">vector</a>&lt; T &gt;::inbuf </td>
-          <td>(</td>
-          <td class="paramtype">const T *&#160;</td>
-          <td class="paramname"><em>e</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>returns whether the pointer is inside the vector's internal array </p>
-<p >Returns whether the pointer passed has an address that falls within the used addresses of the vector. It will return false if the address is only in the allocated buffer, or is not inside the address range at all.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">e</td><td>the pointer to determine the status of</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true if the address is inside the vector's array </dd>
-<dd>
-false if the address is outside the vector's array </dd></dl>
 
 </div>
 </div>

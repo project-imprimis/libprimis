@@ -23,7 +23,6 @@ var structvector =
     [ "getbuf", "structvector.html#a15a5e04878f77f49540e149c9f8d427f", null ],
     [ "growbuf", "structvector.html#a500a5fefd99c45e122ffdedaf8cb55b6", null ],
     [ "htfind", "structvector.html#aeb422be9160e47b6960ac83078e725bc", null ],
-    [ "inbuf", "structvector.html#a1597d5f5683b5666dca9edf2365c6c27", null ],
     [ "inrange", "structvector.html#a4fc5cf788f4ff40e5c9c31f7ac10b5ce", null ],
     [ "inrange", "structvector.html#a9c8b60b827cee171c65238526b27a623", null ],
     [ "insert", "structvector.html#ae14839b92fd4f03eddd2026d72a3210e", null ],
