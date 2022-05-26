@@ -556,7 +556,7 @@ namespace
         int numargs;
         tagval args[3];
     };
-    vector<releaseaction> releaseactions;
+    std::vector<releaseaction> releaseactions;
 
     void onrelease(const char *s)
     {
@@ -565,7 +565,7 @@ namespace
 
     void execbind(KeyM &k, bool isdown)
     {
-        for(int i = 0; i < releaseactions.length(); i++)
+        for(uint i = 0; i < releaseactions.size(); i++)
         {
             releaseaction &ra = releaseactions[i];
             if(ra.key==&k)
@@ -582,7 +582,8 @@ namespace
                 {
                     execute(isdown ? nullptr : ra.id, ra.args, ra.numargs);
                 }
-                releaseactions.remove(i--);
+                releaseactions.erase(releaseactions.begin() + i);
+                i--;
             }
         }
         if(isdown)
@@ -1123,7 +1124,8 @@ const char *addreleaseaction(char *s)
         delete[] s;
         return nullptr;
     }
-    releaseaction &ra = releaseactions.add();
+    releaseactions.emplace_back();
+    releaseaction &ra = releaseactions.back();
     ra.key = keypressed;
     ra.action = s;
     ra.numargs = -1;
@@ -1136,7 +1138,8 @@ tagval *addreleaseaction(ident *id, int numargs)
     {
         return nullptr;
     }
-    releaseaction &ra = releaseactions.add();
+    releaseactions.emplace_back();
+    releaseaction &ra = releaseactions.back();
     ra.key = keypressed;
     ra.id = id;
     ra.numargs = numargs;
@@ -1147,12 +1150,12 @@ tagval *addreleaseaction(ident *id, int numargs)
 void writebinds(stream *f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
-    vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.add(&km));
-    binds.sortname();
+    std::vector<KeyM *> binds;
+    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
-        for(int i = 0; i < binds.length(); i++)
+        for(uint i = 0; i < binds.size(); i++)
         {
             KeyM &km = *binds[i];
             if(*km.actions[j])
