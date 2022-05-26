@@ -1406,7 +1406,7 @@ static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
 static std::vector<lightinfo> lights;
 static std::vector<int> lightorder;
 static hashset<lightbatch> lightbatcher(128);
-static vector<lightbatch *> lightbatches;
+static std::vector<lightbatch *> lightbatches;
 std::vector<shadowmapinfo> shadowmaps;
 
 void clearshadowcache()
@@ -2395,7 +2395,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
     bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
-    for(int i = 0; i < lightbatches.length(); i++)
+    for(uint i = 0; i < lightbatches.size(); i++)
     {
         lightbatch &batch = *lightbatches[i];
         if(!batch.overlaps(btx1, bty1, btx2, bty2, tilemask))
@@ -3301,7 +3301,7 @@ static void batchlights(const batchstack &initstack)
                 if(batch.rects.empty())
                 {
                     (lightbatchkey &)batch = key;
-                    lightbatches.add(&batch);
+                    lightbatches.push_back(&batch);
                 }
                 batch.rects.push_back(s);
                 ++lightbatchrectsused;
@@ -3348,7 +3348,7 @@ static bool sortlightbatches(const lightbatch *x, const lightbatch *y)
 
 static void batchlights()
 {
-    lightbatches.setsize(0);
+    lightbatches.clear();
     lightbatchstacksused = 0;
     lightbatchrectsused = 0;
 
@@ -3356,10 +3356,10 @@ static void batchlights()
     {
         lightbatcher.recycle();
         batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()));
-        lightbatches.sort(sortlightbatches);
+        std::sort(lightbatches.begin(), lightbatches.end(), sortlightbatches);
     }
 
-    lightbatchesused = lightbatches.length();
+    lightbatchesused = lightbatches.size();
 }
 
 void packlights()
@@ -4197,7 +4197,7 @@ void cleanuplights()
     cleanupaa();
 }
 
-void initrenderlightscmds() 
+void initrenderlightscmds()
 {
     addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}), "", Id_Command);
 }
