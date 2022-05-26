@@ -1043,7 +1043,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     {
         return;
     }
-    vector<SortItem> items;
+    std::vector<SortItem> items;
     int clen = std::strlen(list),
         total = 0;
     char *cstr = newstring(list, clen);
@@ -1053,7 +1053,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     {
         cstr[end - list] = '\0';
         SortItem item = { &cstr[start - list], quotestart, quoteend };
-        items.add(item);
+        items.push_back(item);
         total += item.quotelength();
     }
     if(items.empty())
@@ -1066,18 +1066,18 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     x->flags &= ~Idf_Unknown;
     pusharg(*y, NullVal(), ystack);
     y->flags &= ~Idf_Unknown;
-    int totalunique = total,
-        numunique = items.length();
+    int totalunique = total;
+    uint numunique = items.size();
     if(body)
     {
         SortFunction f = { x, y, body };
-        items.sort(f);
+        std::sort(items.begin(), items.end(), f);
         if((*unique&Code_OpMask) != Code_Exit)
         {
             f.body = unique;
             totalunique = items[0].quotelength();
             numunique = 1;
-            for(int i = 1; i < items.length(); i++)
+            for(int i = 1; i < items.size(); i++)
             {
                 SortItem &item = items[i];
                 if(f(items[i-1], item))
@@ -1097,7 +1097,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         SortFunction f = { x, y, unique };
         totalunique = items[0].quotelength();
         numunique = 1;
-        for(int i = 1; i < items.length(); i++)
+        for(uint i = 1; i < items.size(); i++)
         {
             SortItem &item = items[i];
             for(int j = 0; j < i; ++j)
@@ -1119,14 +1119,14 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     poparg(*x);
     poparg(*y);
     char *sorted = cstr;
-    int sortedlen = totalunique + std::max(numunique - 1, 0);
+    int sortedlen = totalunique + std::max(static_cast<int>(numunique - 1), 0);
     if(clen < sortedlen)
     {
         delete[] cstr;
         sorted = newstring(sortedlen);
     }
     int offset = 0;
-    for(int i = 0; i < items.length(); i++)
+    for(uint i = 0; i < items.size(); i++)
     {
         SortItem &item = items[i];
         if(!item.quotestart)
