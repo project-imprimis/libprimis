@@ -179,7 +179,7 @@ void EditLine::insert(char *str, int start, int count)
     len += count;
 }
 
-void EditLine::combinelines(vector<EditLine> &src)
+void EditLine::combinelines(std::vector<EditLine> &src)
 {
     if(src.empty())
     {
@@ -187,7 +187,7 @@ void EditLine::combinelines(vector<EditLine> &src)
     }
     else
     {
-        for(int i = 0; i < src.length(); i++)
+        for(uint i = 0; i < src.size(); i++)
         {
             if(i)
             {
@@ -209,21 +209,22 @@ void EditLine::combinelines(vector<EditLine> &src)
 
 bool Editor::empty()
 {
-    return lines.length() == 1 && lines[0].empty();
+    return lines.size() == 1 && lines[0].empty();
 }
 
 void Editor::clear(const char *init)
 {
     cx = cy = 0;
     mark(false);
-    for(int i = 0; i < lines.length(); i++)
+    for(uint i = 0; i < lines.size(); i++)
     {
         lines[i].clear();
     }
-    lines.shrink(0);
+    lines.clear();
     if(init)
     {
-        lines.add().set(init);
+        lines.emplace_back();
+        lines.back().set(init);
     }
 }
 
@@ -254,6 +255,12 @@ void Editor::setfile(const char *fname)
     }
 }
 
+bool Editor::readback(stream * file)
+{
+    lines.emplace_back();
+    return lines.back().read(file, maxx) && (maxy < 0 || static_cast<int>(lines.size()) <= maxy);
+}
+
 void Editor::load()
 {
     if(!filename)
@@ -264,15 +271,17 @@ void Editor::load()
     stream *file = openutf8file(filename, "r");
     if(file)
     {
-        while(lines.add().read(file, maxx) && (maxy < 0 || lines.length() <= maxy))
+        while(readback(file))
         {
-            lines.pop().clear();
+            lines.back().clear();
+            lines.pop_back();
         }
         delete file;
     }
     if(lines.empty())
     {
-        lines.add().set("");
+        lines.emplace_back();
+        lines.back().set("");
     }
 }
 
@@ -287,7 +296,7 @@ void Editor::save()
     {
         return;
     }
-    for(int i = 0; i < lines.length(); i++)
+    for(uint i = 0; i < lines.size(); i++)
     {
         file->putline(lines[i].text);
     }
@@ -310,12 +319,12 @@ void Editor::selectall()
 // also ensures that cy is always within lines[] and cx is valid
 bool Editor::region(int &sx, int &sy, int &ex, int &ey)
 {
-    int n = lines.length();
+    uint n = lines.size();
     if(cy < 0)
     {
         cy = 0;
     }
-    else if(cy >= n)
+    else if(cy >= static_cast<int>(n))
     {
         cy = n-1;
     }
@@ -334,7 +343,7 @@ bool Editor::region(int &sx, int &sy, int &ex, int &ey)
         {
             my = 0;
         }
-        else if(my >= n)
+        else if(my >= static_cast<int>(n))
         {
             my = n-1;
         }
@@ -377,12 +386,12 @@ bool Editor::region()
 // also ensures that cy is always within lines[] and cx is valid
 EditLine &Editor::currentline()
 {
-    int n = lines.length();
+    uint n = lines.size();
     if(cy < 0)
     {
         cy = 0;
     }
-    else if(cy >= n)
+    else if(cy >= static_cast<int>(n))
     {
         cy = n-1;
     }
@@ -408,7 +417,7 @@ void Editor::copyselectionto(Editor *b)
     region(sx, sy, ex, ey);
     for(int i = 0; i < 1+ey-sy; ++i)
     {
-        if(b->maxy != -1 && b->lines.length() >= b->maxy)
+        if(b->maxy != -1 && static_cast<int>(b->lines.size()) >= b->maxy)
         {
             break;
         }
@@ -428,24 +437,26 @@ void Editor::copyselectionto(Editor *b)
         {
             len = ex;
         }
-        b->lines.add().set(line, len);
+        b->lines.emplace_back();
+        b->lines.back().set(line, len);
     }
     if(b->lines.empty())
     {
-        b->lines.add().set("");
+        b->lines.emplace_back();
+        b->lines.back().set("");
     }
 }
 
 char *Editor::tostring()
 {
     int len = 0;
-    for(int i = 0; i < lines.length(); i++)
+    for(uint i = 0; i < lines.size(); i++)
     {
         len += lines[i].len + 1;
     }
     char *str = newstring(len);
     int offset = 0;
-    for(int i = 0; i < lines.length(); i++)
+    for(uint i = 0; i < lines.size(); i++)
     {
         EditLine &l = lines[i];
         std::memcpy(&str[offset], l.text, l.len);
@@ -492,7 +503,7 @@ void Editor::removelines(int start, int count)
     {
         lines[start+i].clear();
     }
-    lines.remove(start, count);
+    lines.erase(lines.begin() + start, lines.begin() + start + count);
 }
 
 bool Editor::del() // removes the current selection (if any)
@@ -537,13 +548,14 @@ bool Editor::del() // removes the current selection (if any)
     }
     if(lines.empty())
     {
-        lines.add().set("");
+        lines.emplace_back();
+        lines.back().set("");
     }
     mark(false);
     cx = sx;
     cy = sy;
     EditLine &current = currentline();
-    if(cx >= current.len && cy < lines.length() - 1)
+    if(cx >= current.len && cy < static_cast<int>(lines.size()) - 1)
     {
         current.append(lines[cy+1].text);
         removelines(cy + 1, 1);
@@ -561,8 +573,8 @@ void Editor::insert(char ch)
         {
             EditLine newline(&current.text[cx]);
             current.chop(cx);
-            cy = std::min(lines.length(), cy+1);
-            lines.insert(cy, newline);
+            cy = std::min(static_cast<int>(lines.size()), cy+1);
+            lines.insert(lines.begin() + cy, newline);
         }
         else
         {
@@ -601,7 +613,7 @@ void Editor::insertallfrom(Editor *b)
 
     del();
 
-    if(b->lines.length() == 1 || maxy == 1)
+    if(b->lines.size() == 1 || maxy == 1)
     {
         EditLine &current = currentline();
         char *str = b->lines[0].text;
@@ -623,20 +635,20 @@ void Editor::insertallfrom(Editor *b)
     }
     else
     {
-        for(int i = 0; i < b->lines.length(); i++)
+        for(uint i = 0; i < b->lines.size(); i++)
         {
             if(!i)
             {
                 lines[cy++].append(b->lines[i].text);
             }
-            else if(i >= b->lines.length())
+            else if(i >= b->lines.size())
             {
                 cx = b->lines[i].len;
                 lines[cy].prepend(b->lines[i].text);
             }
-            else if(maxy < 0 || lines.length() < maxy)
+            else if(maxy < 0 || static_cast<int>(lines.size()) < maxy)
             {
-                lines.insert(cy++, EditLine(b->lines[i].text));
+                lines.insert(lines.begin() + cy++, EditLine(b->lines[i].text));
             }
         }
     }
@@ -729,7 +741,7 @@ void Editor::key(int code)
                 {
                     current.del(cx, 1);
                 }
-                else if(cy < lines.length()-1)
+                else if(cy < static_cast<int>(lines.size())-1)
                 {   //combine with next line
                     current.append(lines[cy+1].text);
                     removelines(cy+1, 1);
@@ -785,7 +797,7 @@ void Editor::hit(int hitx, int hity, bool dragged)
 {
     int maxwidth = linewrap?pixelwidth:-1,
         h = 0;
-    for(int i = scrolly; i < lines.length(); i++)
+    for(uint i = scrolly; i < lines.size(); i++)
     {
         int width, height;
         text_bounds(lines[i].text, width, height, maxwidth);
@@ -848,7 +860,7 @@ void Editor::draw(int x, int y, int color, bool hit)
         int psx, psy, pex, pey;
         text_pos(lines[sy].text, sx, psx, psy, maxwidth);
         text_pos(lines[ey].text, ex, pex, pey, maxwidth);
-        int maxy = lines.length(),
+        int maxy = static_cast<int>(lines.size()),
             h = 0;
         for(int i = scrolly; i < maxy; i++)
         {
@@ -919,7 +931,7 @@ void Editor::draw(int x, int y, int color, bool hit)
     }
 
     int h = 0;
-    for(int i = scrolly; i < lines.length(); i++)
+    for(uint i = scrolly; i < lines.size(); i++)
     {
         int width, height;
         text_bounds(lines[i].text, width, height, maxwidth);
@@ -927,7 +939,7 @@ void Editor::draw(int x, int y, int color, bool hit)
         {
             break;
         }
-        draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(cy==i)?cx:-1, maxwidth);
+        draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
         if(linewrap && height > FONTH) // line wrap indicator
         {
             hudnotextureshader->set();
@@ -1071,7 +1083,7 @@ void textinit(char *name, char *file, char *initval)
             break;
         }
     }
-    if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !std::strcmp(e->lines[0].text, initval))))
+    if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.size() == 1 && !std::strcmp(e->lines[0].text, initval))))
     {
         e->setfile(copypath(file));
         e->load();

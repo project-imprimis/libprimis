@@ -24,7 +24,7 @@ struct EditLine
     void del(int start, int count);
     void chop(int newlen);
     void insert(char *str, int start, int count = 0);
-    void combinelines(vector<EditLine> &src);
+    void combinelines(std::vector<EditLine> &src);
 };
 
 enum
@@ -48,7 +48,7 @@ class Editor
         int pixelwidth; // required for up/down/hit/draw/bounds
         int pixelheight; // -1 for variable sized, i.e. from bounds()
 
-        vector<EditLine> lines; // MUST always contain at least one line!
+        std::vector<EditLine> lines; // MUST always contain at least one line!
 
         Editor(const char *name, int mode, const char *initval) :
             mode(mode), active(true), rendered(false), name(newstring(name)), filename(nullptr),
@@ -56,7 +56,8 @@ class Editor
             cx(0), cy(0), mx(-1), my(-1), scrolly(0)
         {
             //printf("editor %08x '%s'\n", this, name);
-            lines.add().set(initval ? initval : "");
+            lines.emplace_back();
+            lines.back().set(initval ? initval : "");
         }
 
         ~Editor()
@@ -101,6 +102,7 @@ class Editor
         bool region(int &sx, int &sy, int &ex, int &ey);
         bool del(); // removes the current selection (if any)
         void insert(char ch);
+        bool readback(stream * file);
 };
 
 extern vector<Editor *> editors;
