@@ -141,21 +141,21 @@ void vertmodel::vertmesh::assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
     vv.tangent = v.tangent;
 }
 
-int vertmodel::vertmesh::genvbo(vector<ushort> &idxs, int offset)
+int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
 {
     voffset = offset;
-    eoffset = idxs.length();
+    eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
         tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
-            idxs.add(voffset+t.vert[j]);
+            idxs.push_back(voffset+t.vert[j]);
         }
     }
     minvert = voffset;
     maxvert = voffset + numverts-1;
-    elen = idxs.length()-eoffset;
+    elen = idxs.size()-eoffset;
     return numverts;
 }
 
@@ -293,7 +293,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    vector<ushort> idxs;
+    std::vector<ushort> idxs;
 
     vlen = 0;
     if(numframes>1)
@@ -315,9 +315,9 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         #define GENVBO(type) \
             do \
             { \
-                vector<type> vverts; \
+                std::vector<type> vverts; \
                 LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
-                glBufferData(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
+                glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(type), vverts.data(), GL_STATIC_DRAW); \
             } while(0)
 
         int numverts = 0,
@@ -343,7 +343,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.length()*sizeof(ushort), idxs.getbuf(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 

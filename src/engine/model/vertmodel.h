@@ -62,10 +62,10 @@ struct vertmodel : animmodel
         static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v);
 
         template<class T>
-        int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
-            eoffset = idxs.length();
+            eoffset = idxs.size();
             minvert = 0xFFFF;
             for(int i = 0; i < numtris; ++i)
             {
@@ -83,25 +83,27 @@ struct vertmodel : animmodel
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.add(static_cast<ushort>(vverts.length()));
-                            vverts.add(vv);
+                            idxs.push_back(vverts.size());
+                            vidx = idxs.back();
+                            vverts.push_back(vv);
                             break;
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = std::min(minvert, idxs.add(static_cast<ushort>(vidx)));
+                            idxs.push_back(static_cast<ushort>(vidx));
+                            minvert = std::min(minvert, idxs.back());
                             break;
                         }
                     }
                 }
             }
             minvert = std::min(minvert, static_cast<ushort>(voffset));
-            maxvert = std::max(minvert, static_cast<ushort>(vverts.length()-1));
-            elen = idxs.length()-eoffset;
-            return vverts.length()-voffset;
+            maxvert = std::max(minvert, static_cast<ushort>(vverts.size()-1));
+            elen = idxs.size()-eoffset;
+            return vverts.size()-voffset;
         }
 
-        int genvbo(vector<ushort> &idxs, int offset);
+        int genvbo(std::vector<ushort> &idxs, int offset);
 
         template<class T>
         static void fillvert(T &vv, int j, tcvert &tc, vert &v)
