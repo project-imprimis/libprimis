@@ -20,24 +20,24 @@
 
 namespace hmap
 {
-    vector<int> textures;
+    std::vector<int> textures;
 
     void cancel()
     {
-        textures.setsize(0);
+        textures.clear();
     }
 
     void hmapselect()
     {
         int t = rootworld.lookupcube(cur).texture[orient],
-            i = textures.find(t);
+            i = std::distance(textures.begin(), std::find(textures.begin(), textures.end(), t));
         if(i<0)
         {
-            textures.add(t);
+            textures.push_back(t);
         }
         else
         {
-            textures.remove(i);
+            textures.erase(textures.begin() + i);
         }
     }
 
@@ -46,7 +46,7 @@ namespace hmap
         return havesel ||
             (empty && c.isempty()) ||
             textures.empty() ||
-            textures.find(c.texture[o]) >= 0;
+            (std::find(textures.begin(), textures.end(), c.texture[o]) != textures.end());
     }
     //max brush consts: number of cubes on end that can be heightmap brushed at once
     static constexpr int maxbrush  = 64,
