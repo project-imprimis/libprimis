@@ -71,9 +71,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     std::vector<vec> attrib[3];
     char buf[512];
     hashtable<ivec, int> verthash(1<<11);
-    vector<vert> verts;
-    vector<tcvert> tcverts;
-    vector<tri> tris;
+    std::vector<vert> verts;
+    std::vector<tcvert> tcverts;
+    std::vector<tri> tris;
 
     string meshname = "";
     vertmesh *curmesh = nullptr;
@@ -141,9 +141,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     meshes.add(&m);
                     curmesh = &m;
                     verthash.clear();
-                    verts.setsize(0);
-                    tcverts.setsize(0);
-                    tris.setsize(0);
+                    verts.clear();
+                    tcverts.clear();
+                    tris.clear();
                 }
                 int v0 = -1,
                     v1 = -1;
@@ -187,13 +187,15 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     if(!index)
                     {
                         index = &verthash[vkey];
-                        *index = verts.length();
-                        vert &v = verts.add();
+                        *index = verts.size();
+                        verts.emplace_back();
+                        vert &v = verts.back();
                         v.pos = vkey.x < 0 ? vec(0, 0, 0) : attrib[0][vkey.x];
                         v.pos = vec(v.pos.z, -v.pos.x, v.pos.y);
                         v.norm = vkey.z < 0 ? vec(0, 0, 0) : attrib[2][vkey.z];
                         v.norm = vec(v.norm.z, -v.norm.x, v.norm.y);
-                        tcvert &tcv = tcverts.add();
+                        tcverts.emplace_back();
+                        tcvert &tcv = tcverts.back();
                         tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
                     }
                     if(v0 < 0)
@@ -206,7 +208,8 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     }
                     else
                     {
-                        tri &t = tris.add();
+                        tris.emplace_back();
+                        tri &t = tris.back();
                         t.vert[0] = static_cast<ushort>(*index);
                         t.vert[1] = static_cast<ushort>(v1);
                         t.vert[2] = static_cast<ushort>(v0);
@@ -247,22 +250,22 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, vector<vert> verts, vector<tcvert> tcverts,
-                                   vector<tri> tris, std::vector<vec> attrib, float smooth)
+void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, std::vector<vert> verts, std::vector<tcvert> tcverts,
+                                   std::vector<tri> tris, std::vector<vec> attrib, float smooth)
 {
-    curmesh->numverts = verts.length();
-    if(verts.length())
+    curmesh->numverts = verts.size();
+    if(verts.size())
     {
-        curmesh->verts = new vert[verts.length()];
-        std::memcpy(curmesh->verts, verts.getbuf(), verts.length()*sizeof(vert));
-        curmesh->tcverts = new tcvert[verts.length()];
-        std::memcpy(curmesh->tcverts, tcverts.getbuf(), tcverts.length()*sizeof(tcvert));
+        curmesh->verts = new vert[verts.size()];
+        std::memcpy(curmesh->verts, verts.data(), verts.size()*sizeof(vert));
+        curmesh->tcverts = new tcvert[verts.size()];
+        std::memcpy(curmesh->tcverts, tcverts.data(), tcverts.size()*sizeof(tcvert));
     }
-    curmesh->numtris = tris.length();
-    if(tris.length())
+    curmesh->numtris = tris.size();
+    if(tris.size())
     {
-        curmesh->tris = new tri[tris.length()];
-        std::memcpy(curmesh->tris, tris.getbuf(), tris.length()*sizeof(tri));
+        curmesh->tris = new tri[tris.size()];
+        std::memcpy(curmesh->tris, tris.data(), tris.size()*sizeof(tri));
     }
     if(attrib.empty())
     {
