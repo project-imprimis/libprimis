@@ -2423,7 +2423,7 @@ VSlot &lookupvslot(int index, bool load)
 
 DecalSlot &lookupdecalslot(int index, bool load)
 {
-    DecalSlot &s = (decalslots.size() > index) ? *decalslots[index] : dummydecalslot;
+    DecalSlot &s = (static_cast<int>(decalslots.size()) > index) ? *decalslots[index] : dummydecalslot;
     if(load && !s.linked)
     {
         if(!s.loaded)
