@@ -682,7 +682,7 @@ void resetmodelbatches()
 void addbatchedmodel(model *m, batchedmodel &bm, int idx)
 {
     modelbatch *b = nullptr;
-    if(batches.size() > m->batch)
+    if(static_cast<int>(batches.size()) > m->batch)
     {
         b = &batches[m->batch];
         if(b->m == m && (b->flags & Model_Mapmodel) == (bm.flags & Model_Mapmodel))
@@ -1100,7 +1100,7 @@ void startmodelquery(occludequery *query)
 
 void endmodelquery()
 {
-    if(batchedmodels.size() == modelquerymodels)
+    if(static_cast<int>(batchedmodels.size()) == modelquerymodels)
     {
         modelquery->fragments = 0;
         modelquery = nullptr;
