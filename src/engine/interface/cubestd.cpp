@@ -1077,7 +1077,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
             f.body = unique;
             totalunique = items[0].quotelength();
             numunique = 1;
-            for(int i = 1; i < items.size(); i++)
+            for(uint i = 1; i < items.size(); i++)
             {
                 SortItem &item = items[i];
                 if(f(items[i-1], item))
@@ -1100,7 +1100,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         for(uint i = 1; i < items.size(); i++)
         {
             SortItem &item = items[i];
-            for(int j = 0; j < i; ++j)
+            for(uint j = 0; j < i; ++j)
             {
                 SortItem &prev = items[j];
                 if(prev.quotestart && f(item, prev))
