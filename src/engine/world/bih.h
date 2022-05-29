@@ -56,7 +56,7 @@ class BIH
             vec2 gettc(int i) const;
         };
 
-        BIH(vector<mesh> &buildmeshes);
+        BIH(std::vector<mesh> &buildmeshes);
 
         ~BIH();
 

@@ -113,7 +113,7 @@ class animmodel : public model
 
                 virtual void genBIH(BIH::mesh &m) {}
 
-                void genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
                 virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
                 {
@@ -350,7 +350,7 @@ class animmodel : public model
                 } while(0)
 
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-                void genBIH(std::vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
                 virtual void *animkey()
@@ -413,7 +413,7 @@ class animmodel : public model
                 virtual void cleanup();
                 void disablepitch();
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-                void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
+                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
                 bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
                 bool unlink(part *p);
@@ -473,7 +473,7 @@ class animmodel : public model
         }
 
         void initmatrix(matrix4x3 &m);
-        void genBIH(vector<BIH::mesh> &bih);
+        void genBIH(std::vector<BIH::mesh> &bih);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
         BIH *setBIH();

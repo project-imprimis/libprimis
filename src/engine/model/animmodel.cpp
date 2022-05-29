@@ -422,9 +422,10 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
 
 //Mesh
 
-void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
-    BIH::mesh &m = bih.add();
+    bih.emplace_back();
+    BIH::mesh &m = bih.back();
     m.xform = t;
     m.tex = s.tex;
     if(canrender)
@@ -448,12 +449,13 @@ void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
         m.flags |= BIH::Mesh_CullFace;
     }
     genBIH(m);
-    while(bih.last().numtris > BIH::mesh::maxtriangles)
+    while(bih.back().numtris > BIH::mesh::maxtriangles)
     {
-        BIH::mesh &overflow = bih.dup();
+        bih.push_back(bih.back());
+        BIH::mesh &overflow = bih.back();
         overflow.tris += BIH::mesh::maxtriangles;
         overflow.numtris -= BIH::mesh::maxtriangles;
-        bih[bih.length()-2].numtris = BIH::mesh::maxtriangles;
+        bih[bih.size()-2].numtris = BIH::mesh::maxtriangles;
     }
 }
 
@@ -501,7 +503,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
     LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
-void animmodel::meshgroup::genBIH(std::vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     for(int i = 0; i < meshes.length(); i++)
     {
@@ -650,7 +652,7 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     }
 }
 
-void animmodel::part::genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m)
+void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m)
 {
     matrix4x3 t = m;
     t.scale(model->scale);
@@ -1526,7 +1528,7 @@ void animmodel::initmatrix(matrix4x3 &m)
     m.translate(translate, scale);
 }
 
-void animmodel::genBIH(vector<BIH::mesh> &bih)
+void animmodel::genBIH(std::vector<BIH::mesh> &bih)
 {
     if(parts.empty())
     {
@@ -1593,7 +1595,7 @@ BIH *animmodel::setBIH()
     {
         return bih;
     }
-    vector<BIH::mesh> meshes;
+    std::vector<BIH::mesh> meshes;
     genBIH(meshes);
     bih = new BIH(meshes);
     return bih;
