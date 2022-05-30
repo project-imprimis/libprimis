@@ -1879,39 +1879,41 @@ namespace UI
         }
     };
 
-    struct Outline : Filler
+    class Outline : public Filler
     {
-        Color color;
+        public:
 
-        void setup(const Color &color_, float minw_ = 0, float minh_ = 0)
-        {
-            Filler::setup(minw_, minh_);
-            color = color_;
-        }
+            void setup(const Color &color_, float minw_ = 0, float minh_ = 0)
+            {
+                Filler::setup(minw_, minh_);
+                color = color_;
+            }
 
-        static const char *typestr() { return "#Outline"; }
-        const char *gettype() const { return typestr(); }
+            const char *gettype() const { return typestr(); }
+            static const char *typestr() { return "#Outline"; }
 
-        void startdraw()
-        {
-            hudnotextureshader->set();
-            gle::defvertex(2);
-        }
+            void draw(float sx, float sy)
+            {
+                changedraw(Change_Shader | Change_Color);
 
-        void draw(float sx, float sy)
-        {
-            changedraw(Change_Shader | Change_Color);
+                color.init();
+                gle::begin(GL_LINE_LOOP);
+                gle::attribf(sx,   sy);
+                gle::attribf(sx+w, sy);
+                gle::attribf(sx+w, sy+h);
+                gle::attribf(sx,   sy+h);
+                gle::end();
 
-            color.init();
-            gle::begin(GL_LINE_LOOP);
-            gle::attribf(sx,   sy);
-            gle::attribf(sx+w, sy);
-            gle::attribf(sx+w, sy+h);
-            gle::attribf(sx,   sy+h);
-            gle::end();
-
-            Object::draw(sx, sy);
-        }
+                Object::draw(sx, sy);
+            }
+        protected:
+            void startdraw()
+            {
+                hudnotextureshader->set();
+                gle::defvertex(2);
+            }
+        private:
+            Color color;
     };
 
     static bool checkalphamask(Texture *tex, float x, float y)
