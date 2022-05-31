@@ -65,178 +65,6 @@ VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initstains to
 VARP(stainfade, 1000, 15000, 60000);                //number of milliseconds before stain geom fades
 VAR(debugstain, 0, 0, 1);                           //toggles printout of stain information to console
 
-class stainbuffer
-{
-    public:
-        int maxverts, endvert, lastvert, availverts;
-        stainbuffer() : maxverts(0), endvert(0), lastvert(0), availverts(0), verts(nullptr), startvert(0), vbo(0), dirty(false)
-        {}
-
-        ~stainbuffer()
-        {
-            delete[] verts;
-        }
-
-        void init(int tris)
-        {
-            if(verts)
-            {
-                delete[] verts;
-                verts = nullptr;
-                maxverts = startvert = endvert = lastvert = availverts = 0;
-            }
-            if(tris)
-            {
-                maxverts = tris*3 + 3;
-                availverts = maxverts - 3;
-                verts = new stainvert[maxverts];
-            }
-        }
-
-        void cleanup()
-        {
-            if(vbo)
-            {
-                glDeleteBuffers(1, &vbo);
-                vbo = 0;
-            }
-        }
-
-        void clear()
-        {
-            startvert = endvert = lastvert = 0;
-            availverts = std::max(maxverts - 3, 0);
-            dirty = true;
-        }
-
-        int freestain(const staininfo &d)
-        {
-            int removed = d.endvert < d.startvert ? maxverts - (d.startvert - d.endvert) : d.endvert - d.startvert;
-            startvert = d.endvert;
-            if(startvert==endvert)
-            {
-                startvert = endvert = lastvert = 0;
-            }
-            availverts += removed;
-            return removed;
-        }
-
-        void clearstains(const staininfo &d)
-        {
-            startvert = d.endvert;
-            availverts = endvert < startvert ? startvert - endvert - 3 : maxverts - 3 - (endvert - startvert);
-            dirty = true;
-        }
-
-        bool faded(const staininfo &d) const
-        {
-            return verts[d.startvert].color.a < 255;
-        }
-
-        void fadestain(const staininfo &d, const vec4<uchar> &color)
-        {
-            stainvert *vert = &verts[d.startvert],
-                      *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
-            while(vert < end)
-            {
-                vert->color = color;
-                vert++;
-            }
-            if(d.endvert < d.startvert)
-            {
-                vert = verts;
-                end = &verts[d.endvert];
-                while(vert < end)
-                {
-                    vert->color = color;
-                    vert++;
-                }
-            }
-            dirty = true;
-        }
-
-        void render()
-        {
-            if(startvert == endvert)
-            {
-                return;
-            }
-            if(!vbo)
-            {
-                glGenBuffers(1, &vbo);
-                dirty = true;
-            }
-            gle::bindvbo(vbo);
-            int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
-            if(dirty)
-            {
-                glBufferData(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
-                if(endvert < startvert)
-                {
-                    glBufferSubData(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
-                    count += endvert;
-                }
-                dirty = false;
-            }
-            else if(endvert < startvert)
-            {
-                count += endvert;
-            }
-            const stainvert *ptr = 0;
-            gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
-            gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
-            gle::colorpointer(sizeof(stainvert), ptr->color.v);
-
-            glDrawArrays(GL_TRIANGLES, 0, count);
-            xtravertsva += count;
-        }
-
-        stainvert *addtri()
-        {
-            stainvert *tri = &verts[endvert];
-            availverts -= 3;
-            endvert += 3;
-            if(endvert >= maxverts)
-            {
-                endvert = 0;
-            }
-            return tri;
-        }
-
-        void addstain()
-        {
-            dirty = true;
-        }
-
-        bool hasverts() const
-        {
-            return startvert != endvert;
-        }
-
-        int nextverts() const
-        {
-            return endvert < lastvert ? endvert + maxverts - lastvert : endvert - lastvert;
-        }
-
-        int totaltris() const
-        {
-            return (maxverts - 3 - availverts)/3;
-        }
-    private:
-        stainvert *verts;
-        int startvert;
-        GLuint vbo;
-        bool dirty;
-
-        //debug functions, not used by any of the code
-        int totalverts() const
-        {
-            return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
-        }
-
-};
-
 class stainrenderer
 {
     public:
@@ -244,7 +72,6 @@ class stainrenderer
         Texture *tex;
         staininfo *stains;
         int maxstains, startstain, endstain;
-        stainbuffer verts[StainBuffer_Number];
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
@@ -651,6 +478,179 @@ class stainrenderer
         }
 
     private:
+        class stainbuffer
+        {
+            public:
+                int maxverts, endvert, lastvert, availverts;
+                stainbuffer() : maxverts(0), endvert(0), lastvert(0), availverts(0), verts(nullptr), startvert(0), vbo(0), dirty(false)
+                {}
+
+                ~stainbuffer()
+                {
+                    delete[] verts;
+                }
+
+                void init(int tris)
+                {
+                    if(verts)
+                    {
+                        delete[] verts;
+                        verts = nullptr;
+                        maxverts = startvert = endvert = lastvert = availverts = 0;
+                    }
+                    if(tris)
+                    {
+                        maxverts = tris*3 + 3;
+                        availverts = maxverts - 3;
+                        verts = new stainvert[maxverts];
+                    }
+                }
+
+                void cleanup()
+                {
+                    if(vbo)
+                    {
+                        glDeleteBuffers(1, &vbo);
+                        vbo = 0;
+                    }
+                }
+
+                void clear()
+                {
+                    startvert = endvert = lastvert = 0;
+                    availverts = std::max(maxverts - 3, 0);
+                    dirty = true;
+                }
+
+                int freestain(const staininfo &d)
+                {
+                    int removed = d.endvert < d.startvert ? maxverts - (d.startvert - d.endvert) : d.endvert - d.startvert;
+                    startvert = d.endvert;
+                    if(startvert==endvert)
+                    {
+                        startvert = endvert = lastvert = 0;
+                    }
+                    availverts += removed;
+                    return removed;
+                }
+
+                void clearstains(const staininfo &d)
+                {
+                    startvert = d.endvert;
+                    availverts = endvert < startvert ? startvert - endvert - 3 : maxverts - 3 - (endvert - startvert);
+                    dirty = true;
+                }
+
+                bool faded(const staininfo &d) const
+                {
+                    return verts[d.startvert].color.a < 255;
+                }
+
+                void fadestain(const staininfo &d, const vec4<uchar> &color)
+                {
+                    stainvert *vert = &verts[d.startvert],
+                              *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
+                    while(vert < end)
+                    {
+                        vert->color = color;
+                        vert++;
+                    }
+                    if(d.endvert < d.startvert)
+                    {
+                        vert = verts;
+                        end = &verts[d.endvert];
+                        while(vert < end)
+                        {
+                            vert->color = color;
+                            vert++;
+                        }
+                    }
+                    dirty = true;
+                }
+
+                void render()
+                {
+                    if(startvert == endvert)
+                    {
+                        return;
+                    }
+                    if(!vbo)
+                    {
+                        glGenBuffers(1, &vbo);
+                        dirty = true;
+                    }
+                    gle::bindvbo(vbo);
+                    int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
+                    if(dirty)
+                    {
+                        glBufferData(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
+                        glBufferSubData(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
+                        if(endvert < startvert)
+                        {
+                            glBufferSubData(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
+                            count += endvert;
+                        }
+                        dirty = false;
+                    }
+                    else if(endvert < startvert)
+                    {
+                        count += endvert;
+                    }
+                    const stainvert *ptr = 0;
+                    gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
+                    gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
+                    gle::colorpointer(sizeof(stainvert), ptr->color.v);
+
+                    glDrawArrays(GL_TRIANGLES, 0, count);
+                    xtravertsva += count;
+                }
+
+                stainvert *addtri()
+                {
+                    stainvert *tri = &verts[endvert];
+                    availverts -= 3;
+                    endvert += 3;
+                    if(endvert >= maxverts)
+                    {
+                        endvert = 0;
+                    }
+                    return tri;
+                }
+
+                void addstain()
+                {
+                    dirty = true;
+                }
+
+                bool hasverts() const
+                {
+                    return startvert != endvert;
+                }
+
+                int nextverts() const
+                {
+                    return endvert < lastvert ? endvert + maxverts - lastvert : endvert - lastvert;
+                }
+
+                int totaltris() const
+                {
+                    return (maxverts - 3 - availverts)/3;
+                }
+            private:
+                stainvert *verts;
+                int startvert;
+                GLuint vbo;
+                bool dirty;
+
+                //debug functions, not used by any of the code
+                int totalverts() const
+                {
+                    return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
+                }
+        };
+
+        stainbuffer verts[StainBuffer_Number];
+
         const char *texname;
 
         staininfo &newstain()
