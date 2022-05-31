@@ -285,11 +285,6 @@ class stainrenderer
             tex = textureload(texname, 3);
         }
 
-        int totalstains()
-        {
-            return endstain < startstain ? maxstains - (startstain - endstain) : endstain - startstain;
-        }
-
         bool hasstains(int sbuf)
         {
             return verts[sbuf].hasverts();
@@ -302,36 +297,6 @@ class stainrenderer
             {
                 verts[i].clear();
             }
-        }
-
-        int freestain()
-        {
-            if(startstain==endstain)
-            {
-                return 0;
-            }
-            staininfo &d = stains[startstain];
-            startstain++;
-            if(startstain >= maxstains)
-            {
-                startstain = 0;
-            }
-            return verts[d.owner].freestain(d);
-        }
-
-        bool faded(const staininfo &d) const
-        {
-            return verts[d.owner].faded(d);
-        }
-
-        void fadestain(const staininfo &d, uchar alpha)
-        {
-            bvec color = d.color;
-            if(flags&(StainFlag_Overbright|StainFlag_Glow|StainFlag_InvMod))
-            {
-                color.scale(alpha, 255);
-            }
-            verts[d.owner].fadestain(d, vec4<uchar>(color, alpha));
         }
 
         void clearfadedstains()
@@ -555,22 +520,6 @@ class stainrenderer
             verts[sbuf].render();
         }
 
-        staininfo &newstain()
-        {
-            staininfo &d = stains[endstain];
-            int next = endstain + 1;
-            if(next>=maxstains)
-            {
-                next = 0;
-            }
-            if(next==startstain)
-            {
-                freestain();
-            }
-            endstain = next;
-            return d;
-        }
-
         ivec bbmin, bbmax;
         vec staincenter, stainnormal, staintangent, stainbitangent;
         float stainradius, stainu, stainv;
@@ -703,6 +652,52 @@ class stainrenderer
 
     private:
         const char *texname;
+
+        staininfo &newstain()
+        {
+            staininfo &d = stains[endstain];
+            int next = endstain + 1;
+            if(next>=maxstains)
+            {
+                next = 0;
+            }
+            if(next==startstain)
+            {
+                freestain();
+            }
+            endstain = next;
+            return d;
+        }
+
+        bool faded(const staininfo &d) const
+        {
+            return verts[d.owner].faded(d);
+        }
+
+        void fadestain(const staininfo &d, uchar alpha)
+        {
+            bvec color = d.color;
+            if(flags&(StainFlag_Overbright|StainFlag_Glow|StainFlag_InvMod))
+            {
+                color.scale(alpha, 255);
+            }
+            verts[d.owner].fadestain(d, vec4<uchar>(color, alpha));
+        }
+
+        int freestain()
+        {
+            if(startstain==endstain)
+            {
+                return 0;
+            }
+            staininfo &d = stains[startstain];
+            startstain++;
+            if(startstain >= maxstains)
+            {
+                startstain = 0;
+            }
+            return verts[d.owner].freestain(d);
+        }
 
         void findmaterials(vtxarray *va)
         {
