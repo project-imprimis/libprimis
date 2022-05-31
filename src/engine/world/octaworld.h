@@ -200,13 +200,6 @@ enum
     ViewFrustumCull_NotVisible,
 };
 
-struct prefabheader
-{
-    char magic[4];
-    int version;
-};
-
-
 extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);

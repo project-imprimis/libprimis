@@ -36,6 +36,12 @@
 #include "material.h"
 #include "world.h"
 
+struct prefabheader
+{
+    char magic[4];
+    int version;
+};
+
 bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)
