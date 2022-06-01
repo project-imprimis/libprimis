@@ -951,7 +951,7 @@ void rendermodelbatches()
 {
     transmdlsx1 = transmdlsy1 = 1;
     transmdlsx2 = transmdlsy2 = -1;
-    memset(transmdltiles, 0, sizeof(transmdltiles));
+    std::memset(transmdltiles, 0, sizeof(transmdltiles));
 
     enableaamask();
     for(uint i = 0; i < batches.size(); i++)
