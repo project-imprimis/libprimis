@@ -720,7 +720,7 @@ static void packvslots(block3 &b, vector<uchar> &buf)
     {
         packvslots(c[i], buf, used);
     }
-    memset(buf.pad(sizeof(vslothdr)), 0, sizeof(vslothdr));
+    std::memset(buf.pad(sizeof(vslothdr)), 0, sizeof(vslothdr));
 }
 
 template<class B>
@@ -768,7 +768,7 @@ static bool unpackblock(block3 *&b, B &buf)
     }
     *b = hdr;
     cube *c = b->c();
-    memset(c, 0, b->size()*sizeof(cube));
+    std::memset(c, 0, b->size()*sizeof(cube));
     for(int i = 0; i < b->size(); ++i)
     {
         unpackcube(c[i], buf);
@@ -1133,7 +1133,7 @@ class prefabmesh
         std::vector<int> chain;
         std::vector<ushort> tris;
 
-        prefabmesh() { memset(table, -1, sizeof(table)); }
+        prefabmesh() { std::memset(table, -1, sizeof(table)); }
 
         int addvert(const vec &pos, const bvec &norm)
         {
