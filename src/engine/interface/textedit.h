@@ -105,9 +105,6 @@ class Editor
         bool readback(stream * file);
 };
 
-extern vector<Editor *> editors;
-extern Editor *textfocus;
-
 extern void readyeditors();
 extern void flusheditors();
 extern Editor *useeditor(const char *name, int mode, bool focus, const char *initval = nullptr);

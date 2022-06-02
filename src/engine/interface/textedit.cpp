@@ -958,12 +958,12 @@ void Editor::draw(int x, int y, int color, bool hit)
 
 // global
 
-vector<Editor *> editors;
+std::vector<Editor *> editors;
 Editor *textfocus = nullptr;
 
 void readyeditors()
 {
-    for(int i = 0; i < editors.length(); i++)
+    for(uint i = 0; i < editors.size(); i++)
     {
         editors[i]->active = (editors[i]->mode==Editor_Forever);
     }
@@ -971,11 +971,12 @@ void readyeditors()
 
 void flusheditors()
 {
-    for(int i = editors.length(); --i >=0;) //note reverse iteration
+    for(int i = editors.size(); --i >=0;) //note reverse iteration
     {
         if(!editors[i]->active)
         {
-            Editor *e = editors.remove(i);
+            Editor *e = editors.at(i);
+            editors.erase(editors.begin() + i);
             if(e == textfocus)
             {
                 textfocus = nullptr;
@@ -987,7 +988,7 @@ void flusheditors()
 
 Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 {
-    for(int i = 0; i < editors.length(); i++)
+    for(uint i = 0; i < editors.size(); i++)
     {
         if(!std::strcmp(editors[i]->name, name))
         {
@@ -1005,7 +1006,7 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
         return nullptr;
     }
     Editor *e = new Editor(name, mode, initval);
-    editors.add(e);
+    editors.push_back(e);
     if(focus)
     {
         textfocus = e;
@@ -1016,7 +1017,7 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 void textlist()
 {
     vector<char> s;
-    for(int i = 0; i < editors.length(); i++)
+    for(uint i = 0; i < editors.size(); i++)
     {
         if(i > 0)
         {
@@ -1038,9 +1039,9 @@ void textfocuscmd(char *name, int *mode)
     {
         useeditor(name, *mode<=0 ? Editor_Forever : *mode, true);
     }
-    else if(editors.length() > 0)
+    else if(editors.size() > 0)
     {
-        result(editors.last()->name);
+        result(editors.back()->name);
     }
 }
 
@@ -1075,7 +1076,7 @@ void textinit(char *name, char *file, char *initval)
         return;
     }
     Editor *e = nullptr;
-    for(int i = 0; i < editors.length(); i++)
+    for(int i = 0; i < editors.size(); i++)
     {
         if(!std::strcmp(editors[i]->name, name))
         {
@@ -1098,7 +1099,7 @@ void inittextcmds()
     addcommand("textlist", reinterpret_cast<identfun>(textlist), "", Id_Command);
     addcommand("textshow", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; /* @DEBUG return the start of the buffer*/ EditLine line; line.combinelines(textfocus->lines); result(line.text); line.clear();; }), "", Id_Command);
     addcommand("textfocus", reinterpret_cast<identfun>(textfocuscmd), "si", Id_Command);
-    addcommand("textprev", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; editors.insert(0, textfocus); editors.pop();; }), "", Id_Command);; // return to the previous editor
+    addcommand("textprev", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; editors.insert(editors.begin(), textfocus); editors.pop_back();; }), "", Id_Command);; // return to the previous editor
     addcommand("textmode", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); }; }), "i", Id_Command);
     addcommand("textsave", reinterpret_cast<identfun>(textsave), "s", Id_Command);
     addcommand("textload", reinterpret_cast<identfun>(textload), "s", Id_Command);
