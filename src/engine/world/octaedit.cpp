@@ -1080,7 +1080,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         return nullptr;
     }
     prefabheader hdr;
-    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
+    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || std::memcmp(hdr.magic, "OEBR", 4))
     {
         delete f;
         if(msg)

@@ -4146,7 +4146,7 @@ namespace UI
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
+            modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
             model *m = loadmodel(name);
             if(m)
             {
@@ -4160,7 +4160,7 @@ namespace UI
             {
                 clipstack.back().scissor();
             }
-            modelpreview::end();
+            modelpreview.end();
         }
     };
 
@@ -4192,13 +4192,13 @@ namespace UI
             changedraw(Change_Shader);
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
+            modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
             previewprefab(name, color);
             if(clipstack.size())
             {
                 clipstack.back().scissor();
             }
-            modelpreview::end();
+            modelpreview.end();
         }
     };
 

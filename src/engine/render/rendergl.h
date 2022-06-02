@@ -84,11 +84,23 @@ extern void pophudmatrix(bool flush = true, bool flushparams = true);
 extern void pushhudscale(float sx, float sy = 0);
 extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 
-namespace modelpreview
+class ModelPreview
 {
-    extern void start(int x, int y, int w, int h, bool background = true, bool scissor = false);
-    extern void end();
-}
+    public:
+        void start(int x, int y, int w, int h, bool background, bool scissor);
+        void end();
+    private:
+        physent *oldcamera;
+        physent camera;
+
+        float oldaspect, oldfovy, oldfov, oldldrscale, oldldrscaleb;
+        int oldfarplane, oldvieww, oldviewh;
+        matrix4 oldprojmatrix;
+
+        int x, y, w, h;
+        bool background, scissor;
+};
+extern ModelPreview modelpreview;
 
 extern void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2);
 #endif

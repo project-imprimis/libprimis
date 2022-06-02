@@ -1656,93 +1656,81 @@ VAR(modelpreviewpitch, -90, -15, 90); //pitch above model to render
 
 /* ======================== model preview windows =========================== */
 
-namespace modelpreview
+
+void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg, bool usescissor)
 {
-    physent *oldcamera;
-    physent camera;
+    x = xcoord;
+    y = ycoord;
+    w = width;
+    h = height;
+    background = bg;
+    scissor = usescissor;
 
-    float oldaspect, oldfovy, oldfov, oldldrscale, oldldrscaleb;
-    int oldfarplane, oldvieww, oldviewh;
-    matrix4 oldprojmatrix;
+    gbuf.setupgbuffer();
 
-    int x, y, w, h;
-    bool background, scissor;
+    useshaderbyname("modelpreview");
 
-    void start(int x, int y, int w, int h, bool background, bool scissor)
-    {
-        modelpreview::x = x;
-        modelpreview::y = y;
-        modelpreview::w = w;
-        modelpreview::h = h;
-        modelpreview::background = background;
-        modelpreview::scissor = scissor;
+    drawtex = Draw_TexModelPreview;
 
-        gbuf.setupgbuffer();
+    oldcamera = camera1;
+    camera = *camera1;
+    camera.reset();
+    camera.type = PhysEnt_Camera;
+    camera.o = vec(0, 0, 0);
+    camera.yaw = 0;
+    camera.pitch = modelpreviewpitch;
+    camera.roll = 0;
+    camera1 = &camera;
 
-        useshaderbyname("modelpreview");
+    oldaspect = aspect;
+    oldfovy = fovy;
+    oldfov = curfov;
+    oldldrscale = ldrscale;
+    oldldrscaleb = ldrscaleb;
+    oldfarplane = farplane;
+    oldvieww = vieww;
+    oldviewh = viewh;
+    oldprojmatrix = projmatrix;
 
-        drawtex = Draw_TexModelPreview;
+    aspect = w/static_cast<float>(h);
+    fovy = modelpreviewfov;
+    curfov = 2*std::atan2(std::tan(fovy/2*RAD), 1/aspect)/RAD;
+    farplane = 1024;
+    vieww = std::min(gw, w);
+    viewh = std::min(gh, h);
+    ldrscale = 1;
+    ldrscaleb = ldrscale/255;
 
-        oldcamera = camera1;
-        camera = *camera1;
-        camera.reset();
-        camera.type = PhysEnt_Camera;
-        camera.o = vec(0, 0, 0);
-        camera.yaw = 0;
-        camera.pitch = modelpreviewpitch;
-        camera.roll = 0;
-        camera1 = &camera;
+    projmatrix.perspective(fovy, aspect, nearplane, farplane);
+    setcamprojmatrix();
 
-        oldaspect = aspect;
-        oldfovy = fovy;
-        oldfov = curfov;
-        oldldrscale = ldrscale;
-        oldldrscaleb = ldrscaleb;
-        oldfarplane = farplane;
-        oldvieww = vieww;
-        oldviewh = viewh;
-        oldprojmatrix = projmatrix;
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+}
 
-        aspect = w/static_cast<float>(h);
-        fovy = modelpreviewfov;
-        curfov = 2*std::atan2(std::tan(fovy/2*RAD), 1/aspect)/RAD;
-        farplane = 1024;
-        vieww = std::min(gw, w);
-        viewh = std::min(gh, h);
-        ldrscale = 1;
-        ldrscaleb = ldrscale/255;
+void ModelPreview::end()
+{
+    rendermodelbatches();
 
-        projmatrix.perspective(fovy, aspect, nearplane, farplane);
-        setcamprojmatrix();
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
 
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-    }
+    gbuf.shademodelpreview(x, y, w, h, background, scissor);
 
-    void end()
-    {
-        rendermodelbatches();
+    aspect = oldaspect;
+    fovy = oldfovy;
+    curfov = oldfov;
+    farplane = oldfarplane;
+    vieww = oldvieww;
+    viewh = oldviewh;
+    ldrscale = oldldrscale;
+    ldrscaleb = oldldrscaleb;
 
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
+    camera1 = oldcamera;
+    drawtex = 0;
 
-        gbuf.shademodelpreview(x, y, w, h, background, scissor);
-
-        aspect = oldaspect;
-        fovy = oldfovy;
-        curfov = oldfov;
-        farplane = oldfarplane;
-        vieww = oldvieww;
-        viewh = oldviewh;
-        ldrscale = oldldrscale;
-        ldrscaleb = oldldrscaleb;
-
-        camera1 = oldcamera;
-        drawtex = 0;
-
-        projmatrix = oldprojmatrix;
-        setcamprojmatrix();
-    }
+    projmatrix = oldprojmatrix;
+    setcamprojmatrix();
 }
 
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
