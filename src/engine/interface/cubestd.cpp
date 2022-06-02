@@ -1242,7 +1242,7 @@ void initmathcmds()
 
 char *strreplace(const char *s, const char *oldval, const char *newval, const char *newval2)
 {
-    vector<char> buf;
+    std::vector<char> buf;
 
     int oldlen = std::strlen(oldval);
     if(!oldlen)
@@ -1256,11 +1256,11 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
         {
             while(s < found)
             {
-                buf.add(*s++);
+                buf.push_back(*s++);
             }
             for(const char *n = i&1 ? newval2 : newval; *n; n++)
             {
-                buf.add(*n);
+                buf.push_back(*n);
             }
             s = found + oldlen;
         }
@@ -1268,10 +1268,10 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
         {
             while(*s)
             {
-                buf.add(*s++);
+                buf.push_back(*s++);
             }
-            buf.add('\0');
-            return newstring(buf.getbuf(), buf.length());
+            buf.push_back('\0');
+            return newstring(buf.data(), buf.size());
         }
     }
 }
