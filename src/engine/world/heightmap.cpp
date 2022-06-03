@@ -18,8 +18,9 @@
 #include "world.h"
 
 
-namespace hmap
+class hmap
 {
+    public:
     std::vector<int> textures;
 
     void cancel()
@@ -529,12 +530,34 @@ namespace hmap
         changes.s.sub(changes.o).shr(gridpower).add(1);
         rootworld.changed(changes);
     }
+} heightmapper;
+
+// free functions wrappers of member functions to bind commands to
+//imply existence of singleton instance of hmap
+void hmapcancel()
+{
+    heightmapper.cancel();
+}
+
+void hmapselect()
+{
+    heightmapper.hmapselect();
+}
+
+void clearhbrush()
+{
+    heightmapper.clearhbrush();
+}
+
+void hbrushvert(int *x, int *y, int *v)
+{
+    heightmapper.hbrushvert(x, y, v);
 }
 
 void initheightmapcmds()
 {
-    addcommand("hmapcancel", reinterpret_cast<identfun>(hmap::cancel), "", Id_Command);
-    addcommand("hmapselect", reinterpret_cast<identfun>(hmap::hmapselect), "", Id_Command);
-    addcommand("clearhbrush", reinterpret_cast<identfun>(hmap::clearhbrush), "", Id_Command);
-    addcommand("hbrushvert", reinterpret_cast<identfun>(hmap::hbrushvert), "iii", Id_Command);
+    addcommand("hmapcancel", reinterpret_cast<identfun>(hmapcancel), "", Id_Command);
+    addcommand("hmapselect", reinterpret_cast<identfun>(hmapselect), "", Id_Command);
+    addcommand("clearhbrush", reinterpret_cast<identfun>(clearhbrush), "", Id_Command);
+    addcommand("hbrushvert", reinterpret_cast<identfun>(hbrushvert), "iii", Id_Command);
 }

@@ -33,6 +33,7 @@
 #include "render/renderva.h"
 #include "render/texture.h"
 
+#include "heightmap.h"
 #include "material.h"
 #include "world.h"
 
@@ -216,14 +217,12 @@ VARF(hmapedit, 0, 0, 1, horient = sel.orient);
 
 void forcenextundo() { lastsel.orient = -1; }
 
-namespace hmap { void cancel(); }
-
 void cubecancel()
 {
     havesel = false;
     moving = dragging = hmapedit = passthroughsel = 0;
     forcenextundo();
-    hmap::cancel();
+    hmapcancel();
 }
 
 void cancelsel()
@@ -373,11 +372,6 @@ bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, 
     }
     dest.sub(handle);
     return true;
-}
-
-namespace hmap
-{
-    bool isheightmap(int o, int d, bool empty, cube &c);
 }
 
 //////////// ready changes to vertex arrays ////////////
