@@ -47,8 +47,8 @@ VARP(softparticleblend, 1, 8, 64); //inverse of blend factor for soft particle b
 // Check canemitparticles() to limit the rate that paricles can be emitted for models/sparklies
 // Automatically stops particles being emitted when paused or in reflective drawing
 VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
-static int lastemitframe = 0,
-           emitoffset    = 0;
+
+static int emitoffset     = 0;
 static bool canemit       = false,
             regenemitters = false,
             canstep       = false;
@@ -1978,6 +1978,9 @@ void seedparticles()
 
 void updateparticles()
 {
+    //note: static int carried across all calls of function
+    static int lastemitframe = 0;
+
     if(regenemitters) //regenemitters called whenever a new particle generator is placed
     {
         addparticleemitters();
