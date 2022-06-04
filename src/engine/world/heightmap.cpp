@@ -554,6 +554,17 @@ void hbrushvert(int *x, int *y, int *v)
     heightmapper.hbrushvert(x, y, v);
 }
 
+//engine interface functions
+bool isheightmap(int o, bool empty, cube &c)
+{
+    return heightmapper.isheightmap(o, empty, c);
+}
+
+void heightmaprun(int dir, int mode)
+{
+    heightmapper.run(dir, mode);
+}
+
 void initheightmapcmds()
 {
     addcommand("hmapcancel", reinterpret_cast<identfun>(hmapcancel), "", Id_Command);
