@@ -103,8 +103,8 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
     {
         if(c.ext)
         {
-            memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
-            memcpy(ext->verts(), c.ext->verts(), c.ext->maxverts*sizeof(vertinfo));
+            std::memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
+            std::memcpy(ext->verts(), c.ext->verts(), c.ext->maxverts*sizeof(vertinfo));
         }
         else
         {
