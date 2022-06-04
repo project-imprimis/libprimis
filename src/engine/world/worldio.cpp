@@ -115,7 +115,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
             conoutf(Console_Error, "map %s has malformatted header", ogzname);
             return false;
         }
-        memcpy(hdr.magic, "TMAP", 4);
+        std::memcpy(hdr.magic, "TMAP", 4);
         hdr.version = 0;
         hdr.headersize = sizeof(hdr);
         hdr.worldsize = ohdr.worldsize;
@@ -856,7 +856,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     renderprogress(0, "saving map...");
 
     mapheader hdr;
-    memcpy(hdr.magic, "TMAP", 4);
+    std::memcpy(hdr.magic, "TMAP", 4);
     hdr.version = currentmapversion;
     hdr.headersize = sizeof(hdr);
     hdr.worldsize = worldsize;
