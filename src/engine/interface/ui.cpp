@@ -58,6 +58,8 @@
  * }
  */
 
+static ModelPreview modelpreview = ModelPreview();
+
 namespace UI
 {
     float cursorx = 0.499f,

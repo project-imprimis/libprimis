@@ -99,7 +99,6 @@ class ModelPreview
         int x, y, w, h;
         bool background, scissor;
 };
-extern ModelPreview modelpreview;
 
 extern void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2);
 #endif
