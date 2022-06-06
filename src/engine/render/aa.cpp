@@ -284,6 +284,13 @@ namespace //internal functions incl. AA implementations
 
             //debug view for smaa buffers
             void viewsmaa();
+
+            subpixelaa();
+
+            int smaa;
+            int smaaspatial;
+            int debugsmaa;
+
         private:
             //smaa graphics buffers
             GLuint smaaareatex = 0,
@@ -336,27 +343,40 @@ namespace //internal functions incl. AA implementations
             vec2 areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern);
             vec2 areadiag(int pattern, float left, float right, const vec2 &offset);
             void gensmaaareadata();
+
+            /* smaa vars are set by `setupsmaa()` automatically: if TQAA and/or MSAA are
+             * enabled, the following variables will be set to 1
+             *
+             * generally, do not change these vars from ingame
+             */
+            int smaat2x;
+            int smaas2x;
+            int smaa4x;
+
+            int smaaquality;
+            int smaacoloredge;
+            int smaagreenluma;
+            int smaadepthmask;
+            int smaastencil;
     };
 
     subpixelaa smaarenderer;
 
-    /* smaa vars are set by `setupsmaa()` automatically: if TQAA and/or MSAA are
-     * enabled, the following variables will be set to 1
-     *
-     * generally, do not change these vars from ingame
-     */
-    VAR(smaat2x, 1, 0, 0); //SMAA Temporal 2x (temporal antialiasing)
-    VAR(smaas2x, 1, 0, 0); //SMAA Split 2x (multisample antialiasing)
-    VAR(smaa4x, 1, 0, 0);  //SMAA 4x (both temporal and multisample)
+    subpixelaa::subpixelaa()
+    {
+            smaat2x = variable("smaat2x", 1, 0, 0, &smaat2x, nullptr, 0); //SMAA Temporal 2x (temporal antialiasing)
+            smaas2x = variable("smaas2x", 1, 0, 0, &smaas2x, nullptr, 0); //SMAA Split 2x (multisample antialiasing)
+            smaa4x = variable("smaa4x", 1, 0, 0, &smaa4x, nullptr, 0); //SMAA 4x (both temporal and multisample)
 
-    VARFP(smaa, 0, 0, 1, gbuf.cleanupgbuffer()); //toggles smaa
-    VARFP(smaaspatial, 0, 1, 1, gbuf.cleanupgbuffer());
-    VARFP(smaaquality, 0, 2, 3, smaarenderer.cleanupsmaa());
-    VARFP(smaacoloredge, 0, 0, 1, smaarenderer.cleanupsmaa()); //toggle between color & luma edge shaders
-    VARFP(smaagreenluma, 0, 0, 1, smaarenderer.cleanupsmaa());
-    VARF(smaadepthmask, 0, 1, 1, smaarenderer.cleanupsmaa());
-    VARF(smaastencil, 0, 1, 1, smaarenderer.cleanupsmaa());
-    VAR(debugsmaa, 0, 0, 5); //see viewsmaa() below, displays one of the five smaa texs
+            smaa = variable("smaa", 0, 0, 1, &smaa, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);; //toggles smaa
+            smaaspatial = variable("smaaspatial", 0, 1, 1, &smaaspatial, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);
+            smaaquality = variable("smaaquality", 0, 2, 3, &smaaquality, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
+            smaacoloredge = variable("smaacoloredge", 0, 0, 1, &smaacoloredge, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist); //toggle between color & luma edge shaders
+            smaagreenluma = variable("smaagreenluma", 0, 0, 1, &smaagreenluma, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
+            smaadepthmask = variable("smaadepthmask", 0, 1, 1, &smaadepthmask, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
+            smaastencil = variable("smaastencil", 0, 1, 1, &smaastencil, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
+            debugsmaa = variable("debugsmaa", 0, 0, 5, &debugsmaa, nullptr, 0); //see viewsmaa() below, displays one of the five smaa texs
+    }
 
     void subpixelaa::loadsmaashaders(bool split)
     {
@@ -1129,7 +1149,7 @@ void setupaa(int w, int h)
     {
         setuptqaa(w, h);
     }
-    if(smaa)
+    if(smaarenderer.smaa)
     {
         if(!smaarenderer.smaafbo[0])
         {
@@ -1218,7 +1238,7 @@ void disableaamask()
 
 bool multisampledaa()
 {
-    return msaasamples == 2 && (smaa ? msaalight && smaaspatial : tqaa);
+    return msaasamples == 2 && (smaarenderer.smaa ? msaalight && smaarenderer.smaaspatial : tqaa);
 }
 
 //used by rendergl
@@ -1234,7 +1254,7 @@ bool multisampledaa()
  */
 void doaa(GLuint outfbo, GBuffer gbuffer)
 {
-    if(smaa)
+    if(smaarenderer.smaa)
     {
         bool split = multisampledaa();
         gbuffer.processhdr(smaarenderer.smaafbo[0], smaarenderer.smaatype);
@@ -1258,7 +1278,7 @@ void doaa(GLuint outfbo, GBuffer gbuffer)
 
 bool debugaa()
 {
-    if(debugsmaa)
+    if(smaarenderer.debugsmaa)
     {
         smaarenderer.viewsmaa();
     }
