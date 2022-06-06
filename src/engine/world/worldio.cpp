@@ -432,8 +432,8 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
         surfmask = f->getchar();
         totalverts = std::max(f->getchar(), 0);
         newcubeext(c, totalverts, false);
-        memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
-        memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
+        std::memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
+        std::memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
         int offset = 0;
         for(int i = 0; i < 6; ++i)
         {
@@ -667,7 +667,7 @@ void savevslots(stream *f, int numvslots)
         return;
     }
     int *prev = new int[numvslots];
-    memset(prev, -1, numvslots*sizeof(int));
+    std::memset(prev, -1, numvslots*sizeof(int));
     for(int i = 0; i < numvslots; ++i)
     {
         VSlot *vs = vslots[i];
@@ -799,7 +799,7 @@ void loadvslots(stream *f, int numvslots)
     {
         return;
     }
-    memset(prev, -1, numvslots*sizeof(int));
+    std::memset(prev, -1, numvslots*sizeof(int));
     while(numvslots > 0)
     {
         int changed = f->get<int>();
@@ -972,7 +972,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     }
     mapheader hdr;
     octaheader ohdr;
-    memset(&ohdr, 0, sizeof(ohdr));
+    std::memset(&ohdr, 0, sizeof(ohdr));
     if(!loadmapheader(f, ogzname, hdr, ohdr))
     {
         delete f;
