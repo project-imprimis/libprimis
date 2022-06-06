@@ -173,11 +173,13 @@ namespace //internal functions incl. AA implementations
         public:
             GLuint fxaafbo = 0;
             int fxaatype = -1;
+            int usefxaa;
 
             void cleanupfxaa();
             void dofxaa(GLuint outfbo = 0);
             void setupfxaa(int w, int h);
 
+            fxaa();
         private:
 
             GLuint fxaatex = 0;
@@ -185,13 +187,19 @@ namespace //internal functions incl. AA implementations
 
             void loadfxaashaders();
             void clearfxaashaders();
+
+            int fxaaquality;
+            int fxaagreenluma;
     };
 
     fxaa fxaarenderer;
 
-    VARFP(usefxaa, 0, 0, 1, fxaarenderer.cleanupfxaa());
-    VARFP(fxaaquality, 0, 1, 3, fxaarenderer.cleanupfxaa());
-    VARFP(fxaagreenluma, 0, 0, 1, fxaarenderer.cleanupfxaa());
+    fxaa::fxaa()
+    {
+        variable("usefxaa", 0, 0, 1, &usefxaa, [] (ident *) { fxaarenderer.cleanupfxaa(); }, Idf_Persist);
+        variable("fxaaquality", 0, 1, 3, &fxaaquality, [] (ident *) { fxaarenderer.cleanupfxaa(); }, Idf_Persist);
+        variable("fxaagreenluma", 0, 0, 1, &fxaagreenluma, [] (ident *) { fxaarenderer.cleanupfxaa(); }, Idf_Persist);
+    };
 
     void fxaa::loadfxaashaders()
     {
@@ -1156,7 +1164,7 @@ void setupaa(int w, int h)
             smaarenderer.setupsmaa(w, h);
         }
     }
-    else if(usefxaa)
+    else if(fxaarenderer.usefxaa)
     {
         if(!fxaarenderer.fxaafbo)
         {
@@ -1260,7 +1268,7 @@ void doaa(GLuint outfbo, GBuffer gbuffer)
         gbuffer.processhdr(smaarenderer.smaafbo[0], smaarenderer.smaatype);
         smaarenderer.dosmaa(outfbo, split);
     }
-    else if(usefxaa)
+    else if(fxaarenderer.usefxaa)
     {
         gbuffer.processhdr(fxaarenderer.fxaafbo, fxaarenderer.fxaatype);
         fxaarenderer.dofxaa(outfbo);
