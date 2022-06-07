@@ -63,7 +63,7 @@ namespace
                 matrix4x3 m;
                 m.identity();
                 m.settranslation(w/2, h/2, 0);
-                m.rotate_around_z(i*45*RAD);
+                m.rotate_around_z(i*45/RAD);
                 m.translate(0, offset, 0);
                 m.scale(size*scale);
 
@@ -424,8 +424,8 @@ void vectoryawpitch(const vec &v, float &yaw, float &pitch)
     }
     else
     {
-        yaw = -std::atan2(v.x, v.y)/RAD;
-        pitch = std::asin(v.z/v.magnitude())/RAD;
+        yaw = -std::atan2(v.x, v.y)*RAD;
+        pitch = std::asin(v.z/v.magnitude())*RAD;
     }
 }
 

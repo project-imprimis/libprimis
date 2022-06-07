@@ -943,8 +943,8 @@ void reflectiveshadowmap::setup()
 void reflectiveshadowmap::getmodelmatrix()
 {
     model = viewmatrix;                             //copy global view matrix
-    model.rotate_around_x(sunlightpitch*RAD);       //orient camera in same yaw as sunlight
-    model.rotate_around_z((180-sunlightyaw)*RAD);   //orient camera in same pitch as sunlight
+    model.rotate_around_x(sunlightpitch/RAD);       //orient camera in same yaw as sunlight
+    model.rotate_around_z((180-sunlightyaw)/RAD);   //orient camera in same pitch as sunlight
 }
 
 void reflectiveshadowmap::getprojmatrix()

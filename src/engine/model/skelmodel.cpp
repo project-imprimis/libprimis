@@ -549,7 +549,7 @@ float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, co
     {
         dy = -dy;
     }
-    return atan2f(dy, dx)/RAD;
+    return atan2f(dy, dx)*RAD;
 }
 
 void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const vec &forward)
@@ -696,7 +696,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             {
                 angle *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
             }
-            sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
+            sc.bdata[b.interpindex].mulorient(quat(axis, angle/RAD), b.base);
         }
     }
     for(uint i = 0; i < antipodes.size(); i++)
@@ -1727,15 +1727,15 @@ void skeladjustment::adjust(dualquat &dq)
 {
     if(yaw)
     {
-        dq.mulorient(quat(vec(0, 0, 1), yaw*RAD));
+        dq.mulorient(quat(vec(0, 0, 1), yaw/RAD));
     }
     if(pitch)
     {
-        dq.mulorient(quat(vec(0, -1, 0), pitch*RAD));
+        dq.mulorient(quat(vec(0, -1, 0), pitch/RAD));
     }
     if(roll)
     {
-        dq.mulorient(quat(vec(-1, 0, 0), roll*RAD));
+        dq.mulorient(quat(vec(-1, 0, 0), roll/RAD));
     }
     if(!translate.iszero())
     {

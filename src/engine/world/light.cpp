@@ -45,7 +45,7 @@ FVARFR(sunlightpitch, -90, 90, 90, setsunlightdir());
 
 void setsunlightdir()
 {
-    sunlightdir = vec(sunlightyaw*RAD, sunlightpitch*RAD);
+    sunlightdir = vec(sunlightyaw/RAD, sunlightpitch/RAD);
     for(int k = 0; k < 3; ++k)
     {
         if(std::fabs(sunlightdir[k]) < 1e-5f)

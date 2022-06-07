@@ -659,9 +659,9 @@ void setcammatrix()
 {
     // move from RH to Z-up LH quake style worldspace
     cammatrix = viewmatrix;
-    cammatrix.rotate_around_y(camera1->roll*RAD);
-    cammatrix.rotate_around_x(camera1->pitch*-RAD);
-    cammatrix.rotate_around_z(camera1->yaw*-RAD);
+    cammatrix.rotate_around_y(camera1->roll/RAD);
+    cammatrix.rotate_around_x(camera1->pitch/-RAD);
+    cammatrix.rotate_around_z(camera1->yaw/-RAD);
     cammatrix.translate(vec(camera1->o).neg());
 
     cammatrix.transposedtransformnormal(vec(viewmatrix.b), camdir);
@@ -896,7 +896,7 @@ float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, c
         return minimapradius.magnitude();
     }
 
-    float width = std::tan(fov/2.0f*RAD),
+    float width = std::tan(fov/(2.0f*RAD)),
           height = width / aspect,
           cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
     if(cdist <= farplane)
@@ -919,7 +919,7 @@ vec calcavatarpos(const vec &pos, float dist)
 {
     vec eyepos;
     cammatrix.transform(pos, eyepos);
-    GLdouble ydist = nearplane * std::tan(curavatarfov/2*RAD),
+    GLdouble ydist = nearplane * std::tan(curavatarfov/(2*RAD)),
              xdist = ydist * aspect;
     vec4<float> scrpos;
     scrpos.x = eyepos.x*nearplane/xdist;
@@ -1020,7 +1020,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     float zzrr = e.z*e.z - size*size,
           dx = e.x*e.x + zzrr,
           dy = e.y*e.y + zzrr,
-          focaldist = 1.0f/std::tan(fovy*0.5f*RAD);
+          focaldist = 1.0f/std::tan(fovy*0.5f/RAD);
     sx1 = sy1 = -1;
     sx2 = sy2 = 1;
     #define CHECKPLANE(c, dir, focaldist, low, high) \
@@ -1694,7 +1694,7 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
 
     aspect = w/static_cast<float>(h);
     fovy = modelpreviewfov;
-    curfov = 2*std::atan2(std::tan(fovy/2*RAD), 1/aspect)/RAD;
+    curfov = 2*std::atan2(std::tan(fovy/(2*RAD)), 1/aspect)*RAD;
     farplane = 1024;
     vieww = std::min(gw, w);
     viewh = std::min(gh, h);
@@ -1736,8 +1736,8 @@ void ModelPreview::end()
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
 {
     yaw = std::fmod(lastmillis/10000.0f*360.0f, 360.0f);
-    float dist = std::max(radius.magnitude2()/aspect, radius.magnitude())/std::sin(fovy/2*RAD);
-    return vec(0, dist, 0).rotate_around_x(camera1->pitch*RAD);
+    float dist = std::max(radius.magnitude2()/aspect, radius.magnitude())/std::sin(fovy/(2*RAD));
+    return vec(0, dist, 0).rotate_around_x(camera1->pitch/RAD);
 }
 
 int xtraverts, xtravertsva;
@@ -1912,7 +1912,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     flipqueries();
     aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
-    fovy = 2*std::atan2(std::tan(curfov/2*RAD), aspect)/RAD;
+    fovy = 2*std::atan2(std::tan(curfov/(2*RAD)), aspect)*RAD;
     vieww = hudw;
     viewh = hudh;
     if(mainmenu)

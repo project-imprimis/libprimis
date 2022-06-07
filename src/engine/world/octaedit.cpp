@@ -1307,15 +1307,15 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     m.settranslation(o);
     if(yaw)
     {
-        m.rotate_around_z(yaw*RAD);
+        m.rotate_around_z(yaw/RAD);
     }
     if(pitch)
     {
-        m.rotate_around_x(pitch*RAD);
+        m.rotate_around_x(pitch/RAD);
     }
     if(roll)
     {
-        m.rotate_around_y(-roll*RAD);
+        m.rotate_around_y(-roll/RAD);
     }
     matrix3 w(m);
     if(size > 0 && size != 1)

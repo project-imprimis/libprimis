@@ -707,7 +707,7 @@ bool updatechannel(SoundChannel &chan)
         }
         if(stereo && (v.x != 0 || v.y != 0) && dist>0)
         {
-            v.rotate_around_z(-camera1->yaw*RAD);
+            v.rotate_around_z(-camera1->yaw/RAD);
             pan = static_cast<int>(255.9f*(0.5f - 0.5f*v.x/v.magnitude2())); // range is from 0 (left) to 255 (right)
         }
     }
