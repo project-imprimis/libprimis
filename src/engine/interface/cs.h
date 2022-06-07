@@ -361,8 +361,6 @@ extern void clearoverrides();
 
 extern void clearsleep(bool clearoverrides = true);
 
-extern char *executestr(const uint *code);
-extern char *executestr(const char *p);
 extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
 extern bool identexists(const char *name);
 extern ident *newident(const char *name, int flags = 0);
@@ -373,7 +371,6 @@ extern void freecode(uint *p);
 extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
 extern bool executebool(const char *p);
 extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
-extern bool execidentbool(const char *name, bool noid = false, bool lookup = false);
 extern void alias(const char *name, const char *action);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);

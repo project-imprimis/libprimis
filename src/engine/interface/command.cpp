@@ -5398,30 +5398,6 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
     --rundepth;
 }
 
-char *executestr(const uint *code)
-{
-    tagval result;
-    runcode(code, result);
-    if(result.type == Value_Null)
-    {
-        return nullptr;
-    }
-    forcestr(result);
-    return result.s;
-}
-
-char *executestr(const char *p)
-{
-    tagval result;
-    executeret(p, result);
-    if(result.type == Value_Null)
-    {
-        return nullptr;
-    }
-    forcestr(result);
-    return result.s;
-}
-
 char *executestr(ident *id, tagval *args, int numargs, bool lookup)
 {
     tagval result;
@@ -5432,12 +5408,6 @@ char *executestr(ident *id, tagval *args, int numargs, bool lookup)
     }
     forcestr(result);
     return result.s;
-}
-
-char *execidentstr(const char *name, bool lookup)
-{
-    ident *id = idents.access(name);
-    return id ? executestr(id, nullptr, 0, lookup) : nullptr;
 }
 
 int execute(const uint *code)
@@ -5480,39 +5450,6 @@ int execident(const char *name, int noid, bool lookup)
     return id ? execute(id, nullptr, 0, lookup) : noid;
 }
 
-float executefloat(const uint *code)
-{
-    tagval result;
-    runcode(code, result);
-    float f = result.getfloat();
-    freearg(result);
-    return f;
-}
-
-float executefloat(const char *p)
-{
-    tagval result;
-    executeret(p, result);
-    float f = result.getfloat();
-    freearg(result);
-    return f;
-}
-
-float executefloat(ident *id, tagval *args, int numargs, bool lookup)
-{
-    tagval result;
-    executeret(id, args, numargs, lookup, result);
-    float f = result.getfloat();
-    freearg(result);
-    return f;
-}
-
-float execidentfloat(const char *name, float noid, bool lookup)
-{
-    ident *id = idents.access(name);
-    return id ? executefloat(id, nullptr, 0, lookup) : noid;
-}
-
 bool executebool(const uint *code)
 {
     tagval result;
@@ -5538,12 +5475,6 @@ bool executebool(ident *id, tagval *args, int numargs, bool lookup)
     bool b = getbool(result);
     freearg(result);
     return b;
-}
-
-bool execidentbool(const char *name, bool noid, bool lookup)
-{
-    ident *id = idents.access(name);
-    return id ? executebool(id, nullptr, 0, lookup) : noid;
 }
 
 void initcscmds()
