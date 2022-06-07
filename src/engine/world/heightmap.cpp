@@ -65,7 +65,7 @@ class hmap
 
     void clearhbrush()
     {
-        memset(brush, 0, sizeof brush);
+        std::memset(brush, 0, sizeof brush);
         brushmaxx = brushmaxy = 0;
         brushminx = brushminy = maxbrush;
         paintbrush = false;
@@ -510,8 +510,8 @@ class hmap
 
         changes.grid = gridsize;
         changes.s = changes.o = cur;
-        memset(map, 0, sizeof map);
-        memset(flags, 0, sizeof flags);
+        std::memset(map, 0, sizeof map);
+        std::memset(flags, 0, sizeof flags);
 
         selecting = true;
         select(std::clamp(maxbrush2-cx, bmx, bnx),
