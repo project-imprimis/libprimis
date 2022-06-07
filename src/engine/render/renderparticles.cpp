@@ -1241,7 +1241,7 @@ struct fireballrenderer : listrenderer
             t = vec(dir.x*dir.z, dir.y*dir.z, -mag2/dist);
         }
 
-        matrix3 rot(lastmillis/1000.0f*143*RAD, vec(1/SQRT3, 1/SQRT3, 1/SQRT3));
+        matrix3 rot(lastmillis/1000.0f*143/RAD, vec(1/SQRT3, 1/SQRT3, 1/SQRT3));
         LOCALPARAM(texgenS, rot.transposedtransform(s));
         LOCALPARAM(texgenT, rot.transposedtransform(t));
 
