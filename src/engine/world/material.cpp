@@ -946,8 +946,8 @@ int findmaterials()
     }
     matliquidsx1 = matliquidsy1 = matsolidsx1 = matsolidsy1 = matrefractsx1 = matrefractsy1 = 1;
     matliquidsx2 = matliquidsy2 = matsolidsx2 = matsolidsy2 = matrefractsx2 = matrefractsy2 = -1;
-    memset(matliquidtiles, 0, sizeof(matliquidtiles));
-    memset(matsolidtiles, 0, sizeof(matsolidtiles));
+    std::memset(matliquidtiles, 0, sizeof(matliquidtiles));
+    std::memset(matsolidtiles, 0, sizeof(matsolidtiles));
     int hasmats = 0;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
