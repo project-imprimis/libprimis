@@ -957,7 +957,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     {
         ++matrixpos;
         matrixstack[matrixpos] = matrixstack[matrixpos-1];
-        matrixstack[matrixpos].rotate(pitchamount*RAD, oaxis);
+        matrixstack[matrixpos].rotate(pitchamount/RAD, oaxis);
     }
     if(this == model->parts[0] && !model->translate.iszero())
     {
@@ -1059,7 +1059,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
     {
         ++matrixpos;
         matrixstack[matrixpos] = matrixstack[matrixpos-1];
-        matrixstack[matrixpos].rotate(pitchamount*RAD, oaxis);
+        matrixstack[matrixpos].rotate(pitchamount/RAD, oaxis);
     }
     if(this == model->parts[0] && !model->translate.iszero())
     {
@@ -1277,29 +1277,29 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
         roll += spinroll*secs;
 
         matrixstack[0].settranslation(pos);
-        matrixstack[0].rotate_around_z(yaw*RAD);
+        matrixstack[0].rotate_around_z(yaw/RAD);
         bool usepitch = pitched();
         if(roll && !usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll*RAD);
+            matrixstack[0].rotate_around_y(-roll/RAD);
         }
         matrixstack[0].transformnormal(vec(axis), axis);
         matrixstack[0].transformnormal(vec(forward), forward);
         if(roll && usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll*RAD);
+            matrixstack[0].rotate_around_y(-roll/RAD);
         }
         if(offsetyaw)
         {
-            matrixstack[0].rotate_around_z(offsetyaw*RAD);
+            matrixstack[0].rotate_around_z(offsetyaw/RAD);
         }
         if(offsetpitch)
         {
-            matrixstack[0].rotate_around_x(offsetpitch*RAD);
+            matrixstack[0].rotate_around_x(offsetpitch/RAD);
         }
         if(offsetroll)
         {
-            matrixstack[0].rotate_around_y(-offsetroll*RAD);
+            matrixstack[0].rotate_around_y(-offsetroll/RAD);
         }
     }
     else
@@ -1436,29 +1436,29 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         roll += spinroll*secs;
 
         matrixstack[0].settranslation(o);
-        matrixstack[0].rotate_around_z(yaw*RAD);
+        matrixstack[0].rotate_around_z(yaw/RAD);
         bool usepitch = pitched();
         if(roll && !usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll*RAD);
+            matrixstack[0].rotate_around_y(-roll/RAD);
         }
         matrixstack[0].transformnormal(vec(axis), axis);
         matrixstack[0].transformnormal(vec(forward), forward);
         if(roll && usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll*RAD);
+            matrixstack[0].rotate_around_y(-roll/RAD);
         }
         if(offsetyaw)
         {
-            matrixstack[0].rotate_around_z(offsetyaw*RAD);
+            matrixstack[0].rotate_around_z(offsetyaw/RAD);
         }
         if(offsetpitch)
         {
-            matrixstack[0].rotate_around_x(offsetpitch*RAD);
+            matrixstack[0].rotate_around_x(offsetpitch/RAD);
         }
         if(offsetroll)
         {
-            matrixstack[0].rotate_around_y(-offsetroll*RAD);
+            matrixstack[0].rotate_around_y(-offsetroll/RAD);
         }
     }
     else
@@ -1515,15 +1515,15 @@ void animmodel::initmatrix(matrix4x3 &m)
     m.identity();
     if(offsetyaw)
     {
-        m.rotate_around_z(offsetyaw*RAD);
+        m.rotate_around_z(offsetyaw/RAD);
     }
     if(offsetpitch)
     {
-        m.rotate_around_x(offsetpitch*RAD);
+        m.rotate_around_x(offsetpitch/RAD);
     }
     if(offsetroll)
     {
-        m.rotate_around_y(-offsetroll*RAD);
+        m.rotate_around_y(-offsetroll/RAD);
     }
     m.translate(translate, scale);
 }

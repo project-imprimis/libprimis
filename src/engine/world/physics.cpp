@@ -99,7 +99,7 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec 
     }
     vec yo(d->o);
     yo.sub(origin);
-    yo.rotate_around_z(-yaw*RAD);
+    yo.rotate_around_z(-yaw/RAD);
     yo.sub(center);
 
     float dx = std::clamp(yo.x, -xr, xr) - yo.x,
@@ -112,20 +112,20 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec 
         if(dist > (yo.z < 0 ? below : above) && (sx || sy))
         {
             vec ydir(dir);
-            ydir.rotate_around_z(-yaw*RAD);
+            ydir.rotate_around_z(-yaw/RAD);
             if(sx*yo.x - xr > sy*yo.y - yr)
             {
                 if(dir.iszero() || sx*ydir.x < -1e-6f)
                 {
                     collidewall = vec(sx, 0, 0);
-                    collidewall.rotate_around_z(yaw*RAD);
+                    collidewall.rotate_around_z(yaw/RAD);
                     return true;
                 }
             }
             else if(dir.iszero() || sy*ydir.y < -1e-6f)
             {
                 collidewall = vec(0, sy, 0);
-                collidewall.rotate_around_z(yaw*RAD);
+                collidewall.rotate_around_z(yaw/RAD);
                 return true;
             }
         }
@@ -156,13 +156,13 @@ bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center,
         return false;
     }
     vec yo(center);
-    yo.rotate_around_z(yaw*RAD);
+    yo.rotate_around_z(yaw/RAD);
     yo.add(o);
     float x = yo.x - d->o.x,
           y = yo.y - d->o.y,
           angle = atan2f(y, x),
-          dangle = angle-d->yaw*RAD,
-          eangle = angle-yaw*RAD,
+          dangle = angle-d->yaw/RAD,
+          eangle = angle-yaw/RAD,
           dx = d->xradius*std::cos(dangle),
           dy = d->yradius*std::sin(dangle),
           ex = xr*std::cos(eangle),
@@ -1306,8 +1306,8 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 {
     if(move)
     {
-        m.x = move*-std::sin(RAD*yaw);
-        m.y = move*std::cos(RAD*yaw);
+        m.x = move*-std::sin(yaw/RAD);
+        m.y = move*std::cos(yaw/RAD);
     }
     else
     {
@@ -1316,9 +1316,9 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 
     if(pitch)
     {
-        m.x *= std::cos(RAD*pitch);
-        m.y *= std::cos(RAD*pitch);
-        m.z = move*std::sin(RAD*pitch);
+        m.x *= std::cos(pitch/RAD);
+        m.y *= std::cos(pitch/RAD);
+        m.z = move*std::sin(pitch/RAD);
     }
     else
     {
@@ -1327,8 +1327,8 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 
     if(strafe)
     {
-        m.x += strafe*std::cos(RAD*yaw);
-        m.y += strafe*std::sin(RAD*yaw);
+        m.x += strafe*std::cos(yaw/RAD);
+        m.y += strafe*std::sin(yaw/RAD);
     }
 }
 
