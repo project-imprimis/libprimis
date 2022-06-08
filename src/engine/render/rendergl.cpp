@@ -1510,7 +1510,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 
     }
 }
 
-void drawminimap(int yaw, int pitch, vec loc, cubeworld world)
+void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scale)
 {
     if(!showminimap)
     {
@@ -1569,7 +1569,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world)
         }
     }
 
-    minimapradius = vec(bbmax).sub(vec(bbmin));
+    minimapradius = vec(bbmax).sub(vec(bbmin)).div(scalefactor);
     minimapcenter = loc;
     minimapradius.x = minimapradius.y = std::max(minimapradius.x, minimapradius.y);
     minimapscale = vec((0.5f - 1.0f/size)/minimapradius.x, (0.5f - 1.0f/size)/minimapradius.y, 1.0f);
