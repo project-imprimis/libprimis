@@ -18,7 +18,7 @@ var iengine_8h =
     [ "countselchild", "iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95", null ],
     [ "detachentity", "iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1", null ],
     [ "disablezoom", "iengine_8h.html#a22c96f585456f856035322b5bb4a6169", null ],
-    [ "drawminimap", "iengine_8h.html#aaaca628ac539ed8575ddb8bbc4d55a75", null ],
+    [ "drawminimap", "iengine_8h.html#af0178542cfb4893bbdc375c1d2da7adb", null ],
     [ "dropenttofloor", "iengine_8h.html#a0ad347f2277926b638e58f460536b2b8", null ],
     [ "edittexcube", "iengine_8h.html#affcfb00260ac3ea3762dfed37eef8097", null ],
     [ "enginebuilddate", "iengine_8h.html#a8ef879cc5c463110ac5688289a2bcd66", null ],
