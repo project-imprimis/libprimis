@@ -1510,7 +1510,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 
     }
 }
 
-void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scale)
+void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
 {
     if(!showminimap)
     {
