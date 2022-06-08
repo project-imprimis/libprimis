@@ -1091,7 +1091,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
          icenter = ivec(imin).add(imax).div(2),
          iradius = ivec(imax).sub(imin).add(1).div(2);
     matrix3 drot, dorient;
-    drot.setyaw(d->yaw*RAD);
+    drot.setyaw(d->yaw/RAD);
     vec ddir = drot.transform(dir),
         dcenter = drot.transform(center).neg();
     dorient.mul(drot, orient);

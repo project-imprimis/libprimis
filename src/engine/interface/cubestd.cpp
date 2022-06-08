@@ -1193,13 +1193,13 @@ void initmathcmds()
     addcommand("pow", reinterpret_cast<identfun>(+[] (tagval *args, int numargs) { { float val; if(numargs >= 2) { val = args[0].f; float val2 = args[1].f; val = std::pow(val, val2); for(int i = 2; i < numargs; i++) { val2 = args[i].f; val = std::pow(val, val2); } } else { val = numargs > 0 ? args[0].f : 0; ; } floatret(val); }; }), "f" "1V", Id_Command);
 
     //float transcendentals
-    addcommand("sin", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::sin(*a*RAD)); }), "f", Id_Command);
-    addcommand("cos", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::cos(*a*RAD)); }), "f", Id_Command);
-    addcommand("tan", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::tan(*a*RAD)); }), "f", Id_Command);
-    addcommand("asin", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::asin(*a)/RAD); }), "f", Id_Command);
-    addcommand("acos", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::acos(*a)/RAD); }), "f", Id_Command);
-    addcommand("atan", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::atan(*a)/RAD); }), "f", Id_Command);
-    addcommand("atan2", reinterpret_cast<identfun>(+[] (float *y, float *x) { floatret(std::atan2(*y, *x)/RAD); }), "ff", Id_Command);
+    addcommand("sin", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::sin(*a/RAD)); }), "f", Id_Command);
+    addcommand("cos", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::cos(*a/RAD)); }), "f", Id_Command);
+    addcommand("tan", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::tan(*a/RAD)); }), "f", Id_Command);
+    addcommand("asin", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::asin(*a)*RAD); }), "f", Id_Command);
+    addcommand("acos", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::acos(*a)*RAD); }), "f", Id_Command);
+    addcommand("atan", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::atan(*a)*RAD); }), "f", Id_Command);
+    addcommand("atan2", reinterpret_cast<identfun>(+[] (float *y, float *x) { floatret(std::atan2(*y, *x)*RAD); }), "ff", Id_Command);
     addcommand("sqrt", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::sqrt(*a)); }), "f", Id_Command);
     addcommand("loge", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::log(*a)); }), "f", Id_Command);
     addcommand("log2", reinterpret_cast<identfun>(+[] (float *a) { floatret(std::log(*a)/M_LN2); }), "f", Id_Command);

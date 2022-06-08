@@ -674,7 +674,7 @@ void matrix4::frustum(float left, float right, float bottom, float top, float zn
 
 void matrix4::perspective(float fovy, float aspect, float znear, float zfar)
 {
-    float ydist = znear * std::tan(fovy/2*RAD),
+    float ydist = znear * std::tan(fovy/(2*RAD)),
           xdist = ydist * aspect;
     frustum(-xdist, xdist, -ydist, ydist, znear, zfar);
 }

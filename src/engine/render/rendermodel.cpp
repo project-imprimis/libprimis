@@ -358,7 +358,7 @@ static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, 
     ragdollskel::rotlimit r;
     r.tri[0] = *t1;
     r.tri[1] = *t2;
-    r.maxangle = *maxangle * RAD;
+    r.maxangle = *maxangle / RAD;
     r.maxtrace = 1 + 2*std::cos(r.maxangle);
     r.middle = matrix3(quat(*qx, *qy, *qz, *qw));
     ragdoll->rotlimits.push_back(r);
@@ -1167,13 +1167,13 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     center.mul(size);
     if(roll)
     {
-        center.rotate_around_y(-roll*RAD);
+        center.rotate_around_y(-roll/RAD);
     }
     if(pitch && m->pitched())
     {
-        center.rotate_around_x(pitch*RAD);
+        center.rotate_around_x(pitch/RAD);
     }
-    center.rotate_around_z(yaw*RAD);
+    center.rotate_around_z(yaw/RAD);
     center.add(o);
     radius *= size;
 
@@ -1249,13 +1249,13 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
     center.mul(size);
     if(roll)
     {
-        center.rotate_around_y(-roll*RAD);
+        center.rotate_around_y(-roll/RAD);
     }
     if(pitch && m->pitched())
     {
-        center.rotate_around_x(pitch*RAD);
+        center.rotate_around_x(pitch/RAD);
     }
-    center.rotate_around_z(yaw*RAD);
+    center.rotate_around_z(yaw/RAD);
     center.add(o);
 hasboundbox:
     radius *= size;

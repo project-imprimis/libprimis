@@ -181,8 +181,8 @@ void cascadedshadowmap::updatesplitdist()
 void cascadedshadowmap::getmodelmatrix()
 {
     model = viewmatrix;
-    model.rotate_around_x(sunlightpitch*RAD);
-    model.rotate_around_z((180-sunlightyaw)*RAD);
+    model.rotate_around_x(sunlightpitch/RAD);
+    model.rotate_around_z((180-sunlightyaw)/RAD);
 }
 
 void cascadedshadowmap::getprojmatrix()
