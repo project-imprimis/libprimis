@@ -233,7 +233,7 @@ void cancelsel()
 
 bool haveselent()
 {
-    return entgroup.length() > 0;
+    return entgroup.size() > 0;
 }
 
 bool noedit(bool inview, bool msg)

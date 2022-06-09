@@ -2992,7 +2992,7 @@ void viewlightscissor()
 {
     vector<extentity *> &ents = entities::getents();
     gle::defvertex(2);
-    for(int i = 0; i < entgroup.length(); i++)
+    for(uint i = 0; i < entgroup.size(); i++)
     {
         int idx = entgroup[i];
         if(ents.inrange(idx) && ents[idx]->type == EngineEnt_Light)

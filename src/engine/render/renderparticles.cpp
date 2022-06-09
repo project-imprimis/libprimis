@@ -2047,7 +2047,7 @@ void updateparticles()
     {
         const vector<extentity *> &ents = entities::getents();
         // note: order matters in this case as particles of the same type are drawn in the reverse order that they are added
-        for(int i = 0; i < entgroup.length(); i++)
+        for(uint i = 0; i < entgroup.size(); i++)
         {
             entity &e = *ents[entgroup[i]];
             particle_textcopy(e.o, entname(e), Part_Text, 1, 0xFF4B19, 2.0f);

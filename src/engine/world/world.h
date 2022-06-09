@@ -44,7 +44,7 @@ extern int mapversion;
 extern char *maptitle;
 extern int octaentsize;
 
-extern vector<int> entgroup;
+extern std::vector<int> entgroup;
 extern std::vector<int> outsideents;
 
 extern void resetmap();

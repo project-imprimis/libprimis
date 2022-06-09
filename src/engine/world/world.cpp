@@ -33,7 +33,7 @@ SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
 std::vector<int> outsideents;
-vector<int> entgroup;
+std::vector<int> entgroup;
 
 namespace entities
 {
@@ -75,7 +75,7 @@ VAR(octaentsize, 0, 64, 1024);
 
 void entcancel()
 {
-    entgroup.shrink(0);
+    entgroup.clear();
 }
 
 //need a getter fxn because decalslot obj not exposed to the game
