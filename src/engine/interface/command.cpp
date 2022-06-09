@@ -3974,6 +3974,11 @@ void* arg(ident *id, tagval args[], int n, int offset = 0)
  * whatever length function is desired. E.g. callcom(id, args, 6) takes the function
  * pointer id->fun and changes its type to comfun6 (command function w/ 6 args).
  * Each argument is then described by the arg() function for each argument slot.
+ *
+ * the id->fun member is a pointer to a free function with the signature
+ * void foo(ident *), which is then reinterpret_casted to a function with parameters
+ * that it originally had before being stored as a generic function pointer.
+ *
  * @param id the identifier for the type of command.
  * @param args the command arguments.
  * @param n the n-th argument to return.
