@@ -32,7 +32,7 @@ VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
-vector<int> outsideents;
+std::vector<int> outsideents;
 vector<int> entgroup;
 
 namespace entities
@@ -433,17 +433,17 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
     }
     if(!insideworld(e.o))
     {
-        int idx = outsideents.find(id);
+        uint idx = std::distance(outsideents.begin(), std::find(outsideents.begin(), outsideents.end(), id));
         if(flags&ModOctaEnt_Add)
         {
-            if(idx < 0)
+            if(idx < outsideents.size())
             {
-                outsideents.add(id);
+                outsideents.push_back(id);
             }
         }
         else if(idx >= 0)
         {
-            outsideents.removeunordered(idx);
+            outsideents.erase(outsideents.begin() + idx);
         }
     }
     else
@@ -644,7 +644,7 @@ void resetmap()
     clearmapcrc();
 
     entities::clearents();
-    outsideents.setsize(0);
+    outsideents.clear();
     spotlights = 0;
     volumetriclights = 0;
     nospeclights = 0;

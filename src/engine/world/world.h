@@ -45,7 +45,7 @@ extern char *maptitle;
 extern int octaentsize;
 
 extern vector<int> entgroup;
-extern vector<int> outsideents;
+extern std::vector<int> outsideents;
 
 extern void resetmap();
 extern void freeoctaentities(cube &c);

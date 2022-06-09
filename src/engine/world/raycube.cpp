@@ -200,7 +200,7 @@ namespace
         float dist = radius,
               f = 0.0f;
         const vector<extentity *> &ents = entities::getents();
-        for(int i = 0; i < outsideents.length(); i++)
+        for(uint i = 0; i < outsideents.size(); i++)
         {
             extentity &e = *ents[outsideents[i]];
             if(!(e.flags&EntFlag_Octa) || &e == t)
