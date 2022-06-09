@@ -62,6 +62,7 @@ CLIENT_OBJS= \
 	engine/render/hdr.o \
 	engine/render/hud.o \
 	engine/render/imagedata.o \
+	engine/render/lightsphere.o \
 	engine/render/normal.o \
 	engine/render/octarender.o \
 	engine/render/radiancehints.o \
