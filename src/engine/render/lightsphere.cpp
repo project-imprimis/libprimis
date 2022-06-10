@@ -8,75 +8,77 @@
 
 namespace lightsphere
 {
-    vec *verts = nullptr;
-    GLushort *indices = nullptr;
-    int numverts   = 0,
-        numindices = 0;
-    GLuint vbuf = 0,
-           ebuf = 0;
-
-    void init(int slices, int stacks)
+    namespace
     {
-        numverts = (stacks+1)*(slices+1);
-        verts = new vec[numverts];
-        float ds = 1.0f/slices,
-              dt = 1.0f/stacks,
-              t  = 1.0f;
-        for(int i = 0; i < stacks+1; ++i)
-        {
-            float rho    = M_PI*(1-t),
-                  s      = 0.0f,
-                  sinrho = i && i < stacks ? std::sin(rho) : 0,
-                  cosrho = !i ? 1 : (i < stacks ? std::cos(rho) : -1);
-            for(int j = 0; j < slices+1; ++j)
-            {
-                float theta = j==slices ? 0 : 2*M_PI*s;
-                verts[i*(slices+1) + j] = vec(-std::sin(theta)*sinrho, -std::cos(theta)*sinrho, cosrho);
-                s += ds;
-            }
-            t -= dt;
-        }
+        vec *verts = nullptr;
+        GLushort *indices = nullptr;
+        int numverts   = 0,
+            numindices = 0;
+        GLuint vbuf = 0,
+               ebuf = 0;
 
-        numindices = (stacks-1)*slices*3*2;
-        indices = new ushort[numindices];
-        GLushort *curindex = indices;
-        for(int i = 0; i < stacks; ++i)
+        void init(int slices, int stacks)
         {
-            for(int k = 0; k < slices; ++k)
+            numverts = (stacks+1)*(slices+1);
+            verts = new vec[numverts];
+            float ds = 1.0f/slices,
+                  dt = 1.0f/stacks,
+                  t  = 1.0f;
+            for(int i = 0; i < stacks+1; ++i)
             {
-                int j = i%2 ? slices-k-1 : k;
-                if(i)
+                float rho    = M_PI*(1-t),
+                      s      = 0.0f,
+                      sinrho = i && i < stacks ? std::sin(rho) : 0,
+                      cosrho = !i ? 1 : (i < stacks ? std::cos(rho) : -1);
+                for(int j = 0; j < slices+1; ++j)
                 {
-                    *curindex++ = i*(slices+1)+j;
-                    *curindex++ = i*(slices+1)+j+1;
-                    *curindex++ = (i+1)*(slices+1)+j;
+                    float theta = j==slices ? 0 : 2*M_PI*s;
+                    verts[i*(slices+1) + j] = vec(-std::sin(theta)*sinrho, -std::cos(theta)*sinrho, cosrho);
+                    s += ds;
                 }
-                if(i+1 < stacks)
+                t -= dt;
+            }
+
+            numindices = (stacks-1)*slices*3*2;
+            indices = new ushort[numindices];
+            GLushort *curindex = indices;
+            for(int i = 0; i < stacks; ++i)
+            {
+                for(int k = 0; k < slices; ++k)
                 {
-                    *curindex++ = i*(slices+1)+j+1;
-                    *curindex++ = (i+1)*(slices+1)+j+1;
-                    *curindex++ = (i+1)*(slices+1)+j;
+                    int j = i%2 ? slices-k-1 : k;
+                    if(i)
+                    {
+                        *curindex++ = i*(slices+1)+j;
+                        *curindex++ = i*(slices+1)+j+1;
+                        *curindex++ = (i+1)*(slices+1)+j;
+                    }
+                    if(i+1 < stacks)
+                    {
+                        *curindex++ = i*(slices+1)+j+1;
+                        *curindex++ = (i+1)*(slices+1)+j+1;
+                        *curindex++ = (i+1)*(slices+1)+j;
+                    }
                 }
             }
+            if(!vbuf)
+            {
+                glGenBuffers(1, &vbuf);
+            }
+            gle::bindvbo(vbuf);
+            glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
+            delete[] verts;
+            verts = nullptr;
+            if(!ebuf)
+            {
+                glGenBuffers(1, &ebuf);
+            }
+            gle::bindebo(ebuf);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
+            delete[] indices;
+            indices = nullptr;
         }
-        if(!vbuf)
-        {
-            glGenBuffers(1, &vbuf);
-        }
-        gle::bindvbo(vbuf);
-        glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
-        delete[] verts;
-        verts = nullptr;
-        if(!ebuf)
-        {
-            glGenBuffers(1, &ebuf);
-        }
-        gle::bindebo(ebuf);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
-        delete[] indices;
-        indices = nullptr;
     }
-
     void cleanup()
     {
         if(vbuf)
