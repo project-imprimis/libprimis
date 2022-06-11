@@ -62,7 +62,7 @@ namespace
     //returns if there are pending changes or not enqueued
     void pendingchanges (int *idx)
     {
-        if(needsapply.size() >*idx)
+        if(static_cast<int>(needsapply.size()) >*idx)
         {
             result(needsapply[*idx].desc);
         }
