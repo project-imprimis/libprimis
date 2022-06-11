@@ -1076,7 +1076,7 @@ void textinit(char *name, char *file, char *initval)
         return;
     }
     Editor *e = nullptr;
-    for(int i = 0; i < editors.size(); i++)
+    for(uint i = 0; i < editors.size(); i++)
     {
         if(!std::strcmp(editors[i]->name, name))
         {
