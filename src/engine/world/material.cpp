@@ -35,6 +35,8 @@
 
 namespace
 {
+    std::vector<materialsurface> editsurfs;
+
     struct QuadNode
     {
         int x, y, size;
@@ -459,7 +461,7 @@ namespace
         {
             std::swap(sortdim[2], sortdim[1]);
         }
-        editsurfs.sort(editmatcmp);
+        std::sort(editsurfs.begin(), editsurfs.end(), editmatcmp);
     }
 
     void rendermatgrid()
@@ -467,7 +469,7 @@ namespace
         enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         int lastmat = -1;
-        for(int i = editsurfs.length(); --i >=0;) //note reverse iteration
+        for(int i = static_cast<int>(editsurfs.size()); --i >=0;) //note reverse iteration
         {
             materialsurface &m = editsurfs[i];
             if(m.material != lastmat)
@@ -918,7 +920,7 @@ void setupmaterials(int start, int len)
 
 VARP(showmat, 0, 1, 1); //toggles rendering material faces
 
-vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
+vector<materialsurface> glasssurfs[4], watersurfs[4], waterfallsurfs[4];
 
 float matliquidsx1  = -1,
       matliquidsy1  = -1,
@@ -937,7 +939,7 @@ uint matliquidtiles[lighttilemaxheight],
 
 int findmaterials()
 {
-    editsurfs.setsize(0);
+    editsurfs.clear();
     for(int i = 0; i < 4; ++i)
     {
         glasssurfs[i].setsize(0);
@@ -959,7 +961,7 @@ int findmaterials()
         {
             for(int i = 0; i < va->matsurfs; ++i)
             {
-                editsurfs.add(va->matbuf[i]);
+                editsurfs.push_back(va->matbuf[i]);
             }
             continue;
         }
@@ -1092,7 +1094,7 @@ void rendereditmaterials()
     glEnable(GL_BLEND);
 
     int lastmat = -1;
-    for(int i = 0; i < editsurfs.length(); i++)
+    for(uint i = 0; i < editsurfs.size(); i++)
     {
         const materialsurface &m = editsurfs[i];
         if(lastmat!=m.material)
