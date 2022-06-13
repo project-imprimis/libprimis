@@ -80,7 +80,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
         conoutf(Console_Error, "map %s has malformatted header", ogzname);
         return false;
     }
-    if(!memcmp(hdr.magic, "TMAP", 4))
+    if(!std::memcmp(hdr.magic, "TMAP", 4))
     {
         if(hdr.version>currentmapversion)
         {
@@ -98,7 +98,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
             return false;
         }
     }
-    else if(!memcmp(hdr.magic, "OCTA", 4))
+    else if(!std::memcmp(hdr.magic, "OCTA", 4))
     {
         if(hdr.version!=octaversion)
         {
