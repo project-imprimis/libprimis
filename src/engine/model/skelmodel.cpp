@@ -579,7 +579,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         for(uint i = 0; i < pitchcorrects.size(); i++)
         {
             pitchcorrect &c = pitchcorrects[i];
-            if(c.target != j)
+            if(c.target != static_cast<int>(j))
             {
                 continue;
             }
@@ -1525,7 +1525,7 @@ void skelmodel::skelmeshgroup::sortblendcombos()
 {
     std::sort(blendcombos.begin(), blendcombos.end(), blendcombo::sortcmp);
     int *remap = new int[blendcombos.size()];
-    for(int i = 0; i < blendcombos.size(); i++)
+    for(uint i = 0; i < blendcombos.size(); i++)
     {
         remap[blendcombos[i].interpindex] = i;
     }
