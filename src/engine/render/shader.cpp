@@ -1719,7 +1719,7 @@ static void linkslotshaderparams(vector<SlotShaderParam> &params, Shader *sh, bo
                 SlotShaderParamState &dparam = sh->defaultparams[i];
                 if(dparam.name==param.name)
                 {
-                    if(memcmp(param.val, dparam.val, sizeof(param.val)))
+                    if(std::memcmp(param.val, dparam.val, sizeof(param.val)))
                     {
                         loc = i;
                     }
@@ -1786,7 +1786,7 @@ bool shouldreuseparams(Slot &s, VSlot &p)
         if(param.flags & SlotShaderParam::REUSE)
         {
             const float *val = findslotparam(p, param.name);
-            if(val && memcmp(param.val, val, sizeof(param.val)))
+            if(val && std::memcmp(param.val, val, sizeof(param.val)))
             {
                 for(int j = 0; j < s.params.length(); j++)
                 {
