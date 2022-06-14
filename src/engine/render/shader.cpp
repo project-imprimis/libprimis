@@ -723,7 +723,7 @@ void Shader::addvariant(int row, Shader *s)
     if(!variantrows)
     {
         variantrows = new ushort[maxvariantrows+1];
-        memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
+        std::memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
     }
     variants.insert(variants.begin() + variantrows[row+1], s);
     for(int i = row+1; i <= maxvariantrows; ++i)
