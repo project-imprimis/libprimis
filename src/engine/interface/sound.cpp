@@ -54,7 +54,7 @@ struct SoundConfig
 
     bool hasslot(const soundslot *p, const std::vector<soundslot> &v) const
     {
-        return p >= v.data() + slots && p < v.data() + slots+numslots && slots+numslots < v.size();
+        return p >= v.data() + slots && p < v.data() + slots+numslots && slots+numslots < static_cast<int>(v.size());
     }
 
     int chooseslot(int flags) const
@@ -121,7 +121,7 @@ SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, exten
         loc = &ent->o;
         ent->flags |= EntFlag_Sound;
     }
-    while(!(channels.size() >n))
+    while(!(static_cast<int>(channels.size()) > n))
     {
         channels.push_back(channels.size());
     }
@@ -142,7 +142,7 @@ SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, exten
 //sets a channel as not being in use
 void freechannel(int n)
 {
-    if(!(channels.size() > n) || !channels[n].inuse)
+    if(!(static_cast<int>(channels.size()) > n) || !channels[n].inuse)
     {
         return;
     }
@@ -612,7 +612,7 @@ static struct SoundType
     }
     void preloadsound(int n)
     {
-        if(nosound || !(configs.size() > n))
+        if(nosound || !(static_cast<int>(configs.size()) > n))
         {
             return;
         }
@@ -786,7 +786,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         return -1;
     }
     SoundType &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
-    if(!(sounds.configs.size() > n)) //sound isn't within index
+    if(!(static_cast<int>(sounds.configs.size()) > n)) //sound isn't within index
     {
         conoutf(Console_Warn, "unregistered sound: %d", n);
         return -1;
@@ -799,7 +799,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         int rad = radius > 0 ? (maxsoundradius ? std::min(maxsoundradius, radius) : radius) : maxsoundradius;
         if(camera1->o.dist(*loc) > 1.5f*rad)
         {
-            if(channels.size() > chanid && sounds.playing(channels[chanid], config))
+            if(static_cast<int>(channels.size()) > chanid && sounds.playing(channels[chanid], config))
             {
                 Mix_HaltChannel(chanid);
                 freechannel(chanid);
@@ -837,7 +837,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
             return -1;
         }
     }
-    if(channels.size() > chanid)
+    if(static_cast<int>(channels.size()) > chanid)
     {
         SoundChannel &chan = channels[chanid];
         if(sounds.playing(chan, config))
@@ -875,7 +875,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
             break;
         }
     }
-    if(chanid < 0 && channels.size() < maxchannels)
+    if(chanid < 0 && static_cast<int>(channels.size()) < maxchannels)
     {
         chanid = channels.size();
     }
@@ -926,7 +926,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
 
 bool stopsound(int n, int chanid, int fade)
 {
-    if(!(gamesounds.configs.size() > n) || !(channels.size() > chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
+    if(!(static_cast<int>(gamesounds.configs.size()) > n) || !(static_cast<int>(channels.size()) > chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
     {
         return false;
     }
