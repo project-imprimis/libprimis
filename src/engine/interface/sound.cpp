@@ -114,7 +114,7 @@ static std::vector<SoundChannel> channels;
 int maxchannels = 0;
 
 //creates a new SoundChannel object with passed properties
-SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int radius = 0)
+static SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int radius = 0)
 {
     if(ent)
     {
@@ -140,7 +140,7 @@ SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, exten
 }
 
 //sets a channel as not being in use
-void freechannel(int n)
+static void freechannel(int n)
 {
     if(!(static_cast<int>(channels.size()) > n) || !channels[n].inuse)
     {
@@ -154,7 +154,7 @@ void freechannel(int n)
     }
 }
 
-void syncchannel(SoundChannel &chan)
+static void syncchannel(SoundChannel &chan)
 {
     if(!chan.dirty)
     {
@@ -168,7 +168,7 @@ void syncchannel(SoundChannel &chan)
     chan.dirty = false;
 }
 
-void stopchannels()
+static void stopchannels()
 {
     for(uint i = 0; i < channels.size(); i++)
     {
@@ -182,7 +182,7 @@ void stopchannels()
     }
 }
 
-void setmusicvol(int musicvol);
+static void setmusicvol(int musicvol);
 
 VARFP(soundvol, 0, 255, 255,
     if(!soundvol)
@@ -201,7 +201,7 @@ Mix_Music *music    = nullptr;
 SDL_RWops *musicrw  = nullptr;
 stream *musicstream = nullptr;
 
-void setmusicvol(int musicvol)
+static void setmusicvol(int musicvol)
 {
     if(nosound) //don't modulate music that isn't there
     {
@@ -213,7 +213,7 @@ void setmusicvol(int musicvol)
     }
 }
 
-void stopmusic()
+static void stopmusic()
 {
     if(nosound) //don't stop music that isn't there
     {
@@ -267,7 +267,7 @@ VARF(soundfreq, 0, 44100, 48000, initwarning("sound configuration", Init_Reset, 
 //length of sound buffer in milliseconds
 VARF(soundbufferlen, 128, 1024, 4096, initwarning("sound configuration", Init_Reset, Change_Sound));
 
-bool initaudio()
+static bool initaudio()
 {
     static string fallback = "";
     static bool initfallback = true;
@@ -303,6 +303,7 @@ bool initaudio()
     return false;
 }
 
+//used in iengine
 void initsound()
 {
     //get sdl version info
@@ -345,7 +346,7 @@ void initsound()
 }
 
 //clears and deletes cached music for playback
-void musicdone()
+static void musicdone()
 {
     if(music)
     {
@@ -377,7 +378,7 @@ void musicdone()
 }
 
 //uses Mix_Music object from libSDL
-Mix_Music *loadmusic(const char *name)
+static Mix_Music *loadmusic(const char *name)
 {
     if(!musicstream)
     {
@@ -423,7 +424,7 @@ Mix_Music *loadmusic(const char *name)
 }
 
 //cmd
-void startmusic(char *name, char *cmd)
+static void startmusic(char *name, char *cmd)
 {
     if(nosound)
     {
@@ -629,7 +630,7 @@ static struct SoundType
 } gamesounds("game/"), mapsounds("mapsound/"); //init for default directories
 
 //free all channels
-void resetchannels()
+static void resetchannels()
 {
     for(uint i = 0; i < channels.size(); i++)
     {
@@ -641,6 +642,7 @@ void resetchannels()
     channels.clear();
 }
 
+//used externally in iengine
 void clear_sound()
 {
     if(nosound) //don't bother closing stuff that isn't there
@@ -655,7 +657,7 @@ void clear_sound()
     resetchannels();
 }
 
-void stopmapsound(extentity *e)
+static void stopmapsound(extentity *e)
 {
     for(uint i = 0; i < channels.size(); i++)
     {
