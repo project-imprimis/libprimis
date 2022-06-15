@@ -275,6 +275,19 @@ void floatret(float v)
 
 const char *numberstr(double v)
 {
+    auto numberformat = [] (char *buf, double v, int len = 20)
+    {
+        int i = static_cast<int>(v);
+        if(v == i)
+        {
+            nformatstring(buf, len, "%d", i);
+        }
+        else
+        {
+            nformatstring(buf, len, "%.7g", v);
+        }
+    };
+
     retidx = (retidx + 1)%4;
     numberformat(retbuf[retidx], v);
     return retbuf[retidx];

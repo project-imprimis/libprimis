@@ -148,18 +148,7 @@ PARSEFLOAT(number, double)
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
-inline void numberformat(char *buf, double v, int len = 20)
-{
-    int i = static_cast<int>(v);
-    if(v == i)
-    {
-        nformatstring(buf, len, "%d", i);
-    }
-    else
-    {
-        nformatstring(buf, len, "%.7g", v);
-    }
-}
+
 
 extern const char *intstr(int v);
 
