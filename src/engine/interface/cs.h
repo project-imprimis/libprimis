@@ -363,7 +363,6 @@ extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = fals
 extern void alias(const char *name, const char *action);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);
-extern void numberret(double v);
 extern const char *numberstr(double v);
 
 #endif

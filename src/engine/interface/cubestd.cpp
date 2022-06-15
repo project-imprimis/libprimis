@@ -293,20 +293,6 @@ const char *numberstr(double v)
     return retbuf[retidx];
 }
 
-void numberret(double v)
-{
-    int i = static_cast<int>(v);
-    if(v == i)
-    {
-        commandret->setint(i);
-    }
-    else
-    {
-        commandret->setfloat(v);
-    }
-}
-
-
 static void doargs(uint *body)
 {
     if(aliasstack != &noalias)
