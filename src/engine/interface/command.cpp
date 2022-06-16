@@ -41,6 +41,79 @@ IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
 
 int _numargs = variable("numargs", Max_Args, 0, 0, &_numargs, nullptr, 0);
 
+//ident object
+
+void ident::getval(tagval &r) const
+{
+    ::getval(val, valtype, r);
+}
+
+void ident::getcstr(tagval &v) const
+{
+    switch(valtype)
+    {
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setstr(newstring(intstr(val.i)));
+            break;
+        }
+        case Value_Float:
+        {
+            v.setstr(newstring(floatstr(val.f)));
+            break;
+        }
+        default:
+        {
+            v.setcstr("");
+            break;
+        }
+    }
+}
+
+void ident::getcval(tagval &v) const
+{
+    switch(valtype)
+    {
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setint(val.i);
+            break;
+        }
+        case Value_Float:
+        {
+            v.setfloat(val.f);
+            break;
+        }
+        default:
+        {
+            v.setnull();
+            break;
+        }
+    }
+}
+
 //tagval object
 
 void tagval::setint(int val)
