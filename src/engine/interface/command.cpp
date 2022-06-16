@@ -5173,6 +5173,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     forcearg(result, op&Code_RetMask); \
                     continue; \
                 }
+                //==================================================== CALLALIAS
                 #define CALLALIAS { \
                     identstack argstack[Max_Args]; \
                     for(int i = 0; i < callargs; i++) \
@@ -5475,6 +5476,8 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
     commandret = prevret;
     --rundepth;
 }
+#undef CALLALIAS
+//==============================================================================
 
 char *executestr(ident *id, tagval *args, int numargs, bool lookup)
 {
