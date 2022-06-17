@@ -280,7 +280,6 @@ extern void clearoverrides();
 extern void clearsleep(bool clearoverrides = true);
 
 extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
-extern bool identexists(const char *name);
 extern ident *newident(const char *name, int flags = 0);
 extern ident *readident(const char *name);
 extern ident *writeident(const char *name, int flags = 0);
