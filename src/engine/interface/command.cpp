@@ -552,6 +552,8 @@ static ident *addident(const ident &id)
     return identmap.add(&def);
 }
 
+ident *newident(const char *name, int flags = 0);
+
 bool initidents()
 {
     initedidents = true;
@@ -843,17 +845,7 @@ ident *writeident(const char *name, int flags)
     return id;
 }
 
-ident *readident(const char *name)
-{
-    ident *id = idents.access(name);
-    if(id && id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
-    {
-       return nullptr;
-    }
-    return id;
-}
-
-void resetvar(char *name)
+static void resetvar(char *name)
 {
     ident *id = idents.access(name);
     if(!id)
