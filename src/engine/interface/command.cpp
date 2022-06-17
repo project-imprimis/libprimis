@@ -959,11 +959,6 @@ void alias(const char *name, const char *str)
     setalias(name, v);
 }
 
-void alias(const char *name, tagval &v)
-{
-    setalias(name, v);
-}
-
 // variables and commands are registered through globals, see cube.h
 
 int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags)
