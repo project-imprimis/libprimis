@@ -2025,66 +2025,66 @@ static void compilefloat(vector<uint> &code, const stringslice &word)
     compilefloat(code, word.len ? parsefloat(word.str) : 0.0f);
 }
 
-static bool getbool(const char *s)
+bool getbool(const tagval &v)
 {
-    switch(s[0])
+    auto getbool = [] (const char *s)
     {
-        case '+':
-        case '-':
-            switch(s[1])
+        switch(s[0])
+        {
+            case '+':
+            case '-':
+                switch(s[1])
+                {
+                    case '0':
+                    {
+                        break;
+                    }
+                    case '.':
+                    {
+                        return !isdigit(s[2]) || parsefloat(s) != 0;
+                    }
+                    default:
+                    {
+                        return true;
+                    }
+                }
+                [[fallthrough]];
+            case '0':
             {
-                case '0':
-                {
-                    break;
-                }
-                case '.':
-                {
-                    return !isdigit(s[2]) || parsefloat(s) != 0;
-                }
-                default:
+                char *end;
+                int val = static_cast<int>(std::strtoul(const_cast<char *>(s), &end, 0));
+                if(val)
                 {
                     return true;
                 }
+                switch(*end)
+                {
+                    case 'e':
+                    case '.':
+                    {
+                        return parsefloat(s) != 0;
+                    }
+                    default:
+                    {
+                        return false;
+                    }
+                }
             }
-            [[fallthrough]];
-        case '0':
-        {
-            char *end;
-            int val = static_cast<int>(std::strtoul(const_cast<char *>(s), &end, 0));
-            if(val)
+            case '.':
+            {
+                return !isdigit(s[1]) || parsefloat(s) != 0;
+            }
+            case '\0':
+            {
+                return false;
+            }
+            default:
             {
                 return true;
             }
-            switch(*end)
-            {
-                case 'e':
-                case '.':
-                {
-                    return parsefloat(s) != 0;
-                }
-                default:
-                {
-                    return false;
-                }
-            }
         }
-        case '.':
-        {
-            return !isdigit(s[1]) || parsefloat(s) != 0;
-        }
-        case '\0':
-        {
-            return false;
-        }
-        default:
-        {
-            return true;
-        }
-    }
-}
+    };
 
-bool getbool(const tagval &v)
-{
     switch(v.type)
     {
         case Value_Float:
