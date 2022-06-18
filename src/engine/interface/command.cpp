@@ -180,7 +180,7 @@ void tagval::setident(ident *val)
 
 //end tagval
 
-int getint(const identval &v, int type)
+static int getint(const identval &v, int type)
 {
     switch(type)
     {
