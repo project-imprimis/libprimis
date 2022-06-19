@@ -2124,20 +2124,20 @@ namespace
 
     void precachetextures()
     {
-        vector<int> texs;
+        std::vector<int> texs;
         for(int i = 0; i < valist.length(); i++)
         {
             vtxarray *va = valist[i];
             for(int j = 0; j < va->texs; ++j)
             {
                 int tex = va->texelems[j].texture;
-                if(texs.find(tex) < 0)
+                if(std::find(texs.begin(), texs.end(), tex) != texs.end())
                 {
-                    texs.add(tex);
+                    texs.push_back(tex);
                 }
             }
         }
-        for(int i = 0; i < texs.length(); i++)
+        for(uint i = 0; i < texs.size(); i++)
         {
             lookupvslot(texs[i]);
         }
