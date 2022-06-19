@@ -126,7 +126,7 @@ void clearbilateralshaders()
     }
 }
 
-void setbilateralparams(int radius, float depth)
+static void setbilateralparams(int radius, float depth)
 {
     float sigma = blursigma*2*radius;
     LOCALPARAMF(bilateralparams, 1.0f/(M_LN2*2*sigma*sigma), 1.0f/(M_LN2*depth*depth));
