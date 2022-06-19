@@ -215,7 +215,10 @@ VAR(passthroughsel, 0, 0, 1);
 VAR(selectcorners, 0, 0, 1);
 VARF(hmapedit, 0, 0, 1, horient = sel.orient);
 
-void forcenextundo() { lastsel.orient = -1; }
+void forcenextundo()
+{
+    lastsel.orient = -1;
+}
 
 void cubecancel()
 {
