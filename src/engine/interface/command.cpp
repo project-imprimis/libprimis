@@ -462,8 +462,9 @@ void cleancode(ident &id)
     }
 }
 
-tagval noret = NullVal(),
-       *commandret = &noret;
+static tagval noret = NullVal();
+
+tagval * commandret = &noret;
 
 void clear_command()
 {
