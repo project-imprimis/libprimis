@@ -88,7 +88,7 @@ struct vertmodel : animmodel
                             vverts.push_back(vv);
                             break;
                         }
-                        else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                        else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
                             idxs.push_back(static_cast<ushort>(vidx));
                             minvert = std::min(minvert, idxs.back());
