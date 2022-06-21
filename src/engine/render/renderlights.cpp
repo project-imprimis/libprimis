@@ -1401,7 +1401,7 @@ static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
 {
     return x.flags == y.flags &&
            x.numlights == y.numlights &&
-           (!x.numlights || !memcmp(x.lights, y.lights, x.numlights*sizeof(x.lights[0])));
+           (!x.numlights || !std::memcmp(x.lights, y.lights, x.numlights*sizeof(x.lights[0])));
 }
 
 static std::vector<lightinfo> lights;
