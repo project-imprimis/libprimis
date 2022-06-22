@@ -258,7 +258,7 @@ bool cube::poly::clippoly(const facebounds &b)
     {
         return false;
     }
-    memcpy(verts, verts2, numverts2*sizeof(pvert));
+    std::memcpy(verts, verts2, numverts2*sizeof(pvert));
     numverts = numverts2;
     return true;
 }
@@ -521,7 +521,7 @@ bool cube::poly::mergepolys(hashset<plink> &links, std::vector<plink *> &queue, 
     q.numverts = 0;
     merged = true;
     numverts = nummergeverts;
-    memcpy(verts, mergeverts, nummergeverts*sizeof(pvert));
+    std::memcpy(verts, mergeverts, nummergeverts*sizeof(pvert));
     int prev = numverts-1;
     for(int j = 0; j < numverts; ++j)
     {
