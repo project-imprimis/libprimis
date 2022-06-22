@@ -5528,15 +5528,6 @@ bool executebool(const uint *code)
     return b;
 }
 
-bool executebool(const char *p)
-{
-    tagval result;
-    executeret(p, result);
-    bool b = getbool(result);
-    freearg(result);
-    return b;
-}
-
 bool executebool(ident *id, tagval *args, int numargs, bool lookup)
 {
     tagval result;

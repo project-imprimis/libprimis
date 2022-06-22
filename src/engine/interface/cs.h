@@ -283,7 +283,6 @@ extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = fals
 extern uint *compilecode(const char *p);
 extern void freecode(uint *p);
 extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
-extern bool executebool(const char *p);
 extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
 extern void alias(const char *name, const char *action);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
