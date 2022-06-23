@@ -62,18 +62,18 @@ void setupsunlight()
     clearradiancehintscache();
 }
 
-static const surfaceinfo brightsurfaces[6] =
-{
-    topsurface,
-    topsurface,
-    topsurface,
-    topsurface,
-    topsurface,
-    topsurface
-};
-
 void brightencube(cube &c)
 {
+    static const surfaceinfo brightsurfaces[6] =
+    {
+        topsurface,
+        topsurface,
+        topsurface,
+        topsurface,
+        topsurface,
+        topsurface
+    };
+
     if(!c.ext)
     {
         newcubeext(c, 0, false);
