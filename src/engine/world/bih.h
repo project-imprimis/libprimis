@@ -52,6 +52,7 @@ class BIH
             vec bbmin, bbmax;
 
             mesh();
+
             vec getpos(int i) const;
             vec2 gettc(int i) const;
         };
@@ -60,17 +61,13 @@ class BIH
 
         ~BIH();
 
-
         float entradius;
 
         bool traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode);
         bool triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode);
-
         bool boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         bool ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
-
         void genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale = 1);
-
         void preload();
 
     private:
@@ -92,7 +89,6 @@ class BIH
         bool traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, node *curnode, float tmin, float tmax);
         void genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br);
         void genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &center, float radius, const matrix4x3 &orient, const ivec &bo, const ivec &br);
-
 };
 
 extern bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist, int mode, float &dist);
