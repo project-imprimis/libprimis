@@ -106,7 +106,7 @@ vec physent::headpos(float offset) const
 
 bool physent::crouched() const
 {
-    return fabs(eyeheight - maxheight*crouchheight) < 1e-4f;
+    return std::fabs(eyeheight - maxheight*crouchheight) < 1e-4f;
 }
 
 //modelattach
