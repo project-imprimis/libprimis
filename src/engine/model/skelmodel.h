@@ -72,56 +72,7 @@ struct skelmodel : animmodel
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 
-            void serialize(skelmodel::vvertgw &v)
-            {
-                if(interpindex >= 0)
-                {
-                    v.weights[0] = 255;
-                    for(int k = 0; k < 3; ++k)
-                    {
-                        v.weights[k+1] = 0;
-                    }
-                    v.bones[0] = 2*interpindex;
-                    for(int k = 0; k < 3; ++k)
-                    {
-                        v.bones[k+1] = v.bones[0];
-                    }
-                }
-                else
-                {
-                    int total = 0;
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        total += (v.weights[k] = static_cast<uchar>(0.5f + weights[k]*255));
-                    }
-                    while(total > 255)
-                    {
-                        for(int k = 0; k < 4; ++k)
-                        {
-                            if(v.weights[k] > 0 && total > 255)
-                            {
-                                v.weights[k]--;
-                                total--;
-                            }
-                        }
-                    }
-                    while(total < 255)
-                    {
-                        for(int k = 0; k < 4; ++k)
-                        {
-                            if(v.weights[k] < 255 && total < 255)
-                            {
-                                v.weights[k]++;
-                                total++;
-                            }
-                        }
-                    }
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        v.bones[k] = 2*interpbones[k];
-                    }
-                }
-            }
+            void serialize(skelmodel::vvertgw &v);
     };
 
 
