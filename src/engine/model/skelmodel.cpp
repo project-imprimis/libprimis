@@ -1710,6 +1710,31 @@ void skelmodel::skelmeshgroup::preload(part *p)
     }
 }
 
+animmodel::meshgroup * skelmodel::loadmeshes(const char *name, const char *skelname, float smooth)
+{
+    skelmeshgroup *group = newmeshes();
+    group->shareskeleton(skelname);
+    if(!group->load(name, smooth))
+    {
+        delete group;
+        return nullptr;
+    }
+    return group;
+}
+animmodel::meshgroup * skelmodel::sharemeshes(const char *name, const char *skelname, float smooth)
+{
+    if(!meshgroups.access(name))
+    {
+        meshgroup *group = loadmeshes(name, skelname, smooth);
+        if(!group)
+        {
+            return nullptr;
+        }
+        meshgroups.add(group);
+    }
+    return meshgroups[name];
+}
+
 // skelpart
 uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
 {

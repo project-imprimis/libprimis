@@ -503,30 +503,8 @@ struct skelmodel : animmodel
 
     virtual skelmeshgroup *newmeshes() = 0;
 
-    meshgroup *loadmeshes(const char *name, const char *skelname = nullptr, float smooth = 2)
-    {
-        skelmeshgroup *group = newmeshes();
-        group->shareskeleton(skelname);
-        if(!group->load(name, smooth))
-        {
-            delete group;
-            return nullptr;
-        }
-        return group;
-    }
-    meshgroup *sharemeshes(const char *name, const char *skelname = nullptr, float smooth = 2)
-    {
-        if(!meshgroups.access(name))
-        {
-            meshgroup *group = loadmeshes(name, skelname, smooth);
-            if(!group)
-            {
-                return nullptr;
-            }
-            meshgroups.add(group);
-        }
-        return meshgroups[name];
-    }
+    meshgroup *loadmeshes(const char *name, const char *skelname = nullptr, float smooth = 2);
+    meshgroup *sharemeshes(const char *name, const char *skelname = nullptr, float smooth = 2);
 
     struct animpartmask
     {
