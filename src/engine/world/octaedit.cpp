@@ -488,6 +488,7 @@ void pastecube(const cube &src, cube &dst)
     copycube(src, dst);
 }
 
+//used in iengine.h
 void blockcopy(const block3 &s, int rgrid, block3 *b)
 {
     *b = s;
