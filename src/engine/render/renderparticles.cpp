@@ -708,6 +708,8 @@ static const vec2 rotcoeffs[32][4] =
     ROTCOEFFS(16), ROTCOEFFS(17), ROTCOEFFS(18), ROTCOEFFS(19), ROTCOEFFS(20), ROTCOEFFS(21), ROTCOEFFS(22), ROTCOEFFS(7),
     ROTCOEFFS(24), ROTCOEFFS(25), ROTCOEFFS(26), ROTCOEFFS(27), ROTCOEFFS(28), ROTCOEFFS(29), ROTCOEFFS(30), ROTCOEFFS(31),
 };
+#undef ROTCOEFFS
+//==============================================================================
 
 template<>
 void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
@@ -719,8 +721,6 @@ void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts
     vs[3].pos = vec(o).madd(camright, coeffs[3].x*size).madd(camup, coeffs[3].y*size);
 }
 
-#undef ROTCOEFFS
-//==============================================================================
 template<int T>
 void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
