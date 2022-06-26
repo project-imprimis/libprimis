@@ -944,11 +944,9 @@ struct varenderer : partrenderer
             #undef SETTEXCOORDS
             //==================================================================
 
-            //====================================================== SETMODCOLOR
-            #define SETMODCOLOR setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs)
             if(type&PT_MOD)
             {
-                SETMODCOLOR;
+                setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs)
             }
             else
             {
@@ -958,10 +956,9 @@ struct varenderer : partrenderer
         }
         else if(type&PT_MOD)
         {
-            SETMODCOLOR;
+            //note: same call as `if(type&PT_MOD)` above
+            setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs)
         }
-        #undef SETMODCOLOR
-        //======================================================================
         else
         {
             for(int i = 0; i < 4; ++i)
