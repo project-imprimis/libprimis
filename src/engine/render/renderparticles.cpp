@@ -756,6 +756,16 @@ void seedpos<PT_TRAIL>(particleemitter &pe, const vec &o, const vec &d, int fade
     pe.extendbb(e, size);
 }
 
+//only used by template<> varenderer, but cannot be declared in a template in c++17
+static void setcolor(float r, float g, float b, float a, partvert * vs)
+{
+    vec4<uchar> col(r, g, b, a);
+    for(int i = 0; i < 4; ++i)
+    {
+        vs[i].color = col;
+    }
+};
+
 template<int T>
 struct varenderer : partrenderer
 {
@@ -934,24 +944,15 @@ struct varenderer : partrenderer
             #undef SETTEXCOORDS
             //==================================================================
 
-            //========================================================= SETCOLOR
-            #define SETCOLOR(r, g, b, a) \
-            do { \
-                vec4<uchar> col(r, g, b, a); \
-                for(int i = 0; i < 4; ++i) \
-                { \
-                    vs[i].color = col; \
-                } \
-            } while(0)
             //====================================================== SETMODCOLOR
-            #define SETMODCOLOR SETCOLOR((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255)
+            #define SETMODCOLOR setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs)
             if(type&PT_MOD)
             {
                 SETMODCOLOR;
             }
             else
             {
-                SETCOLOR(p->color.r, p->color.g, p->color.b, blend);
+                setcolor(p->color.r, p->color.g, p->color.b, blend, vs);
             }
 
         }
@@ -959,7 +960,6 @@ struct varenderer : partrenderer
         {
             SETMODCOLOR;
         }
-        #undef SETCOLOR
         #undef SETMODCOLOR
         //======================================================================
         else
