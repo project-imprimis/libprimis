@@ -80,12 +80,6 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
  */
 static vertcommands<obj> objcommands;
 
-// this dummy variable only exists to call addmodeltype() before game's main()
-static int dummy_md5 = addmodeltype((MDL_MD5), +[] (const char *filename) -> model* { return new md5(filename); });
-
-// this dummy variable only exists to call addmodeltype() before game's main()
-static int dummy_obj = addmodeltype((MDL_OBJ), +[] (const char *filename) -> model* { return new obj(filename); });
-
 static void checkmdl()
 {
     if(!loadingmodel)
@@ -1480,6 +1474,10 @@ void setbbfrommodel(dynent *d, const char *mdl)
 
 void initrendermodelcmds()
 {
+    //initialize model loaders
+    addmodeltype((MDL_MD5), +[] (const char *filename) -> model* { return new md5(filename); });
+    addmodeltype((MDL_OBJ), +[] (const char *filename) -> model* { return new obj(filename); });
+
     addcommand("mdlcullface", reinterpret_cast<identfun>(mdlcullface), "i", Id_Command);
     addcommand("mdlcolor", reinterpret_cast<identfun>(mdlcolor), "fff", Id_Command);
     addcommand("mdlcollide", reinterpret_cast<identfun>(mdlcollide), "i", Id_Command);
