@@ -60,14 +60,6 @@ model *loadmapmodel(int n)
     return nullptr;
 }
 
-static model *(__cdecl *modeltypes[MDL_NumMDLTypes])(const char *);
-
-static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
-{
-    modeltypes[type] = loader;
-    return type;
-}
-
 //need the above macros & fxns inited before these headers will load properly
 #include "model/md5.h"
 #include "model/obj.h"
@@ -537,6 +529,14 @@ void preloadusedmapmodels(bool msg, bool bih)
 
 model *loadmodel(const char *name, int i, bool msg)
 {
+
+    model *(__cdecl *md5loader)(const char *) = +[] (const char *filename) -> model* { return new md5(filename); };
+    model *(__cdecl *objloader)(const char *) = +[] (const char *filename) -> model* { return new obj(filename); };
+
+    std::vector<model *(__cdecl *)(const char *)> loaders;
+    loaders.push_back(md5loader);
+    loaders.push_back(objloader);
+
     if(!name)
     {
         if(!(static_cast<int>(mapmodels.size()) > i))
@@ -567,9 +567,9 @@ model *loadmodel(const char *name, int i, bool msg)
             DEF_FORMAT_STRING(filename, "media/model/%s", name);
             renderprogress(loadprogress, filename);
         }
-        for(int i = 0; i < MDL_NumMDLTypes; ++i)
+        for(model *(__cdecl *i)(const char *) : loaders)
         {
-            m = modeltypes[i](name);
+            m = i(name);
             if(!m)
             {
                 continue;
@@ -1474,10 +1474,6 @@ void setbbfrommodel(dynent *d, const char *mdl)
 
 void initrendermodelcmds()
 {
-    //initialize model loaders
-    addmodeltype((MDL_MD5), +[] (const char *filename) -> model* { return new md5(filename); });
-    addmodeltype((MDL_OBJ), +[] (const char *filename) -> model* { return new obj(filename); });
-
     addcommand("mdlcullface", reinterpret_cast<identfun>(mdlcullface), "i", Id_Command);
     addcommand("mdlcolor", reinterpret_cast<identfun>(mdlcolor), "fff", Id_Command);
     addcommand("mdlcollide", reinterpret_cast<identfun>(mdlcollide), "i", Id_Command);
