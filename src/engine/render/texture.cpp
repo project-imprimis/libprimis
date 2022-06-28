@@ -69,16 +69,20 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     {
         for(uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
         {
+
             uint t[BPP] = {0};
             for(uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
                 ycur < yend;
                 ycur += stride, xend += stride)
             {
-                for(uchar *xcur = ycur; xcur < xend; xcur += BPP)
+                //going to (xend - 1) seems to be necessary to avoid buffer overrun
+                for(uchar *xcur = ycur; xcur < xend -1; xcur += BPP)
+                {
                     for(int i = 0; i < BPP; ++i)
                     {
                         t[i] += xcur[i];
                     }
+                }
             }
             for(int i = 0; i < BPP; ++i)
             {
