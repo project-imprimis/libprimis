@@ -60,15 +60,18 @@ namespace
     }
 
     //returns if there are pending changes or not enqueued
-    void pendingchanges (int *idx)
+    void pendingchanges(int *idx)
     {
-        if(static_cast<int>(needsapply.size()) >*idx)
+        if(idx)
         {
-            result(needsapply[*idx].desc);
-        }
-        else if(*idx < 0)
-        {
-            intret(needsapply.size());
+            if((needsapply.size()) > static_cast<uint>(*idx))
+            {
+                    result(needsapply.at(*idx).desc);
+            }
+            else if(*idx < 0)
+            {
+                intret(needsapply.size());
+            }
         }
     }
 
