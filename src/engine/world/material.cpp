@@ -383,6 +383,8 @@ namespace
     int sortdim[3];
     ivec sortorigin;
 
+//allows for sorting of materialsurface objects
+//intended to meet the standards of c++ stl `Compare`
     bool editmatcmp(const materialsurface &x, const materialsurface &y)
     {
         int xdim = DIMENSION(x.orient),
@@ -425,7 +427,7 @@ namespace
             xmax = std::abs(xmax - c);
             ymin = std::abs(ymin - c);
             ymax = std::abs(ymax - c);
-            if(std::max(xmin, xmax) <= std::min(ymin, ymax))
+            if(std::max(xmin, xmax) < std::min(ymin, ymax))
             {
                 return true;
             }
@@ -434,9 +436,9 @@ namespace
                 return false;
             }
         }
-        if(x.material < y.material)
+        if(x.material != y.material)
         {
-            return true;
+            return x.material < y.material;
         }
         return false;
     }
