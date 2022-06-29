@@ -332,7 +332,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
             htlen *= 2;
         }
         int *htdata = new int[htlen];
-        memset(htdata, -1, htlen*sizeof(int));
+        std::memset(htdata, -1, htlen*sizeof(int));
         GENVBO(vvertg);
         delete[] htdata;
         htdata = nullptr;
