@@ -593,7 +593,7 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         models.access(m->name, m);
     }
-    if((static_cast<int>(mapmodels.size()) > i) && !mapmodels[i].m)
+    if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
     {
         mapmodels[i].m = m;
     }
