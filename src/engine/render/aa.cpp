@@ -1188,8 +1188,8 @@ void jitteraa()
     }
 }
 
-int aamaskstencil = -1,
-           aamask = -1;
+static int aamaskstencil = -1,
+                  aamask = -1;
 
 void setaamask(bool on)
 {
