@@ -914,7 +914,7 @@ void rendershadowmodelbatches(bool dynmodel)
 
 void rendermapmodelbatches()
 {
-    enableaamask();
+    aamask::enable();
     for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
@@ -923,7 +923,7 @@ void rendermapmodelbatches()
             continue;
         }
         b.m->startrender();
-        setaamask(b.m->animated());
+        aamask::set(b.m->animated());
         for(int j = b.batched; j >= 0;)
         {
             batchedmodel &bm = batchedmodels[j];
@@ -932,7 +932,7 @@ void rendermapmodelbatches()
         }
         b.m->endrender();
     }
-    disableaamask();
+    aamask::disable();
 }
 
 float transmdlsx1 = -1,
@@ -947,7 +947,7 @@ void rendermodelbatches()
     transmdlsx2 = transmdlsy2 = -1;
     std::memset(transmdltiles, 0, sizeof(transmdltiles));
 
-    enableaamask();
+    aamask::enable();
     for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
@@ -983,7 +983,7 @@ void rendermodelbatches()
             {
                 b.m->startrender();
                 rendered = true;
-                setaamask(true);
+                aamask::set(true);
             }
             if(bm.flags&Model_CullQuery)
             {
@@ -1015,7 +1015,7 @@ void rendermodelbatches()
                     {
                         if(rendered)
                         {
-                            setaamask(false);
+                            aamask::set(false);
                         }
                         enablecullmodelquery();
                         queried = true;
@@ -1029,12 +1029,12 @@ void rendermodelbatches()
             }
         }
     }
-    disableaamask();
+    aamask::disable();
 }
 
 void rendertransparentmodelbatches(int stencil)
 {
-    enableaamask(stencil);
+    aamask::enable(stencil);
     for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
@@ -1056,7 +1056,7 @@ void rendertransparentmodelbatches(int stencil)
             {
                 b.m->startrender();
                 rendered = true;
-                setaamask(true);
+                aamask::set(true);
             }
             if(bm.flags&Model_CullQuery)
             {
@@ -1076,7 +1076,7 @@ void rendertransparentmodelbatches(int stencil)
             b.m->endrender();
         }
     }
-    disableaamask();
+    aamask::disable();
 }
 
 static occludequery *modelquery = nullptr;
@@ -1100,7 +1100,7 @@ void endmodelquery()
         modelquery = nullptr;
         return;
     }
-    enableaamask();
+    aamask::enable();
     startquery(modelquery);
     for(uint i = 0; i < batches.size(); i++)
     {
@@ -1111,7 +1111,7 @@ void endmodelquery()
             continue;
         }
         b.m->startrender();
-        setaamask(!(b.flags&Model_Mapmodel) || b.m->animated());
+        aamask::set(!(b.flags&Model_Mapmodel) || b.m->animated());
         do
         {
             batchedmodel &bm = batchedmodels[j];
@@ -1126,7 +1126,7 @@ void endmodelquery()
     batches.resize(modelquerybatches);
     batchedmodels.resize(modelquerymodels);
     modelattached.resize(modelqueryattached);
-    disableaamask();
+    aamask::disable();
 }
 
 void clearbatchedmapmodels()
@@ -1291,7 +1291,7 @@ hasboundbox:
             }
             return;
         }
-        enableaamask();
+        aamask::enable();
         if(flags&Model_CullQuery)
         {
             d->query = newquery(d);
@@ -1301,7 +1301,7 @@ hasboundbox:
             }
         }
         m->startrender();
-        setaamask(true);
+        aamask::set(true);
         if(flags&Model_FullBright)
         {
             anim |= Anim_FullBright;
@@ -1312,7 +1312,7 @@ hasboundbox:
         {
             endquery();
         }
-        disableaamask();
+        aamask::disable();
         return;
     }
 

@@ -1188,59 +1188,64 @@ void jitteraa()
     }
 }
 
-static int aamaskstencil = -1,
-                  aamask = -1;
+// aa mask
 
-void setaamask(bool on)
+namespace aamask
 {
-    int val = on && !drawtex ? 1 : 0;
-    if(aamask == val)
-    {
-        return;
-    }
-    if(!aamaskstencil)
-    {
-        glStencilOp(GL_KEEP, GL_KEEP, val ? GL_REPLACE : GL_KEEP);
-        if(aamask < 0)
-        {
-            glStencilFunc(GL_ALWAYS, 0x80, ~0);
-            glEnable(GL_STENCIL_TEST);
-        }
-    }
-    else if(aamaskstencil > 0)
-    {
-        if(val)
-        {
-            glStencilFunc(GL_ALWAYS, 0x80 | aamaskstencil, ~0);
-        }
-        else if(aamask >= 0)
-        {
-            glStencilFunc(GL_ALWAYS, aamaskstencil, ~0);
-        }
-    }
-    aamask = val;
-    GLOBALPARAMF(aamask, aamask);
-}
+    static int aamaskstencil = -1,
+                      aamask = -1;
 
-void enableaamask(int stencil)
-{
-    aamask = -1;
-    aamaskstencil = !msaasamples && ghasstencil && tqaa && tqaamovemask && !drawtex ? stencil|avatarmask : -1;
-}
-
-void disableaamask()
-{
-    if(aamaskstencil >= 0 && aamask >= 0)
+    void set(bool on)
     {
+        int val = on && !drawtex ? 1 : 0;
+        if(aamask == val)
+        {
+            return;
+        }
         if(!aamaskstencil)
         {
-            glDisable(GL_STENCIL_TEST);
+            glStencilOp(GL_KEEP, GL_KEEP, val ? GL_REPLACE : GL_KEEP);
+            if(aamask < 0)
+            {
+                glStencilFunc(GL_ALWAYS, 0x80, ~0);
+                glEnable(GL_STENCIL_TEST);
+            }
         }
-        else if(aamask)
+        else if(aamaskstencil > 0)
         {
-            glStencilFunc(GL_ALWAYS, aamaskstencil, ~0);
+            if(val)
+            {
+                glStencilFunc(GL_ALWAYS, 0x80 | aamaskstencil, ~0);
+            }
+            else if(aamask >= 0)
+            {
+                glStencilFunc(GL_ALWAYS, aamaskstencil, ~0);
+            }
         }
+        aamask = val;
+        GLOBALPARAMF(aamask, aamask);
+    }
+
+    void enable(int stencil)
+    {
         aamask = -1;
+        aamaskstencil = !msaasamples && ghasstencil && tqaa && tqaamovemask && !drawtex ? stencil|avatarmask : -1;
+    }
+
+    void disable()
+    {
+        if(aamaskstencil >= 0 && aamask >= 0)
+        {
+            if(!aamaskstencil)
+            {
+                glDisable(GL_STENCIL_TEST);
+            }
+            else if(aamask)
+            {
+                glStencilFunc(GL_ALWAYS, aamaskstencil, ~0);
+            }
+            aamask = -1;
+        }
     }
 }
 
