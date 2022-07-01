@@ -85,7 +85,7 @@ bool skelmodel::animcacheentry::operator==(const animcacheentry &c) const
 
 bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
 {
-    return !operator==(c);
+    return !(*this == c);
 }
 
 skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
