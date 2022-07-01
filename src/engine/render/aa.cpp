@@ -1189,7 +1189,6 @@ void jitteraa()
 }
 
 // aa mask
-// used for masking around model rendering in rendermodel.cpp, not used for octree/mat/part rendering
 
 namespace aamask
 {
@@ -1230,12 +1229,9 @@ namespace aamask
     void enable(int stencil)
     {
         aamask = -1;
-        bool dostencil = !msaasamples && ghasstencil && tqaa && tqaamovemask && !drawtex;
-        aamaskstencil = dostencil ? stencil|avatarmask : -1;
+        aamaskstencil = !msaasamples && ghasstencil && tqaa && tqaamovemask && !drawtex ? stencil|avatarmask : -1;
     }
 
-    //if aamaskstencil & aamask are both positive, disables applicable enabled aa mask gl
-    //otherwise does nothing
     void disable()
     {
         if(aamaskstencil >= 0 && aamask >= 0)
