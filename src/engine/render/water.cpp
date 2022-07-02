@@ -375,18 +375,18 @@ static void renderwater(const materialsurface &m, int mat = Mat_Water)
 
 //==================================================================== WATERVARS
 #define WATERVARS(name) \
-    CVAR0R(name##color, 0x01212C); \
-    CVAR0R(name##deepcolor, 0x010A10); \
-    CVAR0R(name##deepfade, 0x60BFFF); \
-    CVAR0R(name##refractcolor, 0xFFFFFF); \
-    VARR(name##fog, 0, 30, 10000); \
-    VARR(name##deep, 0, 50, 10000); \
-    VARR(name##spec, 0, 150, 200); \
-    FVARR(name##refract, 0, 0.1f, 1e3f); \
-    CVARR(name##fallcolor, 0); \
-    CVARR(name##fallrefractcolor, 0); \
-    VARR(name##fallspec, 0, 150, 200); \
-    FVARR(name##fallrefract, 0, 0.1f, 1e3f);
+    static CVAR0R(name##color, 0x01212C); \
+    static CVAR0R(name##deepcolor, 0x010A10); \
+    static CVAR0R(name##deepfade, 0x60BFFF); \
+    static CVAR0R(name##refractcolor, 0xFFFFFF); \
+    static VARR(name##fog, 0, 30, 10000); \
+    static VARR(name##deep, 0, 50, 10000); \
+    static VARR(name##spec, 0, 150, 200); \
+    static FVARR(name##refract, 0, 0.1f, 1e3f); \
+    static CVARR(name##fallcolor, 0); \
+    static CVARR(name##fallrefractcolor, 0); \
+    static VARR(name##fallspec, 0, 150, 200); \
+    static FVARR(name##fallrefract, 0, 0.1f, 1e3f);
 
 WATERVARS(water)
 WATERVARS(water2)
