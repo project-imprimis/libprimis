@@ -483,6 +483,7 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
     }
     int csize = m.csize,
         rsize = m.rsize;
+//we need to undefine and redefine these macros such that GENFACEVERTSXY has the appropriate code substituted into it
 #define GENFACEORIENT(orient, v0, v1, v2, v3) \
         case orient: \
         { \
@@ -524,6 +525,7 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
     }
 #undef GENFACENORMAL
 #undef GENFACEORIENT
+//restore GENFACEVERTX/Y
 #undef GENFACEVERTX
 #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 #undef GENFACEVERTY
