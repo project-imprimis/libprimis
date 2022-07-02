@@ -719,6 +719,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     for(const char *pcmds = cmds; pcmds;)
     {
+        //===================================================== PARSETEXCOMMANDS
         #define PARSETEXCOMMANDS(cmds) \
             const char *cmd = nullptr, \
                        *end = nullptr, \
@@ -901,6 +902,9 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     return true;
 }
+
+#undef PARSETEXCOMMANDS
+//==============================================================================
 
 bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress, int *wrap)
 {
