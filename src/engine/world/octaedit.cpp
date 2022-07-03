@@ -857,6 +857,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
     return true;
 }
 
+//used in iengine.h
 bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
 {
     if(compressBound(outlen) > (1<<20))
@@ -875,6 +876,7 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
     return true;
 }
 
+//used in iengine.h
 bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
@@ -887,6 +889,7 @@ bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
 }
 
+//used in iengine.h
 bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
 {
     if(e && e->copy)
@@ -915,6 +918,7 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
     return true;
 }
 
+//used in iengine.h
 void freeeditinfo(editinfo *&e)
 {
     if(!e)
@@ -930,6 +934,7 @@ void freeeditinfo(editinfo *&e)
     e = nullptr;
 }
 
+//used in iengine.h
 bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
@@ -959,6 +964,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
 }
 
+//used in iengine.h
 bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
 {
     if(undo)
