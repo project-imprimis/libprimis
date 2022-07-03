@@ -43,10 +43,8 @@ struct prefabheader
     int version;
 };
 
-static bool boxoutline = false;
-
 //used in iengine.h
-void boxs(int orient, vec o, const vec &s, float size)
+void boxs(int orient, vec o, const vec &s, float size, bool boxoutline)
 {
     int d  = DIMENSION(orient),
         dc = DIM_COORD(orient);
@@ -86,7 +84,7 @@ void boxs(int orient, vec o, const vec &s, float size)
 }
 
 //used in iengine.h
-void boxs(int orient, vec origin, const vec &s)
+void boxs(int orient, vec origin, const vec &s, bool boxoutline)
 {
     int d  = DIMENSION(orient),
         dc = DIM_COORD(orient);
@@ -105,17 +103,17 @@ void boxs(int orient, vec origin, const vec &s)
 }
 
 //used in iengine.h
-void boxs3D(const vec &origin, vec s, int g)
+void boxs3D(const vec &origin, vec s, int g, bool boxoutline)
 {
     s.mul(g); //multiply displacement by g(ridpower)
     for(int i = 0; i < 6; ++i) //for each face
     {
-        boxs(i, origin, s);
+        boxs(i, origin, s, boxoutline);
     }
 }
 
 //used in iengine.h
-void boxsgrid(int orient, vec origin, vec s, int g)
+void boxsgrid(int orient, vec origin, vec s, int g, bool boxoutline)
 {
     int d  = DIMENSION(orient),
         dc = DIM_COORD(orient);
