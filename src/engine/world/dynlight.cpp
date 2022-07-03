@@ -157,7 +157,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     dynlights.insert(dynlights.begin() + insert, d);
 }
 
-void removetrackeddynlights(physent *owner)
+void removetrackeddynlights(const physent *owner)
 {
     for(int i = dynlights.size(); --i >=0;) //note reverse iteration
     {
