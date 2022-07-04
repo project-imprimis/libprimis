@@ -2279,7 +2279,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
     lightsphere::disable();
 }
 
-static void renderlightbatches(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
+static void renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
     bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
@@ -2332,11 +2332,11 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         {
             bool shadowmap = !(batch.flags & BatchFlag_NoShadow),
                  spotlight = (batch.flags & BatchFlag_Spotlight) != 0;
-            setlightshader(s, n, baselight, shadowmap, spotlight, transparent);
+            setlightshader(&s, n, baselight, shadowmap, spotlight, transparent);
         }
         else
         {
-            s->setvariant(transparent ? 0 : -1, 16);
+            s.setvariant(transparent ? 0 : -1, 16);
         }
 
         lightpassesused++;
@@ -2423,11 +2423,11 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
             if(n)
             {
-                setlightshader(s, n, baselight, shadowmap, spotlight, false, true);
+                setlightshader(&s, n, baselight, shadowmap, spotlight, false, true);
             }
             else
             {
-                s->setvariant(0, 17);
+                s.setvariant(0, 17);
             }
             if(hasDBT && depthtestlights > 1)
             {
@@ -2564,7 +2564,7 @@ void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *ti
     }
     else
     {
-        renderlightbatches(s, stencilref, transparent, bsx1, bsy1, bsx2, bsy2, tilemask);
+        renderlightbatches(*s, stencilref, transparent, bsx1, bsy1, bsx2, bsy2, tilemask);
     }
 
     if(msaapass == 1 && ghasstencil)
