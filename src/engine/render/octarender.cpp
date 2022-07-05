@@ -147,6 +147,11 @@ namespace
         }
     }
 
+    //default type = -1: flush every vbo
+    //otherwise type specifies which of the VBOs to flush
+
+    //flushvbo: flushes data out of the specified VBO object and calls genvbo()
+    //then destroys the data in the relevant VBO
     void flushvbo(int type = -1)
     {
         if(type < 0)
