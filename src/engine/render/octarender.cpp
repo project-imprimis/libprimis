@@ -689,7 +689,7 @@ namespace
                 matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
             }
 
-            void genverts(void *buf)
+            void genverts(uchar *buf)
             {
                 vertex *f = reinterpret_cast<vertex *>(buf);
                 for(vertex i : verts)
