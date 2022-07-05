@@ -916,6 +916,8 @@ namespace
         { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
     };
 
+    //index array must be >= numverts long
+    //verts array must be >= Face_MaxVerts + 1 and >= numverts long
     void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
     {
         int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris,
@@ -1087,7 +1089,7 @@ namespace
     }
 
     //face: index of which face to cover
-    //verts: information about grass texs' face
+    //verts: information about grass texs' face, array of vertices, must be >= face+3 long
     //numv: number of grass vertices
     //texture: index for the grass texture to use
     void addgrasstri(int face, vertex *verts, int numv, ushort texture)
