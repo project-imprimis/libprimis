@@ -3342,7 +3342,8 @@ void LocalShaderParam::setv(const uint *u, int n)
         glUniform1uiv_(b->loc, n, u);
     }
 }
-void inittexturecmds() {
+void inittexturecmds()
+{
     addcommand("texturereset", reinterpret_cast<identfun>(texturereset), "i", Id_Command);
     addcommand("materialreset", reinterpret_cast<identfun>(materialreset), "", Id_Command);
     addcommand("decalreset", reinterpret_cast<identfun>(decalreset), "i", Id_Command);
