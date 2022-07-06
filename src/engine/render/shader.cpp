@@ -12,6 +12,7 @@
 #include "rendermodel.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/console.h"

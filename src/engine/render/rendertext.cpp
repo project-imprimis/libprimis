@@ -23,6 +23,7 @@
 
 #include "rendergl.h"
 #include "rendertext.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/control.h"

@@ -77,6 +77,7 @@ CLIENT_OBJS= \
 	engine/render/renderva.o \
 	engine/render/renderwindow.o \
 	engine/render/shader.o \
+	engine/render/shaderparam.o \
 	engine/render/stain.o \
 	engine/render/texture.o \
 	engine/render/water.o \

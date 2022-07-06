@@ -29,6 +29,7 @@
 #include "render/renderlights.h"
 #include "render/renderva.h"
 #include "render/water.h"
+#include "render/shaderparam.h"
 #include "render/texture.h"
 
 //internally relevant functionality

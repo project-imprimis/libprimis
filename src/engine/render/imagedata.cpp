@@ -10,6 +10,7 @@
 
 #include "imagedata.h"
 #include "renderwindow.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/control.h"

@@ -33,6 +33,7 @@
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
+#include "render/shaderparam.h"
 #include "render/texture.h"
 
 #include "textedit.h"

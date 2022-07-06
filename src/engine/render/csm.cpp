@@ -14,6 +14,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "world/light.h"

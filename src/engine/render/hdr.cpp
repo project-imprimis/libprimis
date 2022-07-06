@@ -21,6 +21,7 @@
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendertimers.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/control.h"

@@ -13,6 +13,7 @@
 #include "raycube.h"
 
 #include "render/rendermodel.h"
+#include "render/shaderparam.h"
 #include "render/stain.h"
 #include "render/texture.h"
 

@@ -18,6 +18,7 @@
 #include "renderparticles.h"
 #include "rendertimers.h"
 #include "renderva.h"
+#include "shaderparam.h"
 #include "stain.h"
 #include "texture.h"
 

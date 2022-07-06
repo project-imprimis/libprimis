@@ -21,6 +21,7 @@
 #include "render/radiancehints.h"
 #include "render/renderlights.h"
 #include "render/octarender.h"
+#include "render/shaderparam.h"
 #include "render/texture.h"
 
 CVAR1R(ambient, 0x191919);

@@ -20,6 +20,7 @@
 #include "rendermodel.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/console.h"

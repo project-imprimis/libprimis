@@ -21,6 +21,7 @@
 #include "renderlights.h"
 #include "rendermodel.h"
 #include "stain.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/console.h"

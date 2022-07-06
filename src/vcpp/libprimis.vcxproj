@@ -121,6 +121,7 @@
     <ClInclude Include="..\engine\render\rendertext.h" />
     <ClInclude Include="..\engine\render\rendertimers.h" />
     <ClInclude Include="..\engine\render\renderwindow.h" />
+    <ClInclude Include="..\engine\render\shaderparam.h" />
     <ClInclude Include="..\engine\render\stain.h" />
     <ClInclude Include="..\engine\render\texture.h" />
     <ClInclude Include="..\engine\render\water.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="..\engine\render\renderva.cpp" />
     <ClCompile Include="..\engine\render\renderwindow.cpp" />
     <ClCompile Include="..\engine\render\shader.cpp" />
+    <ClCompile Include="..\engine\render\shaderparam.cpp" />
     <ClCompile Include="..\engine\render\stain.cpp" />
     <ClCompile Include="..\engine\render\texture.cpp" />
     <ClCompile Include="..\engine\render\water.cpp" />

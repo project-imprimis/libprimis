@@ -20,6 +20,7 @@
 #include "renderva.h"
 #include "renderwindow.h"
 #include "rendertext.h"
+#include "shaderparam.h"
 #include "stain.h"
 #include "texture.h"
 #include "water.h"

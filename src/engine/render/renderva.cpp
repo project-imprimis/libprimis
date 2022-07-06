@@ -15,6 +15,7 @@
 #include "renderva.h"
 #include "renderwindow.h"
 #include "rendersky.h"
+#include "shaderparam.h"
 #include "texture.h"
 
 #include "interface/control.h"
