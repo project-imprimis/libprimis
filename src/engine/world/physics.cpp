@@ -79,16 +79,6 @@ int collideinside; // whether an internal collision happened
 physent *collideplayer; // whether the collection hit a player
 vec collidewall; // just the normal vectors.
 
-/* note here:
- * these vars are declared extern inline to allow a `const` (implicitly also
- * `static`) to be linked to other files as a `const`.
- */
-extern const float stairheight = 4.1f; //max height in cubits of an allowable step (4 = 0.5m)
-extern const float floorz = 0.867f; //to be considered a level floor, slope is below this
-extern const float slopez = 0.5f; //maximum climbable slope
-extern const float wallz = 0.2f; //steeper than this is considered a wall
-extern const float gravity = 100.0f; //downwards force scale
-
 bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
     float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),
@@ -1331,8 +1321,6 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
         m.y += strafe*std::sin(yaw/RAD);
     }
 }
-
-VAR(floatspeed, 1, 100, 10000);
 
 bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective way to find a free spawn spot in the map
 {

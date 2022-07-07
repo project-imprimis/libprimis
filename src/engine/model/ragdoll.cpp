@@ -495,7 +495,7 @@ void ragdolldata::move(dynent *pl, float ts)
     {
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
-        dpos.z -= gravity*ts*ts;
+        dpos.z -= 100*ts*ts;
         if(water)
         {
             dpos.z += 0.25f*std::sin(detrnd(size_t(this)+i, 360)/RAD + lastmillis/10000.0f*M_PI)*ts;
