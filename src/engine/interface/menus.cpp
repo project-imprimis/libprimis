@@ -66,7 +66,7 @@ namespace
         {
             if((needsapply.size()) > static_cast<uint>(*idx))
             {
-                    result(needsapply.at(*idx).desc);
+                result(needsapply.at(*idx).desc);
             }
             else if(*idx < 0)
             {
