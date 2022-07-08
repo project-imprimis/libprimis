@@ -26,7 +26,7 @@ namespace
 
         bool operator==(const Change & c) const
         {
-            return type == c.type && strcmp(desc, c.desc) == 0;
+            return type == c.type && std::strcmp(desc, c.desc) == 0;
         }
     };
     std::vector<Change> needsapply;
