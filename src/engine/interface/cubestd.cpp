@@ -101,55 +101,58 @@ bool validateblock(const char *s)
     constexpr int maxbrak = 100;
     static char brakstack[maxbrak];
     int brakdepth = 0;
-    for(; *s; s++) switch(*s)
+    for(; *s; s++)
     {
-        case '[':
-        case '(':
+        switch(*s)
         {
-            if(brakdepth >= maxbrak)
+            case '[':
+            case '(':
+            {
+                if(brakdepth >= maxbrak)
+                {
+                    return false;
+                }
+                brakstack[brakdepth++] = *s;
+                break;
+            }
+            case ']':
+            {
+                if(brakdepth <= 0 || brakstack[--brakdepth] != '[')
+                {
+                    return false;
+                }
+                break;
+            }
+            case ')':
+            {
+                if(brakdepth <= 0 || brakstack[--brakdepth] != '(')
+                {
+                    return false;
+                }
+                break;
+            }
+            case '"':
+            {
+                s = parsestring(s + 1);
+                if(*s != '"')
+                {
+                    return false;
+                }
+                break;
+            }
+            case '/':
+            {
+                if(s[1] == '/')
+                {
+                    return false;
+                }
+                break;
+            }
+            case '@':
+            case '\f':
             {
                 return false;
             }
-            brakstack[brakdepth++] = *s;
-            break;
-        }
-        case ']':
-        {
-            if(brakdepth <= 0 || brakstack[--brakdepth] != '[')
-            {
-                return false;
-            }
-            break;
-        }
-        case ')':
-        {
-            if(brakdepth <= 0 || brakstack[--brakdepth] != '(')
-            {
-                return false;
-            }
-            break;
-        }
-        case '"':
-        {
-            s = parsestring(s + 1);
-            if(*s != '"')
-            {
-                return false;
-            }
-            break;
-        }
-        case '/':
-        {
-            if(s[1] == '/')
-            {
-                return false;
-            }
-            break;
-        }
-        case '@':
-        case '\f':
-        {
-            return false;
         }
     }
     return brakdepth == 0;
