@@ -147,7 +147,8 @@ void boxsgrid(int orient, vec origin, vec s, int g, bool boxoutline)
     xtraverts += gle::end();
 }
 
-selinfo sel, lastsel, savedsel;
+selinfo sel, lastsel; //lastsel is used only in iengine
+static selinfo savedsel;
 
 int orient = 0,
     gridsize = 8;
