@@ -1450,7 +1450,7 @@ ushort getmaterial(cube &c)
 /////////// texture editing //////////////////
 
 int curtexindex = -1,
-    lasttex = 0,
+    lasttex     = 0;
 int texpaneltimer = 0;
 std::vector<ushort> texmru;
 
