@@ -5,8 +5,6 @@
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
 
-#include "SDL_image.h"
-
 #include "imagedata.h"
 #include "octarender.h"
 #include "renderwindow.h"
