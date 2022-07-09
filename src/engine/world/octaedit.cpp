@@ -1451,7 +1451,6 @@ ushort getmaterial(cube &c)
 
 int curtexindex = -1,
     lasttex = 0,
-    lasttexmillis = -1;
 int texpaneltimer = 0;
 std::vector<ushort> texmru;
 
