@@ -13,6 +13,7 @@ var iengine_8h =
     [ "cleargamma", "iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f", null ],
     [ "clearmapcrc", "iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920", null ],
     [ "clearshadowcache", "iengine_8h.html#a279b07f34d381a6947e84a1c8289b582", null ],
+    [ "collide", "iengine_8h.html#a95645194a5c37d3cc0d58fb2e69ae86b", null ],
     [ "conoutf", "iengine_8h.html#a4db7318348a74b95e2013bae083f410f", null ],
     [ "conoutf", "iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa", null ],
     [ "countselchild", "iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95", null ],

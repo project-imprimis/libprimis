@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24":[10,0,6,6],
 "structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c":[10,0,6,8],
 "structdatabuf.html#a7c8c5031dcedbf681924e5166ea190ae":[10,0,6,3],
 "structdatabuf.html#a96a3266c8d62a2bb467c133e815fb216":[10,0,6,5],
