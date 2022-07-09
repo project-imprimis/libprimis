@@ -639,7 +639,6 @@ int countblock(block3 *b)
 }
 
 std::vector<editinfo *> editinfos;
-editinfo *localedit = nullptr;
 
 template<class B>
 static void packcube(cube &c, B &buf)
