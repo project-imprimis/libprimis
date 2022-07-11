@@ -432,10 +432,9 @@ void ragdolldata::tryunstick(float speed)
     }
 }
 
-VAR(ragdollconstrain, 1, 7, 100); //number of iterations to run ragdolldata::constrain() for
-
 void ragdolldata::constrain()
 {
+    static VAR(ragdollconstrain, 1, 7, 100); //number of iterations to run ragdolldata::constrain() for
     //note: this for loop does not use the loop variable `i` anywhere
     for(int i = 0; i < ragdollconstrain; ++i)
     {
