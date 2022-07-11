@@ -1043,14 +1043,7 @@ class stainrenderer
         }
 };
 
-stainrenderer stains[] =
-{
-    stainrenderer("<grey>media/particle/blood.png", StainFlag_Rnd4|StainFlag_Rotate|StainFlag_InvMod),
-    stainrenderer("<grey>media/particle/pulse_scorch.png", StainFlag_Rotate, 500),
-    stainrenderer("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright),
-    stainrenderer("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250),
-    stainrenderer("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100)
-};
+std::vector<stainrenderer> stains;
 
 /* initstains: sets up each entry in the stains global variable array using init() method
  * and then preloads them
@@ -1063,13 +1056,18 @@ void initstains()
     {
         return;
     }
-    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
+    stains.emplace_back("<grey>media/particle/blood.png", StainFlag_Rnd4|StainFlag_Rotate|StainFlag_InvMod);
+    stains.emplace_back("<grey>media/particle/pulse_scorch.png", StainFlag_Rotate, 500);
+    stains.emplace_back("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright);
+    stains.emplace_back("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250);
+    stains.emplace_back("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100);
+    for(uint i = 0; i < stains.size(); ++i)
     {
         stains[i].init(maxstaintris);
     }
-    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(uint i = 0; i < stains.size(); ++i)
     {
-        loadprogress = static_cast<float>(i+1)/(sizeof(stains)/sizeof(stains[0]));
+        loadprogress = static_cast<float>(i+1)/stains.size();
         stains[i].preload();
     }
     loadprogress = 0;
@@ -1079,7 +1077,7 @@ void initstains()
  */
 void clearstains()
 {
-    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(uint i = 0; i < stains.size(); ++i)
     {
         stains[i].clearstains();
     }
@@ -1090,7 +1088,7 @@ VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(uint i = 0; i < stains.size(); ++i)
     {
         stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf)
@@ -1124,7 +1122,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
 
 void cleanupstains()
 {
-    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(uint i = 0; i < stains.size(); ++i)
     {
         stains[i].cleanup();
     }
@@ -1134,7 +1132,7 @@ VARP(maxstaindistance, 1, 512, 10000); //distance in cubes before stains stop re
 
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
-    if(!showstains || type<0 || static_cast<size_t>(type) >= sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
+    if(!showstains || type<0 || static_cast<size_t>(type) >= stains.size() || center.dist(camera1->o) - radius > maxstaindistance)
     {
         return;
     }
