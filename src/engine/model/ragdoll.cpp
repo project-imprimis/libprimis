@@ -235,8 +235,6 @@ void ragdolldata::calcboundsphere()
 
 VAR(ragdolltimestepmin, 1, 5, 50);
 VAR(ragdolltimestepmax, 1, 10, 50);
-FVAR(ragdollrotfric, 0, 0.85f, 1);
-FVAR(ragdollrotfricstop, 0, 0.1f, 1);
 
 void ragdolldata::init(dynent *d)
 {
@@ -365,6 +363,9 @@ void ragdolldata::calcrotfriction()
 
 void ragdolldata::applyrotfriction(float ts)
 {
+    static FVAR(ragdollrotfric, 0, 0.85f, 1);
+    static FVAR(ragdollrotfricstop, 0, 0.1f, 1);
+
     calctris();
     float stopangle = 2*M_PI*ts*ragdollrotfricstop,
           rotfric = 1.0f - std::pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
