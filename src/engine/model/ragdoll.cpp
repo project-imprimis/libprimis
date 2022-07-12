@@ -483,7 +483,7 @@ void ragdolldata::move(dynent *pl, float ts)
         return;
     }
     int material = rootworld.lookupmaterial(vec(center.x, center.y, center.z + radius/2));
-    bool water = material&MatFlag_Volume == Mat_Water;
+    bool water = (material&MatFlag_Volume) == Mat_Water;
     pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
     calcrotfriction();
