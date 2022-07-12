@@ -123,7 +123,7 @@ namespace
     HVARP(fullconfilter, 0, 0xFFFFFF, 0xFFFFFF);
     HVARP(miniconfilter, 0, 0, 0xFFFFFF);
 
-    int conskip = 0,
+    int conskip     = 0,
         miniconskip = 0;
 
     void setconskip(int &skip, int filter, int n)
@@ -1177,7 +1177,13 @@ void writebinds(stream *f)
 void writecompletions(stream *f)
 {
     vector<char *> cmds;
-    ENUMERATE_KT(completions, char *, k, FilesVal *, v, { if(v) cmds.add(k); });
+    ENUMERATE_KT(completions, char *, k, FilesVal *, v,
+    {
+        if(v)
+        {
+            cmds.add(k);
+        }
+    });
     cmds.sort();
     for(int i = 0; i < cmds.length(); i++)
     {
