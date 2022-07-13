@@ -165,8 +165,8 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>cancombine</b>
 <tr class="memitem:a57219daadd6ecd0b863395970baf349d"><td class="memItemLeft" align="right" valign="top"><a id="a57219daadd6ecd0b863395970baf349d" name="a57219daadd6ecd0b863395970baf349d"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>shouldpremul</b> (int) const</td></tr>
 <tr class="separator:a57219daadd6ecd0b863395970baf349d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a880cae62250a7b71bcb3df0024ba55d5"><td class="memItemLeft" align="right" valign="top"><a id="a880cae62250a7b71bcb3df0024ba55d5" name="a880cae62250a7b71bcb3df0024ba55d5"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>findtextype</b> (int type, int last=-1) const</td></tr>
+<tr class="memitem:a880cae62250a7b71bcb3df0024ba55d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSlot.html#a880cae62250a7b71bcb3df0024ba55d5">findtextype</a> (int type, int last=-1) const</td></tr>
+<tr class="memdesc:a880cae62250a7b71bcb3df0024ba55d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to find a tex with index type.  <a href="structSlot.html#a880cae62250a7b71bcb3df0024ba55d5">More...</a><br /></td></tr>
 <tr class="separator:a880cae62250a7b71bcb3df0024ba55d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29d89cb3dd5dc1027c3b2baaa11818aa"><td class="memItemLeft" align="right" valign="top"><a id="a29d89cb3dd5dc1027c3b2baaa11818aa" name="a29d89cb3dd5dc1027c3b2baaa11818aa"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (int index, <a class="el" href="structSlot_1_1Tex.html">Slot::Tex</a> &amp;t)</td></tr>
@@ -174,8 +174,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (int index, 
 <tr class="memitem:a9d16183908013bc7ac371d15406eb60e"><td class="memItemLeft" align="right" valign="top"><a id="a9d16183908013bc7ac371d15406eb60e" name="a9d16183908013bc7ac371d15406eb60e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> ()</td></tr>
 <tr class="separator:a9d16183908013bc7ac371d15406eb60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c03515604972228df2b940a04ff1309"><td class="memItemLeft" align="right" valign="top"><a id="a1c03515604972228df2b940a04ff1309" name="a1c03515604972228df2b940a04ff1309"></a>
-Texture *&#160;</td><td class="memItemRight" valign="bottom"><b>loadthumbnail</b> ()</td></tr>
+<tr class="memitem:a1c03515604972228df2b940a04ff1309"><td class="memItemLeft" align="right" valign="top">Texture *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSlot.html#a1c03515604972228df2b940a04ff1309">loadthumbnail</a> ()</td></tr>
+<tr class="memdesc:a1c03515604972228df2b940a04ff1309"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a new texture that is a thumbnail of the slot's texture.  <a href="structSlot.html#a1c03515604972228df2b940a04ff1309">More...</a><br /></td></tr>
 <tr class="separator:a1c03515604972228df2b940a04ff1309"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a280788a152c280940fb9e2703a206863"><td class="memItemLeft" align="right" valign="top"><a id="a280788a152c280940fb9e2703a206863" name="a280788a152c280940fb9e2703a206863"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b> ()</td></tr>
@@ -223,7 +223,68 @@ Texture *&#160;</td><td class="memItemRight" valign="bottom"><b>thumbnail</b></t
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A representation of a texture inside the engine. </p>
 <p >A texture slot represents the texture and shader information for a single application onto an octree face. This includes a diffuse texture, as well as other shader-defined textures such as normal, parallax, and specular maps if they are part of the shader configuration of the slot object. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a880cae62250a7b71bcb3df0024ba55d5" name="a880cae62250a7b71bcb3df0024ba55d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a880cae62250a7b71bcb3df0024ba55d5">&#9670;&nbsp;</a></span>findtextype()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Slot::findtextype </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>last</em> = <code>-1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Attempts to find a tex with index type. </p>
+<p >Searches for a tex with the type passed, searching only for the part of the sts vector after <code>last</code>. If none is found, returns -1.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>the type to seach for </td></tr>
+    <tr><td class="paramname">last</td><td>the last index to not look at</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the index where the type was found </dd></dl>
+
+</div>
+</div>
+<a id="a1c03515604972228df2b940a04ff1309" name="a1c03515604972228df2b940a04ff1309"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c03515604972228df2b940a04ff1309">&#9670;&nbsp;</a></span>loadthumbnail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Texture * Slot::loadthumbnail </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a new texture that is a thumbnail of the slot's texture. </p>
+<p >Creates a new texture on the heap representing a scaled-down version of the slot's diffuse map.</p>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to the generated Texture containing the thumbnail </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="slot_8h_source.html">slot.h</a></li>
 </ul>
 </div><!-- contents -->

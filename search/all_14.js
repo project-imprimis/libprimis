@@ -14,6 +14,5 @@ var searchData=
   ['vectoryawpitch_11',['vectoryawpitch',['../iengine_8h.html#a19db406be1891683192cd071c05b5e7c',1,'iengine.h']]],
   ['visible_12',['visible',['../classcube.html#a8b3bf44db777a571dc5ec004c53b8204',1,'cube']]],
   ['vslot_13',['VSlot',['../structVSlot.html',1,'']]],
-  ['vslotmap_14',['vslotmap',['../structvslotmap.html',1,'']]],
-  ['vslotref_15',['vslotref',['../structvslotref.html',1,'']]]
+  ['vslotmap_14',['vslotmap',['../structvslotmap.html',1,'']]]
 ];

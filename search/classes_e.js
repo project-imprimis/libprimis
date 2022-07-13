@@ -8,6 +8,5 @@ var searchData=
   ['vector_3c_20slot_3a_3atex_20_3e_5',['vector&lt; Slot::Tex &gt;',['../structvector.html',1,'']]],
   ['vector_3c_20slotshaderparam_20_3e_6',['vector&lt; SlotShaderParam &gt;',['../structvector.html',1,'']]],
   ['vslot_7',['VSlot',['../structVSlot.html',1,'']]],
-  ['vslotmap_8',['vslotmap',['../structvslotmap.html',1,'']]],
-  ['vslotref_9',['vslotref',['../structvslotref.html',1,'']]]
+  ['vslotmap_8',['vslotmap',['../structvslotmap.html',1,'']]]
 ];
