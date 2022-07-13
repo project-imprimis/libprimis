@@ -23,8 +23,6 @@
 #include "model.h"
 #include "ragdoll.h"
 
-FVAR(ragdollbodyfric, 0, 0.95f, 1);
-FVAR(ragdollbodyfricscale, 0, 2, 10);
 FVAR(ragdollwaterfric, 0, 0.85f, 1);
 FVAR(ragdollgroundfric, 0, 0.8f, 1);
 FVAR(ragdollairfric, 0, 0.996f, 1);
@@ -479,6 +477,9 @@ void ragdolldata::constrain()
 
 void ragdolldata::move(dynent *pl, float ts)
 {
+
+    static FVAR(ragdollbodyfric, 0, 0.95f, 1);
+    static FVAR(ragdollbodyfricscale, 0, 2, 10);
     if(collidemillis && lastmillis > collidemillis)
     {
         return;
