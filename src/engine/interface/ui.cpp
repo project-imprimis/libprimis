@@ -4602,9 +4602,36 @@ namespace UI
         addcommand("uifocus?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && TextEditor::focus == buildparent, t, f); }), "tt", Id_Command);
         addcommand("uifocus+", reinterpret_cast<identfun>(+[] (uint *t, uint *f) { executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild] ? t : f); }), "ee", Id_Command);
         addcommand("uifocus+?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild], t, f); }), "tt", Id_Command);
-        addcommand("uialign", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign) { { if(buildparent) { buildparent->setalign(*xalign, *yalign); } }; }), "ii", Id_Command);
-        addcommand("uialign-", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign) { { if(buildparent && buildchild > 0) { buildparent->children[buildchild-1]->setalign(*xalign, *yalign); } }; }), "ii", Id_Command);
-        addcommand("uialign*", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign) { { if(buildparent) { for(int i = 0; i < buildchild; ++i) { buildparent->children[i]->setalign(*xalign, *yalign); } } }; }), "ii", Id_Command);
+        addcommand("uialign", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign)
+        {
+            {
+                if(buildparent)
+                {
+                    buildparent->setalign(*xalign, *yalign);
+                }
+            };
+        }), "ii", Id_Command);
+        addcommand("uialign-", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign)
+        {
+            {
+                if(buildparent && buildchild > 0)
+                {
+                    buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
+                }
+            };
+        }), "ii", Id_Command);
+        addcommand("uialign*", reinterpret_cast<identfun>(+[] (int *xalign, int *yalign)
+        {
+            {
+                if(buildparent)
+                {
+                    for(int i = 0; i < buildchild; ++i)
+                    {
+                        buildparent->children[i]->setalign(*xalign, *yalign);
+                    }
+                }
+            };
+        }), "ii", Id_Command);
         addcommand("uiclamp", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent) { buildparent->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
         addcommand("uiclamp-", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent && buildchild > 0) { buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
         addcommand("uiclamp*", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent) { for(int i = 0; i < buildchild; ++i) { buildparent->children[i]->setclamp(*left, *right, *top, *bottom); } } }; }), "iiii", Id_Command);
