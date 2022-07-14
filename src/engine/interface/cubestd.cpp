@@ -631,7 +631,7 @@ static char *listelem(const char *start = liststart, const char *end = listend, 
     return s;
 }
 
-void explodelist(const char *s, vector<char *> &elems, int limit)
+static void explodelist(const char *s, vector<char *> &elems, int limit)
 {
     const char *start, *end, *qstart;
     while((limit < 0 || elems.length() < limit) && parselist(s, start, end, qstart))
@@ -640,7 +640,7 @@ void explodelist(const char *s, vector<char *> &elems, int limit)
     }
 }
 
-int listlen(const char *s)
+static int listlen(const char *s)
 {
     int n = 0;
     while(parselist(s))
@@ -650,12 +650,12 @@ int listlen(const char *s)
     return n;
 }
 
-void listlencmd(const char *s)
+static void listlencmd(const char *s)
 {
     intret(listlen(s));
 }
 
-void at(tagval *args, int numargs)
+static void at(tagval *args, int numargs)
 {
     if(!numargs)
     {
