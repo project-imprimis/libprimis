@@ -631,7 +631,7 @@ static char *listelem(const char *start = liststart, const char *end = listend, 
     return s;
 }
 
-static void explodelist(const char *s, vector<char *> &elems, int limit)
+void explodelist(const char *s, vector<char *> &elems, int limit)
 {
     const char *start, *end, *qstart;
     while((limit < 0 || elems.length() < limit) && parselist(s, start, end, qstart))
