@@ -563,11 +563,10 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
     return collide(&v, dir, 0, false);
 }
 
-FVAR(ragdolleyesmooth, 0, 0.5f, 1);
-VAR(ragdolleyesmoothmillis, 1, 250, 10000);
-
 void moveragdoll(dynent *d)
 {
+    static FVAR(ragdolleyesmooth, 0, 0.5f, 1);
+    static VAR(ragdolleyesmoothmillis, 1, 250, 10000);
     if(!curtime || !d->ragdoll)
     {
         return;
