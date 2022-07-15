@@ -121,6 +121,7 @@ class Shader
         void cleanup(bool full = false);
 
         static int uniformlocversion();
+
     private:
         ushort *variantrows;
         bool used;
@@ -207,6 +208,9 @@ class LocalShaderParam
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
 #define GLOBALPARAMV(name, vals, num) do { static GlobalShaderParam param( #name ); param.setv(vals, num); } while(0)
 
+//creates a new static variable inside the function called <name>setshader
+//then sets to it any(if present) args passed to set to the shader
+//can only be called once per function, and not in the global scope
 #define SETSHADER(name, ...) \
     do { \
         static Shader *name##shader = nullptr; \
