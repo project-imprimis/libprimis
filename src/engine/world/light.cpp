@@ -437,7 +437,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     surfaceinfo surfaces[6];
     vertinfo litverts[6*2*Face_MaxVerts];
     int numlitverts = 0;
-    memset(surfaces, 0, sizeof(surfaces));
+    std::memset(surfaces, 0, sizeof(surfaces));
     for(int i = 0; i < 6; ++i) //for each face of the cube
     {
         int usefaces = usefacemask&0xF;
