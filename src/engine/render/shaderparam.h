@@ -9,13 +9,6 @@ struct UniformLoc
     UniformLoc(const char *name = nullptr, const char *blockname = nullptr, int binding = -1, int stride = -1) : name(name), blockname(blockname), loc(-1), version(-1), binding(binding), stride(stride), offset(-1), size(-1), data(nullptr) {}
 };
 
-struct AttribLoc
-{
-    const char *name;
-    int loc;
-    AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
-};
-
 struct GlobalShaderParamState
 {
     const char *name;
@@ -96,6 +89,13 @@ class Shader
         bool standard, forced;
         Shader *reusevs, *reuseps;
         std::vector<UniformLoc> uniformlocs;
+
+        struct AttribLoc
+        {
+            const char *name;
+            int loc;
+            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
+        };
         std::vector<AttribLoc> attriblocs;
         const void *owner;
 

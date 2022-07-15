@@ -276,7 +276,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         uint attribs = 0;
         for(uint i = 0; i < s.attriblocs.size(); i++)
         {
-            AttribLoc &a = s.attriblocs[i];
+            Shader::AttribLoc &a = s.attriblocs[i];
             glBindAttribLocation(s.program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
@@ -1076,7 +1076,7 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
         {
             if(std::sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
-                s.attriblocs.emplace_back(AttribLoc(getshaderparamname(name), loc));
+                s.attriblocs.emplace_back(Shader::AttribLoc(getshaderparamname(name), loc));
             }
             vs += len;
         }
