@@ -385,7 +385,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>disablepolygonoffset<
 <tr class="memitem:ab159dfadc5fe66ba15fe39184f831629"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629">gl_drawframe</a> (int crosshairindex, void(*gamefxn)(), void(*hudfxn)(), void(*editfxn)(), void(*hud2d)())</td></tr>
 <tr class="memdesc:ab159dfadc5fe66ba15fe39184f831629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the frame to the screen.  <a href="iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629">More...</a><br /></td></tr>
 <tr class="separator:ab159dfadc5fe66ba15fe39184f831629"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0178542cfb4893bbdc375c1d2da7adb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#af0178542cfb4893bbdc375c1d2da7adb">drawminimap</a> (int yaw, int pitch, <a class="el" href="structvec.html">vec</a> loc, <a class="el" href="structcubeworld.html">cubeworld</a> world, int scalefactor=1)</td></tr>
+<tr class="memitem:af0178542cfb4893bbdc375c1d2da7adb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#af0178542cfb4893bbdc375c1d2da7adb">drawminimap</a> (int yaw, int pitch, <a class="el" href="structvec.html">vec</a> loc, <a class="el" href="classcubeworld.html">cubeworld</a> world, int scalefactor=1)</td></tr>
 <tr class="memdesc:af0178542cfb4893bbdc375c1d2da7adb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a minimap texture.  <a href="iengine_8h.html#af0178542cfb4893bbdc375c1d2da7adb">More...</a><br /></td></tr>
 <tr class="separator:af0178542cfb4893bbdc375c1d2da7adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5359315f0d74947e09c8a41f015350ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a5359315f0d74947e09c8a41f015350ff">initrenderlightscmds</a> ()</td></tr>
@@ -802,12 +802,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>entities::deleteentit
 <tr class="memitem:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a46e5679d080c44b3b86c1f2fb00d80f8">fixmapname</a> (char *name)</td></tr>
 <tr class="memdesc:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the passed string to conform to valid map names.  <a href="iengine_8h.html#a46e5679d080c44b3b86c1f2fb00d80f8">More...</a><br /></td></tr>
 <tr class="separator:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca8e922e29d2c8192d29efc8c82a8d5"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a3ca8e922e29d2c8192d29efc8c82a8d5">getmapcrc</a> ()</td></tr>
-<tr class="memdesc:a3ca8e922e29d2c8192d29efc8c82a8d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the CRC code for the map currently loaded.  <a href="iengine_8h.html#a3ca8e922e29d2c8192d29efc8c82a8d5">More...</a><br /></td></tr>
-<tr class="separator:a3ca8e922e29d2c8192d29efc8c82a8d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8db3c9d89b1bcf07023f08b8d0884920"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920">clearmapcrc</a> ()</td></tr>
-<tr class="memdesc:a8db3c9d89b1bcf07023f08b8d0884920"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the CRC global variable to 0  <a href="iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920">More...</a><br /></td></tr>
-<tr class="separator:a8db3c9d89b1bcf07023f08b8d0884920"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -1387,26 +1381,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
 
 </div>
 </div>
-<a id="a8db3c9d89b1bcf07023f08b8d0884920" name="a8db3c9d89b1bcf07023f08b8d0884920"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8db3c9d89b1bcf07023f08b8d0884920">&#9670;&nbsp;</a></span>clearmapcrc()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void clearmapcrc </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>sets the CRC global variable to 0 </p>
-<p >Invalidates the CRC code saved as a global variable for the world, usually to indicate that the CRC has become invalid as a result of modification. </p>
-
-</div>
-</div>
 <a id="a279b07f34d381a6947e84a1c8289b582" name="a279b07f34d381a6947e84a1c8289b582"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a279b07f34d381a6947e84a1c8289b582">&#9670;&nbsp;</a></span>clearshadowcache()</h2>
 
@@ -1679,7 +1653,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structcubeworld.html">cubeworld</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classcubeworld.html">cubeworld</a>&#160;</td>
           <td class="paramname"><em>world</em>, </td>
         </tr>
         <tr>
@@ -2208,27 +2182,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
 <p >the file where the <br  />
 </p>
 <p >Log files are not supported on Windows, so this function returns stdout if on Windows. </p>
-
-</div>
-</div>
-<a id="a3ca8e922e29d2c8192d29efc8c82a8d5" name="a3ca8e922e29d2c8192d29efc8c82a8d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ca8e922e29d2c8192d29efc8c82a8d5">&#9670;&nbsp;</a></span>getmapcrc()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint getmapcrc </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the CRC code for the map currently loaded. </p>
-<p >Returns the cyclic redundancy checksum for the file currently loaded. This value is unique for every revision of a map binary, and is useful to make sure multiple clients have the same binary.</p>
-<dl class="section return"><dt>Returns</dt><dd>the cyclic redundancy code of the map file currently loaded </dd></dl>
 
 </div>
 </div>

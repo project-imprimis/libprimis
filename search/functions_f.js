@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['raycube_0',['raycube',['../structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d',1,'cubeworld']]],
+  ['raycube_0',['raycube',['../classcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d',1,'cubeworld']]],
   ['raycubepos_1',['raycubepos',['../iengine_8h.html#ae18d06933ae2dd87e478835b5c7e700b',1,'iengine.h']]],
   ['recip_2',['recip',['../structvec4.html#a3e918f4203f76877740e6c67886c099e',1,'vec4']]],
   ['regular_5fparticle_5fflame_3',['regular_particle_flame',['../iengine_8h.html#a8eb1f1e6e87532e051ba486b5dbea5dc',1,'iengine.h']]],
   ['regular_5fparticle_5fsplash_4',['regular_particle_splash',['../iengine_8h.html#a6bfd22d6a168826720612b334681e9ee',1,'iengine.h']]],
   ['remaining_5',['remaining',['../structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e',1,'databuf']]],
-  ['remip_6',['remip',['../structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2',1,'cubeworld']]],
+  ['remip_6',['remip',['../classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2',1,'cubeworld']]],
   ['remove_7',['remove',['../structvector.html#a32cb8f72325a5f52298ffac9abd8d102',1,'vector::remove(int i, int n)'],['../structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6',1,'vector::remove(int i)']]],
   ['removeheap_8',['removeheap',['../structvector.html#aae7414b428036a6a109e2a40976e0eb1',1,'vector']]],
   ['removeobj_9',['removeobj',['../structvector.html#a10daba22a06b056f79048f614dccbd52',1,'vector']]],

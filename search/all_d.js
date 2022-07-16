@@ -2,7 +2,7 @@ var searchData=
 [
   ['o_0',['o',['../structentity.html#a525c90c5512cbb504f7ac9ab7014336f',1,'entity::o()'],['../structselinfo.html#ae8353821d8834bf1fd29564adadc742d',1,'selinfo::o()']]],
   ['octa_2eh_1',['octa.h',['../octa_8h.html',1,'']]],
-  ['octarender_2',['octarender',['../structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5',1,'cubeworld']]],
+  ['octarender_2',['octarender',['../classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5',1,'cubeworld']]],
   ['operator_3d_3',['operator=',['../structvector.html#a985cff80c58441215643ae45a95dd25c',1,'vector']]],
   ['operator_3d_3d_4',['operator==',['../structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7',1,'selinfo']]],
   ['operator_5b_5d_5',['operator[]',['../structvector.html#a8b5dc28a2e0035fc84a41f3588194853',1,'vector::operator[](int i)'],['../structvector.html#a6d35bc5e9b1f66d671c86432807f32f8',1,'vector::operator[](int i) const']]],

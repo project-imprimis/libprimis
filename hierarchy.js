@@ -7,7 +7,7 @@ var hierarchy =
     [ "hashbase< H, E, K, T >::chain", "structhashbase_1_1chain.html", null ],
     [ "hashbase< H, E, K, T >::chainchunk", "structhashbase_1_1chainchunk.html", null ],
     [ "cube", "classcube.html", null ],
-    [ "cubeworld", "structcubeworld.html", null ],
+    [ "cubeworld", "classcubeworld.html", null ],
     [ "databuf< T >", "structdatabuf.html", null ],
     [ "editinfo", "structeditinfo.html", null ],
     [ "entity", "structentity.html", [

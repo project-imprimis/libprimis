@@ -413,29 +413,29 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span><span class="keyword">struct </span>prefab;</div>
 <div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span><span class="keyword">struct </span>clipplanes;</div>
 <div class="line"><a id="l00476" name="l00476"></a><span class="lineno">  476</span> </div>
-<div class="line"><a id="l00477" name="l00477"></a><span class="lineno"><a class="line" href="structcubeworld.html">  477</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcubeworld.html">cubeworld</a></div>
+<div class="line"><a id="l00477" name="l00477"></a><span class="lineno"><a class="line" href="classcubeworld.html">  477</a></span><span class="keyword">class </span><a class="code hl_class" href="classcubeworld.html">cubeworld</a></div>
 <div class="line"><a id="l00478" name="l00478"></a><span class="lineno">  478</span>{</div>
 <div class="line"><a id="l00479" name="l00479"></a><span class="lineno">  479</span>    <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00480" name="l00480"></a><span class="lineno">  480</span>        <a class="code hl_class" href="classcube.html">cube</a> *worldroot = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00481" name="l00481"></a><span class="lineno">  481</span> </div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno"><a class="line" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">  492</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">lookupmaterial</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v);</div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno"><a class="line" href="classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">  492</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">lookupmaterial</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v);</div>
 <div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span> </div>
-<div class="line"><a id="l00505" name="l00505"></a><span class="lineno"><a class="line" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">  505</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">emptymap</a>(<span class="keywordtype">int</span> factor, <span class="keywordtype">bool</span> force, <span class="keywordtype">bool</span> usecfg = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno"><a class="line" href="classcubeworld.html#a12e042d30ab218c7764519e10008adef">  505</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classcubeworld.html#a12e042d30ab218c7764519e10008adef">emptymap</a>(<span class="keywordtype">int</span> factor, <span class="keywordtype">bool</span> force, <span class="keywordtype">bool</span> usecfg = <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span> </div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno"><a class="line" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">  515</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">enlargemap</a>(<span class="keywordtype">bool</span> force);</div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno"><a class="line" href="classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">  515</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">enlargemap</a>(<span class="keywordtype">bool</span> force);</div>
 <div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>        <span class="keywordtype">bool</span> modifyoctaent(<span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> <span class="keywordtype">id</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> &amp;e);</div>
 <div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>        <span class="keywordtype">void</span> shrinkmap();</div>
 <div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>        <span class="keywordtype">bool</span> load_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameinfo = <span class="keyword">nullptr</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *cname = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>        <span class="keywordtype">bool</span> save_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident);</div>
 <div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span> </div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno"><a class="line" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">  527</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a>(<span class="keywordtype">bool</span> cull = <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno"><a class="line" href="classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">  527</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a>(<span class="keywordtype">bool</span> cull = <span class="keyword">false</span>);</div>
 <div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>        <span class="keywordtype">void</span> genprefabmesh(prefab &amp;p);</div>
 <div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span> </div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno"><a class="line" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">  536</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a>();</div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno"><a class="line" href="classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">  536</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a>();</div>
 <div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span> </div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno"><a class="line" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">  544</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a>();</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno"><a class="line" href="classcubeworld.html#a445b1bb007a38a2449bac939748c0d92">  544</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a>();</div>
 <div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span> </div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">  556</a></span>        <span class="keywordtype">float</span> <a class="code hl_function" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a>   (<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius = 0, <span class="keywordtype">int</span> mode = 3, <span class="keywordtype">int</span> size = 0, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = 0);</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno"><a class="line" href="classcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">  556</a></span>        <span class="keywordtype">float</span> <a class="code hl_function" href="classcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a>   (<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius = 0, <span class="keywordtype">int</span> mode = 3, <span class="keywordtype">int</span> size = 0, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = 0);</div>
 <div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        <span class="keywordtype">bool</span> octacollide(<a class="code hl_struct" href="structphysent.html">physent</a> *d, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir, <span class="keywordtype">float</span> cutoff, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bs);</div>
 <div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>        <a class="code hl_class" href="classcube.html">cube</a> &amp;lookupcube(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;to, <span class="keywordtype">int</span> tsize = 0, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro = lu, <span class="keywordtype">int</span> &amp;rsize = lusize);</div>
 <div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        <span class="keywordtype">bool</span> bboccluded(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;br);</div>
@@ -443,73 +443,78 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>        <span class="keywordtype">void</span> allchanged(<span class="keywordtype">bool</span> load = <span class="keyword">false</span>);</div>
 <div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        <span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;neighborcube(<span class="keywordtype">int</span> orient, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;co, <span class="keywordtype">int</span> size, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro, <span class="keywordtype">int</span> &amp;rsize);</div>
 <div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span> </div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno"><a class="line" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">  570</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">calclight</a>();</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno"><a class="line" href="classcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">  570</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">calclight</a>();</div>
 <div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        <span class="keywordtype">float</span> shadowray(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius, <span class="keywordtype">int</span> mode, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmin, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmax, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structblock3.html">block3</a> &amp;sel, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        clipplanes &amp;getclipbounds(<span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;c, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;o, <span class="keywordtype">int</span> size, <span class="keywordtype">int</span> offset);</div>
 <div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>        <span class="keywordtype">void</span> calcnormals(<span class="keywordtype">bool</span> lerptjoints);</div>
 <div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span> </div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">  584</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">remip</a>();</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>};</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span> </div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="keyword">extern</span> <a class="code hl_struct" href="structcubeworld.html">cubeworld</a> rootworld;</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span> </div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno"><a class="line" href="structundolist.html">  589</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>{</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span> </div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span> </div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span> </div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    {</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        u-&gt;prev = last;</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>        <span class="keywordflow">if</span>(!first)</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>        {</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>            first = last = u;</div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        }</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>        {</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>            last-&gt;next = u;</div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>            last = u;</div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>        }</div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>    }</div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span> </div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>    {</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>        first = first-&gt;next;</div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>        <span class="keywordflow">if</span>(first)</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>        {</div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>        }</div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>        {</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>            last = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>        }</div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>    }</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span> </div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>    {</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>        last = last-&gt;prev;</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        <span class="keywordflow">if</span>(last)</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>        {</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>        }</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>        {</div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>            first = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>        }</div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>    }</div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>};</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span> </div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno"><a class="line" href="classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">  584</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">remip</a>();</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno"><a class="line" href="classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1">  594</a></span>        uint <a class="code hl_function" href="classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1">getmapcrc</a>();</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span> </div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno"><a class="line" href="classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070">  602</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070">clearmapcrc</a>();</div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        uint mapcrc; </div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>};</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span> </div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="keyword">extern</span> <a class="code hl_class" href="classcubeworld.html">cubeworld</a> rootworld;</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span> </div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno"><a class="line" href="structundolist.html">  609</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>{</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span> </div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span> </div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span> </div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>    {</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>        u-&gt;prev = last;</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>        <span class="keywordflow">if</span>(!first)</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>        {</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>            first = last = u;</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>        }</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>        {</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>            last-&gt;next = u;</div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>            last = u;</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>        }</div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    }</div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span> </div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>    {</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        first = first-&gt;next;</div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>        <span class="keywordflow">if</span>(first)</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>        {</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>        }</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>        {</div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>            last = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>        }</div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>    }</div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span> </div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>    {</div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>        last = last-&gt;prev;</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>        <span class="keywordflow">if</span>(last)</div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>        {</div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>        }</div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>        {</div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>            first = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>        }</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    }</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>};</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span> </div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclasscube_html"><div class="ttname"><a href="classcube.html">cube</a></div><div class="ttdoc">The fundemental building block of the octree world, representing a 3D cube.</div><div class="ttdef"><b>Definition:</b> octa.h:95</div></div>
 <div class="ttc" id="aclasscube_html_a2260c52d69daed945371581af8dcf637"><div class="ttname"><a href="classcube.html#a2260c52d69daed945371581af8dcf637">cube::faces</a></div><div class="ttdeci">uint faces[3]</div><div class="ttdef"><b>Definition:</b> octa.h:103</div></div>
 <div class="ttc" id="aclasscube_html_a2faf100108da8f40d88473baafb9be61"><div class="ttname"><a href="classcube.html#a2faf100108da8f40d88473baafb9be61">cube::isvalidcube</a></div><div class="ttdeci">bool isvalidcube()</div><div class="ttdoc">Returns whether the cube is valid.</div></div>
@@ -526,20 +531,22 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="aclasscube_html_adabf7826306d245930ea049e0a8bf76e"><div class="ttname"><a href="classcube.html#adabf7826306d245930ea049e0a8bf76e">cube::material</a></div><div class="ttdeci">ushort material</div><div class="ttdef"><b>Definition:</b> octa.h:106</div></div>
 <div class="ttc" id="aclasscube_html_aeb55655cef2a95f24d7456e9422c2aff"><div class="ttname"><a href="classcube.html#aeb55655cef2a95f24d7456e9422c2aff">cube::edges</a></div><div class="ttdeci">uchar edges[12]</div><div class="ttdef"><b>Definition:</b> octa.h:101</div></div>
 <div class="ttc" id="aclasscube_html_afd1fe0c107339a3c20060cda213b8aa5"><div class="ttname"><a href="classcube.html#afd1fe0c107339a3c20060cda213b8aa5">cube::texture</a></div><div class="ttdeci">ushort texture[6]</div><div class="ttdef"><b>Definition:</b> octa.h:105</div></div>
+<div class="ttc" id="aclasscubeworld_html"><div class="ttname"><a href="classcubeworld.html">cubeworld</a></div><div class="ttdef"><b>Definition:</b> octa.h:478</div></div>
+<div class="ttc" id="aclasscubeworld_html_a12e042d30ab218c7764519e10008adef"><div class="ttname"><a href="classcubeworld.html#a12e042d30ab218c7764519e10008adef">cubeworld::emptymap</a></div><div class="ttdeci">bool emptymap(int factor, bool force, bool usecfg=true)</div><div class="ttdoc">Clears the old level and creates a new one.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a2d586f0ba0d3ca1a5d087d91cff42a5d"><div class="ttname"><a href="classcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">cubeworld::raycube</a></div><div class="ttdeci">float raycube(const vec &amp;o, const vec &amp;ray, float radius=0, int mode=3, int size=0, extentity *t=0)</div><div class="ttdoc">Returns the distance before a ray hits a cube.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a2e0c8606178d333e6c0faeaa9a662070"><div class="ttname"><a href="classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070">cubeworld::clearmapcrc</a></div><div class="ttdeci">void clearmapcrc()</div><div class="ttdoc">sets the CRC global variable to 0</div></div>
+<div class="ttc" id="aclasscubeworld_html_a2fe409c8dd963be4883f4c8870c0f6c2"><div class="ttname"><a href="classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">cubeworld::remip</a></div><div class="ttdeci">void remip()</div><div class="ttdoc">Reduces the number of cubes on the level losslessly.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a38b877faf6e8e755315b350cd098b1c1"><div class="ttname"><a href="classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1">cubeworld::getmapcrc</a></div><div class="ttdeci">uint getmapcrc()</div><div class="ttdoc">Returns the CRC code for the map currently loaded.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a445b1bb007a38a2449bac939748c0d92"><div class="ttname"><a href="classcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cubeworld::cleanupva</a></div><div class="ttdeci">void cleanupva()</div><div class="ttdoc">Destroys vertex arrays for the octree world.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a5b0a574f37d4613b6fa97d80d10984ce"><div class="ttname"><a href="classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">cubeworld::enlargemap</a></div><div class="ttdeci">bool enlargemap(bool force)</div><div class="ttdoc">Grows the map to an additional gridsize.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a6818f64cfc8a9cff6b26e46bf948e2d4"><div class="ttname"><a href="classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">cubeworld::lookupmaterial</a></div><div class="ttdeci">int lookupmaterial(const vec &amp;v)</div><div class="ttdoc">Returns the material bitmask value at the given location.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a98a1ad1ac154aaeea6fc6954b3670fe5"><div class="ttname"><a href="classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">cubeworld::octarender</a></div><div class="ttdeci">void octarender()</div><div class="ttdoc">Creates vertex arrays for the octree world.</div></div>
+<div class="ttc" id="aclasscubeworld_html_a9eac3f5488f4c52b15ce1de57d31cfcc"><div class="ttname"><a href="classcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">cubeworld::calclight</a></div><div class="ttdeci">void calclight()</div><div class="ttdoc">Calculates normals and re-calculates geometry.</div></div>
+<div class="ttc" id="aclasscubeworld_html_ab674bb2b758999fdd377ef5bc7561f98"><div class="ttname"><a href="classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">cubeworld::compactvslots</a></div><div class="ttdeci">int compactvslots(bool cull=false)</div><div class="ttdoc">Removes unnecessary virtual texture slots.</div></div>
 <div class="ttc" id="aocta_8h_html_a1eb1a9d704d2a37241ea5ccac905cae2"><div class="ttname"><a href="octa_8h.html#a1eb1a9d704d2a37241ea5ccac905cae2">facesolid</a></div><div class="ttdeci">constexpr uint facesolid</div><div class="ttdef"><b>Definition:</b> octa.h:14</div></div>
 <div class="ttc" id="aocta_8h_html_a4430b561a204df665b15f88337201173"><div class="ttname"><a href="octa_8h.html#a4430b561a204df665b15f88337201173">setcubefaces</a></div><div class="ttdeci">void setcubefaces(cube &amp;c, uint face)</div><div class="ttdoc">sets the faces to a given value face given</div><div class="ttdef"><b>Definition:</b> octa.h:444</div></div>
 <div class="ttc" id="aocta_8h_html_a9392cbbd2ed30129294d84c5032432af"><div class="ttname"><a href="octa_8h.html#a9392cbbd2ed30129294d84c5032432af">faceempty</a></div><div class="ttdeci">constexpr uint faceempty</div><div class="ttdef"><b>Definition:</b> octa.h:13</div></div>
 <div class="ttc" id="astructblock3_html"><div class="ttname"><a href="structblock3.html">block3</a></div><div class="ttdoc">A representation of a rectangular volume of cubes, with less metadata.</div><div class="ttdef"><b>Definition:</b> octa.h:386</div></div>
-<div class="ttc" id="astructcubeworld_html"><div class="ttname"><a href="structcubeworld.html">cubeworld</a></div><div class="ttdef"><b>Definition:</b> octa.h:478</div></div>
-<div class="ttc" id="astructcubeworld_html_a12e042d30ab218c7764519e10008adef"><div class="ttname"><a href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">cubeworld::emptymap</a></div><div class="ttdeci">bool emptymap(int factor, bool force, bool usecfg=true)</div><div class="ttdoc">Clears the old level and creates a new one.</div></div>
-<div class="ttc" id="astructcubeworld_html_a2d586f0ba0d3ca1a5d087d91cff42a5d"><div class="ttname"><a href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">cubeworld::raycube</a></div><div class="ttdeci">float raycube(const vec &amp;o, const vec &amp;ray, float radius=0, int mode=3, int size=0, extentity *t=0)</div><div class="ttdoc">Returns the distance before a ray hits a cube.</div></div>
-<div class="ttc" id="astructcubeworld_html_a2fe409c8dd963be4883f4c8870c0f6c2"><div class="ttname"><a href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">cubeworld::remip</a></div><div class="ttdeci">void remip()</div><div class="ttdoc">Reduces the number of cubes on the level losslessly.</div></div>
-<div class="ttc" id="astructcubeworld_html_a445b1bb007a38a2449bac939748c0d92"><div class="ttname"><a href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cubeworld::cleanupva</a></div><div class="ttdeci">void cleanupva()</div><div class="ttdoc">Destroys vertex arrays for the octree world.</div></div>
-<div class="ttc" id="astructcubeworld_html_a5b0a574f37d4613b6fa97d80d10984ce"><div class="ttname"><a href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">cubeworld::enlargemap</a></div><div class="ttdeci">bool enlargemap(bool force)</div><div class="ttdoc">Grows the map to an additional gridsize.</div></div>
-<div class="ttc" id="astructcubeworld_html_a6818f64cfc8a9cff6b26e46bf948e2d4"><div class="ttname"><a href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">cubeworld::lookupmaterial</a></div><div class="ttdeci">int lookupmaterial(const vec &amp;v)</div><div class="ttdoc">Returns the material bitmask value at the given location.</div></div>
-<div class="ttc" id="astructcubeworld_html_a98a1ad1ac154aaeea6fc6954b3670fe5"><div class="ttname"><a href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">cubeworld::octarender</a></div><div class="ttdeci">void octarender()</div><div class="ttdoc">Creates vertex arrays for the octree world.</div></div>
-<div class="ttc" id="astructcubeworld_html_a9eac3f5488f4c52b15ce1de57d31cfcc"><div class="ttname"><a href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">cubeworld::calclight</a></div><div class="ttdeci">void calclight()</div><div class="ttdoc">Calculates normals and re-calculates geometry.</div></div>
-<div class="ttc" id="astructcubeworld_html_ab674bb2b758999fdd377ef5bc7561f98"><div class="ttname"><a href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">cubeworld::compactvslots</a></div><div class="ttdeci">int compactvslots(bool cull=false)</div><div class="ttdoc">Removes unnecessary virtual texture slots.</div></div>
 <div class="ttc" id="astructeditinfo_html"><div class="ttname"><a href="structeditinfo.html">editinfo</a></div><div class="ttdef"><b>Definition:</b> octa.h:404</div></div>
 <div class="ttc" id="astructentity_html"><div class="ttname"><a href="structentity.html">entity</a></div><div class="ttdoc">Entity data capable of being saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:89</div></div>
 <div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdoc">Extended entity data not of the subset which is saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:100</div></div>
@@ -561,7 +568,7 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="astructundoblock_html_a1dec53ad5f85909e6796642ea8e4b663"><div class="ttname"><a href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">undoblock::numents</a></div><div class="ttdeci">int numents</div><div class="ttdef"><b>Definition:</b> octa.h:420</div></div>
 <div class="ttc" id="astructundoblock_html_ac7993663dac147f8134a9f24ec91a876"><div class="ttname"><a href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">undoblock::timestamp</a></div><div class="ttdeci">int timestamp</div><div class="ttdef"><b>Definition:</b> octa.h:419</div></div>
 <div class="ttc" id="astructundoent_html"><div class="ttname"><a href="structundoent.html">undoent</a></div><div class="ttdef"><b>Definition:</b> octa.h:410</div></div>
-<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:590</div></div>
+<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:610</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -5,7 +5,7 @@ var annotated_dup =
     [ "block3", "structblock3.html", null ],
     [ "bvec", "structbvec.html", null ],
     [ "cube", "classcube.html", "classcube" ],
-    [ "cubeworld", "structcubeworld.html", "structcubeworld" ],
+    [ "cubeworld", "classcubeworld.html", "classcubeworld" ],
     [ "databuf", "structdatabuf.html", "structdatabuf" ],
     [ "DecalSlot", "structDecalSlot.html", null ],
     [ "dynent", "structdynent.html", "structdynent" ],

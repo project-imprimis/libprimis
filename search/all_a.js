@@ -12,5 +12,5 @@ var searchData=
   ['loadthumbnail_9',['loadthumbnail',['../structSlot.html#a1c03515604972228df2b940a04ff1309',1,'Slot']]],
   ['logfile_10',['logfile',['../iengine_8h.html#ab25a3625a8efbaa3d81ef27bbb51c9c5',1,'iengine.h']]],
   ['logoutf_11',['logoutf',['../iengine_8h.html#a9ab71763e51e4ec1e66eec6015d6e76f',1,'iengine.h']]],
-  ['lookupmaterial_12',['lookupmaterial',['../structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4',1,'cubeworld']]]
+  ['lookupmaterial_12',['lookupmaterial',['../classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4',1,'cubeworld']]]
 ];
