@@ -1696,7 +1696,7 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
 }
 
-void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
+void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
 {
     int dim = DIMENSION(orient);
     if(cu.children)
