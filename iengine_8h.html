@@ -210,9 +210,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>interceptkey</b> (int
 <tr class="memitem:a9bf8d96b829ec509dd4841b5f196aa3f"><td class="memItemLeft" align="right" valign="top"><a id="a9bf8d96b829ec509dd4841b5f196aa3f" name="a9bf8d96b829ec509dd4841b5f196aa3f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>inputgrab</b> (bool on)</td></tr>
 <tr class="separator:a9bf8d96b829ec509dd4841b5f196aa3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af177de1c96ef47cb37c195b88be805c3"><td class="memItemLeft" align="right" valign="top"><a id="af177de1c96ef47cb37c195b88be805c3" name="af177de1c96ef47cb37c195b88be805c3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>checkinput</b> ()</td></tr>
-<tr class="separator:af177de1c96ef47cb37c195b88be805c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e0c96fc4497edec75309ddbea087ebd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a9e0c96fc4497edec75309ddbea087ebd">checkinput</a> (int map=0)</td></tr>
+<tr class="memdesc:a9e0c96fc4497edec75309ddbea087ebd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input from SDL.  <a href="iengine_8h.html#a9e0c96fc4497edec75309ddbea087ebd">More...</a><br /></td></tr>
+<tr class="separator:a9e0c96fc4497edec75309ddbea087ebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29a5087ad1fa01a38dd91c79cec01d7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a29a5087ad1fa01a38dd91c79cec01d7a">ignoremousemotion</a> ()</td></tr>
 <tr class="memdesc:a29a5087ad1fa01a38dd91c79cec01d7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes all queued mouse events.  <a href="iengine_8h.html#a29a5087ad1fa01a38dd91c79cec01d7a">More...</a><br /></td></tr>
 <tr class="separator:a29a5087ad1fa01a38dd91c79cec01d7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1271,6 +1271,33 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
 
 <p>Deselects edit selection. </p>
 <p >This function deselects the cubes and entities currently selected. </p>
+
+</div>
+</div>
+<a id="a9e0c96fc4497edec75309ddbea087ebd" name="a9e0c96fc4497edec75309ddbea087ebd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e0c96fc4497edec75309ddbea087ebd">&#9670;&nbsp;</a></span>checkinput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void checkinput </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>map</em> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handles input from SDL. </p>
+<p >Executes the CubeScript commands associated with any SDL key operations queued.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">map</td><td>the keymap to use: 0 for default, 1 for edit, 2 for spec </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

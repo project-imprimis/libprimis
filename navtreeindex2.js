@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"structcubeworld.html#a12e042d30ab218c7764519e10008adef":[10,0,5,3],
 "structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d":[10,0,5,7],
 "structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2":[10,0,5,8],
 "structcubeworld.html#a445b1bb007a38a2449bac939748c0d92":[10,0,5,1],

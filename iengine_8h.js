@@ -7,6 +7,7 @@ var iengine_8h =
     [ "bindminimap", "iengine_8h.html#a4d143c1e4190c04ba6b10ab26ecaf857", null ],
     [ "blockcube", "iengine_8h.html#a0f7823631f3789786a0334f712444101", null ],
     [ "cancelsel", "iengine_8h.html#a8b60e2355be761bf7cc68e262981248f", null ],
+    [ "checkinput", "iengine_8h.html#a9e0c96fc4497edec75309ddbea087ebd", null ],
     [ "cleanragdoll", "iengine_8h.html#a8f4eefe05d6feb452f8192a1bef539eb", null ],
     [ "cleanup", "iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca", null ],
     [ "clear_console", "iengine_8h.html#a3cffe15b7e5d10a108f1734a9640a2c7", null ],
