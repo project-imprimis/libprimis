@@ -68,8 +68,8 @@ physent::physent() :
             xradius(4.1f),
             yradius(4.1f),
             zmargin(0),
-            state(ClientState_Alive),
-            editstate(ClientState_Alive),
+            state(0),
+            editstate(0),
             type(PhysEnt_Player),
             collidetype(Collide_Ellipse),
             blocked(false)
