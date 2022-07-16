@@ -12,7 +12,6 @@ var annotated_dup =
     [ "editinfo", "structeditinfo.html", null ],
     [ "entity", "structentity.html", "structentity" ],
     [ "extentity", "structextentity.html", null ],
-    [ "facebounds", "structfacebounds.html", null ],
     [ "GenericVec2", "structGenericVec2.html", null ],
     [ "GenericVec3", "structGenericVec3.html", null ],
     [ "hashbase", "structhashbase.html", "structhashbase" ],

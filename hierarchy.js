@@ -13,7 +13,6 @@ var hierarchy =
     [ "entity", "structentity.html", [
       [ "extentity", "structextentity.html", null ]
     ] ],
-    [ "facebounds", "structfacebounds.html", null ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", null ],
