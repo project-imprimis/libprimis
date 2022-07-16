@@ -956,10 +956,15 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     return true;
 }
 
-static uint mapcrc = 0;
+uint cubeworld::getmapcrc()
+{
+    return mapcrc;
+}
 
-uint getmapcrc() { return mapcrc; }
-void clearmapcrc() { mapcrc = 0; }
+void cubeworld::clearmapcrc()
+{
+    mapcrc = 0;
+}
 
 bool cubeworld::load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
 {
