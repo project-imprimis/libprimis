@@ -201,7 +201,23 @@ class LocalShaderParam
         int loc;
 };
 
-#define LOCALPARAM(name, vals) do { static LocalShaderParam param( #name ); param.set(vals); } while(0)
+/**
+ * @brief Defines a LocalShaderParam with static storage inside the function's scope
+ *
+ * This macro creates a LocalShaderParam named `param` and inserts it into the function
+ *  as a static variable. This variable cannot be accessed later and remains defined
+ * for as long as the program runs.
+ *
+ * @param name a string (or plain text, that will be stringized)
+ * @param vals the values to set, must comply with one of the set() functions for LocalShaderParam
+ */
+#define LOCALPARAM(name, vals) \
+    do \
+    { \
+        static LocalShaderParam param( #name ); \
+        param.set(vals); \
+    } \
+    while(0)
 #define LOCALPARAMF(name, ...) do { static LocalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
 #define LOCALPARAMV(name, vals, num) do { static LocalShaderParam param( #name ); param.setv(vals, num); } while(0)
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
