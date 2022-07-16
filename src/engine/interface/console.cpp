@@ -563,7 +563,7 @@ namespace
         addreleaseaction(newstring(s));
     }
 
-    void execbind(KeyM &k, bool isdown)
+    static void execbind(KeyM &k, bool isdown, int map)
     {
         for(uint i = 0; i < releaseactions.size(); i++)
         {
@@ -591,11 +591,11 @@ namespace
             int state = KeyM::Action_Default;
             if(!mainmenu)
             {
-                if(editmode)
+                if(map == 1)
                 {
                     state = KeyM::Action_Editing;
                 }
-                else if(player->state==ClientState_Spectator)
+                else if(map == 2)
                 {
                     state = KeyM::Action_Spectator;
                 }
@@ -1030,12 +1030,12 @@ void processtextinput(const char *str, int len)
     }
 }
 
-void processkey(int code, bool isdown)
+void processkey(int code, bool isdown, int map)
 {
     KeyM *haskey = keyms.access(code);
     if(haskey && haskey->pressed)
     {
-        execbind(*haskey, isdown); // allow pressed keys to release
+        execbind(*haskey, isdown, map); // allow pressed keys to release
     }
     else if(!UI::keypress(code, isdown)) // UI key intercept
     {
@@ -1043,7 +1043,7 @@ void processkey(int code, bool isdown)
         {
             if(haskey)
             {
-                execbind(*haskey, isdown);
+                execbind(*haskey, isdown, map);
             }
         }
     }

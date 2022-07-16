@@ -246,8 +246,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
     for(int i = 0; i < numdyns; ++i)
     {
         dynent *d = iterdynents(i);
-        if(d->state != ClientState_Alive ||
-           d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
+        if(d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
            d->o.y+d->radius <= dy || d->o.y-d->radius >= dy+dsize)
         {
             continue;
@@ -329,7 +328,7 @@ static bool plcollide(physent *d, const vec &dir, physent *o)
 
 bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide with player
 {
-    if(d->type==PhysEnt_Camera || d->state!=ClientState_Alive)
+    if(d->type==PhysEnt_Camera)
     {
         return false;
     }

@@ -231,7 +231,8 @@ static void checkmousemotion(int &dx, int &dy)
 }
 
 //handle different input types
-void checkinput()
+// map: which keymap to map the pressed key to
+void checkinput(int map)
 {
     SDL_Event event;
     bool mousemoved = false;
@@ -268,7 +269,7 @@ void checkinput()
             {
                 if(keyrepeatmask || !event.key.repeat)
                 {
-                    processkey(event.key.keysym.sym, event.key.state==SDL_PRESSED);
+                    processkey(event.key.keysym.sym, event.key.state==SDL_PRESSED, map);
                 }
                 break;
             }
@@ -353,27 +354,27 @@ void checkinput()
                 {
                     case SDL_BUTTON_LEFT:
                     {
-                        processkey(Key_Left, event.button.state==SDL_PRESSED);
+                        processkey(Key_Left, event.button.state==SDL_PRESSED, map);
                         break;
                     }
                     case SDL_BUTTON_MIDDLE:
                     {
-                        processkey(Key_Middle, event.button.state==SDL_PRESSED);
+                        processkey(Key_Middle, event.button.state==SDL_PRESSED, map);
                         break;
                     }
                     case SDL_BUTTON_RIGHT:
                     {
-                        processkey(Key_Right, event.button.state==SDL_PRESSED);
+                        processkey(Key_Right, event.button.state==SDL_PRESSED, map);
                         break;
                     }
                     case SDL_BUTTON_X1:
                     {
-                        processkey(Key_X1, event.button.state==SDL_PRESSED);
+                        processkey(Key_X1, event.button.state==SDL_PRESSED, map);
                         break;
                     }
                     case SDL_BUTTON_X2:
                     {
-                        processkey(Key_X2, event.button.state==SDL_PRESSED);
+                        processkey(Key_X2, event.button.state==SDL_PRESSED, map);
                         break;
                     }
                 }
@@ -384,14 +385,14 @@ void checkinput()
                 //up
                 if(event.wheel.y > 0)
                 {
-                    processkey(Key_ScrollUp, true);
-                    processkey(Key_ScrollUp, false);
+                    processkey(Key_ScrollUp, true, map);
+                    processkey(Key_ScrollUp, false, map);
                 }
                 //down
                 else if(event.wheel.y < 0)
                 {
-                    processkey(Key_ScrollDown, true);
-                    processkey(Key_ScrollDown, false);
+                    processkey(Key_ScrollDown, true, map);
+                    processkey(Key_ScrollDown, false, map);
                 }
                 break;
             }

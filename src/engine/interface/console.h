@@ -1,7 +1,7 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-extern void processkey(int code, bool isdown);
+extern void processkey(int code, bool isdown, int map);
 extern void processtextinput(const char *str, int len);
 extern float rendercommand(float x, float y, float w);
 extern float renderfullconsole(float w, float h);
