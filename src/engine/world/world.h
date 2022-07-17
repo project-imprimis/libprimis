@@ -49,7 +49,6 @@ extern std::vector<int> outsideents;
 
 extern void resetmap();
 extern void freeoctaentities(cube &c);
-extern void entitiesinoctanodes();
 extern void entcancel();
 extern void entselectionbox(const entity &e, vec &eo, vec &es);
 

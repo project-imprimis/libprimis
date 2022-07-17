@@ -563,12 +563,12 @@ void freeoctaentities(cube &c)
     }
 }
 
-void entitiesinoctanodes()
+void cubeworld::entitiesinoctanodes()
 {
     vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
-        ::rootworld.modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
+        modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
     }
 }
 

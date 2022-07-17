@@ -425,7 +425,7 @@ static void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const iv
     }
 }
 
-void commitchanges(bool force = false)
+void cubeworld::commitchanges(bool force)
 {
     if(!force && !haschanged)
     {
@@ -436,7 +436,7 @@ void commitchanges(bool force = false)
     resetclipplanes();
     entitiesinoctanodes();
     inbetweenframes = false;
-    rootworld.octarender();
+    octarender();
     inbetweenframes = true;
     setupmaterials(oldlen);
     clearshadowcache();
