@@ -642,7 +642,7 @@ void resetmap()
     clearsleep();
     cancelsel();
     pruneundos();
-    clearmapcrc();
+    rootworld.clearmapcrc();
 
     entities::clearents();
     outsideents.clear();
