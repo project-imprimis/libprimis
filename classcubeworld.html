@@ -112,6 +112,11 @@ $(document).ready(function(){initNavTree('classcubeworld.html',''); initResizabl
   <div class="headertitle"><div class="title">cubeworld Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>An object representing the entirety of an octree world.  
+ <a href="classcubeworld.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="octa_8h_source.html">octa.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -142,9 +147,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>save_world</b> (const
 <tr class="memitem:a8d185066964d4ad931110e765d0648a8"><td class="memItemLeft" align="right" valign="top"><a id="a8d185066964d4ad931110e765d0648a8" name="a8d185066964d4ad931110e765d0648a8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>genprefabmesh</b> (prefab &amp;p)</td></tr>
 <tr class="separator:a8d185066964d4ad931110e765d0648a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a> ()</td></tr>
-<tr class="memdesc:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates vertex arrays for the octree world.  <a href="classcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">More...</a><br /></td></tr>
-<tr class="separator:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a445b1bb007a38a2449bac939748c0d92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a> ()</td></tr>
 <tr class="memdesc:a445b1bb007a38a2449bac939748c0d92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys vertex arrays for the octree world.  <a href="classcubeworld.html#a445b1bb007a38a2449bac939748c0d92">More...</a><br /></td></tr>
 <tr class="separator:a445b1bb007a38a2449bac939748c0d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -196,6 +198,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>calcnormals</b> (bool
 <tr class="memitem:a2e0c8606178d333e6c0faeaa9a662070"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070">clearmapcrc</a> ()</td></tr>
 <tr class="memdesc:a2e0c8606178d333e6c0faeaa9a662070"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the CRC global variable to 0  <a href="classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070">More...</a><br /></td></tr>
 <tr class="separator:a2e0c8606178d333e6c0faeaa9a662070"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf6fbc828f38413b3d47fdfc21a1009b"><td class="memItemLeft" align="right" valign="top"><a id="acf6fbc828f38413b3d47fdfc21a1009b" name="acf6fbc828f38413b3d47fdfc21a1009b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>entitiesinoctanodes</b> ()</td></tr>
+<tr class="separator:acf6fbc828f38413b3d47fdfc21a1009b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c58b4e7503b9965491807223609f11a"><td class="memItemLeft" align="right" valign="top"><a id="a7c58b4e7503b9965491807223609f11a" name="a7c58b4e7503b9965491807223609f11a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>commitchanges</b> (bool force=false)</td></tr>
+<tr class="separator:a7c58b4e7503b9965491807223609f11a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -203,7 +211,10 @@ Public Attributes</h2></td></tr>
 <a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>worldroot</b> = nullptr</td></tr>
 <tr class="separator:a186f977846ee6323310570d5479f90a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >An object representing the entirety of an octree world. </p>
+<p >A <code>cubeworld</code> is an object storing an entire octree structure and its data; the octree is made up of <code>cube</code> objects, the topmost of which is pointed to by <code>worldroot</code>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a9eac3f5488f4c52b15ce1de57d31cfcc" name="a9eac3f5488f4c52b15ce1de57d31cfcc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9eac3f5488f4c52b15ce1de57d31cfcc">&#9670;&nbsp;</a></span>calclight()</h2>
 
@@ -392,26 +403,6 @@ Public Attributes</h2></td></tr>
 <p>Returns the material bitmask value at the given location. </p>
 <p >Given a world location, returns the material bitmask at the specified location. This bitmask may be the sum of multiple materials if present. Returns 0 (air) if the location specified has no material or is outside the world.</p>
 <dl class="section return"><dt>Returns</dt><dd>an integer corresponding to the material(s) at the specified location </dd></dl>
-
-</div>
-</div>
-<a id="a98a1ad1ac154aaeea6fc6954b3670fe5" name="a98a1ad1ac154aaeea6fc6954b3670fe5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98a1ad1ac154aaeea6fc6954b3670fe5">&#9670;&nbsp;</a></span>octarender()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cubeworld::octarender </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Creates vertex arrays for the octree world. </p>
-<p >Creates vertex arrays, geometry objects used by the renderer to render the world. </p>
 
 </div>
 </div>

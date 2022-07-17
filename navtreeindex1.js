@@ -1,6 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"index.html#autotoc_md2":[1],
 "index.html#autotoc_md3":[2],
 "index.html#autotoc_md4":[3],
 "index.html#autotoc_md5":[4],
@@ -249,5 +248,6 @@ var NAVTREEINDEX1 =
 "structDecalSlot.html":[10,0,7],
 "structGenericVec2.html":[10,0,12],
 "structGenericVec3.html":[10,0,13],
-"structSlot.html":[10,0,30]
+"structSlot.html":[10,0,30],
+"structSlot.html#a1c03515604972228df2b940a04ff1309":[10,0,30,2]
 };

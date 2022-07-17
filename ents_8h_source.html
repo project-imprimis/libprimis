@@ -165,63 +165,62 @@ $(document).ready(function(){initNavTree('ents_8h_source.html',''); initResizabl
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keyword">enum</span></div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>{</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    PhysEnt_Player = 0,</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    PhysEnt_Camera,</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    PhysEnt_Bounce,</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>};</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword">enum</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>{</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    PhysEntState_Float = 0,</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    PhysEntState_Fall,</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    PhysEntState_Slide,</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    PhysEntState_Slope,</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    PhysEntState_Floor,</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    PhysEntState_StepUp,</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    PhysEntState_StepDown,</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    PhysEntState_Bounce,</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>};</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structentity.html">   88</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structentity.html">entity</a>                                   </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>{</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">   90</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> <a class="code hl_variable" href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">o</a>;                                      </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">   91</a></span>    <span class="keywordtype">short</span> attr1, attr2, attr3, attr4, <a class="code hl_variable" href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">attr5</a>;    </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="structentity.html#a8149790bddae92665ede0d60432f2dee">   92</a></span>    uchar <a class="code hl_variable" href="structentity.html#a8149790bddae92665ede0d60432f2dee">type</a>;                                 </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    uchar reserved;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>};</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="structextentity.html">   99</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structextentity.html">extentity</a> : <a class="code hl_struct" href="structentity.html">entity</a></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>{</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordtype">int</span> flags;</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <a class="code hl_struct" href="structextentity.html">extentity</a> *attached;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <a class="code hl_struct" href="structextentity.html">extentity</a>();</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordtype">bool</span> spawned() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keywordtype">void</span> setspawned(<span class="keywordtype">bool</span> val);</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keywordtype">void</span> setspawned();</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordtype">void</span> clearspawned();</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>};</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="structphysent.html">  117</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structphysent.html">physent</a></div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>{</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">  119</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> o, vel, <a class="code hl_variable" href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">falling</a>;                        </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">  120</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> deltapos, <a class="code hl_variable" href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">newpos</a>;                       </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keywordtype">float</span> yaw, pitch, roll;</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">  122</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">maxspeed</a>;                             </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    <span class="keywordtype">int</span> timeinair;</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">  124</a></span>    <span class="keywordtype">float</span> radius, eyeheight, maxheight, <a class="code hl_variable" href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">aboveeye</a>; </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <span class="keywordtype">float</span> xradius, yradius, zmargin;</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">  126</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> <a class="code hl_variable" href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">floor</a>;                                  </div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordtype">int</span> inwater;</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <span class="keywordtype">bool</span> jumping;</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="comment">// The velocity type: `move` is movement along camera axis while `strafe` is</span></div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="comment">// side-to-side movement perpendicular to camera axis.</span></div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keywordtype">char</span> move, strafe, crouching;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">  135</a></span>    uchar <a class="code hl_variable" href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">physstate</a>;                            </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">  136</a></span>    uchar state, <a class="code hl_variable" href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">editstate</a>;                     </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    PhysEntState_Float = 0,</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    PhysEntState_Fall,</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    PhysEntState_Slide,</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    PhysEntState_Slope,</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    PhysEntState_Floor,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    PhysEntState_StepUp,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    PhysEntState_StepDown,</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    PhysEntState_Bounce,</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>};</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="structentity.html">   81</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structentity.html">entity</a>                                   </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>{</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">   83</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> <a class="code hl_variable" href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">o</a>;                                      </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">   84</a></span>    <span class="keywordtype">short</span> attr1, attr2, attr3, attr4, <a class="code hl_variable" href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">attr5</a>;    </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="structentity.html#a8149790bddae92665ede0d60432f2dee">   85</a></span>    uchar <a class="code hl_variable" href="structentity.html#a8149790bddae92665ede0d60432f2dee">type</a>;                                 </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    uchar reserved;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>};</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="structextentity.html">   92</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structextentity.html">extentity</a> : <a class="code hl_struct" href="structentity.html">entity</a></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>{</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordtype">int</span> flags;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <a class="code hl_struct" href="structextentity.html">extentity</a> *attached;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <a class="code hl_struct" href="structextentity.html">extentity</a>();</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordtype">bool</span> spawned() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keywordtype">void</span> setspawned(<span class="keywordtype">bool</span> val);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordtype">void</span> setspawned();</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keywordtype">void</span> clearspawned();</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>};</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="structphysent.html">  110</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structphysent.html">physent</a></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>{</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">  112</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> o, vel, <a class="code hl_variable" href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">falling</a>;                        </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">  113</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> deltapos, <a class="code hl_variable" href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">newpos</a>;                       </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordtype">float</span> yaw, pitch, roll;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">  115</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">maxspeed</a>;                             </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keywordtype">int</span> timeinair;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">  117</a></span>    <span class="keywordtype">float</span> radius, eyeheight, maxheight, <a class="code hl_variable" href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">aboveeye</a>; </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <span class="keywordtype">float</span> xradius, yradius, zmargin;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">  119</a></span>    <a class="code hl_struct" href="structvec.html">vec</a> <a class="code hl_variable" href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">floor</a>;                                  </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keywordtype">int</span> inwater;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordtype">bool</span> jumping;</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <span class="comment">// The velocity type: `move` is movement along camera axis while `strafe` is</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <span class="comment">// side-to-side movement perpendicular to camera axis.</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="keywordtype">char</span> move, strafe, crouching;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno"><a class="line" href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">  128</a></span>    uchar <a class="code hl_variable" href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">physstate</a>;                            </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">  129</a></span>    uchar state, <a class="code hl_variable" href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">editstate</a>;                     </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keyword">enum</span></div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    {</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        PhysEnt_Player = 0,</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        PhysEnt_Camera,</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        PhysEnt_Bounce,</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    };</div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="structphysent.html#a5f05656ab22794accdccf288f4056831">  137</a></span>    uchar <a class="code hl_variable" href="structphysent.html#a5f05656ab22794accdccf288f4056831">type</a>;                                 </div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno"><a class="line" href="structphysent.html#a9559739316e0d2b54f939194a7259542">  138</a></span>    uchar <a class="code hl_variable" href="structphysent.html#a9559739316e0d2b54f939194a7259542">collidetype</a>;                          </div>
 <div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="structphysent.html#a2923ea64fc81be5ae30e6623b8fbaf9b">  140</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structphysent.html#a2923ea64fc81be5ae30e6623b8fbaf9b">blocked</a>;                               </div>
@@ -294,23 +293,23 @@ $(document).ready(function(){initNavTree('ents_8h_source.html',''); initResizabl
 <div class="ttc" id="astructdynent_html_a328ca39121b002c30b585162adec026b"><div class="ttname"><a href="structdynent.html#a328ca39121b002c30b585162adec026b">dynent::k_right</a></div><div class="ttdeci">bool k_right</div><div class="ttdef"><b>Definition:</b> ents.h:199</div></div>
 <div class="ttc" id="astructdynent_html_a4d1a81af37056f80ad90cee60b9ecca8"><div class="ttname"><a href="structdynent.html#a4d1a81af37056f80ad90cee60b9ecca8">dynent::k_left</a></div><div class="ttdeci">bool k_left</div><div class="ttdef"><b>Definition:</b> ents.h:198</div></div>
 <div class="ttc" id="astructdynent_html_afaa0d5d6115b157e1b9bf3d61ee42543"><div class="ttname"><a href="structdynent.html#afaa0d5d6115b157e1b9bf3d61ee42543">dynent::k_up</a></div><div class="ttdeci">bool k_up</div><div class="ttdef"><b>Definition:</b> ents.h:200</div></div>
-<div class="ttc" id="astructentity_html"><div class="ttname"><a href="structentity.html">entity</a></div><div class="ttdoc">Entity data capable of being saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:89</div></div>
-<div class="ttc" id="astructentity_html_a525c90c5512cbb504f7ac9ab7014336f"><div class="ttname"><a href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">entity::o</a></div><div class="ttdeci">vec o</div><div class="ttdef"><b>Definition:</b> ents.h:90</div></div>
-<div class="ttc" id="astructentity_html_a70fab3b3b43a8fa51e997d7b13d74dac"><div class="ttname"><a href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">entity::attr5</a></div><div class="ttdeci">short attr5</div><div class="ttdef"><b>Definition:</b> ents.h:91</div></div>
-<div class="ttc" id="astructentity_html_a8149790bddae92665ede0d60432f2dee"><div class="ttname"><a href="structentity.html#a8149790bddae92665ede0d60432f2dee">entity::type</a></div><div class="ttdeci">uchar type</div><div class="ttdef"><b>Definition:</b> ents.h:92</div></div>
-<div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdoc">Extended entity data not of the subset which is saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:100</div></div>
+<div class="ttc" id="astructentity_html"><div class="ttname"><a href="structentity.html">entity</a></div><div class="ttdoc">Entity data capable of being saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:82</div></div>
+<div class="ttc" id="astructentity_html_a525c90c5512cbb504f7ac9ab7014336f"><div class="ttname"><a href="structentity.html#a525c90c5512cbb504f7ac9ab7014336f">entity::o</a></div><div class="ttdeci">vec o</div><div class="ttdef"><b>Definition:</b> ents.h:83</div></div>
+<div class="ttc" id="astructentity_html_a70fab3b3b43a8fa51e997d7b13d74dac"><div class="ttname"><a href="structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac">entity::attr5</a></div><div class="ttdeci">short attr5</div><div class="ttdef"><b>Definition:</b> ents.h:84</div></div>
+<div class="ttc" id="astructentity_html_a8149790bddae92665ede0d60432f2dee"><div class="ttname"><a href="structentity.html#a8149790bddae92665ede0d60432f2dee">entity::type</a></div><div class="ttdeci">uchar type</div><div class="ttdef"><b>Definition:</b> ents.h:85</div></div>
+<div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdoc">Extended entity data not of the subset which is saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:93</div></div>
 <div class="ttc" id="astructmodelattach_html"><div class="ttname"><a href="structmodelattach.html">modelattach</a></div><div class="ttdoc">An representation of a model attachment (e.g. weapon to player).</div><div class="ttdef"><b>Definition:</b> ents.h:155</div></div>
-<div class="ttc" id="astructphysent_html"><div class="ttname"><a href="structphysent.html">physent</a></div><div class="ttdoc">A base object representing a class.</div><div class="ttdef"><b>Definition:</b> ents.h:118</div></div>
-<div class="ttc" id="astructphysent_html_a003b18e03d94a5d20e8ee050c4148cbf"><div class="ttname"><a href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">physent::floor</a></div><div class="ttdeci">vec floor</div><div class="ttdef"><b>Definition:</b> ents.h:126</div></div>
-<div class="ttc" id="astructphysent_html_a132643e09f4acca54efcfd589b6ee251"><div class="ttname"><a href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">physent::falling</a></div><div class="ttdeci">vec falling</div><div class="ttdef"><b>Definition:</b> ents.h:119</div></div>
-<div class="ttc" id="astructphysent_html_a284dcaeb1abad58fd576ee40da286475"><div class="ttname"><a href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">physent::aboveeye</a></div><div class="ttdeci">float aboveeye</div><div class="ttdef"><b>Definition:</b> ents.h:124</div></div>
+<div class="ttc" id="astructphysent_html"><div class="ttname"><a href="structphysent.html">physent</a></div><div class="ttdoc">A base object representing a class.</div><div class="ttdef"><b>Definition:</b> ents.h:111</div></div>
+<div class="ttc" id="astructphysent_html_a003b18e03d94a5d20e8ee050c4148cbf"><div class="ttname"><a href="structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf">physent::floor</a></div><div class="ttdeci">vec floor</div><div class="ttdef"><b>Definition:</b> ents.h:119</div></div>
+<div class="ttc" id="astructphysent_html_a132643e09f4acca54efcfd589b6ee251"><div class="ttname"><a href="structphysent.html#a132643e09f4acca54efcfd589b6ee251">physent::falling</a></div><div class="ttdeci">vec falling</div><div class="ttdef"><b>Definition:</b> ents.h:112</div></div>
+<div class="ttc" id="astructphysent_html_a284dcaeb1abad58fd576ee40da286475"><div class="ttname"><a href="structphysent.html#a284dcaeb1abad58fd576ee40da286475">physent::aboveeye</a></div><div class="ttdeci">float aboveeye</div><div class="ttdef"><b>Definition:</b> ents.h:117</div></div>
 <div class="ttc" id="astructphysent_html_a2923ea64fc81be5ae30e6623b8fbaf9b"><div class="ttname"><a href="structphysent.html#a2923ea64fc81be5ae30e6623b8fbaf9b">physent::blocked</a></div><div class="ttdeci">bool blocked</div><div class="ttdef"><b>Definition:</b> ents.h:140</div></div>
-<div class="ttc" id="astructphysent_html_a3fba674449f2c9f4a07838b7430fc768"><div class="ttname"><a href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">physent::newpos</a></div><div class="ttdeci">vec newpos</div><div class="ttdef"><b>Definition:</b> ents.h:120</div></div>
-<div class="ttc" id="astructphysent_html_a51de6393b72a6b9b6ed62434d4ac2ea9"><div class="ttname"><a href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">physent::maxspeed</a></div><div class="ttdeci">float maxspeed</div><div class="ttdef"><b>Definition:</b> ents.h:122</div></div>
+<div class="ttc" id="astructphysent_html_a3fba674449f2c9f4a07838b7430fc768"><div class="ttname"><a href="structphysent.html#a3fba674449f2c9f4a07838b7430fc768">physent::newpos</a></div><div class="ttdeci">vec newpos</div><div class="ttdef"><b>Definition:</b> ents.h:113</div></div>
+<div class="ttc" id="astructphysent_html_a51de6393b72a6b9b6ed62434d4ac2ea9"><div class="ttname"><a href="structphysent.html#a51de6393b72a6b9b6ed62434d4ac2ea9">physent::maxspeed</a></div><div class="ttdeci">float maxspeed</div><div class="ttdef"><b>Definition:</b> ents.h:115</div></div>
 <div class="ttc" id="astructphysent_html_a5f05656ab22794accdccf288f4056831"><div class="ttname"><a href="structphysent.html#a5f05656ab22794accdccf288f4056831">physent::type</a></div><div class="ttdeci">uchar type</div><div class="ttdef"><b>Definition:</b> ents.h:137</div></div>
-<div class="ttc" id="astructphysent_html_a63ae2d323571ee6236e9f5c0384cfa60"><div class="ttname"><a href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">physent::editstate</a></div><div class="ttdeci">uchar editstate</div><div class="ttdef"><b>Definition:</b> ents.h:136</div></div>
+<div class="ttc" id="astructphysent_html_a63ae2d323571ee6236e9f5c0384cfa60"><div class="ttname"><a href="structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60">physent::editstate</a></div><div class="ttdeci">uchar editstate</div><div class="ttdef"><b>Definition:</b> ents.h:129</div></div>
 <div class="ttc" id="astructphysent_html_a9559739316e0d2b54f939194a7259542"><div class="ttname"><a href="structphysent.html#a9559739316e0d2b54f939194a7259542">physent::collidetype</a></div><div class="ttdeci">uchar collidetype</div><div class="ttdef"><b>Definition:</b> ents.h:138</div></div>
-<div class="ttc" id="astructphysent_html_aa48b48d6e8ef099842e6102061f9c45e"><div class="ttname"><a href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">physent::physstate</a></div><div class="ttdeci">uchar physstate</div><div class="ttdef"><b>Definition:</b> ents.h:135</div></div>
+<div class="ttc" id="astructphysent_html_aa48b48d6e8ef099842e6102061f9c45e"><div class="ttname"><a href="structphysent.html#aa48b48d6e8ef099842e6102061f9c45e">physent::physstate</a></div><div class="ttdeci">uchar physstate</div><div class="ttdef"><b>Definition:</b> ents.h:128</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

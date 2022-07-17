@@ -1,6 +1,5 @@
 var NAVTREEINDEX2 =
 {
-"structSlot.html#a1c03515604972228df2b940a04ff1309":[10,0,30,2],
 "structSlot.html#a880cae62250a7b71bcb3df0024ba55d5":[10,0,30,1],
 "structSlotShaderParam.html":[10,0,31],
 "structSlot_1_1Tex.html":[10,0,30,0],
