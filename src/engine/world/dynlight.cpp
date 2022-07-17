@@ -178,7 +178,7 @@ int finddynlights()
         return 0;
     }
     physent e;
-    e.type = PhysEnt_Camera;
+    e.type = physent::PhysEnt_Camera;
     for(uint j = 0; j < dynlights.size(); j++)
     {
         dynlight &d = dynlights[j];

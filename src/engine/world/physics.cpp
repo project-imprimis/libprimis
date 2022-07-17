@@ -42,7 +42,7 @@ clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int
 
 static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent &d)
 {
-    int offset = !(c.visible&0x80) || d.type==PhysEnt_Player ? 0 : 1;
+    int offset = !(c.visible&0x80) || d.type==physent::PhysEnt_Player ? 0 : 1;
     return rootworld.getclipbounds(c, o, size, offset);
 }
 
@@ -121,13 +121,13 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec 
         }
         if(yo.z < 0)
         {
-            if(dir.iszero() || (dir.z > 0 && (d->type!=PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
+            if(dir.iszero() || (dir.z > 0 && (d->type!=physent::PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
                 collidewall = vec(0, 0, -1);
                 return true;
             }
         }
-        else if(dir.iszero() || (dir.z < 0 && (d->type!=PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
+        else if(dir.iszero() || (dir.z < 0 && (d->type!=physent::PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
             collidewall = vec(0, 0, 1);
             return true;
@@ -167,13 +167,13 @@ bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center,
         }
         if(d->o.z < yo.z)
         {
-            if(dir.iszero() || (dir.z > 0 && (d->type!=PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
+            if(dir.iszero() || (dir.z > 0 && (d->type!=physent::PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
                 collidewall = vec(0, 0, -1);
                 return true;
             }
         }
-        else if(dir.iszero() || (dir.z < 0 && (d->type!=PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
+        else if(dir.iszero() || (dir.z < 0 && (d->type!=physent::PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
             collidewall = vec(0, 0, 1);
             return true;
@@ -328,7 +328,7 @@ static bool plcollide(physent *d, const vec &dir, physent *o)
 
 bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide with player
 {
-    if(d->type==PhysEnt_Camera)
+    if(d->type==physent::PhysEnt_Camera)
     {
         return false;
     }
@@ -462,7 +462,7 @@ static bool fuzzycollidebox(physent *d, const vec &dir, float cutoff, const vec 
                 continue;
             }
             //nasty ternary in the indented part
-            if(d->type==PhysEnt_Player &&
+            if(d->type==physent::PhysEnt_Player &&
                     dist < (dir.z*w.z < 0 ?
                         d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                         (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -547,7 +547,7 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
             {
                 continue;
             }
-            if(d->type==PhysEnt_Player &&
+            if(d->type==physent::PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                     d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                     (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -723,7 +723,7 @@ static bool checkside(physent &d, int side, const vec &dir, const int visible, c
             {
                 return true;
             }
-            if(d.type==PhysEnt_Player && dotval < 0 && dist < margin)
+            if(d.type==physent::PhysEnt_Player && dotval < 0 && dist < margin)
             {
                 return true;
             }
@@ -745,7 +745,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
     }
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
+    int visible = !(c.visible&0x80) || d->type==physent::PhysEnt_Player ? c.visible : 0xFF;
 
     //if any of these checks are false (NAND of all of these checks)
     if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
@@ -854,7 +854,7 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
                 continue;
             }
             //nasty ternary
-            if(d->type==PhysEnt_Player &&
+            if(d->type==physent::PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                         d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                         (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -898,7 +898,7 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
     }
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
+    int visible = !(c.visible&0x80) || d->type==physent::PhysEnt_Player ? c.visible : 0xFF;
 
     if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
        && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
@@ -966,7 +966,7 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
             {
                 continue;
             }
-            if(d->type==PhysEnt_Player &&
+            if(d->type==physent::PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                 d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                 (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -1056,7 +1056,7 @@ static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo
                 }
                 case Mat_Clip:
                 {
-                    if(IS_CLIPPED(c[i].material&MatFlag_Volume) || d->type==PhysEnt_Player)
+                    if(IS_CLIPPED(c[i].material&MatFlag_Volume) || d->type==physent::PhysEnt_Player)
                     {
                         solid = true;
                     }
@@ -1112,7 +1112,7 @@ bool cubeworld::octacollide(physent *d, const vec &dir, float cutoff, const ivec
         }
         case Mat_Clip:
         {
-            if(IS_CLIPPED(c->material&MatFlag_Volume) || d->type==PhysEnt_Player)
+            if(IS_CLIPPED(c->material&MatFlag_Volume) || d->type==physent::PhysEnt_Player)
             {
                 solid = true;
             }

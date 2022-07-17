@@ -1578,7 +1578,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     physent *oldcamera = camera1;
     physent cmcamera = *player;
     cmcamera.reset();
-    cmcamera.type = PhysEnt_Camera;
+    cmcamera.type = physent::PhysEnt_Camera;
     cmcamera.o = loc;
     cmcamera.yaw = yaw;
     cmcamera.pitch = pitch;
@@ -1676,7 +1676,7 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
     oldcamera = camera1;
     camera = *camera1;
     camera.reset();
-    camera.type = PhysEnt_Camera;
+    camera.type = physent::PhysEnt_Camera;
     camera.o = vec(0, 0, 0);
     camera.yaw = 0;
     camera.pitch = modelpreviewpitch;

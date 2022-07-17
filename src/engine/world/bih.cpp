@@ -821,7 +821,7 @@ static bool playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radi
 {
     float a = 2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)),
           b = (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0);
-    if(d->type==PhysEnt_Player)
+    if(d->type==physent::PhysEnt_Player)
     {
         if(pdist < (dir.z*n.z < 0 ? a : b))
         {
