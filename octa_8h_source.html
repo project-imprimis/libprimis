@@ -455,69 +455,71 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span> </div>
 <div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        <span class="keywordtype">void</span> entitiesinoctanodes();</div>
 <div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        <span class="keywordtype">void</span> commitchanges(<span class="keywordtype">bool</span> force = <span class="keyword">false</span>);</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span> </div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>        uint mapcrc; </div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>        <span class="keywordtype">void</span> octarender();</div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>};</div>
-<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span> </div>
-<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span><span class="keyword">extern</span> <a class="code hl_class" href="classcubeworld.html">cubeworld</a> rootworld;</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>        <span class="keywordtype">void</span> updateparticles();</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span> </div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>        uint mapcrc; </div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>        <span class="keywordtype">void</span> octarender();</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>        <span class="keywordtype">void</span> seedparticles();</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>};</div>
 <div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span> </div>
-<div class="line"><a id="l00620" name="l00620"></a><span class="lineno"><a class="line" href="structundolist.html">  620</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
-<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>{</div>
-<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
-<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span> </div>
-<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span><span class="keyword">extern</span> <a class="code hl_class" href="classcubeworld.html">cubeworld</a> rootworld;</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span> </div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno"><a class="line" href="structundolist.html">  622</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>{</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
 <div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span> </div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
 <div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span> </div>
-<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
-<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>    {</div>
-<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>        u-&gt;prev = last;</div>
-<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>        <span class="keywordflow">if</span>(!first)</div>
-<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>        {</div>
-<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>            first = last = u;</div>
-<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        }</div>
-<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>        {</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>            last-&gt;next = u;</div>
-<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>            last = u;</div>
-<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>        }</div>
-<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>    }</div>
-<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span> </div>
-<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
-<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>    {</div>
-<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
-<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>        first = first-&gt;next;</div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>        <span class="keywordflow">if</span>(first)</div>
-<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>        {</div>
-<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>        }</div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>        {</div>
-<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>            last = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>        }</div>
-<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>    }</div>
-<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span> </div>
-<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
-<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span>    {</div>
-<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
-<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>        last = last-&gt;prev;</div>
-<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>        <span class="keywordflow">if</span>(last)</div>
-<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>        {</div>
-<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>        }</div>
-<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>        {</div>
-<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>            first = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>        }</div>
-<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>    }</div>
-<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>};</div>
-<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span> </div>
-<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span> </div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span>    {</div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno">  633</span>        u-&gt;prev = last;</div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>        <span class="keywordflow">if</span>(!first)</div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>        {</div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>            first = last = u;</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>        }</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span>        {</div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>            last-&gt;next = u;</div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>            last = u;</div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span>        }</div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span>    }</div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span> </div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span>    {</div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
+<div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>        first = first-&gt;next;</div>
+<div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>        <span class="keywordflow">if</span>(first)</div>
+<div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>        {</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>        }</div>
+<div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>        {</div>
+<div class="line"><a id="l00655" name="l00655"></a><span class="lineno">  655</span>            last = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00656" name="l00656"></a><span class="lineno">  656</span>        }</div>
+<div class="line"><a id="l00657" name="l00657"></a><span class="lineno">  657</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00658" name="l00658"></a><span class="lineno">  658</span>    }</div>
+<div class="line"><a id="l00659" name="l00659"></a><span class="lineno">  659</span> </div>
+<div class="line"><a id="l00660" name="l00660"></a><span class="lineno">  660</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
+<div class="line"><a id="l00661" name="l00661"></a><span class="lineno">  661</span>    {</div>
+<div class="line"><a id="l00662" name="l00662"></a><span class="lineno">  662</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
+<div class="line"><a id="l00663" name="l00663"></a><span class="lineno">  663</span>        last = last-&gt;prev;</div>
+<div class="line"><a id="l00664" name="l00664"></a><span class="lineno">  664</span>        <span class="keywordflow">if</span>(last)</div>
+<div class="line"><a id="l00665" name="l00665"></a><span class="lineno">  665</span>        {</div>
+<div class="line"><a id="l00666" name="l00666"></a><span class="lineno">  666</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00667" name="l00667"></a><span class="lineno">  667</span>        }</div>
+<div class="line"><a id="l00668" name="l00668"></a><span class="lineno">  668</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00669" name="l00669"></a><span class="lineno">  669</span>        {</div>
+<div class="line"><a id="l00670" name="l00670"></a><span class="lineno">  670</span>            first = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00671" name="l00671"></a><span class="lineno">  671</span>        }</div>
+<div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span>    }</div>
+<div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>};</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span> </div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclasscube_html"><div class="ttname"><a href="classcube.html">cube</a></div><div class="ttdoc">The fundemental building block of the octree world, representing a 3D cube.</div><div class="ttdef"><b>Definition:</b> octa.h:95</div></div>
 <div class="ttc" id="aclasscube_html_a2260c52d69daed945371581af8dcf637"><div class="ttname"><a href="classcube.html#a2260c52d69daed945371581af8dcf637">cube::faces</a></div><div class="ttdeci">uint faces[3]</div><div class="ttdef"><b>Definition:</b> octa.h:103</div></div>
 <div class="ttc" id="aclasscube_html_a2faf100108da8f40d88473baafb9be61"><div class="ttname"><a href="classcube.html#a2faf100108da8f40d88473baafb9be61">cube::isvalidcube</a></div><div class="ttdeci">bool isvalidcube()</div><div class="ttdoc">Returns whether the cube is valid.</div></div>
@@ -570,7 +572,7 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="astructundoblock_html_a1dec53ad5f85909e6796642ea8e4b663"><div class="ttname"><a href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">undoblock::numents</a></div><div class="ttdeci">int numents</div><div class="ttdef"><b>Definition:</b> octa.h:420</div></div>
 <div class="ttc" id="astructundoblock_html_ac7993663dac147f8134a9f24ec91a876"><div class="ttname"><a href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">undoblock::timestamp</a></div><div class="ttdeci">int timestamp</div><div class="ttdef"><b>Definition:</b> octa.h:419</div></div>
 <div class="ttc" id="astructundoent_html"><div class="ttname"><a href="structundoent.html">undoent</a></div><div class="ttdef"><b>Definition:</b> octa.h:410</div></div>
-<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:621</div></div>
+<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:623</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
