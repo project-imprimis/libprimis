@@ -14,7 +14,6 @@ enum
 
 extern void clearparticles();
 extern void clearparticleemitters();
-extern void seedparticles();
 extern void debugparticles();
 extern void cleanupparticles();
 

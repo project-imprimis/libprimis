@@ -1954,7 +1954,7 @@ static void makeparticles(entity &e)
     }
 }
 
-void seedparticles()
+void cubeworld::seedparticles()
 {
     renderprogress(0, "seeding particles");
     addparticleemitters();
