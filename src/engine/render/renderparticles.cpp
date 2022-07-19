@@ -1974,7 +1974,7 @@ void cubeworld::seedparticles()
     }
 }
 
-void updateparticles()
+void cubeworld::updateparticles()
 {
     //note: static int carried across all calls of function
     static int lastemitframe = 0;
