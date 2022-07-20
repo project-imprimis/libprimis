@@ -632,7 +632,7 @@ void splitocta(cube *c, int size)
     }
 }
 
-void resetmap()
+void cubeworld::resetmap()
 {
     clearoverrides();
     clearlights();
@@ -642,7 +642,7 @@ void resetmap()
     clearsleep();
     cancelsel();
     pruneundos();
-    rootworld.clearmapcrc();
+    clearmapcrc();
 
     entities::clearents();
     outsideents.clear();

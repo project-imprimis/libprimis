@@ -62,7 +62,7 @@ static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p
     return p.visible;
 }
 
-void resetclipplanes()
+void cubeworld::resetclipplanes()
 {
     clipcacheversion += maxclipoffset;
     if(!clipcacheversion)

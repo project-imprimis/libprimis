@@ -74,7 +74,7 @@ static void fixent(entity &e, int version)
     }
 }
 
-static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
+bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
     {
@@ -191,7 +191,7 @@ enum
 
 static int savemapprogress = 0;
 
-void savec(cube *c, const ivec &o, int size, stream *f)
+void cubeworld::savec(cube *c, const ivec &o, int size, stream *f)
 {
     if((savemapprogress++&0xFFF)==0)
     {

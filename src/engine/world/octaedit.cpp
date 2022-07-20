@@ -383,8 +383,6 @@ bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, 
 
 //////////// ready changes to vertex arrays ////////////
 
-static bool haschanged = false;
-
 static void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor, int size)
 {
     LOOP_OCTA_BOX(cor, size, bbmin, bbmax)

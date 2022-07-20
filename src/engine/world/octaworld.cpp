@@ -37,24 +37,6 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
     { 2,  3,  5, 7 },
 };
 
-//this is simply a cube() object but with a constructor that indicates nothing is in it
-static struct emptycube : cube
-{
-    emptycube()
-    {
-        children = nullptr;
-        ext = nullptr;
-        visible = 0;
-        merged = 0;
-        material = Mat_Air;
-        setcubefaces(*this, faceempty);
-        for(int i = 0; i < 6; ++i)
-        {
-            texture[i] = Default_Sky;
-        }
-    }
-} emptycube;
-
 cubeworld rootworld;
 
 void calcmerges();
