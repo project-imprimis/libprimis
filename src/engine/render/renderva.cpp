@@ -698,7 +698,7 @@ namespace
         {
             enablevquery(cur);
         }
-        startquery(query);
+        query->startquery();
         if(full)
         {
             drawbb(ivec(va->bbmin).sub(1), ivec(va->bbmax).sub(va->bbmin).add(2));
@@ -1278,7 +1278,7 @@ namespace
             if(va->query) \
             { \
                 flush; \
-                startquery(va->query); \
+                va->query->startquery(); \
             } \
         } while(0)
 
@@ -2322,9 +2322,9 @@ occludequery *newquery(void *owner)
     return queryframes[flipquery].newquery(owner);
 }
 
-void startquery(occludequery *query)
+void occludequery::startquery()
 {
-    glBeginQuery(querytarget(), query->id);
+    glBeginQuery(querytarget(), this->id);
 }
 
 void endquery()
@@ -2445,7 +2445,7 @@ void rendermapmodels()
                     oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : nullptr;
                     if(oe->query)
                     {
-                        startmodelquery(oe->query);
+                        oe->query->startmodelquery();
                     }
                 }
                 rendermapmodel(e);
@@ -2475,7 +2475,7 @@ void rendermapmodels()
                 startbb();
                 queried = true;
             }
-            startquery(oe->query);
+            oe->query->startquery();
             drawbb(oe->bbmin, ivec(oe->bbmax).sub(oe->bbmin));
             endquery();
         }

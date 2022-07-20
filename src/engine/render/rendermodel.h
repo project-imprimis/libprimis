@@ -13,7 +13,6 @@ extern uint transmdltiles[];
 extern void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void resetmodelbatches();
-extern void startmodelquery(occludequery *query);
 extern void endmodelquery();
 extern void rendershadowmodelbatches(bool dynmodel = true);
 extern void shadowmaskbatchedmodels(bool dynshadow = true);

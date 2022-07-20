@@ -48,6 +48,9 @@ struct occludequery
     void *owner;
     GLuint id;
     int fragments;
+
+    void startmodelquery();
+    void startquery();
 };
 
 struct octaentities

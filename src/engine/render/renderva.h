@@ -48,7 +48,6 @@ extern bvec outlinecolor;
 extern int deferquery;
 extern void flipqueries();
 extern occludequery *newquery(void *owner);
-extern void startquery(occludequery *query);
 extern void endquery();
 extern bool checkquery(occludequery *query, bool nowait = false);
 extern void resetqueries();

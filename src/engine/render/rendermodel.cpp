@@ -743,7 +743,7 @@ static void rendercullmodelquery(model *m, dynent *d, const vec &center, float r
     {
         return;
     }
-    startquery(d->query);
+    d->query->startquery();
     int br = static_cast<int>(radius*2)+1;
     drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
     endquery();
@@ -991,7 +991,7 @@ void rendermodelbatches()
                 bm.d->query = newquery(bm.d);
                 if(bm.d->query)
                 {
-                    startquery(bm.d->query);
+                    bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
                     endquery();
                     continue;
@@ -1064,7 +1064,7 @@ void rendertransparentmodelbatches(int stencil)
                 bm.d->query = newquery(bm.d);
                 if(bm.d->query)
                 {
-                    startquery(bm.d->query);
+                    bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
                     endquery();
                     continue;
@@ -1085,9 +1085,9 @@ static int modelquerybatches = -1,
            modelquerymodels = -1,
            modelqueryattached = -1;
 
-void startmodelquery(occludequery *query)
+void occludequery::startmodelquery()
 {
-    modelquery = query;
+    modelquery = this;
     modelquerybatches = batches.size();
     modelquerymodels = batchedmodels.size();
     modelqueryattached = modelattached.size();
@@ -1102,7 +1102,7 @@ void endmodelquery()
         return;
     }
     aamask::enable();
-    startquery(modelquery);
+    modelquery->startquery();
     for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
@@ -1298,7 +1298,7 @@ hasboundbox:
             d->query = newquery(d);
             if(d->query)
             {
-                startquery(d->query);
+                d->query->startquery();
             }
         }
         m->startrender();
