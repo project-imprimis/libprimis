@@ -125,3 +125,6 @@ endif
 emplace:
 	cp libprimis.so $(DESTDIR)$(PREFIX)/lib/libprimis.so
 
+uninstall:
+	rm $(DESTDIR)$(PREFIX)/lib/libprimis.so
+
