@@ -158,8 +158,7 @@ ivec cor, lastcor,
 bool editmode     = false,
      multiplayer  = false,
      allowediting = false,
-     havesel      = false,
-     hmapsel      = false;
+     havesel      = false;
 int horient  = 0,
     entmoving = 0;
 
