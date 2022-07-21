@@ -123,5 +123,9 @@ client: $(CLIENT_OBJS)
 endif
 
 emplace:
+	mkdir --parents $(DESTDIR)$(PREFIX)/lib/
 	cp libprimis.so $(DESTDIR)$(PREFIX)/lib/libprimis.so
+
+uninstall:
+	rm $(DESTDIR)$(PREFIX)/lib/libprimis.so
 
