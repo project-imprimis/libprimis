@@ -3,6 +3,16 @@
 
 struct vtxarray;
 
+struct occludequery
+{
+    void *owner;
+    GLuint id;
+    int fragments;
+
+    void startmodelquery();
+    void startquery();
+};
+
 class vfc
 {
     public:
