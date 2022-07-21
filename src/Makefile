@@ -6,17 +6,21 @@
 # -std=c++17: compile to c++17 standard, needed for some std library functions
 # -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
 # -Wall: show "all" level of compiler warnings (which is not actually all possible warnings)
+
 # -fsigned-char: have the `char` type be signed (as opposed to `uchar`)
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
 
-CXXFLAGS= -O3 -ffast-math -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
-
-CLIENT_INCLUDES= -Ishared -Iengine $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
+CXXFLAGS ?= -O3 -ffast-math -Wall
+CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
+#-Ishared
+CLIENT_INCLUDES=  -Iengine $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
 
 COVERAGE_BUILD ?= 0
 
 CPP_20 ?= 0
+
+PREFIX ?= /usr/local
 
 # if you want to compile with coverage flags, use `make -Csrc COVERAGE_BUILD=1`
 
@@ -119,5 +123,8 @@ client: $(CLIENT_OBJS)
 endif
 
 emplace:
-	sudo cp libprimis.so /usr/lib/libprimis.so
+	cp --parents libprimis.so $(DESTDIR)$(PREFIX)/lib/libprimis.so
+
+uninstall:
+	rm $(DESTDIR)$(PREFIX)/lib/libprimis.so
 
