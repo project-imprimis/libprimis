@@ -1,6 +1,8 @@
 #ifndef OCTAWORLD_H_
 #define OCTAWORLD_H_
 
+#define OPPOSITE(orient)   ((orient)^1)
+
 enum BlendMapLayers
 {
     BlendLayer_Top    = (1<<5),
