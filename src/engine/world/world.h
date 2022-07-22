@@ -5,7 +5,7 @@ constexpr int currentmapversion = 1;   // bump if map format changes, see worldi
 constexpr float wateramplitude = 0.4f; //max wave height
 constexpr float wateroffset = 1.1f;    //wave offset from top of mat volume
 
-enum
+enum MaterialSurfaces
 {
     MatSurf_NotVisible = 0,
     MatSurf_Visible,
