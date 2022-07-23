@@ -36,8 +36,8 @@ const char *sourcefile = nullptr,
 vector<char> strbuf[4];
 int stridx = 0;
 
-IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
-          *aliasstack = &noalias;
+static IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
+             *aliasstack = &noalias;
 
 static int _numargs = variable("numargs", Max_Args, 0, 0, &_numargs, nullptr, 0);
 
@@ -4323,6 +4323,54 @@ cleanup:
 static constexpr int maxrundepth = 255; //limit for rundepth (nesting depth) var below
 static int rundepth = 0; //current rundepth
 
+#define UNDOARGS \
+    identstack argstack[Max_Args]; \
+    IdentLink *prevstack = aliasstack; \
+    IdentLink aliaslink; \
+    for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
+    { \
+        if(prevstack->usedargs & undoflag) \
+        { \
+            ++undos; \
+        } \
+        else if(undos > 0) \
+        { \
+            --undos; \
+        } \
+        else \
+        { \
+            prevstack = prevstack->next; \
+            for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
+            { \
+                if(argmask&1) \
+                { \
+                    undoarg(*identmap[i], argstack[i]); \
+                } \
+            } \
+            aliaslink.id = aliasstack->id; \
+            aliaslink.next = aliasstack; \
+            aliaslink.usedargs = undoflag | prevstack->usedargs; \
+            aliaslink.argstack = prevstack->argstack; \
+            aliasstack = &aliaslink; \
+            break; \
+        } \
+    } \
+
+
+#define REDOARGS \
+    if(aliasstack == &aliaslink) \
+    { \
+        prevstack->usedargs |= aliaslink.usedargs & ~undoflag; \
+        aliasstack = aliaslink.next; \
+        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
+        { \
+            if(argmask&1) \
+            { \
+                redoarg(*identmap[i], argstack[i]); \
+            } \
+        } \
+    }
+
 static const uint *runcode(const uint *code, tagval &result)
 {
     result.setnull();
@@ -5537,6 +5585,20 @@ bool executebool(ident *id, tagval *args, int numargs, bool lookup)
     return b;
 }
 
+static void doargs(uint *body)
+{
+    if(aliasstack != &noalias)
+    {
+        UNDOARGS
+        executeret(body, *commandret);
+        REDOARGS
+    }
+    else
+    {
+        executeret(body, *commandret);
+    }
+}
+
 void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
@@ -5557,4 +5619,5 @@ void initcscmds()
     addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
     addcommand("alias", reinterpret_cast<identfun>(+[] (const char *name, tagval *v){ setalias(name, *v); v->type = Value_Null;}), "sT", Id_Command);
     addcommand("resetvar", reinterpret_cast<identfun>(resetvar), "s", Id_Command);
+    addcommand("doargs", reinterpret_cast<identfun>(doargs), "e", Id_DoArgs);
 }

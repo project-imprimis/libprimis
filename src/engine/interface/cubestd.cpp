@@ -296,20 +296,6 @@ const char *numberstr(double v)
     return retbuf[retidx];
 }
 
-static void doargs(uint *body)
-{
-    if(aliasstack != &noalias)
-    {
-        UNDOARGS
-        executeret(body, *commandret);
-        REDOARGS
-    }
-    else
-    {
-        executeret(body, *commandret);
-    }
-}
-
 void loopiter(ident *id, identstack &stack, const tagval &v)
 {
     if(id->stack != &stack)
@@ -1419,7 +1405,6 @@ void initcontrolcmds()
     addcommand("unescape", reinterpret_cast<identfun>(unescapecmd), "s", Id_Command);
     addcommand("writecfg", reinterpret_cast<identfun>(writecfg), "s", Id_Command);
     addcommand("changedvars", reinterpret_cast<identfun>(changedvars), "", Id_Command);
-    addcommand("doargs", reinterpret_cast<identfun>(doargs), "e", Id_DoArgs);
 
     addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
     addcommand("?", reinterpret_cast<identfun>(+[] (tagval *cond, tagval *t, tagval *f) { result(*(getbool(*cond) ? t : f)); }), "tTT", Id_Command);

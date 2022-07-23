@@ -98,54 +98,6 @@ enum
 PARSEFLOAT(float, float)
 PARSEFLOAT(number, double)
 
-#define UNDOARGS \
-    identstack argstack[Max_Args]; \
-    IdentLink *prevstack = aliasstack; \
-    IdentLink aliaslink; \
-    for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
-    { \
-        if(prevstack->usedargs & undoflag) \
-        { \
-            ++undos; \
-        } \
-        else if(undos > 0) \
-        { \
-            --undos; \
-        } \
-        else \
-        { \
-            prevstack = prevstack->next; \
-            for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
-            { \
-                if(argmask&1) \
-                { \
-                    undoarg(*identmap[i], argstack[i]); \
-                } \
-            } \
-            aliaslink.id = aliasstack->id; \
-            aliaslink.next = aliasstack; \
-            aliaslink.usedargs = undoflag | prevstack->usedargs; \
-            aliaslink.argstack = prevstack->argstack; \
-            aliasstack = &aliaslink; \
-            break; \
-        } \
-    } \
-
-
-#define REDOARGS \
-    if(aliasstack == &aliaslink) \
-    { \
-        prevstack->usedargs |= aliaslink.usedargs & ~undoflag; \
-        aliasstack = aliaslink.next; \
-        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
-        { \
-            if(argmask&1) \
-            { \
-                redoarg(*identmap[i], argstack[i]); \
-            } \
-        } \
-    }
-
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
 
@@ -232,9 +184,6 @@ struct IdentLink
     int usedargs;
     identstack *argstack;
 };
-
-extern IdentLink noalias;
-extern IdentLink *aliasstack;
 
 extern const char *sourcefile,
                   *sourcestr;
