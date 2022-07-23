@@ -10,7 +10,7 @@ enum
 };
 const int undoflag = 1<<Max_Args;
 
-enum
+enum CubeScriptCodes
 {
     Code_Start = 0,          //0
     Code_Offset,
