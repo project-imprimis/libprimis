@@ -1,7 +1,12 @@
 #ifndef RENDERMODEL_H_
 #define RENDERMODEL_H_
 
-struct mapmodelinfo { string name; model *m, *collide; };
+struct mapmodelinfo
+{
+    string name;
+    model *m,
+          *collide;
+};
 
 extern std::vector<mapmodelinfo> mapmodels;
 
