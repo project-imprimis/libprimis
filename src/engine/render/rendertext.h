@@ -59,22 +59,6 @@ extern void text_boundsf(const char *str, float &width, float &height, int maxwi
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
 extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
-inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
-{
-    float widthf, heightf;
-    text_boundsf(str, widthf, heightf, maxwidth);
-    width = static_cast<int>(std::ceil(widthf));
-    height = static_cast<int>(std::ceil(heightf));
-}
-
-inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
-{
-    float cxf, cyf;
-    text_posf(str, cursor, cxf, cyf, maxwidth);
-    cx = static_cast<int>(cxf);
-    cy = static_cast<int>(cyf);
-}
-
 inline int text_width(const char *str)
 {
     return static_cast<int>(std::ceil(text_widthf(str)));

@@ -19,6 +19,22 @@
 
 // editline
 
+inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
+{
+    float widthf, heightf;
+    text_boundsf(str, widthf, heightf, maxwidth);
+    width = static_cast<int>(std::ceil(widthf));
+    height = static_cast<int>(std::ceil(heightf));
+}
+
+inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
+{
+    float cxf, cyf;
+    text_posf(str, cursor, cxf, cyf, maxwidth);
+    cx = static_cast<int>(cxf);
+    cy = static_cast<int>(cyf);
+}
+
 bool EditLine::empty()
 {
     return len <= 0;
