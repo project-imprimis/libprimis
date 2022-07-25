@@ -981,7 +981,7 @@ void loopfiles(ident *id, char *dir, char *ext, uint *body)
     }
 }
 
-void findfile_(char *name)
+static void findfile_(char *name)
 {
     string fname;
     copystring(fname, name);
