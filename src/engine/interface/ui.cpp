@@ -110,45 +110,46 @@ namespace UI
             float x1, y1, x2, y2;
     };
 
-    static std::vector<ClipArea> clipstack;
-
-    static void pushclip(float x, float y, float w, float h)
-    {
-        if(clipstack.empty())
-        {
-            glEnable(GL_SCISSOR_TEST);
-        }
-        ClipArea &c = clipstack.emplace_back(ClipArea(x, y, w, h));
-        if(clipstack.size() >= 2)
-        {
-            c.intersect(clipstack[clipstack.size()-2]);
-        }
-        c.scissor();
-    }
-
-    static void popclip()
-    {
-        clipstack.pop_back();
-        if(clipstack.empty())
-        {
-            glDisable(GL_SCISSOR_TEST);
-        }
-        else
-        {
-            clipstack.back().scissor();
-        }
-    }
-
-    static bool isfullyclipped(float x, float y, float w, float h)
-    {
-        if(clipstack.empty())
-        {
-            return false;
-        }
-        return clipstack.back().isfullyclipped(x, y, w, h);
-    }
     namespace
     {
+        std::vector<ClipArea> clipstack;
+
+        void pushclip(float x, float y, float w, float h)
+        {
+            if(clipstack.empty())
+            {
+                glEnable(GL_SCISSOR_TEST);
+            }
+            ClipArea &c = clipstack.emplace_back(ClipArea(x, y, w, h));
+            if(clipstack.size() >= 2)
+            {
+                c.intersect(clipstack[clipstack.size()-2]);
+            }
+            c.scissor();
+        }
+
+        void popclip()
+        {
+            clipstack.pop_back();
+            if(clipstack.empty())
+            {
+                glDisable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                clipstack.back().scissor();
+            }
+        }
+
+        bool isfullyclipped(float x, float y, float w, float h)
+        {
+            if(clipstack.empty())
+            {
+                return false;
+            }
+            return clipstack.back().isfullyclipped(x, y, w, h);
+        }
+
         enum Alignment
         {
             Align_Mask = 0xF,
