@@ -1,8 +1,6 @@
 #ifndef SKELMODEL_H_
 #define SKELMODEL_H_
 
-extern int gpuskel, maxskelanimdata;
-
 enum Bonemask
 {
     Bonemask_Not  = 0x8000,
