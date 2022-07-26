@@ -27,7 +27,6 @@
 #include "render/stain.h"
 #include "render/texture.h"
 
-VARR(mapversion, 1, currentmapversion, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);
 VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");

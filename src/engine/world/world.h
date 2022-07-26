@@ -15,7 +15,6 @@ enum MaterialSurfaces
 constexpr float defaulttexscale = 16.0f;
 
 extern int worldscale, worldsize;
-extern int mapversion;
 extern char *maptitle;
 extern int octaentsize;
 

@@ -21,6 +21,8 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
+VARR(mapversion, 1, currentmapversion, 0);
+
 string clientmap = "";
 
 void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
