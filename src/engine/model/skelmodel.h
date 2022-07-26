@@ -3,7 +3,7 @@
 
 extern int gpuskel, maxskelanimdata;
 
-enum
+enum Bonemask
 {
     Bonemask_Not  = 0x8000,
     Bonemask_End  = 0xFFFF,
