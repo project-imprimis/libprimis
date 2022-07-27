@@ -683,14 +683,14 @@ void limitfps(int &millis, int curmillis)
 
 constexpr int maxfpshistory = 60;
 
-int fpspos = 0,
-    fpshistory[maxfpshistory];
+int fpspos = 0;
+std::array<int, maxfpshistory> fpshistory;
 
 void resetfpshistory()
 {
-    for(int i = 0; i < maxfpshistory; ++i)
+    for(int& i : fpshistory)
     {
-        fpshistory[i] = 1;
+        i = 1;
     }
     fpspos = 0;
 }
@@ -706,7 +706,7 @@ void updatefpshistory(int millis)
 
 void getfps(int &fps, int &bestdiff, int &worstdiff)
 {
-    int total = fpshistory[maxfpshistory-1],
+    int total = fpshistory.at(maxfpshistory-1),
         best = total,
         worst = total;
     for(int i = 0; i < maxfpshistory-1; ++i)
