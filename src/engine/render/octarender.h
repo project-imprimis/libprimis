@@ -97,6 +97,7 @@ extern ivec worldmin, worldmax;
 extern std::vector<tjoint> tjoints;
 extern vector<vtxarray *> varoot, valist;
 extern int filltjoints;
+extern int allocva;
 
 extern ushort encodenormal(const vec &n);
 extern void guessnormals(const vec *pos, int numverts, vec *normals);

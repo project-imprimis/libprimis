@@ -185,7 +185,7 @@ extern int wtris, wverts,
            glde, gbatches,
            rplanes;
 
-extern int allocnodes, allocva;
+extern int allocnodes;
 
 enum
 {
