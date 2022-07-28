@@ -32,6 +32,8 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
+vector<materialsurface> glasssurfs[4], watersurfs[4], waterfallsurfs[4];
+
 //internally relevant functionality
 
 namespace
@@ -922,8 +924,6 @@ void setupmaterials(int start, int len)
 }
 
 VARP(showmat, 0, 1, 1); //toggles rendering material faces
-
-vector<materialsurface> glasssurfs[4], watersurfs[4], waterfallsurfs[4];
 
 float matliquidsx1  = -1,
       matliquidsy1  = -1,

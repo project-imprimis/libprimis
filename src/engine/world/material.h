@@ -8,7 +8,7 @@ extern float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
 extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
 extern float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
 extern uint matliquidtiles[], matsolidtiles[];
-extern vector<materialsurface> glasssurfs[4], watersurfs[4], waterfallsurfs[4];
+extern vector<materialsurface> watersurfs[4], waterfallsurfs[4];
 inline const vec matnormals[6] =
 {
     vec(-1, 0, 0),
