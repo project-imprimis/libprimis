@@ -1900,6 +1900,90 @@ namespace
         shadowvbos.push_back(vbuf);
     }
 
+    int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
+    {
+        // p1, p2, p3 are in the cubemap's local coordinate system
+        // bias = border/(size - border)
+        int mask = 0x3F;
+        float dp1 = p1.x + p1.y,
+              dn1 = p1.x - p1.y,
+              ap1 = std::fabs(dp1),
+              an1 = std::fabs(dn1),
+              dp2 = p2.x + p2.y,
+              dn2 = p2.x - p2.y,
+              ap2 = std::fabs(dp2),
+              an2 = std::fabs(dn2),
+              dp3 = p3.x + p3.y,
+              dn3 = p3.x - p3.y,
+              ap3 = std::fabs(dp3),
+              an3 = std::fabs(dn3);
+        if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
+        {
+            mask &=  (3<<4)
+                   | (dp1 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
+                   | (dp2 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
+                   | (dp3 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
+        }
+        if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
+            mask &=  (3<<4)
+                   | (dn1 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
+                   | (dn2 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
+                   | (dn3 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
+        dp1 = p1.y + p1.z,
+        dn1 = p1.y - p1.z,
+        ap1 = std::fabs(dp1),
+        an1 = std::fabs(dn1),
+        dp2 = p2.y + p2.z,
+        dn2 = p2.y - p2.z,
+        ap2 = std::fabs(dp2),
+        an2 = std::fabs(dn2),
+        dp3 = p3.y + p3.z,
+        dn3 = p3.y - p3.z,
+        ap3 = std::fabs(dp3),
+        an3 = std::fabs(dn3);
+        if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
+        {
+            mask &= (3<<0)
+                | (dp1 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4))
+                | (dp2 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4))
+                | (dp3 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4));
+        }
+        if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
+        {
+            mask &= (3<<0)
+                | (dn1 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4))
+                | (dn2 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4))
+                | (dn3 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4));
+        }
+        dp1 = p1.z + p1.x,
+        dn1 = p1.z - p1.x,
+        ap1 = std::fabs(dp1),
+        an1 = std::fabs(dn1),
+        dp2 = p2.z + p2.x,
+        dn2 = p2.z - p2.x,
+        ap2 = std::fabs(dp2),
+        an2 = std::fabs(dn2),
+        dp3 = p3.z + p3.x,
+        dn3 = p3.z - p3.x,
+        ap3 = std::fabs(dp3),
+        an3 = std::fabs(dn3);
+        if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
+        {
+            mask &= (3<<2)
+                | (dp1 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0))
+                | (dp2 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0))
+                | (dp3 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
+        }
+        if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
+        {
+            mask &= (3<<2)
+                | (dn1 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0))
+                | (dn2 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0))
+                | (dn3 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
+        }
+        return mask;
+    }
+
     void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
     {
         vec l0 = vec(v0).sub(shadoworigin);
@@ -2614,90 +2698,6 @@ void cubeworld::cleanupva()
     clearqueries();
     cleanupbb();
     cleanupgrass();
-}
-
-int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
-{
-    // p1, p2, p3 are in the cubemap's local coordinate system
-    // bias = border/(size - border)
-    int mask = 0x3F;
-    float dp1 = p1.x + p1.y,
-          dn1 = p1.x - p1.y,
-          ap1 = std::fabs(dp1),
-          an1 = std::fabs(dn1),
-          dp2 = p2.x + p2.y,
-          dn2 = p2.x - p2.y,
-          ap2 = std::fabs(dp2),
-          an2 = std::fabs(dn2),
-          dp3 = p3.x + p3.y,
-          dn3 = p3.x - p3.y,
-          ap3 = std::fabs(dp3),
-          an3 = std::fabs(dn3);
-    if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
-    {
-        mask &=  (3<<4)
-               | (dp1 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
-               | (dp2 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
-               | (dp3 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
-    }
-    if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
-        mask &=  (3<<4)
-               | (dn1 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
-               | (dn2 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
-               | (dn3 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
-    dp1 = p1.y + p1.z,
-    dn1 = p1.y - p1.z,
-    ap1 = std::fabs(dp1),
-    an1 = std::fabs(dn1),
-    dp2 = p2.y + p2.z,
-    dn2 = p2.y - p2.z,
-    ap2 = std::fabs(dp2),
-    an2 = std::fabs(dn2),
-    dp3 = p3.y + p3.z,
-    dn3 = p3.y - p3.z,
-    ap3 = std::fabs(dp3),
-    an3 = std::fabs(dn3);
-    if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
-    {
-        mask &= (3<<0)
-            | (dp1 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4))
-            | (dp2 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4))
-            | (dp3 >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4));
-    }
-    if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
-    {
-        mask &= (3<<0)
-            | (dn1 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4))
-            | (dn2 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4))
-            | (dn3 >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4));
-    }
-    dp1 = p1.z + p1.x,
-    dn1 = p1.z - p1.x,
-    ap1 = std::fabs(dp1),
-    an1 = std::fabs(dn1),
-    dp2 = p2.z + p2.x,
-    dn2 = p2.z - p2.x,
-    ap2 = std::fabs(dp2),
-    an2 = std::fabs(dn2),
-    dp3 = p3.z + p3.x,
-    dn3 = p3.z - p3.x,
-    ap3 = std::fabs(dp3),
-    an3 = std::fabs(dn3);
-    if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
-    {
-        mask &= (3<<2)
-            | (dp1 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0))
-            | (dp2 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0))
-            | (dp3 >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
-    }
-    if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
-    {
-        mask &= (3<<2)
-            | (dn1 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0))
-            | (dn2 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0))
-            | (dn3 >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
-    }
-    return mask;
 }
 
 int findalphavas()

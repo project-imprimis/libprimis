@@ -65,7 +65,6 @@ extern int getnumqueries();
 extern void startbb(bool mask = true);
 extern void endbb(bool mask = true);
 extern void drawbb(const ivec &bo, const ivec &br);
-extern int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias);
 
 extern void renderdecals();
 
