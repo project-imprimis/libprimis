@@ -264,38 +264,31 @@ namespace UI
             ushort state, childstate;
             Object *parent;
 
-            //takes a polymorphic std::function parameter to allow [this](){} macros
-            //to be passed as the "body"
-            void loopchildren(std::function<void(Object *)> body)
-            {
-                for(int i = 0; i < static_cast<int>(children.size()); i++)
-                {
-                    Object *o = children.at(i);
-                    body(o);
-                }
-            }
+            //LOOP_CHILDREN: loops through all of the children, assigns them to
+            // a temp var, and executes the passed body
+            #define LOOP_CHILDREN(o, body) do { \
+                for(int i = 0; i < static_cast<int>(children.size()); i++) \
+                { \
+                    Object *o = children.at(i); \
+                    body; \
+                } \
+            } while(0)
+            //note reverse iteration
+            #define LOOP_CHILDREN_REV(o, body) do { \
+                for(int i = static_cast<int>(children.size()); --i >=0;) \
+                { \
+                    Object *o = children.at(i); \
+                    body; \
+                } \
+            } while(0)
 
-            //takes a polymorphic std::function parameter to allow [this](){} macros
-            //to be passed as the "body"
-            void loopchildrenrev(std::function<void(Object *)> body)
-            {
-                for(int i = static_cast<int>(children.size()); --i >=0;)
-                {
-                    Object *o = children.at(i);
-                    body(o);
-                }
-            }
-
-            //takes a polymorphic std::function parameter to allow [this](){} macros
-            //to be passed as the "body"
-            void loopchildrange(uint start, uint end, std::function<void(Object *)> body)
-            {
-                for(uint i = start; i < end; i++)
-                {
-                    Object *o = children.at(i);
-                    body(o);
-                }
-            }
+            #define LOOP_CHILD_RANGE(start, end, o, body) do { \
+                for(int i = start; i < end; i++) \
+                { \
+                    Object *o = children.at(i); \
+                    body; \
+                } \
+            } while(0)
 
             Object() :  x(), y(), w(), h(), adjust(0), state(0), childstate(0), parent() {}
             virtual ~Object()
@@ -333,7 +326,7 @@ namespace UI
             virtual void layout()
             {
                 w = h = 0;
-                loopchildren( [this] (Object * o)
+                LOOP_CHILDREN(o,
                 {
                     o->x = o->y = 0;
                     o->layout();
@@ -370,7 +363,7 @@ namespace UI
                 state &= ~flags;
                 if(childstate & flags)
                 {
-                    loopchildren([flags] (Object * o) { if((o->state | o->childstate) & flags) o->clearstate(flags); });
+                    LOOP_CHILDREN(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
                     childstate &= ~flags;
                 }
             }
@@ -399,7 +392,7 @@ namespace UI
             void resetchildstate()
             {
                 resetstate();
-                loopchildren( [] (Object * o)  {o->resetchildstate();});
+                LOOP_CHILDREN(o, o->resetchildstate());
             }
 
             bool hasstate(int flags) const
@@ -414,7 +407,7 @@ namespace UI
 
             virtual void draw(float sx, float sy)
             {
-                loopchildren( [sx, sy] (Object * o)
+                LOOP_CHILDREN(o,
                 {
                     if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     {
@@ -467,41 +460,38 @@ namespace UI
 
             virtual bool rawkey(int code, bool isdown)
             {
-                bool down = false;
-                loopchildrenrev( [&] (Object * o)
+                LOOP_CHILDREN_REV(o,
                 {
                     if(o->rawkey(code, isdown))
                     {
-                        down = true;
+                        return true;
                     }
                 });
-                return down;
+                return false;
             }
 
             virtual bool key(int code, bool isdown)
             {
-                bool down = false;
-                loopchildrenrev([&] (Object * o)
+                LOOP_CHILDREN_REV(o,
                 {
                     if(o->key(code, isdown))
                     {
-                        down = true;
+                        return true;
                     }
                 });
-                return down;
+                return false;
             }
 
             virtual bool textinput(const char *str, int len)
             {
-                bool text = false; //needed to make void lambda act like bool
-                loopchildrenrev([&] (Object * o)
+                LOOP_CHILDREN_REV(o,
                 {
                     if(o->textinput(str, len))
                     {
-                        text = true;
+                        return true;
                     }
                 });
-                return text;
+                return false;
             }
 
             virtual int childcolumns() const
@@ -629,7 +619,7 @@ namespace UI
 
             void adjustchildrento(float px, float py, float pw, float ph)
             {
-                loopchildren([px, py, pw, ph] (Object * o) {o->adjustlayout(px, py, pw, ph);});
+                LOOP_CHILDREN(o, o->adjustlayout(px, py, pw, ph));
             }
 
             virtual void adjustchildren()
@@ -669,27 +659,23 @@ namespace UI
 
             #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
                 /* loop through children back to front */ \
-                loopchildrenrev( [&] (Object * o)\
+                LOOP_CHILDREN_REV(o, \
                 { \
-                    bool shouldcontinue = true; \
                     if(((o->state | o->childstate) & mask) != mask) \
                     { \
-                        shouldcontinue = false; \
+                        continue; \
                     } \
-                    if(shouldcontinue) \
+                    float o##x = cx - o->x; /*offset x*/ \
+                    float o##y = cy - o->y; /*offset y*/ \
+                    if(!inside) \
                     { \
-                        float o##x = cx - o->x; /*offset x*/ \
-                        float o##y = cy - o->y; /*offset y*/ \
-                        if(!inside) \
-                        { \
-                            o##x = std::clamp(o##x, 0.0f, o->w); /*clamp offsets to Object bounds in x*/ \
-                            o##y = std::clamp(o##y, 0.0f, o->h); /*clamp offsets to Object bounds in y*/ \
-                            body; \
-                        } \
-                        else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) /*if in bounds execute body*/ \
-                        { \
-                            body; \
-                        } \
+                        o##x = std::clamp(o##x, 0.0f, o->w); /*clamp offsets to Object bounds in x*/ \
+                        o##y = std::clamp(o##y, 0.0f, o->h); /*clamp offsets to Object bounds in y*/ \
+                        body; \
+                    } \
+                    else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) /*if in bounds execute body*/ \
+                    { \
+                        body; \
                     } \
                 })
 
@@ -722,26 +708,27 @@ namespace UI
                 return gettype();
             }
 
-            Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr)
+            Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr) const
             {
-                Object * out = nullptr;
-                loopchildren( [&out, name, exclude] (Object * o)
+                //note that this is a macro
+                LOOP_CHILDREN(o,
                 {
                     if(o != exclude && o->isnamed(name))
                     {
-                        out = o;
+                        return o;
                     }
                 });
                 if(recurse)
                 {
-                    loopchildren( [&out, name, exclude] (Object * o)
+                    //note that this is a macro
+                    LOOP_CHILDREN(o,
                     {
                         if(o != exclude)
                         {
                             Object *found = o->find(name);
                             if(found)
                             {
-                                out = o;
+                                return found;
                             }
                         }
                     });
@@ -749,9 +736,9 @@ namespace UI
                 return nullptr;
             }
 
-            Object *findsibling(const char *name)
+            Object *findsibling(const char *name) const
             {
-                for(Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
+                for(const Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
                 {
                     Object *o = cur->find(name, true, prev);
                     if(o)
@@ -1074,7 +1061,7 @@ namespace UI
         {
             children.erase(children.begin() + index);
             childstate = 0;
-            loopchildren([this] (Object * o) {childstate |= o->state | o->childstate;});
+            LOOP_CHILDREN(o, childstate |= o->state | o->childstate);
             w->hide();
         }
 
@@ -1204,7 +1191,7 @@ namespace UI
         void layout()
         {
             subw = h = 0;
-            loopchildren( [this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x = subw;
                 o->y = 0;
@@ -1267,7 +1254,7 @@ namespace UI
         void layout()
         {
             w = subh = 0;
-            loopchildren( [this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x = 0;
                 o->y = subh;
@@ -1289,7 +1276,7 @@ namespace UI
                   sy     = 0,
                   rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
-            loopchildren( [&offset, &rspace, rstep, &sy, this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->y = offset;
                 offset += o->h + rspace;
@@ -1338,7 +1325,7 @@ namespace UI
 
             int column = 0,
                 row = 0;
-            loopchildren( [&column, &row, this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->layout();
                 if(column >= static_cast<int>(widths.size()))
@@ -1393,7 +1380,7 @@ namespace UI
                   cstep = (w - subw) / widths.size(),
                   rspace = (h - subh) / std::max(static_cast<int>(heights.size()) - 1, 1),
                   rstep = (h - subh) / heights.size();
-            loopchildren( [&row, &column, &offsety, &sy, &offsetx, &sx, cspace, cstep, rspace, rstep, this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x = offsetx;
                 o->y = offsety;
@@ -1467,19 +1454,19 @@ namespace UI
 
         void adjustchildren()
         {
-            loopchildrange(static_cast<uint>(columns), children.size(), [this] (Object * o) {o->adjustlayout(0, 0, w, h);});
+            LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o, o->adjustlayout(0, 0, w, h));
         }
 
         void draw(float sx, float sy)
         {
-            loopchildrange(static_cast<uint>(columns), children.size(), [sx, sy] (Object * o)
+            LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                 {
                     o->draw(sx + o->x, sy + o->y);
                 }
             });
-            loopchildrange(0, static_cast<uint>(columns), [sx, sy] (Object * o)
+            LOOP_CHILD_RANGE(0, columns, o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                 {
@@ -1539,7 +1526,7 @@ namespace UI
             widths.resize(0);
 
             w = subh = 0;
-            loopchildren( [this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->layout();
                 int cols = o->childcolumns();
@@ -1580,7 +1567,7 @@ namespace UI
                   cstep = (w - subw) / widths.size(),
                   rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
-            loopchildren([&offsety, &sy, cspace, cstep, rspace, rstep, this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x = 0;
                 o->y = offsety;
@@ -1631,7 +1618,7 @@ namespace UI
         {
             w = spacew;
             h = spaceh;
-            loopchildren( [this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x = spacew;
                 o->y = spaceh;
@@ -1667,7 +1654,7 @@ namespace UI
         {
             Object::layout();
 
-            loopchildren( [this] (Object * o)
+            LOOP_CHILDREN(o,
             {
                 o->x += offsetx;
                 o->y += offsety;
@@ -4876,3 +4863,7 @@ namespace UI
         return world->abovehud();
     }
 }
+
+#undef LOOP_CHILDREN
+#undef LOOP_CHILDREN_REV
+#undef LOOP_CHILD_RANGE
