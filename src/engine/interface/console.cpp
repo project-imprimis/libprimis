@@ -558,6 +558,21 @@ namespace
     };
     std::vector<releaseaction> releaseactions;
 
+    const char *addreleaseaction(char *s)
+    {
+        if(!keypressed)
+        {
+            delete[] s;
+            return nullptr;
+        }
+        releaseactions.emplace_back();
+        releaseaction &ra = releaseactions.back();
+        ra.key = keypressed;
+        ra.action = s;
+        ra.numargs = -1;
+        return keypressed->name;
+    }
+
     void onrelease(const char *s)
     {
         addreleaseaction(newstring(s));
@@ -1115,21 +1130,6 @@ const char *getkeyname(int code)
 {
     KeyM *km = keyms.access(code);
     return km ? km->name : nullptr;
-}
-
-const char *addreleaseaction(char *s)
-{
-    if(!keypressed)
-    {
-        delete[] s;
-        return nullptr;
-    }
-    releaseactions.emplace_back();
-    releaseaction &ra = releaseactions.back();
-    ra.key = keypressed;
-    ra.action = s;
-    ra.numargs = -1;
-    return keypressed->name;
 }
 
 tagval *addreleaseaction(ident *id, int numargs)
