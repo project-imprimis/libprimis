@@ -114,7 +114,6 @@ namespace
         UI::toggleui("fullconsole");
     }
 
-    VARP(consize, 0, 5, 100);                   //font size of the console text
     VARP(miniconsize, 0, 5, 100);               //miniature console font size
     VARP(miniconwidth, 0, 40, 100);             //miniature console width
     VARP(confade, 0, 30, 60);                   //seconds before fading console
@@ -1091,6 +1090,7 @@ float renderfullconsole(float w, float h)
 
 float renderconsole(float w, float h, float abovehud)
 {
+    static VARP(consize, 0, 5, 100);                   //font size of the console text
     float conpad = FONTH/2,
           conheight = std::min(static_cast<float>(FONTH*consize), h - 2*conpad),
           conwidth = w - 2*conpad,
