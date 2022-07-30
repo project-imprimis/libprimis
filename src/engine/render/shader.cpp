@@ -253,16 +253,6 @@ static void uniformtex(const char * name, int tmu, Shader &s)
     }
 }
 
-static void bindworldtexlocs(Shader &s)
-{
-    uniformtex("diffusemap", Tex_Diffuse, s);
-    uniformtex("normalmap", Tex_Normal, s);
-    uniformtex("glowmap", Tex_Glow, s);
-    uniformtex("blendmap", 7, s);
-    uniformtex("refractmask", 7, s);
-    uniformtex("refractlight", 8, s);
-}
-
 static void linkglslprogram(Shader &s, bool msg = true)
 {
     s.program = s.vsobj && s.psobj ? glCreateProgram() : 0;
@@ -302,7 +292,12 @@ static void linkglslprogram(Shader &s, bool msg = true)
         }
         if(s.type & Shader_World)
         {
-            bindworldtexlocs(s);
+            uniformtex("diffusemap", Tex_Diffuse, s);
+            uniformtex("normalmap", Tex_Normal, s);
+            uniformtex("glowmap", Tex_Glow, s);
+            uniformtex("blendmap", 7, s);
+            uniformtex("refractmask", 7, s);
+            uniformtex("refractlight", 8, s);
         }
         for(uint i = 0; i < s.defaultparams.size(); i++)
         {
