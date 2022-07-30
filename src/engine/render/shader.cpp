@@ -244,15 +244,13 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
     }
 }
 
-static void uniformtex(const char * name, int tmu, Shader &s) \
-{ \
-    do { \
-        int loc = glGetUniformLocation(s.program, name); \
-        if(loc != -1) \
-        { \
-            glUniform1i(loc, tmu); \
-        } \
-    } while(0);
+static void uniformtex(const char * name, int tmu, Shader &s)
+{
+    int loc = glGetUniformLocation(s.program, name);
+    if(loc != -1)
+    {
+        glUniform1i(loc, tmu);
+    }
 }
 
 static void bindworldtexlocs(Shader &s)
