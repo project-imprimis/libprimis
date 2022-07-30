@@ -203,10 +203,10 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     }
 }
 
-VAR(debugubo, 0, 0, 1); //print out to console information about ubos when bindglsluniform is called
-
 static void bindglsluniform(Shader &s, UniformLoc &u)
 {
+    static VAR(debugubo, 0, 0, 1); //print out to console information about ubos when bindglsluniform is called
+
     u.loc = glGetUniformLocation(s.program, u.name);
     if(!u.blockname)
     {
