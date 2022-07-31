@@ -1032,7 +1032,7 @@ namespace UI
             LOOP_WINDOWS(w,
             {
                 w->build();
-                if(static_cast<int>(children.size()) < i )
+                if(children.size() <= i )
                 {
                     break;
                 }
