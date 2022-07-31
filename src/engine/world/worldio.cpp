@@ -183,7 +183,7 @@ void backup(const char *name, const char *backupname)
     rename(findfile(name, "wb"), backupfile);
 }
 
-enum
+enum OctaSave
 {
     OctaSave_Children = 0,
     OctaSave_Empty,
