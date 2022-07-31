@@ -18,8 +18,7 @@ enum
     Draw_TexModelPreview,
 };
 
-extern int fov;
-extern float curfov, fovy, aspect, forceaspect;
+extern float curfov, aspect, forceaspect;
 extern float nearplane;
 extern int farplane;
 extern float ldrscale, ldrscaleb;
