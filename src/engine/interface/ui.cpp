@@ -984,7 +984,7 @@ namespace UI
         const char *gettype() const { return typestr(); }
 
         #define LOOP_WINDOWS(o, body) do { \
-            for(int i = 0; i < static_cast<int>(children.size()); i++) \
+            for(uint i = 0; i < children.size(); i++) \
             { \
                 Window *o = static_cast<Window *>(children[i]); \
                 body; \
@@ -1036,7 +1036,7 @@ namespace UI
                 {
                     break;
                 }
-                if(children[i] != w)
+                if(children.at(i) != w)
                 {
                     i--;
                 }
