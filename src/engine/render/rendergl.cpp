@@ -740,14 +740,10 @@ void pophudmatrix(bool flush, bool flushparams)
     }
 }
 
-void pushhudscale(float sx, float sy)
+void pushhudscale(float scale)
 {
-    if(!sy)
-    {
-        sy = sx;
-    }
     pushhudmatrix();
-    hudmatrix.scale(sx, sy, 1);
+    hudmatrix.scale(scale, scale, 1);
     flushhudmatrix();
 }
 

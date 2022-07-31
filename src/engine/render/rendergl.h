@@ -80,7 +80,7 @@ extern void resethudmatrix();
 extern void pushhudmatrix();
 extern void flushhudmatrix(bool flushparams = true);
 extern void pophudmatrix(bool flush = true, bool flushparams = true);
-extern void pushhudscale(float sx, float sy = 0);
+extern void pushhudscale(float scale);
 extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 
 class ModelPreview
