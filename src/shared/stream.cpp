@@ -1836,18 +1836,6 @@ stream *openfile(const char *filename, const char *mode)
     return openrawfile(filename, mode);
 }
 
-stream *opentempfile(const char *name, const char *mode)
-{
-    const char *found = findfile(name, mode);
-    filestream *file = new filestream;
-    if(!file->opentemp(found ? found : name, mode))
-    {
-        delete file;
-        return nullptr;
-    }
-    return file;
-}
-
 stream *opengzfile(const char *filename, const char *mode, stream *file, int level)
 {
     stream *source = file ? file : openfile(filename, mode);
