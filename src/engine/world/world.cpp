@@ -162,7 +162,7 @@ void attachentities()
     }
 }
 
-enum
+enum ModOctaEnt
 {
     ModOctaEnt_Add      = 1<<0,
     ModOctaEnt_UpdateBB = 1<<1,
