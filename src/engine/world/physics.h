@@ -3,7 +3,6 @@
 
 extern vec collidewall;
 extern int collideinside;
-extern physent *collideplayer;
 
 extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
 extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
