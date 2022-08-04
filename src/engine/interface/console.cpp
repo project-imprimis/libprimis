@@ -831,7 +831,7 @@ namespace
         public:
             int type;
             char *dir, *ext;
-            vector<char *> files;
+            std::vector<char *> files;
 
             FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1) {}
             ~FilesVal()
@@ -841,7 +841,10 @@ namespace
 
                 dir = nullptr;
                 ext = nullptr;
-                files.deletearrays();
+                for(char* i : files)
+                {
+                    delete[] i;
+                }
             }
 
             void update()
@@ -850,14 +853,21 @@ namespace
                 {
                     return;
                 }
-                files.deletearrays();
+                //first delete old cached file vector
+                for(char* i : files)
+                {
+                    delete[] i;
+                }
+                //generate new one
                 listfiles(dir, ext, files);
-                files.sort();
-                for(int i = 0; i < files.length(); i++)
+                std::sort(files.begin(), files.end());
+                for(uint i = 0; i < files.size(); i++)
                 {
                     if(i && !std::strcmp(files[i], files[i-1]))
                     {
-                        delete[] files.remove(i--);
+                        delete[] files.at(i);
+                        files.erase(files.begin() + i);
+                        i--; //we need to make up for the element we destroyed
                     }
                 }
                 millis = totalmillis;
@@ -990,7 +1000,7 @@ namespace
         {
             int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
             f->update();
-            for(int i = 0; i < f->files.length(); i++)
+            for(uint i = 0; i < f->files.size(); i++)
             {
                 if(std::strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
                           (!lastcomplete || std::strcmp(f->files[i], lastcomplete) > 0) &&

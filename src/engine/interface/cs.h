@@ -234,7 +234,7 @@ extern void freecode(uint *p);
 extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
 extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
 extern void alias(const char *name, const char *action);
-extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
+extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);
 extern const char *numberstr(double v);
 

@@ -712,7 +712,7 @@ const char *findfile(const char *filename, const char *mode)
     return filename;
 }
 
-bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &files)
+bool listdir(const char *dirname, bool rel, const char *ext, std::vector<char *> &files)
 {
     size_t extsize = ext ? std::strlen(ext)+1 : 0;
 #ifdef WIN32
@@ -724,7 +724,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
         do {
             if(!ext)
             {
-                files.add(newstring(FindFileData.cFileName));
+                files.push_back(newstring(FindFileData.cFileName));
             }
             else
             {
@@ -734,7 +734,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
                     namelen -= extsize;
                     if(FindFileData.cFileName[namelen] == '.' && strncmp(FindFileData.cFileName+namelen+1, ext, extsize-1)==0)
                     {
-                        files.add(newstring(FindFileData.cFileName, namelen));
+                        files.push_back(newstring(FindFileData.cFileName, namelen));
                     }
                 }
             }
@@ -752,7 +752,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
         {
             if(!ext)
             {
-                files.add(newstring(de->d_name));
+                files.push_back(newstring(de->d_name));
             }
             else
             {
@@ -762,7 +762,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
                     namelen -= extsize;
                     if(de->d_name[namelen] == '.' && strncmp(de->d_name+namelen+1, ext, extsize-1)==0)
                     {
-                        files.add(newstring(de->d_name, namelen));
+                        files.push_back(newstring(de->d_name, namelen));
                     }
                 }
             }
@@ -777,7 +777,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
     }
 }
 
-int listfiles(const char *dir, const char *ext, vector<char *> &files)
+int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
 {
     string dirname;
     copystring(dirname, dir);

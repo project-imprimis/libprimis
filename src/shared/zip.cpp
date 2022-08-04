@@ -719,7 +719,7 @@ bool findzipfile(const char *name)
     return false;
 }
 
-int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
+int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files)
 {
     size_t extsize = ext ? std::strlen(ext)+1 : 0,
            dirsize = std::strlen(dir);
@@ -727,7 +727,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
-        int oldsize = files.length();
+        uint oldsize = files.size();
         ENUMERATE(arch->files, zipfile, f,
         {
             if(std::strncmp(f.name, dir, dirsize))
@@ -745,7 +745,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
             }
             if(!ext)
             {
-                files.add(newstring(name));
+                files.push_back(newstring(name));
             }
             else
             {
@@ -755,12 +755,12 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
                     namelen -= extsize;
                     if(name[namelen] == '.' && std::strncmp(name+namelen+1, ext, extsize-1)==0)
                     {
-                        files.add(newstring(name, namelen));
+                        files.push_back(newstring(name, namelen));
                     }
                 }
             }
         });
-        if(files.length() > oldsize)
+        if(files.size() > oldsize)
         {
             dirs++;
         }

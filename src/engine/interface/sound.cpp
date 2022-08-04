@@ -281,18 +281,24 @@ static bool initaudio()
     }
     if(!fallback[0] && audiodriver[0])
     {
-        vector<char*> drivers;
+        std::vector<char*> drivers;
         explodelist(audiodriver, drivers);
-        for(int i = 0; i < drivers.length(); i++)
+        for(uint i = 0; i < drivers.size(); i++)
         {
             SDL_setenv("SDL_AUDIODRIVER", drivers[i], 1);
             if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
             {
-                drivers.deletearrays();
+                for(char* j : drivers)
+                {
+                    delete[] j;
+                }
                 return true;
             }
         }
-        drivers.deletearrays();
+        for(char* j : drivers)
+        {
+            delete[] j;
+        }
     }
     SDL_setenv("SDL_AUDIODRIVER", fallback, 1);
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)

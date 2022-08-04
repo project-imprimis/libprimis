@@ -61,8 +61,8 @@ extern size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size
 
 extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
 extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &files);
-extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
-extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
+extern int listfiles(const char *dir, const char *ext, std::vector<char *> &files);
+extern int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files);
 extern bool findzipfile(const char *filename);
 extern const char *addpackagedir(const char *dir);
 extern const char *parentdir(const char *directory);

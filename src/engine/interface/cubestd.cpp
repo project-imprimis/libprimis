@@ -617,12 +617,12 @@ static char *listelem(const char *start = liststart, const char *end = listend, 
     return s;
 }
 
-void explodelist(const char *s, vector<char *> &elems, int limit)
+void explodelist(const char *s, std::vector<char *> &elems, int limit)
 {
     const char *start, *end, *qstart;
-    while((limit < 0 || elems.length() < limit) && parselist(s, start, end, qstart))
+    while((limit < 0 || elems.size() < limit) && parselist(s, start, end, qstart))
     {
-        elems.add(listelem(start, end, qstart));
+        elems.push_back(listelem(start, end, qstart));
     }
 }
 
@@ -966,16 +966,15 @@ void loopfiles(ident *id, char *dir, char *ext, uint *body)
         return;
     }
     identstack stack;
-    vector<char *> files;
+    std::vector<char *> files;
     listfiles(dir, ext[0] ? ext : nullptr, files);
-    files.sort();
-    files.uniquedeletearrays();
-    for(int i = 0; i < files.length(); i++)
+    std::sort(files.begin(), files.end());
+    for(uint i = 0; i < files.size(); i++)
     {
         setiter(*id, files[i], stack);
         execute(body);
     }
-    if(files.length())
+    if(files.size())
     {
         poparg(*id);
     }

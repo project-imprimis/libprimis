@@ -885,21 +885,28 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         part *p = static_cast<part *>(MDL::loading->parts.last());
 
-        vector<char *> bonestrs;
+        std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
         vector<ushort> bonemask;
-        for(int i = 0; i < bonestrs.length(); i++)
+        for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
             int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
             if(bone<0)
             {
-                conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr); bonestrs.deletearrays();
+                conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr);
+                for(char* j : bonestrs)
+                {
+                    delete[] j;
+                }
                 return;
             }
             bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
-        bonestrs.deletearrays();
+        for(char* i : bonestrs)
+        {
+            delete[] i;
+        }
         bonemask.sort();
         if(bonemask.length())
         {
@@ -954,22 +961,28 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             return;
         }
-        vector<char *> bonestrs;
+        std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
         vector<ushort> bonemask;
-        for(int i = 0; i < bonestrs.length(); i++)
+        for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
             int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
             if(bone<0)
             {
                 conoutf("could not find bone %s for hit zone mask [%s]", bonestr, maskstr);
-                bonestrs.deletearrays();
+                for(char* j : bonestrs)
+                {
+                    delete[] j;
+                }
                 return;
             }
             bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
-        bonestrs.deletearrays();
+        for(char* i : bonestrs)
+        {
+            delete[] i;
+        }
         if(bonemask.empty())
         {
             return;
