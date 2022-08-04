@@ -235,7 +235,7 @@ namespace
                 chain.emplace_back(table[h]);
                 return table[h] = verts.size()-1;
             }
-
+        protected:
             void clearverts()
             {
                 memset(table, -1, sizeof(table));
