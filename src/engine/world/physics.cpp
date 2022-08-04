@@ -574,7 +574,7 @@ VAR(testtricol, 0, 0, 2);
 bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
 {
     const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < oc.mapmodels.length(); i++)
+    for(uint i = 0; i < oc.mapmodels.size(); i++)
     {
         extentity &e = *ents[oc.mapmodels[i]];
         if(e.flags&EntFlag_NoCollide || !(static_cast<int>(mapmodels.size()) > e.attr1))

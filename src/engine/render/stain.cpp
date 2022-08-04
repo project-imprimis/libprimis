@@ -790,7 +790,7 @@ class stainrenderer
                         {
                             findmaterials(cu.ext->va);
                         }
-                        if(cu.ext->ents && cu.ext->ents->mapmodels.length())
+                        if(cu.ext->ents && cu.ext->ents->mapmodels.size())
                         {
                             genmmtris(*cu.ext->ents);
                         }
@@ -852,7 +852,7 @@ class stainrenderer
         void genmmtris(octaentities &oe)
         {
             const vector<extentity *> &ents = entities::getents();
-            for(int i = 0; i < oe.mapmodels.length(); i++)
+            for(uint i = 0; i < oe.mapmodels.size(); i++)
             {
                 extentity &e = *ents[oe.mapmodels[i]];
                 model *m = loadmapmodel(e.attr1);

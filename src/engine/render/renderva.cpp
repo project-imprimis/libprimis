@@ -370,7 +370,7 @@ namespace
                     else
                     {
                         int visible = 0;
-                        for(int i = 0; i < oe->mapmodels.length(); i++)
+                        for(uint i = 0; i < oe->mapmodels.size(); i++)
                         {
                             extentity &e = *ents[oe->mapmodels[i]];
                             if(e.flags&EntFlag_NoVis)
@@ -2052,7 +2052,7 @@ namespace
         const vector<extentity *> &ents = entities::getents();
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
-            for(int k = 0; k < oe->mapmodels.length(); k++)
+            for(uint k = 0; k < oe->mapmodels.size(); k++)
             {
                 extentity &e = *ents[oe->mapmodels[k]];
                 if(e.flags&(EntFlag_NoVis|EntFlag_NoShadow))
@@ -2065,7 +2065,7 @@ namespace
         std::vector<triangle> tris;
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
-            for(int j = 0; j < oe->mapmodels.length(); j++)
+            for(uint j = 0; j < oe->mapmodels.size(); j++)
             {
                 extentity &e = *ents[oe->mapmodels[j]];
                 if(!(e.flags&EntFlag_Render))
@@ -2516,7 +2516,7 @@ void rendermapmodels()
         if(oe->distance>=0)
         {
             bool rendered = false;
-            for(int i = 0; i < oe->mapmodels.length(); i++)
+            for(uint i = 0; i < oe->mapmodels.size(); i++)
             {
                 extentity &e = *ents[oe->mapmodels[i]];
                 if(!(e.flags&EntFlag_Render))
@@ -3591,7 +3591,7 @@ void batchshadowmapmodels(bool skipmesh)
     const vector<extentity *> &ents = entities::getents();
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(int k = 0; k < oe->mapmodels.length(); k++)
+        for(uint k = 0; k < oe->mapmodels.size(); k++)
         {
             extentity &e = *ents[oe->mapmodels[k]];
             if(e.flags&nflags)
@@ -3603,7 +3603,7 @@ void batchshadowmapmodels(bool skipmesh)
     }
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(int j = 0; j < oe->mapmodels.length(); j++)
+        for(uint j = 0; j < oe->mapmodels.size(); j++)
         {
             extentity &e = *ents[oe->mapmodels[j]];
             if(!(e.flags&EntFlag_Render))

@@ -294,7 +294,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                             va->decals.add(&oe);
                         }
                     }
-                    oe.decals.add(id);
+                    oe.decals.push_back(id);
                     oe.bbmin.min(bo).max(oe.o);
                     oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
                     break;
@@ -311,7 +311,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                                 va->mapmodels.add(&oe);
                             }
                         }
-                        oe.mapmodels.add(id);
+                        oe.mapmodels.push_back(id);
                         oe.bbmin.min(bo).max(oe.o);
                         oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
                     }
@@ -320,7 +320,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                 // invisible mapmodels: lights sounds spawns etc.
                 default:
                 {
-                    oe.other.add(id);
+                    oe.other.push_back(id);
                     break;
                 }
             }
@@ -332,7 +332,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
             {
                 case EngineEnt_Decal:
                 {
-                    oe.decals.removeobj(id);
+                    if(std::find(oe.decals.begin(), oe.decals.end(), id) != oe.decals.end())
+                    {
+                        oe.decals.erase(std::find(oe.decals.begin(), oe.decals.end(), id));
+                    }
                     if(va)
                     {
                         va->bbmin.x = -1;
@@ -343,7 +346,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     }
                     oe.bbmin = oe.bbmax = oe.o;
                     oe.bbmin.add(oe.size);
-                    for(int j = 0; j < oe.decals.length(); j++)
+                    for(uint j = 0; j < oe.decals.size(); j++)
                     {
                         extentity &e = *entities::getents()[oe.decals[j]];
                         ivec eo, er;
@@ -361,7 +364,11 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                 {
                     if(loadmapmodel(e.attr1))
                     {
-                        oe.mapmodels.removeobj(id);
+                        //double std::find of same thing is slower than it could be
+                        if(std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id) != oe.mapmodels.end())
+                        {
+                            oe.mapmodels.erase(std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id));
+                        }
                         if(va)
                         {
                             va->bbmin.x = -1;
@@ -372,7 +379,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         }
                         oe.bbmin = oe.bbmax = oe.o;
                         oe.bbmin.add(oe.size);
-                        for(int j = 0; j < oe.mapmodels.length(); j++)
+                        for(uint j = 0; j < oe.mapmodels.size(); j++)
                         {
                             extentity &e = *entities::getents()[oe.mapmodels[j]];
                             ivec eo, er;
@@ -390,7 +397,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                 // invisible mapmodels: light sounds spawns etc.
                 default:
                 {
-                    oe.other.removeobj(id);
+                    if(std::find(oe.other.begin(), oe.other.end(), id) != oe.other.end())
+                    {
+                        oe.other.erase(std::find(oe.other.begin(), oe.other.end(), id));
+                    }
                     break;
                 }
             }
@@ -544,15 +554,18 @@ void freeoctaentities(cube &c)
     {
         while(c.ext->ents && !c.ext->ents->mapmodels.empty())
         {
-            removeentity(c.ext->ents->mapmodels.pop());
+            removeentity(c.ext->ents->decals.back());
+            c.ext->ents->mapmodels.pop_back();
         }
         while(c.ext->ents && !c.ext->ents->decals.empty())
         {
-            removeentity(c.ext->ents->decals.pop());
+            removeentity(c.ext->ents->decals.back());
+            c.ext->ents->decals.pop_back();
         }
         while(c.ext->ents && !c.ext->ents->other.empty())
         {
-            removeentity(c.ext->ents->other.pop());
+            removeentity(c.ext->ents->other.back());
+            c.ext->ents->other.pop_back();
         }
     }
     if(c.ext->ents)

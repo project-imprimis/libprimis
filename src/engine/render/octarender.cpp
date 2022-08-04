@@ -853,7 +853,7 @@ namespace
                 for(int i = 0; i < extdecals.length(); i++)
                 {
                     octaentities *oe = extdecals[i];
-                    for(int j = 0; j < oe->decals.length(); j++)
+                    for(uint j = 0; j < oe->decals.size(); j++)
                     {
                         extentity &e = *ents[oe->decals[j]];
                         if(e.flags&EntFlag_Render)
@@ -873,7 +873,7 @@ namespace
                 for(int i = 0; i < extdecals.length(); i++)
                 {
                     octaentities *oe = extdecals[i];
-                    for(int j = 0; j < oe->decals.length(); j++)
+                    for(uint j = 0; j < oe->decals.size(); j++)
                     {
                         extentity &e = *ents[oe->decals[j]];
                         if(e.flags&EntFlag_Render)
@@ -1871,11 +1871,11 @@ namespace
             }
             if(c.ext && c.ext->ents)
             {
-                if(c.ext->ents->mapmodels.length())
+                if(c.ext->ents->mapmodels.size())
                 {
                     vc.mapmodels.add(c.ext->ents);
                 }
-                if(c.ext->ents->decals.length())
+                if(c.ext->ents->decals.size())
                 {
                     vc.decals.add(c.ext->ents);
                 }
@@ -1897,11 +1897,11 @@ namespace
         }
         if(c.ext && c.ext->ents)
         {
-            if(c.ext->ents->mapmodels.length())
+            if(c.ext->ents->mapmodels.size())
             {
                 vc.mapmodels.add(c.ext->ents);
             }
-            if(c.ext->ents->decals.length())
+            if(c.ext->ents->decals.size())
             {
                 vc.decals.add(c.ext->ents);
             }
@@ -1945,7 +1945,7 @@ namespace
         for(int i = 0; i < entdepth+1; ++i)
         {
             octaentities *oe = entstack[i];
-            if(oe->decals.length())
+            if(oe->decals.size())
             {
                 vc.extdecals.add(oe);
             }

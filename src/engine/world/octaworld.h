@@ -47,7 +47,7 @@ struct vertinfo
 
 struct octaentities
 {
-    vector<int> mapmodels, decals, other;
+    std::vector<int> mapmodels, decals, other;
     occludequery *query;
     octaentities *next, *rnext;
     int distance;

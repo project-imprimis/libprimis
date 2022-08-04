@@ -145,7 +145,7 @@ namespace
         const vector<extentity *> &ents = entities::getents();
     //=======ENT_SEL_INTERSECT ENT_INTERSECT
         #define ENT_INTERSECT(type, func) do { \
-            for(int i = 0; i < oc->type.length(); i++) \
+            for(uint i = 0; i < oc->type.size(); i++) \
             { \
                 extentity &e = *ents[oc->type[i]]; \
                 if(!(e.flags&EntFlag_Octa) || &e==t) \
@@ -228,7 +228,7 @@ namespace
         float dist = radius,
               f = 0.0f;
         const vector<extentity *> &ents = entities::getents();
-        for(int i = 0; i < oc->mapmodels.length(); i++)
+        for(uint i = 0; i < oc->mapmodels.size(); i++)
         {
             extentity &e = *ents[oc->mapmodels[i]];
             if(!(e.flags&EntFlag_Octa) || &e==t)
