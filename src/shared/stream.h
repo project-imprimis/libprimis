@@ -60,7 +60,6 @@ extern size_t decodeutf8(uchar *dst, size_t dstlen, const uchar *src, size_t src
 extern size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry = nullptr);
 
 extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
-extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &files);
 extern int listfiles(const char *dir, const char *ext, std::vector<char *> &files);
 extern int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files);
 extern bool findzipfile(const char *filename);
