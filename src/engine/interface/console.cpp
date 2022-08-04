@@ -1186,16 +1186,16 @@ void writebinds(stream *f)
 //print to a stream f the listcompletions in the completions filesval
 void writecompletions(stream *f)
 {
-    vector<char *> cmds;
+    std::vector<char *> cmds;
     ENUMERATE_KT(completions, char *, k, FilesVal *, v,
     {
         if(v)
         {
-            cmds.add(k);
+            cmds.push_back(k);
         }
     });
-    cmds.sort();
-    for(int i = 0; i < cmds.length(); i++)
+    std::sort(cmds.begin(), cmds.end());
+    for(uint i = 0; i < cmds.size(); i++)
     {
         char *k = cmds[i];
         FilesVal *v = completions[k];
