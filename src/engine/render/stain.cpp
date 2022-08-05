@@ -1128,10 +1128,9 @@ void cleanupstains()
     }
 }
 
-VARP(maxstaindistance, 1, 512, 10000); //distance in cubes before stains stop rendering
-
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
+    static VARP(maxstaindistance, 1, 512, 10000); //distance in cubes before stains stop rendering
     if(!showstains || type<0 || static_cast<size_t>(type) >= stains.size() || center.dist(camera1->o) - radius > maxstaindistance)
     {
         return;
