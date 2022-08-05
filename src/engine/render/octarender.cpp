@@ -260,7 +260,7 @@ namespace
     };
 
     //alpha enum local to this file
-    enum
+    enum AlphaState
     {
         Alpha_None = 0,
         Alpha_Back,
