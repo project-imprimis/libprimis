@@ -1122,9 +1122,9 @@ bool renderstains(int sbuf, bool gbuf, int layer)
 
 void cleanupstains()
 {
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer& i : stains)
     {
-        stains[i].cleanup();
+        i.cleanup();
     }
 }
 
