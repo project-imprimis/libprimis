@@ -69,7 +69,7 @@ namespace
         VBO_NumVBOs
     };
 
-    std::vector<uchar> vbodata[VBO_NumVBOs];
+    vector<uchar> vbodata[VBO_NumVBOs];
     vector<vtxarray *> vbovas[VBO_NumVBOs];
     int vbosize[VBO_NumVBOs];
 
@@ -164,14 +164,14 @@ namespace
             return;
         }
 
-        std::vector<uchar> &data = vbodata[type];
+        vector<uchar> &data = vbodata[type];
         if(data.empty())
         {
             return;
         }
         vector<vtxarray *> &vas = vbovas[type];
-        genvbo(type, data.data(), data.size(), vas.getbuf(), vas.length());
-        data.clear();
+        genvbo(type, data.getbuf(), data.length(), vas.getbuf(), vas.length());
+        data.setsize(0);
         vas.setsize(0);
         vbosize[type] = 0;
     }
@@ -202,11 +202,13 @@ namespace
             }
         }
         vbosize[type] += numelems;
-        std::vector<uchar> &data = vbodata[type];
+        vector<uchar> &data = vbodata[type];
         vector<vtxarray *> &vas = vbovas[type];
         vas.add(va);
         int len = numelems*elemsize;
-        return data.data();
+        uchar *buf = data.reserve(len).buf;
+        data.advance(len);
+        return buf;
     }
 
     class verthash
