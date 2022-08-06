@@ -20,7 +20,7 @@ extern void doaa(GLuint outfbo, GBuffer gbuffer);
 extern bool debugaa();
 extern void cleanupaa();
 
-enum
+enum AAFlag
 {
     AA_Unused = 0,
     AA_Luma,
