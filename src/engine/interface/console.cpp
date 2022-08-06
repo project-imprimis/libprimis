@@ -51,7 +51,7 @@ namespace
     string commandbuf;
     char *commandaction = nullptr,
          *commandprompt = nullptr;
-    enum
+    enum CommandFlags
     {
         CmdFlags_Complete = 1<<0,
         CmdFlags_Execute  = 1<<1,
