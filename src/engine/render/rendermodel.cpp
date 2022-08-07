@@ -415,23 +415,23 @@ void nummapmodels()
 // model registry
 
 hashnameset<model *> models;
-vector<const char *> preloadmodels;
+std::vector<const char *> preloadmodels;
 hashset<char *> failedmodels;
 
 void preloadmodel(const char *name)
 {
-    if(!name || !name[0] || models.access(name) || preloadmodels.htfind(name) >= 0)
+    if(!name || !name[0] || models.access(name) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
     {
         return;
     }
-    preloadmodels.add(newstring(name));
+    preloadmodels.push_back(newstring(name));
 }
 
 void flushpreloadedmodels(bool msg)
 {
-    for(int i = 0; i < preloadmodels.length(); i++)
+    for(uint i = 0; i < preloadmodels.size(); i++)
     {
-        loadprogress = static_cast<float>(i+1)/preloadmodels.length();
+        loadprogress = static_cast<float>(i+1)/preloadmodels.size();
         model *m = loadmodel(preloadmodels[i], -1, msg);
         if(!m)
         {
@@ -446,7 +446,10 @@ void flushpreloadedmodels(bool msg)
             m->preloadshaders();
         }
     }
-    preloadmodels.deletearrays();
+    for(const char * i : preloadmodels)
+    {
+        delete[] i;
+    }
     loadprogress = 0;
 }
 
