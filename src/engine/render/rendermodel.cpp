@@ -466,7 +466,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         }
     }
 
-    vector<const char *> col;
+    std::vector<const char *> col;
     for(uint i = 0; i < used.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
@@ -504,16 +504,16 @@ void preloadusedmapmodels(bool msg, bool bih)
             }
             m->preloadmeshes();
             m->preloadshaders();
-            if(m->collidemodel && col.htfind(m->collidemodel) < 0)
+            if(m->collidemodel && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
             {
-                col.add(m->collidemodel);
+                col.push_back(m->collidemodel);
             }
         }
     }
 
-    for(int i = 0; i < col.length(); i++)
+    for(uint i = 0; i < col.size(); i++)
     {
-        loadprogress = static_cast<float>(i+1)/col.length();
+        loadprogress = static_cast<float>(i+1)/col.size();
         model *m = loadmodel(col[i], -1, msg);
         if(!m)
         {
