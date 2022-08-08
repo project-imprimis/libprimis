@@ -455,8 +455,8 @@ namespace
                 decals.setsize(0);
                 extdecals.setsize(0);
                 grasstris.setsize(0);
-                texs.setsize(0);
-                decaltexs.setsize(0);
+                texs.clear();
+                decaltexs.clear();
                 alphamin = refractmin = skymin = vec(1e16f, 1e16f, 1e16f);
                 alphamax = refractmax = skymax = vec(-1e16f, -1e16f, -1e16f);
             }
@@ -536,7 +536,7 @@ namespace
                 }
 
                 va->texelems = nullptr;
-                va->texs = texs.length();
+                va->texs = texs.size();
                 va->alphabacktris = 0;
                 va->alphaback = 0;
                 va->alphafronttris = 0;
@@ -551,7 +551,7 @@ namespace
                     va->texelems = new elementset[va->texs];
                     ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
                            *curbuf = edata;
-                    for(int i = 0; i < texs.length(); i++)
+                    for(uint i = 0; i < texs.size(); i++)
                     {
                         const sortkey &k = texs[i];
                         const sortval &t = indices[k];
@@ -619,14 +619,14 @@ namespace
                 va->decaldata = 0;
                 va->decaloffset = 0;
                 va->decalelems = nullptr;
-                va->decaltexs = decaltexs.length();
+                va->decaltexs = decaltexs.size();
                 va->decaltris = decaltris/3;
                 if(va->decaltexs)
                 {
                     va->decalelems = new elementset[va->decaltexs];
                     ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
                            *curbuf = edata;
-                    for(int i = 0; i < decaltexs.length(); i++)
+                    for(uint i = 0; i < decaltexs.size(); i++)
                     {
                         const decalkey &k = decaltexs[i];
                         const sortval &t = decalindices[k];
@@ -672,8 +672,8 @@ namespace
 
         private:
             hashtable<decalkey, sortval> decalindices;
-            vector<sortkey> texs;
-            vector<decalkey> decaltexs;
+            std::vector<sortkey> texs;
+            std::vector<decalkey> decaltexs;
             int decaltris;
 
             void optimize()
@@ -682,10 +682,10 @@ namespace
                 {
                     if(t.tris.length())
                     {
-                        texs.add(k);
+                        texs.push_back(k);
                     }
                 });
-                texs.sort(sortkey::sort);
+                std::sort(texs.begin(), texs.end(), sortkey::sort);
 
                 matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
             }
@@ -738,7 +738,7 @@ namespace
                     bbmin = vec(center).sub(radius),
                     bbmax = vec(center).add(radius),
                     clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
-                for(int i = 0; i < texs.length(); i++)
+                for(uint i = 0; i < texs.size(); i++)
                 {
                     const sortkey &k = texs[i];
                     if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
@@ -888,10 +888,10 @@ namespace
                 {
                     if(t.tris.length())
                     {
-                        decaltexs.add(k);
+                        decaltexs.push_back(k);
                     }
                 });
-                decaltexs.sort(decalkey::sort);
+                std::sort(texs.begin(), texs.end(), sortkey::sort);
             }
     } vc;
 
