@@ -807,17 +807,17 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         animspec *spec = nullptr;
         if(anims[animpart])
         {
-            vector<animspec> &primary = anims[animpart][anim & Anim_Index];
-            if(primary.length())
+            std::vector<animspec> &primary = anims[animpart][anim & Anim_Index];
+            if(primary.size())
             {
-                spec = &primary[static_cast<uint>(varseed + basetime)%primary.length()];
+                spec = &primary[static_cast<uint>(varseed + basetime)%primary.size()];
             }
             if((anim >> Anim_Secondary) & (Anim_Index | Anim_Dir))
             {
-                vector<animspec> &secondary = anims[animpart][(anim >> Anim_Secondary) & Anim_Index];
-                if(secondary.length())
+                std::vector<animspec> &secondary = anims[animpart][(anim >> Anim_Secondary) & Anim_Index];
+                if(secondary.size())
                 {
-                    animspec &spec2 = secondary[static_cast<uint>(varseed + basetime2)%secondary.length()];
+                    animspec &spec2 = secondary[static_cast<uint>(varseed + basetime2)%secondary.size()];
                     if(!spec || spec2.priority > spec->priority)
                     {
                         spec = &spec2;
@@ -1142,9 +1142,10 @@ void animmodel::part::setanim(int animpart, int num, int frame, int range, float
     }
     if(!anims[animpart])
     {
-        anims[animpart] = new vector<animspec>[numanims];
+        anims[animpart] = new std::vector<animspec>[numanims];
     }
-    animspec &spec = anims[animpart][num].add();
+    anims[animpart][num].emplace_back();
+    animspec &spec = anims[animpart][num].back();
     spec.frame = frame;
     spec.range = range;
     spec.speed = speed;

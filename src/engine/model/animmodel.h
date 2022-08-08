@@ -439,7 +439,7 @@ class animmodel : public model
                     int priority;
                 };
 
-                vector<animspec> *anims[maxanimparts];
+                std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
         };
 
         enum
