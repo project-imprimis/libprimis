@@ -535,7 +535,7 @@ void clearoverrides()
 }
 
 static bool initedidents = false;
-static vector<ident> *identinits = nullptr;
+static std::vector<ident> *identinits = nullptr;
 
 static ident *addident(const ident &id)
 {
@@ -543,9 +543,9 @@ static ident *addident(const ident &id)
     {
         if(!identinits)
         {
-            identinits = new vector<ident>;
+            identinits = new std::vector<ident>;
         }
-        identinits->add(id);
+        identinits->push_back(id);
         return nullptr;
     }
     ident &def = idents.access(id.name, id);
@@ -566,7 +566,7 @@ bool initidents()
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
     {
-        for(int i = 0; i < (*identinits).length(); i++)
+        for(uint i = 0; i < (*identinits).size(); i++)
         {
             addident((*identinits)[i]);
         }
