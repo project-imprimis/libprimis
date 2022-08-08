@@ -450,6 +450,8 @@ void flushpreloadedmodels(bool msg)
     {
         delete[] i;
     }
+    preloadmodels.clear();
+
     loadprogress = 0;
 }
 
