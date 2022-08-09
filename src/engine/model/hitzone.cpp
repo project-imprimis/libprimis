@@ -820,7 +820,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         }
     }
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : nullptr;
-    for(int i = 0; i < std::min(g->meshes.length(), 0x100); ++i)
+    for(int i = 0; i < std::min(static_cast<int>(g->meshes.size()), 0x100); ++i)
     {
         skelmodel::skelmesh *m = reinterpret_cast<skelmodel::skelmesh *>(g->meshes[i]);
         for(int j = 0; j < m->numtris; ++j)

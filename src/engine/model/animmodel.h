@@ -326,7 +326,7 @@ class animmodel : public model
             public:
                 int shared;
                 char *name;
-                vector<Mesh *> meshes;
+                std::vector<Mesh *> meshes;
 
                 meshgroup();
                 virtual ~meshgroup();
@@ -339,7 +339,7 @@ class animmodel : public model
                 virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
-                    for(int i = 0; i < meshes.length(); i++) \
+                    for(uint i = 0; i < meshes.size(); i++) \
                     { \
                         type &name = *static_cast<type *>(meshes[i]); \
                         if(name.canrender || debugcolmesh) \
@@ -455,7 +455,7 @@ class animmodel : public model
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a);
         void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color);
 
-        vector<part *> parts;
+        std::vector<part *> parts;
 
         animmodel(const char *name);
         ~animmodel();
@@ -467,8 +467,8 @@ class animmodel : public model
         part& addpart()
         {
             flushpart();
-            part *p = new part(this, parts.length());
-            parts.add(p);
+            part *p = new part(this, parts.size());
+            parts.push_back(p);
             return *p;
         }
 
@@ -539,7 +539,7 @@ class animmodel : public model
 
         virtual void loaded()
         {
-            for(int i = 0; i < parts.length(); i++)
+            for(int i = 0; i < parts.size(); i++)
             {
                 parts[i]->loaded();
             }
@@ -663,12 +663,12 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname()); \
             return; \
         } \
-        part &mdl = *MDL::loading->parts.last(); \
+        part &mdl = *MDL::loading->parts.back(); \
         if(!mdl.meshes) \
         { \
             return; \
         } \
-        for(int i = 0; i < mdl.meshes->meshes.length(); i++) \
+        for(uint i = 0; i < mdl.meshes->meshes.size(); i++) \
         { \
             MESH &m = *static_cast<MESH *>(mdl.meshes->meshes[i]); \
             if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
@@ -797,7 +797,7 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        if(!MDL::loading->parts.inrange(*parent) || !MDL::loading->parts.inrange(*child))
+        if((!MDL::loading->parts.size() > *parent) || (!MDL::loading->parts.size() > *child))
         {
             conoutf("no models loaded to link");
             return;

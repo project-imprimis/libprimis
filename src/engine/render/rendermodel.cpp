@@ -268,7 +268,7 @@ static void mdlname()
     { \
         return; \
     } \
-    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.last()->meshes); \
+    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes); \
     if(!meshes) \
     { \
         return; \

@@ -94,7 +94,11 @@ animmodel::animmodel(const char *name) : model(name)
 
 animmodel::~animmodel()
 {
-    parts.deletecontents();
+    for(part * i : parts)
+    {
+        delete i;
+    }
+    parts.clear();
 }
 
 // AnimPos
@@ -491,7 +495,11 @@ animmodel::meshgroup::meshgroup() : shared(0), name(nullptr), next(nullptr)
 animmodel::meshgroup::~meshgroup()
 {
     delete[] name;
-    meshes.deletecontents();
+    for(Mesh * i : meshes)
+    {
+        delete i;
+    }
+    meshes.clear();
     if(next)
     {
         delete next;
@@ -506,7 +514,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
 
 void animmodel::meshgroup::genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
-    for(int i = 0; i < meshes.length(); i++)
+    for(int i = 0; i < meshes.size(); i++)
     {
         meshes[i]->genBIH(skins[i], bih, t);
     }
@@ -734,7 +742,7 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
         {
             return;
         }
-        limit = meshes->meshes.length();
+        limit = meshes->meshes.size();
     }
     while(skins.size() < static_cast<uint>(limit))
     {
@@ -1178,7 +1186,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     int numtags = 0;
     if(a)
     {
-        int index = parts.last()->index + parts.last()->numanimparts;
+        int index = parts.back()->index + parts.back()->numanimparts;
         for(int i = 0; a[i].tag; i++)
         {
             numtags++;
@@ -1212,7 +1220,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     AnimState as[maxanimparts];
     parts[0]->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 
-    for(int i = 1; i < parts.length(); i++)
+    for(int i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))
@@ -1326,7 +1334,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     int numtags = 0;
     if(a)
     {
-        int index = parts.last()->index + parts.last()->numanimparts;
+        int index = parts.back()->index + parts.back()->numanimparts;
         for(int i = 0; a[i].tag; i++)
         {
             numtags++;
@@ -1365,7 +1373,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     AnimState as[maxanimparts];
     parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 
-    for(int i = 1; i < parts.length(); i++)
+    for(int i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))
@@ -1506,7 +1514,7 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
 
 void animmodel::cleanup()
 {
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         parts[i]->cleanup();
     }
@@ -1539,7 +1547,7 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     matrix4x3 m;
     initmatrix(m);
     parts[0]->genBIH(bih, m);
-    for(int i = 1; i < parts.length(); i++)
+    for(int i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))
@@ -1564,7 +1572,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
     initmatrix(m);
     m.mul(orient, matrix4x3(m));
     parts[0]->genshadowmesh(tris, m);
-    for(int i = 1; i < parts.length(); i++)
+    for(int i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))
@@ -1584,7 +1592,7 @@ void animmodel::preloadBIH()
     model::preloadBIH();
     if(bih)
     {
-        for(int i = 0; i < parts.length(); i++)
+        for(int i = 0; i < parts.size(); i++)
         {
             parts[i]->preloadBIH();
         }
@@ -1618,7 +1626,7 @@ bool animmodel::animated() const
     {
         return true;
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         if(parts[i]->animated())
         {
@@ -1630,7 +1638,7 @@ bool animmodel::animated() const
 
 bool animmodel::alphatested() const
 {
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         if(parts[i]->alphatested())
         {
@@ -1643,7 +1651,7 @@ bool animmodel::alphatested() const
 bool animmodel::load()
 {
     startload();
-    bool success = loadconfig() && parts.length(); // configured model, will call the model commands below
+    bool success = loadconfig() && parts.size(); // configured model, will call the model commands below
     if(!success)
     {
         success = loaddefaultparts(); // model without configuration, try default tris and skin
@@ -1659,7 +1667,7 @@ bool animmodel::load()
     {
         return false;
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         if(!parts[i]->meshes)
         {
@@ -1672,7 +1680,7 @@ bool animmodel::load()
 
 void animmodel::preloadshaders()
 {
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         parts[i]->preloadshaders();
     }
@@ -1680,7 +1688,7 @@ void animmodel::preloadshaders()
 
 void animmodel::preloadmeshes()
 {
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         parts[i]->preloadmeshes();
     }
@@ -1692,7 +1700,7 @@ void animmodel::setshader(Shader *shader)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1707,7 +1715,7 @@ void animmodel::setspec(float spec)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1722,7 +1730,7 @@ void animmodel::setgloss(int gloss)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1737,7 +1745,7 @@ void animmodel::setglow(float glow, float delta, float pulse)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1755,7 +1763,7 @@ void animmodel::setalphatest(float alphatest)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1770,7 +1778,7 @@ void animmodel::setfullbright(float fullbright)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1785,7 +1793,7 @@ void animmodel::setcullface(int cullface)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1800,7 +1808,7 @@ void animmodel::setcolor(const vec &color)
     {
         loaddefaultparts();
     }
-    for(int i = 0; i < parts.length(); i++)
+    for(int i = 0; i < parts.size(); i++)
     {
         for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
@@ -1820,7 +1828,7 @@ void animmodel::calcbb(vec &center, vec &radius)
     matrix4x3 m;
     initmatrix(m);
     parts[0]->calcbb(bbmin, bbmax, m);
-    for(int i = 1; i < parts.length(); i++)
+    for(int i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))

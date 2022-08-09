@@ -383,12 +383,16 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
         {
             md5mesh *m = new md5mesh;
             m->group = this;
-            meshes.add(m);
+            meshes.push_back(m);
             m->load(f, buf, sizeof(buf));
             if(!m->numtris || !m->numverts) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename);
-                meshes.removeobj(m);
+                //double std::find of the same thing not the most efficient
+                if(std::find(meshes.begin(), meshes.end(), m) != meshes.end())
+                {
+                    meshes.erase(std::find(meshes.begin(), meshes.end(), m));
+                }
                 delete m;
             }
         }
@@ -405,7 +409,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
         }
     }
 
-    for(int i = 0; i < meshes.length(); i++)
+    for(uint i = 0; i < meshes.size(); i++)
     {
         md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
         m.buildverts(basejoints);
@@ -517,8 +521,8 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             if(start && end)
             {
                 char *texname = newstring(start+1, end-(start+1));
-                part *p = loading->parts.last();
-                p->initskins(notexture, notexture, group->meshes.length());
+                part *p = loading->parts.back();
+                p->initskins(notexture, notexture, group->meshes.size());
                 skin &s = p->skins.back();
                 s.tex = textureload(makerelpath(dir, texname), 0, true, false);
                 delete[] texname;

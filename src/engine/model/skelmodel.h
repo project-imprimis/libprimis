@@ -556,8 +556,8 @@ struct skelmodel : animmodel
     skelpart &addpart()
     {
         flushpart();
-        skelpart *p = new skelpart(this, parts.length());
-        parts.add(p);
+        skelpart *p = new skelpart(this, parts.size());
+        parts.push_back(p);
         return *p;
     }
 };
@@ -582,9 +582,9 @@ struct skelloader : modelloader<MDL, skelmodel>
 
     void flushpart()
     {
-        if(hitzones.size() && skelmodel::parts.length())
+        if(hitzones.size() && skelmodel::parts.size())
         {
-            skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.last());
+            skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.back());
             skelmodel::skelmeshgroup *m = static_cast<skelmodel::skelmeshgroup *>(p->meshes);
             if(m)
             {
@@ -655,7 +655,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
         if(i >= 0)
         {
@@ -679,7 +679,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
 
         if(name[0])
         {
@@ -726,7 +726,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("\frnot loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         if(!mdl.meshes)
         {
             return;
@@ -767,7 +767,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("\frnot loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         if(!mdl.meshes)
         {
             return;
@@ -836,7 +836,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         else
         {
-            part *p = static_cast<part *>(MDL::loading->parts.last());
+            part *p = static_cast<part *>(MDL::loading->parts.back());
             if(!p->meshes)
             {
                 return;
@@ -870,7 +870,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                     {
                         end = std::max(end + *endoffset, 1);
                     }
-                    MDL::loading->parts.last()->setanim(p->numanimparts-1, anims[i], start, end, *speed, *priority);
+                    MDL::loading->parts.back()->setanim(p->numanimparts-1, anims[i], start, end, *speed, *priority);
                 }
             }
         }
@@ -883,7 +883,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part *p = static_cast<part *>(MDL::loading->parts.last());
+        part *p = static_cast<part *>(MDL::loading->parts.back());
 
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
@@ -925,7 +925,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         if(!name[0])
         {
             return;
@@ -955,7 +955,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("invalid hit zone id %d", *id);
             return;
         }
-        part *p = static_cast<part *>(MDL::loading->parts.last());
+        part *p = static_cast<part *>(MDL::loading->parts.back());
         meshgroup *m = static_cast<meshgroup *>(p->meshes);
         if(!m || m->hitdata)
         {
