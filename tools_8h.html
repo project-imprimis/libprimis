@@ -178,8 +178,6 @@ Macros</h2></td></tr>
 <tr class="memitem:acb346732fc8b8343f12d511a4cbe1b28"><td class="memItemLeft" align="right" valign="top"><a id="acb346732fc8b8343f12d511a4cbe1b28" name="acb346732fc8b8343f12d511a4cbe1b28"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFV_FORMAT_STRING</b>(d,  last,  fmt)&#160;&#160;&#160;string d; { va_list ap; va_start(ap, last); vformatstring(d, fmt, ap); va_end(ap); }</td></tr>
 <tr class="separator:acb346732fc8b8343f12d511a4cbe1b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad027a2b3e89cee878472e6c2dfae09c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#ad027a2b3e89cee878472e6c2dfae09c4">UNIQUE</a>(overwrite,  cleanup)</td></tr>
-<tr class="separator:ad027a2b3e89cee878472e6c2dfae09c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa3f46f516bee2a8033ce1de62519b1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#afa3f46f516bee2a8033ce1de62519b1e">HTFIND</a>(success,  fail)</td></tr>
 <tr class="separator:afa3f46f516bee2a8033ce1de62519b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5b747ed0f45e8cf7eb7f18b818065f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#ad5b747ed0f45e8cf7eb7f18b818065f6">ENUMERATE_KT</a>(ht,  k,  e,  t,  f,  b)</td></tr>
@@ -649,49 +647,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>homedir</b></td></t
 <div class="line">            } \</div>
 <div class="line">        } \</div>
 <div class="line">        return (fail);</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ad027a2b3e89cee878472e6c2dfae09c4" name="ad027a2b3e89cee878472e6c2dfae09c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad027a2b3e89cee878472e6c2dfae09c4">&#9670;&nbsp;</a></span>UNIQUE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define UNIQUE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">overwrite, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">cleanup&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 1; i &lt; ulen; i++) \</div>
-<div class="line">            <span class="keywordflow">if</span>(htcmp(buf[i-1], buf[i])) \</div>
-<div class="line">            { \</div>
-<div class="line">                int n = i; \</div>
-<div class="line">                while(++i &lt; ulen) \</div>
-<div class="line">                { \</div>
-<div class="line">                    if(!htcmp(buf[n-1], buf[i])) \</div>
-<div class="line">                    { \</div>
-<div class="line">                        overwrite; \</div>
-<div class="line">                        n++; \</div>
-<div class="line">                    } \</div>
-<div class="line">                } \</div>
-<div class="line">                cleanup; \</div>
-<div class="line">                break; \</div>
-<div class="line">            }</div>
 </div><!-- fragment -->
 </div>
 </div>

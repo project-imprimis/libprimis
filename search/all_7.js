@@ -17,6 +17,5 @@ var searchData=
   ['heapparent_14',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
   ['hideui_15',['hideui',['../iengine_8h.html#a0aa63a54de2a562677e38df439fa1975',1,'UI']]],
   ['hmapedit_16',['hmapedit',['../iengine_8h.html#ae7a734b768e6f702bba8fcaf872f7be6',1,'iengine.h']]],
-  ['holdui_17',['holdui',['../iengine_8h.html#a5ee70bab788b14cfecd70356f5eebf33',1,'UI']]],
-  ['htfind_18',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
+  ['holdui_17',['holdui',['../iengine_8h.html#a5ee70bab788b14cfecd70356f5eebf33',1,'UI']]]
 ];
