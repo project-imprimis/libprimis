@@ -329,10 +329,13 @@ int getlocalparam(const char *name)
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
 {
     int idx = getlocalparam(name);
-    if(idx >= s.localparamremap.length())
+    if(idx >= s.localparamremap.size())
     {
-        int n = idx + 1 - s.localparamremap.length();
-        std::memset(s.localparamremap.pad(n), 0xFF, n);
+        int n = idx + 1 - s.localparamremap.size();
+        for(int i = 0; i < n; ++i)
+        {
+            s.localparamremap.push_back(0xFF);
+        }
     }
     s.localparamremap[idx] = s.localparams.size();
     LocalShaderParamState l;
@@ -928,7 +931,7 @@ void Shader::cleanup(bool full)
         program = 0;
     }
     localparams.clear();
-    localparamremap.setsize(0);
+    localparamremap.clear();
     globalparams.clear();
     if(standard || full)
     {

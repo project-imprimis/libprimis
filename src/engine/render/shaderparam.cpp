@@ -122,13 +122,13 @@ LocalShaderParamState *LocalShaderParam::resolve()
     {
         return nullptr;
     }
-    if(!s->localparamremap.inrange(loc))
+    if(!s->localparamremap.size() > loc)
     {
         if(loc == -1)
         {
             loc = getlocalparam(name);
         }
-        if(!s->localparamremap.inrange(loc))
+        if(!s->localparamremap.size() > loc)
         {
             return nullptr;
         }

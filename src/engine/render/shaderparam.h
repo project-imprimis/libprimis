@@ -83,7 +83,7 @@ class Shader
         std::vector<SlotShaderParamState> defaultparams;
         std::vector<GlobalShaderParamUse> globalparams;
         std::vector<LocalShaderParamState> localparams;
-        vector<uchar> localparamremap;
+        std::vector<uchar> localparamremap;
         Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
