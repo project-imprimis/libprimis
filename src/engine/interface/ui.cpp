@@ -657,36 +657,40 @@ namespace UI
                 childstate &= State_HoldMask;
             }
 
-            #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
-                /* loop through children back to front */ \
-                LOOP_CHILDREN_REV(o, \
-                { \
-                    if(((o->state | o->childstate) & mask) != mask) \
-                    { \
-                        continue; \
-                    } \
-                    float o##x = cx - o->x; /*offset x*/ \
-                    float o##y = cy - o->y; /*offset y*/ \
-                    if(!inside) \
-                    { \
-                        o##x = std::clamp(o##x, 0.0f, o->w); /*clamp offsets to Object bounds in x*/ \
-                        o##y = std::clamp(o##y, 0.0f, o->h); /*clamp offsets to Object bounds in y*/ \
-                        body; \
-                    } \
-                    else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) /*if in bounds execute body*/ \
-                    { \
-                        body; \
-                    } \
-                })
+            void changechildstate(Object * o, void (Object::*member)(float, float, int, bool, int), float ox, float oy, int mask, bool inside, int setflags)
+            {
+                (o->*member)(ox, oy, mask, inside, setflags); /*child's->func##children fxn called*/
+                childstate |= (o->state | o->childstate) & (setflags); /*set childstate*/
+            }
+
+            void propagatestate(float cx, float cy, int mask, bool inside, int setflags, void (UI::Object::*method)(float, float, int, bool, int))
+            {
+                for(int i = static_cast<int>(children.size()); --i >= 0;)
+                {
+                    Object *o = children.at(i);
+                    if(((o->state | o->childstate) & mask) != mask)
+                    {
+                        continue;
+                    }
+                    float ox = cx - o->x; /*offset x*/
+                    float oy = cy - o->y; /*offset y*/
+                    if(!inside)
+                    {
+                        ox = std::clamp(ox, 0.0f, o->w); /*clamp offsets to Object bounds in x*/
+                        oy = std::clamp(oy, 0.0f, o->h); /*clamp offsets to Object bounds in y*/
+                        changechildstate(o, method, ox, oy, mask, inside, setflags);
+                    }
+                    else if(ox >= 0 && ox < o->w && oy >= 0 && oy < o->h) /*if in bounds execute body*/
+                    {
+                        changechildstate(o, method, ox, oy, mask, inside, setflags);
+                    }
+                }
+            }
 
             #define DOSTATE(flags, func) \
                 virtual void func##children(float cx, float cy, int mask, bool inside, int setflags) \
                 { \
-                    PROPAGATE_STATE(o, cx, cy, mask, inside, \
-                    { \
-                        o->func##children(ox, oy, mask, inside, setflags); /*child's->func##children fxn called*/ \
-                        childstate |= (o->state | o->childstate) & (setflags); /*set childstate*/ \
-                    }); \
+                    propagatestate(cx, cy, mask, inside, setflags, &UI::Object::func##children); \
                     if(target(cx, cy)) \
                     { \
                         state |= (setflags); \
