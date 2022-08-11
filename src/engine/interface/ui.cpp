@@ -699,7 +699,6 @@ namespace UI
                 } \
                 virtual void func(float, float) {} /*note unnamed function parameters*/
             DOSTATES
-            #undef PROPAGATE_STATE
             #undef DOSTATE
 
             virtual const char *gettype() const
