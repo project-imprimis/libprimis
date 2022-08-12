@@ -620,7 +620,7 @@ static char *listelem(const char *start = liststart, const char *end = listend, 
 void explodelist(const char *s, std::vector<char *> &elems, int limit)
 {
     const char *start, *end, *qstart;
-    while((limit < 0 || elems.size() < limit) && parselist(s, start, end, qstart))
+    while((limit < 0 || static_cast<int>(elems.size()) < limit) && parselist(s, start, end, qstart))
     {
         elems.push_back(listelem(start, end, qstart));
     }
