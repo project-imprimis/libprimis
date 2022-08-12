@@ -797,7 +797,7 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        if(!(MDL::loading->parts.size() > *parent) || !(MDL::loading->parts.size() > *child))
+        if(!(static_cast<int>(MDL::loading->parts.size()) > *parent) || !(static_cast<int>(MDL::loading->parts.size()) > *child))
         {
             conoutf("no models loaded to link");
             return;
