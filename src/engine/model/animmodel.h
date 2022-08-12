@@ -539,7 +539,7 @@ class animmodel : public model
 
         virtual void loaded()
         {
-            for(int i = 0; i < parts.size(); i++)
+            for(uint i = 0; i < parts.size(); i++)
             {
                 parts[i]->loaded();
             }
