@@ -329,7 +329,7 @@ int getlocalparam(const char *name)
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
 {
     int idx = getlocalparam(name);
-    if(idx >= s.localparamremap.size())
+    if(idx >= static_cast<int>(s.localparamremap.size()))
     {
         int n = idx + 1 - s.localparamremap.size();
         for(int i = 0; i < n; ++i)
