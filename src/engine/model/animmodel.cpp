@@ -514,7 +514,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
 
 void animmodel::meshgroup::genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
-    for(int i = 0; i < meshes.size(); i++)
+    for(uint i = 0; i < meshes.size(); i++)
     {
         meshes[i]->genBIH(skins[i], bih, t);
     }
