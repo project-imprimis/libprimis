@@ -682,7 +682,7 @@ struct vslothdr
     ushort slot;
 };
 
-static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
+static void packvslots(cube &c, vector<uchar> &buf, std::vector<ushort> &used)
 {
     //recursively apply to children
     if(c.children)
@@ -697,9 +697,9 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
         for(int i = 0; i < 6; ++i) //for each face
         {
             ushort index = c.texture[i];
-            if(vslots.inrange(index) && vslots[index]->changed && used.find(index) < 0)
+            if(vslots.inrange(index) && vslots[index]->changed && std::find(used.begin(), used.end(), index) != used.end())
             {
-                used.add(index);
+                used.push_back(index);
                 VSlot &vs = *vslots[index];
                 vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
                 hdr.index = index;
@@ -712,7 +712,7 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
 
 static void packvslots(block3 &b, vector<uchar> &buf)
 {
-    vector<ushort> used;
+    std::vector<ushort> used;
     cube *c = b.c();
     for(int i = 0; i < b.size(); ++i)
     {
@@ -1926,7 +1926,7 @@ void initoctaeditcmds()
         pruneundos(0);
     };
     addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos), "", Id_Command); //run pruneundos but with a cache size of zero
-    
+
     static auto delprefab = [] (char *name)
     {
         prefab *p = prefabs.access(name);
