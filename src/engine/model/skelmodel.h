@@ -887,7 +887,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        vector<ushort> bonemask;
+        std::vector<ushort> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
@@ -901,18 +901,18 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 }
                 return;
             }
-            bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
+            bonemask.push_back(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         for(char* i : bonestrs)
         {
             delete[] i;
         }
-        bonemask.sort();
-        if(bonemask.length())
+        std::sort(bonemask.begin(), bonemask.end());
+        if(bonemask.size())
         {
-            bonemask.add(Bonemask_End);
+            bonemask.push_back(Bonemask_End);
         }
-        if(!p->addanimpart(bonemask.getbuf()))
+        if(!p->addanimpart(bonemask.data()))
         {
             conoutf("too many animation parts");
         }
@@ -963,7 +963,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        vector<ushort> bonemask;
+        std::vector<ushort> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
@@ -977,7 +977,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 }
                 return;
             }
-            bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
+            bonemask.push_back(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         for(char* i : bonestrs)
         {
@@ -987,14 +987,14 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             return;
         }
-        bonemask.sort();
-        bonemask.add(Bonemask_End);
+        std::sort(bonemask.begin(), bonemask.end());
+        bonemask.push_back(Bonemask_End);
 
         while(static_cast<int>(MDL::hitzones.size()) < m->skel->numbones)
         {
             MDL::hitzones.emplace_back(0xFF);
         }
-        m->skel->applybonemask(bonemask.getbuf(), MDL::hitzones.data(), *id < 0 ? 0xFF : *id);
+        m->skel->applybonemask(bonemask.data(), MDL::hitzones.data(), *id < 0 ? 0xFF : *id);
     }
 
     skelcommands()
