@@ -423,9 +423,9 @@ namespace
 
     struct sortval
     {
-         vector<ushort> tris;
+        std::vector<ushort> tris;
 
-         sortval() {}
+        sortval() {}
     };
 
     class vacollect : public verthash
@@ -440,7 +440,7 @@ namespace
             vec refractmin, refractmax;
             vector<grasstri> grasstris;
             int worldtris, skytris;
-            vector<ushort> skyindices;
+            std::vector<ushort> skyindices;
             hashtable<sortkey, sortval> indices;
 
             void clear()
@@ -449,7 +449,7 @@ namespace
                 worldtris = skytris = decaltris = 0;
                 indices.clear();
                 decalindices.clear();
-                skyindices.setsize(0);
+                skyindices.clear();
                 matsurfs.clear();
                 mapmodels.setsize(0);
                 decals.setsize(0);
@@ -521,11 +521,11 @@ namespace
                 va->skybuf = 0;
                 va->skydata = 0;
                 va->skyoffset = 0;
-                va->sky = skyindices.length();
+                va->sky = skyindices.size();
                 if(va->sky)
                 {
                     ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
-                    std::memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
+                    std::memcpy(skydata, skyindices.data(), va->sky*sizeof(ushort));
                     if(va->voffset)
                     {
                         for(int i = 0; i < va->sky; ++i)
@@ -563,16 +563,16 @@ namespace
                         e.minvert = USHRT_MAX;
                         e.maxvert = 0;
 
-                        if(t.tris.length())
+                        if(t.tris.size())
                         {
-                            std::memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
-                            for(int j = 0; j < t.tris.length(); j++)
+                            std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
+                            for(uint j = 0; j < t.tris.size(); j++)
                             {
                                 curbuf[j] += va->voffset;
                                 e.minvert = std::min(e.minvert, curbuf[j]);
                                 e.maxvert = std::max(e.maxvert, curbuf[j]);
                             }
-                            curbuf += t.tris.length();
+                            curbuf += t.tris.size();
                         }
                         e.length = curbuf-startbuf;
                         if(k.alpha==Alpha_Back)
@@ -636,16 +636,16 @@ namespace
                         ushort *startbuf = curbuf;
                         e.minvert = USHRT_MAX;
                         e.maxvert = 0;
-                        if(t.tris.length())
+                        if(t.tris.size())
                         {
-                            std::memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
-                            for(int j = 0; j < t.tris.length(); j++)
+                            std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
+                            for(uint j = 0; j < t.tris.size(); j++)
                             {
                                 curbuf[j] += va->voffset;
                                 e.minvert = std::min(e.minvert, curbuf[j]);
                                 e.maxvert = std::max(e.maxvert, curbuf[j]);
                             }
-                            curbuf += t.tris.length();
+                            curbuf += t.tris.size();
                         }
                         e.length = curbuf-startbuf;
                     }
@@ -680,7 +680,7 @@ namespace
             {
                 ENUMERATE_KT(indices, sortkey, k, sortval, t,
                 {
-                    if(t.tris.length())
+                    if(t.tris.size())
                     {
                         texs.push_back(k);
                     }
@@ -755,7 +755,7 @@ namespace
                     {
                         tkey.reuse = k.tex;
                     }
-                    for(int j = 0; j < t.tris.length(); j += 3)
+                    for(uint j = 0; j < t.tris.size(); j += 3)
                     {
                         const vertex &t0 = verts[t.tris[j]],
                                      &t1 = verts[t.tris[j+1]],
@@ -826,14 +826,14 @@ namespace
                             v.tangent.lerp(x0, x1, x2, b0, b1, b2);
                             idx[k] = addvert(v);
                         }
-                        vector<ushort> &tris = decalindices[tkey].tris;
+                        std::vector<ushort> &tris = decalindices[tkey].tris;
                         for(int k = 0; k < nump-2; ++k)
                         {
                             if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
                             {
-                                tris.add(idx[0]);
-                                tris.add(idx[k+1]);
-                                tris.add(idx[k+2]);
+                                tris.push_back(idx[0]);
+                                tris.push_back(idx[k+1]);
+                                tris.push_back(idx[k+2]);
                                 decaltris += 3;
                             }
                         }
@@ -886,7 +886,7 @@ namespace
                 }
                 ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
                 {
-                    if(t.tris.length())
+                    if(t.tris.size())
                     {
                         decaltexs.push_back(k);
                     }
@@ -932,7 +932,7 @@ namespace
         {
             if(index[0]!=index[i+1] && index[i+1]!=index[i+2] && index[i+2]!=index[0])
             {
-                vector<ushort> &idxs = key.tex == Default_Sky ? vc.skyindices : vc.indices[key].tris;
+                std::vector<ushort> &idxs = key.tex == Default_Sky ? vc.skyindices : vc.indices[key].tris;
                 int left  = index[0],
                     mid   = index[i+1],
                     right = index[i+2],
@@ -992,9 +992,9 @@ namespace
                             return;
                         }
                         total += 3;
-                        idxs.add(i0);
-                        idxs.add(i1);
-                        idxs.add(i2);
+                        idxs.push_back(i0);
+                        idxs.push_back(i1);
+                        idxs.push_back(i2);
                         i1 = i2;
                     }
                     if(cedge >= 0)
@@ -1077,9 +1077,9 @@ namespace
                                     return;
                                 }
                                 total += 3;
-                                idxs.add(i0);
-                                idxs.add(i1);
-                                idxs.add(i2);
+                                idxs.push_back(i0);
+                                idxs.push_back(i1);
+                                idxs.push_back(i2);
                                 i1 = i2;
                             }
                             else
