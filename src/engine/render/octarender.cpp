@@ -438,7 +438,7 @@ namespace
             vec skymin, skymax;
             vec alphamin, alphamax;
             vec refractmin, refractmax;
-            vector<grasstri> grasstris;
+            std::vector<grasstri> grasstris;
             int worldtris, skytris;
             std::vector<ushort> skyindices;
             hashtable<sortkey, sortval> indices;
@@ -454,7 +454,7 @@ namespace
                 mapmodels.setsize(0);
                 decals.setsize(0);
                 extdecals.setsize(0);
-                grasstris.setsize(0);
+                grasstris.clear();
                 texs.clear();
                 decaltexs.clear();
                 alphamin = refractmin = skymin = vec(1e16f, 1e16f, 1e16f);
@@ -650,9 +650,9 @@ namespace
                         e.length = curbuf-startbuf;
                     }
                 }
-                if(grasstris.length())
+                if(grasstris.size())
                 {
-                    va->grasstris.move(grasstris);
+                    std::swap(va->grasstris, grasstris);
                     loadgrassshaders();
                 }
                 if(mapmodels.length())
@@ -1100,7 +1100,8 @@ namespace
     //texture: index for the grass texture to use
     void addgrasstri(int face, vertex *verts, int numv, ushort texture)
     {
-        grasstri &g = vc.grasstris.add();
+        vc.grasstris.emplace_back();
+        grasstri &g = vc.grasstris.back();
         int i1, i2, i3, i4;
         if(numv <= 3 && face%2)
         {
@@ -1123,7 +1124,7 @@ namespace
         g.surface.toplane(g.v[0], g.v[1], g.v[2]);
         if(g.surface.z <= 0)
         {
-            vc.grasstris.pop();
+            vc.grasstris.pop_back();
             return;
         }
         g.minz = std::min(std::min(g.v[0].z, g.v[1].z), std::min(g.v[2].z, g.v[3].z));

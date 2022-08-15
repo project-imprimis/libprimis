@@ -88,7 +88,7 @@ struct vtxarray
     uchar curvfc, occluded;
     occludequery *query;
     vector<octaentities *> mapmodels, decals;
-    vector<grasstri> grasstris;
+    std::vector<grasstri> grasstris;
     int hasmerges, mergelevel;
     int shadowmask;
 };
