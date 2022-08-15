@@ -326,11 +326,11 @@ namespace
                 {
                     return false;
                 }
-                if(xs.slot->params.length() < ys.slot->params.length())
+                if(xs.slot->params.size() < ys.slot->params.size())
                 {
                     return true;
                 }
-                if(xs.slot->params.length() > ys.slot->params.length())
+                if(xs.slot->params.size() > ys.slot->params.size())
                 {
                     return false;
                 }
@@ -392,11 +392,11 @@ namespace
             {
                 return false;
             }
-            if(xs.slot->params.length() < ys.slot->params.length())
+            if(xs.slot->params.size() < ys.slot->params.size())
             {
                 return true;
             }
-            if(xs.slot->params.length() > ys.slot->params.length())
+            if(xs.slot->params.size() > ys.slot->params.size())
             {
                 return false;
             }
