@@ -64,7 +64,6 @@ var hierarchy =
     [ "vec4< float >", "structvec4.html", null ],
     [ "vector< T >", "structvector.html", null ],
     [ "vector< Slot::Tex >", "structvector.html", null ],
-    [ "vector< SlotShaderParam >", "structvector.html", null ],
     [ "VSlot", "structVSlot.html", [
       [ "DecalSlot", "structDecalSlot.html", null ]
     ] ],
