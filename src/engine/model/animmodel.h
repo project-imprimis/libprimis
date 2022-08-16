@@ -657,6 +657,7 @@ struct modelcommands
         formatstring(MDL::dir, "media/model/%s", name);
     }
 
+//======================================================= LOOP_MESHES LOOP_SKINS
     #define LOOP_MESHES(meshname, m, body) do { \
         if(!MDL::loading || MDL::loading->parts.empty()) \
         { \
@@ -789,6 +790,7 @@ struct modelcommands
 
 #undef LOOP_MESHES
 #undef LOOP_SKINS
+//==============================================================================
 
     static void setlink(int *parent, int *child, char *tagname, float *x, float *y, float *z)
     {
