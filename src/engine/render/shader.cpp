@@ -1382,7 +1382,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     }
     else
     {
-        for(int i = 0; i < slotparams.size(); i++)
+        for(uint i = 0; i < slotparams.size(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
             vsbuf.put(uni, std::strlen(uni));
