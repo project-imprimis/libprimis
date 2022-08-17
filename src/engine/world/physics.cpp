@@ -21,7 +21,7 @@
 #include "render/rendermodel.h"
 
 int numdynents; //updated by engine, visible through iengine.h
-vector<dynent *> dynents;
+std::vector<dynent *> dynents;
 
 static constexpr int maxclipoffset = 4;
 static constexpr int maxclipplanes = 1024;
@@ -214,7 +214,7 @@ void cleardynentcache()
 //returns the dynent at location i in the dynents vector
 dynent *iterdynents(int i)
 {
-    if(i<dynents.length())
+    if(i<dynents.size())
     {
         return dynents[i];
     }
