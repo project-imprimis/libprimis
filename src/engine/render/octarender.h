@@ -87,7 +87,7 @@ struct vtxarray
     ivec bbmin, bbmax;       // BB of everything including children
     uchar curvfc, occluded;
     occludequery *query;
-    vector<octaentities *> mapmodels, decals;
+    std::vector<octaentities *> mapmodels, decals;
     std::vector<grasstri> grasstris;
     int hasmerges, mergelevel;
     int shadowmask;

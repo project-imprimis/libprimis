@@ -434,7 +434,7 @@ namespace
             int size;
             ivec origin;
             std::vector<materialsurface> matsurfs;
-            vector<octaentities *> mapmodels, decals, extdecals;
+            std::vector<octaentities *> mapmodels, decals, extdecals;
             vec skymin, skymax;
             vec alphamin, alphamax;
             vec refractmin, refractmax;
@@ -451,9 +451,9 @@ namespace
                 decalindices.clear();
                 skyindices.clear();
                 matsurfs.clear();
-                mapmodels.setsize(0);
-                decals.setsize(0);
-                extdecals.setsize(0);
+                mapmodels.clear();
+                decals.clear();
+                extdecals.clear();
                 grasstris.clear();
                 texs.clear();
                 decaltexs.clear();
@@ -655,13 +655,13 @@ namespace
                     std::swap(va->grasstris, grasstris);
                     loadgrassshaders();
                 }
-                if(mapmodels.length())
+                if(mapmodels.size())
                 {
-                    va->mapmodels.put(mapmodels.getbuf(), mapmodels.length());
+                    va->mapmodels.insert(va->decals.end(), mapmodels.begin(), mapmodels.end());
                 }
-                if(decals.length())
+                if(decals.size())
                 {
-                    va->decals.put(decals.getbuf(), decals.length());
+                    va->decals.insert(va->decals.end(), decals.begin(), decals.end());
                 }
             }
 
@@ -843,16 +843,16 @@ namespace
 
             void gendecals()
             {
-                if(decals.length())
+                if(decals.size())
                 {
-                    extdecals.put(decals.getbuf(), decals.length());
+                    extdecals.insert(extdecals.end(), decals.begin(), decals.end());
                 }
                 if(extdecals.empty())
                 {
                     return;
                 }
                 vector<extentity *> &ents = entities::getents();
-                for(int i = 0; i < extdecals.length(); i++)
+                for(uint i = 0; i < extdecals.size(); i++)
                 {
                     octaentities *oe = extdecals[i];
                     for(uint j = 0; j < oe->decals.size(); j++)
@@ -872,7 +872,7 @@ namespace
                         gendecal(e, s, k);
                     }
                 }
-                for(int i = 0; i < extdecals.length(); i++)
+                for(uint i = 0; i < extdecals.size(); i++)
                 {
                     octaentities *oe = extdecals[i];
                     for(uint j = 0; j < oe->decals.size(); j++)
@@ -1831,11 +1831,11 @@ namespace
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
-            for(int i = 0; i < va->decals.length(); i++)
+            for(uint i = 0; i < va->decals.size(); i++)
             {
-                vc.extdecals.add(va->decals[i]);
+                vc.extdecals.push_back(va->decals[i]);
             }
-            for(int i = 0; i < va->children.length(); i++)
+            for(uint i = 0; i < va->children.length(); i++)
             {
                 finddecals(va->children[i]);
             }
@@ -1876,11 +1876,11 @@ namespace
             {
                 if(c.ext->ents->mapmodels.size())
                 {
-                    vc.mapmodels.add(c.ext->ents);
+                    vc.mapmodels.push_back(c.ext->ents);
                 }
                 if(c.ext->ents->decals.size())
                 {
-                    vc.decals.add(c.ext->ents);
+                    vc.decals.push_back(c.ext->ents);
                 }
             }
             return;
@@ -1902,11 +1902,11 @@ namespace
         {
             if(c.ext->ents->mapmodels.size())
             {
-                vc.mapmodels.add(c.ext->ents);
+                vc.mapmodels.push_back(c.ext->ents);
             }
             if(c.ext->ents->decals.size())
             {
-                vc.decals.add(c.ext->ents);
+                vc.decals.push_back(c.ext->ents);
             }
         }
 
@@ -1950,7 +1950,7 @@ namespace
             octaentities *oe = entstack[i];
             if(oe->decals.size())
             {
-                vc.extdecals.add(oe);
+                vc.extdecals.push_back(oe);
             }
         }
         int maxlevel = -1;
@@ -2405,13 +2405,13 @@ void updatevabb(vtxarray *va, bool force)
         va->bbmin.min(child->bbmin);
         va->bbmax.max(child->bbmax);
     }
-    for(int i = 0; i < va->mapmodels.length(); i++)
+    for(uint i = 0; i < va->mapmodels.size(); i++)
     {
         octaentities *oe = va->mapmodels[i];
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
     }
-    for(int i = 0; i < va->decals.length(); i++)
+    for(uint i = 0; i < va->decals.size(); i++)
     {
         octaentities *oe = va->decals[i];
         va->bbmin.min(oe->bbmin);

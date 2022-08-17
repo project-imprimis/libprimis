@@ -291,7 +291,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         va->bbmin.x = -1;
                         if(oe.decals.empty())
                         {
-                            va->decals.add(&oe);
+                            va->decals.push_back(&oe);
                         }
                     }
                     oe.decals.push_back(id);
@@ -308,7 +308,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                             va->bbmin.x = -1;
                             if(oe.mapmodels.empty())
                             {
-                                va->mapmodels.add(&oe);
+                                va->mapmodels.push_back(&oe);
                             }
                         }
                         oe.mapmodels.push_back(id);
@@ -340,8 +340,11 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     {
                         va->bbmin.x = -1;
                         if(oe.decals.empty())
-                        {
-                            va->decals.removeobj(&oe);
+                        { //double std::find less efficient than possible
+                            if(std::find(va->decals.begin(), va->decals.end(), &oe) != va->decals.end())
+                            {
+                                va->decals.erase(std::find(va->decals.begin(), va->decals.end(), &oe));
+                            }
                         }
                     }
                     oe.bbmin = oe.bbmax = oe.o;
@@ -374,7 +377,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                             va->bbmin.x = -1;
                             if(oe.mapmodels.empty())
                             {
-                                va->mapmodels.removeobj(&oe);
+                                if(std::find(va->mapmodels.begin(), va->mapmodels.end(), &oe) != va->mapmodels.end())
+                                {
+                                    va->mapmodels.erase(std::find(va->mapmodels.begin(), va->mapmodels.end(), &oe));
+                                }
                             }
                         }
                         oe.bbmin = oe.bbmax = oe.o;

@@ -352,7 +352,7 @@ namespace
         {
             if(va->occluded < Occlude_BB && va->curvfc < ViewFrustumCull_Fogged)
             {
-                for(int i = 0; i < va->mapmodels.length(); i++)
+                for(uint i = 0; i < va->mapmodels.size(); i++)
                 {
                     octaentities *oe = va->mapmodels[i];
                     if(view.isfoggedcube(oe->o, oe->size))
@@ -559,7 +559,7 @@ namespace
         {
             vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
+            if(v.children.length() || v.mapmodels.size())
             {
                 bbmin = v.bbmin;
                 bbmax = v.bbmax;
@@ -588,7 +588,7 @@ namespace
         {
             vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
+            if(v.children.length() || v.mapmodels.size())
             {
                 bbmin = v.bbmin;
                 bbmax = v.bbmax;
@@ -619,7 +619,7 @@ namespace
             float dist = vadist(&v, shadoworigin);
             if(dist < shadowradius || !smdistcull)
             {
-                v.shadowmask = !smbbcull || (v.children.length() || v.mapmodels.length() ?
+                v.shadowmask = !smbbcull || (v.children.length() || v.mapmodels.size() ?
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v.bbmin, v.bbmax) :
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v.geommin, v.geommax)) ? 1 : 0;
                 addshadowva(&v, dist);
@@ -3397,7 +3397,7 @@ void findshadowvas(vector<vtxarray *> &vas)
         float dist = vadist(&v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ?
+            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.size() ?
                                 calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
                                 calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
             addshadowva(&v, dist);
@@ -3479,7 +3479,7 @@ void findshadowmms()
     octaentities **lastmms = &shadowmms;
     for(vtxarray *va = shadowva; va; va = va->rnext)
     {
-        for(int j = 0; j < va->mapmodels.length(); j++)
+        for(uint j = 0; j < va->mapmodels.size(); j++)
         {
             octaentities *oe = va->mapmodels[j];
             switch(shadowmapping)
