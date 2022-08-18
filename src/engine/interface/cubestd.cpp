@@ -173,10 +173,10 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
     f->printf("\n");
     writecrosshairs(f);
-    vector<ident *> ids;
-    ENUMERATE(idents, ident, id, ids.add(&id));
-    ids.sortname();
-    for(int i = 0; i < ids.length(); i++)
+    std::vector<ident *> ids;
+    ENUMERATE(idents, ident, id, ids.push_back(&id));
+    std::sort(ids.begin(), ids.end());
+    for(uint i = 0; i < ids.size(); i++)
     {
         ident &id = *ids[i];
         if(id.flags&Idf_Persist)
@@ -204,7 +204,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     f->printf("\n");
     writebinds(f);
     f->printf("\n");
-    for(int i = 0; i < ids.length(); i++)
+    for(uint i = 0; i < ids.size(); i++)
     {
         ident &id = *ids[i];
         if(id.type==Id_Alias && id.flags&Idf_Persist && !(id.flags&Idf_Overridden))
@@ -240,10 +240,10 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
 
 void changedvars()
 {
-    vector<ident *> ids;
-    ENUMERATE(idents, ident, id, if(id.flags&Idf_Overridden) ids.add(&id));
-    ids.sortname();
-    for(int i = 0; i < ids.length(); i++)
+    std::vector<ident *> ids;
+    ENUMERATE(idents, ident, id, if(id.flags&Idf_Overridden) ids.push_back(&id));
+    std::sort(ids.begin(), ids.end());
+    for(uint i = 0; i < ids.size(); i++)
     {
         printvar(ids[i]);
     }
