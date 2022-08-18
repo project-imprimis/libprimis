@@ -24,7 +24,7 @@
 #include "world/octaedit.h"
 
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
-static vector<ident *> identmap;
+static std::vector<ident *> identmap;
 static ident *dummyident = nullptr;
 std::queue<ident *> triggerqueue; //for the game to handle var change events
 static constexpr uint cmdqueuedepth = 128; //how many elements before oldest queued data gets discarded
@@ -549,8 +549,9 @@ static ident *addident(const ident &id)
         return nullptr;
     }
     ident &def = idents.access(id.name, id);
-    def.index = identmap.length();
-    return identmap.add(&def);
+    def.index = identmap.size();
+    identmap.push_back(&def);
+    return identmap.back();
 }
 
 ident *newident(const char *name, int flags = 0);
