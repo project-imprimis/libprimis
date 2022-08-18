@@ -191,7 +191,7 @@ static struct dynentcacheentry
 {
     int x, y;
     uint frame;
-    vector<physent *> dynents;
+    std::vector<physent *> dynents;
 } dynentcache[dynentcachesize];
 
 //resets the dynentcache[] array entries
@@ -228,7 +228,7 @@ static int dynenthash(int x, int y)
     return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1));
 }
 
-const vector<physent *> &checkdynentcache(int x, int y)
+const std::vector<physent *> &checkdynentcache(int x, int y)
 {
     dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
     if(dec.x == x && dec.y == y && dec.frame == dynentframe)
@@ -238,7 +238,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
     dec.x = x;
     dec.y = y;
     dec.frame = dynentframe;
-    dec.dynents.shrink(0);
+    dec.dynents.clear();
     int numdyns = numdynents,
         dsize = 1<<dynentsize,
         dx = x<<dynentsize,
@@ -251,7 +251,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
         {
             continue;
         }
-        dec.dynents.add(d);
+        dec.dynents.push_back(d);
     }
     return dec.dynents;
 }
@@ -266,11 +266,11 @@ void updatedynentcache(physent *d)
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
         dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
-        if(dec.x != x || dec.y != y || dec.frame != dynentframe || dec.dynents.find(d) >= 0)
+        if(dec.x != x || dec.y != y || dec.frame != dynentframe || (std::find(dec.dynents.begin(), dec.dynents.end(), d) != dec.dynents.end()))
         {
             continue;
         }
-        dec.dynents.add(d);
+        dec.dynents.push_back(d);
     }
 }
 
@@ -336,8 +336,8 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
     physent *insideplayer = nullptr;
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
-        const vector<physent *> &dynents = checkdynentcache(x, y);
-        for(int i = 0; i < dynents.length(); i++)
+        const std::vector<physent *> &dynents = checkdynentcache(x, y);
+        for(uint i = 0; i < dynents.size(); i++)
         {
             physent *o = dynents[i];
             if(o==d || d->o.reject(o->o, d->radius+o->radius))
