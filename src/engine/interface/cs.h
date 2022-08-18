@@ -213,7 +213,6 @@ extern const char *parseword(const char *p);
 
 extern bool validateblock(const char *s);
 extern hashnameset<ident> idents;
-extern vector<ident *> identmap;
 
 extern void setvarchecked(ident *id, int val);
 extern void setfvarchecked(ident *id, float val);
