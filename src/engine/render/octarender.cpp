@@ -1708,7 +1708,7 @@ namespace
     const int maxmergelevel = 12;
     int vahasmerges = 0,
         vamergemax = 0;
-    vector<mergedface> vamerges[maxmergelevel+1];
+    std::vector<mergedface> vamerges[maxmergelevel+1];
 
     int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     {
@@ -1754,13 +1754,13 @@ namespace
                     }
                     if(surf.numverts&BlendLayer_Top)
                     {
-                        vamerges[level].add(mf);
+                        vamerges[level].push_back(mf);
                     }
                     if(surf.numverts&BlendLayer_Bottom)
                     {
                         mf.numverts &= ~BlendLayer_Blend;
                         mf.numverts |= surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top;
-                        vamerges[level].add(mf);
+                        vamerges[level].push_back(mf);
                     }
                 }
             }
@@ -1802,14 +1802,14 @@ namespace
 
     void addmergedverts(int level, const ivec &o)
     {
-        vector<mergedface> &mfl = vamerges[level];
+        std::vector<mergedface> &mfl = vamerges[level];
         if(mfl.empty())
         {
             return;
         }
         vec vo(ivec(o).mask(~0xFFF));
         vec pos[Face_MaxVerts];
-        for(int i = 0; i < mfl.length(); i++)
+        for(uint i = 0; i < mfl.size(); i++)
         {
             mergedface &mf = mfl[i];
             int numverts = mf.numverts&Face_MaxVerts;
@@ -1823,7 +1823,7 @@ namespace
             addcubeverts(vslot, mf.orient, pos, mf.tex, mf.verts, numverts, mf.tjoints, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
             vahasmerges |= Merge_Use;
         }
-        mfl.setsize(0);
+        mfl.clear();
     }
 
     //recursively finds and adds decals to vacollect object vc
@@ -1868,7 +1868,7 @@ namespace
             }
             --neighbordepth;
 
-            if(csi <= maxmergelevel && vamerges[csi].length())
+            if(csi <= maxmergelevel && vamerges[csi].size())
             {
                 addmergedverts(csi, co);
             }
@@ -1910,7 +1910,7 @@ namespace
             }
         }
 
-        if(csi <= maxmergelevel && vamerges[csi].length())
+        if(csi <= maxmergelevel && vamerges[csi].size())
         {
             addmergedverts(csi, co);
         }
@@ -1941,7 +1941,7 @@ namespace
         int vamergeoffset[maxmergelevel+1];
         for(int i = 0; i < maxmergelevel+1; ++i)
         {
-            vamergeoffset[i] = vamerges[i].length();
+            vamergeoffset[i] = vamerges[i].size();
         }
         vc.origin = co;
         vc.size = size;
@@ -1968,7 +1968,7 @@ namespace
         {
             for(int i = 0; i < maxmergelevel+1; ++i)
             {
-                vamerges[i].setsize(vamergeoffset[i]);
+                vamerges[i].resize(vamergeoffset[i]);
             }
         }
         vc.clear();
@@ -2060,7 +2060,7 @@ namespace
                 {
                     count += setcubevisibility(c[i], o, size);
                 }
-                int tcount = count + (csi <= maxmergelevel ? vamerges[csi].length() : 0);
+                int tcount = count + (csi <= maxmergelevel ? vamerges[csi].size() : 0);
                 if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, worldsize/2))
                 {
                     setva(c[i], o, size, csi);
@@ -2086,9 +2086,9 @@ namespace
                     }
                 }
             }
-            if(csi+1 <= maxmergelevel && vamerges[csi].length())
+            if(csi+1 <= maxmergelevel && vamerges[csi].size())
             {
-                vamerges[csi+1].move(vamerges[csi]);
+                vamerges[csi+1].swap(vamerges[csi]);
             }
             cmergemax = std::max(cmergemax, vamergemax);
             chasmerges |= vahasmerges;
