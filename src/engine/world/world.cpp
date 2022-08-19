@@ -340,10 +340,11 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     {
                         va->bbmin.x = -1;
                         if(oe.decals.empty())
-                        { //double std::find less efficient than possible
-                            if(std::find(va->decals.begin(), va->decals.end(), &oe) != va->decals.end())
+                        {
+                            auto itr = std::find(va->decals.begin(), va->decals.end(), &oe);
+                            if(itr != va->decals.end())
                             {
-                                va->decals.erase(std::find(va->decals.begin(), va->decals.end(), &oe));
+                                va->decals.erase(itr);
                             }
                         }
                     }
@@ -367,10 +368,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                 {
                     if(loadmapmodel(e.attr1))
                     {
-                        //double std::find of same thing is slower than it could be
-                        if(std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id) != oe.mapmodels.end())
+                        auto itr = std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id);
+                        if(itr != oe.mapmodels.end())
                         {
-                            oe.mapmodels.erase(std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id));
+                            oe.mapmodels.erase(itr);
                         }
                         if(va)
                         {
