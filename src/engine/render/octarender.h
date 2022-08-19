@@ -55,7 +55,7 @@ struct grasstri
 struct vtxarray
 {
     vtxarray *parent;
-    vector<vtxarray *> children;
+    std::vector<vtxarray *> children;
     vtxarray *next, *rnext;  // linked list of visible VOBs
     vertex *vdata;           // vertex data
     ushort voffset, eoffset, skyoffset, decaloffset; // offset into vertex data
@@ -95,7 +95,7 @@ struct vtxarray
 
 extern ivec worldmin, worldmax;
 extern std::vector<tjoint> tjoints;
-extern vector<vtxarray *> varoot, valist;
+extern std::vector<vtxarray *> varoot, valist;
 extern int filltjoints;
 extern int allocva;
 

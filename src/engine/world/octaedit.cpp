@@ -429,7 +429,7 @@ void cubeworld::commitchanges(bool force)
         return;
     }
     haschanged = false;
-    int oldlen = valist.length();
+    int oldlen = valist.size();
     resetclipplanes();
     entitiesinoctanodes();
     inbetweenframes = false;

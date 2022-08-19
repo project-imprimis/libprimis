@@ -73,7 +73,7 @@ struct shadowmesh
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-void findshadowvas(vector<vtxarray *> &vas);
+void findshadowvas(std::vector<vtxarray *> &vas);
 
 namespace
 {
@@ -143,9 +143,9 @@ namespace
     }
 
     template<bool fullvis, bool resetocclude>
-    void findvisiblevas(vector<vtxarray *> &vas)
+    void findvisiblevas(std::vector<vtxarray *> &vas)
     {
-        for(int i = 0; i < vas.length(); i++)
+        for(uint i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
             int prevvfc = v.curvfc;
@@ -159,7 +159,7 @@ namespace
                     v.query = nullptr;
                 }
                 addvisibleva(&v);
-                if(v.children.length())
+                if(v.children.size())
                 {
                     if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
                     {
@@ -553,13 +553,13 @@ namespace
         }
     }
 
-    void findcsmshadowvas(vector<vtxarray *> &vas)
+    void findcsmshadowvas(std::vector<vtxarray *> &vas)
     {
-        for(int i = 0; i < vas.length(); i++)
+        for(uint i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.size())
+            if(v.children.size() || v.mapmodels.size())
             {
                 bbmin = v.bbmin;
                 bbmax = v.bbmax;
@@ -574,7 +574,7 @@ namespace
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
                 addshadowva(&v, dist);
-                if(v.children.length())
+                if(v.children.size())
                 {
                     findcsmshadowvas(v.children);
                 }
@@ -582,13 +582,13 @@ namespace
         }
     }
 
-    void findrsmshadowvas(vector<vtxarray *> &vas)
+    void findrsmshadowvas(std::vector<vtxarray *> &vas)
     {
-        for(int i = 0; i < vas.length(); i++)
+        for(uint i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.size())
+            if(v.children.size() || v.mapmodels.size())
             {
                 bbmin = v.bbmin;
                 bbmax = v.bbmax;
@@ -603,7 +603,7 @@ namespace
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
                 addshadowva(&v, dist);
-                if(v.children.length())
+                if(v.children.size())
                 {
                     findrsmshadowvas(v.children);
                 }
@@ -611,19 +611,19 @@ namespace
         }
     }
 
-    void findspotshadowvas(vector<vtxarray *> &vas)
+    void findspotshadowvas(std::vector<vtxarray *> &vas)
     {
-        for(int i = 0; i < vas.length(); i++)
+        for(uint i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
             float dist = vadist(&v, shadoworigin);
             if(dist < shadowradius || !smdistcull)
             {
-                v.shadowmask = !smbbcull || (v.children.length() || v.mapmodels.size() ?
+                v.shadowmask = !smbbcull || (v.children.size() || v.mapmodels.size() ?
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v.bbmin, v.bbmax) :
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v.geommin, v.geommax)) ? 1 : 0;
                 addshadowva(&v, dist);
-                if(v.children.length())
+                if(v.children.size())
                 {
                     findspotshadowvas(v.children);
                 }
@@ -2245,7 +2245,7 @@ void vfc::visiblecubes(bool cull)
         std::memset(vfcDnear, 0, sizeof(vfcDnear));
         std::memset(vfcDfar, 0, sizeof(vfcDfar));
         visibleva = nullptr;
-        for(int i = 0; i < valist.length(); i++)
+        for(uint i = 0; i < valist.size(); i++)
         {
             vtxarray *va = valist[i];
             va->distance = 0;
@@ -3389,19 +3389,19 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
     return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
 }
 
-void findshadowvas(vector<vtxarray *> &vas)
+void findshadowvas(std::vector<vtxarray *> &vas)
 {
-    for(int i = 0; i < vas.length(); i++)
+    for(uint i = 0; i < vas.size(); i++)
     {
         vtxarray &v = *vas[i];
         float dist = vadist(&v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.size() ?
+            v.shadowmask = !smbbcull ? 0x3F : (v.children.size() || v.mapmodels.size() ?
                                 calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
                                 calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
             addshadowva(&v, dist);
-            if(v.children.length())
+            if(v.children.size())
             {
                 findshadowvas(v.children);
             }

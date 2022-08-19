@@ -35,7 +35,7 @@ int allocva  = 0,
     glde     = 0,
     gbatches = 0;
 
-vector<vtxarray *> valist, varoot;
+std::vector<vtxarray *> valist, varoot;
 
 ivec worldmin(0, 0, 0),
      worldmax(0, 0, 0);
@@ -1693,7 +1693,7 @@ namespace
         wverts += va->verts;
         wtris  += va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
         allocva++;
-        valist.add(va);
+        valist.push_back(va);
         return va;
     }
 
@@ -1835,7 +1835,7 @@ namespace
             {
                 vc.extdecals.push_back(va->decals[i]);
             }
-            for(uint i = 0; i < va->children.length(); i++)
+            for(uint i = 0; i < va->children.size(); i++)
             {
                 finddecals(va->children[i]);
             }
@@ -2030,13 +2030,13 @@ namespace
         for(int i = 0; i < 8; ++i)                                  // counting number of semi-solid/solid children cubes
         {
             int count = 0,
-                childpos = varoot.length();
+                childpos = varoot.size();
             ivec o(i, co, size);                                    //translate cube vector to world vector
             vamergemax = 0;
             vahasmerges = 0;
             if(c[i].ext && c[i].ext->va)
             {
-                varoot.add(c[i].ext->va);
+                varoot.push_back(c[i].ext->va);
                 if(c[i].ext->va->hasmerges&Merge_Origin)
                 {
                     findmergedfaces(c[i], o, size, csi, csi);
@@ -2066,13 +2066,14 @@ namespace
                     setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
                     {
-                        while(varoot.length() > childpos)
+                        while(varoot.size() > childpos)
                         {
-                            vtxarray *child = varoot.pop();
-                            c[i].ext->va->children.add(child);
+                            vtxarray *child = varoot.back();
+                            varoot.pop_back();
+                            c[i].ext->va->children.push_back(child);
                             child->parent = c[i].ext->va;
                         }
-                        varoot.add(c[i].ext->va);
+                        varoot.push_back(c[i].ext->va);
                         if(vamergemax > size)
                         {
                             cmergemax = std::max(cmergemax, vamergemax);
@@ -2134,7 +2135,7 @@ namespace
     void precachetextures()
     {
         std::vector<int> texs;
-        for(int i = 0; i < valist.length(); i++)
+        for(uint i = 0; i < valist.size(); i++)
         {
             vtxarray *va = valist[i];
             for(int j = 0; j < va->texs; ++j)
@@ -2313,24 +2314,36 @@ void destroyva(vtxarray *va, bool reparent)
     wverts -= va->verts;
     wtris -= va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
     allocva--;
-    valist.removeobj(va);
+    auto itr = std::find(valist.begin(), valist.end(), va);
+    if(itr != valist.end())
+    {
+        valist.erase(itr);
+    }
     if(!va->parent)
     {
-        varoot.removeobj(va);
+        auto itr2 = std::find(valist.begin(), valist.end(), va);
+        if(itr2 != valist.end())
+        {
+            valist.erase(itr2);
+        }
     }
     if(reparent)
     {
         if(va->parent)
         {
-            va->parent->children.removeobj(va);
+            auto itr = std::find(va->parent->children.begin(), va->parent->children.end(), va);
+            if(itr != va->parent->children.end())
+            {
+                va->parent->children.erase(itr);
+            }
         }
-        for(int i = 0; i < va->children.length(); i++)
+        for(uint i = 0; i < va->children.size(); i++)
         {
             vtxarray *child = va->children[i];
             child->parent = va->parent;
             if(child->parent)
             {
-                child->parent->children.add(child);
+                child->parent->children.push_back(child);
             }
         }
     }
@@ -2398,7 +2411,7 @@ void updatevabb(vtxarray *va, bool force)
     va->bbmax.max(va->watermax);
     va->bbmin.min(va->glassmin);
     va->bbmax.max(va->glassmax);
-    for(int i = 0; i < va->children.length(); i++)
+    for(uint i = 0; i < va->children.size(); i++)
     {
         vtxarray *child = va->children[i];
         updatevabb(child, force);
@@ -2430,7 +2443,7 @@ void updatevabbs(bool force)
     {
         worldmin = ivec(worldsize, worldsize, worldsize);
         worldmax = ivec(0, 0, 0);
-        for(int i = 0; i < varoot.length(); i++)
+        for(uint i = 0; i < varoot.size(); i++)
         {
             updatevabb(varoot[i], true);
         }
@@ -2442,7 +2455,7 @@ void updatevabbs(bool force)
     }
     else
     {
-        for(int i = 0; i < varoot.length(); i++)
+        for(uint i = 0; i < varoot.size(); i++)
         {
             updatevabb(varoot[i]);
         }
@@ -2467,11 +2480,11 @@ void cubeworld::octarender()                               // creates va s for a
         csi++;
     }
     recalcprogress = 0;
-    varoot.setsize(0);
+    varoot.clear();
     updateva(worldroot, ivec(0, 0, 0), worldsize/2, csi-1);
     flushvbo();
     explicitsky = 0;
-    for(int i = 0; i < valist.length(); i++)
+    for(uint i = 0; i < valist.size(); i++)
     {
         vtxarray *va = valist[i];
         explicitsky += va->sky;

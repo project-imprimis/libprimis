@@ -831,7 +831,7 @@ void setupmaterials(int start, int len)
     int hasmat = 0;
     if(!len)
     {
-        len = valist.length();
+        len = valist.size();
     }
     for(int i = start; i < len; i++)
     {

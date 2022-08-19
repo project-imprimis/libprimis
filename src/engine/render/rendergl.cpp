@@ -1538,7 +1538,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     }
     ivec bbmin(worldsize, worldsize, worldsize),
          bbmax(0, 0, 0);
-    for(int i = 0; i < valist.length(); i++)
+    for(uint i = 0; i < valist.size(); i++)
     {
         vtxarray *va = valist[i];
         for(int k = 0; k < 3; ++k)
