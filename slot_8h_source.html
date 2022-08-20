@@ -165,7 +165,7 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    };</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordtype">int</span> index, smooth;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <a class="code hl_struct" href="structvector.html">vector&lt;Tex&gt;</a> sts;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    std::vector&lt;Tex&gt; sts;</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    Shader *shader;</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    std::vector&lt;SlotShaderParam&gt; params;</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <a class="code hl_struct" href="structVSlot.html">VSlot</a> *variants;</div>
@@ -206,7 +206,7 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordtype">void</span> reset()</div>
 <div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    {</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        smooth = -1;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        sts.<a class="code hl_function" href="structvector.html#a63a989ce0517774b2390d0641eccf835">setsize</a>(0);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        sts.clear();</div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        shader = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        params.clear();</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        loaded = <span class="keyword">false</span>;</div>
@@ -222,7 +222,7 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        loaded = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        grasstex = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        thumbnail = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; sts.<a class="code hl_function" href="structvector.html#a6c907908675387470a149acfe8684811">length</a>(); i++)</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        <span class="keywordflow">for</span>(uint i = 0; i &lt; sts.size(); i++)</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        {</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>            Tex &amp;t = sts[i];</div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            t.t = <span class="keyword">nullptr</span>;</div>
@@ -363,8 +363,6 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="ttc" id="astructvec2_html"><div class="ttname"><a href="structvec2.html">vec2</a></div><div class="ttdoc">2 dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:28</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 <div class="ttc" id="astructvector_html"><div class="ttname"><a href="structvector.html">vector</a></div><div class="ttdoc">A container template for storing variable lists of items.</div><div class="ttdef"><b>Definition:</b> tools.h:704</div></div>
-<div class="ttc" id="astructvector_html_a63a989ce0517774b2390d0641eccf835"><div class="ttname"><a href="structvector.html#a63a989ce0517774b2390d0641eccf835">vector::setsize</a></div><div class="ttdeci">void setsize(int i)</div><div class="ttdoc">Sets the used size of the array to i.</div><div class="ttdef"><b>Definition:</b> tools.h:1033</div></div>
-<div class="ttc" id="astructvector_html_a6c907908675387470a149acfe8684811"><div class="ttname"><a href="structvector.html#a6c907908675387470a149acfe8684811">vector::length</a></div><div class="ttdeci">int length() const</div><div class="ttdoc">Returns the size of the array.</div><div class="ttdef"><b>Definition:</b> tools.h:963</div></div>
 <div class="ttc" id="astructvslotmap_html"><div class="ttname"><a href="structvslotmap.html">vslotmap</a></div><div class="ttdef"><b>Definition:</b> slot.h:286</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
