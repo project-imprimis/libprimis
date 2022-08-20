@@ -544,7 +544,7 @@ void renderwaterfalls()
         }
         MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.inrange(2) ? wslot.sts[2].t : (wslot.sts.inrange(0) ? wslot.sts[0].t : notexture);
+        Texture *tex = wslot.sts.size() > 2 ? wslot.sts[2].t : (wslot.sts.size() ? wslot.sts[0].t : notexture);
         float angle = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
         s *= 8 - std::fabs(s)*16;
@@ -575,7 +575,7 @@ void renderwaterfalls()
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture_(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, wslot.sts.inrange(2) ? (wslot.sts.inrange(3) ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.inrange(1) ? wslot.sts[1].t->id : notexture->id));
+        glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
         glActiveTexture_(GL_TEXTURE0);
         for(int i = 0; i < surfs.length(); i++)
         {
@@ -597,14 +597,14 @@ void renderwater()
         }
         MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.inrange(0) ? wslot.sts[0].t: notexture;
+        Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
         wxscale = defaulttexscale/(tex->xs*wslot.scale);
         wyscale = defaulttexscale/(tex->ys*wslot.scale);
         wscroll = 0.0f;
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture_(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, wslot.sts.inrange(1) ? wslot.sts[1].t->id : notexture->id);
+        glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id);
         if(caustics && causticscale && causticmillis)
         {
             setupcaustics(2);

@@ -1454,7 +1454,7 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
     {
         slot = dst.slot;
     }
-    if(slot && slot->sts.inrange(0))
+    if(slot && slot->sts.size())
     {
         if(!slot->loaded)
         {
@@ -2021,11 +2021,12 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
     Slot &s = *defslot;
     s.loaded = false;
     s.texmask |= 1<<tnum;
-    if(s.sts.length()>=8)
+    if(s.sts.size()>=8)
     {
         conoutf(Console_Warn, "warning: too many textures in %s", s.name());
     }
-    Slot::Tex &st = s.sts.add();
+    s.sts.emplace_back();
+    Slot::Tex &st = s.sts.back();
     st.type = tnum;
     copystring(st.name, name);
     path(st.name);
@@ -2232,7 +2233,7 @@ VSlot &Slot::emptyvslot()
 
 int Slot::findtextype(int type, int last) const
 {
-    for(int i = last+1; i<sts.length(); i++)
+    for(uint i = last+1; i<sts.size(); i++)
     {
         if((type&(1<<sts[i].type)) && sts[i].combined<0)
         {
@@ -2266,7 +2267,7 @@ void Slot::load(int index, Slot::Tex &t)
     vector<char> key;
     addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : nullptr);
     Slot::Tex *combine = nullptr;
-    for(int i = 0; i < sts.length(); i++)
+    for(uint i = 0; i < sts.size(); i++)
     {
         Slot::Tex &c = sts[i];
         if(c.combined == index)
@@ -2351,7 +2352,7 @@ void Slot::load(int index, Slot::Tex &t)
 void Slot::load()
 {
     linkslotshader(*this);
-    for(int i = 0; i < sts.length(); i++)
+    for(uint i = 0; i < sts.size(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0)
@@ -2365,7 +2366,7 @@ void Slot::load()
             c.combined = i;
         }
     }
-    for(int i = 0; i < sts.length(); i++)
+    for(uint i = 0; i < sts.size(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0)
@@ -2522,7 +2523,7 @@ Texture *Slot::loadthumbnail()
     int glow = -1;
     if(texmask&(1 << Tex_Glow))
     {
-        for(int j = 0; j < sts.length(); j++)
+        for(uint j = 0; j < sts.size(); j++)
         {
             if(sts[j].type == Tex_Glow)
             {

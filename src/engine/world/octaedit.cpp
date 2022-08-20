@@ -1708,7 +1708,7 @@ void rendertexturepanel(int w, int h)
                         *glowtex = nullptr;
                 if(slot.texmask&(1 << Tex_Glow))
                 {
-                    for(int j = 0; j < slot.sts.length(); j++)
+                    for(uint j = 0; j < slot.sts.size(); j++)
                     {
                         if(slot.sts[j].type == Tex_Glow)
                         {

@@ -637,7 +637,7 @@ namespace
 
             MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
-            Texture *tex = gslot.sts.inrange(0) ? gslot.sts[0].t : notexture;
+            Texture *tex = gslot.sts.size() ? gslot.sts[0].t : notexture;
             glassxscale = defaulttexscale/(tex->xs*gslot.scale);
             glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 

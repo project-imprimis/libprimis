@@ -1037,7 +1037,7 @@ namespace
             GLOBALPARAMF(colorparams, vslot.colorscale.x, vslot.colorscale.y, vslot.colorscale.z, 1);
         }
 
-        for(int j = 0; j < slot.sts.length(); j++)
+        for(uint j = 0; j < slot.sts.size(); j++)
         {
             Slot::Tex &t = slot.sts[j];
             switch(t.type)
@@ -1629,7 +1629,7 @@ namespace
     {
         Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
         bindslottex(Tex_Diffuse, diffuse);
-        for(int i = 0; i < dslot.sts.length(); i++)
+        for(uint i = 0; i < dslot.sts.size(); i++)
         {
             Slot::Tex &t = dslot.sts[i];
             switch(t.type)

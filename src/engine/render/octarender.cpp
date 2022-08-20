@@ -609,7 +609,7 @@ namespace
                         va->dyntexs++;
                     }
                     Slot &slot = *vslot.slot;
-                    for(int j = 0; j < slot.sts.length(); j++)
+                    for(uint j = 0; j < slot.sts.size(); j++)
                     {
                         va->texmask |= 1<<slot.sts[j].type;
                     }
