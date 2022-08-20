@@ -1164,8 +1164,8 @@ bool settexture(const char *name, int clamp)
     return t != notexture;
 }
 
-vector<VSlot *> vslots;
-vector<Slot *> slots;
+std::vector<VSlot *> vslots;
+std::vector<Slot *> slots;
 MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
@@ -1197,8 +1197,8 @@ void texturereset(int *n)
     }
     defslot = nullptr;
     resetslotshader();
-    int limit = std::clamp(*n, 0, slots.length());
-    for(int i = limit; i < slots.length(); i++)
+    int limit = std::clamp(*n, 0, static_cast<int>(slots.size()));
+    for(int i = limit; i < slots.size(); i++)
     {
         Slot *s = slots[i];
         for(VSlot *vs = s->variants; vs; vs = vs->next)
@@ -1207,15 +1207,16 @@ void texturereset(int *n)
         }
         delete s;
     }
-    slots.setsize(limit);
-    while(vslots.length())
+    slots.resize(limit);
+    while(vslots.size())
     {
-        VSlot *vs = vslots.last();
+        VSlot *vs = vslots.back();
         if(vs->slot != &dummyslot || vs->changed)
         {
             break;
         }
-        delete vslots.pop();
+        delete vslots.back();
+        vslots.pop_back();
     }
 }
 
@@ -1256,8 +1257,16 @@ void clearslots()
 {
     defslot = nullptr;
     resetslotshader();
-    slots.deletecontents();
-    vslots.deletecontents();
+    for(Slot * i : slots)
+    {
+        delete i;
+    }
+    slots.clear();
+    for(VSlot * i : vslots)
+    {
+        delete i;
+    }
+    vslots.clear();
     for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].reset();
@@ -1273,7 +1282,7 @@ static void assignvslot(VSlot &vs)
 
 void compactvslot(int &index)
 {
-    if(vslots.inrange(index))
+    if(vslots.size() > index)
     {
         VSlot &vs = *vslots[index];
         if(vs.index < 0)
@@ -1311,7 +1320,7 @@ void compactvslots(cube *c, int n)
         {
             for(int j = 0; j < 6; ++j)
             {
-                if(vslots.inrange(c[i].texture[j]))
+                if(vslots.size() > c[i].texture[j])
                 {
                     VSlot &vs = *vslots[c[i].texture[j]];
                     if(vs.index < 0)
@@ -1335,25 +1344,25 @@ int cubeworld::compactvslots(bool cull)
     markingvslots = cull;
     compactedvslots = 0;
     compactvslotsprogress = 0;
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
         vslots[i]->index = -1;
     }
     if(cull)
     {
-        int numdefaults = std::min(static_cast<int>(Default_NumDefaults), slots.length());
-        for(int i = 0; i < numdefaults; ++i)
+        uint numdefaults = std::min(static_cast<uint>(Default_NumDefaults), static_cast<uint>(slots.size()));
+        for(uint i = 0; i < numdefaults; ++i)
         {
             slots[i]->variants->index = compactedvslots++;
         }
     }
     else
     {
-        for(int i = 0; i < slots.length(); i++)
+        for(uint i = 0; i < slots.size(); i++)
         {
             slots[i]->variants->index = compactedvslots++;
         }
-        for(int i = 0; i < vslots.length(); i++)
+        for(uint i = 0; i < vslots.size(); i++)
         {
             VSlot &vs = *vslots[i];
             if(!vs.changed && vs.index < 0)
@@ -1366,7 +1375,7 @@ int cubeworld::compactvslots(bool cull)
     compactvslots(worldroot);
     int total = compactedvslots;
     compacteditvslots();
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
         VSlot *vs = vslots[i];
         if(vs->changed)
@@ -1391,7 +1400,7 @@ int cubeworld::compactvslots(bool cull)
         compactedvslots = 0;
         compactvslotsprogress = 0;
         int lastdiscard = 0;
-        for(int i = 0; i < vslots.length(); i++)
+        for(uint i = 0; i < vslots.size(); i++)
         {
             VSlot &vs = *vslots[i];
             if(vs.changed || (vs.index < 0 && !vs.next))
@@ -1421,30 +1430,31 @@ int cubeworld::compactvslots(bool cull)
     compactmruvslots();
     if(cull)
     {
-        for(int i = slots.length(); --i >=0;) //note reverse iteration
+        for(int i = static_cast<int>(slots.size()); --i >=0;) //note reverse iteration
         {
             if(slots[i]->variants->index < 0)
             {
-                delete slots.remove(i);
+                delete slots.at(i);
+                slots.erase(slots.begin() + i);
             }
         }
-        for(int i = 0; i < slots.length(); i++)
+        for(uint i = 0; i < slots.size(); i++)
         {
             slots[i]->index = i;
         }
     }
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
         while(vslots[i]->index >= 0 && vslots[i]->index != i)
         {
             std::swap(vslots[i], vslots[vslots[i]->index]);
         }
     }
-    for(int i = compactedvslots; i < vslots.length(); i++)
+    for(uint i = compactedvslots; i < vslots.size(); i++)
     {
         delete vslots[i];
     }
-    vslots.setsize(compactedvslots);
+    vslots.resize(compactedvslots);
     return total;
 }
 
@@ -1638,7 +1648,7 @@ static VSlot *reassignvslot(Slot &owner, VSlot *vs)
 static VSlot *emptyvslot(Slot &owner)
 {
     int offset = 0;
-    for(int i = slots.length(); --i >=0;) //note reverse iteration
+    for(int i = static_cast<int>(slots.size()); --i >=0;) //note reverse iteration
     {
         if(slots[i]->variants)
         {
@@ -1646,14 +1656,15 @@ static VSlot *emptyvslot(Slot &owner)
             break;
         }
     }
-    for(int i = offset; i < vslots.length(); i++)
+    for(uint i = offset; i < vslots.size(); i++)
     {
         if(!vslots[i]->changed)
         {
             return reassignvslot(owner, vslots[i]);
         }
     }
-    return vslots.add(new VSlot(&owner, vslots.length()));
+    vslots.push_back(new VSlot(&owner, vslots.size()));
+    return vslots.back();
 }
 
 static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
@@ -1755,7 +1766,7 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
 //used in iengine.h
 void packvslot(vector<uchar> &buf, int index)
 {
-    if(vslots.inrange(index))
+    if(vslots.size() > index)
     {
         packvslot(buf, *vslots[index]);
     }
@@ -1898,7 +1909,8 @@ VSlot *findvslot(Slot &slot, const VSlot &src, const VSlot &delta)
 
 static VSlot *clonevslot(const VSlot &src, const VSlot &delta)
 {
-    VSlot *dst = vslots.add(new VSlot(src.slot, vslots.length()));
+    vslots.push_back(new VSlot(src.slot, vslots.size()));
+    VSlot *dst = vslots.back();
     dst->changed = src.changed | delta.changed;
     propagatevslot(*dst, src, ((1 << VSlot_Num) - 1) & ~delta.changed);
     propagatevslot(*dst, delta, delta.changed, true);
@@ -1914,11 +1926,11 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
     {
         return exists;
     }
-    if(vslots.length()>=0x10000)
+    if(vslots.size()>=0x10000)
     {
         ::rootworld.compactvslots();
         rootworld.allchanged();
-        if(vslots.length()>=0x10000)
+        if(vslots.size()>=0x10000)
         {
             return nullptr;
         }
@@ -1988,11 +2000,12 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
     int tnum = findslottex(type), matslot;
     if(tnum == Tex_Diffuse)
     {
-        if(slots.length() >= 0x10000)
+        if(slots.size() >= 0x10000)
         {
             return;
         }
-        defslot = slots.add(new Slot(slots.length()));
+        slots.push_back(new Slot(slots.size()));
+        defslot = slots.back();
     }
     else if(!std::strcmp(type, "decal"))
     {
@@ -2404,7 +2417,7 @@ MatSlot &lookupmaterialslot(int index, bool load)
 
 Slot &lookupslot(int index, bool load)
 {
-    Slot &s = slots.inrange(index) ? *slots[index] : (slots.inrange(Default_Geom) ? *slots[Default_Geom] : dummyslot);
+    Slot &s = (slots.size() > index) ? *slots[index] : ((slots.size() > Default_Geom) ? *slots[Default_Geom] : dummyslot);
     if(!s.loaded && load)
     {
         s.load();
@@ -2414,7 +2427,7 @@ Slot &lookupslot(int index, bool load)
 
 VSlot &lookupvslot(int index, bool load)
 {
-    VSlot &s = vslots.inrange(index) && vslots[index]->slot ? *vslots[index] : (slots.inrange(Default_Geom) && slots[Default_Geom]->variants ? *slots[Default_Geom]->variants : dummyvslot);
+    VSlot &s = (vslots.size() > index) && vslots[index]->slot ? *vslots[index] : ((slots.size() > Default_Geom) && slots[Default_Geom]->variants ? *slots[Default_Geom]->variants : dummyvslot);
     if(load && !s.linked)
     {
         if(!s.slot->loaded)
@@ -2444,21 +2457,21 @@ DecalSlot &lookupdecalslot(int index, bool load)
 
 void linkslotshaders()
 {
-    for(int i = 0; i < slots.length(); i++)
+    for(uint i = 0; i < slots.size(); i++)
     {
         if(slots[i]->loaded)
         {
             linkslotshader(*slots[i]);
         }
     }
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
         if(vslots[i]->linked)
         {
             linkvslotshader(*vslots[i]);
         }
     }
-    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
+    for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         if(materialslots[i].loaded)
         {
@@ -2623,15 +2636,15 @@ void cleanuptexture(Texture *t)
 
 void cleanuptextures()
 {
-    for(int i = 0; i < slots.length(); i++)
+    for(uint i = 0; i < slots.size(); i++)
     {
         slots[i]->cleanup();
     }
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
         vslots[i]->cleanup();
     }
-    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
+    for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].cleanup();
     }

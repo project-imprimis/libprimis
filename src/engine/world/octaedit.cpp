@@ -697,7 +697,7 @@ static void packvslots(cube &c, vector<uchar> &buf, std::vector<ushort> &used)
         for(int i = 0; i < 6; ++i) //for each face
         {
             ushort index = c.texture[i];
-            if(vslots.inrange(index) && vslots[index]->changed && std::find(used.begin(), used.end(), index) != used.end())
+            if((vslots.size() > index) && vslots[index]->changed && std::find(used.begin(), used.end(), index) != used.end())
             {
                 used.push_back(index);
                 VSlot &vs = *vslots[index];
@@ -1547,7 +1547,7 @@ void compactmruvslots()
     remappedvslots.clear();
     for(int i = static_cast<int>(texmru.size()); --i >=0;) //note reverse iteration
     {
-        if(vslots.inrange(texmru[i]))
+        if(vslots.size() > texmru[i])
         {
             VSlot &vs = *vslots[texmru[i]];
             if(vs.index >= 0)
@@ -1566,7 +1566,7 @@ void compactmruvslots()
         }
         texmru.erase(texmru.begin() + i);
     }
-    if(vslots.inrange(lasttex))
+    if(vslots.size() > lasttex)
     {
         VSlot &vs = *vslots[lasttex];
         lasttex = vs.index >= 0 ? vs.index : 0;
@@ -1575,7 +1575,7 @@ void compactmruvslots()
     {
         lasttex = 0;
     }
-    reptex = vslots.inrange(reptex) ? vslots[reptex]->index : -1;
+    reptex = (vslots.size() > reptex) ? vslots[reptex]->index : -1;
 }
 
 void edittexcube(cube &c, int tex, int orient, bool &findrep)

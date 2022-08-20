@@ -811,20 +811,21 @@ void loadvslots(stream *f, int numvslots)
         {
             for(int i = 0; i < -changed; ++i)
             {
-                vslots.add(new VSlot(nullptr, vslots.length()));
+                vslots.push_back(new VSlot(nullptr, vslots.size()));
             }
             numvslots += changed;
         }
         else
         {
-            prev[vslots.length()] = f->get<int>();
-            loadvslot(f, *vslots.add(new VSlot(nullptr, vslots.length())), changed);
+            prev[vslots.size()] = f->get<int>();
+            vslots.push_back(new VSlot(nullptr, vslots.size()));
+            loadvslot(f, *vslots.back(), changed);
             numvslots--;
         }
     }
-    for(int i = 0; i < vslots.length(); i++)
+    for(uint i = 0; i < vslots.size(); i++)
     {
-        if(vslots.inrange(prev[i]))
+        if(vslots.size() > prev[i])
         {
             vslots[prev[i]]->next = vslots[i];
         }
@@ -849,7 +850,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
         conoutf(Console_Warn, "could not write map to %s", ogzname);
         return false;
     }
-    int numvslots = vslots.length();
+    uint numvslots = vslots.size();
     if(!multiplayer)
     {
         numvslots = compactvslots();
