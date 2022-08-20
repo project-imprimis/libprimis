@@ -70,7 +70,7 @@ namespace
     };
 
     vector<uchar> vbodata[VBO_NumVBOs];
-    vector<vtxarray *> vbovas[VBO_NumVBOs];
+    std::vector<vtxarray *> vbovas[VBO_NumVBOs];
     int vbosize[VBO_NumVBOs];
 
     void destroyvbo(GLuint vbo)
@@ -169,10 +169,10 @@ namespace
         {
             return;
         }
-        vector<vtxarray *> &vas = vbovas[type];
-        genvbo(type, data.getbuf(), data.length(), vas.getbuf(), vas.length());
+        std::vector<vtxarray *> &vas = vbovas[type];
+        genvbo(type, data.getbuf(), data.length(), vas.data(), vas.size());
         data.setsize(0);
-        vas.setsize(0);
+        vas.clear();
         vbosize[type] = 0;
     }
 
@@ -203,8 +203,8 @@ namespace
         }
         vbosize[type] += numelems;
         vector<uchar> &data = vbodata[type];
-        vector<vtxarray *> &vas = vbovas[type];
-        vas.add(va);
+        std::vector<vtxarray *> &vas = vbovas[type];
+        vas.push_back(va);
         int len = numelems*elemsize;
         uchar *buf = data.reserve(len).buf;
         data.advance(len);
