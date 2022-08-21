@@ -33,7 +33,7 @@ int identflags = 0;
 const char *sourcefile = nullptr,
            *sourcestr  = nullptr;
 
-vector<char> strbuf[4];
+std::vector<char> strbuf[4];
 int stridx = 0;
 
 static IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
@@ -1718,13 +1718,13 @@ static void cutstring(const char *&p, stringslice &s)
     int maxlen = static_cast<int>(end-p) + 1;
 
     stridx = (stridx + 1)%4;
-    vector<char> &buf = strbuf[stridx];
+    std::vector<char> &buf = strbuf[stridx];
     if(buf.capacity() < maxlen)
     {
-        buf.growbuf(maxlen);
+        buf.reserve(maxlen);
     }
-    s.str = buf.getbuf();
-    s.len = unescapestring(buf.getbuf(), p, end);
+    s.str = buf.data();
+    s.len = unescapestring(buf.data(), p, end);
     p = end;
     if(*p=='\"')
     {

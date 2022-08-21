@@ -55,26 +55,58 @@ static void exec(char *file, int *msg)
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
 
+//excapes strings by converting \<special char> to ^<special char>
+// ^ is the escape char in cubescript
 const char *escapestring(const char *s)
 {
     stridx = (stridx + 1)%4;
-    vector<char> &buf = strbuf[stridx];
-    buf.setsize(0);
-    buf.add('"');
+    std::vector<char> &buf = strbuf[stridx];
+    buf.clear();
+    buf.push_back('"');
     for(; *s; s++)
     {
         switch(*s)
         {
-            case '\n': buf.put("^n", 2);  break;
-            case '\t': buf.put("^t", 2);  break;
-            case '\f': buf.put("^f", 2);  break;
-            case '"':  buf.put("^\"", 2); break;
-            case '^':  buf.put("^^", 2);  break;
-            default:   buf.add(*s);       break;
+            case '\n':
+            {
+                buf.push_back('^');
+                buf.push_back('n');
+                break;
+            }
+            case '\t':
+            {
+                buf.push_back('^');
+                buf.push_back('t');
+                break;
+            }
+            case '\f':
+            {
+                buf.push_back('^');
+                buf.push_back('f');
+                break;
+            }
+            case '"':
+            {
+                buf.push_back('^');
+                buf.push_back('"');
+                break;
+                }
+            case '^':
+            {
+                buf.push_back('^');
+                buf.push_back('^');
+                break;
+            }
+            default:
+            {
+                buf.push_back(*s);
+                break;
+            }
         }
     }
-    buf.put("\"\0", 2);
-    return buf.getbuf();
+    buf.push_back('\"');
+    buf.push_back('\0');
+    return buf.data();
 }
 
 static void escapecmd(char *s)
