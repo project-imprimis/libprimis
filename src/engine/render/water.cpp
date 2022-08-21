@@ -537,7 +537,7 @@ void renderwaterfalls()
 {
     for(int k = 0; k < 4; ++k)
     {
-        vector<materialsurface> &surfs = waterfallsurfs[k];
+        std::vector<materialsurface> &surfs = waterfallsurfs[k];
         if(surfs.empty())
         {
             continue;
@@ -577,7 +577,7 @@ void renderwaterfalls()
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
         glActiveTexture_(GL_TEXTURE0);
-        for(int i = 0; i < surfs.length(); i++)
+        for(uint i = 0; i < surfs.size(); i++)
         {
             materialsurface &m = surfs[i];
             renderwaterfall(m, 0.1f, &matnormals[m.orient]);
@@ -590,7 +590,7 @@ void renderwater()
 {
     for(int k = 0; k < 4; ++k) //four types of water hardcoded
     {
-        vector<materialsurface> &surfs = watersurfs[k];
+        std::vector<materialsurface> &surfs = watersurfs[k];
         if(surfs.empty())
         {
             continue;
@@ -683,7 +683,7 @@ void renderwater()
         //======================================================================
 
         aboveshader->set();
-        for(int i = 0; i < surfs.length(); i++)
+        for(uint i = 0; i < surfs.size(); i++)
         {
             materialsurface &m = surfs[i];
             if(camera1->o.z < m.o.z - wateroffset)
@@ -696,7 +696,7 @@ void renderwater()
         if(belowshader)
         {
             belowshader->set();
-            for(int i = 0; i < surfs.length(); i++)
+            for(uint i = 0; i < surfs.size(); i++)
             {
                 materialsurface &m = surfs[i];
                 if(camera1->o.z >= m.o.z - wateroffset)

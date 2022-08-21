@@ -32,7 +32,7 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-vector<materialsurface> glasssurfs[4], watersurfs[4], waterfallsurfs[4];
+std::vector<materialsurface> watersurfs[4], waterfallsurfs[4], glasssurfs[4];
 
 //internally relevant functionality
 
@@ -629,7 +629,7 @@ namespace
     {
         for(int k = 0; k < 4; ++k)
         {
-            vector<materialsurface> &surfs = glasssurfs[k];
+            std::vector<materialsurface> &surfs = glasssurfs[k];
             if(surfs.empty())
             {
                 continue;
@@ -652,7 +652,7 @@ namespace
             GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
             GLOBALPARAMF(glassspec, spec/100.0f);
 
-            for(int i = 0; i < surfs.length(); i++)
+            for(uint i = 0; i < surfs.size(); i++)
             {
                 materialsurface &m = surfs[i];
                 drawglass(m, 0.1f, &matnormals[m.orient]);
@@ -945,9 +945,9 @@ int findmaterials()
     editsurfs.clear();
     for(int i = 0; i < 4; ++i)
     {
-        glasssurfs[i].setsize(0);
-        watersurfs[i].setsize(0);
-        waterfallsurfs[i].setsize(0);
+        glasssurfs[i].clear();
+        watersurfs[i].clear();
+        waterfallsurfs[i].clear();
     }
     matliquidsx1 = matliquidsy1 = matsolidsx1 = matsolidsy1 = matrefractsx1 = matrefractsy1 = 1;
     matliquidsx2 = matliquidsy2 = matsolidsx2 = matsolidsy2 = matrefractsx2 = matrefractsy2 = -1;
@@ -992,11 +992,17 @@ int findmaterials()
                 hasmats |= 4|1;
                 if(m.orient == Orient_Top)
                 {
-                    watersurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
+                    for(int i = 0; i < 1 + m.skip; ++i)
+                    {
+                        watersurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                    }
                 }
                 else
                 {
-                    waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
+                    for(int i = 0; i < 1 + m.skip; ++i)
+                    {
+                        waterfallsurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                    }
                 }
                 i += m.skip;
             }
@@ -1021,7 +1027,10 @@ int findmaterials()
                     continue;
                 }
                 hasmats |= 4|2;
-                glasssurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
+                for(int i = 0; i < 1 + m.skip; ++i)
+                {
+                    glasssurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                }
                 i += m.skip;
             }
         }
@@ -1034,24 +1043,24 @@ void rendermaterialmask()
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
     {
-        vector<materialsurface> &surfs = glasssurfs[k];
-        for(int i = 0; i < surfs.length(); i++)
+        std::vector<materialsurface> &surfs = glasssurfs[k];
+        for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        vector<materialsurface> &surfs = watersurfs[k];
-        for(int i = 0; i < surfs.length(); i++)
+        std::vector<materialsurface> &surfs = watersurfs[k];
+        for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], wateroffset);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        vector<materialsurface> &surfs = waterfallsurfs[k];
-        for(int i = 0; i < surfs.length(); i++)
+        std::vector<materialsurface> &surfs = waterfallsurfs[k];
+        for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
         }
