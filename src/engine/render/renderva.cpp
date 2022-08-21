@@ -344,7 +344,7 @@ namespace
     octaentities *visiblemms,
                 **lastvisiblemms;
 
-    void findvisiblemms(const vector<extentity *> &ents, bool doquery)
+    void findvisiblemms(const std::vector<extentity *> &ents, bool doquery)
     {
         visiblemms = nullptr;
         lastvisiblemms = &visiblemms;
@@ -2051,7 +2051,7 @@ namespace
 
     void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draws[6])
     {
-        const vector<extentity *> &ents = entities::getents();
+        const std::vector<extentity *> &ents = entities::getents();
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
             for(uint k = 0; k < oe->mapmodels.size(); k++)
@@ -2510,7 +2510,7 @@ void rendermapmodels()
 {
     static int skipoq = 0;
     bool doquery = !drawtex && oqfrags && oqmm;
-    const vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     findvisiblemms(ents, doquery);
 
     for(octaentities *oe = visiblemms; oe; oe = oe->next)
@@ -3121,8 +3121,8 @@ void clearshadowmeshes()
     }
     if(shadowmeshes.numelems)
     {
-        vector<extentity *> &ents = entities::getents();
-        for(int i = 0; i < ents.length(); i++)
+        std::vector<extentity *> &ents = entities::getents();
+        for(uint i = 0; i < ents.size(); i++)
         {
             extentity &e = *ents[i];
             if(e.flags&EntFlag_ShadowMesh)
@@ -3145,8 +3145,8 @@ void genshadowmeshes()
     }
     renderprogress(0, "generating shadow meshes..");
 
-    vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type != EngineEnt_Light)
@@ -3590,7 +3590,7 @@ void batchshadowmapmodels(bool skipmesh)
     {
         nflags |= EntFlag_ShadowMesh;
     }
-    const vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
         for(uint k = 0; k < oe->mapmodels.size(); k++)

@@ -142,7 +142,7 @@ namespace
         int orient = -1;
         float dist = radius,
               f = 0.0f;
-        const vector<extentity *> &ents = entities::getents();
+        const std::vector<extentity *> &ents = entities::getents();
     //=======ENT_SEL_INTERSECT ENT_INTERSECT
         #define ENT_INTERSECT(type, func) do { \
             for(uint i = 0; i < oc->type.size(); i++) \
@@ -199,7 +199,7 @@ namespace
         int orient;
         float dist = radius,
               f = 0.0f;
-        const vector<extentity *> &ents = entities::getents();
+        const std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < outsideents.size(); i++)
         {
             extentity &e = *ents[outsideents[i]];
@@ -227,7 +227,7 @@ namespace
     {
         float dist = radius,
               f = 0.0f;
-        const vector<extentity *> &ents = entities::getents();
+        const std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < oc->mapmodels.size(); i++)
         {
             extentity &e = *ents[oc->mapmodels[i]];

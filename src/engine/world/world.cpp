@@ -37,9 +37,9 @@ std::vector<int> entgroup;
 
 namespace entities
 {
-    vector<extentity *> ents;
+    std::vector<extentity *> ents;
 
-    vector<extentity *> &getents()
+    std::vector<extentity *> &getents()
     {
         return ents;
     }
@@ -61,9 +61,10 @@ namespace entities
 
     void clearents()
     {
-        while(ents.length())
+        while(ents.size())
         {
-            deleteentity(ents.pop());
+            deleteentity(ents.back());
+            ents.pop_back();
         }
     }
 
@@ -112,10 +113,10 @@ void attachentity(extentity &e)
     }
     detachentity(e);
 
-    vector<extentity *> &ents = entities::getents();
+    std::vector<extentity *> &ents = entities::getents();
     int closest = -1;
     float closedist = 1e10f; //some arbitrary high value
-    for(int i = 0; i < ents.length(); i++)
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity *a = ents[i];
         if(a->attached)
@@ -155,8 +156,8 @@ void attachentity(extentity &e)
 
 void attachentities()
 {
-    vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         attachentity(*ents[i]);
     }
@@ -532,8 +533,8 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
 
 static bool modifyoctaent(int flags, int id)
 {
-    vector<extentity *> &ents = entities::getents();
-    return ents.inrange(id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
+    std::vector<extentity *> &ents = entities::getents();
+    return (ents.size() > id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
 }
 
 void addentityedit(int id)
@@ -557,7 +558,7 @@ void freeoctaentities(cube &c)
     {
         return;
     }
-    if(entities::getents().length())
+    if(entities::getents().size())
     {
         while(c.ext->ents && !c.ext->ents->mapmodels.empty())
         {
@@ -584,8 +585,8 @@ void freeoctaentities(cube &c)
 
 void cubeworld::entitiesinoctanodes()
 {
-    vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
     }
@@ -808,8 +809,8 @@ void cubeworld::shrinkmap()
     worldscale--;
     worldsize /= 2;
     ivec offset(octant, ivec(0, 0, 0), worldsize);
-    vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         ents[i]->o.sub(vec(offset));
     }

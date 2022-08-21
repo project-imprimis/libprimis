@@ -866,8 +866,8 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     hdr.headersize = sizeof(hdr);
     hdr.worldsize = worldsize;
     hdr.numents = 0;
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    const std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         if(ents[i]->type!=EngineEnt_Empty)
         {
@@ -944,7 +944,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     {
         f->put<ushort>(texmru[i]);
     }
-    for(int i = 0; i < ents.length(); i++)
+    for(uint i = 0; i < ents.size(); i++)
     {
         if(ents[i]->type!=EngineEnt_Empty)
         {
@@ -1116,11 +1116,11 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         texmru.push_back(f->get<ushort>());
     }
     renderprogress(0, "loading entities...");
-    vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < (std::min(hdr.numents, maxents)); ++i)
+    std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < (std::min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
-        ents.add(&e);
+        ents.push_back(&e);
         f->read(&e, sizeof(entity));
         fixent(e, hdr.version);
         //delete entities from other games
@@ -1132,7 +1132,8 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
             }
             if(e.type>=EngineEnt_GameSpecific)
             {
-                entities::deleteentity(ents.pop());
+                entities::deleteentity(ents.back());
+                ents.pop_back();
                 continue;
             }
         }

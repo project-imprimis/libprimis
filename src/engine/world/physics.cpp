@@ -573,7 +573,7 @@ VAR(testtricol, 0, 0, 2);
 
 bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
 {
-    const vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     for(uint i = 0; i < oc.mapmodels.size(); i++)
     {
         extentity &e = *ents[oc.mapmodels[i]];

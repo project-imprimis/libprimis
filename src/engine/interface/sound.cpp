@@ -776,8 +776,8 @@ void preloadmapsound(int n)
 
 void preloadmapsounds()
 {
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    const std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type==EngineEnt_Sound)
@@ -965,8 +965,8 @@ void stopmapsounds()
 //check map entities to see what sounds need to be played because of them
 void checkmapsounds()
 {
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    const std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type!=EngineEnt_Sound) //ents that aren't soundents don't make sound (!)

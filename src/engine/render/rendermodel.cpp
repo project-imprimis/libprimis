@@ -457,9 +457,9 @@ void flushpreloadedmodels(bool msg)
 
 void preloadusedmapmodels(bool msg, bool bih)
 {
-    vector<extentity *> &ents = entities::getents();
+    std::vector<extentity *> &ents = entities::getents();
     std::vector<int> used;
-    for(int i = 0; i < ents.length(); i++)
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && std::find(used.begin(), used.end(), e.attr1) != used.end() )

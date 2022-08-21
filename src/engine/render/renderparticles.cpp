@@ -135,8 +135,8 @@ void clearparticleemitters()
 void addparticleemitters()
 {
     emitters.clear();
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
+    const std::vector<extentity *> &ents = entities::getents();
+    for(uint i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type != EngineEnt_Particles)
@@ -2042,14 +2042,14 @@ void cubeworld::updateparticles()
     }
     if(editmode) // show sparkly thingies for map entities in edit mode
     {
-        const vector<extentity *> &ents = entities::getents();
+        const std::vector<extentity *> &ents = entities::getents();
         // note: order matters in this case as particles of the same type are drawn in the reverse order that they are added
         for(uint i = 0; i < entgroup.size(); i++)
         {
             entity &e = *ents[entgroup[i]];
             particle_textcopy(e.o, entname(e), Part_Text, 1, 0xFF4B19, 2.0f);
         }
-        for(int i = 0; i < ents.length(); i++)
+        for(uint i = 0; i < ents.size(); i++)
         {
             entity &e = *ents[i];
             if(e.type==EngineEnt_Empty)

@@ -2880,12 +2880,12 @@ VAR(debuglightscissor, 0, 0, 1); //displays the light scissor map in the corner 
 
 void viewlightscissor()
 {
-    vector<extentity *> &ents = entities::getents();
+    std::vector<extentity *> &ents = entities::getents();
     gle::defvertex(2);
     for(uint i = 0; i < entgroup.size(); i++)
     {
         int idx = entgroup[i];
-        if(ents.inrange(idx) && ents[idx]->type == EngineEnt_Light)
+        if((ents.size() >idx) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
             for(uint j = 0; j < lights.size(); j++)
@@ -2922,10 +2922,10 @@ void collectlights()
     }
 
     // point lights processed here
-    const vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     if(!editmode || !fullbright)
     {
-        for(int i = 0; i < ents.length(); i++)
+        for(uint i = 0; i < ents.size(); i++)
         {
             const extentity *e = ents[i];
             if(e->type != EngineEnt_Light || e->attr1 <= 0)
@@ -3475,7 +3475,7 @@ void GBuffer::rendershadowmaps(int offset)
 
     glEnable(GL_SCISSOR_TEST);
 
-    const vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     for(uint i = offset; i < shadowmaps.size(); i++)
     {
         shadowmapinfo &sm = shadowmaps[i];

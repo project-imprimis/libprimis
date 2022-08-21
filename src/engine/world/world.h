@@ -29,5 +29,5 @@ namespace entities
 {
     extern extentity *newentity();
     extern void deleteentity(extentity *e);
-    extern vector<extentity *> &getents();
+    extern std::vector<extentity *> &getents();
 }

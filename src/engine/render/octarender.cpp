@@ -851,7 +851,7 @@ namespace
                 {
                     return;
                 }
-                vector<extentity *> &ents = entities::getents();
+                std::vector<extentity *> &ents = entities::getents();
                 for(uint i = 0; i < extdecals.size(); i++)
                 {
                     octaentities *oe = extdecals[i];
