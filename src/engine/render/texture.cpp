@@ -2217,21 +2217,21 @@ bool DecalSlot::shouldpremul(int type) const
     }
 }
 
-static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined = false, const char *prefix = nullptr)
+static void addname(std::vector<char> &key, Slot &slot, Slot::Tex &t, bool combined = false, const char *prefix = nullptr)
 {
     if(combined)
     {
-        key.add('&');
+        key.push_back('&');
     }
     if(prefix)
     {
         while(*prefix)
         {
-            key.add(*prefix++);
+            key.push_back(*prefix++);
         }
     }
     DEF_FORMAT_STRING(tname, "%s/%s", slot.texturedir(), t.name);
-    for(const char *s = path(tname); *s; key.add(*s++))
+    for(const char *s = path(tname); *s; key.push_back(*s++))
     {
         //(empty body)
     }
@@ -2277,7 +2277,7 @@ int Slot::cancombine(int type) const
 
 void Slot::load(int index, Slot::Tex &t)
 {
-    vector<char> key;
+    std::vector<char> key;
     addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : nullptr);
     Slot::Tex *combine = nullptr;
     for(uint i = 0; i < sts.size(); i++)
@@ -2290,8 +2290,8 @@ void Slot::load(int index, Slot::Tex &t)
             break;
         }
     }
-    key.add('\0');
-    t.t = textures.access(key.getbuf());
+    key.push_back('\0');
+    t.t = textures.access(key.data());
     if(t.t)
     {
         return;
@@ -2359,7 +2359,7 @@ void Slot::load(int index, Slot::Tex &t)
     {
         ts.texpremul();
     }
-    t.t = newtexture(nullptr, key.getbuf(), ts, wrap, true, true, true, compress);
+    t.t = newtexture(nullptr, key.data(), ts, wrap, true, true, true, compress);
 }
 
 void Slot::load()
@@ -2523,7 +2523,7 @@ Texture *Slot::loadthumbnail()
     VSlot &vslot = *variants;
     linkslotshader(*this, false);
     linkvslotshader(vslot, false);
-    vector<char> name;
+    std::vector<char> name;
     if(vslot.colorscale == vec(1, 1, 1))
     {
         addname(name, *this, sts[0], false, "<thumbnail>");
@@ -2550,8 +2550,8 @@ Texture *Slot::loadthumbnail()
             addname(name, *this, sts[glow], true, prefix);
         }
     }
-    name.add('\0');
-    Texture *t = textures.access(path(name.getbuf()));
+    name.push_back('\0');
+    Texture *t = textures.access(path(name.data()));
     if(t)
     {
         thumbnail = t;
@@ -2608,7 +2608,7 @@ Texture *Slot::loadthumbnail()
             {
                 s.forcergbimage();
             }
-            t = newtexture(nullptr, name.getbuf(), s, 0, false, false, true);
+            t = newtexture(nullptr, name.data(), s, 0, false, false, true);
             t->xs = xs;
             t->ys = ys;
             thumbnail = t;
