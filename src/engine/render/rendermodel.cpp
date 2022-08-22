@@ -1407,19 +1407,22 @@ std::vector<int> findanims(const char *pattern)
 void findanimscmd(char *name)
 {
     std::vector<int> anims = findanims(name);
-    vector<char> buf;
+    std::vector<char> buf;
     string num;
     for(int i = 0; i < static_cast<int>(anims.size()); i++)
     {
         formatstring(num, "%d", anims[i]);
         if(i > 0)
         {
-            buf.add(' ');
+            buf.push_back(' ');
         }
-        buf.put(num, std::strlen(num));
+        for(int i = 0; i < std::strlen(num); ++i)
+        {
+            buf.push_back(num[i]);
+        }
     }
-    buf.add('\0');
-    result(buf.getbuf());
+    buf.push_back('\0');
+    result(buf.data());
 }
 
 //literally goes and attempts a textureload for png, jpg four times using the inside of the if statement

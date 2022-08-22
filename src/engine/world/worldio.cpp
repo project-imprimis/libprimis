@@ -1107,8 +1107,9 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     }
     int eif = f->get<ushort>(),
         extrasize = f->get<ushort>();
-    vector<char> extras;
-    f->read(extras.pad(extrasize), extrasize);
+    std::vector<char> extras;
+    extras.reserve(extrasize);
+    f->read(&(*extras.begin()), extrasize);
     texmru.clear();
     ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)

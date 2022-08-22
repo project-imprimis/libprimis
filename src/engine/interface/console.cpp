@@ -307,20 +307,23 @@ namespace
 
     void searchbinds(char *action, int type)
     {
-        vector<char> names;
+        std::vector<char> names;
         ENUMERATE(keyms, KeyM, km,
         {
             if(!std::strcmp(km.actions[type], action))
             {
-                if(names.length())
+                if(names.size())
                 {
-                    names.add(' ');
+                    names.push_back(' ');
                 }
-                names.put(km.name, std::strlen(km.name));
+                for(uint i = 0; i < std::strlen(km.name); ++i)
+                {
+                    names.push_back(km.name[i]);
+                }
             }
         });
-        names.add('\0');
-        result(names.getbuf());
+        names.push_back('\0');
+        result(names.data());
     }
 
     KeyM *findbind(char *key)

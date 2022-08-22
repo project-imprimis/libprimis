@@ -486,7 +486,7 @@ char *Editor::tostring()
 
 char *Editor::selectiontostring()
 {
-    vector<char> buf;
+    std::vector<char> buf;
     int sx, sy, ex, ey;
     region(sx, sy, ex, ey);
     for(int i = 0; i < 1+ey-sy; ++i)
@@ -507,11 +507,14 @@ char *Editor::selectiontostring()
         {
             len = ex;
         }
-        buf.put(line, len);
-        buf.add('\n');
+        for(int i = 0; i < len; ++i)
+        {
+            buf.push_back(line[i]);
+        }
+        buf.push_back('\n');
     }
-    buf.add('\0');
-    return newstring(buf.getbuf(), buf.length()-1);
+    buf.push_back('\0');
+    return newstring(buf.data(), buf.size()-1);
 }
 
 void Editor::removelines(int start, int count)
@@ -1033,17 +1036,21 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 
 void textlist()
 {
-    vector<char> s;
+    std::vector<char> s;
     for(uint i = 0; i < editors.size(); i++)
     {
         if(i > 0)
         {
-            s.put(", ", 2);
+            s.push_back(',');
+            s.push_back(' ');
         }
-        s.put(editors[i]->name, std::strlen(editors[i]->name));
+        for(int j = 0; j < std::strlen(editors[i]->name); ++j)
+        {
+            s.push_back(editors[i]->name[j]);
+        }
     }
-    s.add('\0');
-    result(s.getbuf());
+    s.push_back('\0');
+    result(s.data());
 }
 
 void textfocuscmd(char *name, int *mode)
