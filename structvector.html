@@ -226,7 +226,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ac3d44f0f942b1210dc91b8a3e8e88cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an element to the vector.  <a href="structvector.html#ac3d44f0f942b1210dc91b8a3e8e88cc5">More...</a><br /></td></tr>
 <tr class="separator:ac3d44f0f942b1210dc91b8a3e8e88cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9231b000547521ee4c24bfc1c53a48d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a9231b000547521ee4c24bfc1c53a48d3">put</a> (const T *v, int n)</td></tr>
-<tr class="memdesc:a9231b000547521ee4c24bfc1c53a48d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds n-1 empty entries after adding v.  <a href="structvector.html#a9231b000547521ee4c24bfc1c53a48d3">More...</a><br /></td></tr>
+<tr class="memdesc:a9231b000547521ee4c24bfc1c53a48d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an array to the vector.  <a href="structvector.html#a9231b000547521ee4c24bfc1c53a48d3">More...</a><br /></td></tr>
 <tr class="separator:a9231b000547521ee4c24bfc1c53a48d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32cb8f72325a5f52298ffac9abd8d102"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a32cb8f72325a5f52298ffac9abd8d102">remove</a> (int i, int n)</td></tr>
 <tr class="memdesc:a32cb8f72325a5f52298ffac9abd8d102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes n elements starting at index i.  <a href="structvector.html#a32cb8f72325a5f52298ffac9abd8d102">More...</a><br /></td></tr>
@@ -1657,10 +1657,18 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Adds n-1 empty entries after adding v. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Adds an array to the vector. </p>
+<p >Adds an array of length n to the end of the vector, reserving the necessary space if required.</p>
+<p >The std::vector equivalent to</p>
+<div class="fragment"><div class="line">foo.put(a, len);</div>
+</div><!-- fragment --><p >is</p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; len; ++i)</div>
+<div class="line">{</div>
+<div class="line">    foo.push_back(a[i]);</div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">v</td><td>the value to assign to the </td></tr>
+    <tr><td class="paramname">v</td><td>a pointer to the array to add </td></tr>
     <tr><td class="paramname">n</td><td>the number of total entries to add </td></tr>
   </table>
   </dd>
@@ -1926,7 +1934,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Expands the array by the amount requested. </p>
-<p >Expands the data array by the amount requested. Silently fails to expand the array if it is already long enough. If this operation succeeds, the pointers to the old array will become invalidated.</p>
+<p >Expands the data array by the amount requested. Silently fails to expand the array if it is already long enough. If this operation succeeds in lengthening the array, all of the pointers to the old array will become invalidated.</p>
 <dl class="section return"><dt>Returns</dt><dd>the buffer starting at the old used length for sz entries </dd></dl>
 
 </div>
