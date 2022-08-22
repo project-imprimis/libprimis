@@ -1535,14 +1535,17 @@ int unescapestring(char *dst, const char *src, const char *end)
     return dst - start;
 }
 
-static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
+static char *conc(std::vector<char> &buf, tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
 {
     if(prefix)
     {
-        buf.put(prefix, prefixlen);
+        for(int i = 0; i < prefixlen; ++i)
+        {
+            buf.push_back(prefix[i]);
+        }
         if(space && n)
         {
-            buf.add(' ');
+            buf.push_back(' ');
         }
     }
     for(int i = 0; i < n; ++i)
@@ -1576,18 +1579,21 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
         }
         len = static_cast<int>(std::strlen(s));
     haslen:
-        buf.put(s, len);
+        for(int i = 0; i < len; ++i)
+        {
+            buf.push_back(s[i]);
+        }
         if(i == n-1)
         {
             break;
         }
         if(space)
         {
-            buf.add(' ');
+            buf.push_back(' ');
         }
     }
-    buf.add('\0');
-    return buf.getbuf();
+    buf.push_back('\0');
+    return buf.data();
 }
 
 static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixlen)
@@ -4283,7 +4289,7 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
             case 'C':
             {
                 i = std::max(i+1, numargs);
-                vector<char> buf;
+                std::vector<char> buf;
                 reinterpret_cast<comfun1>(id->fun)(conc(buf, args, i, true));
                 goto cleanup;
             }
@@ -5144,7 +5150,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     offset = numargs-callargs;
                 forcenull(result);
                 {
-                    vector<char> buf;
+                    std::vector<char> buf;
                     buf.reserve(maxstrlen);
                     reinterpret_cast<comfun1>(id->fun)(conc(buf, &args[offset], callargs, true));
                 }

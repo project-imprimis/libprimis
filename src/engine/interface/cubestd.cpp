@@ -407,7 +407,7 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
         return;
     }
     identstack stack;
-    vector<char> s;
+    std::vector<char> s;
     for(int i = 0; i < n; ++i)
     {
         setiter(id, offset + i, stack);
@@ -417,17 +417,22 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
         int len = std::strlen(vstr);
         if(space && i)
         {
-            s.add(' ');
+            s.push_back(' ');
         }
-        s.put(vstr, len);
+        for(int j = 0; j < len; ++j)
+        {
+            s.push_back(vstr[j]);
+        }
         freearg(v);
     }
     if(n > 0)
     {
         poparg(id);
     }
-    s.add('\0');
-    commandret->setstr(s.disown());
+    s.push_back('\0');
+    char * arr = new char[s.size()];
+    std::memcpy(arr, s.data(), s.size());
+    commandret->setstr(arr);
 }
 
 void concatword(tagval *v, int n)
@@ -480,7 +485,7 @@ void result(const char *s)
 
 void format(tagval *args, int numargs)
 {
-    vector<char> s;
+    std::vector<char> s;
     const char *f = args[0].getstr();
     while(*f)
     {
@@ -494,21 +499,24 @@ void format(tagval *args, int numargs)
                 const char *sub = i < numargs ? args[i].getstr() : "";
                 while(*sub)
                 {
-                    s.add(*sub++);
+                    s.push_back(*sub++);
                 }
             }
             else
             {
-                s.add(i);
+                s.push_back(i);
             }
         }
         else
         {
-            s.add(c);
+            s.push_back(c);
         }
     }
-    s.add('\0');
-    commandret->setstr(s.disown());
+    s.push_back('\0');
+    //create new array to pass back
+    char * arr = new char[s.size()];
+    std::memcpy(arr, s.data(), s.size());
+    commandret->setstr(arr);
 }
 
 static const char *liststart      = nullptr,
@@ -835,7 +843,7 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
         return;
     }
     identstack stack;
-    vector<char> r;
+    std::vector<char> r;
     int n = 0;
     for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
     {
@@ -843,21 +851,26 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
         setiter(*id, val, stack);
         if(n && space)
         {
-            r.add(' ');
+            r.push_back(' ');
         }
         tagval v;
         executeret(body, v);
         const char *vstr = v.getstr();
         int len = std::strlen(vstr);
-        r.put(vstr, len);
+        for(int i = 0; i < len; ++i)
+        {
+            r.push_back(vstr[i]);
+        }
         freearg(v);
     }
     if(n)
     {
         poparg(*id);
     }
-    r.add('\0');
-    commandret->setstr(r.disown());
+    r.push_back('\0');
+    char * arr = new char[r.size()];
+    std::memcpy(arr, r.data(), r.size());
+    commandret->setstr(arr);
 }
 
 void listcount(ident *id, const char *list, const uint *body)
@@ -887,34 +900,49 @@ void listcount(ident *id, const char *list, const uint *body)
 
 void prettylist(const char *s, const char *conj)
 {
-    vector<char> p;
+    std::vector<char> p;
     const char *start, *end, *qstart;
     for(int len = listlen(s), n = 0; parselist(s, start, end, qstart); n++)
     {
         if(*qstart == '"')
         {
-            p.advance(unescapestring(p.reserve(end - start + 1).buf, start, end));
+            p.reserve(end - start + 1);
+
+            for(int i = 0; i < end - start + 1; ++i)
+            {
+                p.emplace_back();
+            }
+            unescapestring(&(*(p.end() - (end - start + 1))), start, end);
         }
         else
         {
-            p.put(start, end - start);
+            for(int i = 0; i < end - start; ++i)
+            {
+                p.push_back(start[i]);
+            }
         }
         if(n+1 < len)
         {
             if(len > 2 || !conj[0])
             {
-                p.add(',');
+                p.push_back(',');
             }
             if(n+2 == len && conj[0])
             {
-                p.add(' ');
-                p.put(conj, std::strlen(conj));
+                p.push_back(' ');
+                for(int i = 0; i < std::strlen(conj); ++i)
+                {
+                    p.push_back(conj[i]);
+                }
             }
-            p.add(' ');
+            p.push_back(' ');
         }
     }
-    p.add('\0');
-    commandret->setstr(p.disown());
+    p.push_back('\0');
+    //create new array to pass back
+    char * arr = new char[p.size()];
+    std::memcpy(arr, p.data(), p.size());
+    commandret->setstr(arr);
 }
 
 //returns the int position of the needle inside the passed list
@@ -947,18 +975,24 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
             break;
         }
     }
-    vector<char> p;
+    std::vector<char> p;
     if(qend > list)
     {
-        p.put(list, qend-list);
+        for(int i = 0; i < qend - list; ++i)
+        {
+            p.push_back(list[i]);
+        }
     }
     if(*vals)
     {
         if(!p.empty())
         {
-            p.add(' ');
+            p.push_back(' ');
         }
-        p.put(vals, std::strlen(vals));
+        for(int i = 0; i < std::strlen(vals); ++i)
+        {
+            p.push_back(vals[i]);
+        }
     }
     for(int i = 0; i < len; ++i)
     {
@@ -980,14 +1014,19 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
         {
             if(!p.empty())
             {
-                p.add(' ');
+                p.push_back(' ');
             }
-            p.put(s, std::strlen(s));
+            for(int i = 0; i < std::strlen(s); ++i)
+            {
+                p.push_back(s[i]);
+            }
             break;
         }
     }
-    p.add('\0');
-    commandret->setstr(p.disown());
+    p.push_back('\0');
+    char * arr = new char[p.size()];
+    std::memcpy(arr, p.data(), p.size());
+    commandret->setstr(arr);
 }
 
 //executes the body for each file in the given path, using ident passed
@@ -1532,9 +1571,88 @@ void initcontrolcmds()
     addcommand("prettylist", reinterpret_cast<identfun>(prettylist), "ss", Id_Command);
     addcommand("indexof", reinterpret_cast<identfun>(+[] (char *list, char *elem) { intret(listincludes(list, elem, std::strlen(elem))); }), "ss", Id_Command);
 
-    addcommand("listdel", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
-    addcommand("listintersect", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) >= 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
-    addcommand("listunion", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; p.put(list, std::strlen(list)); for(const char *start, *end, *qstart, *qend; parselist(elems, start, end, qstart, qend);) { int len = end - start; if(listincludes(list, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
+    addcommand("listdel", reinterpret_cast<identfun>(+[] (const char *list, const char *elems)
+    {
+        {
+            std::vector<char> p;
+            for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);)
+            {
+                int len = end - start;
+                if(listincludes(elems, start, len) < 0)
+                {
+                    if(!p.empty())
+                    {
+                        p.push_back(' ');
+                    }
+                    for(int i = 0; i < qend - qstart; ++i)
+                    {
+                        p.push_back(qstart[i]);
+                    }
+                }
+            }
+            p.push_back('\0');
+            char * arr = new char[p.size()];
+            std::memcpy(arr, p.data(), p.size());
+            commandret->setstr(arr);
+        }
+    }), "ss", Id_Command);
+
+    addcommand("listintersect", reinterpret_cast<identfun>(+[] (const char *list, const char *elems)
+    {
+        {
+            std::vector<char> p;
+            for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);)
+            {
+                int len = end - start;
+                if(listincludes(elems, start, len) >= 0)
+                {
+                    if(!p.empty())
+                    {
+                        p.push_back(' ');
+                    }
+                    for(int i = 0; i < qend - qstart; ++i)
+                    {
+                        p.push_back(qstart[i]);
+                    }
+                }
+            }
+            p.push_back('\0');
+            char * arr = new char[p.size()];
+            std::memcpy(arr, p.data(), p.size());
+            commandret->setstr(arr);
+        }
+    }), "ss", Id_Command);
+
+    addcommand("listunion", reinterpret_cast<identfun>(+[] (const char *list, const char *elems)
+    {
+        {
+            std::vector<char> p;
+            for(int i = 0; i < std::strlen(list); ++i)
+            {
+                p.push_back(list[i]);
+            }
+            for(const char *start, *end, *qstart, *qend; parselist(elems, start, end, qstart, qend);)
+            {
+                int len = end - start;
+                if(listincludes(list, start, len) < 0)
+                {
+                    if(!p.empty())
+                    {
+                        p.push_back(' ');
+                    }
+                    for(int i = 0; i < qend - qstart; ++i)
+                    {
+                        p.push_back(qstart[i]);
+                    }
+                }
+            }
+            p.push_back('\0');
+            char * arr = new char[p.size()];
+            std::memcpy(arr, p.data(), p.size());
+            commandret->setstr(arr);
+        }
+    }), "ss", Id_Command);
+
     addcommand("loopfiles", reinterpret_cast<identfun>(loopfiles), "rsse", Id_Command);
     addcommand("listsplice", reinterpret_cast<identfun>(listsplice), "ssii", Id_Command);
     addcommand("findfile", reinterpret_cast<identfun>(findfile_), "s", Id_Command);
