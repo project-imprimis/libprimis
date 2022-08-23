@@ -682,7 +682,7 @@ void resetmodelbatches()
 void addbatchedmodel(model *m, batchedmodel &bm, int idx)
 {
     modelbatch *b = nullptr;
-    if(batches.size() > m->batch)
+    if(batches.size() > static_cast<uint>(m->batch))
     {
         b = &batches[m->batch];
         if(b->m == m && (b->flags & Model_Mapmodel) == (bm.flags & Model_Mapmodel))
@@ -1416,7 +1416,7 @@ void findanimscmd(char *name)
         {
             buf.push_back(' ');
         }
-        for(int i = 0; i < std::strlen(num); ++i)
+        for(uint i = 0; i < std::strlen(num); ++i)
         {
             buf.push_back(num[i]);
         }
