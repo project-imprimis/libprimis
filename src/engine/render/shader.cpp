@@ -1212,11 +1212,11 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     bool vschanged = false,
          pschanged = false;
     std::vector<char> vsv, psv;
-    for(int i = 0; i < std::strlen(vs)+1; ++i)
+    for(uint i = 0; i < std::strlen(vs)+1; ++i)
     {
         vsv.push_back(vs[i]);
     }
-    for(int i = 0; i < std::strlen(ps)+1; ++i)
+    for(uint i = 0; i < std::strlen(ps)+1; ++i)
     {
         psv.push_back(ps[i]);
     }
@@ -1311,7 +1311,7 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
                 vsbuf.push_back(vs[i]);
             }
             const char *fogparams = "\nuniform vec2 lineardepthscale;\nvarying float lineardepth;\n";
-            for(int i = 0; i < std::strlen(fogparams); ++i)
+            for(uint i = 0; i < std::strlen(fogparams); ++i)
             {
                 vsbuf.push_back(fogparams[i]);
             }
@@ -1320,11 +1320,11 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
                 vsbuf.push_back(vsmain[i]);
             }
             const char *vsfog = "\nlineardepth = dot(lineardepthscale, gl_Position.zw);\n";
-            for(int i = 0; i < std::strlen(vsfog); ++i)
+            for(uint i = 0; i < std::strlen(vsfog); ++i)
             {
                 vsbuf.push_back(vsfog[i]);
             }
-            for(int i = 0; i < std::strlen(vsend)+1; ++i)
+            for(uint i = 0; i < std::strlen(vsend)+1; ++i)
             {
                 vsbuf.push_back(vsend[i]);
             }
@@ -1341,7 +1341,7 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
         if(!std::strstr(ps, "lineardepth"))
         {
             const char *foginterp = "\nvarying float lineardepth;\n";
-            for(int i = 0; i < std::strlen(foginterp); ++i)
+            for(uint i = 0; i < std::strlen(foginterp); ++i)
             {
                 psbuf.push_back(foginterp[i]);
             }
@@ -1351,11 +1351,11 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
             "uniform vec2 fogdensity;\n"
             "uniform vec4 radialfogscale;\n"
             "#define fogcoord lineardepth*length(vec3(gl_FragCoord.xy*radialfogscale.xy + radialfogscale.zw, 1.0))\n";
-        for(int i = 0; i < std::strlen(fogparams); ++i)
+        for(uint i = 0; i < std::strlen(fogparams); ++i)
         {
             psbuf.push_back(fogparams[i]);
         }
-        for(int i = 0; i < psend - psmain; ++i)
+        for(uint i = 0; i < psend - psmain; ++i)
         {
             psbuf.push_back(psmain[i]);
         }
@@ -1384,7 +1384,7 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
             pspragma = "fogcolor";
             clen = std::strlen(pspragma);
         }
-        for(int i = 0; i < std::strlen(psdef); ++i)
+        for(uint i = 0; i < std::strlen(psdef); ++i)
         {
             psbuf.push_back(psdef[i]);
         }
@@ -1392,11 +1392,11 @@ static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, con
         {
             psbuf.push_back(pspragma[i]);
         }
-        for(int i = 0; i < std::strlen(psfog); ++i)
+        for(uint i = 0; i < std::strlen(psfog); ++i)
         {
             psbuf.push_back(psfog[i]);
         }
-        for(int i = 0; i < std::strlen(psend) + 1; ++i)
+        for(uint i = 0; i < std::strlen(psend) + 1; ++i)
         {
             psbuf.push_back(psend[i]);
         }
@@ -1428,7 +1428,7 @@ static void genuniformdefs(std::vector<char> &vsbuf, std::vector<char> &psbuf, c
         for(uint i = 0; i < variant->defaultparams.size(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
-            for(int j = 0; j < std::strlen(uni); ++j)
+            for(uint j = 0; j < std::strlen(uni); ++j)
             {
                 vsbuf.push_back(uni[j]);
                 psbuf.push_back(uni[j]);
@@ -1440,18 +1440,18 @@ static void genuniformdefs(std::vector<char> &vsbuf, std::vector<char> &psbuf, c
         for(uint i = 0; i < slotparams.size(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
-            for(int j = 0; j < std::strlen(uni); ++j)
+            for(uint j = 0; j < std::strlen(uni); ++j)
             {
                 vsbuf.push_back(uni[j]);
                 psbuf.push_back(uni[j]);
             }
         }
     }
-    for(int i = 0; i < std::strlen(vsmain)+1; ++i)
+    for(uint i = 0; i < std::strlen(vsmain)+1; ++i)
     {
         vsbuf.push_back(vsmain[i]);
     }
-    for(int i = 0; i < std::strlen(psmain)+1; ++i)
+    for(uint i = 0; i < std::strlen(psmain)+1; ++i)
     {
         psbuf.push_back(psmain[i]);
     }
@@ -1649,7 +1649,7 @@ Shader *useshaderbyname(const char *name)
         if(vsbuf.size()) \
         { \
             vsbak.clear(); \
-            for(int i = 0; i < std::strlen(vs)+1; ++i) \
+            for(uint i = 0; i < std::strlen(vs)+1; ++i) \
             { \
                 vsbak.push_back(vs[i]); \
             } \
@@ -1659,7 +1659,7 @@ Shader *useshaderbyname(const char *name)
         if(psbuf.size()) \
         { \
             psbak.clear(); \
-            for(int i = 0; i < std::strlen(ps)+1; ++i) \
+            for(uint i = 0; i < std::strlen(ps)+1; ++i) \
             { \
                 psbak.push_back(ps[i]); \
             } \
