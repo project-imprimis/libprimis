@@ -414,7 +414,7 @@ void resethudshader()
 
 FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 //note: fps displayed is the average over the statrate duration
-VAR(statrate, 1, 200, 1000);  //update time for fps (not other hud readouts)
+VAR(statrate, 1, 200, 1000);  //update time for fps and edit stats
 VAR(showhud, 0, 1, 1);
 
 void vectoryawpitch(const vec &v, float &yaw, float &pitch)
