@@ -9,7 +9,6 @@ extern int scr_w, scr_h;
 extern int screenw, screenh;
 
 extern void cleargamma();
-extern void restorevsync();
 extern void limitfps(int &millis, int curmillis);
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
