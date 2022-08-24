@@ -825,7 +825,7 @@ void loadvslots(stream *f, int numvslots)
     }
     for(uint i = 0; i < vslots.size(); i++)
     {
-        if(vslots.size() > prev[i])
+        if(static_cast<int>(vslots.size()) > prev[i])
         {
             vslots[prev[i]]->next = vslots[i];
         }
@@ -1118,7 +1118,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     }
     renderprogress(0, "loading entities...");
     std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < (std::min(hdr.numents, maxents)); ++i)
+    for(int i = 0; i < (std::min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
         ents.push_back(&e);
