@@ -298,8 +298,8 @@ void freearg(tagval &v)
         {
             if(v.code[-1] == Code_Start)
             {
-                //need to cast away constness then mangle type to uchar to delete w/ same type as created
-                delete[] reinterpret_cast<uchar *>(const_cast<uint *>(&v.code[-1]));
+                //delete starting at index **[-1]**, since tagvals get passed arrays starting at index 1
+                delete[] &v.code[-1];
             }
             break;
         }
@@ -1721,7 +1721,7 @@ static void cutstring(const char *&p, stringslice &s)
 {
     p++;
     const char *end = parsestring(p);
-    int maxlen = static_cast<int>(end-p) + 1;
+    uint maxlen = (end-p) + 1;
 
     stridx = (stridx + 1)%4;
     std::vector<char> &buf = strbuf[stridx];
@@ -1886,7 +1886,7 @@ int ret_code_string(int type)
     return type << Code_Ret;
 }
 
-static void compilestr(vector<uint> &code, const char *word, int len, bool macro = false)
+static void compilestr(std::vector<uint> &code, const char *word, int len, bool macro = false)
 {
     if(len <= 3 && !macro)
     {
@@ -1895,11 +1895,15 @@ static void compilestr(vector<uint> &code, const char *word, int len, bool macro
         {
             op |= static_cast<uint>(static_cast<uchar>(word[i]))<<((i+1)*8);
         }
-        code.add(op);
+        code.push_back(op);
         return;
     }
-    code.add((macro ? Code_Macro : Code_Val|Ret_String)|(len<<8));
-    code.put(reinterpret_cast<const uint *>(word), len/sizeof(uint));
+    code.push_back((macro ? Code_Macro : Code_Val|Ret_String));
+    code.back() |= len << 8;
+    for(uint i = 0; i < len/sizeof(uint); ++i)
+    {
+        code.push_back((reinterpret_cast<const uint *>(word))[i]);
+    }
     size_t endlen = len%sizeof(uint);
     union
     {
@@ -1908,53 +1912,61 @@ static void compilestr(vector<uint> &code, const char *word, int len, bool macro
     } end;
     end.u = 0;
     std::memcpy(end.c, word + len - endlen, endlen);
-    code.add(end.u);
+    code.push_back(end.u);
 }
 
-static void compilestr(vector<uint> &code)
+static void compilestr(std::vector<uint> &code)
 {
-    code.add(Code_ValI|Ret_String);
+    code.push_back(Code_ValI|Ret_String);
 }
 
-static void compilestr(vector<uint> &code, const stringslice &word, bool macro = false)
+static void compilestr(std::vector<uint> &code, const stringslice &word, bool macro = false)
 {
     compilestr(code, word.str, word.len, macro);
 }
 
 //compile un-escape string
-static void compileunescapestring(vector<uint> &code, const char *&p, bool macro = false)
+// removes the escape characters from a c string reference `p` (such as "\")
+// and appends it to the execution string referenced to by code. The len/(val/ret/macro) field
+// of the code vector is created depending on the state of macro and the length of the string
+// passed.
+static void compileunescapestring(std::vector<uint> &code, const char *&p, bool macro = false)
 {
     p++;
     const char *end = parsestring(p);
-    code.add(macro ? Code_Macro : Code_Val|Ret_String);
-    char *buf = reinterpret_cast<char *>(code.reserve(static_cast<int>(end-p)/sizeof(uint) + 1).buf);
+    code.emplace_back(macro ? Code_Macro : Code_Val|Ret_String);
+    int size = static_cast<int>(end-p)/sizeof(uint) + 1;
+    int oldvecsize = code.size();
+    for(int i = 0; i < size; ++i)
+    {
+        code.emplace_back();
+    }
+    char *buf = reinterpret_cast<char *>(&(code[oldvecsize]));
     int len = unescapestring(buf, p, end);
     std::memset(&buf[len], 0, sizeof(uint) - len%sizeof(uint));
-    code.last() |= len<<8;
-    code.advance(len/sizeof(uint) + 1);
+    code.at(oldvecsize-1) |= len<<8;
     p = end;
     if(*p == '\"')
     {
         p++;
     }
 }
-
-static void compileint(vector<uint> &code, int i = 0)
+static void compileint(std::vector<uint> &code, int i = 0)
 {
     if(i >= -0x800000 && i <= 0x7FFFFF)
     {
-        code.add(Code_ValI|Ret_Integer|(i<<8));
+        code.push_back(Code_ValI|Ret_Integer|(i<<8));
     }
     else
     {
-        code.add(Code_Val|Ret_Integer);
-        code.add(i);
+        code.push_back(Code_Val|Ret_Integer);
+        code.push_back(i);
     }
 }
 
-static void compilenull(vector<uint> &code)
+static void compilenull(std::vector<uint> &code)
 {
-    code.add(Code_ValI|Ret_Null);
+    code.push_back(Code_ValI|Ret_Null);
 }
 
 static uint emptyblock[Value_Any][2] =
@@ -1965,55 +1977,55 @@ static uint emptyblock[Value_Any][2] =
     { Code_Start + 0x100, Code_Exit|Ret_String }
 };
 
-static void compileblock(vector<uint> &code)
+static void compileblock(std::vector<uint> &code)
 {
-    code.add(Code_Empty);
+    code.push_back(Code_Empty);
 }
 
-static void compilestatements(vector<uint> &code, const char *&p, int rettype, int brak = '\0', int prevargs = 0);
+static void compilestatements(std::vector<uint> &code, const char *&p, int rettype, int brak = '\0', int prevargs = 0);
 
-static const char *compileblock(vector<uint> &code, const char *p, int rettype = Ret_Null, int brak = '\0')
+static const char *compileblock(std::vector<uint> &code, const char *p, int rettype = Ret_Null, int brak = '\0')
 {
-    int start = code.length();
-    code.add(Code_Block);
-    code.add(Code_Offset|((start+2)<<8));
+    uint start = code.size();
+    code.push_back(Code_Block);
+    code.push_back(Code_Offset|((start+2)<<8));
     if(p)
     {
         compilestatements(code, p, Value_Any, brak);
     }
-    if(code.length() > start + 2)
+    if(code.size() > start + 2)
     {
-        code.add(Code_Exit|rettype);
-        code[start] |= static_cast<uint>(code.length() - (start + 1))<<8;
+        code.push_back(Code_Exit|rettype);
+        code[start] |= static_cast<uint>(code.size() - (start + 1))<<8;
     }
     else
     {
-        code.setsize(start);
-        code.add(Code_Empty|rettype);
+        code.resize(start);
+        code.push_back(Code_Empty|rettype);
     }
     return p;
 }
 
-static void compileident(vector<uint> &code, ident *id = dummyident)
+static void compileident(std::vector<uint> &code, ident *id = dummyident)
 {
-    code.add((id->index < Max_Args ? Code_IdentArg : Code_Ident)|(id->index<<8));
+    code.push_back((id->index < Max_Args ? Code_IdentArg : Code_Ident)|(id->index<<8));
 }
 
-static void compileident(vector<uint> &code, const stringslice &word)
+static void compileident(std::vector<uint> &code, const stringslice &word)
 {
     compileident(code, newident(word, Idf_Unknown));
 }
 
-static void compileint(vector<uint> &code, const stringslice &word)
+static void compileint(std::vector<uint> &code, const stringslice &word)
 {
     compileint(code, word.len ? parseint(word.str) : 0);
 }
 
-static void compilefloat(vector<uint> &code, float f = 0.0f)
+static void compilefloat(std::vector<uint> &code, float f = 0.0f)
 {
     if(static_cast<int>(f) == f && f >= -0x800000 && f <= 0x7FFFFF)
     {
-        code.add(Code_ValI|Ret_Float|(static_cast<int>(f)<<8));
+        code.push_back(Code_ValI|Ret_Float|(static_cast<int>(f)<<8));
     }
     else
     {
@@ -2023,12 +2035,12 @@ static void compilefloat(vector<uint> &code, float f = 0.0f)
             uint u;
         } conv;
         conv.f = f;
-        code.add(Code_Val|Ret_Float);
-        code.add(conv.u);
+        code.push_back(Code_Val|Ret_Float);
+        code.push_back(conv.u);
     }
 }
 
-static void compilefloat(vector<uint> &code, const stringslice &word)
+static void compilefloat(std::vector<uint> &code, const stringslice &word)
 {
     compilefloat(code, word.len ? parsefloat(word.str) : 0.0f);
 }
@@ -2116,7 +2128,7 @@ bool getbool(const tagval &v)
     }
 }
 
-static void compileval(vector<uint> &code, int wordtype, const stringslice &word = stringslice(nullptr, 0))
+static void compileval(std::vector<uint> &code, int wordtype, const stringslice &word = stringslice(nullptr, 0))
 {
     switch(wordtype)
     {
@@ -2194,9 +2206,9 @@ static void compileval(vector<uint> &code, int wordtype, const stringslice &word
 }
 
 static stringslice unusedword(nullptr, 0);
-static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int prevargs = Max_Results, stringslice &word = unusedword);
+static bool compilearg(std::vector<uint> &code, const char *&p, int wordtype, int prevargs = Max_Results, stringslice &word = unusedword);
 
-static void compilelookup(vector<uint> &code, const char *&p, int ltype, int prevargs = Max_Results)
+static void compilelookup(std::vector<uint> &code, const char *&p, int ltype, int prevargs = Max_Results)
 {
     stringslice lookup;
     switch(*++p)
@@ -2235,22 +2247,22 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                 {
                     case Id_Var:
                     {
-                        code.add(Code_IntVar|ret_code_int(ltype)|(id->index<<8));
+                        code.push_back(Code_IntVar|ret_code_int(ltype)|(id->index<<8));
                         switch(ltype)
                         {
                             case Value_Pop:
                             {
-                                code.pop();
+                                code.pop_back();
                                 break;
                             }
                             case Value_Code:
                             {
-                                code.add(Code_Compile);
+                                code.push_back(Code_Compile);
                                 break;
                             }
                             case Value_Ident:
                             {
-                                code.add(Code_IdentU);
+                                code.push_back(Code_IdentU);
                                 break;
                             }
                         }
@@ -2258,22 +2270,22 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                     }
                     case Id_FloatVar:
                     {
-                        code.add(Code_FloatVar|ret_code_float(ltype)|(id->index<<8));
+                        code.push_back(Code_FloatVar|ret_code_float(ltype)|(id->index<<8));
                         switch(ltype)
                         {
                             case Value_Pop:
                             {
-                                code.pop();
+                                code.pop_back();
                                 break;
                             }
                             case Value_Code:
                             {
-                                code.add(Code_Compile);
+                                code.push_back(Code_Compile);
                                 break;
                             }
                             case Value_Ident:
                             {
-                                code.add(Code_IdentU);
+                                code.push_back(Code_IdentU);
                                 break;
                             }
                         }
@@ -2293,12 +2305,12 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                             case Value_Ident:
                             case Value_Cond:
                             {
-                                code.add(Code_StrVarM|(id->index<<8));
+                                code.push_back(Code_StrVarM|(id->index<<8));
                                 break;
                             }
                             default:
                             {
-                                code.add(Code_StrVar|ret_code_string(ltype)|(id->index<<8));
+                                code.push_back(Code_StrVar|ret_code_string(ltype)|(id->index<<8));
                                 break;
                             }
                         }
@@ -2315,19 +2327,19 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                             case Value_CAny:
                             case Value_Cond:
                             {
-                                code.add((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|(id->index<<8));
+                                code.push_back((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|(id->index<<8));
                                 break;
                             }
                             case Value_CString:
                             case Value_Code:
                             case Value_Ident:
                             {
-                                code.add((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|Ret_String|(id->index<<8));
+                                code.push_back((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|Ret_String|(id->index<<8));
                                 break;
                             }
                             default:
                             {
-                                code.add((id->index < Max_Args ? Code_LookupArg : Code_Lookup)|ret_code_string(ltype)|(id->index<<8));
+                                code.push_back((id->index < Max_Args ? Code_LookupArg : Code_Lookup)|ret_code_string(ltype)|(id->index<<8));
                                 break;
                             }
                         }
@@ -2339,7 +2351,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                             numargs = 0;
                         if(prevargs >= Max_Results)
                         {
-                            code.add(Code_Enter);
+                            code.push_back(Code_Enter);
                         }
                         for(const char *fmt = id->args; *fmt; fmt++)
                         {
@@ -2377,7 +2389,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                                 }
                                 case 'F':
                                 {
-                                    code.add(Code_Dup|Ret_Float);
+                                    code.push_back(Code_Dup|Ret_Float);
                                     numargs++;
                                     break;
                                 }
@@ -2438,12 +2450,12 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                                 }
                             }
                         }
-                        code.add(comtype|ret_code_any(ltype)|(id->index<<8));
-                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
+                        code.push_back(comtype|ret_code_any(ltype)|(id->index<<8));
+                        code.push_back((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
                         goto done;
                     compilecomv:
-                        code.add(comtype|ret_code_any(ltype)|(numargs<<8)|(id->index<<13));
-                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
+                        code.push_back(comtype|ret_code_any(ltype)|(numargs<<8)|(id->index<<13));
+                        code.push_back((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
                         goto done;
                     }
                     default:
@@ -2461,19 +2473,19 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
         case Value_CAny:
         case Value_Cond:
         {
-            code.add(Code_LookupMU);
+            code.push_back(Code_LookupMU);
             break;
         }
         case Value_CString:
         case Value_Code:
         case Value_Ident:
         {
-            code.add(Code_LookupMU|Ret_String);
+            code.push_back(Code_LookupMU|Ret_String);
             break;
         }
         default:
         {
-            code.add(Code_LookupU|ret_code_any(ltype));
+            code.push_back(Code_LookupU|ret_code_any(ltype));
             break;
         }
     }
@@ -2482,22 +2494,22 @@ done:
     {
         case Value_Pop:
         {
-            code.add(Code_Pop);
+            code.push_back(Code_Pop);
             break;
         }
         case Value_Code:
         {
-            code.add(Code_Compile);
+            code.push_back(Code_Compile);
             break;
         }
         case Value_Cond:
         {
-            code.add(Code_Cond);
+            code.push_back(Code_Cond);
             break;
         }
         case Value_Ident:
         {
-            code.add(Code_IdentU);
+            code.push_back(Code_IdentU);
             break;
         }
     }
@@ -2526,11 +2538,17 @@ invalid:
     }
 }
 
-static bool compileblockstr(vector<uint> &code, const char *str, const char *end, bool macro)
+static bool compileblockstr(std::vector<uint> &code, const char *str, const char *end, bool macro)
 {
-    int start = code.length();
-    code.add(macro ? Code_Macro : Code_Val|Ret_String);
-    char *buf = reinterpret_cast<char *>(code.reserve((end-str)/sizeof(uint)+1).buf);
+    int start = code.size();
+    code.push_back(macro ? Code_Macro : Code_Val|Ret_String);
+    int size = (end-str)/sizeof(uint)+1;
+    int oldvecsize = code.size();
+    for(int i = 0; i < size; ++i)
+    {
+        code.emplace_back();
+    }
+    char *buf = reinterpret_cast<char *>(&(code[oldvecsize]));
     int len = 0;
     while(str < end)
     {
@@ -2588,12 +2606,11 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
     }
 done:
     std::memset(&buf[len], '\0', sizeof(uint)-len%sizeof(uint));
-    code.advance(len/sizeof(uint)+1);
     code[start] |= len<<8;
     return true;
 }
 
-static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
+static bool compileblocksub(std::vector<uint> &code, const char *&p, int prevargs)
 {
     stringslice lookup;
     switch(*p)
@@ -2612,7 +2629,7 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
             {
                 return false;
             }
-            code.add(Code_LookupMU);
+            code.push_back(Code_LookupMU);
             break;
         }
         case '\"':
@@ -2641,28 +2658,28 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
                 {
                     case Id_Var:
                     {
-                        code.add(Code_IntVar|(id->index<<8));
+                        code.push_back(Code_IntVar|(id->index<<8));
                         goto done;
                     }
                     case Id_FloatVar:
                     {
-                        code.add(Code_FloatVar|(id->index<<8));
+                        code.push_back(Code_FloatVar|(id->index<<8));
                         goto done;
                     }
                     case Id_StringVar:
                     {
-                        code.add(Code_StrVarM|(id->index<<8));
+                        code.push_back(Code_StrVarM|(id->index<<8));
                         goto done;
                     }
                     case Id_Alias:
                     {
-                        code.add((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|(id->index<<8));
+                        code.push_back((id->index < Max_Args ? Code_LookupMArg : Code_LookupM)|(id->index<<8));
                         goto done;
                     }
                 }
             }
             compilestr(code, lookup, true);
-            code.add(Code_LookupMU);
+            code.push_back(Code_LookupMU);
         done:
             break;
         }
@@ -2670,7 +2687,7 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
     return true;
 }
 
-static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, int prevargs)
+static void compileblockmain(std::vector<uint> &code, const char *&p, int wordtype, int prevargs)
 {
     const char *line  = p,
                *start = p;
@@ -2730,11 +2747,11 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
                 }
                 if(!concs && prevargs >= Max_Results)
                 {
-                    code.add(Code_Enter);
+                    code.push_back(Code_Enter);
                 }
                 if(concs + 2 > Max_Args)
                 {
-                    code.add(Code_ConCW|Ret_String|(concs<<8));
+                    code.push_back(Code_ConCW|Ret_String|(concs<<8));
                     concs = 1;
                 }
                 if(compileblockstr(code, start, esc-1, true))
@@ -2751,7 +2768,7 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
                 }
                 else if(prevargs >= Max_Results)
                 {
-                    code.pop();
+                    code.pop_back();
                 }
                 break;
             }
@@ -2807,12 +2824,12 @@ done:
     {
         if(prevargs >= Max_Results)
         {
-            code.add(Code_ConCM|ret_code_any(wordtype)|(concs<<8));
-            code.add(Code_Exit|ret_code_any(wordtype));
+            code.push_back(Code_ConCM|ret_code_any(wordtype)|(concs<<8));
+            code.push_back(Code_Exit|ret_code_any(wordtype));
         }
         else
         {
-            code.add(Code_ConCW|ret_code_any(wordtype)|(concs<<8));
+            code.push_back(Code_ConCW|ret_code_any(wordtype)|(concs<<8));
         }
     }
     switch(wordtype)
@@ -2821,7 +2838,7 @@ done:
         {
             if(concs || p-1 > start)
             {
-                code.add(Code_Pop);
+                code.push_back(Code_Pop);
             }
             break;
         }
@@ -2833,7 +2850,7 @@ done:
             }
             else
             {
-                code.add(Code_Cond);
+                code.push_back(Code_Cond);
             }
             break;
         }
@@ -2845,7 +2862,7 @@ done:
             }
             else
             {
-                code.add(Code_Compile);
+                code.push_back(Code_Compile);
             }
             break;
         }
@@ -2857,7 +2874,7 @@ done:
             }
             else
             {
-                code.add(Code_IdentU);
+                code.push_back(Code_IdentU);
             }
             break;
         }
@@ -2891,7 +2908,7 @@ done:
                 }
                 else
                 {
-                    code.add(Code_Force|(wordtype<<Code_Ret));
+                    code.push_back(Code_Force|(wordtype<<Code_Ret));
                 }
             }
             break;
@@ -2899,7 +2916,7 @@ done:
     }
 }
 
-static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int prevargs, stringslice &word)
+static bool compilearg(std::vector<uint> &code, const char *&p, int wordtype, int prevargs, stringslice &word)
 {
     skipcomments(p);
     switch(*p)
@@ -2975,17 +2992,17 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
             p++;
             if(prevargs >= Max_Results)
             {
-                code.add(Code_Enter);
+                code.push_back(Code_Enter);
                 compilestatements(code, p, wordtype > Value_Any ? Value_CAny : Value_Any, ')');
-                code.add(Code_Exit|ret_code_any(wordtype));
+                code.push_back(Code_Exit|ret_code_any(wordtype));
             }
             else
             {
-                int start = code.length();
+                uint start = code.size();
                 compilestatements(code, p, wordtype > Value_Any ? Value_CAny : Value_Any, ')', prevargs);
-                if(code.length() > start)
+                if(code.size() > start)
                 {
-                    code.add(Code_ResultArg|ret_code_any(wordtype));
+                    code.push_back(Code_ResultArg|ret_code_any(wordtype));
                 }
                 else
                 {
@@ -2997,22 +3014,22 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
             {
                 case Value_Pop:
                 {
-                    code.add(Code_Pop);
+                    code.push_back(Code_Pop);
                     break;
                 }
                 case Value_Cond:
                 {
-                    code.add(Code_Cond);
+                    code.push_back(Code_Cond);
                     break;
                 }
                 case Value_Code:
                 {
-                    code.add(Code_Compile);
+                    code.push_back(Code_Compile);
                     break;
                 }
                 case Value_Ident:
                 {
-                    code.add(Code_IdentU);
+                    code.push_back(Code_IdentU);
                     break;
                 }
             }
@@ -3073,7 +3090,7 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
     }
 }
 
-static void compilestatements(vector<uint> &code, const char *&p, int rettype, int brak, int prevargs)
+static void compilestatements(std::vector<uint> &code, const char *&p, int rettype, int brak, int prevargs)
 {
     const char *line = p;
     stringslice idname;
@@ -3120,7 +3137,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         compilestr(code);
                                     }
-                                    code.add((id->index < Max_Args ? Code_AliasArg : Code_Alias)|(id->index<<8));
+                                    code.push_back((id->index < Max_Args ? Code_AliasArg : Code_Alias)|(id->index<<8));
                                     goto endstatement;
                                 }
                                 case Id_Var:
@@ -3129,7 +3146,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         compileint(code);
                                     }
-                                    code.add(Code_IntVar1|(id->index<<8));
+                                    code.push_back(Code_IntVar1|(id->index<<8));
                                     goto endstatement;
                                 }
                                 case Id_FloatVar:
@@ -3138,7 +3155,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         compilefloat(code);
                                     }
-                                    code.add(Code_FloatVar1|(id->index<<8));
+                                    code.push_back(Code_FloatVar1|(id->index<<8));
                                     goto endstatement;
                                 }
                                 case Id_StringVar:
@@ -3147,7 +3164,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         compilestr(code);
                                     }
-                                    code.add(Code_StrVar1|(id->index<<8));
+                                    code.push_back(Code_StrVar1|(id->index<<8));
                                     goto endstatement;
                                 }
                             }
@@ -3158,7 +3175,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                     {
                         compilestr(code);
                     }
-                    code.add(Code_AliasU);
+                    code.push_back(Code_AliasU);
                     goto endstatement;
             }
         }
@@ -3170,7 +3187,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
             {
                 numargs++;
             }
-            code.add(Code_CallU|(numargs<<8));
+            code.push_back(Code_CallU|(numargs<<8));
         }
         else
         {
@@ -3203,7 +3220,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                     compileval(code, rettype, idname);
                     break;
                 }
-                code.add(Code_Result);
+                code.push_back(Code_Result);
             }
             else
             {
@@ -3215,7 +3232,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             numargs++;
                         }
-                        code.add((id->index < Max_Args ? Code_CallArg : Code_Call)|(numargs<<8)|(id->index<<13));
+                        code.push_back((id->index < Max_Args ? Code_CallArg : Code_Call)|(numargs<<8)|(id->index<<13));
                         break;
                     }
                     case Id_Command:
@@ -3252,7 +3269,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         }
                                         if(numconc > 1)
                                         {
-                                            code.add(Code_ConC|Ret_String|(numconc<<8));
+                                            code.push_back(Code_ConC|Ret_String|(numconc<<8));
                                         }
                                     }
                                     numargs++;
@@ -3324,7 +3341,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         {
                                             break;
                                         }
-                                        code.add(Code_Dup|Ret_Float);
+                                        code.push_back(Code_Dup|Ret_Float);
                                         fakeargs++;
                                     }
                                     numargs++;
@@ -3460,17 +3477,17 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         for(; numargs > Max_Args; numargs--)
                                         {
-                                            code.add(Code_Pop);
+                                            code.push_back(Code_Pop);
                                         }
                                     }
                                     break;
                                 }
                             }
                         }
-                        code.add(comtype|ret_code_any(rettype)|(id->index<<8));
+                        code.push_back(comtype|ret_code_any(rettype)|(id->index<<8));
                         break;
                     compilecomv:
-                        code.add(comtype|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
+                        code.push_back(comtype|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
                         break;
                     }
                     case Id_Local:
@@ -3489,7 +3506,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                 //(empty body)
                             }
                         }
-                        code.add(Code_Local|(numargs<<8));
+                        code.push_back(Code_Local|(numargs<<8));
                         break;
                     }
                     case Id_Do:
@@ -3498,7 +3515,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Code, prevargs);
                         }
-                        code.add((more ? Code_Do : Code_Null) | ret_code_any(rettype));
+                        code.push_back((more ? Code_Do : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_DoArgs:
@@ -3507,7 +3524,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Code, prevargs);
                         }
-                        code.add((more ? Code_DoArgs : Code_Null) | ret_code_any(rettype));
+                        code.push_back((more ? Code_DoArgs : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_If:
@@ -3518,20 +3535,20 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         }
                         if(!more) //more can be affected by above assignment
                         {
-                            code.add(Code_Null | ret_code_any(rettype));
+                            code.push_back(Code_Null | ret_code_any(rettype));
                         }
                         else
                         {
-                            int start1 = code.length();
+                            int start1 = code.size();
                             more = compilearg(code, p, Value_Code, prevargs+1);
                             if(!more)
                             {
-                                code.add(Code_Pop);
-                                code.add(Code_Null | ret_code_any(rettype));
+                                code.push_back(Code_Pop);
+                                code.push_back(Code_Null | ret_code_any(rettype));
                             }
                             else
                             {
-                                int start2 = code.length();
+                                int start2 = code.size();
                                 more = compilearg(code, p, Value_Code, prevargs+2);
                                 uint inst1 = code[start1], op1 = inst1&~Code_RetMask, len1 = start2 - (start1+1);
                                 if(!more)
@@ -3547,7 +3564,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                 }
                                 else
                                 {
-                                    uint inst2 = code[start2], op2 = inst2&~Code_RetMask, len2 = code.length() - (start2+1);
+                                    uint inst2 = code[start2], op2 = inst2&~Code_RetMask, len2 = code.size() - (start2+1);
                                     if(op2 == (Code_Block|(len2<<8)))
                                     {
                                         if(op1 == (Code_Block|(len1<<8)))
@@ -3570,7 +3587,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         }
                                     }
                                 }
-                                code.add(Code_Com|ret_code_any(rettype)|(id->index<<8));
+                                code.push_back(Code_Com|ret_code_any(rettype)|(id->index<<8));
                             }
                         }
                         break;
@@ -3581,7 +3598,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Any, prevargs);
                         }
-                        code.add((more ? Code_Result : Code_Null) | ret_code_any(rettype));
+                        code.push_back((more ? Code_Result : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_Not:
@@ -3590,7 +3607,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_CAny, prevargs);
                         }
-                        code.add((more ? Code_Not : Code_True) | ret_code_any(rettype));
+                        code.push_back((more ? Code_Not : Code_True) | ret_code_any(rettype));
                         break;
                     }
                     case Id_And:
@@ -3602,12 +3619,12 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         }
                         if(!more) //more can be affected by above assignment
                         {
-                            code.add((id->type == Id_And ? Code_True : Code_False) | ret_code_any(rettype));
+                            code.push_back((id->type == Id_And ? Code_True : Code_False) | ret_code_any(rettype));
                         }
                         else
                         {
                             numargs++;
-                            int start = code.length(),
+                            int start = code.size(),
                                 end = start;
                             while(numargs < Max_Args)
                             {
@@ -3617,11 +3634,11 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     break;
                                 }
                                 numargs++;
-                                if((code[end]&~Code_RetMask) != (Code_Block|(static_cast<uint>(code.length()-(end+1))<<8)))
+                                if((code[end]&~Code_RetMask) != (Code_Block|(static_cast<uint>(code.size()-(end+1))<<8)))
                                 {
                                     break;
                                 }
-                                end = code.length();
+                                end = code.size();
                             }
                             if(more)
                             {
@@ -3629,13 +3646,13 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                 {
                                     numargs++;
                                 }
-                                code.add(Code_ComV|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
+                                code.push_back(Code_ComV|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
                             }
                             else
                             {
                                 uint op = id->type == Id_And ? Code_JumpResultFalse : Code_JumpResultTrue;
-                                code.add(op);
-                                end = code.length();
+                                code.push_back(op);
+                                end = code.size();
                                 while(start+1 < end)
                                 {
                                     uint len = code[start]>>8;
@@ -3652,19 +3669,19 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                     {
                         if(!(more = compilearg(code, p, Value_Integer, prevargs)))
                         {
-                            code.add(Code_Print|(id->index<<8));
+                            code.push_back(Code_Print|(id->index<<8));
                         }
                         else if(!(id->flags&Idf_Hex) || !(more = compilearg(code, p, Value_Integer, prevargs+1)))
                         {
-                            code.add(Code_IntVar1|(id->index<<8));
+                            code.push_back(Code_IntVar1|(id->index<<8));
                         }
                         else if(!(more = compilearg(code, p, Value_Integer, prevargs+2)))
                         {
-                            code.add(Code_IntVar2|(id->index<<8));
+                            code.push_back(Code_IntVar2|(id->index<<8));
                         }
                         else
                         {
-                            code.add(Code_IntVar3|(id->index<<8));
+                            code.push_back(Code_IntVar3|(id->index<<8));
                         }
                         break;
                     }
@@ -3672,11 +3689,11 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                     {
                         if(!(more = compilearg(code, p, Value_Float, prevargs)))
                         {
-                            code.add(Code_Print|(id->index<<8));
+                            code.push_back(Code_Print|(id->index<<8));
                         }
                         else
                         {
-                            code.add(Code_FloatVar1|(id->index<<8));
+                            code.push_back(Code_FloatVar1|(id->index<<8));
                         }
                         break;
                     }
@@ -3684,7 +3701,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                     {
                         if(!(more = compilearg(code, p, Value_CString, prevargs)))
                         {
-                            code.add(Code_Print|(id->index<<8));
+                            code.push_back(Code_Print|(id->index<<8));
                         }
                         else
                         {
@@ -3694,9 +3711,9 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                             } while(numargs < Max_Args && (more = compilearg(code, p, Value_CAny, prevargs+numargs)));
                             if(numargs > 1)
                             {
-                                code.add(Code_ConC|Ret_String|(numargs<<8));
+                                code.push_back(Code_ConC|Ret_String|(numargs<<8));
                             }
-                            code.add(Code_StrVar1|(id->index<<8));
+                            code.push_back(Code_StrVar1|(id->index<<8));
                         }
                         break;
                     }
@@ -3746,20 +3763,20 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
     }
 }
 
-static void compilemain(vector<uint> &code, const char *p, int rettype = Value_Any)
+static void compilemain(std::vector<uint> &code, const char *p, int rettype = Value_Any)
 {
-    code.add(Code_Start);
+    code.push_back(Code_Start);
     compilestatements(code, p, Value_Any);
-    code.add(Code_Exit|(rettype < Value_Any ? rettype<<Code_Ret : 0));
+    code.push_back(Code_Exit|(rettype < Value_Any ? rettype<<Code_Ret : 0));
 }
 
 uint *compilecode(const char *p)
 {
-    vector<uint> buf;
+    std::vector<uint> buf;
     buf.reserve(64);
     compilemain(buf, p);
-    uint *code = new uint[buf.length()];
-    std::memcpy(code, buf.getbuf(), buf.length()*sizeof(uint));
+    uint *code = new uint[buf.size()];
+    std::memcpy(code, buf.data(), buf.size()*sizeof(uint));
     code[0] += 0x100;
     return code;
 }
@@ -3768,11 +3785,13 @@ static const uint *forcecode(tagval &v)
 {
     if(v.type != Value_Code)
     {
-        vector<uint> buf;
+        std::vector<uint> buf;
         buf.reserve(64);
         compilemain(buf, v.getstr());
         freearg(v);
-        v.setcode(buf.disown()+1);
+        uint * arr = new uint[buf.size()];
+        std::memcpy(arr, buf.data(), buf.size()*sizeof(uint));
+        v.setcode(arr+1);
     }
     return v.code;
 }
@@ -4652,7 +4671,14 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Val|Ret_String:
             {
                 uint len = op>>8;
-                args[numargs++].setstr(newstring(reinterpret_cast<const char *>(code), len));
+                const char * codearr = reinterpret_cast<const char *>(code);
+                //char * str = newstring(codearr, len);
+                //copystring(new char[len+1], codearr, len+1);
+                char * str = new char[len+1];
+                std::memcpy(str, codearr, len*sizeof(uchar));
+                str[len] = 0;
+
+                args[numargs++].setstr(str);
                 code += len/sizeof(uint) + 1;
                 continue;
             }
@@ -4772,25 +4798,25 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Compile:
             {
                 tagval &arg = args[numargs-1];
-                vector<uint> buf;
+                std::vector<uint> buf;
                 switch(arg.type)
                 {
                     case Value_Integer:
                     {
                         buf.reserve(8);
-                        buf.add(Code_Start);
+                        buf.push_back(Code_Start);
                         compileint(buf, arg.i);
-                        buf.add(Code_Result);
-                        buf.add(Code_Exit);
+                        buf.push_back(Code_Result);
+                        buf.push_back(Code_Exit);
                         break;
                     }
                     case Value_Float:
                     {
                         buf.reserve(8);
-                        buf.add(Code_Start);
+                        buf.push_back(Code_Start);
                         compilefloat(buf, arg.f);
-                        buf.add(Code_Result);
-                        buf.add(Code_Exit);
+                        buf.push_back(Code_Result);
+                        buf.push_back(Code_Exit);
                         break;
                     }
                     case Value_String:
@@ -4805,14 +4831,16 @@ static const uint *runcode(const uint *code, tagval &result)
                     default:
                     {
                         buf.reserve(8);
-                        buf.add(Code_Start);
+                        buf.push_back(Code_Start);
                         compilenull(buf);
-                        buf.add(Code_Result);
-                        buf.add(Code_Exit);
+                        buf.push_back(Code_Result);
+                        buf.push_back(Code_Exit);
                         break;
                     }
                 }
-                arg.setcode(buf.disown()+1);
+                uint * arr = new uint[buf.size()];
+                std::memcpy(arr, buf.data(), buf.size()*sizeof(uint));
+                arg.setcode(arr+1);
                 continue;
             }
             case Code_Cond:
@@ -4825,11 +4853,13 @@ static const uint *runcode(const uint *code, tagval &result)
                     case Value_CString:
                         if(arg.s[0])
                         {
-                            vector<uint> buf;
+                            std::vector<uint> buf;
                             buf.reserve(64);
                             compilemain(buf, arg.s);
                             freearg(arg);
-                            arg.setcode(buf.disown()+1);
+                            uint * arr = new uint[buf.size()];
+                            std::memcpy(arr, buf.data(), buf.size()*sizeof(uint));
+                            arg.setcode(arr + 1);
                         }
                         else
                         {
@@ -4969,11 +4999,13 @@ static const uint *runcode(const uint *code, tagval &result)
                 }
                 LOOKUPARG(args[numargs++].setstr(newstring(id->getstr())), args[numargs++].setstr(newstring("")));
             case Code_LookupU|Ret_Integer:
+            {
                 LOOKUPU(arg.setint(id->getint()),
-                        arg.setint(parseint(*id->storage.s)),
+                        arg.setint(static_cast<int>(strtoul(*id->storage.s, nullptr, 0))),
                         arg.setint(*id->storage.i),
                         arg.setint(static_cast<int>(*id->storage.f)),
                         arg.setint(0));
+            }
             case Code_Lookup|Ret_Integer:
                 LOOKUP(args[numargs++].setint(id->getint()));
             case Code_LookupArg|Ret_Integer:
@@ -5027,7 +5059,7 @@ static const uint *runcode(const uint *code, tagval &result)
             }
             case Code_StrVar|Ret_Integer:
             {
-                args[numargs++].setint(parseint(*identmap[op>>8]->storage.s));
+                args[numargs++].setint(static_cast<int>(strtoul((*identmap[op>>8]->storage.s), nullptr, 0)));
                 continue;
             }
             case Code_StrVar|Ret_Float:
@@ -5419,11 +5451,15 @@ void executeret(const uint *code, tagval &result)
 
 void executeret(const char *p, tagval &result)
 {
-    vector<uint> code;
+    std::vector<uint> code;
     code.reserve(64);
     compilemain(code, p, Value_Any);
-    runcode(code.getbuf()+1, result);
-    if(static_cast<int>(code[0]) >= 0x100) code.disown();
+    runcode(code.data()+1, result);
+    if(static_cast<int>(code[0]) >= 0x100)
+    {
+        uint * arr = new uint[code.size()];
+        std::memcpy(arr, code.data(), code.size()*sizeof(uint));
+    }
 }
 
 void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &result)
@@ -5545,14 +5581,15 @@ int execute(const uint *code)
 
 int execute(const char *p)
 {
-    vector<uint> code;
+    std::vector<uint> code;
     code.reserve(64);
     compilemain(code, p, Value_Integer);
     tagval result;
-    runcode(code.getbuf()+1, result);
+    runcode(code.data()+1, result);
     if(static_cast<int>(code[0]) >= 0x100)
     {
-        code.disown();
+        uint * arr = new uint[code.size()];
+        std::memcpy(arr, code.data(), code.size()*sizeof(uint));
     }
     int i = result.getint();
     freearg(result);
