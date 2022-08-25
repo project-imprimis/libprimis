@@ -209,7 +209,7 @@ void swapbuffers(bool)
     SDL_GL_SwapWindow(screen);
 }
 
-void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
+static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
 {
     renderedframe = false;
     copystring(backgroundcaption, caption ? caption : "");
@@ -257,7 +257,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     setbackgroundinfo(caption, mapshot, mapname, mapinfo);
 }
 
-void restorebackground(int w, int h, bool force = false)
+static void restorebackground(int w, int h, bool force = false)
 {
     if(renderedframe)
     {
@@ -274,7 +274,7 @@ void restorebackground(int w, int h, bool force = false)
 
 float loadprogress = 0;
 
-void renderprogressview(int w, int h, float bar, const char *text)   // also used during loading
+static void renderprogressview(int w, int h, float bar, const char *text)   // also used during loading
 {
     hudmatrix.ortho(0, w, h, 0, -1, 1);
     resethudmatrix();
@@ -444,6 +444,8 @@ VARFNP(gamma, reqgamma, 30, 100, 300,
 
 /* restoregamma: sets gamma to the previous set value, useful for reverting bad-
  * looking gamma trial settings
+ *
+ * used in iengine.h
  */
 void restoregamma()
 {
@@ -480,6 +482,7 @@ void restorevsync()
     }
 }
 
+//used in iengine.h
 void setupscreen()
 {
     //clear prior gl context/screen if present
