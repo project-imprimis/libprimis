@@ -65,7 +65,7 @@ int getint(std::vector<uchar> &p)
 void putfloat(std::vector<uchar> &p, float n)
 {
     uchar arr[sizeof(float)];
-    memcpy(arr, &n, sizeof(float));
+    std::memcpy(arr, &n, sizeof(float));
     for(int i = 0; i < sizeof(float); ++i)
     {
         p.push_back(arr[sizeof(float)-i-1]);
@@ -82,7 +82,7 @@ float getfloat(std::vector<uchar> &p)
         p.pop_back();
     }
     float n = 0.f;
-    memcpy(&n, arr, sizeof(float));
+    std::memcpy(&n, arr, sizeof(float));
     return n;
 }
 
