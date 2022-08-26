@@ -74,4 +74,9 @@ extern void sendstring(const char *t, vector<uchar> &p);
 extern void putfloat(vector<uchar> &p, float f);
 extern void putuint(vector<uchar> &p, int n);
 extern void putint(vector<uchar> &p, int n);
+
+extern void putint(std::vector<uchar> &p, int n);
+extern int getint(std::vector<uchar> &p);
+extern void putfloat(std::vector<uchar> &p, float n);
+extern float getfloat(std::vector<uchar> &p);
 #endif
