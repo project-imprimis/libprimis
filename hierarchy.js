@@ -15,16 +15,16 @@ var hierarchy =
     ] ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
-    [ "hashbase< H, E, K, T >", "structhashbase.html", null ],
+    [ "hashbase< H, E, K, T >", "structhashbase.html", [
+      [ "hashtable< cube::cfkey, cube::cfpolys >", "structhashtable.html", null ]
+    ] ],
     [ "hashbase< hashnameset< T >, T, const char *, T >", "structhashbase.html", [
       [ "hashnameset< T >", "structhashnameset.html", null ]
     ] ],
     [ "hashbase< hashset< T >, T, T, T >", "structhashbase.html", [
       [ "hashset< T >", "structhashset.html", null ]
     ] ],
-    [ "hashbase< hashtable< cube::cfkey, cube::cfpolys >, hashtableentry< cube::cfkey, cube::cfpolys >, cube::cfkey, cube::cfpolys >", "structhashbase.html", [
-      [ "hashtable< cube::cfkey, cube::cfpolys >", "structhashtable.html", null ]
-    ] ],
+    [ "hashbase< hashtable< cube::cfkey, cube::cfpolys >, hashtableentry< cube::cfkey, cube::cfpolys >, cube::cfkey, cube::cfpolys >", "structhashbase.html", null ],
     [ "hashbase< hashtable< K, T >, hashtableentry< K, T >, K, T >", "structhashbase.html", [
       [ "hashtable< K, T >", "structhashtable.html", null ]
     ] ],
