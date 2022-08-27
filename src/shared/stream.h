@@ -72,9 +72,6 @@ extern size_t fixpackagedir(char *dir);
 extern char *makerelpath(const char *dir, const char *file, const char *prefix = nullptr, const char *cmd = nullptr);
 
 extern void sendstring(const char *t, std::vector<uchar> &p);
-extern void putfloat(vector<uchar> &p, float f);
-extern void putuint(vector<uchar> &p, int n);
-extern void putint(vector<uchar> &p, int n);
 
 extern void putint(std::vector<uchar> &p, int n);
 extern int getint(std::vector<uchar> &p);
