@@ -188,7 +188,7 @@ extern SDL_Surface *loadsurface(const char *name);
 extern MatSlot &lookupmaterialslot(int slot, bool load = true);
 
 extern void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta);
-extern void packvslot(vector<uchar> &buf, const VSlot &src);
+extern void packvslot(std::vector<uchar> &buf, const VSlot &src);
 
 extern Slot dummyslot;
 extern VSlot dummyvslot;

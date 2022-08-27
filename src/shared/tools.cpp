@@ -167,7 +167,7 @@ void sendstring(const char *t, ucharbuf &p)
 {
     sendstring_(t, p);
 }
-void sendstring(const char *t, vector<uchar> &p)
+void sendstring(const char *t, std::vector<uchar> &p)
 {
     sendstring_(t, p);
 }

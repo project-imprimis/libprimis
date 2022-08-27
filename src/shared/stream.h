@@ -13,6 +13,7 @@ struct streambuf
     size_t get(T *vals, size_t numvals) { return s->get(vals, numvals); }
     void put(const T &val) { s->put(&val, 1); }
     void put(const T *vals, size_t numvals) { s->put(vals, numvals); }
+    void push_back(const T &val) { put(val); }
     size_t length() { return s->size(); }
 };
 
@@ -70,7 +71,7 @@ extern bool createdir(const char *path);
 extern size_t fixpackagedir(char *dir);
 extern char *makerelpath(const char *dir, const char *file, const char *prefix = nullptr, const char *cmd = nullptr);
 
-extern void sendstring(const char *t, vector<uchar> &p);
+extern void sendstring(const char *t, std::vector<uchar> &p);
 extern void putfloat(vector<uchar> &p, float f);
 extern void putuint(vector<uchar> &p, int n);
 extern void putint(vector<uchar> &p, int n);

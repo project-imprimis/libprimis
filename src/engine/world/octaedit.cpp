@@ -643,7 +643,7 @@ static void packcube(cube &c, B &buf)
     //recursvely apply to children
     if(c.children)
     {
-        buf.put(0xFF);
+        buf.push_back(0xFF);
         for(int i = 0; i < 8; ++i)
         {
             packcube(c.children[i], buf);
@@ -652,10 +652,16 @@ static void packcube(cube &c, B &buf)
     else
     {
         cube data = c;
-        buf.put(c.material&0xFF);
-        buf.put(c.material>>8);
-        buf.put(data.edges, sizeof(data.edges));
-        buf.put(reinterpret_cast<uchar *>(data.texture), sizeof(data.texture));
+        buf.push_back(c.material&0xFF);
+        buf.push_back(c.material>>8);
+        for(int i = 0; i < sizeof(data.edges); ++i)
+        {
+            buf.push_back(data.edges[i]);
+        }
+        for(int i = 0; i < sizeof(data.texture); ++i)
+        {
+            buf.push_back(reinterpret_cast<uchar *>(data.texture)[i]);
+        }
     }
 }
 
@@ -667,7 +673,10 @@ static bool packblock(block3 &b, B &buf)
         return false;
     }
     block3 hdr = b;
-    buf.put(reinterpret_cast<const uchar *>(&hdr), sizeof(hdr));
+    for(int i = 0; i < sizeof(hdr); ++i)
+    {
+        buf.push_back(reinterpret_cast<const uchar *>(&hdr)[i]);
+    }
     cube *c = b.c();
     for(int i = 0; i < static_cast<int>(b.size()); ++i)
     {
@@ -682,7 +691,7 @@ struct vslothdr
     ushort slot;
 };
 
-static void packvslots(cube &c, vector<uchar> &buf, std::vector<ushort> &used)
+static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &used)
 {
     //recursively apply to children
     if(c.children)
@@ -701,7 +710,11 @@ static void packvslots(cube &c, vector<uchar> &buf, std::vector<ushort> &used)
             {
                 used.push_back(index);
                 VSlot &vs = *vslots[index];
-                vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
+                for(int i = 0; i < sizeof(vslothdr); ++i)
+                {
+                    buf.emplace_back();
+                }
+                vslothdr &hdr = *reinterpret_cast<vslothdr *>(&(*(buf.end())) - sizeof(vslothdr));
                 hdr.index = index;
                 hdr.slot = vs.slot->index;
                 packvslot(buf, vs);
@@ -710,7 +723,7 @@ static void packvslots(cube &c, vector<uchar> &buf, std::vector<ushort> &used)
     }
 }
 
-static void packvslots(block3 &b, vector<uchar> &buf)
+static void packvslots(block3 &b, std::vector<uchar> &buf)
 {
     std::vector<ushort> used;
     cube *c = b.c();
@@ -718,7 +731,11 @@ static void packvslots(block3 &b, vector<uchar> &buf)
     {
         packvslots(c[i], buf, used);
     }
-    std::memset(buf.pad(sizeof(vslothdr)), 0, sizeof(vslothdr));
+    //std::memset(buf.pad(sizeof(vslothdr)), 0, sizeof(vslothdr));
+    for(int i = 0; i < sizeof(vslothdr); ++i)
+    {
+        buf.push_back(0);
+    }
 }
 
 template<class B>
@@ -875,14 +892,14 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
 //used in iengine.h
 bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
-    vector<uchar> buf;
+    std::vector<uchar> buf;
     if(!e || !e->copy || !packblock(*e->copy, buf))
     {
         return false;
     }
     packvslots(*e->copy, buf);
-    inlen = buf.length();
-    return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
+    inlen = buf.size();
+    return compresseditinfo(buf.data(), buf.size(), outbuf, outlen);
 }
 
 //used in iengine.h
@@ -933,16 +950,28 @@ void freeeditinfo(editinfo *&e)
 //used in iengine.h
 bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
-    vector<uchar> buf;
+    std::vector<uchar> buf;
     buf.reserve(512);
-    *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(u->numents);
+    for(int i = 0; i < sizeof(ushort); ++i)
+    {
+        buf.emplace_back();
+    }
+    *reinterpret_cast<ushort *>(buf.data()) = static_cast<ushort>(u->numents);
     if(u->numents)
     {
         undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(ue[i].i);
-            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
+            for(int i = 0; i < sizeof(ushort); ++i)
+            {
+                buf.emplace_back();
+            }
+            *reinterpret_cast<ushort *>(&(*buf.end()) - sizeof(ushort)) = static_cast<ushort>(ue[i].i);
+            for(int i = 0; i < sizeof(entity); ++i)
+            {
+                buf.emplace_back();
+            }
+            entity &e = *reinterpret_cast<entity *>(&(*buf.end()) - sizeof(entity));
             e = ue[i].e;
         }
     }
@@ -953,11 +982,14 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
         {
             return false;
         }
-        buf.put(u->gridmap(), b.size());
+        for(int i = 0; i < b.size(); ++i)
+        {
+            buf.push_back(u->gridmap()[i]);
+        }
         packvslots(b, buf);
     }
-    inlen = buf.length();
-    return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
+    inlen = buf.size();
+    return compresseditinfo(buf.data(), buf.size(), outbuf, outlen);
 }
 
 //used in iengine.h

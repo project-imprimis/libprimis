@@ -1695,14 +1695,14 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
     return true;
 }
 
-void packvslot(vector<uchar> &buf, const VSlot &src)
+void packvslot(std::vector<uchar> &buf, const VSlot &src)
 {
     if(src.changed & (1 << VSlot_ShParam))
     {
         for(uint i = 0; i < src.params.size(); i++)
         {
             const SlotShaderParam &p = src.params[i];
-            buf.put(VSlot_ShParam);
+            buf.push_back(VSlot_ShParam);
             sendstring(p.name, buf);
             for(int j = 0; j < 4; ++j)
             {
@@ -1712,59 +1712,59 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
     }
     if(src.changed & (1 << VSlot_Scale))
     {
-        buf.put(VSlot_Scale);
+        buf.push_back(VSlot_Scale);
         putfloat(buf, src.scale);
     }
     if(src.changed & (1 << VSlot_Rotation))
     {
-        buf.put(VSlot_Rotation);
+        buf.push_back(VSlot_Rotation);
         putint(buf, src.rotation);
     }
     if(src.changed & (1 << VSlot_Angle))
     {
-        buf.put(VSlot_Angle);
+        buf.push_back(VSlot_Angle);
         putfloat(buf, src.angle.x);
         putfloat(buf, src.angle.y);
         putfloat(buf, src.angle.z);
     }
     if(src.changed & (1 << VSlot_Offset))
     {
-        buf.put(VSlot_Offset);
+        buf.push_back(VSlot_Offset);
         putint(buf, src.offset.x);
         putint(buf, src.offset.y);
     }
     if(src.changed & (1 << VSlot_Scroll))
     {
-        buf.put(VSlot_Scroll);
+        buf.push_back(VSlot_Scroll);
         putfloat(buf, src.scroll.x);
         putfloat(buf, src.scroll.y);
     }
     if(src.changed & (1 << VSlot_Alpha))
     {
-        buf.put(VSlot_Alpha);
+        buf.push_back(VSlot_Alpha);
         putfloat(buf, src.alphafront);
         putfloat(buf, src.alphaback);
     }
     if(src.changed & (1 << VSlot_Color))
     {
-        buf.put(VSlot_Color);
+        buf.push_back(VSlot_Color);
         putfloat(buf, src.colorscale.r);
         putfloat(buf, src.colorscale.g);
         putfloat(buf, src.colorscale.b);
     }
     if(src.changed & (1 << VSlot_Refract))
     {
-        buf.put(VSlot_Refract);
+        buf.push_back(VSlot_Refract);
         putfloat(buf, src.refractscale);
         putfloat(buf, src.refractcolor.r);
         putfloat(buf, src.refractcolor.g);
         putfloat(buf, src.refractcolor.b);
     }
-    buf.put(0xFF);
+    buf.push_back(0xFF);
 }
 
 //used in iengine.h
-void packvslot(vector<uchar> &buf, int index)
+void packvslot(std::vector<uchar> &buf, int index)
 {
     if(vslots.size() > index)
     {
@@ -1772,12 +1772,12 @@ void packvslot(vector<uchar> &buf, int index)
     }
     else
     {
-        buf.put(0xFF);
+        buf.push_back(0xFF);
     }
 }
 
 //used in iengine.h
-void packvslot(vector<uchar> &buf, const VSlot *vs)
+void packvslot(std::vector<uchar> &buf, const VSlot *vs)
 {
     if(vs)
     {
@@ -1785,7 +1785,7 @@ void packvslot(vector<uchar> &buf, const VSlot *vs)
     }
     else
     {
-        buf.put(0xFF);
+        buf.push_back(0xFF);
     }
 }
 
