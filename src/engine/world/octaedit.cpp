@@ -654,11 +654,11 @@ static void packcube(cube &c, B &buf)
         cube data = c;
         buf.push_back(c.material&0xFF);
         buf.push_back(c.material>>8);
-        for(int i = 0; i < sizeof(data.edges); ++i)
+        for(uint i = 0; i < sizeof(data.edges); ++i)
         {
             buf.push_back(data.edges[i]);
         }
-        for(int i = 0; i < sizeof(data.texture); ++i)
+        for(uint i = 0; i < sizeof(data.texture); ++i)
         {
             buf.push_back(reinterpret_cast<uchar *>(data.texture)[i]);
         }
@@ -673,12 +673,12 @@ static bool packblock(block3 &b, B &buf)
         return false;
     }
     block3 hdr = b;
-    for(int i = 0; i < sizeof(hdr); ++i)
+    for(uint i = 0; i < sizeof(hdr); ++i)
     {
         buf.push_back(reinterpret_cast<const uchar *>(&hdr)[i]);
     }
     cube *c = b.c();
-    for(int i = 0; i < static_cast<int>(b.size()); ++i)
+    for(uint i = 0; i < static_cast<uint>(b.size()); ++i)
     {
         packcube(c[i], buf);
     }
@@ -710,7 +710,7 @@ static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &us
             {
                 used.push_back(index);
                 VSlot &vs = *vslots[index];
-                for(int i = 0; i < sizeof(vslothdr); ++i)
+                for(uint i = 0; i < sizeof(vslothdr); ++i)
                 {
                     buf.emplace_back();
                 }
@@ -731,8 +731,7 @@ static void packvslots(block3 &b, std::vector<uchar> &buf)
     {
         packvslots(c[i], buf, used);
     }
-    //std::memset(buf.pad(sizeof(vslothdr)), 0, sizeof(vslothdr));
-    for(int i = 0; i < sizeof(vslothdr); ++i)
+    for(uint i = 0; i < sizeof(vslothdr); ++i)
     {
         buf.push_back(0);
     }
@@ -952,7 +951,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     std::vector<uchar> buf;
     buf.reserve(512);
-    for(int i = 0; i < sizeof(ushort); ++i)
+    for(uint i = 0; i < sizeof(ushort); ++i)
     {
         buf.emplace_back();
     }
@@ -962,12 +961,12 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
         undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            for(int i = 0; i < sizeof(ushort); ++i)
+            for(uint i = 0; i < sizeof(ushort); ++i)
             {
                 buf.emplace_back();
             }
             *reinterpret_cast<ushort *>(&(*buf.end()) - sizeof(ushort)) = static_cast<ushort>(ue[i].i);
-            for(int i = 0; i < sizeof(entity); ++i)
+            for(uint i = 0; i < sizeof(entity); ++i)
             {
                 buf.emplace_back();
             }
@@ -1598,7 +1597,7 @@ void compactmruvslots()
         }
         texmru.erase(texmru.begin() + i);
     }
-    if(vslots.size() > lasttex)
+    if(vslots.size() > static_cast<uint>(lasttex))
     {
         VSlot &vs = *vslots[lasttex];
         lasttex = vs.index >= 0 ? vs.index : 0;
@@ -1607,7 +1606,7 @@ void compactmruvslots()
     {
         lasttex = 0;
     }
-    reptex = (vslots.size() > reptex) ? vslots[reptex]->index : -1;
+    reptex = (vslots.size() > static_cast<uint>(reptex)) ? vslots[reptex]->index : -1;
 }
 
 void edittexcube(cube &c, int tex, int orient, bool &findrep)
