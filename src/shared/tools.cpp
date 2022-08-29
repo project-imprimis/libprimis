@@ -27,6 +27,10 @@ char *tempformatstring(const char *fmt, ...)
 // note that the parent put*_ template functions is not defined here but in tools.h
 
 //*             signed integers            *//
+void putint(ucharbuf &p, int n)
+{
+    putint_(p, n);
+}
 
 //Stores the passed integer into a uchar array, by splitting it into four bytes.
 void putint(std::vector<uchar> &p, int n)
