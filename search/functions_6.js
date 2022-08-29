@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['getbuf_0',['getbuf',['../structvector.html#a37662a6675e018cefdfc3543de9c731b',1,'vector::getbuf()'],['../structvector.html#a15a5e04878f77f49540e149c9f8d427f',1,'vector::getbuf() const'],['../structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f',1,'databuf::getbuf()']]],
+  ['getbuf_0',['getbuf',['../structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f',1,'databuf']]],
   ['getclockmillis_1',['getclockmillis',['../iengine_8h.html#a0834d53419f37bf4891ce417e2d9ef16',1,'iengine.h']]],
   ['getcursorpos_2',['getcursorpos',['../iengine_8h.html#a3161f6bab070a19e58191cc1e37193f8',1,'UI']]],
   ['getdecalslotdepth_3',['getdecalslotdepth',['../iengine_8h.html#a055cfb70731e0d3a171b146a5f37e0b8',1,'iengine.h']]],
@@ -14,6 +14,5 @@ var searchData=
   ['gl_5fdrawframe_11',['gl_drawframe',['../iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629',1,'iengine.h']]],
   ['gl_5finit_12',['gl_init',['../iengine_8h.html#acc19403a720bda8d74dcad7109f33a79',1,'iengine.h']]],
   ['gl_5fresize_13',['gl_resize',['../iengine_8h.html#a444f839aefe4337c63821a9a5953a067',1,'iengine.h']]],
-  ['gl_5fsetupframe_14',['gl_setupframe',['../iengine_8h.html#a32f3b0225eb75fb287a510e709f8b82e',1,'iengine.h']]],
-  ['growbuf_15',['growbuf',['../structvector.html#a500a5fefd99c45e122ffdedaf8cb55b6',1,'vector']]]
+  ['gl_5fsetupframe_14',['gl_setupframe',['../iengine_8h.html#a32f3b0225eb75fb287a510e709f8b82e',1,'iengine.h']]]
 ];

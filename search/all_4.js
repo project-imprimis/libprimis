@@ -5,7 +5,7 @@ var searchData=
   ['editstate_2',['editstate',['../structphysent.html#a63ae2d323571ee6236e9f5c0384cfa60',1,'physent']]],
   ['edittexcube_3',['edittexcube',['../iengine_8h.html#affcfb00260ac3ea3762dfed37eef8097',1,'iengine.h']]],
   ['elapsedtime_4',['elapsedtime',['../iengine_8h.html#a6bc7dfdf586908af253bd99d400085ce',1,'iengine.h']]],
-  ['empty_5',['empty',['../structdatabuf.html#ac462a5159900a306d67117cabbbf17db',1,'databuf::empty()'],['../structvector.html#a9af39ba556fbaeaa09cff474c6308076',1,'vector::empty()']]],
+  ['empty_5',['empty',['../structdatabuf.html#ac462a5159900a306d67117cabbbf17db',1,'databuf']]],
   ['emptymap_6',['emptymap',['../classcubeworld.html#a12e042d30ab218c7764519e10008adef',1,'cubeworld']]],
   ['enginebuilddate_7',['enginebuilddate',['../iengine_8h.html#a8ef879cc5c463110ac5688289a2bcd66',1,'iengine.h']]],
   ['enginestr_8',['enginestr',['../iengine_8h.html#a10981386f25017ca2cd1797547e708db',1,'iengine.h']]],
