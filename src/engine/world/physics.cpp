@@ -214,7 +214,7 @@ void cleardynentcache()
 //returns the dynent at location i in the dynents vector
 dynent *iterdynents(int i)
 {
-    if(i<dynents.size())
+    if(i < static_cast<int>(dynents.size()))
     {
         return dynents[i];
     }
