@@ -816,7 +816,7 @@ namespace
 
     void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr, int offset = 0)
     {
-        int numtexs = 0;
+        int numtexs;
         if(!texs)
         {
             texs = va->texelems;
@@ -2025,7 +2025,9 @@ namespace
         int i0 = shadowverts.add(v0),
             i1 = shadowverts.add(v1),
             i2 = shadowverts.add(v2);
-int        for(int k = 0; k < sides; ++k)
+        ushort minvert = std::min(i0, std::min(i1, i2)),
+               maxvert = std::max(i0, std::max(i1, i2));
+        for(int k = 0; k < sides; ++k)
         {
             if(sidemask&(1<<k))
             {
