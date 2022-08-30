@@ -2069,7 +2069,7 @@ namespace
                     setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
                     {
-                        while(varoot.size() > childpos)
+                        while(varoot.size() > static_cast<size_t>(childpos))
                         {
                             vtxarray *child = varoot.back();
                             varoot.pop_back();
@@ -2382,8 +2382,7 @@ void destroyva(vtxarray *va, bool reparent)
 }
 
 //recursively clear vertex arrays for a cube object and its children
-void clearvas(cube *c)
-{
+int{
     for(int i = 0; i < 8; ++i)
     {
         if(c[i].ext)
@@ -2435,11 +2434,7 @@ void updatevabb(vtxarray *va, bool force)
     }
     va->bbmin.max(va->o);
     va->bbmax.min(ivec(va->o).add(va->size));
-    worldmin.min(va->bbmin);
-    worldmax.max(va->bbmax);
-}
-
-//update vertex array bounding boxes recursively from the root va object down to all children
+int//update vertex array bounding boxes recursively from the root va object down to all children
 void updatevabbs(bool force)
 {
     if(force)
@@ -2493,10 +2488,7 @@ void cubeworld::octarender()                               // creates va s for a
         explicitsky += va->sky;
     }
     visibleva = nullptr;
-}
-
-void cubeworld::allchanged(bool load)
-{
+int{
     if(mainmenu)
     {
         load = false;
