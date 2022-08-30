@@ -816,7 +816,7 @@ namespace
 
     void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr, int offset = 0)
     {
-        int numtexs;
+        int numtexs = 0;
         if(!texs)
         {
             texs = va->texelems;
