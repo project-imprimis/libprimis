@@ -534,7 +534,7 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
 static bool modifyoctaent(int flags, int id)
 {
     std::vector<extentity *> &ents = entities::getents();
-    return (ents.size() > id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
+    return (static_cast<int>(ents.size()) > id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
 }
 
 void addentityedit(int id)
