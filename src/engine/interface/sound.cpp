@@ -110,7 +110,7 @@ struct SoundChannel
     }
 };
 
-static std::vectointr<SoundChannel> channels;
+static std::vector<SoundChannel> channels;
 int maxchannels = 0;
 
 //creates a new SoundChannel object with passed properties
