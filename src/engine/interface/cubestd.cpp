@@ -930,7 +930,7 @@ void prettylist(const char *s, const char *conj)
             if(n+2 == len && conj[0])
             {
                 p.push_back(' ');
-                for(int i = 0; i < std::strlen(conj); ++i)
+                for(size_t i = 0; i < std::strlen(conj); ++i)
                 {
                     p.push_back(conj[i]);
                 }
@@ -989,7 +989,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
         {
             p.push_back(' ');
         }
-        for(int i = 0; i < std::strlen(vals); ++i)
+        for(size_t i = 0; i < std::strlen(vals); ++i)
         {
             p.push_back(vals[i]);
         }
@@ -1016,7 +1016,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
             {
                 p.push_back(' ');
             }
-            for(int i = 0; i < std::strlen(s); ++i)
+            for(size_t i = 0; i < std::strlen(s); ++i)
             {
                 p.push_back(s[i]);
             }
@@ -1627,7 +1627,7 @@ void initcontrolcmds()
     {
         {
             std::vector<char> p;
-            for(int i = 0; i < std::strlen(list); ++i)
+            for(size_t i = 0; i < std::strlen(list); ++i)
             {
                 p.push_back(list[i]);
             }
