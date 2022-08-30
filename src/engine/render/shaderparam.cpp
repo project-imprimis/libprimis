@@ -128,7 +128,7 @@ LocalShaderParamState *LocalShaderParam::resolve()
         {
             loc = getlocalparam(name);
         }
-        if(!(s->localparamremap.size() > loc))
+        if(!(s->localparamremap.size() > static_cast<size_t>(loc)))
         {
             return nullptr;
         }
