@@ -2069,7 +2069,7 @@ namespace
                     setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
                     {
-                        while(varoot.size() > static_cast<size_t>(childpos))
+                        while(static_cast<long>(varoot.size()) > childpos)
                         {
                             vtxarray *child = varoot.back();
                             varoot.pop_back();

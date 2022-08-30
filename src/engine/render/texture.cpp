@@ -1282,7 +1282,7 @@ static void assignvslot(VSlot &vs)
 
 void compactvslot(int &index)
 {
-    if(vslots.size() > static_cast<size_t>(index))
+    if(static_cast<long>(vslots.size()) > index)
     {
         VSlot &vs = *vslots[index];
         if(vs.index < 0)
@@ -1445,7 +1445,7 @@ int cubeworld::compactvslots(bool cull)
     }
     for(uint i = 0; i < vslots.size(); i++)
     {
-        while(vslots[i]->index >= 0 && vslots[i]->index != i)
+        while(vslots[i]->index >= 0 && vslots[i]->index != static_cast<int>(i))
         {
             std::swap(vslots[i], vslots[vslots[i]->index]);
         }
@@ -1766,7 +1766,7 @@ void packvslot(std::vector<uchar> &buf, const VSlot &src)
 //used in iengine.h
 void packvslot(std::vector<uchar> &buf, int index)
 {
-    if(vslots.size() > index)
+    if(static_cast<long>(vslots.size()) > index)
     {
         packvslot(buf, *vslots[index]);
     }
@@ -2417,7 +2417,7 @@ MatSlot &lookupmaterialslot(int index, bool load)
 
 Slot &lookupslot(int index, bool load)
 {
-    Slot &s = (slots.size() > index) ? *slots[index] : ((slots.size() > Default_Geom) ? *slots[Default_Geom] : dummyslot);
+    Slot &s = (static_cast<long>(slots.size()) > index) ? *slots[index] : ((slots.size() > Default_Geom) ? *slots[Default_Geom] : dummyslot);
     if(!s.loaded && load)
     {
         s.load();
@@ -2427,7 +2427,7 @@ Slot &lookupslot(int index, bool load)
 
 VSlot &lookupvslot(int index, bool load)
 {
-    VSlot &s = (vslots.size() > index) && vslots[index]->slot ? *vslots[index] : ((slots.size() > Default_Geom) && slots[Default_Geom]->variants ? *slots[Default_Geom]->variants : dummyvslot);
+    VSlot &s = (static_cast<long>(vslots.size()) > index) && vslots[index]->slot ? *vslots[index] : ((slots.size() > Default_Geom) && slots[Default_Geom]->variants ? *slots[Default_Geom]->variants : dummyvslot);
     if(load && !s.linked)
     {
         if(!s.slot->loaded)
