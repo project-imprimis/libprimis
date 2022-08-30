@@ -2885,7 +2885,7 @@ void viewlightscissor()
     for(uint i = 0; i < entgroup.size(); i++)
     {
         int idx = entgroup[i];
-        if((ents.size() >idx) && ents[idx]->type == EngineEnt_Light)
+        if((ents.size() > static_cast<size_t>(idx)) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
             for(uint j = 0; j < lights.size(); j++)
