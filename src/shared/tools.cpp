@@ -61,7 +61,7 @@ void putfloat(std::vector<uchar> &p, float n)
 {
     uchar arr[sizeof(float)];
     std::memcpy(arr, &n, sizeof(float));
-    for(int i = 0; i < sizeof(float); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(float)); ++i)
     {
         p.push_back(arr[sizeof(float)-i-1]);
     }
