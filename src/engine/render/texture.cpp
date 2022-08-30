@@ -1198,7 +1198,7 @@ void texturereset(int *n)
     defslot = nullptr;
     resetslotshader();
     int limit = std::clamp(*n, 0, static_cast<int>(slots.size()));
-    for(int i = limit; i < slots.size(); i++)
+    for(size_t i = limit; i < slots.size(); i++)
     {
         Slot *s = slots[i];
         for(VSlot *vs = s->variants; vs; vs = vs->next)
@@ -1282,7 +1282,7 @@ static void assignvslot(VSlot &vs)
 
 void compactvslot(int &index)
 {
-    if(vslots.size() > index)
+    if(vslots.size() > static_cast<size_t>(index))
     {
         VSlot &vs = *vslots[index];
         if(vs.index < 0)
@@ -1411,7 +1411,7 @@ int cubeworld::compactvslots(bool cull)
             {
                 if(!cull)
                 {
-                    while(lastdiscard < i)
+                    while(lastdiscard < static_cast<int>(i))
                     {
                         VSlot &ds = *vslots[lastdiscard++];
                         if(!ds.changed && ds.index < 0)
