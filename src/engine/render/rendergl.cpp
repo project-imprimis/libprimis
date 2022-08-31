@@ -763,7 +763,8 @@ void pushhudtranslate(float tx, float ty, float sx, float sy)
     flushhudmatrix();
 }
 
-float curfov, curavatarfov, fovy, aspect;
+float curfov, aspect;
+static float curavatarfov, fovy;
 int farplane;
 VARP(zoominvel, 0, 40, 500);
 VARP(zoomoutvel, 0, 50, 500);
