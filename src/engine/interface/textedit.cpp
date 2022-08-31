@@ -1044,7 +1044,7 @@ void textlist()
             s.push_back(',');
             s.push_back(' ');
         }
-        for(int j = 0; j < std::strlen(editors[i]->name); ++j)
+        for(size_t j = 0; j < std::strlen(editors[i]->name); ++j)
         {
             s.push_back(editors[i]->name[j]);
         }

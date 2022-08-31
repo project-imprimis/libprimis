@@ -61,7 +61,7 @@ void putfloat(std::vector<uchar> &p, float n)
 {
     uchar arr[sizeof(float)];
     std::memcpy(arr, &n, sizeof(float));
-    for(int i = 0; i < sizeof(float); ++i)
+    for(unsigned long i = 0; i < sizeof(float); ++i)
     {
         p.push_back(arr[sizeof(float)-i-1]);
     }
@@ -71,7 +71,7 @@ void putfloat(std::vector<uchar> &p, float n)
 float getfloat(std::vector<uchar> &p)
 {
     uchar arr[sizeof(float)];
-    for(int i = 0; i < sizeof(float); ++i)
+    for(unsigned long i = 0; i < sizeof(float); ++i)
     {
         arr[i] = p.back();
         p.pop_back();
