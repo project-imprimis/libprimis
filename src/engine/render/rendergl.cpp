@@ -247,7 +247,7 @@ VAR(maxdualdrawbufs, 1, 0, 0);
 
 VAR(debugexts, 0, 0, 1);
 
-hashset<const char *> glexts;
+static hashset<const char *> glexts;
 
 void parseglexts()
 {
