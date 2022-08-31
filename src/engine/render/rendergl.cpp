@@ -255,6 +255,7 @@ void parseglexts()
     glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
     for(int i = 0; i < numexts; ++i)
     {
+        //cast from uchar * to char *
         const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
         glexts.add(newstring(ext));
     }
