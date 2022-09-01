@@ -830,7 +830,7 @@ void loadvslots(stream *f, int numvslots)
     }
     for(uint i = 0; i < vslots.size(); i++)
     {
-        if(vslots.size() > static_cast<uint>(prev[i]))
+        if(vslots.size() > prev[i])
         {
             vslots.at(prev[i])->next = vslots[i];
         }
