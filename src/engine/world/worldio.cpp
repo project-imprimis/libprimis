@@ -798,6 +798,11 @@ void loadvslot(stream *f, VSlot &vs, int changed)
 
 void loadvslots(stream *f, int numvslots)
 {
+    //no point if loading 0 vslots
+    if(numvslots == 0)
+    {
+        return;
+    }
     int *prev = new int[numvslots];
     if(!prev)
     {
