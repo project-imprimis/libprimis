@@ -845,7 +845,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
             return -1;
         }
     }
-    if(static_cast<long>(channels.size()) > chanid)
+    if(channels.size() > chanid)
     {
         SoundChannel &chan = channels[chanid];
         if(sounds.playing(chan, config))
