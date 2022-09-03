@@ -419,10 +419,8 @@ void rendergrass()
     GLOBALPARAMF(grasstest, grasstest); //toggles use of grass (depth) test shader
 
     int texid = -1;
-    for(uint i = 0; i < grassgroups.size(); i++)
+    for(grassgroup &g : grassgroups)
     {
-        grassgroup &g = grassgroups[i];
-
         if(texid != g.tex)
         {
             glBindTexture(GL_TEXTURE_2D, g.tex);
