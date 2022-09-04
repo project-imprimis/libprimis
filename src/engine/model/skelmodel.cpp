@@ -555,14 +555,12 @@ float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, co
 
 void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const vec &forward)
 {
-    for(uint i = 0; i < pitchtargets.size(); i++)
+    for(pitchtarget t : pitchtargets)
     {
-        pitchtarget &t = pitchtargets[i];
         t.deviated = calcdeviation(axis, forward, t.pose, pitchdeps[t.deps].pose);
     }
-    for(uint i = 0; i < pitchcorrects.size(); i++)
+    for(pitchcorrect c : pitchcorrects)
     {
-        pitchcorrect &c = pitchcorrects[i];
         c.pitchangle = c.pitchtotal = 0;
     }
     for(uint j = 0; j < pitchtargets.size(); j++)
@@ -577,9 +575,8 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         {
             tpitch = std::clamp(tpitch, t.pitchmin, t.pitchmax);
         }
-        for(uint i = 0; i < pitchcorrects.size(); i++)
+        for(pitchcorrect& c : pitchcorrects)
         {
-            pitchcorrect &c = pitchcorrects[i];
             if(c.target != static_cast<int>(j))
             {
                 continue;
