@@ -1017,14 +1017,15 @@ namespace
         }
         else // complete using command or var (ident) names
         {
-            ENUMERATE(idents, ident, id,
+            for(auto &[k, id] : idents)
+            {
                 if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
                           (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
                           (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
                 {
                     nextcomplete = id.name;
                 }
-            );
+            }
         }
 
         delete[] lastcomplete;
