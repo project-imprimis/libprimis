@@ -516,7 +516,7 @@ bool SoundSample::load(const char *dir)
 
 static struct SoundType
 {
-    hashnameset<SoundSample> samples;
+    std::map<std::string, SoundSample> samples;
     std::vector<soundslot> slots;
     std::vector<SoundConfig> configs;
     const char *dir;
@@ -539,13 +539,19 @@ static struct SoundType
     }
     int addslot(const char *name, int vol)
     {
-        SoundSample *s = samples.access(name);
-        if(!s)
+        SoundSample * sample = nullptr;
+        auto itr = samples.find(std::string(name));
+        if(itr == samples.end())
         {
             char *n = newstring(name);
-            s = &samples[n];
-            s->name = n;
-            s->chunk = nullptr;
+            SoundSample &s = samples[n];
+            sample = &s;
+            s.name = n;
+            s.chunk = nullptr;
+        }
+        else
+        {
+            sample = &(*(itr)).second;
         }
         soundslot *oldslots = slots.data();
         int oldlen = slots.size();
@@ -563,7 +569,7 @@ static struct SoundType
                 }
             }
         }
-        slot.sample = s;
+        slot.sample = sample;
         slot.volume = vol ? vol : 100;
         return oldlen;
     }
@@ -608,7 +614,10 @@ static struct SoundType
     }
     void cleanupsamples()
     {
-        ENUMERATE(samples, SoundSample, s, s.cleanup());
+        for (auto& [k, v]: samples)
+        {
+            v.cleanup();
+        }
     }
     void cleanup()
     {
