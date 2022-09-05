@@ -972,7 +972,7 @@ namespace UI
         }
     };
 
-    static hashnameset<Window *> windows;
+    static std::map<std::string, Window *> windows;
 
     void ClipArea::scissor()
     {
@@ -4352,14 +4352,15 @@ namespace UI
     //new ui command
     void newui(char *name, char *contents, char *onshow, char *onhide)
     {
-        Window *window = windows.find(name, nullptr);
-        if(window)
+        auto search = windows.find(name);
+        if(search != windows.end())
         {
+            auto [key, window] = *search; // I may have broken this, remove this comment if engine compiles/works. Issue #257
             if (window == UI::window)
             {
                 return;
             }
-            world->hide(window); windows.remove(name);
+            world->hide(window); windows.erase(name);
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
