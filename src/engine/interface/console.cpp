@@ -1298,25 +1298,25 @@ void initconsolecmds()
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Default); }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Spectator); }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Editing); }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear());
+       for(auto &[k, km] : keyms) { km.clear(); }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
