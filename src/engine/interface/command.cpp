@@ -551,12 +551,16 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
+<<<<<<< HEAD
     auto itr = idents.find(id.name);
     if(itr == idents.end())
     {
         //we need to make a new entry
         idents[id.name] = id;
     }
+=======
+    idents.insert_or_assign(id.name, id);
+>>>>>>> 1058f3b6 (pray this works: insert_or_assign)
     ident &def = idents[id.name];
     def.index = identmap.size();
     identmap.push_back(&def);
