@@ -4394,8 +4394,8 @@ namespace UI
 
     bool showui(const char *name)
     {
-        Window *window = windows.find(name, nullptr);
-        return window && world->show(window);
+        auto search = windows.find(name);
+        return search != windows.end() && world->show(search->second);
     }
 
     bool hideui(const char *name)
@@ -4404,8 +4404,8 @@ namespace UI
         {
             return world->hideall() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && world->hide(window);
+        auto search = windows.find(name);
+        return search != windows.end() && world->hide(search->second);
     }
 
     bool toggleui(const char *name)
@@ -4436,8 +4436,8 @@ namespace UI
         {
             return world->children.size() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
+        auto search = windows.find(name);
+        return search != windows.end() && std::find(world->children.begin(), world->children.end(), search->second) != world->children.end();
     }
 
     void ifstateval(bool state, tagval * t, tagval * f)
@@ -4809,7 +4809,7 @@ namespace UI
     void cleanup()
     {
         world->children.resize(0);
-        ENUMERATE(windows, Window *, w, delete w);
+        for(auto &[k, w] : windows) { delete w; }
         windows.clear();
         if(world)
         {
