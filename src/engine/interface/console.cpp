@@ -290,7 +290,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(128);
+    std::map<int, KeyM> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -308,7 +308,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -321,20 +321,20 @@ namespace
                     names.push_back(km.name[i]);
                 }
             }
-        });
+        };
         names.push_back('\0');
         result(names.data());
     }
 
     KeyM *findbind(char *key)
     {
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
-        });
+        };
         return nullptr;
     }
 
@@ -1059,7 +1059,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = keyms.access(code);
+    KeyM *haskey = &keyms[code];
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown, map); // allow pressed keys to release
@@ -1141,7 +1141,7 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyM *km = keyms.access(code);
+    KeyM *km = &keyms[code];
     return km ? km->name : nullptr;
 }
 
@@ -1164,7 +1164,7 @@ void writebinds(stream *f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    for(auto &[k, km] : keyms) { binds.push_back(&km); }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
