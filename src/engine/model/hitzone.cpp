@@ -807,7 +807,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     {
         return;
     }
-    hashset<skelzoneinfo> infomap(256);
+    std::map<skelzoneinfo, skelzoneinfo> infomap;
     std::vector<skelzoneinfo *> info;
     skelzonebounds *bounds = new skelzonebounds[g->skel->numbones];
     numblends = g->blendcombos.size();
@@ -839,7 +839,8 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
                 }
             }
             skelzonekey key(m, t);
-            skelzoneinfo &zi = infomap.access(key, key);
+            infomap.insert_or_assign(key, key);
+            skelzoneinfo &zi = infomap[key];
             if(key.blend >= numblends && zi.index < 0)
             {
                 bounds[key.bones[0]].owner = zi.index = info.size();
@@ -859,18 +860,19 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             continue;
         }
         skelzonekey key(i);
-        skelzoneinfo &zi = infomap.access(key, key);
+        infomap.insert_or_assign(key, key);
+        skelzoneinfo &zi = infomap[key];
         zi.index = info.size();
         info.push_back(&zi);
     }
     int leafzones = info.size();
-    ENUMERATE(infomap, skelzoneinfo, zi,
+    for(auto &[k, zi] : infomap)
     {
         if(zi.index < 0)
         {
             info.push_back(&zi);
         }
-    });
+    };
     for(uint i = leafzones; i < info.size(); i++)
     {
         skelzoneinfo &zi = *info[i];
@@ -928,7 +930,8 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
                 break;
             }
             skelzonekey dep(deps.bones[j]);
-            skelzoneinfo &zj = infomap.access(dep, dep);
+            infomap.insert_or_assign(dep, dep);
+            skelzoneinfo &zj = infomap[dep];
             zj.parents++;
             zi.children.push_back(&zj);
         }
