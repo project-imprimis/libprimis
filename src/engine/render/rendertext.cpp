@@ -190,7 +190,7 @@ static void fontskip(int *n)
  */
 static void fontalias(const char *dst, const char *src)
 {
-    font *s = fonts.access(src);
+    font *s = &fonts[src];
     if(!s)
     {
         return;
@@ -217,12 +217,12 @@ static void fontalias(const char *dst, const char *src)
 
 font *findfont(const char *name)
 {
-    return fonts.access(name);
+    return &fonts[name];
 }
 
 bool setfont(const char *name)
 {
-    font *f = fonts.access(name);
+    font *f = &fonts[name];
     if(!f)
     {
         return false;

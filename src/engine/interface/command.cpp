@@ -2015,7 +2015,7 @@ static void compileident(std::vector<uint> &code, ident *id = dummyident)
 
 static void compileident(std::vector<uint> &code, const stringslice &word)
 {
-    compileident(code, newident(word, Idf_Unknown));
+    compileident(code, newident(word.str, Idf_Unknown));
 }
 
 static void compileint(std::vector<uint> &code, const stringslice &word)
@@ -2242,7 +2242,7 @@ static void compilelookup(std::vector<uint> &code, const char *&p, int ltype, in
                 goto invalid; //invalid is near bottom of fxn
             }
         lookupid:
-            ident *id = newident(lookup, Idf_Unknown);
+            ident *id = newident(lookup.str, Idf_Unknown);
             if(id)
             {
                 switch(id->type)
@@ -2653,7 +2653,7 @@ static bool compileblocksub(std::vector<uint> &code, const char *&p, int prevarg
                 return false;
             }
         lookupid:
-            ident *id = newident(lookup, Idf_Unknown);
+            ident *id = newident(lookup.str, Idf_Unknown);
             if(id)
             {
                 switch(id->type)
@@ -3128,7 +3128,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
                     p++;
                     if(idname.str)
                     {
-                        ident *id = newident(idname, Idf_Unknown);
+                        ident *id = newident(idname.str, Idf_Unknown);
                         if(id)
                         {
                             switch(id->type)
