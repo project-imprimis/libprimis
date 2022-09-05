@@ -38,7 +38,8 @@ VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
 VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
-hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
+std::map<std::string, skelmodel::skeleton *> skelmodel::skeletons; //static member variable
+
 
 skelmodel::blendcombo::blendcombo() : uses(1)
 {
@@ -1504,15 +1505,16 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
         return;
     }
 
-    if(skeletons.access(name))
+    auto itr = skeletons.find(name);
+    if(itr != skeletons.end())
     {
-        skel = skeletons[name];
+        skel = skeletons[std::string(name)];
     }
     else
     {
         skel = new skeleton;
         skel->name = newstring(name);
-        skeletons.add(skel);
+        skeletons[std::string(name)] = skel;
     }
     skel->users.push_back(this);
     skel->shared++;

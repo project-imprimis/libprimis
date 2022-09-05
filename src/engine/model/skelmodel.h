@@ -390,7 +390,7 @@ struct skelmodel : animmodel
             dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
     };
 
-    static hashnameset<skeleton *> skeletons;
+    static std::map<std::string, skeleton *> skeletons;
 
     struct skelmeshgroup : meshgroup
     {
