@@ -548,7 +548,8 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
-    ident &def = idents.access(id.name, id);
+    idents.insert_or_assign(id.name, id);
+    ident &def = idents[id.name];
     def.index = identmap.size();
     identmap.push_back(&def);
     return identmap.back();
