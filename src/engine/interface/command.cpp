@@ -551,7 +551,6 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
-    std::printf("Adding ident with name: %s \n", id.name);
     auto itr = idents.find(id.name);
     if(itr == idents.end())
     {
@@ -2052,12 +2051,14 @@ static void compileident(std::vector<uint> &code, ident *id = dummyident)
 
 static void compileident(std::vector<uint> &code, const stringslice &word)
 {
-    compileident(code, newident(word.str, Idf_Unknown));
+    std::string lookupsubstr = std::string(word.str).substr(0, word.len);
+    compileident(code, newident(lookupsubstr.c_str(), Idf_Unknown));
 }
 
 static void compileint(std::vector<uint> &code, const stringslice &word)
 {
-    compileint(code, word.len ? parseint(word.str) : 0);
+    std::string lookupsubstr = std::string(word.str).substr(0, word.len);
+    compileint(code, word.len ? parseint(lookupsubstr.c_str()) : 0);
 }
 
 static void compilefloat(std::vector<uint> &code, float f = 0.0f)
