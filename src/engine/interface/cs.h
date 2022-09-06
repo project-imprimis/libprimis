@@ -212,7 +212,7 @@ extern void redoarg(ident &id, const identstack &stack);
 extern const char *parseword(const char *p);
 
 extern bool validateblock(const char *s);
-extern hashnameset<ident> idents;
+extern std::unordered_map<std::string, ident> idents;
 
 extern void setvarchecked(ident *id, int val);
 extern void setfvarchecked(ident *id, float val);

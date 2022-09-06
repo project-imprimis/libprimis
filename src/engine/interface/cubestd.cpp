@@ -206,7 +206,10 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     f->printf("\n");
     writecrosshairs(f);
     std::vector<ident *> ids;
-    ENUMERATE(idents, ident, id, ids.push_back(&id));
+    for(auto& [k, id] : idents)
+    {
+        ids.push_back(&id);
+    }
     std::sort(ids.begin(), ids.end());
     for(uint i = 0; i < ids.size(); i++)
     {
@@ -273,7 +276,13 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
 void changedvars()
 {
     std::vector<ident *> ids;
-    ENUMERATE(idents, ident, id, if(id.flags&Idf_Overridden) ids.push_back(&id));
+    for(auto& [k, id] : idents)
+    {
+        if(id.flags&Idf_Overridden)
+        {
+            ids.push_back(&id);
+        }
+    }
     std::sort(ids.begin(), ids.end());
     for(uint i = 0; i < ids.size(); i++)
     {

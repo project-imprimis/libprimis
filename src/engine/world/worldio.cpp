@@ -881,7 +881,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
-    ENUMERATE(idents, ident, id,
+    for(auto& [k, id] : idents)
     {
         if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) &&
              id.flags&Idf_Override  &&
@@ -890,10 +890,10 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
         {
             hdr.numvars++;
         }
-    });
+    }
     f->write(&hdr, sizeof(hdr));
 
-    ENUMERATE(idents, ident, id,
+    for(auto& [k, id] : idents)
     {
         if((id.type!=Id_Var && id.type!=Id_FloatVar && id.type!=Id_StringVar) ||
           !(id.flags&Idf_Override)   ||
@@ -932,7 +932,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
                 f->write(*id.storage.s, std::strlen(*id.storage.s));
                 break;
         }
-    });
+    }
     if(debugvars)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);

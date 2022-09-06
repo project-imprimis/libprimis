@@ -23,7 +23,7 @@
 
 #include "world/octaedit.h"
 
-hashnameset<ident> idents; // contains ALL vars/commands/aliases
+std::unordered_map<std::string, ident> idents; // contains ALL vars/commands/aliases
 static std::vector<ident *> identmap;
 static ident *dummyident = nullptr;
 std::queue<ident *> triggerqueue; //for the game to handle var change events
@@ -468,7 +468,7 @@ tagval * commandret = &noret;
 
 void clear_command()
 {
-    ENUMERATE(idents, ident, i,
+    for(auto& [k, i] : idents)
     {
         if(i.type==Id_Alias)
         {
@@ -480,7 +480,7 @@ void clear_command()
             delete[] i.code;
             i.code = nullptr;
         }
-    });
+    }
 }
 
 void clearoverride(ident &i)
@@ -531,7 +531,10 @@ void clearoverride(ident &i)
 
 void clearoverrides()
 {
-    ENUMERATE(idents, ident, i, clearoverride(i));
+    for(auto& [k, id] : idents)
+    {
+        clearoverride(id);
+    }
 }
 
 static bool initedidents = false;
@@ -548,7 +551,14 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
-    ident &def = idents.access(id.name, id);
+    std::printf("Adding ident with name: %s \n", id.name);
+    auto itr = idents.find(id.name);
+    if(itr == idents.end())
+    {
+        //we need to make a new entry
+        idents[std::string(id.name)] = id;
+    }
+    ident &def = idents[std::string(id.name)];
     def.index = identmap.size();
     identmap.push_back(&def);
     return identmap.back();
@@ -790,8 +800,9 @@ static bool checknumber(const stringslice &s)
 template<class T>
 static ident *newident(const T &name, int flags)
 {
-    ident *id = idents.access(name);
-    if(!id)
+    ident *id = nullptr;
+    auto itr = idents.find(std::string(name));
+    if(itr == idents.end())
     {
         if(checknumber(name))
         {
@@ -799,6 +810,10 @@ static ident *newident(const T &name, int flags)
             return dummyident;
         }
         id = addident(ident(Id_Alias, newstring(name), flags));
+    }
+    else
+    {
+        id = &(*(itr)).second;
     }
     return id;
 }
@@ -849,18 +864,22 @@ ident *writeident(const char *name, int flags)
 
 static void resetvar(char *name)
 {
-    ident *id = idents.access(name);
-    if(!id)
+    auto itr = idents.find(std::string(name));
+    if(itr == idents.end())
     {
         return;
     }
-    if(id->flags&Idf_ReadOnly)
-    {
-        debugcode("variable %s is read-only", id->name);
-    }
     else
     {
-        clearoverride(*id);
+        ident* id = &(*(itr)).second;
+        if(id->flags&Idf_ReadOnly)
+        {
+            debugcode("variable %s is read-only", id->name);
+        }
+        else
+        {
+            clearoverride(*id);
+        }
     }
 }
 
@@ -895,9 +914,10 @@ void setalias(ident &id, tagval &v)
 
 static void setalias(const char *name, tagval &v)
 {
-    ident *id = idents.access(name);
-    if(id)
+    auto itr = idents.find(std::string(name));
+    if(itr != idents.end())
     {
+        ident *id = &(*(itr)).second;
         switch(id->type)
         {
             case Id_Alias:
@@ -1010,12 +1030,17 @@ hashnameset<DefVar> defvars;
  */
 ident* getvar(int vartype, const char *name)
 {
-    ident *id = idents.access(name);
-    if(!id || id->type!=vartype)
+    auto itr = idents.find(std::string(name));
+    if(itr != idents.end())
     {
-        return nullptr;
+        ident *id = &(*(itr)).second;
+        if(!id || id->type!=vartype)
+        {
+            return nullptr;
+        }
+        return id;
     }
-    return id;
+    return nullptr;
 }
 
 /**
@@ -1200,32 +1225,46 @@ float getfvarmax(const char *name)
 
 bool identexists(const char *name)
 {
-    return idents.access(name) != nullptr;
+    return (idents.end() != idents.find(std::string(name)));
 }
 
 ident *getident(const char *name)
 {
-    return idents.access(name);
+    auto itr = idents.find(std::string(name)); 
+    if(itr != idents.end())
+    {
+        return &(*(itr)).second;
+    }
+    return nullptr;
 }
 
 void touchvar(const char *name)
 {
-    ident *id = idents.access(name);
-    if(id) switch(id->type)
+    auto itr = idents.find(std::string(name)); 
+    if(itr != idents.end())
     {
-        case Id_Var:
-        case Id_FloatVar:
-        case Id_StringVar:
+        ident* id = &(*(itr)).second;
+        switch(id->type)
         {
-            id->changed();
-            break;
+            case Id_Var:
+            case Id_FloatVar:
+            case Id_StringVar:
+            {
+                id->changed();
+                break;
+            }
         }
     }
 }
 
 const char *getalias(const char *name)
 {
-    ident *i = idents.access(name);
+    ident *i = nullptr;
+    auto itr = idents.find(std::string(name)); 
+    if(itr != idents.end())
+    {
+        i = &(*(itr)).second;
+    }
     return i && i->type==Id_Alias && (i->index >= Max_Args || aliasstack->usedargs&(1<<i->index)) ? i->getstr() : "";
 }
 
@@ -2013,7 +2052,7 @@ static void compileident(std::vector<uint> &code, ident *id = dummyident)
 
 static void compileident(std::vector<uint> &code, const stringslice &word)
 {
-    compileident(code, newident(word, Idf_Unknown));
+    compileident(code, newident(word.str, Idf_Unknown));
 }
 
 static void compileint(std::vector<uint> &code, const stringslice &word)
@@ -2240,7 +2279,8 @@ static void compilelookup(std::vector<uint> &code, const char *&p, int ltype, in
                 goto invalid; //invalid is near bottom of fxn
             }
         lookupid:
-            ident *id = newident(lookup, Idf_Unknown);
+            std::string lookupsubstr = std::string(lookup.str).substr(0, lookup.len);
+            ident *id = newident(lookupsubstr.c_str(), Idf_Unknown);
             if(id)
             {
                 switch(id->type)
@@ -2651,7 +2691,8 @@ static bool compileblocksub(std::vector<uint> &code, const char *&p, int prevarg
                 return false;
             }
         lookupid:
-            ident *id = newident(lookup, Idf_Unknown);
+            std::string lookupsubstr = std::string(lookup.str).substr(0, lookup.len);
+            ident *id = newident(lookupsubstr.c_str(), Idf_Unknown);
             if(id)
             {
                 switch(id->type)
@@ -3126,7 +3167,8 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
                     p++;
                     if(idname.str)
                     {
-                        ident *id = newident(idname, Idf_Unknown);
+                        std::string lookupsubstr = std::string(idname.str).substr(0, idname.len);
+                        ident *id = newident(lookupsubstr.c_str(), Idf_Unknown);
                         if(id)
                         {
                             switch(id->type)
@@ -3191,7 +3233,13 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
         }
         else
         {
-            ident *id = idents.access(idname);
+            ident *id = nullptr;
+            std::string lookupsubstr = std::string(idname.str).substr(0, idname.len);
+            auto itr = idents.find(lookupsubstr.c_str()); 
+            if(itr != idents.end())
+            {
+                id = &(*(itr)).second;
+            }
             if(!id)
             {
                 if(!checknumber(idname))
@@ -4908,9 +4956,10 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
-                    ident *id = idents.access(arg.s); \
-                    if(id) \
+                    auto itr = idents.find(std::string(arg.s)); \
+                    if(itr != idents.end()) \
                     { \
+                        ident* id = &(*(itr)).second; \
                         switch(id->type) \
                         { \
                             case Id_Alias: \
@@ -4965,7 +5014,7 @@ static const uint *runcode(const uint *code, tagval &result)
                             } \
                         } \
                     } \
-                    debugcode("unknown alias lookup: %s", arg.s); \
+                    debugcode("unknown alias lookup(u): %s", arg.s); \
                     freearg(arg); \
                     nval; \
                     continue; \
@@ -5343,7 +5392,12 @@ static const uint *runcode(const uint *code, tagval &result)
                     }
                     continue;
                 }
-                ident *id = idents.access(idarg.s);
+                ident *id = nullptr;
+                auto itr = idents.find(std::string(idarg.s)); 
+                if(itr != idents.end())
+                {
+                    id = &(*(itr)).second;
+                }
                 if(!id)
                 {
                 noid:
@@ -5607,7 +5661,12 @@ int execute(ident *id, tagval *args, int numargs, bool lookup)
 
 int execident(const char *name, int noid, bool lookup)
 {
-    ident *id = idents.access(name);
+    ident *id = nullptr;
+    auto itr = idents.find(std::string(name)); 
+    if(itr != idents.end())
+    {
+        id = &(*(itr)).second;
+    }
     return id ? execute(id, nullptr, 0, lookup) : noid;
 }
 
@@ -5647,12 +5706,100 @@ void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
 
-    addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0); }; }), "siiis", Id_Command);
-    addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "siiis", Id_Command);
-    addcommand("deffvar", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0); }; }), "sfffs", Id_Command);
-    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "sfffs", Id_Command);
-    addcommand("defsvar", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0); }; }), "sss", Id_Command);
-    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "sss", Id_Command);
+    addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name);
+                return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
+        };
+    }), "siiis", Id_Command);
+    addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name);
+                return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        };
+    }), "siiis", Id_Command);
+    addcommand("deffvar", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name);
+                return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
+        };
+    }), "sfffs", Id_Command);
+    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name);
+                return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        };
+    }), "sfffs", Id_Command);
+    addcommand("defsvar", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name);
+                return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
+        };
+    }), "sss", Id_Command);
+    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
+    {
+        {
+            auto itr = idents.find(std::string(name)); 
+            if(itr != idents.end())
+            {
+                debugcode("cannot redefine %s as a variable", name); return;
+            }
+            name = newstring(name);
+            DefVar &def = defvars[name];
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        };
+    }), "sss", Id_Command);
     addcommand("getvarmin", reinterpret_cast<identfun>(+[] (char *s) { intret(getvarmin(s)); }), "s", Id_Command);
     addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
     addcommand("getfvarmax", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmax(s)); }), "s", Id_Command);
