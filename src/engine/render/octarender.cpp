@@ -498,9 +498,8 @@ namespace
                 {
                     va->matbuf = new materialsurface[matsurfs.size()];
                     std::memcpy(va->matbuf, matsurfs.data(), matsurfs.size()*sizeof(materialsurface));
-                    for(uint i = 0; i < matsurfs.size(); i++)
+                    for(materialsurface &m : matsurfs)
                     {
-                        materialsurface &m = matsurfs[i];
                         if(m.visible == MatSurf_EditOnly)
                         {
                             continue;
@@ -612,9 +611,9 @@ namespace
                         va->dyntexs++;
                     }
                     Slot &slot = *vslot.slot;
-                    for(uint j = 0; j < slot.sts.size(); j++)
+                    for(DecalSlot::Tex j : slot.sts)
                     {
-                        va->texmask |= 1<<slot.sts[j].type;
+                        va->texmask |= 1 << j.type;
                     }
                 }
 
@@ -855,9 +854,8 @@ namespace
                     return;
                 }
                 std::vector<extentity *> &ents = entities::getents();
-                for(uint i = 0; i < extdecals.size(); i++)
+                for(octaentities* oe : extdecals)
                 {
-                    octaentities *oe = extdecals[i];
                     for(uint j = 0; j < oe->decals.size(); j++)
                     {
                         extentity &e = *ents[oe->decals[j]];
@@ -875,9 +873,8 @@ namespace
                         gendecal(e, s, k);
                     }
                 }
-                for(uint i = 0; i < extdecals.size(); i++)
+                for(octaentities* oe : extdecals)
                 {
-                    octaentities *oe = extdecals[i];
                     for(uint j = 0; j < oe->decals.size(); j++)
                     {
                         extentity &e = *ents[oe->decals[j]];
