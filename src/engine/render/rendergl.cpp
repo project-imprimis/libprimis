@@ -137,8 +137,6 @@ PFNGLTEXPARAMETERIIVPROC     glTexParameterIiv_     = nullptr;
 PFNGLTEXPARAMETERIUIVPROC    glTexParameterIuiv_    = nullptr;
 PFNGLGETTEXPARAMETERIIVPROC  glGetTexParameterIiv_  = nullptr;
 PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv_ = nullptr;
-PFNGLCLEARCOLORIIEXTPROC     glClearColorIi_        = nullptr;
-PFNGLCLEARCOLORIUIEXTPROC    glClearColorIui_       = nullptr;
 
 // GL_ARB_uniform_buffer_object
 PFNGLGETUNIFORMINDICESPROC       glGetUniformIndices_       = nullptr;
@@ -438,10 +436,6 @@ void gl_checkextensions()
     glDisablei_   = (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
     glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRender");
     glEndConditionalRender_   = (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
-    glTexParameterIiv_        = (PFNGLTEXPARAMETERIIVPROC)       getprocaddress("glTexParameterIiv");
-    glTexParameterIuiv_       = (PFNGLTEXPARAMETERIUIVPROC)      getprocaddress("glTexParameterIuiv");
-    glGetTexParameterIiv_     = (PFNGLGETTEXPARAMETERIIVPROC)    getprocaddress("glGetTexParameterIiv");
-    glGetTexParameterIuiv_    = (PFNGLGETTEXPARAMETERIUIVPROC)   getprocaddress("glGetTexParameterIuiv");
 
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");

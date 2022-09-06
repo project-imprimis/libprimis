@@ -486,12 +486,6 @@ extern PFNGLCLAMPCOLORPROC glClampColor_;
 typedef void (APIENTRYP PFNGLCLEARCOLORIIEXTPROC) (GLint red, GLint green, GLint blue, GLint alpha);
 typedef void (APIENTRYP PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GLuint blue, GLuint alpha);
 #endif
-extern PFNGLTEXPARAMETERIIVPROC glTexParameterIiv_;
-extern PFNGLTEXPARAMETERIUIVPROC glTexParameterIuiv_;
-extern PFNGLGETTEXPARAMETERIIVPROC glGetTexParameterIiv_;
-extern PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv_;
-extern PFNGLCLEARCOLORIIEXTPROC glClearColorIi_;
-extern PFNGLCLEARCOLORIUIEXTPROC glClearColorIui_;
 
 #ifndef GL_ARB_half_float_vertex
 #define GL_ARB_half_float_vertex 1
