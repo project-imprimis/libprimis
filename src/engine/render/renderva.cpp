@@ -79,7 +79,7 @@ namespace
 {
     void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
     {
-        glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);
+        glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);
         glde++;
     }
 
@@ -961,7 +961,7 @@ namespace
         if(cur.tmu != 0)
         {
             cur.tmu = 0;
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
     }
 
@@ -972,7 +972,7 @@ namespace
             if(cur.tmu != type)
             {
                 cur.tmu = type;
-                glActiveTexture_(GL_TEXTURE0 + type);
+                glActiveTexture(GL_TEXTURE0 + type);
             }
             glBindTexture(target, cur.textures[type] = tex->id);
         }
@@ -1054,7 +1054,7 @@ namespace
         if(cur.tmu != 0)
         {
             cur.tmu = 0;
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
 
         cur.slot = &slot;
@@ -1384,7 +1384,7 @@ namespace
 //==============================================================================
     void setupgeom()
     {
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         GLOBALPARAMF(colorparams, 1, 1, 1, 1);
     }
 
@@ -1608,7 +1608,7 @@ namespace
         if(tmu != 0)
         {
             tmu = 0;
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
     }
 
@@ -1619,7 +1619,7 @@ namespace
             if(tmu != type)
             {
                 tmu = type;
-                glActiveTexture_(GL_TEXTURE0 + type);
+                glActiveTexture(GL_TEXTURE0 + type);
             }
             glBindTexture(target, textures[type] = tex->id);
         }
@@ -1653,7 +1653,7 @@ namespace
         if(tmu != 0)
         {
             tmu = 0;
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
         if(colorscale != dslot.colorscale)
         {
@@ -2484,7 +2484,7 @@ void drawbb(const ivec &bo, const ivec &br)
 {
     LOCALPARAMF(bborigin, bo.x, bo.y, bo.z);
     LOCALPARAMF(bbsize, br.x, br.y, br.z);
-    glDrawRangeElements_(GL_TRIANGLES, 0, 8-1, 3*2*6, GL_UNSIGNED_SHORT, (ushort *)0);
+    glDrawRangeElements(GL_TRIANGLES, 0, 8-1, 3*2*6, GL_UNSIGNED_SHORT, (ushort *)0);
     xtraverts += 8;
 }
 

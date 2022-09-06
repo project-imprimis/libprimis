@@ -2002,7 +2002,7 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent)
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gcolortex);
     }
-    glActiveTexture_(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     if(msaapass)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
@@ -2013,7 +2013,7 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent)
     }
     if(transparent)
     {
-        glActiveTexture_(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE2);
         if(msaapass)
         {
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msglowtex);
@@ -2023,7 +2023,7 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent)
             glBindTexture(GL_TEXTURE_RECTANGLE, gglowtex);
         }
     }
-    glActiveTexture_(GL_TEXTURE3);
+    glActiveTexture(GL_TEXTURE3);
     if(msaapass)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -2032,7 +2032,7 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent)
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(GL_TEXTURE4);
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(shadowatlastarget, shadowatlastex);
     if(usesmcomparemode())
     {
@@ -2044,18 +2044,18 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent)
     }
     if(ao)
     {
-        glActiveTexture_(GL_TEXTURE5);
+        glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
     }
     if(useradiancehints())
     {
         for(int i = 0; i < 4; ++i)
         {
-            glActiveTexture_(GL_TEXTURE6 + i);
+            glActiveTexture(GL_TEXTURE6 + i);
             glBindTexture(GL_TEXTURE_3D, rhtex[i]);
         }
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 static void setlightglobals(bool transparent = false)
@@ -2640,7 +2640,7 @@ void GBuffer::rendervolumetric()
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glActiveTexture_(GL_TEXTURE3);
+    glActiveTexture(GL_TEXTURE3);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -2649,7 +2649,7 @@ void GBuffer::rendervolumetric()
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(GL_TEXTURE4);
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(shadowatlastarget, shadowatlastex);
     if(usesmcomparemode())
     {
@@ -2659,7 +2659,7 @@ void GBuffer::rendervolumetric()
     {
         setsmnoncomparemode();
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
     GLOBALPARAMF(volscale, static_cast<float>(vieww)/volw, static_cast<float>(viewh)/volh, static_cast<float>(volw)/vieww, static_cast<float>(volh)/viewh);
@@ -3898,7 +3898,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gcolortex);
     }
-    glActiveTexture_(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
@@ -3907,7 +3907,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
     }
-    glActiveTexture_(GL_TEXTURE3);
+    glActiveTexture(GL_TEXTURE3);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -3916,7 +3916,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     float lightscale = 2.0f*ldrscale;
     GLOBALPARAMF(lightscale, 0.1f*lightscale, 0.1f*lightscale, 0.1f*lightscale, lightscale);

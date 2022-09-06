@@ -466,9 +466,9 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     b0w = b1w = bloomw;
     b0h = b1h = bloomh;
 
-    glActiveTexture_(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, bloomtex[4]);
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, b0fbo);
     glViewport(0, 0, b0w, b0h);
@@ -500,9 +500,9 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         switch(aa)
         {
             case AA_SplitLuma:
@@ -529,9 +529,9 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         switch(aa)
         {
             case AA_Luma:
@@ -574,9 +574,9 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         glBindFramebuffer(GL_FRAMEBUFFER, blit ? msrefractfbo : outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
 
         if(blit)
         {

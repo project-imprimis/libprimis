@@ -514,11 +514,11 @@ static void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum form
         {
             if(target==GL_TEXTURE_1D)
             {
-                glCompressedTexImage1D_(subtarget, level, format, w, 0, size, data);
+                glCompressedTexImage1D(subtarget, level, format, w, 0, size, data);
             }
             else
             {
-                glCompressedTexImage2D_(subtarget, level, format, w, h, 0, size, data);
+                glCompressedTexImage2D(subtarget, level, format, w, h, 0, size, data);
             }
             level++;
             if(!mipmap)
@@ -849,7 +849,7 @@ void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clam
     {
         setuptexparameters(tnum, pixels, clamp, filter, format, target, swizzle);
     }
-    glTexImage3D_(target, 0, component, w, h, d, 0, format, type, pixels);
+    glTexImage3D(target, 0, component, w, h, d, 0, format, type, pixels);
 }
 
 

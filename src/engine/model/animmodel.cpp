@@ -394,28 +394,28 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     }
     if(bumpmapped() && normalmap!=lastnormalmap)
     {
-        glActiveTexture_(GL_TEXTURE3);
+        glActiveTexture(GL_TEXTURE3);
         activetmu = 3;
         glBindTexture(GL_TEXTURE_2D, normalmap->id);
         lastnormalmap = normalmap;
     }
     if(decaled() && decal!=lastdecal)
     {
-        glActiveTexture_(GL_TEXTURE4);
+        glActiveTexture(GL_TEXTURE4);
         activetmu = 4;
         glBindTexture(GL_TEXTURE_2D, decal->id);
         lastdecal = decal;
     }
     if(masked() && masks!=lastmasks)
     {
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         activetmu = 1;
         glBindTexture(GL_TEXTURE_2D, masks->id);
         lastmasks = masks;
     }
     if(activetmu != 0)
     {
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
     }
     setshader(b, as);
     setshaderparams(b, as);

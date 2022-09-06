@@ -131,7 +131,7 @@ void GBuffer::rendertransparent()
         glDepthMask(GL_TRUE);
     }
 
-    glActiveTexture_(GL_TEXTURE7);
+    glActiveTexture(GL_TEXTURE7);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msrefracttex);
@@ -140,7 +140,7 @@ void GBuffer::rendertransparent()
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
     }
-    glActiveTexture_(GL_TEXTURE8);
+    glActiveTexture(GL_TEXTURE8);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
@@ -149,7 +149,7 @@ void GBuffer::rendertransparent()
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
     }
-    glActiveTexture_(GL_TEXTURE9);
+    glActiveTexture(GL_TEXTURE9);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -158,7 +158,7 @@ void GBuffer::rendertransparent()
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     if(ghasstencil)
     {
         glEnable(GL_STENCIL_TEST);

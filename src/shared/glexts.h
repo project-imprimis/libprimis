@@ -280,47 +280,6 @@ typedef void (APIENTRYP PFNGLFLUSHMAPPEDBUFFERRANGEPROC) (GLenum target, GLintpt
 extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 extern PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_;
 
-// OpenGL 1.3
-#ifndef WIN32
-#define glActiveTexture_ glActiveTexture
-
-#define glBlendEquation_ glBlendEquation
-#define glBlendColor_ glBlendColor
-
-#define glTexImage3D_ glTexImage3D
-#define glTexSubImage3D_ glTexSubImage3D
-#define glCopyTexSubImage3D_ glCopyTexSubImage3D
-
-#define glCompressedTexImage3D_ glCompressedTexImage3D
-#define glCompressedTexImage2D_ glCompressedTexImage2D
-#define glCompressedTexImage1D_ glCompressedTexImage1D
-#define glCompressedTexSubImage3D_ glCompressedTexSubImage3D
-#define glCompressedTexSubImage2D_ glCompressedTexSubImage2D
-#define glCompressedTexSubImage1D_ glCompressedTexSubImage1D
-#define glGetCompressedTexImage_ glGetCompressedTexImage
-
-#define glDrawRangeElements_ glDrawRangeElements
-#else
-extern PFNGLACTIVETEXTUREPROC    glActiveTexture_;
-
-extern PFNGLBLENDEQUATIONPROC glBlendEquation_;
-extern PFNGLBLENDCOLORPROC    glBlendColor_;
-
-extern PFNGLTEXIMAGE3DPROC        glTexImage3D_;
-extern PFNGLTEXSUBIMAGE3DPROC     glTexSubImage3D_;
-extern PFNGLCOPYTEXSUBIMAGE3DPROC glCopyTexSubImage3D_;
-
-extern PFNGLCOMPRESSEDTEXIMAGE3DPROC    glCompressedTexImage3D_;
-extern PFNGLCOMPRESSEDTEXIMAGE2DPROC    glCompressedTexImage2D_;
-extern PFNGLCOMPRESSEDTEXIMAGE1DPROC    glCompressedTexImage1D_;
-extern PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC glCompressedTexSubImage3D_;
-extern PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC glCompressedTexSubImage2D_;
-extern PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC glCompressedTexSubImage1D_;
-extern PFNGLGETCOMPRESSEDTEXIMAGEPROC   glGetCompressedTexImage_;
-
-extern PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_;
-#endif
-
 #ifndef GL_VERSION_2_1
 #define GL_VERSION_2_1 1
 #define GL_PIXEL_PACK_BUFFER              0x88EB

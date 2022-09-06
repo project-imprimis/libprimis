@@ -2040,7 +2040,7 @@ void renderpostfx(GLuint outfbo)
                 }
                 else
                 {
-                    glActiveTexture_(GL_TEXTURE0 + tmu);
+                    glActiveTexture(GL_TEXTURE0 + tmu);
                 }
                 glBindTexture(GL_TEXTURE_RECTANGLE, postfxtexs[postfxbinds[j]].id);
                 ++tmu;
@@ -2048,7 +2048,7 @@ void renderpostfx(GLuint outfbo)
         }
         if(tmu)
         {
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
         screenquad(tw, th);
         for(int j = 0; j < numpostfxbinds; ++j)

@@ -1159,7 +1159,7 @@ namespace sphere
 
     void draw()
     {
-        glDrawRangeElements_(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
+        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
         xtraverts += numindices;
         glde++;
     }
@@ -1427,7 +1427,7 @@ void GBuffer::renderparticles(int layer)
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            glActiveTexture_(GL_TEXTURE2);
+            glActiveTexture(GL_TEXTURE2);
             if(msaalight)
             {
                 glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -1436,7 +1436,7 @@ void GBuffer::renderparticles(int layer)
             {
                 glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
             }
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
         }
 
         uint flags = p->type & flagmask,

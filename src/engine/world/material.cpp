@@ -641,9 +641,9 @@ namespace
             glassxscale = defaulttexscale/(tex->xs*gslot.scale);
             glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
-            glActiveTexture_(GL_TEXTURE1);
+            glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, tex->id);
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
 
             float refractscale = (0.5f/255)/ldrscale;
             const bvec &col = getglasscolor(k);

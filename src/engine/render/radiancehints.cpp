@@ -495,15 +495,15 @@ void radiancehints::renderslices()
     GLOBALPARAM(rsmworldmatrix, rsmworldmatrix);
 
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmdepthtex);
-    glActiveTexture_(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmcolortex);
-    glActiveTexture_(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmnormaltex);
     if(rhborder)
     {
         for(int i = 0; i < 4; ++i)
         {
-            glActiveTexture_(GL_TEXTURE3 + i);
+            glActiveTexture(GL_TEXTURE3 + i);
             glBindTexture(GL_TEXTURE_3D, rhtex[i]);
         }
     }
@@ -511,11 +511,11 @@ void radiancehints::renderslices()
     {
         for(int i = 0; i < 4; ++i)
         {
-            glActiveTexture_(GL_TEXTURE7 + i);
+            glActiveTexture(GL_TEXTURE7 + i);
             glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i : 4+i]);
         }
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     glClearColor(0.5f, 0.5f, 0.5f, 0);
     if(rhrect)
     {
@@ -838,11 +838,11 @@ void radiancehints::renderslices()
                     {
                         if(!(rhclearmasks[0][i][j/32] & (1 << (j%32))))
                         {
-                            glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, cx, cy, sw, sh);
+                            glCopyTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, sy+j, cx, cy, sw, sh);
                         }
                         continue;
                     }
-                    glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, j*sw, sy, sw, sh);
+                    glCopyTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, sy+j, j*sw, sy, sw, sh);
                 }
             }
         }

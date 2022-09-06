@@ -76,10 +76,10 @@ void setupcaustics(int tmu, float surface = -1e16f)
     float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
     for(int i = 0; i < 2; ++i)
     {
-        glActiveTexture_(GL_TEXTURE0+tmu+i);
+        glActiveTexture(GL_TEXTURE0+tmu+i);
         glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
     float blendscale = causticcontrast,
           blendoffset = 1;
     if(surface > -1e15f)
@@ -128,7 +128,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
 
     glEnable(GL_BLEND);
 
-    glActiveTexture_(GL_TEXTURE9);
+    glActiveTexture(GL_TEXTURE9);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -137,7 +137,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     vec p[4] =
     {
@@ -574,9 +574,9 @@ void renderwaterfalls()
         SETSHADER(waterfall);
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         for(uint i = 0; i < surfs.size(); i++)
         {
             materialsurface &m = surfs[i];
@@ -603,13 +603,13 @@ void renderwater()
         wscroll = 0.0f;
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id);
         if(caustics && causticscale && causticmillis)
         {
             setupcaustics(2);
         }
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
 
         float colorscale = 0.5f/255,
               refractscale = colorscale/ldrscale,

@@ -278,7 +278,7 @@ void GBuffer::renderao()
 
     glBindFramebuffer(GL_FRAMEBUFFER, aofbo[0]);
     glViewport(0, 0, aow, aoh);
-    glActiveTexture_(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1);
     if(aoderivnormal)
     {
         if(msaasamples)
@@ -302,9 +302,9 @@ void GBuffer::renderao()
         }
         LOCALPARAM(normalmatrix, matrix3(cammatrix));
     }
-    glActiveTexture_(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, aonoisetex);
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     LOCALPARAMF(tapparams, aoradius*eyematrix.d.z/xscale, aoradius*eyematrix.d.z/yscale, aoradius*aoradius*aocutoff*aocutoff);
     LOCALPARAMF(contrastparams, (2.0f*aodark)/aotaps, aosharp);
@@ -322,7 +322,7 @@ void GBuffer::renderao()
                 glBindFramebuffer(GL_FRAMEBUFFER, aofbo[i+1]);
                 glViewport(0, 0, vieww, i ? viewh : aoh);
                 glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i]);
-                glActiveTexture_(GL_TEXTURE1);
+                glActiveTexture(GL_TEXTURE1);
                 if(msaasamples)
                 {
                     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -331,7 +331,7 @@ void GBuffer::renderao()
                 {
                     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
                 }
-                glActiveTexture_(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);
                 screenquad(vieww, viewh, i ? vieww : aow, aoh);
             }
         }
@@ -343,7 +343,7 @@ void GBuffer::renderao()
                 glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
                 glViewport(0, 0, aow, aoh);
                 glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
-                glActiveTexture_(GL_TEXTURE1);
+                glActiveTexture(GL_TEXTURE1);
                 if(linear)
                 {
                     glBindTexture(GL_TEXTURE_RECTANGLE, aotex[3]);
@@ -356,7 +356,7 @@ void GBuffer::renderao()
                 {
                     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
                 }
-                glActiveTexture_(GL_TEXTURE0);
+                glActiveTexture(GL_TEXTURE0);
                 screenquad(vieww, viewh);
             }
         }

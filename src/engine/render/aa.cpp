@@ -131,10 +131,10 @@ namespace //internal functions incl. AA implementations
         SETSHADER(tqaaresolve,);
         LOCALPARAMF(colorweight, tqaacolorweightscale, -tqaacolorweightbias*tqaacolorweightscale);
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaatex[0]);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaaframe ? tqaatex[1] : tqaatex[0]);
         gbuf.setaavelocityparams(GL_TEXTURE2);
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         vec4<float> quincunx(0, 0, 0, 0);
         if(tqaaquincunx)
         {
@@ -1067,11 +1067,11 @@ namespace //internal functions incl. AA implementations
             }
             LOCALPARAM(subsamples, subsamples);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[1]);
-            glActiveTexture_(GL_TEXTURE1);
+            glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaaareatex);
-            glActiveTexture_(GL_TEXTURE2);
+            glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaasearchtex);
-            glActiveTexture_(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
             screenquad(vieww, viewh);
             if(depthmask)
             {
@@ -1088,16 +1088,16 @@ namespace //internal functions incl. AA implementations
         glBindFramebuffer(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
         smaaneighborhoodshader->set();
         glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[0]);
-        glActiveTexture_(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[2]);
         if(split)
         {
-            glActiveTexture_(GL_TEXTURE2);
+            glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[4]);
-            glActiveTexture_(GL_TEXTURE3);
+            glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[3]);
         }
-        glActiveTexture_(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0);
         screenquad(vieww, viewh);
         if(tqaa)
         {
@@ -1114,7 +1114,7 @@ namespace //internal functions incl. AA implementations
 //for temporal aa, called externally
 void GBuffer::setaavelocityparams(GLenum tmu)
 {
-    glActiveTexture_(tmu);
+    glActiveTexture(tmu);
     if(msaalight)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
@@ -1123,7 +1123,7 @@ void GBuffer::setaavelocityparams(GLenum tmu)
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
-    glActiveTexture_(++tmu);
+    glActiveTexture(++tmu);
     if(msaasamples)
     {
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
@@ -1132,7 +1132,7 @@ void GBuffer::setaavelocityparams(GLenum tmu)
     {
         glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
     }
-    glActiveTexture_(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
     matrix4 reproject;
     reproject.muld(tqaaframe ? tqaaprevscreenmatrix : screenmatrix, worldmatrix);
