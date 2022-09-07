@@ -72,7 +72,7 @@ Texture *animmodel::lasttex = nullptr,
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
-std::unordered_map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys;
+std::map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys; 
 int animmodel::ShaderParamsKey::firstversion = 0,
     animmodel::ShaderParamsKey::lastversion = 1;
 
@@ -169,7 +169,7 @@ bool animmodel::ShaderParamsKey::checkversion()
     version = lastversion;
     if(++lastversion <= 0)
     {
-        for(auto &[k, key] : keys) { key.version = -1; }
+        for(auto& [k, key] : keys) { key.version = -1; }
         firstversion = 0;
         lastversion = 1;
         version = 0;
