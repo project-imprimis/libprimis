@@ -23,7 +23,7 @@
 
 #include "world/octaedit.h"
 
-std::map<std::string, ident> idents; // contains ALL vars/commands/aliases
+std::unordered_map<std::string, ident> idents; // contains ALL vars/commands/aliases
 static std::vector<ident *> identmap;
 static ident *dummyident = nullptr;
 std::queue<ident *> triggerqueue; //for the game to handle var change events
@@ -468,7 +468,7 @@ tagval * commandret = &noret;
 
 void clear_command()
 {
-    for(auto &[k, i] : idents)
+    for(auto& [k, i] : idents)
     {
         if(i.type==Id_Alias)
         {
@@ -627,6 +627,8 @@ static const char *debugline(const char *p, const char *fmt)
     return fmt;
 }
 
+VAR(debugalias, 0, 4, 1000); //depth to which alias aliasing should be debugged (disabled if 0)
+
 static void dodebugalias()
 {
     if(!debugalias)
@@ -641,7 +643,7 @@ static void dodebugalias()
     }
     for(IdentLink *l = aliasstack; l != &noalias; l = l->next)
     {
-        ident *id = l->debugcodeid;
+        ident *id = l->id;
         ++depth;
         if(depth < debugalias)
         {
@@ -4955,8 +4957,8 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
-                    ident *id = &idents[arg.s]; \
-                    if(id) \
+                    auto itr = idents.find(arg.s); \
+                    if(itr != idents.end()) \
                     { \
                         ident* id = &(*(itr)).second; \
                         switch(id->type) \
