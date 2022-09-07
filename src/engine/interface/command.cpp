@@ -216,7 +216,7 @@ int ident::getint() const
 }
 
 float getfloat(const identval &v, int type)
-{
+{debugcode
     switch(type)
     {
         case Value_Float:
@@ -626,9 +626,7 @@ static const char *debugline(const char *p, const char *fmt)
     }
     return fmt;
 }
-
-VAR(debugalias, 0, 4, 1000); //depth to which alias aliasing should be debugged (disabled if 0)
-
+debugcode
 static void dodebugalias()
 {
     if(!debugalias)
@@ -643,7 +641,7 @@ static void dodebugalias()
     }
     for(IdentLink *l = aliasstack; l != &noalias; l = l->next)
     {
-        ident *id = l->id;
+        ident *id = l->debugcodeid;
         ++depth;
         if(depth < debugalias)
         {
@@ -880,7 +878,6 @@ static void resetvar(char *name)
             clearoverride(*id);
         }
     }
-}
 }
 
 void setarg(ident &id, tagval &v)
