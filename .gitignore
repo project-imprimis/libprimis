@@ -18,7 +18,7 @@ src/tess_server
 *.srctrlprj
 # Ignore VSCode specific files
 .ionide/
-.vscode/
+.vscode/*
 # Files auto-produced by CMake
 cmake-build-*/
 # Documentation files in the docs folder.
