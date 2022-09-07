@@ -216,7 +216,7 @@ int ident::getint() const
 }
 
 float getfloat(const identval &v, int type)
-{debugcode
+{
     switch(type)
     {
         case Value_Float:
@@ -626,7 +626,7 @@ static const char *debugline(const char *p, const char *fmt)
     }
     return fmt;
 }
-debugcode
+
 static void dodebugalias()
 {
     if(!debugalias)
@@ -1037,8 +1037,6 @@ ident* getvar(int vartype, const char *name)
         }
         return id;
     }
-    return nullptr;
-}
     return nullptr;
 }
 
@@ -4957,13 +4955,8 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
-<<<<<<< HEAD
-                    auto itr = idents.find(arg.s); \
-                    if(itr != idents.end()) \
-=======
                     ident *id = &idents[arg.s]; \
                     if(id) \
->>>>>>> 4388d847 (idents std::map in command.cpp (issue #257))
                     { \
                         ident* id = &(*(itr)).second; \
                         switch(id->type) \
