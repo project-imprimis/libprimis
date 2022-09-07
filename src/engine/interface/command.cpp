@@ -23,7 +23,7 @@
 
 #include "world/octaedit.h"
 
-std::unordered_map<std::string, ident> idents; // contains ALL vars/commands/aliases
+std::map<std::string, ident> idents; // contains ALL vars/commands/aliases
 static std::vector<ident *> identmap;
 static ident *dummyident = nullptr;
 std::queue<ident *> triggerqueue; //for the game to handle var change events
@@ -468,7 +468,7 @@ tagval * commandret = &noret;
 
 void clear_command()
 {
-    for(auto& [k, i] : idents)
+    for(auto &[k, i] : idents)
     {
         if(i.type==Id_Alias)
         {
@@ -881,6 +881,7 @@ static void resetvar(char *name)
         }
     }
 }
+}
 
 void setarg(ident &id, tagval &v)
 {
@@ -1039,6 +1040,8 @@ ident* getvar(int vartype, const char *name)
         }
         return id;
     }
+    return nullptr;
+}
     return nullptr;
 }
 
@@ -4957,8 +4960,13 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
+<<<<<<< HEAD
                     auto itr = idents.find(arg.s); \
                     if(itr != idents.end()) \
+=======
+                    ident *id = &idents[arg.s]; \
+                    if(id) \
+>>>>>>> 4388d847 (idents std::map in command.cpp (issue #257))
                     { \
                         ident* id = &(*(itr)).second; \
                         switch(id->type) \
