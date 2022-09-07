@@ -52,7 +52,7 @@ class animmodel : public model
 
         struct ShaderParamsKey
         {
-            static hashtable<shaderparams, ShaderParamsKey> keys;
+            static std::map<shaderparams, ShaderParamsKey> keys;
             static int firstversion, lastversion;
 
             int version;
