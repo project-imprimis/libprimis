@@ -86,6 +86,11 @@ bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
     return !std::memcmp(&x, &y, sizeof(animmodel::shaderparams));
 }
 
+bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs)
+{
+    return htcmp(lhs, rhs);
+}
+
 //animmodel
 
 animmodel::animmodel(const char *name) : model(name)

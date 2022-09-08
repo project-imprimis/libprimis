@@ -589,10 +589,8 @@ struct std::hash<animmodel::shaderparams>
     }
 };
 
-bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs) 
-{
-    return htcmp(lhs, rhs);
-}
+bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs); 
+
 
 
 /* modelloader
