@@ -31,32 +31,6 @@
 #define GL_COMPRESSED_ALPHA           0x84E9
 #endif
 
-#ifndef GL_LUMINANCE
-#define GL_LUMINANCE                  0x1909
-#endif
-#ifndef GL_LUMINANCE8
-#define GL_LUMINANCE8                 0x8040
-#endif
-#ifndef GL_LUMINANCE16
-#define GL_LUMINANCE16                0x8042
-#endif
-#ifndef GL_COMPRESSED_LUMINANCE
-#define GL_COMPRESSED_LUMINANCE       0x84EA
-#endif
-
-#ifndef GL_LUMINANCE_ALPHA
-#define GL_LUMINANCE_ALPHA            0x190A
-#endif
-#ifndef GL_LUMINANCE8_ALPHA8
-#define GL_LUMINANCE8_ALPHA8          0x8045
-#endif
-#ifndef GL_LUMINANCE16_ALPHA16
-#define GL_LUMINANCE16_ALPHA16        0x8048
-#endif
-#ifndef GL_COMPRESSED_LUMINANCE_ALPHA
-#define GL_COMPRESSED_LUMINANCE_ALPHA 0x84EB
-#endif
-
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE

@@ -338,6 +338,25 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
     return *nc;
 }
 
+/**
+ * @brief Returns the index (0-7) of a given cube.
+ *
+ * for a given dimension (x,y,z) orientation and 0/1 for x, y, and z, returns the
+ * cube child index (0-7) in the cube array
+ *
+ * @param d the dimension to look from
+ * @param x position in x direction (0/1)
+ * @param y position in y direction (0/1)
+ * @param z position in z direction (0/1)
+ * @return an integer between 0 and 7 corresponding to the cube child index of the given cube
+ */
+static int octacubeindex(int d, int x, int y, int z)
+{
+    return (((z)<<D[d])+
+            ((y)<<C[d])+
+            ((x)<<R[d]));
+}
+
 ////////// (re)mip //////////
 
 int getmippedtexture(const cube &p, int orient)
@@ -351,7 +370,7 @@ int getmippedtexture(const cube &p, int orient)
     {
         for(int y = 0; y < 2; ++y)
         {
-            int n = OCTA_INDEX(d, x, y, dc);
+            int n = octacubeindex(d, x, y, dc);
             if(c[n].isempty())
             {
                 n = OPPOSITE_OCTA(d, n);
@@ -503,10 +522,10 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         int d = DIMENSION(j),
             z = DIM_COORD(j);
-        const ivec &v00 = v[OCTA_INDEX(d, 0, 0, z)],
-                   &v10 = v[OCTA_INDEX(d, 1, 0, z)],
-                   &v01 = v[OCTA_INDEX(d, 0, 1, z)],
-                   &v11 = v[OCTA_INDEX(d, 1, 1, z)];
+        const ivec &v00 = v[octacubeindex(d, 0, 0, z)],
+                   &v10 = v[octacubeindex(d, 1, 0, z)],
+                   &v01 = v[octacubeindex(d, 0, 1, z)],
+                   &v11 = v[octacubeindex(d, 1, 1, z)];
         int e[3][3];
         // corners
         e[0][0] = v00[d];
@@ -714,7 +733,7 @@ static bool remip(cube &c, const ivec &co, int size)
             {
                 for(int y = 0; y < 2; ++y)
                 {
-                    mask |= 1<<OCTA_INDEX(DIMENSION(orient), x, y, DIM_COORD(orient));
+                    mask |= 1<<octacubeindex(DIMENSION(orient), x, y, DIM_COORD(orient));
                 }
             }
             if(vis[orient]&mask && (vis[orient]&mask)!=mask)

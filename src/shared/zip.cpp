@@ -58,11 +58,11 @@ struct ziparchive
 {
     char *name;
     FILE *data;
-    hashnameset<zipfile> files;
+    std::map<std::string, zipfile> files;
     int openfiles;
     zipstream *owner;
 
-    ziparchive() : name(nullptr), data(nullptr), files(512), openfiles(0), owner(nullptr)
+    ziparchive() : name(nullptr), data(nullptr), files(), openfiles(0), owner(nullptr)
     {
     }
     ~ziparchive()
@@ -315,7 +315,7 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
     {
         zipfile &f = files[i];
         formatstring(fname, "%s%s", mdir, striplen && !std::strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
-        if(arch.files.access(fname))
+        if(arch.files.find(fname) != arch.files.end())
         {
             continue;
         }
@@ -691,11 +691,13 @@ stream *openzipfile(const char *name, const char *mode)
     for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
-        zipfile *f = arch->files.access(name);
-        if(!f)
+        auto itr = arch->files.find(name);
+        zipfile *f = nullptr;
+        if(itr == arch->files.end())
         {
             continue;
         }
+        f = &(*(itr)).second;
         zipstream *s = new zipstream;
         if(s->open(arch, f))
         {
@@ -711,7 +713,7 @@ bool findzipfile(const char *name)
     for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
-        if(arch->files.access(name))
+        if(arch->files.find(name) != arch->files.end())
         {
             return true;
         }
@@ -728,13 +730,13 @@ int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files)
     {
         ziparchive *arch = archives[i];
         uint oldsize = files.size();
-        ENUMERATE(arch->files, zipfile, f,
+        for(const auto& [k, f] : arch->files)
         {
-            if(std::strncmp(f.name, dir, dirsize))
+            if(std::strncmp(k.c_str(), dir, dirsize))
             {
                 continue;
             }
-            const char *name = f.name + dirsize;
+            const char *name = k.c_str() + dirsize;
             if(name[0] == PATHDIV)
             {
                 name++;
@@ -759,7 +761,7 @@ int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files)
                     }
                 }
             }
-        });
+        }
         if(files.size() > oldsize)
         {
             dirs++;
