@@ -72,7 +72,7 @@ Texture *animmodel::lasttex = nullptr,
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
-hashtable<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys;
+std::unordered_map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys; 
 int animmodel::ShaderParamsKey::firstversion = 0,
     animmodel::ShaderParamsKey::lastversion = 1;
 
@@ -84,6 +84,11 @@ uint hthash(const animmodel::shaderparams &k)
 bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
 {
     return !std::memcmp(&x, &y, sizeof(animmodel::shaderparams));
+}
+
+bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs)
+{
+    return htcmp(lhs, rhs);
 }
 
 //animmodel
@@ -169,7 +174,7 @@ bool animmodel::ShaderParamsKey::checkversion()
     version = lastversion;
     if(++lastversion <= 0)
     {
-        ENUMERATE(keys, ShaderParamsKey, key, key.version = -1);
+        for(auto& [k, key] : keys) { key.version = -1; }
         firstversion = 0;
         lastversion = 1;
         version = 0;
