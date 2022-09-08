@@ -72,7 +72,7 @@ Texture *animmodel::lasttex = nullptr,
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
-std::map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys; 
+std::unordered_map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys; 
 int animmodel::ShaderParamsKey::firstversion = 0,
     animmodel::ShaderParamsKey::lastversion = 1;
 
