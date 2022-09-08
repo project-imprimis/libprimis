@@ -335,13 +335,11 @@ int formatsize(GLenum format)
     switch(format)
     {
         case GL_RED:
-        case GL_LUMINANCE:
         case GL_ALPHA:
         {
             return 1;
         }
         case GL_RG:
-        case GL_LUMINANCE_ALPHA:
         {
             return 2;
         }
@@ -716,26 +714,6 @@ static GLenum textype(GLenum &component, GLenum &format)
             }
             break;
         }
-        case GL_LUMINANCE8:
-        case GL_LUMINANCE16:
-        case GL_COMPRESSED_LUMINANCE:
-        {
-            if(!format)
-            {
-                format = GL_LUMINANCE;
-            }
-            break;
-        }
-        case GL_LUMINANCE8_ALPHA8:
-        case GL_LUMINANCE16_ALPHA16:
-        case GL_COMPRESSED_LUMINANCE_ALPHA:
-        {
-            if(!format)
-            {
-                format = GL_LUMINANCE_ALPHA;
-            }
-            break;
-        }
         case GL_ALPHA8:
         case GL_ALPHA16:
         case GL_COMPRESSED_ALPHA:
@@ -889,7 +867,6 @@ static bool alphaformat(GLenum format)
     switch(format)
     {
         case GL_ALPHA:
-        case GL_LUMINANCE_ALPHA:
         case GL_RG:
         case GL_RGBA:
         {
