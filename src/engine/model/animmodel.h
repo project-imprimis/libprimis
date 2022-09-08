@@ -582,11 +582,17 @@ extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparam
  * TODO: clean up and refactor so that hthash is actually here
  */ 
 template<>
-struct std::hash<animmodel::shaderparams> {
+struct std::hash<animmodel::shaderparams>
+{
     std::size_t operator()(animmodel::shaderparams const& s) const noexcept {
         return hthash(s);
     }
 };
+
+bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs) 
+{
+    return htcmp(lhs, rhs);
+}
 
 
 /* modelloader
