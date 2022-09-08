@@ -577,8 +577,8 @@ class animmodel : public model
 extern uint hthash(const animmodel::shaderparams &k);
 extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
 
-/* template specialization for std::hash<animmodel::sharedparams>
- * needed to have sharedparams as keys for std::unordered_map
+/* template specialization for std::hash<animmodel::shaderparams>
+ * needed to have shaderparams as keys for std::unordered_map
  * TODO: clean up and refactor so that hthash is actually here
  */ 
 template<>
