@@ -573,7 +573,11 @@ void freeoctaentities(cube &c)
         while(c.ext->ents && !c.ext->ents->other.empty())
         {
             removeentity(c.ext->ents->other.back());
-            c.ext->ents->other.pop_back();
+            //guard against recursive freeoctaentities() deleting this vector
+            if(c.ext->ents)
+            {
+                c.ext->ents->other.pop_back();
+            }
         }
     }
     if(c.ext->ents)
