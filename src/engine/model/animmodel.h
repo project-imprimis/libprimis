@@ -50,9 +50,10 @@ class animmodel : public model
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
+
         struct ShaderParamsKey
         {
-            static hashtable<shaderparams, ShaderParamsKey> keys;
+            static std::unordered_map<shaderparams, ShaderParamsKey> keys;
             static int firstversion, lastversion;
 
             int version;
@@ -575,6 +576,18 @@ class animmodel : public model
 
 extern uint hthash(const animmodel::shaderparams &k);
 extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
+
+/* template specialization for std::hash<animmodel::sharedparams>
+ * needed to have sharedparams as keys for std::unordered_map
+ * TODO: clean up and refactor so that hthash is actually here
+ */ 
+template<>
+struct std::hash<animmodel::shaderparams> {
+    std::size_t operator()(animmodel::shaderparams const& s) const noexcept {
+        return hthash(s);
+    }
+};
+
 
 /* modelloader
  *
