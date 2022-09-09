@@ -221,7 +221,7 @@ VAR(maxdualdrawbufs, 1, 0, 0);
 
 VAR(debugexts, 0, 0, 1);
 
-static hashset<const char *> glexts;
+static std::unordered_set<std::string> glexts;
 
 void parseglexts()
 {
@@ -231,13 +231,13 @@ void parseglexts()
     {
         //cast from uchar * to char *
         const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
-        glexts.add(newstring(ext));
+        glexts.insert(ext);
     }
 }
 
 bool hasext(const char *ext)
 {
-    return glexts.access(ext)!=nullptr;
+    return glexts.find(ext)!=glexts.end();
 }
 
 bool checkdepthtexstencilrb()
