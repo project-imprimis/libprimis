@@ -817,7 +817,7 @@ void radiancehints::renderslices()
                 }
             }
             gle::defvertex(2);
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLES);
             gle::end();
             if(rhborder && !rhrect)
             {
