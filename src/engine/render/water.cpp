@@ -350,7 +350,7 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
         if(gle::attribbuf.empty())
         {
             defvertwtn();
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLE_FAN);
         }
         vertwtn(x, y, z);
         vertwtn(x+rsize, y, z);
