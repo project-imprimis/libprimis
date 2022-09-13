@@ -1,6 +1,6 @@
 /**
  * @brief texture information class definitions
- * 
+ *
  * This file implements a class containing the associated date with a texture image.
  * It is only used by texture.cpp.
  */
@@ -138,6 +138,8 @@ void ImageData::cleanup()
     disown();
 }
 
+// Deletes the data associated with the current ImageData object
+//and makes the object point to the one passed by parameter
 void ImageData::replace(ImageData &d)
 {
     cleanup();
