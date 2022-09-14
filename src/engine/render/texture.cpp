@@ -335,7 +335,6 @@ int formatsize(GLenum format)
     switch(format)
     {
         case GL_RED:
-        case GL_ALPHA:
         {
             return 1;
         }
@@ -714,16 +713,6 @@ static GLenum textype(GLenum &component, GLenum &format)
             }
             break;
         }
-        case GL_ALPHA8:
-        case GL_ALPHA16:
-        case GL_COMPRESSED_ALPHA:
-        {
-            if(!format)
-            {
-                format = GL_ALPHA;
-            }
-            break;
-        }
         case GL_RGB8UI:
         case GL_RGB16UI:
         case GL_RGB32UI:
@@ -866,7 +855,6 @@ static bool alphaformat(GLenum format)
 {
     switch(format)
     {
-        case GL_ALPHA:
         case GL_RG:
         case GL_RGBA:
         {

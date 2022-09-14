@@ -18,19 +18,6 @@
 #define GL_QUADS                      0x0007
 #endif
 
-#ifndef GL_ALPHA
-#define GL_ALPHA                      0x1906
-#endif
-#ifndef GL_ALPHA8
-#define GL_ALPHA8                     0x803C
-#endif
-#ifndef GL_ALPHA16
-#define GL_ALPHA16                    0x803E
-#endif
-#ifndef GL_COMPRESSED_ALPHA
-#define GL_COMPRESSED_ALPHA           0x84E9
-#endif
-
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
 #define GL_TEXTURE_MAX_ANISOTROPY_EXT     0x84FE
