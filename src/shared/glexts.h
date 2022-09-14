@@ -257,12 +257,6 @@ typedef void (APIENTRYP PFNGLBLENDFUNCSEPARATEIPROC) (GLuint buf, GLenum srcRGB,
 // GL_ARB_sample_shading
 extern PFNGLMINSAMPLESHADINGPROC glMinSampleShading_;
 
-// GL_ARB_draw_buffers_blend
-extern PFNGLBLENDEQUATIONIPROC glBlendEquationi_;
-extern PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei_;
-extern PFNGLBLENDFUNCIPROC glBlendFunci_;
-extern PFNGLBLENDFUNCSEPARATEIPROC glBlendFuncSeparatei_;
-
 #ifndef GL_VERSION_4_3
 typedef void (APIENTRYP PFNGLCOPYIMAGESUBDATAPROC) (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
 #endif

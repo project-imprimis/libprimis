@@ -78,12 +78,6 @@ PFNGLSAMPLEMASKIPROC           glSampleMaski_           = nullptr;
 // GL_ARB_sample_shading
 PFNGLMINSAMPLESHADINGPROC glMinSampleShading_ = nullptr;
 
-// GL_ARB_draw_buffers_blend
-PFNGLBLENDEQUATIONIPROC         glBlendEquationi_         = nullptr;
-PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei_ = nullptr;
-PFNGLBLENDFUNCIPROC             glBlendFunci_             = nullptr;
-PFNGLBLENDFUNCSEPARATEIPROC     glBlendFuncSeparatei_     = nullptr;
-
 // OpenGL 1.3
 #ifdef WIN32
 PFNGLACTIVETEXTUREPROC    glActiveTexture_    = nullptr;
@@ -436,10 +430,6 @@ void gl_checkextensions()
     maxdualdrawbufs = dualbufs;
     //OpenGL 4.0
     glMinSampleShading_       = (PFNGLMINSAMPLESHADINGPROC)      getprocaddress("glMinSampleShading");
-    glBlendEquationi_         = (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
-    glBlendEquationSeparatei_ = (PFNGLBLENDEQUATIONSEPARATEIPROC)getprocaddress("glBlendEquationSeparatei");
-    glBlendFunci_             = (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
-    glBlendFuncSeparatei_     = (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
     //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
