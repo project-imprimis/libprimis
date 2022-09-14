@@ -242,7 +242,6 @@ extern PFNGLISVERTEXARRAYPROC      glIsVertexArray_;
 #define GL_MAX_DUAL_SOURCE_DRAW_BUFFERS   0x88FC
 typedef void (APIENTRYP PFNGLBINDFRAGDATALOCATIONINDEXEDPROC) (GLuint program, GLuint colorNumber, GLuint index, const GLchar *name);
 #endif
-extern PFNGLBINDFRAGDATALOCATIONINDEXEDPROC glBindFragDataLocationIndexed_;
 
 #ifndef GL_VERSION_4_0
 #define GL_VERSION_4_0 1
