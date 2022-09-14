@@ -68,10 +68,14 @@ namespace UI
 
     static void quads(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
     {
-        gle::attribf(x,   y);   gle::attribf(tx,    ty);
+        gle::defvertex(2);
+        gle::deftexcoord0();
+        gle::begin(GL_TRIANGLE_STRIP);
         gle::attribf(x+w, y);   gle::attribf(tx+tw, ty);
+        gle::attribf(x,   y);   gle::attribf(tx,    ty);
         gle::attribf(x+w, y+h); gle::attribf(tx+tw, ty+th);
         gle::attribf(x,   y+h); gle::attribf(tx,    ty+th);
+        gle::end();
     }
 
     static void quad(float x, float y, float w, float h, const vec2 tc[4])
@@ -1955,7 +1959,7 @@ namespace UI
 
             gle::defvertex(2);
             gle::deftexcoord0();
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLE_STRIP);
         }
 
         void enddraw()

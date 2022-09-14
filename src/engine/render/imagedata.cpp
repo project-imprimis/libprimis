@@ -1,6 +1,6 @@
 /**
  * @brief texture information class definitions
- * 
+ *
  * This file implements a class containing the associated date with a texture image.
  * It is only used by texture.cpp.
  */
@@ -118,6 +118,9 @@ int ImageData::calcsize() const
     return size;
 }
 
+//Clears the objects pointers that the image data points to, to allow them to be exclusively
+//pointed to by another object. This is used when calling replace() such that the old object
+//does not have references to the new object's data fields.
 void ImageData::disown()
 {
     data = nullptr;
@@ -138,6 +141,8 @@ void ImageData::cleanup()
     disown();
 }
 
+// Deletes the data associated with the current ImageData object
+//and makes the object point to the one passed by parameter
 void ImageData::replace(ImageData &d)
 {
     cleanup();

@@ -329,19 +329,24 @@ static float draw_char(Texture *&tex, int c, float x, float y, float scale)
           ty1 = info.y / tex->ys,
           tx2 = (info.x + info.w) / tex->xs,
           ty2 = (info.y + info.h) / tex->ys;
+    //GL_TRIANGLE_FAN and GL_TRIANGLE_STRIP seem to create artifacts, so both triangles are defined explicitly
     if(textmatrix)
     {
         gle::attrib(textmatrix->transform(vec2(x1, y1))); gle::attribf(tx1, ty1);
         gle::attrib(textmatrix->transform(vec2(x2, y1))); gle::attribf(tx2, ty1);
+        gle::attrib(textmatrix->transform(vec2(x1, y2))); gle::attribf(tx1, ty2);
         gle::attrib(textmatrix->transform(vec2(x2, y2))); gle::attribf(tx2, ty2);
         gle::attrib(textmatrix->transform(vec2(x1, y2))); gle::attribf(tx1, ty2);
+        gle::attrib(textmatrix->transform(vec2(x2, y1))); gle::attribf(tx2, ty1);
     }
     else
     {
         gle::attribf(x1, y1); gle::attribf(tx1, ty1);
         gle::attribf(x2, y1); gle::attribf(tx2, ty1);
+        gle::attribf(x1, y2); gle::attribf(tx1, ty2);
         gle::attribf(x2, y2); gle::attribf(tx2, ty2);
         gle::attribf(x1, y2); gle::attribf(tx1, ty2);
+        gle::attribf(x2, y1); gle::attribf(tx2, ty1);
     }
     return scale*info.advance;
 }
@@ -679,7 +684,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
     gle::color(color, a);
     gle::defvertex(textmatrix ? 3 : 2);
     gle::deftexcoord0();
-    gle::begin(GL_QUADS);
+    gle::begin(GL_TRIANGLES);
     TEXTSKELETON
     TEXTEND(cursor)
     xtraverts += gle::end();

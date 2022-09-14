@@ -1872,16 +1872,16 @@ bool shouldreuseparams(Slot &s, VSlot &p)
 }
 
 
-static hashset<const char *> shaderparamnames(256);
+static std::unordered_set<std::string> shaderparamnames;
 
 const char *getshaderparamname(const char *name, bool insert)
 {
-    const char *exists = shaderparamnames.find(name, nullptr);
-    if(exists || !insert)
+    auto itr = shaderparamnames.find(name);
+    if(itr != shaderparamnames.end() || !insert)
     {
-        return exists;
+        return (*itr).c_str();
     }
-    return shaderparamnames.add(newstring(name));
+    return (*shaderparamnames.insert(name).first).c_str();
 }
 
 void addslotparam(const char *name, float x, float y, float z, float w, int flags = 0)

@@ -921,7 +921,7 @@ void Editor::draw(int x, int y, int color, bool hit)
             hudnotextureshader->set();
             gle::colorub(0xA0, 0x80, 0x80);
             gle::defvertex(2);
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLE_FAN);
             if(psy == pey)
             {
                 gle::attribf(x+psx, y+psy);

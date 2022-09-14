@@ -61,7 +61,6 @@ VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
 
 // GL_EXT_timer_query
-PFNGLGETQUERYOBJECTI64VEXTPROC glGetQueryObjecti64v_  = nullptr;
 PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_ = nullptr;
 
 // GL_EXT_framebuffer_blit
@@ -78,12 +77,6 @@ PFNGLSAMPLEMASKIPROC           glSampleMaski_           = nullptr;
 
 // GL_ARB_sample_shading
 PFNGLMINSAMPLESHADINGPROC glMinSampleShading_ = nullptr;
-
-// GL_ARB_draw_buffers_blend
-PFNGLBLENDEQUATIONIPROC         glBlendEquationi_         = nullptr;
-PFNGLBLENDEQUATIONSEPARATEIPROC glBlendEquationSeparatei_ = nullptr;
-PFNGLBLENDFUNCIPROC             glBlendFunci_             = nullptr;
-PFNGLBLENDFUNCSEPARATEIPROC     glBlendFuncSeparatei_     = nullptr;
 
 // OpenGL 1.3
 #ifdef WIN32
@@ -118,19 +111,11 @@ PFNGLUNIFORM1UIVPROC          glUniform1uiv_          = nullptr;
 PFNGLUNIFORM2UIVPROC          glUniform2uiv_          = nullptr;
 PFNGLUNIFORM3UIVPROC          glUniform3uiv_          = nullptr;
 PFNGLUNIFORM4UIVPROC          glUniform4uiv_          = nullptr;
-PFNGLCLEARBUFFERIVPROC        glClearBufferiv_        = nullptr;
-PFNGLCLEARBUFFERUIVPROC       glClearBufferuiv_       = nullptr;
-PFNGLCLEARBUFFERFVPROC        glClearBufferfv_        = nullptr;
-PFNGLCLEARBUFFERFIPROC        glClearBufferfi_        = nullptr;
 
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
 PFNGLENABLEIPROC    glEnablei_    = nullptr;
 PFNGLDISABLEIPROC   glDisablei_   = nullptr;
-
-// GL_NV_conditional_render
-PFNGLBEGINCONDITIONALRENDERPROC glBeginConditionalRender_ = nullptr;
-PFNGLENDCONDITIONALRENDERPROC   glEndConditionalRender_   = nullptr;
 
 // GL_EXT_texture_integer
 PFNGLTEXPARAMETERIIVPROC     glTexParameterIiv_     = nullptr;
@@ -139,28 +124,13 @@ PFNGLGETTEXPARAMETERIIVPROC  glGetTexParameterIiv_  = nullptr;
 PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv_ = nullptr;
 
 // GL_ARB_uniform_buffer_object
-PFNGLGETUNIFORMINDICESPROC       glGetUniformIndices_       = nullptr;
-PFNGLGETACTIVEUNIFORMSIVPROC     glGetActiveUniformsiv_     = nullptr;
-PFNGLGETUNIFORMBLOCKINDEXPROC    glGetUniformBlockIndex_    = nullptr;
-PFNGLGETACTIVEUNIFORMBLOCKIVPROC glGetActiveUniformBlockiv_ = nullptr;
 PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_     = nullptr;
-PFNGLBINDBUFFERBASEPROC          glBindBufferBase_          = nullptr;
-PFNGLBINDBUFFERRANGEPROC         glBindBufferRange_         = nullptr;
-
-// GL_ARB_copy_buffer
-PFNGLCOPYBUFFERSUBDATAPROC glCopyBufferSubData_ = nullptr;
 
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 
 // GL_ARB_color_buffer_float
 PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
-
-// GL_ARB_debug_output
-PFNGLDEBUGMESSAGECONTROLPROC  glDebugMessageControl_  = nullptr;
-PFNGLDEBUGMESSAGEINSERTPROC   glDebugMessageInsert_   = nullptr;
-PFNGLDEBUGMESSAGECALLBACKPROC glDebugMessageCallback_ = nullptr;
-PFNGLGETDEBUGMESSAGELOGPROC   glGetDebugMessageLog_   = nullptr;
 
 // GL_ARB_map_buffer_range
 PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
@@ -171,9 +141,6 @@ PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_    = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
 PFNGLISVERTEXARRAYPROC      glIsVertexArray_      = nullptr;
-
-// GL_ARB_blend_func_extended
-PFNGLBINDFRAGDATALOCATIONINDEXEDPROC glBindFragDataLocationIndexed_ = nullptr;
 
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
@@ -245,7 +212,7 @@ VAR(maxdualdrawbufs, 1, 0, 0);
 
 VAR(debugexts, 0, 0, 1);
 
-static hashset<const char *> glexts;
+static std::unordered_set<std::string> glexts;
 
 void parseglexts()
 {
@@ -255,13 +222,13 @@ void parseglexts()
     {
         //cast from uchar * to char *
         const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
-        glexts.add(newstring(ext));
+        glexts.insert(ext);
     }
 }
 
 bool hasext(const char *ext)
 {
-    return glexts.access(ext)!=nullptr;
+    return glexts.find(ext)!=glexts.end();
 }
 
 bool checkdepthtexstencilrb()
@@ -399,10 +366,6 @@ void gl_checkextensions()
     glUniform2uiv_    =           (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
     glUniform3uiv_    =           (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
     glUniform4uiv_    =           (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
-    glClearBufferiv_  =           (PFNGLCLEARBUFFERIVPROC)       getprocaddress("glClearBufferiv");
-    glClearBufferuiv_ =           (PFNGLCLEARBUFFERUIVPROC)      getprocaddress("glClearBufferuiv");
-    glClearBufferfv_  =           (PFNGLCLEARBUFFERFVPROC)       getprocaddress("glClearBufferfv");
-    glClearBufferfi_  =           (PFNGLCLEARBUFFERFIPROC)       getprocaddress("glClearBufferfi");
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
@@ -415,8 +378,6 @@ void gl_checkextensions()
     glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
     glEnablei_    = (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
     glDisablei_   = (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
-    glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRender");
-    glEndConditionalRender_   = (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
 
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
@@ -424,15 +385,8 @@ void gl_checkextensions()
     glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
     glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
     //OpenGL 3.1
-    glGetUniformIndices_       = (PFNGLGETUNIFORMINDICESPROC)      getprocaddress("glGetUniformIndices");
-    glGetActiveUniformsiv_     = (PFNGLGETACTIVEUNIFORMSIVPROC)    getprocaddress("glGetActiveUniformsiv");
-    glGetUniformBlockIndex_    = (PFNGLGETUNIFORMBLOCKINDEXPROC)   getprocaddress("glGetUniformBlockIndex");
-    glGetActiveUniformBlockiv_ = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC)getprocaddress("glGetActiveUniformBlockiv");
     glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
-    glBindBufferBase_          = (PFNGLBINDBUFFERBASEPROC)         getprocaddress("glBindBufferBase");
-    glBindBufferRange_         = (PFNGLBINDBUFFERRANGEPROC)        getprocaddress("glBindBufferRange");
     useubo = 1;
-    glCopyBufferSubData_ = (PFNGLCOPYBUFFERSUBDATAPROC)getprocaddress("glCopyBufferSubData");
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
     glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
@@ -446,19 +400,7 @@ void gl_checkextensions()
             conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
         }
     }
-
-    if(hasext("GL_EXT_timer_query"))
-    {
-        glGetQueryObjecti64v_  =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
-        glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
-        hasTQ = true;
-        if(debugexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
-        }
-    }
     //OpenGL 3.3
-    glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
     glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
@@ -483,16 +425,11 @@ void gl_checkextensions()
             conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
         }
     }
-    glBindFragDataLocationIndexed_ = (PFNGLBINDFRAGDATALOCATIONINDEXEDPROC)getprocaddress("glBindFragDataLocationIndexed");
     GLint dualbufs = 0;
     glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
     maxdualdrawbufs = dualbufs;
     //OpenGL 4.0
     glMinSampleShading_       = (PFNGLMINSAMPLESHADINGPROC)      getprocaddress("glMinSampleShading");
-    glBlendEquationi_         = (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
-    glBlendEquationSeparatei_ = (PFNGLBLENDEQUATIONSEPARATEIPROC)getprocaddress("glBlendEquationSeparatei");
-    glBlendFunci_             = (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
-    glBlendFuncSeparatei_     = (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
     //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
@@ -501,28 +438,6 @@ void gl_checkextensions()
         if(glversion < 430 && debugexts)
         {
             conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
-        }
-    }
-
-    if(glversion >= 430)
-    {
-        glDebugMessageControl_  = (PFNGLDEBUGMESSAGECONTROLPROC) getprocaddress("glDebugMessageControl");
-        glDebugMessageInsert_   = (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsert");
-        glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallback");
-        glGetDebugMessageLog_   = (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLog");
-    }
-    else
-    {
-        if(hasext("GL_ARB_debug_output"))
-        {
-            glDebugMessageControl_ =  (PFNGLDEBUGMESSAGECONTROLPROC) getprocaddress("glDebugMessageControlARB");
-            glDebugMessageInsert_ =   (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsertARB");
-            glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
-            glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
-            if(debugexts)
-            {
-                conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
-            }
         }
     }
 

@@ -218,8 +218,12 @@ class LocalShaderParam
         param.set(vals); \
     } \
     while(0)
+
+//creates a localshaderparam like above but calls setf() instead
 #define LOCALPARAMF(name, ...) do { static LocalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
 #define LOCALPARAMV(name, vals, num) do { static LocalShaderParam param( #name ); param.setv(vals, num); } while(0)
+
+//creates a globalshaderparam, either by calling set(), setf() or setv()
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
 #define GLOBALPARAMV(name, vals, num) do { static GlobalShaderParam param( #name ); param.setv(vals, num); } while(0)
