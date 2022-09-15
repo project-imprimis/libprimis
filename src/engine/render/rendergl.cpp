@@ -130,7 +130,6 @@ PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_ = nullptr;
 PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_    = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
-PFNGLISVERTEXARRAYPROC      glIsVertexArray_      = nullptr;
 
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
@@ -345,7 +344,6 @@ void gl_checkextensions()
     glBindVertexArray_    = (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
     glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
-    glIsVertexArray_      = (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
 
     glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)    getprocaddress("glBindFragDataLocation");
     if(hasext("GL_EXT_gpu_shader4"))
