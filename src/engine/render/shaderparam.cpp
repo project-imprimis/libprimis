@@ -190,22 +190,22 @@ void LocalShaderParam::setf(float x, float y, float z, float w)
             }
             case GL_UNSIGNED_INT:
             {
-                glUniform1ui_(b->loc, static_cast<uint>(x));
+                glUniform1ui(b->loc, static_cast<uint>(x));
                 break;
             }
             case GL_UNSIGNED_INT_VEC2:
             {
-                glUniform2ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y));
+                glUniform2ui(b->loc, static_cast<uint>(x), static_cast<uint>(y));
                 break;
             }
             case GL_UNSIGNED_INT_VEC3:
             {
-                glUniform3ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z));
+                glUniform3ui(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z));
                 break;
             }
             case GL_UNSIGNED_INT_VEC4:
             {
-                glUniform4ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z), static_cast<uint>(w));
+                glUniform4ui(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z), static_cast<uint>(w));
                 break;
             }
         }
@@ -373,22 +373,22 @@ void sett(T x, T y, T z, T w, LocalShaderParam & sh)
             }
             case GL_UNSIGNED_INT:
             {
-                glUniform1ui_(b->loc, x);
+                glUniform1ui(b->loc, x);
                 break;
             }
             case GL_UNSIGNED_INT_VEC2:
             {
-                glUniform2ui_(b->loc, x, y);
+                glUniform2ui(b->loc, x, y);
                 break;
             }
             case GL_UNSIGNED_INT_VEC3:
             {
-                glUniform3ui_(b->loc, x, y, z);
+                glUniform3ui(b->loc, x, y, z);
                 break;
             }
             case GL_UNSIGNED_INT_VEC4:
             {
-                glUniform4ui_(b->loc, x, y, z, w);
+                glUniform4ui(b->loc, x, y, z, w);
                 break;
             }
         }
@@ -457,6 +457,6 @@ void LocalShaderParam::setv(const uint *u, int n)
     ShaderParamBinding *b = resolve();
     if(b)
     {
-        glUniform1uiv_(b->loc, n, u);
+        glUniform1uiv(b->loc, n, u);
     }
 }

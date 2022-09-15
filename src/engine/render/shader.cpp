@@ -598,22 +598,22 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
         }
         case GL_UNSIGNED_INT:
         {
-            glUniform1ui_(l.loc, static_cast<uint>(val[0]));
+            glUniform1ui(l.loc, static_cast<uint>(val[0]));
             break;
         }
         case GL_UNSIGNED_INT_VEC2:
         {
-            glUniform2ui_(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]));
+            glUniform2ui(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]));
             break;
         }
         case GL_UNSIGNED_INT_VEC3:
         {
-            glUniform3ui_(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]), static_cast<uint>(val[2]));
+            glUniform3ui(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]), static_cast<uint>(val[2]));
             break;
         }
         case GL_UNSIGNED_INT_VEC4:
         {
-            glUniform4ui_(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]), static_cast<uint>(val[2]), static_cast<uint>(val[3]));
+            glUniform4ui(l.loc, static_cast<uint>(val[0]), static_cast<uint>(val[1]), static_cast<uint>(val[2]), static_cast<uint>(val[3]));
             break;
         }
     }
@@ -1020,22 +1020,22 @@ void GlobalShaderParamUse::flush()
         }
         case GL_UNSIGNED_INT:
         {
-            glUniform1uiv_(loc, size, param->uval);
+            glUniform1uiv(loc, size, param->uval);
             break;
         }
         case GL_UNSIGNED_INT_VEC2:
         {
-            glUniform2uiv_(loc, size, param->uval);
+            glUniform2uiv(loc, size, param->uval);
             break;
         }
         case GL_UNSIGNED_INT_VEC3:
         {
-            glUniform3uiv_(loc, size, param->uval);
+            glUniform3uiv(loc, size, param->uval);
             break;
         }
         case GL_UNSIGNED_INT_VEC4:
         {
-            glUniform4uiv_(loc, size, param->uval);
+            glUniform4uiv(loc, size, param->uval);
             break;
         }
         case GL_FLOAT_MAT2:
