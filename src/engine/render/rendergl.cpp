@@ -106,8 +106,6 @@ PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation_ = nullptr;
 
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
-PFNGLENABLEIPROC    glEnablei_    = nullptr;
-PFNGLDISABLEIPROC   glDisablei_   = nullptr;
 
 // GL_EXT_texture_integer
 PFNGLTEXPARAMETERIIVPROC     glTexParameterIiv_     = nullptr;
@@ -360,8 +358,6 @@ void gl_checkextensions()
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
-    glEnablei_    = (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
-    glDisablei_   = (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
 
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");

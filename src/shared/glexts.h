@@ -1,6 +1,6 @@
 /**
  * @file glexts.h
- * @brief 
+ * @brief
  */
 
 #ifndef GLEXTS_H_
@@ -152,8 +152,6 @@ extern PFNGLGETSTRINGIPROC glGetStringi_;
 
 // GL_EXT_draw_buffers2
 extern PFNGLCOLORMASKIPROC glColorMaski_;
-extern PFNGLENABLEIPROC glEnablei_;
-extern PFNGLDISABLEIPROC glDisablei_;
 
 // GL_ARB_color_buffer_float
 extern PFNGLCLAMPCOLORPROC glClampColor_;
