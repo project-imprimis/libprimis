@@ -30,12 +30,11 @@ var searchData=
   ['inituicmds_27',['inituicmds',['../iengine_8h.html#acd92a89f1ab2250b271c931797e178f4',1,'UI']]],
   ['initworldiocmds_28',['initworldiocmds',['../iengine_8h.html#aacf5cb7ca04b015dac62e8499275a03b',1,'iengine.h']]],
   ['initzipcmds_29',['initzipcmds',['../tools_8h.html#ac348a3a9d5cdd66464d88daffe36a73a',1,'tools.h']]],
-  ['insertionsort_30',['insertionsort',['../tools_8h.html#a5c7af8666d89a580098180b2a3204469',1,'tools.h']]],
-  ['insideworld_31',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
-  ['intret_32',['intret',['../command_8h.html#a21cd226150059e3a302cfdbb389541c5',1,'command.h']]],
-  ['invert_33',['invert',['../classmatrix3.html#a58a461e313094a5350567277678e0d2c',1,'matrix3::invert(const matrix3 &amp;o)'],['../classmatrix3.html#a75239d9aa6d5a9ed3d35ce8e549733a1',1,'matrix3::invert()']]],
-  ['isempty_34',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
-  ['issolid_35',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
-  ['isvalidcube_36',['isvalidcube',['../classcube.html#a2faf100108da8f40d88473baafb9be61',1,'cube']]],
-  ['iterdynents_37',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
+  ['insideworld_30',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
+  ['intret_31',['intret',['../command_8h.html#a21cd226150059e3a302cfdbb389541c5',1,'command.h']]],
+  ['invert_32',['invert',['../classmatrix3.html#a58a461e313094a5350567277678e0d2c',1,'matrix3::invert(const matrix3 &amp;o)'],['../classmatrix3.html#a75239d9aa6d5a9ed3d35ce8e549733a1',1,'matrix3::invert()']]],
+  ['isempty_33',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
+  ['issolid_34',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
+  ['isvalidcube_35',['isvalidcube',['../classcube.html#a2faf100108da8f40d88473baafb9be61',1,'cube']]],
+  ['iterdynents_36',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
 ];

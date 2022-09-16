@@ -1,23 +1,9 @@
 var searchData=
 [
-  ['scalartriple_0',['scalartriple',['../structvec.html#a7569fdf206ec0be0beb74d8f4a21961c',1,'vec']]],
-  ['scale_1',['scale',['../classmatrix3.html#a37c6fb6ef012187e7a164fb4a9c998fe',1,'matrix3']]],
-  ['setcubefaces_2',['setcubefaces',['../octa_8h.html#a4430b561a204df665b15f88337201173',1,'octa.h']]],
-  ['setfont_3',['setfont',['../iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e',1,'iengine.h']]],
-  ['setfvar_4',['setfvar',['../command_8h.html#a61f8df897a1c2017b241a9ad595ef042',1,'command.h']]],
-  ['setmat_5',['setmat',['../classcube.html#ac7983aa3d12a0ebca7bc96c9dfab014e',1,'cube']]],
-  ['setsvar_6',['setsvar',['../command_8h.html#a63fd92ba10830b3f0d68bdb43c312441',1,'command.h']]],
-  ['setup_7',['setup',['../iengine_8h.html#a12441e8293bd0cca61dd838eb11326e3',1,'UI']]],
-  ['setvar_8',['setvar',['../command_8h.html#a6acd0b43e7c56d6f828680837f405355',1,'command.h']]],
-  ['setyaw_9',['setyaw',['../classmatrix3.html#ac48dbf8d8d6a8cbead923c296f413316',1,'matrix3']]],
-  ['showui_10',['showui',['../iengine_8h.html#a909e67dd85e4409604f3573f04bd0b05',1,'UI']]],
-  ['size_11',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo']]],
-  ['square_12',['square',['../structvec4.html#ab9948ab8d952e5a36dde54c0e606a69b',1,'vec4']]],
-  ['stopsound_13',['stopsound',['../iengine_8h.html#aae9922a13a2b42ba5c093ae7f53f43e6',1,'iengine.h']]],
-  ['stopsounds_14',['stopsounds',['../iengine_8h.html#a507031a90887d8f0ec5123f5ac53d3b9',1,'iengine.h']]],
-  ['stringret_15',['stringret',['../command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c',1,'command.h']]],
-  ['sub_16',['sub',['../structvec4.html#a88b17a29301062aa61e0f45bd8259482',1,'vec4::sub(const vec &amp;o)'],['../structvec4.html#a3d367eebccd78bcb86a4f206f14a66c1',1,'vec4::sub(const vec4 &amp;o)']]],
-  ['subbuf_17',['subbuf',['../structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c',1,'databuf']]],
-  ['svariable_18',['svariable',['../command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb',1,'command.h']]],
-  ['swapbuffers_19',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
+  ['toggleui_0',['toggleui',['../iengine_8h.html#a5b561ee57a1c1701d7c1583d92ce7688',1,'UI']]],
+  ['trace_1',['trace',['../classmatrix3.html#a84eaa28f72320d029973f052a1f3b7dd',1,'matrix3']]],
+  ['transform_2',['transform',['../classmatrix3.html#a58452d12508596c22554aa1b2d894f0d',1,'matrix3::transform(const vec &amp;o) const'],['../classmatrix3.html#a186cca4edc595931f87b75f8f9ef0490',1,'matrix3::transform(const vec2 &amp;o)']]],
+  ['transpose_3',['transpose',['../classmatrix3.html#accf661a3b5cbba59d81d4a1828066b45',1,'matrix3']]],
+  ['transposedtransform_4',['transposedtransform',['../classmatrix3.html#ad80c0868a7fd8239d25853969d888074',1,'matrix3::transposedtransform(const vec &amp;o) const'],['../classmatrix3.html#a913fd35c7f822140a5e00169c9c2e831',1,'matrix3::transposedtransform(const vec2 &amp;o) const']]],
+  ['transposemul_5',['transposemul',['../classmatrix3.html#a9981ee9f9df8c61bed812bef9559f0fa',1,'matrix3::transposemul(const matrix3 &amp;m, const matrix3 &amp;n)'],['../classmatrix3.html#ace55aa434ded31ecefa54f0ffc3172b5',1,'matrix3::transposemul(const matrix3 &amp;n)']]]
 ];

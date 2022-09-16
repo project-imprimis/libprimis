@@ -49,8 +49,6 @@ var hierarchy =
       [ "DecalSlot", "structDecalSlot.html", null ]
     ] ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
-    [ "sortless", "structsortless.html", null ],
-    [ "sortnameless", "structsortnameless.html", null ],
     [ "stream", "structstream.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],

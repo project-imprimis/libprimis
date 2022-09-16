@@ -32,8 +32,6 @@ var annotated_dup =
     [ "selinfo", "structselinfo.html", "structselinfo" ],
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
-    [ "sortless", "structsortless.html", null ],
-    [ "sortnameless", "structsortnameless.html", null ],
     [ "stream", "structstream.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],

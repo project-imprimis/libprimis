@@ -131,10 +131,6 @@ $(document).ready(function(){initNavTree('tools_8h.html',''); initResizable(); }
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html">databuf&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsortless.html">sortless</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsortnameless.html">sortnameless</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstringslice.html">stringslice</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html">hashbase&lt; H, E, K, T &gt;</a></td></tr>
@@ -308,34 +304,6 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><b>newstring</b> (cons
 <tr class="memitem:addefb6a939e71ab9cdfe26e32010bc89"><td class="memItemLeft" align="right" valign="top"><a id="addefb6a939e71ab9cdfe26e32010bc89" name="addefb6a939e71ab9cdfe26e32010bc89"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>newconcatstring</b> (const char *s, const char *t)</td></tr>
 <tr class="separator:addefb6a939e71ab9cdfe26e32010bc89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e94525cae03740d8e9c1d7303fa5d20"><td class="memTemplParams" colspan="2"><a id="a0e94525cae03740d8e9c1d7303fa5d20" name="a0e94525cae03740d8e9c1d7303fa5d20"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a0e94525cae03740d8e9c1d7303fa5d20"><td class="memTemplItemLeft" align="right" valign="top">float&#160;</td><td class="memTemplItemRight" valign="bottom"><b>heapscore</b> (const T &amp;n)</td></tr>
-<tr class="separator:a0e94525cae03740d8e9c1d7303fa5d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c7af8666d89a580098180b2a3204469"><td class="memTemplParams" colspan="2">template&lt;class T , class F &gt; </td></tr>
-<tr class="memitem:a5c7af8666d89a580098180b2a3204469"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tools_8h.html#a5c7af8666d89a580098180b2a3204469">insertionsort</a> (T *start, T *end, F fun)</td></tr>
-<tr class="memdesc:a5c7af8666d89a580098180b2a3204469"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specializable insertion sort for a pointer-delineated range.  <a href="tools_8h.html#a5c7af8666d89a580098180b2a3204469">More...</a><br /></td></tr>
-<tr class="separator:a5c7af8666d89a580098180b2a3204469"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77b64ea477081c05096e7540d8211fdd"><td class="memTemplParams" colspan="2"><a id="a77b64ea477081c05096e7540d8211fdd" name="a77b64ea477081c05096e7540d8211fdd"></a>
-template&lt;class T , class F &gt; </td></tr>
-<tr class="memitem:a77b64ea477081c05096e7540d8211fdd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>insertionsort</b> (T *buf, int n, F fun)</td></tr>
-<tr class="separator:a77b64ea477081c05096e7540d8211fdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad856f7142a6cd1791dab3f6c80b9dbde"><td class="memTemplParams" colspan="2"><a id="ad856f7142a6cd1791dab3f6c80b9dbde" name="ad856f7142a6cd1791dab3f6c80b9dbde"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad856f7142a6cd1791dab3f6c80b9dbde"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>insertionsort</b> (T *buf, int n)</td></tr>
-<tr class="separator:ad856f7142a6cd1791dab3f6c80b9dbde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac689abc18c3afee2ad0016533bcab8f4"><td class="memTemplParams" colspan="2">template&lt;class T , class F &gt; </td></tr>
-<tr class="memitem:ac689abc18c3afee2ad0016533bcab8f4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4">quicksort</a> (T *start, T *end, F fun)</td></tr>
-<tr class="memdesc:ac689abc18c3afee2ad0016533bcab8f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specializable quicksort for a pointer-delineated range.  <a href="tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4">More...</a><br /></td></tr>
-<tr class="separator:ac689abc18c3afee2ad0016533bcab8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe47406336177f6ffb907e7fc0952923"><td class="memTemplParams" colspan="2"><a id="afe47406336177f6ffb907e7fc0952923" name="afe47406336177f6ffb907e7fc0952923"></a>
-template&lt;class T , class F &gt; </td></tr>
-<tr class="memitem:afe47406336177f6ffb907e7fc0952923"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>quicksort</b> (T *buf, int n, F fun)</td></tr>
-<tr class="separator:afe47406336177f6ffb907e7fc0952923"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7a609c4897337e3c729a314eed5bfb7"><td class="memTemplParams" colspan="2"><a id="aa7a609c4897337e3c729a314eed5bfb7" name="aa7a609c4897337e3c729a314eed5bfb7"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:aa7a609c4897337e3c729a314eed5bfb7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>quicksort</b> (T *buf, int n)</td></tr>
-<tr class="separator:aa7a609c4897337e3c729a314eed5bfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913f91c14749a99b738d53456455b40c"><td class="memItemLeft" align="right" valign="top"><a id="a913f91c14749a99b738d53456455b40c" name="a913f91c14749a99b738d53456455b40c"></a>
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const char *key)</td></tr>
 <tr class="separator:a913f91c14749a99b738d53456455b40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -676,130 +644,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>homedir</b></td></t
 <p>Initializes zip Cubescript commands. </p>
 <p ><code>addzip</code></p>
 <p ><code>removezip</code> </p>
-
-</div>
-</div>
-<a id="a5c7af8666d89a580098180b2a3204469" name="a5c7af8666d89a580098180b2a3204469"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c7af8666d89a580098180b2a3204469">&#9670;&#160;</a></span>insertionsort()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class F &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void insertionsort </td>
-          <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>end</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">F&#160;</td>
-          <td class="paramname"><em>fun</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Specializable insertion sort for a pointer-delineated range. </p>
-<p >Implements a insertion sort of elements between pointers <code>start</code> and <code>end</code>. The pointers <code>start</code> and <code>end</code> must correspond to a contiguous block of elements with type <code>T</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>The type of object to be comparing </td></tr>
-    <tr><td class="paramname">F</td><td>The comparison object</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">start</td><td>the address to start from </td></tr>
-    <tr><td class="paramname">end</td><td>the address to end at </td></tr>
-    <tr><td class="paramname">fun</td><td>the function object to compare </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ac689abc18c3afee2ad0016533bcab8f4" name="ac689abc18c3afee2ad0016533bcab8f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac689abc18c3afee2ad0016533bcab8f4">&#9670;&#160;</a></span>quicksort()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class F &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void quicksort </td>
-          <td>(</td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T *&#160;</td>
-          <td class="paramname"><em>end</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">F&#160;</td>
-          <td class="paramname"><em>fun</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Specializable quicksort for a pointer-delineated range. </p>
-<p >Implements a quicksort of elements between pointers <code>start</code> and <code>end</code>. The pointers <code>start</code> and <code>end</code> must correspond to a contiguous block of elements with type <code>T</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">T</td><td>The type of object to be comparing </td></tr>
-    <tr><td class="paramname">F</td><td>The comparison object</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">start</td><td>the address to start from </td></tr>
-    <tr><td class="paramname">end</td><td>the address to end at </td></tr>
-    <tr><td class="paramname">fun</td><td>the function object to compare </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
