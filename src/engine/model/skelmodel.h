@@ -562,14 +562,15 @@ struct skelmodel : animmodel
     }
 };
 
-struct skeladjustment
+class skeladjustment
 {
-    float yaw, pitch, roll;
-    vec translate;
+    public:
+        skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
+        void adjust(dualquat &dq);
 
-    skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
-
-    void adjust(dualquat &dq);
+    private:
+        float yaw, pitch, roll;
+        vec translate;
 };
 
 template<class MDL>
