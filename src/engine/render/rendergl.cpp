@@ -102,7 +102,6 @@ PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 
 // OpenGL 3.0
 PFNGLGETSTRINGIPROC           glGetStringi_           = nullptr;
-PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation_ = nullptr;
 
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
@@ -345,7 +344,6 @@ void gl_checkextensions()
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
     glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
 
-    glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)    getprocaddress("glBindFragDataLocation");
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
