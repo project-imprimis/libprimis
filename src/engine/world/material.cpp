@@ -337,7 +337,7 @@ namespace
 
     int mergemats(materialsurface *m, int sz)
     {
-        quicksort(m, sz, mergematcmp);
+        std::sort(m, m+sz, mergematcmp);
 
         int nsz = 0;
         for(int i = 0; i < sz; ++i)
@@ -782,7 +782,7 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurfa
 
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
-    quicksort(matbuf, matsurfs, optmatcmp);
+    std::sort(matbuf, matbuf+matsurfs, optmatcmp);
     materialsurface *cur = matbuf,
                     *end = matbuf+matsurfs;
     while(cur < end)
