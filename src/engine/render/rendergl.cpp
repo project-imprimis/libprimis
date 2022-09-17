@@ -114,7 +114,6 @@ PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
 
 // GL_ARB_map_buffer_range
 PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
-PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_ = nullptr;
 
 // GL_ARB_vertex_array_object
 PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_    = nullptr;
@@ -350,7 +349,6 @@ void gl_checkextensions()
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
     glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
-    glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
     //OpenGL 3.1
     glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
     useubo = 1;
