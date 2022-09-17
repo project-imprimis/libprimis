@@ -106,12 +106,6 @@ PFNGLGETSTRINGIPROC           glGetStringi_           = nullptr;
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
 
-// GL_EXT_texture_integer
-PFNGLTEXPARAMETERIIVPROC     glTexParameterIiv_     = nullptr;
-PFNGLTEXPARAMETERIUIVPROC    glTexParameterIuiv_    = nullptr;
-PFNGLGETTEXPARAMETERIIVPROC  glGetTexParameterIiv_  = nullptr;
-PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv_ = nullptr;
-
 // GL_ARB_uniform_buffer_object
 PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_     = nullptr;
 
