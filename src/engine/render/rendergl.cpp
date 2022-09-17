@@ -75,9 +75,6 @@ PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_ = nullptr;
 PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_      = nullptr;
 PFNGLSAMPLEMASKIPROC           glSampleMaski_           = nullptr;
 
-// GL_ARB_sample_shading
-PFNGLMINSAMPLESHADINGPROC glMinSampleShading_ = nullptr;
-
 // OpenGL 1.3
 #ifdef WIN32
 PFNGLACTIVETEXTUREPROC    glActiveTexture_    = nullptr;
@@ -398,8 +395,6 @@ void gl_checkextensions()
     GLint dualbufs = 0;
     glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
     maxdualdrawbufs = dualbufs;
-    //OpenGL 4.0
-    glMinSampleShading_       = (PFNGLMINSAMPLESHADINGPROC)      getprocaddress("glMinSampleShading");
     usetexgather = !intel && !nvidia ? 2 : 1;
     //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
