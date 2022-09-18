@@ -135,7 +135,6 @@ extern PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_;
 typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 #endif
 extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
-extern PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_;
 
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
