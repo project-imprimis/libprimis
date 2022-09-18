@@ -456,6 +456,22 @@ bool radiancehints::allcached() const
     return true;
 }
 
+void bindslice(int sx, int sy, int sw, int sh, int i, int j)
+{
+    if(rhrect)
+    {
+        glViewport(sx, sy, sw, sh);
+        glScissor(sx, sy, sw, sh);
+    }
+    else
+    {
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j);
+    }
+}
+
 void radiancehints::renderslices()
 {
     int sw = rhgrid+2*rhborder,
@@ -604,21 +620,6 @@ void radiancehints::renderslices()
         for(int j = sh; --j >= 0;) //note reverse iteration
         {
             int sx = rhrect ? j*sw : 0;
-//=================================================================== BIND_SLICE
-            #define BIND_SLICE do { \
-                if(rhrect) \
-                { \
-                    glViewport(sx, sy, sw, sh); \
-                    glScissor(sx, sy, sw, sh); \
-                } \
-                else \
-                { \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j); \
-                } \
-            } while(0)
 
             float x1  = split.center.x - split.bounds,
                   x2  = split.center.x + split.bounds,
@@ -680,7 +681,7 @@ void radiancehints::renderslices()
                 bty1 = bty1*next.scale.y + next.offset.y;
                 bty2 = bty2*next.scale.y + next.offset.y;
                 bz = bz*next.scale.z + next.offset.z;
-                BIND_SLICE;
+                bindslice(sx, sy, sw, sh, i, j);
                 if(clipped)
                 {
                     glClear(GL_COLOR_BUFFER_BIT);
@@ -696,7 +697,7 @@ void radiancehints::renderslices()
             skipped:
                 if(clearmasks[j/32] & (1 << (j%32)) && (!rhrect || cx < 0) && !(rhclearmasks[0][i][j/32] & (1 << (j%32))))
                 {
-                    BIND_SLICE;
+                    bindslice(sx, sy, sw, sh, i, j);
                     glClear(GL_COLOR_BUFFER_BIT);
                     cx = sx;
                     cy = sy;
@@ -729,16 +730,13 @@ void radiancehints::renderslices()
             }
             if(clearmasks[j/32] & (1 << (j%32)))
             {
-                BIND_SLICE;
+                bindslice(sx, sy, sw, sh, i, j);
                 if(clipped || (rhborder && i + 1 >= rhsplits))
                 {
                     glClear(GL_COLOR_BUFFER_BIT);
                 }
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
-
-            #undef BIND_SLICE
-//==============================================================================
 
             if(rhcache && z > split.cached.z - split.bounds && z < split.cached.z + split.bounds)
             {
