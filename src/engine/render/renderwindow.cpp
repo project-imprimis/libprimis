@@ -69,7 +69,7 @@ static string backgroundcaption   = "",
 static Texture *backgroundmapshot = nullptr;
 static char *backgroundmapinfo    = nullptr;
 
-void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
+static void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
     gle::begin(GL_TRIANGLE_STRIP);
     gle::attribf(x,   y);   gle::attribf(tx,      ty);
@@ -87,7 +87,7 @@ Notes:
     * Unsure what 'w' and 'h' refers to, maybe screen resolution?
 */
 
-void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
+static void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
 {
     static int lastupdate  = -1,
                lastw       = -1,
