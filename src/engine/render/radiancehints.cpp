@@ -456,7 +456,7 @@ bool radiancehints::allcached() const
     return true;
 }
 
-void bindslice(int sx, int sy, int sw, int sh, int i, int j)
+static void bindslice(int sx, int sy, int sw, int sh, int i, int j)
 {
     if(rhrect)
     {
