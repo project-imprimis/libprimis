@@ -742,6 +742,25 @@ static float trisegmentdistance(const vec &a, const vec &b, const vec &c, const 
     return 0; // segment intersects triangle
 }
 
+static bool testaxis(const vec& v0, const vec& v1, const vec& v2, const vec& e, const int& s, const int& t, const vec& radius)
+{
+    float p = v0[s]*v1[t] - v0[t]*v1[s],
+          q = v2[s]*e[t] - v2[t]*e[s],
+          r = radius[s]*std::fabs(e[t]) + radius[t]*std::fabs(e[s]);
+    if(p < q)
+    {
+        if(q < -r || p > r)
+        {
+            return false;
+        }
+    }
+    else if(p < -r || q > r)
+    {
+        return false;
+    }
+    return true;
+}
+
 //=============================================================TESTAXIS TESTFACE
 static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
@@ -749,35 +768,17 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
         bc = vec(c).sub(b),
         ca = vec(a).sub(c);
 
-    #define TESTAXIS(v0, v1, v2, e, s, t) { \
-        float p = v0.s*v1.t - v0.t*v1.s, \
-              q = v2.s*e.t - v2.t*e.s, \
-              r = radius.s*std::fabs(e.t) + radius.t*std::fabs(e.s); \
-        if(p < q) \
-        { \
-            if(q < -r || p > r) \
-            { \
-                return false; \
-            } \
-        } \
-        else if(p < -r || q > r) \
-        { \
-            return false; \
-        } \
-    }
+    if(!testaxis(a, b, c, ab, 2, 1, radius)) {return false;};
+    if(!testaxis(a, b, c, ab, 0, 2, radius)) {return false;};
+    if(!testaxis(a, b, c, ab, 1, 0, radius)) {return false;};
 
-    TESTAXIS(a, b, c, ab, z, y);
-    TESTAXIS(a, b, c, ab, x, z);
-    TESTAXIS(a, b, c, ab, y, x);
+    if(!testaxis(b, c, a, bc, 2, 1, radius)) {return false;};
+    if(!testaxis(b, c, a, bc, 0, 2, radius)) {return false;};
+    if(!testaxis(a, b, c, ab, 1, 0, radius)) {return false;};
 
-    TESTAXIS(b, c, a, bc, z, y);
-    TESTAXIS(b, c, a, bc, x, z);
-    TESTAXIS(b, c, a, bc, y, x);
-
-    TESTAXIS(c, a, b, ca, z, y);
-    TESTAXIS(c, a, b, ca, x, z);
-    TESTAXIS(c, a, b, ca, y, x);
-
+    if(!testaxis(c, a, b, ca, 2, 1, radius)) {return false;};
+    if(!testaxis(c, a, b, ca, 0, 2, radius)) {return false;};
+    if(!testaxis(c, a, b, ca, 1, 0, radius)) {return false;};
 
     #define TESTFACE(w) { \
         if(a.w < b.w) \
