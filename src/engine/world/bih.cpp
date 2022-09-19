@@ -761,7 +761,7 @@ static bool testaxis(const vec& v0, const vec& v1, const vec& v2, const vec& e, 
     return true;
 }
 
-//=============================================================TESTAXIS TESTFACE
+//===================================================================== TESTFACE
 static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
     vec ab = vec(b).sub(a),
@@ -813,7 +813,6 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
     TESTFACE(z);
     return true;
 }
-#undef TESTAXIS
 #undef TESTFACE
 //==============================================================================
 //used in the tricollide templates below
