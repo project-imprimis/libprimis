@@ -2708,6 +2708,16 @@ static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, ui
 
 VARP(compresspng, 0, 9, 9);
 
+static void flushzip(z_stream& z, uchar* buf, uint& len, stream* f, uint& crc)
+{
+    int flush = sizeof(buf) - z.avail_out;
+    crc = crc32(crc, buf, flush);
+    len += flush;
+    f->write(buf, flush);
+    z.next_out = static_cast<Bytef *>(buf);
+    z.avail_out = sizeof(buf);
+}
+
 static void savepng(const char *filename, ImageData &image, bool flip)
 {
     uchar ctype = 0;
@@ -2782,16 +2792,7 @@ static void savepng(const char *filename, ImageData &image, bool flip)
                 {
                     goto cleanuperror; //goto is beneath FLUSHZ macro
                 }
-//========================================================================FLUSHZ
-                #define FLUSHZ do { \
-                    int flush = sizeof(buf) - z.avail_out; \
-                    crc = crc32(crc, buf, flush); \
-                    len += flush; \
-                    f->write(buf, flush); \
-                    z.next_out = static_cast<Bytef *>(buf); \
-                    z.avail_out = sizeof(buf); \
-                } while(0)
-                FLUSHZ;
+                flushzip(z, buf, len, f, crc);
             }
         }
     }
@@ -2803,14 +2804,12 @@ static void savepng(const char *filename, ImageData &image, bool flip)
         {
             goto cleanuperror;
         }
-        FLUSHZ;
+        flushzip(z, buf, len, f, crc);
         if(err == Z_STREAM_END)
         {
             break;
         }
     }
-#undef FLUSHZ
-//==============================================================================
     deflateEnd(&z);
 
     f->seek(idat, SEEK_SET);
