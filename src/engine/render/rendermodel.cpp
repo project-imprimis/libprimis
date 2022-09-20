@@ -39,7 +39,7 @@ VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 int numanims; //set by game at runtime
 std::vector<std::string> animnames; //set by game at runtime
 
-model *loadingmodel = nullptr;
+static model *loadingmodel = nullptr;
 
 //need the above vars inited before these headers will load properly
 
