@@ -1,3 +1,9 @@
+/**
+ * @brief GL immediate mode EMUlation layer (glemu).
+ *
+ * This file replicates some of the functionality of the long since removed glBegin/glEnd
+ * features from extremely outdated versions of OpenGL.
+ */
 #include "../libprimis-headers/cube.h"
 
 #include "glemu.h"
