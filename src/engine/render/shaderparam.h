@@ -35,6 +35,8 @@ struct GlobalShaderParamState
     }
 };
 
+extern GlobalShaderParamState *getglobalparam(const char *name);
+
 struct ShaderParamBinding
 {
     int loc, size;
