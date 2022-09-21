@@ -26,7 +26,6 @@ GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullp
 
 GlobalShaderParamState *GlobalShaderParam::resolve()
 {
-    extern GlobalShaderParamState *getglobalparam(const char *name);
     if(!param)
     {
         param = getglobalparam(name);
