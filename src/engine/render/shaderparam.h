@@ -74,12 +74,16 @@ struct SlotShaderParamState : LocalShaderParamState
     }
 };
 
+//a container containing a GLSL shader
 class Shader
 {
     public:
         static Shader *lastshader;
 
-        char *name, *vsstr, *psstr, *defer;
+        char *name,
+            *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
+            *psstr, //a pointer to a `p`ixel `s`hader `str`ing
+            *defer; //a pointer to a deferred shader
         int type;
         GLuint program, vsobj, psobj;
         std::vector<SlotShaderParamState> defaultparams;
@@ -233,6 +237,7 @@ class LocalShaderParam
 //creates a new static variable inside the function called <name>setshader
 //then sets to it any(if present) args passed to set to the shader
 //can only be called once per function, and not in the global scope
+//upon calling set(), the shader associated with the name is loaded into OpenGL
 #define SETSHADER(name, ...) \
     do { \
         static Shader *name##shader = nullptr; \
