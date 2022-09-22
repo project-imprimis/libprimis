@@ -2759,9 +2759,24 @@ static void savepng(const char *filename, ImageData &image, bool flip)
     f->write(signature, sizeof(signature));
     struct pngihdr
     {
-        uint width, height;
-        uchar bitdepth, colortype, compress, filter, interlace;
-    } ihdr = { static_cast<uint>(endianswap(image.w)), static_cast<uint>(endianswap(image.h)), 8, ctype, 0, 0, 0 };
+        uint width,
+             height;
+        uchar bitdepth,
+              colortype,
+              compress,
+              filter,
+              interlace;
+    }
+    pngihdr ihdr =
+    {
+        static_cast<uint>(endianswap(image.w)),
+        static_cast<uint>(endianswap(image.h)),
+        8,
+        ctype,
+        0,
+        0,
+        0
+    };
     writepngchunk(f, "IHDR", reinterpret_cast<uchar *>(&ihdr), 13);
     stream::offset idat = f->tell();
     uint len = 0;
