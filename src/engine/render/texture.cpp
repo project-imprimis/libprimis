@@ -2766,7 +2766,7 @@ static void savepng(const char *filename, ImageData &image, bool flip)
               compress,
               filter,
               interlace;
-    }
+    };
     pngihdr ihdr =
     {
         static_cast<uint>(endianswap(image.w)),
