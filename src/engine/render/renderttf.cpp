@@ -15,12 +15,15 @@
 
 #include "rendergl.h"
 #include "rendertext.h"
+#include "renderttf.h"
 #include "shaderparam.h"
 #include "texture.h"
 #include "renderwindow.h"
 
+TTFRenderer ttr;
+
 //starts up SDL2_TTF
-bool initttf()
+bool TTFRenderer::initttf()
 {
     if(TTF_Init() < 0)
     {
@@ -30,20 +33,21 @@ bool initttf()
 }
 
 //opens a font with the given path and size in points
-//if fails, returns nullptr
-TTF_Font* openfont(const char * path, int size)
+//if fails, returns nullptr to internal value f
+void TTFRenderer::openfont(const char * inpath, int size)
 {
-    TTF_Font* f = TTF_OpenFont(path, size);
+    f = TTF_OpenFont(inpath, size);
     TTF_SetFontStyle(f, TTF_STYLE_NORMAL);
     TTF_SetFontOutline(f, 0);
     TTF_SetFontKerning(f, 1);
     TTF_SetFontHinting(f, TTF_HINTING_NORMAL);
-    return f;
+    fontcache[size] = f;
+    path = inpath;
 }
 
 //draws a string to the coordinates x, y in the current hud context at a scale factor `scale`
 //with a (BGRA) SDL_Color value as passed to its third parameter
-void renderttf(TTF_Font* f, const char* message, SDL_Color col, int x, int y, float scale)
+void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale)
 {
     glEnable(GL_BLEND);
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -75,3 +79,23 @@ void renderttf(TTF_Font* f, const char* message, SDL_Color col, int x, int y, fl
     SDL_FreeSurface(text);
 }
 
+//sets the current working font renderer to one with the appropriate font size
+//if the size does not exist already, creates a new one with the appropriate size
+void TTFRenderer::fontsize(int pts)
+{
+    auto itr = fontcache.find(pts);
+    if(itr == fontcache.end())
+    {
+        TTF_Font* newfont = TTF_OpenFont(path, pts);
+        TTF_SetFontStyle(newfont, TTF_STYLE_NORMAL);
+        TTF_SetFontOutline(newfont, 0);
+        TTF_SetFontKerning(newfont, 1);
+        TTF_SetFontHinting(newfont, TTF_HINTING_NORMAL);
+        fontcache[pts] = newfont;
+        f = newfont;
+    }
+    else
+    {
+        f = fontcache[pts];
+    }
+}
