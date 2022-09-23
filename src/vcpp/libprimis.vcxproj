@@ -120,6 +120,7 @@
     <ClInclude Include="..\engine\render\rendersky.h" />
     <ClInclude Include="..\engine\render\rendertext.h" />
     <ClInclude Include="..\engine\render\rendertimers.h" />
+    <ClInclude Include="..\engine\render\renderttf.h" />
     <ClInclude Include="..\engine\render\renderwindow.h" />
     <ClInclude Include="..\engine\render\shaderparam.h" />
     <ClInclude Include="..\engine\render\stain.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="..\engine\render\rendersky.cpp" />
     <ClCompile Include="..\engine\render\rendertext.cpp" />
     <ClCompile Include="..\engine\render\rendertimers.cpp" />
+    <ClCompile Include="..\engine\render\renderttf.cpp" />
     <ClCompile Include="..\engine\render\renderva.cpp" />
     <ClCompile Include="..\engine\render\renderwindow.cpp" />
     <ClCompile Include="..\engine\render\shader.cpp" />
