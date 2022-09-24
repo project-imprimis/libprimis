@@ -56,13 +56,13 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     SDL_Surface* text = TTF_RenderUTF8_Blended(f, message, col);
     glBindTexture(GL_TEXTURE_RECTANGLE, tex);
     //need to load it in reversed because of how SDL_ttf renders
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
+    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
 
-    float w = text->w*scale, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+
+    float w = text->w*scale,
           h = text->h*scale;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1, 1);
-    glBindTexture(GL_TEXTURE_RECTANGLE, tex);
     int tw = text->w,
         th = text->h;
     gle::defvertex(2);
