@@ -64,7 +64,7 @@ FVARR(causticcontrast, 0, 0.6f, 2);
 FVARR(causticoffset, 0, 0.7f, 1);
 VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
 
-void setupcaustics(int tmu, float surface = -1e16f)
+static void setupcaustics(int tmu, float surface = -1e16f)
 {
     if(!caustictex[0])
     {
@@ -102,7 +102,7 @@ void setupcaustics(int tmu, float surface = -1e16f)
     GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
 }
 
-void rendercaustics(float surface, float syl, float syr)
+static void rendercaustics(float surface, float syl, float syr)
 {
     if(!caustics || !causticscale || !causticmillis)
     {
@@ -343,7 +343,7 @@ static int renderwaterlod(int x, int y, int z, int size, int mat)
 
 /* renderflatwater: renders water with no vertex water subdivision
  */
-void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
+static void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 {
     if(mat == Mat_Water)
     {
