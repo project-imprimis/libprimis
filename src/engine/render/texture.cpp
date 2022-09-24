@@ -330,7 +330,7 @@ VARF(trilinear,     0,   1,      1,     initwarning("texture filtering", Init_Lo
 VARF(bilinear,      0,   1,      1,     initwarning("texture filtering", Init_Load));
 VARFP(aniso,        0,   0,      16,    initwarning("texture filtering", Init_Load));
 
-int formatsize(GLenum format)
+static int formatsize(GLenum format)
 {
     switch(format)
     {
