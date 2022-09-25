@@ -574,7 +574,7 @@ const GLint *swizzlemask(GLenum format)
     return nullptr;
 }
 
-void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
+static void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
 {
     glBindTexture(target, tnum);
     glTexParameteri(target, GL_TEXTURE_WRAP_S, clamp&1 ? GL_CLAMP_TO_EDGE : (clamp&0x100 ? GL_MIRRORED_REPEAT : GL_REPEAT));
@@ -799,7 +799,7 @@ void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int fi
     uploadtexture(subtarget, component, tw, th, format, type, pixels, pw, ph, pitch, mipmap);
 }
 
-void createcompressedtexture(int tnum, int w, int h, const uchar *data, int align, int blocksize, int levels, int clamp, int filter, GLenum format, GLenum subtarget, bool swizzle = false)
+static void createcompressedtexture(int tnum, int w, int h, const uchar *data, int align, int blocksize, int levels, int clamp, int filter, GLenum format, GLenum subtarget, bool swizzle = false)
 {
     GLenum target = textarget(subtarget);
     if(tnum)
