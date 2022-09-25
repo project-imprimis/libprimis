@@ -25,6 +25,8 @@
 VAR(tqaaresolvegather, 1, 0, 0);
 matrix4 nojittermatrix;
 
+bool multisampledaa();
+
 namespace //internal functions incl. AA implementations
 {
     /* TQAA: Temporal Quincunx Anti Aliasing */
