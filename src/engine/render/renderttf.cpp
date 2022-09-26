@@ -49,33 +49,39 @@ void TTFRenderer::openfont(const char * inpath, int size)
 //with a (BGRA) SDL_Color value as passed to its third parameter
 void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale)
 {
-    glEnable(GL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    GLuint tex;
-    glGenTextures(1, &tex);
+    if(!message)
+    {
+        return;
+    }
     SDL_Surface* text = TTF_RenderUTF8_Blended(f, message, col);
-    glBindTexture(GL_TEXTURE_RECTANGLE, tex);
-    //need to load it in reversed because of how SDL_ttf renders
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
+    if(text)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        GLuint tex;
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_RECTANGLE, tex);
+        //need to load it in reversed because of how SDL_ttf renders
+        glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
 
-
-    float w = text->w*scale,
-          h = text->h*scale;
-    SETSHADER(hudrect);
-    gle::colorf(1, 1, 1, 1);
-    int tw = text->w,
-        th = text->h;
-    gle::defvertex(2);
-    gle::deftexcoord0();
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(x+w, y);  gle::attribf(tw, 0);
-    gle::attribf(x, y);    gle::attribf(0, 0);
-    gle::attribf(x+w,y+h); gle::attribf(tw, th);
-    gle::attribf(x,y+h);   gle::attribf(0, th);
-    gle::end();
-    //clean up
-    hudshader->set();
-    glDeleteTextures(1, &tex);
+        float w = text->w*scale,
+              h = text->h*scale;
+        SETSHADER(hudrect);
+        gle::colorf(1, 1, 1, 1);
+        int tw = text->w,
+            th = text->h;
+        gle::defvertex(2);
+        gle::deftexcoord0();
+        gle::begin(GL_TRIANGLE_STRIP);
+        gle::attribf(x+w, y);  gle::attribf(tw, 0);
+        gle::attribf(x, y);    gle::attribf(0, 0);
+        gle::attribf(x+w,y+h); gle::attribf(tw, th);
+        gle::attribf(x,y+h);   gle::attribf(0, th);
+        gle::end();
+        //clean up
+        hudshader->set();
+        glDeleteTextures(1, &tex);
+    }
     SDL_FreeSurface(text);
 }
 
