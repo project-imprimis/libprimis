@@ -128,9 +128,8 @@ void synctimers()
 {
     timercycle = (timercycle + 1) % timer::Timer_MaxQuery;
 
-    for(uint i = 0; i < timers.size(); i++)
+    for(timer& t : timers)
     {
-        timer &t = timers[i];
         if(t.waiting&(1<<timercycle))
         {
             GLint available = 0;
@@ -158,9 +157,8 @@ void synctimers()
  */
 void cleanuptimers()
 {
-    for(uint i = 0; i < timers.size(); i++)
+    for(const timer& t : timers)
     {
-        timer &t = timers[i];
         if(t.gpu)
         {
             glDeleteQueries(timer::Timer_MaxQuery, t.query);
@@ -196,9 +194,9 @@ void printtimers(int conw, int conh, int framemillis)
     }
     if(usetimers)
     {
-        for(uint i = 0; i < timerorder.size(); i++)
+        for(int i : timerorder)
         {
-            timer &t = timers[timerorder[i]];
+            timer &t = timers[i];
             if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200)
             {
                 t.print = t.result;
