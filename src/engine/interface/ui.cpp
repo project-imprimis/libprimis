@@ -2600,8 +2600,14 @@ namespace UI
     {
         char *str;
 
-        TextString() : str(nullptr) {}
-        ~TextString() { delete[] str; }
+        TextString() : str(nullptr)
+        {
+        }
+
+        ~TextString()
+        {
+            delete[] str;
+        }
 
         void setup(const char *str_, float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
         {
