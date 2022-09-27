@@ -577,9 +577,8 @@ void renderwaterfalls()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
         glActiveTexture(GL_TEXTURE0);
-        for(uint i = 0; i < surfs.size(); i++)
+        for(materialsurface& m : surfs)
         {
-            materialsurface &m = surfs[i];
             renderwaterfall(m, 0.1f, &matnormals[m.orient]);
         }
         xtraverts += gle::end();
@@ -696,9 +695,8 @@ void renderwater()
         if(belowshader)
         {
             belowshader->set();
-            for(uint i = 0; i < surfs.size(); i++)
+            for(materialsurface& m : surfs)
             {
-                materialsurface &m = surfs[i];
                 if(camera1->o.z >= m.o.z - wateroffset)
                 {
                     continue;
