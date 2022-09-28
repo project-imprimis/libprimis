@@ -602,9 +602,8 @@ void savevslot(stream *f, VSlot &vs, int prev)
     if(vs.changed & (1 << VSlot_ShParam))
     {
         f->put<ushort>(vs.params.size());
-        for(uint i = 0; i < vs.params.size(); i++)
+        for(const SlotShaderParam& p : vs.params)
         {
-            SlotShaderParam &p = vs.params[i];
             f->put<ushort>(std::strlen(p.name));
             f->write(p.name, std::strlen(p.name));
             for(int k = 0; k < 4; ++k)
@@ -872,9 +871,9 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     hdr.worldsize = worldsize;
     hdr.numents = 0;
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity* const& e : ents)
     {
-        if(ents[i]->type!=EngineEnt_Empty)
+        if(e->type!=EngineEnt_Empty)
         {
             hdr.numents++;
         }
