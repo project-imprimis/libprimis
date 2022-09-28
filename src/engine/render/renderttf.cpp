@@ -1,10 +1,10 @@
 /** @brief SDL2_TTF text renderer
- * 
+ *
  * This file implements the wrapper functions needed to use SDL_TTF in the applications
  * where Tessfont/rendertext.cpp would have been used, allowing for any TTF font and
  * any Unicode character to be renderered at any font size, which are all limitations
  * of the legacy Tessfont font sampling system.
- * 
+ *
  */
 #include "SDL_ttf.h"
 
@@ -83,6 +83,28 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
         glDeleteTextures(1, &tex);
     }
     SDL_FreeSurface(text);
+}
+
+//returns a GLuint refering to a rectangle texture containing the rendered image of a texture
+GLuint TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
+{
+    if(!message)
+    {
+        return 0;
+    }
+        GLuint tex = 0;
+    SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, col, wrap);
+    if(text)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_RECTANGLE, tex);
+        //need to load it in reversed because of how SDL_ttf renders
+        glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
+    }
+    SDL_FreeSurface(text);
+    return tex;
 }
 
 //sets the current working font renderer to one with the appropriate font size
