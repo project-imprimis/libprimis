@@ -2005,9 +2005,8 @@ void cubeworld::updateparticles()
         int emitted = 0,
             replayed = 0;
         addedparticles = 0;
-        for(uint i = 0; i < emitters.size(); i++) //foreach particle emitter
+        for(particleemitter& pe : emitters) //foreach particle emitter
         {
-            particleemitter &pe = emitters[i]; //bring one of the emitters into scope
             extentity &e = *pe.ent; //get info for the entity associated w/ent
             if(e.o.dist(camera1->o) > maxparticledistance) //distance check (don't update faraway particle ents)
             {
