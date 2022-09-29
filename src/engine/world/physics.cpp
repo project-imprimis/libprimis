@@ -337,9 +337,8 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
         const std::vector<physent *> &dynents = checkdynentcache(x, y);
-        for(uint i = 0; i < dynents.size(); i++)
+        for(physent* const& o: dynents)
         {
-            physent *o = dynents[i];
             if(o==d || d->o.reject(o->o, d->radius+o->radius))
             {
                 continue;
@@ -574,9 +573,9 @@ VAR(testtricol, 0, 0, 2);
 bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
 {
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < oc.mapmodels.size(); i++)
+    for(int &i : oc.mapmodels)
     {
-        extentity &e = *ents[oc.mapmodels[i]];
+        extentity &e = *ents[i];
         if(e.flags&EntFlag_NoCollide || !(static_cast<int>(mapmodels.size()) > e.attr1))
         {
             continue;
