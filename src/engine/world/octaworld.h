@@ -85,7 +85,8 @@ struct clipplanes
     vec o, r, v[8];
     plane p[12];
     uchar side[12];
-    uchar size, visible;
+    uchar size, //should always be between 0..11 (a valid index to p/side arrays above)
+          visible;
     const cube *owner;
     int version;
 };
