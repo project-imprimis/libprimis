@@ -47,7 +47,9 @@ struct vertinfo
 
 struct octaentities
 {
-    std::vector<int> mapmodels, decals, other;
+    std::vector<int> mapmodels, //set of indices refering to a position in the getentities() vector corresponding to a mapmodel
+                     decals,    //set of indices refering to a position in the getentities() vector corresponding to a decal
+                     other;     //set of indices refering to a position in the getentities() vector corresponding to a non-mapmodel non-decal entity (sound etc.)
     occludequery *query;
     octaentities *next, *rnext;
     int distance;
