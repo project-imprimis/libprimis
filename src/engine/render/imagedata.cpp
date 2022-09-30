@@ -691,9 +691,9 @@ void ImageData::texnormal(int emphasis)
             normal.y += src[((y+h-1)%h)*pitch + x*bpp];
             normal.y -= src[((y+1)%h)*pitch + x*bpp];
             normal.normalize();
-            *dst++ = static_cast<uchar>(127.5f + normal.x*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.y*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.z*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.x*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.y*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.z*127.5f);
         }
     }
     replace(d);
