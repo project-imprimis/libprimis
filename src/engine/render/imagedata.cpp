@@ -551,18 +551,24 @@ void ImageData::texblend(ImageData &s, ImageData &m)
             return;
         }
         //need to declare int for each var because it's inside a macro body
-        if(bpp < 3) READ_WRITE_TEX((*this), s,
-            int srcblend = src[1];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-        );
-        else READ_WRITE_TEX((*this), s,
-            int srcblend = src[3];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
-        );
+        if(bpp < 3)
+        {
+            READ_WRITE_TEX((*this), s,
+                int srcblend = src[1];
+                int dstblend = 255 - srcblend;
+                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            );
+        }
+        else
+        {
+            READ_WRITE_TEX((*this), s,
+                int srcblend = src[3];
+                int dstblend = 255 - srcblend;
+                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+                dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
+                dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
+            );
+        }
     }
     else
     {
