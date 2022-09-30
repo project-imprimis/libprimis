@@ -43,6 +43,7 @@ enum
 };
 
 const int maxvariantrows = 32;
+extern hashnameset<GlobalShaderParamState> globalparams;
 
 struct Slot;
 struct VSlot;

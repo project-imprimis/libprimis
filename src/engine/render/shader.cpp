@@ -32,7 +32,7 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-static hashnameset<GlobalShaderParamState> globalparams(256);
+hashnameset<GlobalShaderParamState> globalparams(256);
 static hashtable<const char *, int> localparams(256);
 static hashnameset<Shader> shaders(256);
 static Shader *slotshader = nullptr;
@@ -345,19 +345,6 @@ static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum 
     l.format = format;
     s.localparams.push_back(l);
     return idx;
-}
-
-GlobalShaderParamState *getglobalparam(const char *name)
-{
-    GlobalShaderParamState *param = globalparams.access(name);
-    if(!param)
-    {
-        param = &globalparams[name];
-        param->name = name;
-        std::memset(param->buf, -1, sizeof(param->buf));
-        param->version = -1;
-    }
-    return param;
 }
 
 static void addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
