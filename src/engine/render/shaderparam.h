@@ -246,8 +246,14 @@ class LocalShaderParam
 #define SETSHADER(name, ...) \
     do { \
         static Shader *name##shader = nullptr; \
-        if(!name##shader) name##shader = lookupshaderbyname(#name); \
-        name##shader->set(__VA_ARGS__); \
+        if(!name##shader) \
+        { \
+            name##shader = lookupshaderbyname(#name); \
+        } \
+        if(name##shader) \
+        { \
+            name##shader->set(__VA_ARGS__); \
+        } \
     } while(0)
 #define SETVARIANT(name, ...) \
     do { \
