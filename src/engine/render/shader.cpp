@@ -440,10 +440,10 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
     }
 }
 
-static void allocglslactiveuniforms(Shader &s)
+void Shader::allocglslactiveuniforms()
 {
     GLint numactive = 0;
-    glGetProgramiv(s.program, GL_ACTIVE_UNIFORMS, &numactive);
+    glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &numactive);
     string name;
     for(int i = 0; i < numactive; ++i)
     {
@@ -451,7 +451,7 @@ static void allocglslactiveuniforms(Shader &s)
         GLint size = 0;
         GLenum format = GL_FLOAT_VEC4;
         name[0] = '\0';
-        glGetActiveUniform(s.program, i, sizeof(name)-1, &namelen, &size, &format, name);
+        glGetActiveUniform(program, i, sizeof(name)-1, &namelen, &size, &format, name);
         if(namelen <= 0 || size <= 0)
         {
             continue;
@@ -462,13 +462,13 @@ static void allocglslactiveuniforms(Shader &s)
         {
             *brak = '\0';
         }
-        setglsluniformformat(s, name, format, size);
+        setglsluniformformat(*this, name, format, size);
     }
 }
 
 void Shader::allocparams()
 {
-    allocglslactiveuniforms(*this);
+    allocglslactiveuniforms();
 }
 
 int GlobalShaderParamState::nextversion = 0;

@@ -137,6 +137,7 @@ class Shader
         void bindprograms();
         void setvariant_(int col, int row);
         void set_();
+        void allocglslactiveuniforms();
 };
 
 class GlobalShaderParam
