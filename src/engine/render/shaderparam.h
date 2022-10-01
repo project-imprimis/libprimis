@@ -138,6 +138,8 @@ class Shader
         void setvariant_(int col, int row);
         void set_();
         void allocglslactiveuniforms();
+        void setglsluniformformat(const char *name, GLenum format, int size);
+
 };
 
 class GlobalShaderParam

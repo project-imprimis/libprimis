@@ -358,7 +358,7 @@ static void addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, in
     s.globalparams.push_back(g);
 }
 
-static void setglsluniformformat(Shader &s, const char *name, GLenum format, int size)
+void Shader::setglsluniformformat(const char *name, GLenum format, int size)
 {
     switch(format)
     {
@@ -393,50 +393,51 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
     {
         return;
     }
-    int loc = glGetUniformLocation(s.program, name);
+    int loc = glGetUniformLocation(program, name);
     if(loc < 0)
     {
         return;
     }
-    for(uint j = 0; j < s.defaultparams.size(); j++)
+    for(uint j = 0; j < defaultparams.size(); j++)
     {
-        if(s.defaultparams[j].loc == loc)
+        if(defaultparams[j].loc == loc)
         {
-            s.defaultparams[j].format = format;
+            defaultparams[j].format = format;
             return;
         }
     }
-    for(uint j = 0; j < s.uniformlocs.size(); j++)
+    for(uint j = 0; j < uniformlocs.size(); j++)
     {
-        if(s.uniformlocs[j].loc == loc)
-        {
-            return;
-        }
-    }
-    for(uint j = 0; j < s.globalparams.size(); j++)
-    {
-        if(s.globalparams[j].loc == loc)
+        if(uniformlocs[j].loc == loc)
         {
             return;
         }
     }
-    for(uint j = 0; j < s.localparams.size(); j++)
+    for(uint j = 0; j < globalparams.size(); j++)
     {
-        if(s.localparams[j].loc == loc)
+        if(globalparams[j].loc == loc)
+        {
+            return;
+        }
+    }
+    for(uint j = 0; j < localparams.size(); j++)
+    {
+        if(localparams[j].loc == loc)
         {
             return;
         }
     }
 
     name = getshaderparamname(name);
-    GlobalShaderParamState *param = globalparams.access(name);
+    //must explicitly enumerate scope because globalparams is a field & gvar :(
+    GlobalShaderParamState *param = ::globalparams.access(name);
     if(param)
     {
-        addglobalparam(s, param, loc, size, format);
+        addglobalparam(*this, param, loc, size, format);
     }
     else
     {
-        addlocalparam(s, name, loc, size, format);
+        addlocalparam(*this, name, loc, size, format);
     }
 }
 
@@ -462,7 +463,7 @@ void Shader::allocglslactiveuniforms()
         {
             *brak = '\0';
         }
-        setglsluniformformat(*this, name, format, size);
+        setglsluniformformat(name, format, size);
     }
 }
 
