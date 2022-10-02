@@ -598,6 +598,8 @@ class stainrenderer
                     {
                         count += endvert;
                     }
+                    //note: using -> on address `0` aka nullptr is undefined behavior
+                    //this allows passing the location of the fields' position in the object to opengl
                     const stainvert *ptr = 0;
                     gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
                     gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
