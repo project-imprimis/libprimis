@@ -20,6 +20,7 @@
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendermodel.h"
+#include "renderwindow.h"
 #include "stain.h"
 #include "shaderparam.h"
 #include "texture.h"
