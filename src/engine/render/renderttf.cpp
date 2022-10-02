@@ -92,7 +92,7 @@ GLuint TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y
     {
         return 0;
     }
-        GLuint tex = 0;
+    GLuint tex = 0;
     SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, col, wrap);
     if(text)
     {
