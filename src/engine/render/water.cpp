@@ -676,7 +676,7 @@ void renderwater()
         Shader *belowshader = nullptr;
         if(drawtex != Draw_TexMinimap)
         {
-            SETWATERSHADER(below, underwater);
+            SETWATERSHADER(below, underwater); //if rendering water, and not rendering a minimap, sets belowshader to non-null
         }
         #undef SETWATERSHADER
         //======================================================================
