@@ -91,29 +91,6 @@ void GlobalShaderParam::set(const matrix4 &m)
     std::memcpy(resolve()->fval, m.a.v, sizeof(m));
 }
 
-void GlobalShaderParam::seti(int x, int y, int z, int w)
-{
-    GlobalShaderParamState *g = resolve();
-    g->ival[0] = x;
-    g->ival[1] = y;
-    g->ival[2] = z;
-    g->ival[3] = w;
-}
-void GlobalShaderParam::set(const ivec &v, int w)
-{
-    seti(v.x, v.y, v.z, w);
-}
-
-void GlobalShaderParam::set(const ivec2 &v, int z, int w)
-{
-    seti(v.x, v.y, z, w);
-}
-
-void GlobalShaderParam::set(const vec4<int> &v)
-{
-    seti(v.x, v.y, v.z, v.w);
-}
-
 void GlobalShaderParam::setu(uint x, uint y, uint z, uint w)
 {
     GlobalShaderParamState *g = resolve();

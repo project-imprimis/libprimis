@@ -156,10 +156,6 @@ class GlobalShaderParam
         void set(const matrix2 &m);
         void set(const matrix3 &m);
         void set(const matrix4 &m);
-        void seti(int x = 0, int y = 0, int z = 0, int w = 0);
-        void set(const ivec &v, int w = 0);
-        void set(const ivec2 &v, int z = 0, int w = 0);
-        void set(const vec4<int> &v);
         void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
 
         template<class T>
