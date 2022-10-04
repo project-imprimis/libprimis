@@ -1,3 +1,6 @@
+#ifndef RENDERTTF_H_
+#define RENDERTTF_H_
+
 struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
 
@@ -16,3 +19,5 @@ class TTFRenderer
 };
 
 extern TTFRenderer ttr;
+
+#endif
