@@ -151,9 +151,6 @@ class GlobalShaderParam
         void setf(float x = 0, float y = 0, float z = 0, float w = 0);
         void set(const vec &v, float w = 0);
         void set(const vec2 &v, float z = 0, float w = 0);
-        void set(const vec4<float> &v);
-        void set(const plane &p);
-        void set(const matrix2 &m);
         void set(const matrix3 &m);
         void set(const matrix4 &m);
         void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);

@@ -66,21 +66,6 @@ void GlobalShaderParam::set(const vec2 &v, float z, float w)
     setf(v.x, v.y, z, w);
 }
 
-void GlobalShaderParam::set(const vec4<float> &v)
-{
-    setf(v.x, v.y, v.z, v.w);
-}
-
-void GlobalShaderParam::set(const plane &p)
-{
-    setf(p.x, p.y, p.z, p.offset);
-}
-
-void GlobalShaderParam::set(const matrix2 &m)
-{
-    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
-}
-
 void GlobalShaderParam::set(const matrix3 &m)
 {
     std::memcpy(resolve()->fval, m.a.v, sizeof(m));
