@@ -194,12 +194,6 @@ class LocalShaderParam
         void set(const ivec &v, int w = 0);
         void set(const ivec2 &v, int z = 0, int w = 0);
         void set(const vec4<int> &v);
-        void setv(const int *i, int n = 1);
-        void setv(const ivec *v, int n = 1);
-        void setv(const ivec2 *v, int n = 1);
-        void setv(const vec4<int> *v, int n = 1);
-        void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
-        void setv(const uint *u, int n = 1);
     private:
         const char *name;
         int loc;
