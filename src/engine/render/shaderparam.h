@@ -178,7 +178,6 @@ class LocalShaderParam
         void set(const vec &v, float w = 0);
         void set(const vec2 &v, float z = 0, float w = 0);
         void set(const vec4<float> &v);
-        void set(const plane &p);
         void setv(const vec *v, int n = 1);
         void setv(const vec2 *v, int n = 1);
         void setv(const vec4<float> *v, int n = 1);

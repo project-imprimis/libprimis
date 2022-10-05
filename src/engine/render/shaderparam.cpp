@@ -201,11 +201,6 @@ void LocalShaderParam::set(const vec4<float> &v)
     setf(v.x, v.y, v.z, v.w);
 }
 
-void LocalShaderParam::set(const plane &p)
-{
-    setf(p.x, p.y, p.z, p.offset);
-}
-
 void LocalShaderParam::setv(const float *f, int n)
 {
     ShaderParamBinding *b = resolve();
