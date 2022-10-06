@@ -363,22 +363,3 @@ void sett(T x, T y, T z, T w, LocalShaderParam & sh)
         }
     }
 }
-void LocalShaderParam::seti(int x, int y, int z, int w)
-{
-    sett<int>(x, y, z, w, *this);
-}
-
-void LocalShaderParam::set(const ivec &v, int w)
-{
-    seti(v.x, v.y, v.z, w);
-}
-
-void LocalShaderParam::set(const ivec2 &v, int z, int w)
-{
-    seti(v.x, v.y, z, w);
-}
-
-void LocalShaderParam::set(const vec4<int> &v)
-{
-    seti(v.x, v.y, v.z, v.w);
-}
