@@ -26,7 +26,7 @@ namespace gle
 
     extern int enabled;
     extern void forcedisable();
-    inline void disable() { if(enabled) forcedisable(); }
+    extern void disable();
 
     extern void begin(GLenum mode);
     extern void begin(GLenum mode, int numverts);

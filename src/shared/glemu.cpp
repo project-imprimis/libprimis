@@ -403,6 +403,14 @@ namespace gle
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    void disable()
+    {
+        if(enabled)
+        {
+            forcedisable();
+        }
+    }
+
     void setup()
     {
         if(!defaultvao)
