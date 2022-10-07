@@ -29,7 +29,7 @@ namespace gle
     ucharbuf attribbuf;
     static uchar *attribdata;
     static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
-    int enabled = 0;
+    static int enabled = 0;
     static int numattribs = 0,
                attribmask = 0,
                numlastattribs = 0,
@@ -101,7 +101,7 @@ namespace gle
         glDrawRangeElements(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, (ushort *)0 + offset*6);
     }
 
-    void defattrib(int type, int size, int format)
+    static void defattrib(int type, int size, int format)
     {
         if(type == Attribute_Vertex)
         {
