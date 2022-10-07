@@ -37,8 +37,10 @@ namespace gle
     extern void deftexcoord0(int size = 2, int format = GL_FLOAT);
     extern void defnormal(int size = 3, int format = GL_FLOAT);
 
-    extern void colorf(float x, float y, float z);
-    extern void colorf(float x, float y, float z, float w);
+    /**
+     *  if w = 0, then glvertexattrib3f is called, else glvertexattrib4f
+     */
+    extern void colorf(float x, float y, float z, float w = 0.0f);
 
     extern void color(const vec &v);
     extern void color(const vec &v, float w);

@@ -448,8 +448,17 @@ namespace gle
     void deftexcoord0(int size, int format) { defattrib(Attribute_TexCoord0, size, format); }
     void defnormal(int size, int format) { defattrib(Attribute_Normal, size, format); }
 
-    void colorf(float x, float y, float z) { glVertexAttrib3f(Attribute_Color, x, y, z); }
-    void colorf(float x, float y, float z, float w) { glVertexAttrib4f(Attribute_Color, x, y, z, w); }
+    void colorf(float x, float y, float z, float w)
+    {
+        if(w != 0.0f)
+        {
+            glVertexAttrib4f(Attribute_Color, x, y, z, w);
+        }
+        else
+        {
+            glVertexAttrib3f(Attribute_Color, x, y, z);
+        }
+    }
 
     void color(const vec &v) { glVertexAttrib3fv(Attribute_Color, v.v); }
     void color(const vec &v, float w) { glVertexAttrib4f(Attribute_Color, v.x, v.y, v.z, w); }
