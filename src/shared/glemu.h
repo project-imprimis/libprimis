@@ -31,7 +31,6 @@ namespace gle
     extern void begin(GLenum mode);
     extern void begin(GLenum mode, int numverts);
     extern void multidraw();
-    extern void defattrib(int type, int size, int format);
 
     extern void defvertex(int size = 3, int format = GL_FLOAT);
     extern void defcolor(int size = 3, int format = GL_FLOAT);
