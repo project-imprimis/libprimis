@@ -39,34 +39,6 @@ extern PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_;
 // GL_EXT_framebuffer_multisample
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;
 
-#ifndef GL_ARB_texture_multisample
-#define GL_ARB_texture_multisample 1
-#define GL_SAMPLE_POSITION                0x8E50
-#define GL_SAMPLE_MASK                    0x8E51
-#define GL_SAMPLE_MASK_VALUE              0x8E52
-#define GL_MAX_SAMPLE_MASK_WORDS          0x8E59
-#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE   0x9101
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY   0x9102
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY 0x9103
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE 0x9104
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY 0x9105
-#define GL_TEXTURE_SAMPLES                0x9106
-#define GL_TEXTURE_FIXED_SAMPLE_LOCATIONS 0x9107
-#define GL_SAMPLER_2D_MULTISAMPLE         0x9108
-#define GL_INT_SAMPLER_2D_MULTISAMPLE     0x9109
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE 0x910A
-#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY   0x910B
-#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910C
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910D
-#define GL_MAX_COLOR_TEXTURE_SAMPLES      0x910E
-#define GL_MAX_DEPTH_TEXTURE_SAMPLES      0x910F
-#define GL_MAX_INTEGER_SAMPLES            0x9110
-typedef void (APIENTRYP PFNGLTEXIMAGE2DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-typedef void (APIENTRYP PFNGLTEXIMAGE3DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
-typedef void (APIENTRYP PFNGLGETMULTISAMPLEFVPROC) (GLenum pname, GLuint index, GLfloat *val);
-typedef void (APIENTRYP PFNGLSAMPLEMASKIPROC) (GLuint index, GLbitfield mask);
-#endif
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_;
 extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
 extern PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_;
