@@ -24,7 +24,6 @@ namespace gle
     inline const char * const attribnames[Attribute_NumAttributes] = { "vvertex", "vcolor", "vtexcoord0", "vtexcoord1", "vnormal", "vtangent", "vboneweight", "vboneindex" };
     extern ucharbuf attribbuf;
 
-    extern void forcedisable();
     extern void disable();
 
     extern void begin(GLenum mode);

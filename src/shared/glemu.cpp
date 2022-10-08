@@ -384,7 +384,7 @@ namespace gle
         return numvertexes;
     }
 
-    void forcedisable()
+    static void forcedisable()
     {
         for(int i = 0; enabled; i++)
         {
