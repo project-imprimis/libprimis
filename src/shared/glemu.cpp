@@ -417,7 +417,7 @@ namespace gle
         {
             glGenVertexArrays_(1, &defaultvao);
         }
-        glBindVertexArray_(defaultvao);
+        glBindVertexArray(defaultvao);
         attribdata = new uchar[maxvbosize];
         attribbuf.reset(attribdata, maxvbosize);
     }

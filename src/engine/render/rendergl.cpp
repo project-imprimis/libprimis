@@ -116,7 +116,6 @@ PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
 PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
 
 // GL_ARB_vertex_array_object
-PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_    = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
 
@@ -330,7 +329,6 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 4 draw buffers.");
     }
     //OpenGL 3.0
-    glBindVertexArray_    = (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
     glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
 
