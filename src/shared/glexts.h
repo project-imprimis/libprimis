@@ -185,7 +185,6 @@ typedef void (APIENTRYP PFNGLBINDFRAGDATALOCATIONINDEXEDPROC) (GLuint program, G
 
 #ifndef GL_VERSION_4_0
 #define GL_VERSION_4_0 1
-#define GL_SAMPLE_SHADING                 0x8C36
 #define GL_MIN_SAMPLE_SHADING_VALUE       0x8C37
 typedef void (APIENTRYP PFNGLMINSAMPLESHADINGPROC) (GLfloat value);
 typedef void (APIENTRYP PFNGLBLENDEQUATIONIPROC) (GLuint buf, GLenum mode);
