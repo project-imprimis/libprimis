@@ -7,10 +7,17 @@ typedef struct _TTF_Font TTF_Font;
 class TTFRenderer
 {
     public:
+        struct TTFSurface
+        {
+            GLuint tex;
+            uint w;
+            uint h;
+        };
+
         bool initttf();
         void openfont(const char * path, int size);
         void renderttf(const char* message, SDL_Color col, int x, int y, float scale = 1.f, uint wrap = 0);
-        GLuint renderttfgl(const char* message, SDL_Color col, int x, int y, float scale = 1.f, uint wrap = 0);
+        TTFSurface renderttfgl(const char* message, SDL_Color col, int x, int y, float scale = 1.f, uint wrap = 0);
         void fontsize(int pts = 12);
     private:
         TTF_Font* f;                         //the current working font

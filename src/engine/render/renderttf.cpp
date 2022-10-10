@@ -53,23 +53,15 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     {
         return;
     }
-    SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, col, wrap);
-    if(text)
+    TTFSurface tex = renderttfgl(message, col, x, y, scale, wrap);
+    if(tex.tex)
     {
-        glEnable(GL_BLEND);
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        GLuint tex;
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_RECTANGLE, tex);
-        //need to load it in reversed because of how SDL_ttf renders
-        glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
-
-        float w = text->w*scale,
-              h = text->h*scale;
+        float w = tex.w*scale,
+              h = tex.h*scale;
         SETSHADER(hudrect);
         gle::colorf(1, 1, 1, 1);
-        int tw = text->w,
-            th = text->h;
+        int tw = tex.w,
+            th = tex.h;
         gle::defvertex(2);
         gle::deftexcoord0();
         gle::begin(GL_TRIANGLE_STRIP);
@@ -80,17 +72,16 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
         gle::end();
         //clean up
         hudshader->set();
-        glDeleteTextures(1, &tex);
+        glDeleteTextures(1, &(tex.tex));
     }
-    SDL_FreeSurface(text);
 }
 
 //returns a GLuint refering to a rectangle texture containing the rendered image of a texture
-GLuint TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
+TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
     if(!message)
     {
-        return 0;
+        return {0, 0, 0};
     }
     GLuint tex = 0;
     SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, col, wrap);
@@ -103,8 +94,9 @@ GLuint TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y
         //need to load it in reversed because of how SDL_ttf renders
         glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
     }
+    TTFSurface tts{tex, text->w, text->h};
     SDL_FreeSurface(text);
-    return tex;
+    return tts;
 }
 
 //sets the current working font renderer to one with the appropriate font size
