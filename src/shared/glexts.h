@@ -147,11 +147,6 @@ typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_;
 extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_;
 
-#ifndef GL_ARB_depth_clamp
-#define GL_ARB_depth_clamp 1
-#define GL_DEPTH_CLAMP                    0x864F
-#endif
-
 #ifndef GL_ARB_texture_swizzle
 #define GL_ARB_texture_swizzle 1
 #define GL_TEXTURE_SWIZZLE_R              0x8E42
