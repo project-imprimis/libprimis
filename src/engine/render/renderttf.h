@@ -10,8 +10,8 @@ class TTFRenderer
         struct TTFSurface
         {
             GLuint tex;
-            uint w;
-            uint h;
+            int w;
+            int h;
         };
 
         bool initttf();
