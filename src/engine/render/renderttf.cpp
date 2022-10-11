@@ -74,9 +74,13 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
         hudshader->set();
         glDeleteTextures(1, &(tex.tex));
     }
+    else
+    {
+        printf("failed to render text:  %s\n", message);
+    }
 }
 
-//returns a GLuint refering to a rectangle texture containing the rendered image of a texture
+//returns an object containing a GLuint and its dimensions refering to a rectangle texture containing the rendered image of a texture
 TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
     if(!message)
