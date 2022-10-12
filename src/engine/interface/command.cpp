@@ -1516,7 +1516,7 @@ const char *parsestring(const char *p)
             }
             case '^':
             {
-                if(*++p)
+                if(*(++p))
                 {
                     break;
                 }
@@ -1532,7 +1532,7 @@ int unescapestring(char *dst, const char *src, const char *end)
     char *start = dst;
     while(src < end)
     {
-        int c = *src++;
+        int c = *(src++);
         if(c == '^')
         {
             if(src >= end)
@@ -1559,14 +1559,14 @@ int unescapestring(char *dst, const char *src, const char *end)
                 }
                 default:
                 {
-                    *dst++ = e;
+                    *(dst++) = e;
                     break;
                 }
             }
         }
         else
         {
-            *dst++ = c;
+            *(dst++) = c;
         }
     }
     *dst = '\0';
