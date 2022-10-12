@@ -1488,7 +1488,22 @@ void initcontrolcmds()
     addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
     addcommand("?", reinterpret_cast<identfun>(+[] (tagval *cond, tagval *t, tagval *f) { result(*(getbool(*cond) ? t : f)); }), "tTT", Id_Command);
 
-    addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code) { { if(id->type != Id_Alias || id->index < Max_Args) { return; } if(getbool(*v)) { identstack stack; pusharg(*id, *v, stack); v->type = Value_Null; id->flags &= ~Idf_Unknown; executeret(code, *commandret); poparg(*id); } }; }), "rTe", Id_Command);
+    addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code)
+    {
+        if(id->type != Id_Alias || id->index < Max_Args)
+        {
+            return;
+        }
+        if(getbool(*v))
+        {
+            identstack stack;
+            pusharg(*id, *v, stack);
+            v->type = Value_Null;
+            id->flags &= ~Idf_Unknown;
+            executeret(code, *commandret);
+            poparg(*id);
+        }
+    }), "rTe", Id_Command);
     addcommand("do", reinterpret_cast<identfun>(+[] (uint *body) { executeret(body, *commandret); }), "e", Id_Do);
     addcommand("append", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, true); }), "rt", Id_Command);
     addcommand("result", reinterpret_cast<identfun>(+[] (tagval *v) { { *commandret = *v; v->type = Value_Null; }; }), "T", Id_Result);
