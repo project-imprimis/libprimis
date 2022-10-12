@@ -19,8 +19,6 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
-#include "SDL_ttf.h"
-
 #include "rendergl.h"
 #include "rendertext.h"
 #include "shaderparam.h"
