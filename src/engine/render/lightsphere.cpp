@@ -101,7 +101,7 @@ namespace lightsphere
         }
         gle::bindvbo(vbuf);
         gle::bindebo(ebuf);
-        gle::vertexpointer(sizeof(vec), verts);
+        gle::vertexpointer(sizeof(vec), nullptr);
         gle::enablevertex();
     }
 
