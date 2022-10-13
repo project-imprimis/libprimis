@@ -14,8 +14,8 @@ namespace lightsphere
         GLushort *indices = nullptr;
         int numverts   = 0,
             numindices = 0;
-        GLuint vbuf = 0,
-               ebuf = 0;
+        GLuint vbuf = 0, //the GLuint pointing to the lightsphere vertex buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
+               ebuf = 0; //the GLuint pointing to the lightsphere element buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
 
         void init(int slices, int stacks)
         {
