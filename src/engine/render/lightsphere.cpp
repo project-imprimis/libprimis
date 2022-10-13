@@ -10,7 +10,6 @@ namespace lightsphere
 {
     namespace
     {
-        vec *verts = nullptr;
         GLushort *indices = nullptr;
         int numverts   = 0,
             numindices = 0;
@@ -20,7 +19,7 @@ namespace lightsphere
         void init(int slices, int stacks)
         {
             numverts = (stacks+1)*(slices+1);
-            verts = new vec[numverts];
+            vec * verts = new vec[numverts];
             float ds = 1.0f/slices,
                   dt = 1.0f/stacks,
                   t  = 1.0f;
