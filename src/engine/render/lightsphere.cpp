@@ -106,7 +106,7 @@ namespace lightsphere
 
     void draw()
     {
-        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
+        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, nullptr);
         xtraverts += numindices;
         glde++;
     }
