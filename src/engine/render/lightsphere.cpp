@@ -10,7 +10,6 @@ namespace lightsphere
 {
     namespace
     {
-        GLushort *indices = nullptr;
         int numverts   = 0,
             numindices = 0;
         GLuint vbuf = 0, //the GLuint pointing to the lightsphere vertex buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
@@ -39,7 +38,7 @@ namespace lightsphere
             }
 
             numindices = (stacks-1)*slices*3*2;
-            indices = new ushort[numindices];
+            GLushort *indices = new ushort[numindices];
             GLushort *curindex = indices;
             for(int i = 0; i < stacks; ++i)
             {
