@@ -41,7 +41,6 @@ extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_
 
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_;
 extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
-extern PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_;
 extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled

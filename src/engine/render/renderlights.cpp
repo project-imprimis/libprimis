@@ -532,7 +532,7 @@ void GBuffer::setupmsbuffer(int w, int h)
     for(int i = 0; i < msaasamples; ++i)
     {
         GLfloat vals[2];
-        glGetMultisamplefv_(GL_SAMPLE_POSITION, i, vals);
+        glGetMultisamplefv(GL_SAMPLE_POSITION, i, vals);
         msaapositions.emplace_back(vec2(vals[0], vals[1]));
     }
 
