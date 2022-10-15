@@ -202,202 +202,204 @@ void GBuffer::renderwaterfog(int mat, float surface)
 //(nothing to do with any other rendering)
 VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
 VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
+VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
 
-static int wx1, wy1, wx2, wy2, wsize;
-static float whscale, whoffset;
-
-static float wxscale = 1.0f,
-             wyscale = 1.0f,
-             wscroll = 0.0f;
-
-static void defvertwt()
+namespace
 {
-    gle::defvertex();
-    gle::deftexcoord0();
-}
+    int wx1, wy1, wx2, wy2, wsize;
+    float whscale, whoffset;
 
-static void vertwt(float v1, float v2, float v3)
-{
-    float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
-    float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
-    float h = wateramplitude*s-wateroffset;
-    gle::attribf(v1, v2, v3+h);
-    gle::attribf(wxscale*v1, wyscale*v2);
-}
+    float wxscale = 1.0f,
+                 wyscale = 1.0f,
+                 wscroll = 0.0f;
 
-static void defvertwtn()
-{
-    gle::defvertex();
-    gle::deftexcoord0();
-}
-
-static void vertwtn(float v1, float v2, float v3)
-{
-    float h = -wateroffset;
-    gle::attribf(v1, v2, v3+h);
-    gle::attribf(wxscale*v1, wyscale*v2);
-}
-
-static void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
-{
-    wx1 = xo;
-    wy1 = yo;
-    wx2 = wx1 + size,
-    wy2 = wy1 + size;
-    wsize = size;
-    whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
-    if(mat == Mat_Water)
+    void defvertwt()
     {
-        whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
-        defvertwt();
-        gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
-        for(int x = wx1; x<wx2; x += subdiv)
+        gle::defvertex();
+        gle::deftexcoord0();
+    }
+
+    void vertwt(float v1, float v2, float v3)
+    {
+        float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
+        float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
+        float h = wateramplitude*s-wateroffset;
+        gle::attribf(v1, v2, v3+h);
+        gle::attribf(wxscale*v1, wyscale*v2);
+    }
+
+    void defvertwtn()
+    {
+        gle::defvertex();
+        gle::deftexcoord0();
+    }
+
+    void vertwtn(float v1, float v2, float v3)
+    {
+        float h = -wateroffset;
+        gle::attribf(v1, v2, v3+h);
+        gle::attribf(wxscale*v1, wyscale*v2);
+    }
+
+    void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
+    {
+        wx1 = xo;
+        wy1 = yo;
+        wx2 = wx1 + size,
+        wy2 = wy1 + size;
+        wsize = size;
+        whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
+        if(mat == Mat_Water)
         {
-            vertwt(x,        wy1, z);
-            vertwt(x+subdiv, wy1, z);
-            for(int y = wy1; y<wy2; y += subdiv)
+            whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+            defvertwt();
+            gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
+            for(int x = wx1; x<wx2; x += subdiv)
             {
-                vertwt(x,        y+subdiv, z);
-                vertwt(x+subdiv, y+subdiv, z);
+                vertwt(x,        wy1, z);
+                vertwt(x+subdiv, wy1, z);
+                for(int y = wy1; y<wy2; y += subdiv)
+                {
+                    vertwt(x,        y+subdiv, z);
+                    vertwt(x+subdiv, y+subdiv, z);
+                }
+                gle::multidraw();
             }
-            gle::multidraw();
+            xtraverts += gle::end();
         }
-        xtraverts += gle::end();
     }
-}
 
-static int calcwatersubdiv(int x, int y, int z, int size)
-{
-    float dist;
-    if(camera1->o.x >= x && camera1->o.x < x + size &&
-       camera1->o.y >= y && camera1->o.y < y + size)
+    int calcwatersubdiv(int x, int y, int z, int size)
     {
-        dist = std::fabs(camera1->o.z - static_cast<float>(z));
-    }
-    else
-    {
-        dist = vec(x + size/2, y + size/2, z + size/2).dist(camera1->o) - size*1.42f/2;
-    }
-    int subdiv = watersubdiv + static_cast<int>(dist) / (32 << waterlod);
-    return subdiv >= 31 ? INT_MAX : 1<<subdiv;
-}
-
-static int renderwaterlod(int x, int y, int z, int size, int mat)
-{
-    if(size <= (32 << waterlod))
-    {
-        int subdiv = calcwatersubdiv(x, y, z, size);
-        if(subdiv < size * 2)
+        float dist;
+        if(camera1->o.x >= x && camera1->o.x < x + size &&
+           camera1->o.y >= y && camera1->o.y < y + size)
         {
-            rendervertwater(std::min(subdiv, size), x, y, z, size, mat);
+            dist = std::fabs(camera1->o.z - static_cast<float>(z));
         }
-        return subdiv;
-    }
-    else
-    {
-        int subdiv = calcwatersubdiv(x, y, z, size);
-        if(subdiv >= size)
+        else
         {
+            dist = vec(x + size/2, y + size/2, z + size/2).dist(camera1->o) - size*1.42f/2;
+        }
+        int subdiv = watersubdiv + static_cast<int>(dist) / (32 << waterlod);
+        return subdiv >= 31 ? INT_MAX : 1<<subdiv;
+    }
+
+    int renderwaterlod(int x, int y, int z, int size, int mat)
+    {
+        if(size <= (32 << waterlod))
+        {
+            int subdiv = calcwatersubdiv(x, y, z, size);
             if(subdiv < size * 2)
             {
-                rendervertwater(size, x, y, z, size, mat);
+                rendervertwater(std::min(subdiv, size), x, y, z, size, mat);
             }
             return subdiv;
         }
-        int childsize = size / 2,
-            subdiv1 = renderwaterlod(x, y, z, childsize, mat),
-            subdiv2 = renderwaterlod(x + childsize, y, z, childsize, mat),
-            subdiv3 = renderwaterlod(x + childsize, y + childsize, z, childsize, mat),
-            subdiv4 = renderwaterlod(x, y + childsize, z, childsize, mat),
-            minsubdiv = subdiv1;
-        minsubdiv = std::min(minsubdiv, subdiv2);
-        minsubdiv = std::min(minsubdiv, subdiv3);
-        minsubdiv = std::min(minsubdiv, subdiv4);
-        if(minsubdiv < size * 2)
+        else
         {
-            if(minsubdiv >= size)
+            int subdiv = calcwatersubdiv(x, y, z, size);
+            if(subdiv >= size)
             {
-                rendervertwater(size, x, y, z, size, mat);
+                if(subdiv < size * 2)
+                {
+                    rendervertwater(size, x, y, z, size, mat);
+                }
+                return subdiv;
             }
-            else
+            int childsize = size / 2,
+                subdiv1 = renderwaterlod(x, y, z, childsize, mat),
+                subdiv2 = renderwaterlod(x + childsize, y, z, childsize, mat),
+                subdiv3 = renderwaterlod(x + childsize, y + childsize, z, childsize, mat),
+                subdiv4 = renderwaterlod(x, y + childsize, z, childsize, mat),
+                minsubdiv = subdiv1;
+            minsubdiv = std::min(minsubdiv, subdiv2);
+            minsubdiv = std::min(minsubdiv, subdiv3);
+            minsubdiv = std::min(minsubdiv, subdiv4);
+            if(minsubdiv < size * 2)
             {
-                if(subdiv1 >= size)
+                if(minsubdiv >= size)
                 {
-                    rendervertwater(childsize, x, y, z, childsize, mat);
+                    rendervertwater(size, x, y, z, size, mat);
                 }
-                if(subdiv2 >= size)
+                else
                 {
-                    rendervertwater(childsize, x + childsize, y, z, childsize, mat);
-                }
-                if(subdiv3 >= size)
-                {
-                    rendervertwater(childsize, x + childsize, y + childsize, z, childsize, mat);
-                }
-                if(subdiv4 >= size)
-                {
-                    rendervertwater(childsize, x, y + childsize, z, childsize, mat);
+                    if(subdiv1 >= size)
+                    {
+                        rendervertwater(childsize, x, y, z, childsize, mat);
+                    }
+                    if(subdiv2 >= size)
+                    {
+                        rendervertwater(childsize, x + childsize, y, z, childsize, mat);
+                    }
+                    if(subdiv3 >= size)
+                    {
+                        rendervertwater(childsize, x + childsize, y + childsize, z, childsize, mat);
+                    }
+                    if(subdiv4 >= size)
+                    {
+                        rendervertwater(childsize, x, y + childsize, z, childsize, mat);
+                    }
                 }
             }
+            return minsubdiv;
         }
-        return minsubdiv;
     }
-}
 
-/* renderflatwater: renders water with no vertex water subdivision
- */
-static void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
-{
-    if(mat == Mat_Water)
+    /* renderflatwater: renders water with no vertex water subdivision
+     */
+    void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
     {
-        if(gle::attribbuf.empty())
+        if(mat == Mat_Water)
         {
-            defvertwtn();
-            gle::begin(GL_TRIANGLE_FAN);
+            if(gle::attribbuf.empty())
+            {
+                defvertwtn();
+                gle::begin(GL_TRIANGLE_FAN);
+            }
+            vertwtn(x, y, z);
+            vertwtn(x+rsize, y, z);
+            vertwtn(x+rsize, y+csize, z);
+            vertwtn(x, y+csize, z);
+            xtraverts += 4;
         }
-        vertwtn(x, y, z);
-        vertwtn(x+rsize, y, z);
-        vertwtn(x+rsize, y+csize, z);
-        vertwtn(x, y+csize, z);
-        xtraverts += 4;
     }
-}
 
-VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
-
-static void renderwater(const materialsurface &m, int mat = Mat_Water)
-{
-    if(!vertwater || drawtex == Draw_TexMinimap)
+    void renderwater(const materialsurface &m, int mat = Mat_Water)
     {
-        renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
+        if(!vertwater || drawtex == Draw_TexMinimap)
+        {
+            renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
+        }
+        else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= static_cast<int>(m.csize) * 2)
+        {
+            rendervertwater(m.csize, m.o.x, m.o.y, m.o.z, m.csize, mat);
+        }
     }
-    else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= static_cast<int>(m.csize) * 2)
-    {
-        rendervertwater(m.csize, m.o.x, m.o.y, m.o.z, m.csize, mat);
-    }
-}
 
-//==================================================================== WATERVARS
-#define WATERVARS(name) \
-    static CVAR0R(name##color, 0x01212C); \
-    static CVAR0R(name##deepcolor, 0x010A10); \
-    static CVAR0R(name##deepfade, 0x60BFFF); \
-    static CVAR0R(name##refractcolor, 0xFFFFFF); \
-    static VARR(name##fog, 0, 30, 10000); \
-    static VARR(name##deep, 0, 50, 10000); \
-    static VARR(name##spec, 0, 150, 200); \
-    static FVARR(name##refract, 0, 0.1f, 1e3f); \
-    static CVARR(name##fallcolor, 0); \
-    static CVARR(name##fallrefractcolor, 0); \
-    static VARR(name##fallspec, 0, 150, 200); \
-    static FVARR(name##fallrefract, 0, 0.1f, 1e3f);
+    //==================================================================== WATERVARS
+    #define WATERVARS(name) \
+        CVAR0R(name##color, 0x01212C); \
+        CVAR0R(name##deepcolor, 0x010A10); \
+        CVAR0R(name##deepfade, 0x60BFFF); \
+        CVAR0R(name##refractcolor, 0xFFFFFF); \
+        VARR(name##fog, 0, 30, 10000); \
+        VARR(name##deep, 0, 50, 10000); \
+        VARR(name##spec, 0, 150, 200); \
+        FVARR(name##refract, 0, 0.1f, 1e3f); \
+        CVARR(name##fallcolor, 0); \
+        CVARR(name##fallrefractcolor, 0); \
+        VARR(name##fallspec, 0, 150, 200); \
+        FVARR(name##fallrefract, 0, 0.1f, 1e3f);
 
-WATERVARS(water)
-WATERVARS(water2)
-WATERVARS(water3)
-WATERVARS(water4)
+    WATERVARS(water)
+    WATERVARS(water2)
+    WATERVARS(water3)
+    WATERVARS(water4)
 
 #undef WATERVARS
 //==============================================================================
+}
 
 GETMATIDXVAR(water, color, const bvec &)
 GETMATIDXVAR(water, deepcolor, const bvec &)
