@@ -109,7 +109,6 @@ extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
-extern PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_;
 
 #if GL_GLEXT_VERSION < 43
 typedef void (APIENTRYP PFNGLBINDBUFFERRANGEPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);

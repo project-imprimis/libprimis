@@ -102,9 +102,6 @@ PFNGLGETSTRINGIPROC           glGetStringi_           = nullptr;
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
 
-// GL_ARB_uniform_buffer_object
-PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_     = nullptr;
-
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 
@@ -346,8 +343,6 @@ void gl_checkextensions()
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
     glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
-    //OpenGL 3.1
-    glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
     useubo = 1;
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");

@@ -236,7 +236,7 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         }
         u.offset = offsetval;
         u.size = sizeval;
-        glUniformBlockBinding_(s.program, bidx, u.binding);
+        glUniformBlockBinding(s.program, bidx, u.binding);
         if(debugubo)
         {
             conoutf(Console_Debug, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
