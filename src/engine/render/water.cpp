@@ -31,9 +31,73 @@
 //caustics: lightening on surfaces underwater due to lensing effects from an
 // uneven water surface
 
-static constexpr int numcaustics = 32; //number of separate caustics textures to load
+namespace
+{
+    constexpr int numcaustics = 32; //number of separate caustics textures to load
+    Texture *caustictex[numcaustics] = {nullptr};
+    VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
+    VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
+    FVARR(causticcontrast, 0, 0.6f, 2);
+    FVARR(causticoffset, 0, 0.7f, 1);
 
-static Texture *caustictex[numcaustics] = {nullptr};
+    void setupcaustics(int tmu, float surface = -1e16f)
+    {
+        if(!caustictex[0])
+        {
+            loadcaustics(true);
+        }
+        vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale),
+            t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
+        int tex = (lastmillis/causticmillis)%numcaustics;
+        float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
+        for(int i = 0; i < 2; ++i)
+        {
+            glActiveTexture(GL_TEXTURE0+tmu+i);
+            glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
+        }
+        glActiveTexture(GL_TEXTURE0);
+        float blendscale = causticcontrast,
+              blendoffset = 1;
+        if(surface > -1e15f)
+        {
+            float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
+            matrix4 m(vec4<float>(s.x, t.x,  0, 0),
+                      vec4<float>(s.y, t.y,  0, 0),
+                      vec4<float>(s.z, t.z, -1, 0),
+                      vec4<float>(  0,   0, bz, 1));
+            m.mul(worldmatrix);
+            GLOBALPARAM(causticsmatrix, m);
+            blendscale *= 0.5f;
+            blendoffset = 0;
+        }
+        else
+        {
+            GLOBALPARAM(causticsS, s);
+            GLOBALPARAM(causticsT, t);
+        }
+        GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
+    }
+
+    void rendercaustics(float surface, float syl, float syr)
+    {
+        if(!caustics || !causticscale || !causticmillis)
+        {
+            return;
+        }
+        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+        setupcaustics(0, surface);
+        SETSHADER(caustics);
+        gle::defvertex(2);
+        gle::begin(GL_TRIANGLE_STRIP);
+        gle::attribf(1, -1);
+        gle::attribf(-1, -1);
+        gle::attribf(1, syr);
+        gle::attribf(-1, syl);
+        gle::end();
+    }
+}
+
+VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
 
 void loadcaustics(bool force)
 {
@@ -56,68 +120,6 @@ void loadcaustics(bool force)
         DEF_FORMAT_STRING(name, "<grey><noswizzle>media/texture/mat_water/caustic/caust%.2d.png", i);
         caustictex[i] = textureload(name);
     }
-}
-
-VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
-VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
-FVARR(causticcontrast, 0, 0.6f, 2);
-FVARR(causticoffset, 0, 0.7f, 1);
-VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
-
-static void setupcaustics(int tmu, float surface = -1e16f)
-{
-    if(!caustictex[0])
-    {
-        loadcaustics(true);
-    }
-    vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale),
-        t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
-    int tex = (lastmillis/causticmillis)%numcaustics;
-    float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
-    for(int i = 0; i < 2; ++i)
-    {
-        glActiveTexture(GL_TEXTURE0+tmu+i);
-        glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
-    }
-    glActiveTexture(GL_TEXTURE0);
-    float blendscale = causticcontrast,
-          blendoffset = 1;
-    if(surface > -1e15f)
-    {
-        float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
-        matrix4 m(vec4<float>(s.x, t.x,  0, 0),
-                  vec4<float>(s.y, t.y,  0, 0),
-                  vec4<float>(s.z, t.z, -1, 0),
-                  vec4<float>(  0,   0, bz, 1));
-        m.mul(worldmatrix);
-        GLOBALPARAM(causticsmatrix, m);
-        blendscale *= 0.5f;
-        blendoffset = 0;
-    }
-    else
-    {
-        GLOBALPARAM(causticsS, s);
-        GLOBALPARAM(causticsT, t);
-    }
-    GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
-}
-
-static void rendercaustics(float surface, float syl, float syr)
-{
-    if(!caustics || !causticscale || !causticmillis)
-    {
-        return;
-    }
-    glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-    setupcaustics(0, surface);
-    SETSHADER(caustics);
-    gle::defvertex(2);
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(1, -1);
-    gle::attribf(-1, -1);
-    gle::attribf(1, syr);
-    gle::attribf(-1, syl);
-    gle::end();
 }
 
 void GBuffer::renderwaterfog(int mat, float surface)
