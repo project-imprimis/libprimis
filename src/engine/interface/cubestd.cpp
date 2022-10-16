@@ -1346,7 +1346,7 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
 //external api function, for loading the string manip functions into the global hashtable
 void initstrcmds()
 {
-    addcommand("echo", reinterpret_cast<identfun>(+[] (char *s) { conoutf("\f1%s", s); }), "C", Id_Command);
+    addcommand("echo", reinterpret_cast<identfun>(+[] (char *s) { conoutf("^f1%s", s); }), "C", Id_Command);
     addcommand("error", reinterpret_cast<identfun>(+[] (char *s) { conoutf(Console_Error, "%s", s); }), "C", Id_Command);
     addcommand("strstr", reinterpret_cast<identfun>(+[] (char *a, char *b) { { char *s = std::strstr(a, b); intret(s ? s-a : -1); }; }), "ss", Id_Command);
     addcommand("strlen", reinterpret_cast<identfun>(+[] (char *s) { intret(std::strlen(s)); }), "s", Id_Command);

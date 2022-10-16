@@ -1554,7 +1554,8 @@ int unescapestring(char *dst, const char *src, const char *end)
                 }
                 case 'f':
                 {
-                    *dst++ = '\f';
+                    *dst++ = '^';
+                    *dst++ = 'f';
                     break;
                 }
                 default:
