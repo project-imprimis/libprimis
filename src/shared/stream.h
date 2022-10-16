@@ -43,19 +43,15 @@ inline int cube2uni(uchar c)
 }
 inline uchar uni2cube(int c)
 {
-    extern const int uni2cubeoffsets[8];
-    extern const uchar uni2cubechars[];
-    return static_cast<uint>(c) <= 0x7FF ? uni2cubechars[uni2cubeoffsets[c>>8] + (c&0xFF)] : 0;
+    return c;
 }
 inline uchar cubelower(uchar c)
 {
-    extern const uchar cubelowerchars[256];
-    return cubelowerchars[c];
+    return c;
 }
 inline uchar cubeupper(uchar c)
 {
-    extern const uchar cubeupperchars[256];
-    return cubeupperchars[c];
+    return c;
 }
 extern size_t decodeutf8(uchar *dst, size_t dstlen, const uchar *src, size_t srclen, size_t *carry = nullptr);
 extern size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry = nullptr);
