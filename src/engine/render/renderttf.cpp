@@ -49,11 +49,24 @@ void TTFRenderer::openfont(const char * inpath, int size)
 //with a (BGRA) SDL_Color value as passed to its third parameter
 void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
-    if(!message)
+    std::string msg = std::string(message);
+    for(;;)
+    {
+        size_t itr = msg.find("^f");
+        if(itr < msg.size())
+        {
+            msg.erase(itr, 3);
+        }
+        else
+        {
+            break;
+        }
+    }
+    if(!msg.size())
     {
         return;
     }
-    TTFSurface tex = renderttfgl(message, col, x, y, scale, wrap);
+    TTFSurface tex = renderttfgl(msg.c_str(), col, x, y, scale, wrap);
     if(tex.tex)
     {
         float w = tex.w*scale,
