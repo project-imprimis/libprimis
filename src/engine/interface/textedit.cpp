@@ -14,6 +14,7 @@
 
 #include "textedit.h"
 #include "render/rendertext.h"
+#include "render/renderttf.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -959,7 +960,8 @@ void Editor::draw(int x, int y, int color, bool hit)
         {
             break;
         }
-        draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
+        //draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
+        ttr.renderttf(lines[i].text, {static_cast<uchar>(color>>16), static_cast<uchar>((color>>8)&0xFF), static_cast<uchar>(color&0xFF), 0}, x, y+h);
         if(linewrap && height > FONTH) // line wrap indicator
         {
             hudnotextureshader->set();

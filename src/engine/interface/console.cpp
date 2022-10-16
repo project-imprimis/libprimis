@@ -11,6 +11,7 @@
 
 //input.h needs rendertext's objects
 #include "render/rendertext.h"
+#include "render/renderttf.h"
 #include "input.h"
 
 #include "world/octaedit.h"
@@ -219,7 +220,9 @@ namespace
             {
                 y -= height;
             }
-            draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
+            //draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
+            ttr.fontsize(50);
+            ttr.renderttf(line, {0xFF, 0xFF, 0xFF, 0}, conoff, y);
             if(dir > 0)
             {
                 y += height;
@@ -445,7 +448,7 @@ namespace
         }
         size_t cblen = std::strlen(cb),
                commandlen = std::strlen(commandbuf),
-               decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<const uchar *>(cb), cblen);
+               decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<uchar *>(cb), cblen);
         commandbuf[commandlen + decoded] = '\0';
         SDL_free(cb);
     }
@@ -1089,7 +1092,9 @@ float rendercommand(float x, float y, float w)
     float width, height;
     text_boundsf(buf, width, height, w);
     y -= height;
-    draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + std::strlen(prompt) : std::strlen(buf), w);
+    ttr.fontsize(50);
+    ttr.renderttf(buf, {0xFF, 0xFF, 0xFF, 0}, x, y);
+    //draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + std::strlen(prompt) : std::strlen(buf), w);
     return height;
 }
 

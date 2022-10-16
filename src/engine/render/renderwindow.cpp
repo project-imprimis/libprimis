@@ -4,6 +4,7 @@
  * also handles stuff such as main menu rendering and other non-intensive rendering
  * as well as global rendering settings such as gamma
  */
+#include "SDL_ttf.h"
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
@@ -17,6 +18,7 @@
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertext.h"
+#include "renderttf.h"
 #include "renderva.h"
 #include "renderwindow.h"
 #include "shaderparam.h"
@@ -148,7 +150,8 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, Text
               tx  = 0.5f*(win_w - tw*tsz),
               ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
-        draw_text(caption, 0, 0);
+        //draw_text(caption, 0, 0);
+        ttr.renderttf(caption, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
         pophudmatrix();
     }
     if(mapshot || mapname)
@@ -188,7 +191,9 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, Text
                   tsz = sz/(8*FONTH),
                   tx  = std::max(0.5f * (mw*msz - tw * tsz), 0.0f);
             pushhudtranslate(x + mx + tx, y, tsz);
-            draw_text(mapname, 0, 0);
+            //draw_text(mapname, 0, 0);
+            ttr.fontsize(42);
+            ttr.renderttf(mapname, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
             pophudmatrix();
             my = 1.5f*FONTH*tsz;
         }
@@ -196,7 +201,9 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, Text
         if(mapinfo)
         {
             pushhudtranslate(x + mx, y + my, msz);
-            draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
+            //draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
+            ttr.fontsize(42);
+            ttr.renderttf(mapinfo, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
             pophudmatrix();
         }
     }
@@ -321,7 +328,9 @@ static void renderprogressview(int w, int h, float bar, const char *text)   // a
             tsz = mw/tw;
         }
         pushhudtranslate(bx+sw, by + (bh - FONTH*tsz)/2, tsz);
-        draw_text(text, 0, 0);
+        //draw_text(text, 0, 0);
+        ttr.fontsize(50);
+        ttr.renderttf(text, {0xFF, 0xFF, 0xFF, 0}, 0, 4);
         pophudmatrix();
     }
     glDisable(GL_BLEND);
@@ -539,6 +548,8 @@ void setupscreen()
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
     renderer = SDL_CreateRenderer(screen, -1, 0);
+    ttr.initttf();
+    ttr.openfont("media/interface/font/default.ttf", 24);
 
     if(!screen)
     {

@@ -5,6 +5,7 @@ extern int fullscreen;
 extern int hudw, hudh;
 
 extern SDL_Window *screen;
+extern SDL_Renderer *renderer;
 extern int scr_w, scr_h;
 extern int screenw, screenh;
 extern float loadprogress;

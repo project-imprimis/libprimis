@@ -33,6 +33,7 @@
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
+#include "render/renderttf.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -2566,7 +2567,12 @@ namespace UI
 
                 float oldscale = textscale;
                 textscale = drawscale();
-                draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
+                ttr.fontsize(36);
+                pushhudscale(conscale/490);
+                ttr.renderttf(getstr(), {color.r, color.g, color.b, color.a}, sx*1500, sy*1500, scale*33);
+                pophudmatrix();
+                //draw_text(getstr(), sx/textscale, sy/textscale, 0, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
+
                 textscale = oldscale;
             }
 
@@ -4675,7 +4681,10 @@ namespace UI
         addcommand("uicircleoutline", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::OUTLINE), children); }), "ife", Id_Command);
         addcommand("uimodcircle", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children); }), "ife", Id_Command);
         addcommand("uicolortext", reinterpret_cast<identfun>(+[] (tagval *text, int *c, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(*c), -1, children); }), "tife", Id_Command);
-        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children); }), "tfe", Id_Command);
+        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, float *scale, uint *children)
+        {
+            buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children);
+        }), "tfe", Id_Command);
         addcommand("uitextfill", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Filler, o, o->setup(*minw * uitextscale*0.5f, *minh * uitextscale), children); }), "ffe", Id_Command);
         addcommand("uiwrapcolortext", reinterpret_cast<identfun>(+[] (tagval *text, float *wrap, int *c, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(*c), *wrap, children); }), "tfife", Id_Command);
         addcommand("uiwraptext", reinterpret_cast<identfun>(+[] (tagval *text, float *wrap, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(255, 255, 255), *wrap, children); }), "tffe", Id_Command);
