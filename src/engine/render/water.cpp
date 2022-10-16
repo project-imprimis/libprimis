@@ -122,76 +122,6 @@ void loadcaustics(bool force)
     }
 }
 
-void GBuffer::renderwaterfog(int mat, float surface)
-{
-    glDepthFunc(GL_NOTEQUAL);
-    glDepthMask(GL_FALSE);
-    glDepthRange(1, 1);
-
-    glEnable(GL_BLEND);
-
-    glActiveTexture(GL_TEXTURE9);
-    if(msaalight)
-    {
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
-    }
-    else
-    {
-        glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
-    }
-    glActiveTexture(GL_TEXTURE0);
-
-    vec p[4] =
-    {
-        invcamprojmatrix.perspectivetransform(vec(-1, -1, -1)),
-        invcamprojmatrix.perspectivetransform(vec(-1, 1, -1)),
-        invcamprojmatrix.perspectivetransform(vec(1, -1, -1)),
-        invcamprojmatrix.perspectivetransform(vec(1, 1, -1))
-    };
-    float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0),
-          syl = (p[1].z > p[0].z) ? (2*(bz - p[0].z)/(p[1].z - p[0].z) - 1) : 1,
-          syr = (p[3].z > p[2].z) ? (2*(bz - p[2].z)/(p[3].z - p[2].z) - 1) : 1;
-
-    if((mat&MatFlag_Volume) == Mat_Water)
-    {
-        const bvec &deepcolor = getwaterdeepcolor(mat);
-        int deep = getwaterdeep(mat);
-        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb, deepcolor.y*ldrscaleb, deepcolor.z*ldrscaleb);
-        vec deepfade = getwaterdeepfade(mat).tocolor().mul(deep);
-        GLOBALPARAMF(waterdeepfade,
-            deepfade.x ? calcfogdensity(deepfade.x) : -1e4f,
-            deepfade.y ? calcfogdensity(deepfade.y) : -1e4f,
-            deepfade.z ? calcfogdensity(deepfade.z) : -1e4f,
-            deep ? calcfogdensity(deep) : -1e4f);
-
-        rendercaustics(surface, syl, syr);
-    }
-    else
-    {
-        GLOBALPARAMF(waterdeepcolor, 0, 0, 0);
-        GLOBALPARAMF(waterdeepfade, -1e4f, -1e4f, -1e4f, -1e4f);
-    }
-
-    GLOBALPARAMF(waterheight, bz);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    SETSHADER(waterfog);
-    gle::defvertex(3);
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf( 1, -1,  1);
-    gle::attribf(-1, -1,  1);
-    gle::attribf( 1, syr, 1);
-    gle::attribf(-1, syl, 1);
-    gle::end();
-
-    glDisable(GL_BLEND);
-
-    glDepthFunc(GL_LESS);
-    glDepthMask(GL_TRUE);
-    glDepthRange(0, 1);
-}
-
 /* vertex water */
 
 // vertex water refers to the ability for the engine to dynamically create geom
@@ -416,6 +346,76 @@ GETMATIDXVAR(water, fallrefract, float)
 
 VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 VARR(waterreflectstep, 1, 32, 10000);
+
+void GBuffer::renderwaterfog(int mat, float surface)
+{
+    glDepthFunc(GL_NOTEQUAL);
+    glDepthMask(GL_FALSE);
+    glDepthRange(1, 1);
+
+    glEnable(GL_BLEND);
+
+    glActiveTexture(GL_TEXTURE9);
+    if(msaalight)
+    {
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
+    }
+    glActiveTexture(GL_TEXTURE0);
+
+    vec p[4] =
+    {
+        invcamprojmatrix.perspectivetransform(vec(-1, -1, -1)),
+        invcamprojmatrix.perspectivetransform(vec(-1, 1, -1)),
+        invcamprojmatrix.perspectivetransform(vec(1, -1, -1)),
+        invcamprojmatrix.perspectivetransform(vec(1, 1, -1))
+    };
+    float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0),
+          syl = (p[1].z > p[0].z) ? (2*(bz - p[0].z)/(p[1].z - p[0].z) - 1) : 1,
+          syr = (p[3].z > p[2].z) ? (2*(bz - p[2].z)/(p[3].z - p[2].z) - 1) : 1;
+
+    if((mat&MatFlag_Volume) == Mat_Water)
+    {
+        const bvec &deepcolor = getwaterdeepcolor(mat);
+        int deep = getwaterdeep(mat);
+        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb, deepcolor.y*ldrscaleb, deepcolor.z*ldrscaleb);
+        vec deepfade = getwaterdeepfade(mat).tocolor().mul(deep);
+        GLOBALPARAMF(waterdeepfade,
+            deepfade.x ? calcfogdensity(deepfade.x) : -1e4f,
+            deepfade.y ? calcfogdensity(deepfade.y) : -1e4f,
+            deepfade.z ? calcfogdensity(deepfade.z) : -1e4f,
+            deep ? calcfogdensity(deep) : -1e4f);
+
+        rendercaustics(surface, syl, syr);
+    }
+    else
+    {
+        GLOBALPARAMF(waterdeepcolor, 0, 0, 0);
+        GLOBALPARAMF(waterdeepfade, -1e4f, -1e4f, -1e4f, -1e4f);
+    }
+
+    GLOBALPARAMF(waterheight, bz);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    SETSHADER(waterfog);
+    gle::defvertex(3);
+    gle::begin(GL_TRIANGLE_STRIP);
+    gle::attribf( 1, -1,  1);
+    gle::attribf(-1, -1,  1);
+    gle::attribf( 1, syr, 1);
+    gle::attribf(-1, syl, 1);
+    gle::end();
+
+    glDisable(GL_BLEND);
+
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
+    glDepthRange(0, 1);
+}
 
 void preloadwatershaders(bool force)
 {
