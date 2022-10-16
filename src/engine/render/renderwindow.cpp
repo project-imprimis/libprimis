@@ -44,7 +44,7 @@ int screenw = 0,
     screenh = 0;
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
-static SDL_Renderer *renderer  = nullptr;
+SDL_Renderer *renderer  = nullptr;
 
 //helper function for main menu rendering routines
 //returns w and h if both are above 1024x768
