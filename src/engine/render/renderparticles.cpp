@@ -596,59 +596,6 @@ class meterrenderer : public listrenderer
 };
 static meterrenderer meters(PT_METER), metervs(PT_METERVS);
 
-struct textrenderer : listrenderer
-{
-    textrenderer(int type = 0)
-        : listrenderer(type|PT_TEXT|PT_LERP|PT_SHADER|PT_NOLAYER)
-    {
-    }
-
-    void startrender()
-    {
-        textshader = particletextshader;
-
-        pushfont();
-        setfont("default_outline");
-    }
-
-    void endrender()
-    {
-        textshader = nullptr;
-
-        popfont();
-    }
-
-    void killpart(listparticle *p)
-    {
-        if(p->text && p->flags&1)
-        {
-            delete[] p->text;
-        }
-    }
-
-    void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
-    {
-        float scale = p->size/80.0f,
-              xoff = -text_width(p->text)/2,
-              yoff = 0;
-        if((type&0xFF)==PT_TEXTUP)
-        {
-            //this is an UGLY cast from a pointer to an unsigned int
-            xoff += detrnd(reinterpret_cast<size_t>(p), 100)-50;
-            yoff -= detrnd(reinterpret_cast<size_t>(p), 101);
-        }
-
-        matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
-        m.scale(scale);
-        m.translate(xoff, yoff, 50);
-
-        textmatrix = &m;
-        draw_text(p->text, 0, 0, p->color.r, p->color.g, p->color.b, blend);
-        textmatrix = nullptr;
-    }
-};
-static textrenderer texts;
-
 template<int T>
 static void modifyblend(const vec &o, int &blend)
 {
@@ -1302,7 +1249,6 @@ static partrenderer *parts[] =
     new varenderer<PT_PART>("media/particle/pulse_muzzle.png", PT_PART|PT_FEW|PT_FLIP|PT_BRIGHT|PT_TRACK),  // pulse muzzle flash
     new varenderer<PT_PART>("media/interface/hud/items.png", PT_PART|PT_FEW|PT_ICON),                       // hud icon
     new varenderer<PT_PART>("<colorify:1/1/1>media/interface/hud/items.png", PT_PART|PT_FEW|PT_ICON),       // grey hud icon
-    &texts,                                                                                                 // text
     &meters,                                                                                                // meter
     &metervs,                                                                                               // meter vs.
 };
@@ -1618,35 +1564,6 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
 VARP(particletext, 0, 1, 1);
 VARP(maxparticletextdistance, 0, 128, 10000); //cubits at which text can be rendered (128 = 16m)
 
-void particle_text(const vec &s, const char *t, int type, int fade, int color, float size, int gravity)
-{
-    if(minimized)
-    {
-        return;
-    }
-    if(!particletext || camera1->o.dist(s) > maxparticletextdistance)
-    {
-        return;
-    }
-    particle *p = newparticle(s, vec(0, 0, 1), fade, type, color, size, gravity);
-    p->text = t;
-}
-
-void particle_textcopy(const vec &s, const char *t, int type, int fade, int color, float size, int gravity)
-{
-    if(minimized)
-    {
-        return;
-    }
-    if(!particletext || camera1->o.dist(s) > maxparticletextdistance)
-    {
-        return;
-    }
-    particle *p = newparticle(s, vec(0, 0, 1), fade, type, color, size, gravity);
-    p->text = newstring(t);
-    p->flags = 1;
-}
-
 void particle_icon(const vec &s, int ix, int iy, int type, int fade, int color, float size, int gravity)
 {
     if(minimized)
@@ -1944,11 +1861,6 @@ void cubeworld::makeparticles(entity &e)
         }
         default:
         {
-            if(!editmode)
-            {
-                DEF_FORMAT_STRING(ds, "particles %d?", e.attr1);
-                particle_textcopy(e.o, ds, Part_Text, 1, 0x6496FF, 2.0f);
-            }
             break;
         }
     }
@@ -2043,20 +1955,9 @@ void cubeworld::updateparticles()
     if(editmode) // show sparkly thingies for map entities in edit mode
     {
         const std::vector<extentity *> &ents = entities::getents();
-        // note: order matters in this case as particles of the same type are drawn in the reverse order that they are added
-        for(uint i = 0; i < entgroup.size(); i++)
-        {
-            entity &e = *ents[entgroup[i]];
-            particle_textcopy(e.o, entname(e), Part_Text, 1, 0xFF4B19, 2.0f);
-        }
         for(uint i = 0; i < ents.size(); i++)
         {
             entity &e = *ents[i];
-            if(e.type==EngineEnt_Empty)
-            {
-                continue;
-            }
-            particle_textcopy(e.o, entname(e), Part_Text, 1, 0x1EC850, 2.0f);
             regular_particle_splash(Part_Edit, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
         }
     }
