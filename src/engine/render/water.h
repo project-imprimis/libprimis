@@ -22,8 +22,6 @@ extern float watersx1, watersy1, watersx2, watersy2;
 
 extern const bvec &getwatercolor(int mat);
 extern const bvec &getwaterdeepcolor(int mat);
-extern const bvec &getwaterdeepfade(int mat);
-extern const bvec &getwaterrefractcolor(int mat);
 extern const bvec &getwaterfallcolor(int mat);
 extern int getwaterfog(int mat);
 extern int getwaterdeep(int mat);
