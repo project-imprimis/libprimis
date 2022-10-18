@@ -254,12 +254,10 @@ void checkinput(int map)
             {
                 if(textinputmask && static_cast<int>(event.text.timestamp-textinputtime) >= textinputfilter)
                 {
-                    uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
-                    size_t len = decodeutf8(buf, sizeof(buf)-1, reinterpret_cast<const uchar *>(event.text.text), std::strlen(event.text.text));
+                    size_t len = std::strlen(event.text.text);
                     if(len > 0)
                     {
-                        buf[len] = '\0';
-                        processtextinput(reinterpret_cast<const char *>(buf), len);
+                        processtextinput(reinterpret_cast<const char *>(event.text.text), len);
                     }
                 }
                 break;
