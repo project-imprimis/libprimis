@@ -724,7 +724,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
-            conoutf("\frnot loading an %s", MDL::formatname());
+            conoutf("not loading an %s", MDL::formatname());
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
@@ -736,14 +736,14 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
-            conoutf("\frcould not load %s anim file %s", MDL::formatname(), filename);
+            conoutf("could not load %s anim file %s", MDL::formatname(), filename);
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
-            conoutf("\frcould not find bone %s to pitch target", name);
+            conoutf("could not find bone %s to pitch target", name);
             return;
         }
         for(uint i = 0; i < skel->pitchtargets.size(); i++)
@@ -765,7 +765,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
-            conoutf("\frnot loading an %s", MDL::formatname());
+            conoutf("not loading an %s", MDL::formatname());
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
@@ -777,7 +777,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
-            conoutf("\frcould not find bone %s to pitch correct", name);
+            conoutf("could not find bone %s to pitch correct", name);
             return;
         }
         if(skel->findpitchcorrect(bone) >= 0)
@@ -799,7 +799,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         if(target < 0)
         {
-            conoutf("\frcould not find pitch target %s to pitch correct %s", targetname, name);
+            conoutf("could not find pitch target %s to pitch correct %s", targetname, name);
             return;
         }
         pitchcorrect c;
