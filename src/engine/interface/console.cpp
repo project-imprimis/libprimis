@@ -447,9 +447,12 @@ namespace
             return;
         }
         size_t cblen = std::strlen(cb),
-               commandlen = std::strlen(commandbuf),
-               decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<uchar *>(cb), cblen);
-        commandbuf[commandlen + decoded] = '\0';
+               commandlen = std::strlen(commandbuf);
+        if(strlen(commandbuf) + cblen < 260)
+        {
+            std::memcpy(reinterpret_cast<uchar *>(&commandbuf[commandlen]), cb, cblen);
+        }
+        commandbuf[commandlen + cblen] = '\0';
         SDL_free(cb);
     }
 
