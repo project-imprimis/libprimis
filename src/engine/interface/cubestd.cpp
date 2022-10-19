@@ -1354,9 +1354,6 @@ void initstrcmds()
 
     addcommand("codestr", reinterpret_cast<identfun>(+[] (int *i) { { char *s = newstring(1); s[0] = static_cast<char>(*i); s[1] = '\0'; stringret(s); }; }), "i", Id_Command);
 
-    addcommand("struni", reinterpret_cast<identfun>(+[] (char *s, int *i) { intret(*i > 0 ? (std::memchr(s, 0, *i) ? 0 : cube2uni(s[*i])) : cube2uni(s[0])); }), "si", Id_Command);
-    addcommand("unistr", reinterpret_cast<identfun>(+[] (int *i) { { char *s = newstring(1); s[0] = uni2cube(*i); s[1] = '\0'; stringret(s); }; }), "i", Id_Command);
-
     addcommand("strlower", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
     addcommand("strupper", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
 
