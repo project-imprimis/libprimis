@@ -146,153 +146,6 @@ extern const uchar cubeupperchars[256] =
     240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255
 };
 
-size_t decodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
-{
-    uchar *dst = dstbuf,
-          *dstend = &dstbuf[dstlen];
-    const uchar *src = srcbuf,
-                *srcend = &srcbuf[srclen];
-    if(dstbuf == srcbuf)
-    {
-        int len = std::min(dstlen, srclen);
-        for(const uchar *end4 = &srcbuf[len&~3]; src < end4; src += 4)
-        {
-            if(*reinterpret_cast<const int *>(src) & 0x80808080)
-            {
-                goto decode;
-            }
-        }
-        for(const uchar *end = &srcbuf[len]; src < end; src++)
-        {
-            if(*src & 0x80)
-            {
-                goto decode;
-            }
-        }
-        if(carry)
-        {
-            *carry += len;
-        }
-        return len;
-    }
-
-decode:
-    dst += src - srcbuf;
-    while(src < srcend && dst < dstend)
-    {
-        int c = *src++;
-        if(c < 0x80)
-        {
-            *dst++ = c;
-        }
-        else if(c >= 0xC0)
-        {
-            int uni;
-            if(c >= 0xE0)
-            {
-                if(c >= 0xF0)
-                {
-                    if(c >= 0xF8)
-                    {
-                        if(c >= 0xFC)
-                        {
-                            if(c >= 0xFE)
-                            {
-                                continue;
-                            }
-                            uni = c&1;
-                            if(srcend - src < 5)
-                            {
-                                break;
-                            }
-                            c = *src;
-                            if((c&0xC0) != 0x80)
-                            {
-                                continue;
-                            }
-                            src++;
-                            uni = (uni<<6) | (c&0x3F);
-                        }
-                        else
-                        {
-                            uni = c&3;
-                            if(srcend - src < 4)
-                            {
-                                break;
-                            }
-                        }
-                        c = *src;
-                        if((c&0xC0) != 0x80)
-                        {
-                            continue;
-                        }
-                        src++;
-                        uni = (uni<<6) | (c&0x3F);
-                    }
-                    else
-                    {
-                        uni = c&7;
-                        if(srcend - src < 3)
-                        {
-                            break;
-                        }
-                    }
-                    c = *src;
-                    if((c&0xC0) != 0x80)
-                    {
-                        continue;
-                    }
-                    src++;
-                    uni = (uni<<6) | (c&0x3F);
-                }
-                else
-                {
-                    uni = c&0xF;
-                    if(srcend - src < 2)
-                    {
-                        break;
-                    }
-                }
-                c = *src;
-                if((c&0xC0) != 0x80)
-                {
-                    continue;
-                }
-                src++;
-                uni = (uni<<6) | (c&0x3F);
-            }
-            else
-            {
-                uni = c&0x1F;
-                if(srcend - src < 1)
-                {
-                    break;
-                }
-            }
-            c = *src;
-            {
-                if((c&0xC0) != 0x80)
-                {
-                    continue;
-                }
-                src++;
-                uni = (uni<<6) | (c&0x3F);
-            }
-            c = uni2cube(uni);
-            if(!c)
-            {
-                continue;
-            }
-            *dst++ = c;
-        }
-    }
-    if(carry)
-    {
-        *carry += src - srcbuf;
-    }
-    return dst - dstbuf;
-}
-
 size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
 {
     uchar *dst = dstbuf,
@@ -1564,13 +1417,6 @@ struct utf8stream : stream
             return false;
         }
         buflen += n;
-        size_t carry = bufcarry;
-        bufcarry += decodeutf8(&buf[bufcarry], Buffer_Size-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
-        if(carry > bufcarry && carry < buflen)
-        {
-            std::memmove(&buf[bufcarry], &buf[carry], buflen - carry);
-            buflen -= carry - bufcarry;
-        }
         return true;
     }
 
@@ -1922,10 +1768,6 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
     {
         delete[] buf;
         return nullptr;
-    }
-    if(utf8)
-    {
-        len = decodeutf8(reinterpret_cast<uchar *>(buf), len, reinterpret_cast<uchar *>(buf), len);
     }
     buf[len] = '\0';
     if(size!=nullptr)

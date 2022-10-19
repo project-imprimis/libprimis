@@ -53,7 +53,6 @@ inline uchar cubeupper(uchar c)
 {
     return c;
 }
-extern size_t decodeutf8(uchar *dst, size_t dstlen, const uchar *src, size_t srclen, size_t *carry = nullptr);
 extern size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry = nullptr);
 
 extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
