@@ -44,7 +44,6 @@ int screenw = 0,
     screenh = 0;
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
-SDL_Renderer *renderer  = nullptr;
 
 //helper function for main menu rendering routines
 //returns w and h if both are above 1024x768
@@ -547,7 +546,6 @@ void setupscreen()
     uint32_t windowflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags;
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
-    renderer = SDL_CreateRenderer(screen, -1, 0);
     ttr.initttf();
     ttr.openfont("media/interface/font/default.ttf", 24);
 
