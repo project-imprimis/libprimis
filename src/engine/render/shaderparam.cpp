@@ -191,11 +191,6 @@ void LocalShaderParam::set(const vec &v, float w)
     setf(v.x, v.y, v.z, w);
 }
 
-void LocalShaderParam::set(const vec2 &v, float z, float w)
-{
-    setf(v.x, v.y, z, w);
-}
-
 void LocalShaderParam::set(const vec4<float> &v)
 {
     setf(v.x, v.y, v.z, v.w);
