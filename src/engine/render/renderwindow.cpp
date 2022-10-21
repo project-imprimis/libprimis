@@ -440,7 +440,7 @@ static void setgamma(int val)
 }
 
 static int curgamma = 100;
-VARFNP(gamma, reqgamma, 30, 100, 300,
+static VARFNP(gamma, reqgamma, 30, 100, 300,
 {
     if(initing || reqgamma == curgamma)
     {
