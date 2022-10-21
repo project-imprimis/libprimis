@@ -76,15 +76,6 @@ void GlobalShaderParam::set(const matrix4 &m)
     std::memcpy(resolve()->fval, m.a.v, sizeof(m));
 }
 
-void GlobalShaderParam::setu(uint x, uint y, uint z, uint w)
-{
-    GlobalShaderParamState *g = resolve();
-    g->uval[0] = x;
-    g->uval[1] = y;
-    g->uval[2] = z;
-    g->uval[3] = w;
-}
-
 //localshaderparam
 
 LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1) {}
