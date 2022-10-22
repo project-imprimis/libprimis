@@ -33,8 +33,6 @@ inline int iscubeprint(uchar c) { return cubectype[c] & CubeType_Print; }
 inline int iscubespace(uchar c) { return cubectype[c] & CubeType_Space; }
 inline int iscubealpha(uchar c) { return cubectype[c] & CubeType_Alpha; }
 inline int iscubealnum(uchar c) { return cubectype[c]&(CubeType_Alpha | CubeType_Digit); }
-inline int iscubelower(uchar c) { return cubectype[c] & CubeType_Lower; }
-inline int iscubeupper(uchar c) { return cubectype[c] & CubeType_Upper; }
 inline int iscubepunct(uchar c) { return cubectype[c] == CubeType_Print; }
 inline int cube2uni(uchar c)
 {
