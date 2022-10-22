@@ -36,8 +36,7 @@ inline int iscubealnum(uchar c) { return cubectype[c]&(CubeType_Alpha | CubeType
 inline int iscubepunct(uchar c) { return cubectype[c] == CubeType_Print; }
 inline int cube2uni(uchar c)
 {
-    extern const int cube2unichars[256];
-    return cube2unichars[c];
+    return c;
 }
 
 inline uchar cubelower(uchar c)
