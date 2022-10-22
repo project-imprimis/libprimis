@@ -287,8 +287,6 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
 
     glEnable(GL_BLEND);
 
-    debugparticles();
-
     if(!mainmenu)
     {
         drawdamagescreen(w, h);

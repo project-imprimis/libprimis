@@ -1323,24 +1323,7 @@ void removetrackedparticles(physent *owner)
     }
 }
 
-int debugparts = variable("debugparticles", 0, 0, 1, &debugparts, nullptr, 0);
-
-void debugparticles()
-{
-    if(!debugparts)
-    {
-        return;
-    }
-    int n = sizeof(parts)/sizeof(parts[0]);
-    pushhudmatrix();
-    hudmatrix.ortho(0, FONTH*n*2*vieww/static_cast<float>(viewh), FONTH*n*2, 0, -1, 1); // squeeze into top-left corner
-    flushhudmatrix();
-    for(int i = 0; i < n; ++i)
-    {
-        draw_text(parts[i]->info, FONTH, (i+n/2)*FONTH);
-    }
-    pophudmatrix();
-}
+static int debugparts = variable("debugparticles", 0, 0, 1, &debugparts, nullptr, 0);
 
 void GBuffer::renderparticles(int layer)
 {
