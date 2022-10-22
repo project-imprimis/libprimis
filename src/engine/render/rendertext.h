@@ -32,8 +32,6 @@ inline int fontwidth()
 constexpr int minreswidth = 640,
               minresheight = 480;
 
-extern Shader *textshader;
-extern const matrix4x3 *textmatrix;
 extern float textscale;
 
 extern font *findfont(const char *name);
@@ -52,8 +50,6 @@ extern void pushfont();
 extern bool popfont();
 extern void gettextres(int &w, int &h);
 
-extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
-extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
 extern float text_widthf(const char *str);
 extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
