@@ -244,7 +244,7 @@ char *path(char *s)
             }
             curpart = file+1;
         }
-        for(char *t = curpart; (t = strpbrk(t, "/\\")); *t++ = PATHDIV)
+        for(char *t = curpart; (t = std::strpbrk(t, "/\\")); *t++ = PATHDIV)
         {
             //(empty body)
         }
