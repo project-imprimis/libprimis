@@ -32,8 +32,6 @@ bool TTFRenderer::initttf()
     return true;
 }
 
-//opens a font with the given path and size in points
-//if fails, returns nullptr to internal value f
 void TTFRenderer::openfont(const char * inpath, int size)
 {
     f = TTF_OpenFont(inpath, size);
@@ -45,8 +43,6 @@ void TTFRenderer::openfont(const char * inpath, int size)
     path = inpath;
 }
 
-//draws a string to the coordinates x, y in the current hud context at a scale factor `scale`
-//with a (BGRA) SDL_Color value as passed to its third parameter
 void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
     std::string msg = std::string(message);
@@ -93,7 +89,6 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     }
 }
 
-//returns an object containing a GLuint and its dimensions refering to a rectangle texture containing the rendered image of a texture
 TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
     if(!message)
@@ -116,8 +111,6 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
     return tts;
 }
 
-//sets the current working font renderer to one with the appropriate font size
-//if the size does not exist already, creates a new one with the appropriate size
 void TTFRenderer::fontsize(int pts)
 {
     auto itr = fontcache.find(pts);
