@@ -49,6 +49,7 @@ VAR(mintexrectoffset, 1, 0, 0);
 VAR(maxtexrectoffset, 1, 0, 0);
 VAR(debugshader, 0, 1, 2);
 
+//used in iengine.h
 void loadshaders()
 {
     standardshaders = true;
