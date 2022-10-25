@@ -174,6 +174,7 @@ extern void linkvslotshader(VSlot &s, bool load = true);
 extern void linkslotshaders();
 extern bool shouldreuseparams(Slot &s, VSlot &p);
 extern void setupshaders();
+extern void reloadshaders();
 extern void cleanupshaders();
 extern int getlocalparam(const char *name);
 
