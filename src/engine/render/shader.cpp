@@ -40,6 +40,7 @@ static std::vector<SlotShaderParam> slotparams;
 static bool standardshaders = false,
             forceshaders = true,
             loadedshaders = false;
+constexpr int maxvariantrows = 32;
 
 VAR(maxvsuniforms, 1, 0, 0);
 VAR(maxfsuniforms, 1, 0, 0);

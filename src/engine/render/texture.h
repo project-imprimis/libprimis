@@ -42,7 +42,6 @@ enum
     Shader_Deferred   = 1 << 9
 };
 
-const int maxvariantrows = 32;
 extern hashnameset<GlobalShaderParamState> globalparams;
 
 struct Slot;
