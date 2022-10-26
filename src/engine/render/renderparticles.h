@@ -2,7 +2,6 @@
 #define RENDERPARTICLES_H_
 
 extern int particlelayers;
-extern int numanims;
 
 enum
 {

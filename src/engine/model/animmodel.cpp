@@ -1139,7 +1139,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
 void animmodel::part::setanim(int animpart, int num, int frame, int range, float speed, int priority)
 {
-    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= numanims)
+    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= animnames.size())
     {
         return;
     }
@@ -1150,7 +1150,7 @@ void animmodel::part::setanim(int animpart, int num, int frame, int range, float
     }
     if(!anims[animpart])
     {
-        anims[animpart] = new std::vector<animspec>[numanims];
+        anims[animpart] = new std::vector<animspec>[animnames.size()];
     }
     anims[animpart][num].emplace_back();
     animspec &spec = anims[animpart][num].back();

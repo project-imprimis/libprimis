@@ -9,6 +9,7 @@ struct mapmodelinfo
 };
 
 extern std::vector<mapmodelinfo> mapmodels;
+extern std::vector<std::string> animnames; //set by game at runtime
 
 std::vector<int> findanims(const char *pattern);
 
