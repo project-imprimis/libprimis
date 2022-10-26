@@ -1,5 +1,15 @@
 var NAVTREEINDEX2 =
 {
+"octa_8h.html#a9392cbbd2ed30129294d84c5032432af":[11,0,0,0,6,9],
+"octa_8h_source.html":[11,0,0,0,6],
+"pages.html":[],
+"slot_8h.html":[11,0,0,0,7],
+"slot_8h_source.html":[11,0,0,0,7],
+"structDecalSlot.html":[10,0,7],
+"structGenericVec2.html":[10,0,12],
+"structGenericVec3.html":[10,0,13],
+"structSlot.html":[10,0,30],
+"structSlot.html#a1c03515604972228df2b940a04ff1309":[10,0,30,2],
 "structSlot.html#a880cae62250a7b71bcb3df0024ba55d5":[10,0,30,1],
 "structSlotShaderParam.html":[10,0,31],
 "structSlot_1_1Tex.html":[10,0,30,0],

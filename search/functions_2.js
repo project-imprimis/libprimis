@@ -11,12 +11,13 @@ var searchData=
   ['cleanup_8',['cleanup',['../iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca',1,'UI']]],
   ['cleanupva_9',['cleanupva',['../classcubeworld.html#a445b1bb007a38a2449bac939748c0d92',1,'cubeworld']]],
   ['clear_5fconsole_10',['clear_console',['../iengine_8h.html#a3cffe15b7e5d10a108f1734a9640a2c7',1,'iengine.h']]],
-  ['clear_5fsound_11',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
-  ['cleargamma_12',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
-  ['clearmapcrc_13',['clearmapcrc',['../classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070',1,'cubeworld']]],
-  ['clearshadowcache_14',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],
-  ['collide_15',['collide',['../iengine_8h.html#a95645194a5c37d3cc0d58fb2e69ae86b',1,'iengine.h']]],
-  ['compactvslots_16',['compactvslots',['../classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98',1,'cubeworld']]],
-  ['conoutf_17',['conoutf',['../iengine_8h.html#a4db7318348a74b95e2013bae083f410f',1,'conoutf(const char *s,...) PRINTFARGS(1:&#160;iengine.h'],['../iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa',1,'conoutf(int type, const char *s,...) PRINTFARGS(2:&#160;iengine.h']]],
-  ['countselchild_18',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
+  ['clear_5fmodels_11',['clear_models',['../iengine_8h.html#a7ea6b77f12dede55eb7098cf756e7679',1,'iengine.h']]],
+  ['clear_5fsound_12',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
+  ['cleargamma_13',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
+  ['clearmapcrc_14',['clearmapcrc',['../classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070',1,'cubeworld']]],
+  ['clearshadowcache_15',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],
+  ['collide_16',['collide',['../iengine_8h.html#a95645194a5c37d3cc0d58fb2e69ae86b',1,'iengine.h']]],
+  ['compactvslots_17',['compactvslots',['../classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98',1,'cubeworld']]],
+  ['conoutf_18',['conoutf',['../iengine_8h.html#a4db7318348a74b95e2013bae083f410f',1,'conoutf(const char *s,...) PRINTFARGS(1:&#160;iengine.h'],['../iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa',1,'conoutf(int type, const char *s,...) PRINTFARGS(2:&#160;iengine.h']]],
+  ['countselchild_19',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
 ];
