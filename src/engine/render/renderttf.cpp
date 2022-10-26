@@ -96,7 +96,8 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
         return {0, 0, 0};
     }
     GLuint tex = 0;
-    SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, col, wrap);
+    SDL_Color rgbcol = {col.b, col.g, col.r, 0};
+    SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, rgbcol, wrap);
     if(text)
     {
         glEnable(GL_BLEND);
