@@ -22,6 +22,9 @@ class TTFRenderer
         //sets the current working font renderer to one with the appropriate font size
         //if the size does not exist already, creates a new one with the appropriate size
         void fontsize(int pts = 12);
+
+        //returns the dimensions (x,y) of the rendered text, without paying the full cost of rendering
+        ivec2 ttfsize(const char* message);
     private:
 
         // TTF Surface information

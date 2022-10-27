@@ -88,6 +88,13 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     }
 }
 
+ivec2 TTFRenderer::ttfsize(const char* message)
+{
+    ivec2 size;
+    TTF_SizeUTF8(f, message, &size.x, &size.y);
+    return size;
+}
+
 TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
 {
     if(!message)
