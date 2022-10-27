@@ -7,13 +7,6 @@ typedef struct _TTF_Font TTF_Font;
 class TTFRenderer
 {
     public:
-        struct TTFSurface
-        {
-            GLuint tex;
-            int w;
-            int h;
-        };
-
         //starts up SDL2_TTF
         //if the init process did not start properly, returns false
         bool initttf();
@@ -30,6 +23,15 @@ class TTFRenderer
         //if the size does not exist already, creates a new one with the appropriate size
         void fontsize(int pts = 12);
     private:
+
+        // TTF Surface information
+        struct TTFSurface
+        {
+            GLuint tex;
+            int w;
+            int h;
+        };
+
         TTF_Font* f;                         //the current working font
         std::map<int, TTF_Font *> fontcache; //different sizes of the font are cached in a map which maps them to their size in pt
         const char * path;                   //the path which the font was originally found, so it can load other font sizes if needed
