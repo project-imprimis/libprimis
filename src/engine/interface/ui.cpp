@@ -4174,42 +4174,52 @@ namespace UI
         }
     };
 
-    struct PrefabPreview : Preview
+    class PrefabPreview : public Preview
     {
-        char *name;
-        vec color;
-
-        PrefabPreview() : name(nullptr) {}
-        ~PrefabPreview() { delete[] name; }
-
-        void setup(const char *name_, int color_, float minw_, float minh_)
-        {
-            Preview::setup(minw_, minh_);
-            SETSTR(name, name_);
-            color = vec::hexcolor(color_);
-        }
-
-        static const char *typestr()
-        {
-            return "#PrefabPreview";
-        }
-
-        const char *gettype() const { return typestr(); }
-
-        void draw(float sx, float sy)
-        {
-            Object::draw(sx, sy);
-            changedraw(Change_Shader);
-            int sx1, sy1, sx2, sy2;
-            window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
-            previewprefab(name, color);
-            if(clipstack.size())
+        public:
+            PrefabPreview() : name(nullptr)
             {
-                clipstack.back().scissor();
             }
-            modelpreview.end();
-        }
+
+            ~PrefabPreview()
+            {
+                delete[] name;
+            }
+
+            void setup(const char *name_, int color_, float minw_, float minh_)
+            {
+                Preview::setup(minw_, minh_);
+                SETSTR(name, name_);
+                color = vec::hexcolor(color_);
+            }
+
+            static const char *typestr()
+            {
+                return "#PrefabPreview";
+            }
+
+            const char *gettype() const
+            {
+                return typestr();
+            }
+
+            void draw(float sx, float sy)
+            {
+                Object::draw(sx, sy);
+                changedraw(Change_Shader);
+                int sx1, sy1, sx2, sy2;
+                window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
+                modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
+                previewprefab(name, color);
+                if(clipstack.size())
+                {
+                    clipstack.back().scissor();
+                }
+                modelpreview.end();
+            }
+        private:
+            char *name;
+            vec color;
     };
 
     VARP(uislotviewtime, 0, 25, 1000);
