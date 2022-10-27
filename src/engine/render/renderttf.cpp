@@ -22,7 +22,6 @@
 
 TTFRenderer ttr;
 
-//starts up SDL2_TTF
 bool TTFRenderer::initttf()
 {
     if(TTF_Init() < 0)
