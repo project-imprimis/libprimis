@@ -96,9 +96,6 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC   glGetCompressedTexImage_   = nullptr;
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 #endif
 
-// OpenGL 3.0
-PFNGLGETSTRINGIPROC           glGetStringi_           = nullptr;
-
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
 
@@ -194,7 +191,7 @@ void parseglexts()
     for(int i = 0; i < numexts; ++i)
     {
         //cast from uchar * to char *
-        const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
+        const char *ext = reinterpret_cast<const char *>(glGetStringi(GL_EXTENSIONS, i));
         glexts.insert(ext);
     }
 }
@@ -277,8 +274,6 @@ void gl_checkextensions()
     {
         fatal("OpenGL 4.0 or greater is required!");
     }
-
-    glGetStringi_          =      (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
     const char *glslstr = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
