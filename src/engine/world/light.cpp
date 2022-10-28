@@ -30,14 +30,13 @@ FVARR(ambientscale, 0, 1, 16);
 CVAR1R(skylight, 0);
 FVARR(skylightscale, 0, 1, 16);
 
-void setupsunlight();
 CVAR1FR(sunlight, 0,
 {
-    setupsunlight();
+    clearradiancehintscache();
     cleardeferredlightshaders();
     clearshadowcache();
 });
-FVARFR(sunlightscale, 0, 1, 16, setupsunlight());
+FVARFR(sunlightscale, 0, 1, 16, clearradiancehintscache(););
 
 vec sunlightdir(0, 0, 1);
 void setsunlightdir();
@@ -55,11 +54,6 @@ void setsunlightdir()
         }
     }
     sunlightdir.normalize();
-    setupsunlight();
-}
-
-void setupsunlight()
-{
     clearradiancehintscache();
 }
 
