@@ -194,8 +194,7 @@ namespace
 
     ///////// occlusion queries /////////////
 
-    constexpr int maxquery = 2048,
-                  maxqueryframes = 2;
+    constexpr int maxqueryframes = 2;
 
     //all members of this struct are used elsewhere (must be public)
     struct queryframe
@@ -262,6 +261,8 @@ namespace
                 cur = max = defer = 0;
             }
         private:
+            static constexpr int maxquery = 2048;
+
             int max, defer;
             occludequery queries[maxquery];
     };
