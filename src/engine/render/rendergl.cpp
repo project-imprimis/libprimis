@@ -726,29 +726,6 @@ void mousemove(int dx, int dy)
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
-float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
-{
-    if(drawtex == Draw_TexMinimap)
-    {
-        center = minimapcenter;
-        return minimapradius.magnitude();
-    }
-
-    float width = std::tan(fov/(2.0f*RAD)),
-          height = width / aspect,
-          cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
-    if(cdist <= farplane)
-    {
-        center = vec(view).mul(cdist).add(pos);
-        return vec(width*nearplane, height*nearplane, cdist-nearplane).magnitude();
-    }
-    else
-    {
-        center = vec(view).mul(farplane).add(pos);
-        return vec(width*farplane, height*farplane, 0).magnitude();
-    }
-}
-
 matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
@@ -1303,6 +1280,29 @@ GLuint minimaptex = 0;
 vec minimapcenter(0, 0, 0),
     minimapradius(0, 0, 0),
     minimapscale(0, 0, 0);
+
+float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
+{
+    if(drawtex == Draw_TexMinimap)
+    {
+        center = minimapcenter;
+        return minimapradius.magnitude();
+    }
+
+    float width = std::tan(fov/(2.0f*RAD)),
+          height = width / aspect,
+          cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
+    if(cdist <= farplane)
+    {
+        center = vec(view).mul(cdist).add(pos);
+        return vec(width*nearplane, height*nearplane, cdist-nearplane).magnitude();
+    }
+    else
+    {
+        center = vec(view).mul(farplane).add(pos);
+        return vec(width*farplane, height*farplane, 0).magnitude();
+    }
+}
 
 void clearminimap()
 {
