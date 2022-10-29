@@ -922,3 +922,57 @@ bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress,
 {
     return texturedata(tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
 }
+
+void ImageData::reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+{
+    int stridex = bpp,
+        stridey = bpp;
+    if(swapxy)
+    {
+        stridex *= sh;
+    }
+    else
+    {
+        stridey *= sw;
+    }
+    if(flipx)
+    {
+        dst += (sw-1)*stridex;
+        stridex = -stridex;
+    }
+    if(flipy)
+    {
+        dst += (sh-1)*stridey;
+        stridey = -stridey;
+    }
+    uchar *srcrow = src;
+    for(int i = 0; i < sh; ++i)
+    {
+        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*bpp]; src < end;)
+        {
+            uchar nx = *src++, ny = *src++;
+            if(flipx)
+            {
+                nx = 255-nx;
+            }
+            if(flipy)
+            {
+                ny = 255-ny;
+            }
+            if(swapxy)
+            {
+                std::swap(nx, ny);
+            }
+            curdst[0] = nx;
+            curdst[1] = ny;
+            curdst[2] = *src++;
+            if(bpp > 3)
+            {
+                curdst[3] = *src++;
+            }
+            curdst += stridex;
+        }
+        srcrow += stride;
+        dst += stridey;
+    }
+}
