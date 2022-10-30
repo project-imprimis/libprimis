@@ -778,11 +778,6 @@ void preloadsound(int n)
     gamesounds.preloadsound(n);
 }
 
-void preloadmapsound(int n)
-{
-    mapsounds.preloadsound(n);
-}
-
 void preloadmapsounds()
 {
     const std::vector<extentity *> &ents = entities::getents();
