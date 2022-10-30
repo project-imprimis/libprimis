@@ -101,7 +101,6 @@ var iengine_8h =
     [ "playsound", "iengine_8h.html#a8a0596fee228e89becb6a6fa6f332ff7", null ],
     [ "playsoundname", "iengine_8h.html#ad5ac73b888445708898fd13a64eb962a", null ],
     [ "pointinsel", "iengine_8h.html#ad0e8b74def0ed6a4b978838e037bd8be", null ],
-    [ "preloadmapsound", "iengine_8h.html#af2142941181c5371bf3f2aaa033a15fe", null ],
     [ "preloadmapsounds", "iengine_8h.html#aca26d065305827e779529ea0defbd54d", null ],
     [ "preloadmodel", "iengine_8h.html#a6ccc97006f72d0364cad7ca6ccd8eedc", null ],
     [ "preloadsound", "iengine_8h.html#a1818b1ca072ccbf853d44dd14207b4c3", null ],
