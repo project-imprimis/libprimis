@@ -80,6 +80,8 @@ class BIH
         vec bbmin, bbmax, center;
         float radius;
 
+        static constexpr float maxcollidedistance = -1e9f;
+
         template<int C>
         void collide(const mesh &m, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br);
         template<int C>

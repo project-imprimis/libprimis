@@ -21,8 +21,6 @@
 
 #include "model/model.h"
 
-constexpr float maxcollidedistance = -1e9f;
-
 int BIH::node::axis() const
 {
     return child[0]>>14;
