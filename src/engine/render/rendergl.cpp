@@ -18,7 +18,6 @@
 #include "hud.h"
 #include "octarender.h"
 #include "radiancehints.h"
-#include "renderalpha.h"
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendermodel.h"

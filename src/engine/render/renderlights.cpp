@@ -3964,6 +3964,11 @@ void GBuffer::shadesky()
     drawskybox((hdrclear > 0 ? hdrclear-- : msaalight) > 0);
 }
 
+bool GBuffer::istransparentlayer()
+{
+    return transparentlayer;
+}
+
 void shadegbuffer()
 {
     if(msaasamples && !msaalight && !drawtex)

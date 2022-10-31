@@ -42,6 +42,7 @@ class GBuffer
             msaadepthblit= false;
             msaatonemapblit = false;
             inoq = false;
+            transparentlayer = 0;
         }
         static void dummyfxn();
         //main g-buffers
@@ -74,6 +75,7 @@ class GBuffer
         GLuint shouldscale();
         void workinoq();
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
+        bool istransparentlayer();
 
     private:
         void bindmsdepth();
@@ -81,6 +83,7 @@ class GBuffer
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
 
+        bool transparentlayer;
         bool inoq;
         bool gdepthinit;
         bool hdrfloat;

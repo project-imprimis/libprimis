@@ -25,8 +25,6 @@
 #include "world/material.h"
 #include "world/octaedit.h"
 
-int transparentlayer = 0;
-
 //internally relevant functionality
 namespace
 {

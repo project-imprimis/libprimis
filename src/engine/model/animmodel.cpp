@@ -16,7 +16,6 @@
 #include "interface/control.h"
 
 #include "render/radiancehints.h"
-#include "render/renderalpha.h"
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
@@ -349,7 +348,7 @@ void animmodel::skin::preloadshader()
 
 void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 {
-    m.setshader(loadshader(), transparentlayer ? 1 : 0);
+    m.setshader(loadshader(), gbuf.istransparentlayer());
 }
 
 void animmodel::skin::bind(Mesh &b, const AnimState *as)
