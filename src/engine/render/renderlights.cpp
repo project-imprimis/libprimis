@@ -3670,7 +3670,7 @@ void rendershadowatlas()
     endtimer(smcputimer);
 }
 
-void workinoq()
+void GBuffer::workinoq()
 {
     collectlights();
 
@@ -3685,15 +3685,15 @@ void workinoq()
 
         if(csminoq && !debugshadowatlas)
         {
-            gbuf.rendercsmshadowmaps();
+            rendercsmshadowmaps();
         }
         if(sminoq && !debugshadowatlas)
         {
-            gbuf.rendershadowmaps();
+            rendershadowmaps();
         }
         if(rhinoq)
         {
-            gbuf.renderradiancehints();
+            renderradiancehints();
         }
 
         inoq = false;

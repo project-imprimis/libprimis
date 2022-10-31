@@ -71,6 +71,7 @@ class GBuffer
         void doscale(GLuint outfbo = 0);
         void setupscale(int sw, int sh, int w, int h);
         GLuint shouldscale();
+        void workinoq();
 
     private:
         void bindmsdepth();
@@ -248,7 +249,6 @@ extern void rendershadowmapworld();
 extern void batchshadowmapmodels(bool skipmesh = false);
 extern void rendershadowatlas();
 extern void renderrsmgeom(bool dyntex = false);
-extern void workinoq();
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);

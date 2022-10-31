@@ -2911,7 +2911,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        workinoq();
+        gbuf.workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
@@ -3008,7 +3008,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        workinoq();
+        gbuf.workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
