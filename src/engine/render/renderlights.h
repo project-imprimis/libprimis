@@ -47,8 +47,6 @@ class GBuffer
         static void dummyfxn();
         //main g-buffers
         void cleanupgbuffer();
-        void rendercsmshadowmaps();
-        void rendershadowmaps(int offset = 0);
         void renderao();                                    //ao.cpp
         void renderradiancehints();                         //radiancehints.cpp
         void rendertransparent();                           //rendertransparent.cpp
@@ -62,6 +60,7 @@ class GBuffer
         void setaavelocityparams(GLenum tmu = GL_TEXTURE0); //aa.cpp
         void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
         void viewdepth();
+        void rendershadowatlas();
         //multisample antialiasing specific buffers
         void setupmsbuffer(int w, int h);
         void resolvemsaacolor(int w, int h);
@@ -82,6 +81,8 @@ class GBuffer
         void cleanupscale();
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
+        void rendercsmshadowmaps();
+        void rendershadowmaps(int offset = 0);
 
         bool transparentlayer;
         bool inoq;
@@ -254,7 +255,6 @@ extern int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &s
 extern int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax);
 extern void rendershadowmapworld();
 extern void batchshadowmapmodels(bool skipmesh = false);
-extern void rendershadowatlas();
 extern void renderrsmgeom(bool dyntex = false);
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);

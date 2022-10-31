@@ -3637,7 +3637,7 @@ void GBuffer::rendershadowmaps(int offset)
     }
 }
 
-void rendershadowatlas()
+void GBuffer::rendershadowatlas()
 {
     timer *smcputimer = begintimer("shadow map", false),
           *smtimer = begintimer("shadow map");
@@ -3653,14 +3653,14 @@ void rendershadowatlas()
     }
 
     // sun light
-    gbuf.rendercsmshadowmaps();
+    rendercsmshadowmaps();
 
     int smoffset = shadowmaps.size();
 
     packlights();
 
     // point lights
-    gbuf.rendershadowmaps(smoffset);
+    rendershadowmaps(smoffset);
 
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 

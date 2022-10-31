@@ -1445,7 +1445,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
 
     view.visiblecubes(false);
     gbuf.rendergbuffer();
-    rendershadowatlas();
+    gbuf.rendershadowatlas();
 
     gbuf.shademinimap(minimapcolor.tocolor().mul(ldrscale));
 
@@ -1659,7 +1659,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     gbuf.renderradiancehints();
     glerror();
     //lighting
-    rendershadowatlas();
+    gbuf.rendershadowatlas();
     glerror();
     //shading
     shadegbuffer();
