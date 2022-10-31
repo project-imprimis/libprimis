@@ -46,7 +46,6 @@ class GBuffer
         static void dummyfxn();
         //main g-buffers
         void cleanupgbuffer();
-        void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
         void rendershadowmaps(int offset = 0);
         void renderao();                                    //ao.cpp
@@ -80,6 +79,7 @@ class GBuffer
         void bindmsdepth();
         void cleanupscale();
         void cleanupmsbuffer();
+        void preparegbuffer(bool depthclear = true);
 
         bool inoq;
         bool gdepthinit;
