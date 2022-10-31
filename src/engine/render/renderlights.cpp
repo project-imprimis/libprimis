@@ -3077,8 +3077,6 @@ void collectlights()
     }
 }
 
-bool inoq = false;
-
 VAR(csminoq, 0, 1, 1); //cascaded shadow maps in occlusion queries
 VAR(sminoq, 0, 1, 1);  //shadow maps in occlusion queries
 VAR(rhinoq, 0, 1, 1);  //radiance hints in occlusion queries

@@ -41,6 +41,7 @@ class GBuffer
             hdrfloat     = false;
             msaadepthblit= false;
             msaatonemapblit = false;
+            inoq = false;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -78,6 +79,7 @@ class GBuffer
         void cleanupscale();
         void cleanupmsbuffer();
 
+        bool inoq;
         bool gdepthinit;
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
@@ -272,7 +274,6 @@ extern int gw, gh, gdepthformat, ghasstencil;
 extern int msaasamples, msaalight;
 extern std::vector<vec2> msaapositions;
 
-extern bool inoq;
 extern int rhinoq;
 extern int rsmcull;
 extern GLuint rhfbo;
