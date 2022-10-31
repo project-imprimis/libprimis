@@ -3813,6 +3813,14 @@ void GBuffer::preparegbuffer(bool depthclear)
     resetmodelbatches();
 }
 
+
+//allows passing nothing to internal uses of rendergbuffer
+//(the parameter is for taking a game function to be rendered onscreen)
+void GBuffer::dummyfxn()
+{
+    return;
+}
+
 /* rendergbuffer: creates the geometry buffer for the scene
  * args:
  *      bool depthclear: toggles clearing the depth buffer
@@ -3823,12 +3831,12 @@ void GBuffer::preparegbuffer(bool depthclear)
  *      renders and copies a fbo (framebuffer object) to msfbo (multisample framebuffer object)
  *      or gfbo (geometry buffer framebuffer object) depending on whether msaa is enabled
  */
-void rendergbuffer(bool depthclear, void (*gamefxn)())
+void GBuffer::rendergbuffer(bool depthclear, void (*gamefxn)())
 {
     timer *gcputimer = drawtex ? nullptr : begintimer("g-buffer", false),
           *gtimer = drawtex ? nullptr : begintimer("g-buffer");
 
-    gbuf.preparegbuffer(depthclear);
+    preparegbuffer(depthclear);
 
     if(limitsky())
     {

@@ -1445,7 +1445,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     ldrscaleb = ldrscale/255;
 
     view.visiblecubes(false);
-    rendergbuffer();
+    gbuf.rendergbuffer();
     rendershadowatlas();
 
     gbuf.shademinimap(minimapcolor.tocolor().mul(ldrscale));
@@ -1455,7 +1455,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
         camera1->o.z = minimapcenter.z + minimapradius.z + 1;
         projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, -zscale, zscale);
         setcamprojmatrix();
-        rendergbuffer(false);
+        gbuf.rendergbuffer(false);
         gbuf.shademinimap();
     }
 
@@ -1632,7 +1632,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     //construct g-buffer (build basic scene)
-    rendergbuffer(true, gamefxn);
+    gbuf.rendergbuffer(true, gamefxn);
     if(wireframe && editmode) //done with wireframe mode now
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

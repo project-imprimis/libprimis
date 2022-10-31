@@ -43,6 +43,7 @@ class GBuffer
             msaatonemapblit = false;
             inoq = false;
         }
+        static void dummyfxn();
         //main g-buffers
         void cleanupgbuffer();
         void preparegbuffer(bool depthclear = true);
@@ -73,6 +74,7 @@ class GBuffer
         void setupscale(int sw, int sh, int w, int h);
         GLuint shouldscale();
         void workinoq();
+        void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 
     private:
         void bindmsdepth();
@@ -278,18 +280,10 @@ extern int rhinoq;
 extern int rsmcull;
 extern GLuint rhfbo;
 
-//allows passing nothing to internal uses of gbuffer fxn
-//(the parameter is for taking a game function to be rendered onscreen)
-inline void dummyfxn()
-{
-    return;
-}
-
 extern bool shouldworkinoq();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
-extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void setuplights();
 extern bool debuglights();
