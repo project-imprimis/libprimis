@@ -1,6 +1,9 @@
 #ifndef RENDERLIGHTS_H_
 #define RENDERLIGHTS_H_
 
+const int lighttilemaxwidth  = 16;
+const int lighttilemaxheight = 16;
+
 /* gbuffer: a singleton object used to store the graphics buffers
  * (as OpenGL uints) and the functions which act upon the g-buffers.
  */
@@ -43,6 +46,20 @@ class GBuffer
             msaatonemapblit = false;
             inoq = false;
             transparentlayer = 0;
+
+            matliquidsx1  = -1,
+            matliquidsy1  = -1,
+            matliquidsx2  =  1,
+            matliquidsy2  =  1,
+            matsolidsx1   = -1,
+            matsolidsy1   = -1,
+            matsolidsx2   =  1,
+            matsolidsy2   =  1,
+            matrefractsx1 = -1,
+            matrefractsy1 = -1,
+            matrefractsx2 =  1,
+            matrefractsy2 =  1;
+
         }
         static void dummyfxn();
         //main g-buffers
@@ -83,6 +100,7 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
         void rendershadowmaps(int offset = 0);
+        int findmaterials(); //materials.cpp
 
         bool transparentlayer;
         bool inoq;
@@ -90,6 +108,11 @@ class GBuffer
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
         bool msaatonemapblit;
+
+        float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
+        float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
+        float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
+        uint matliquidtiles[lighttilemaxheight], matsolidtiles[lighttilemaxheight];
 
         int scalew,
             scaleh;
@@ -203,9 +226,6 @@ extern int smfilter;
 extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = nullptr);
 
 constexpr int shadowatlassize = 4096;
-
-const int lighttilemaxwidth  = 16;
-const int lighttilemaxheight = 16;
 
 extern int smborder, smborder2;
 
