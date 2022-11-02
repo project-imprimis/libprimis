@@ -237,9 +237,7 @@ extern int nospeclights;
 extern int debugfullscreen;
 extern int msaaedgedetect;
 extern int hdrclear;
-
 extern int msaatonemap;
-extern int msaatonemapblit;
 
 extern int vieww, viewh;
 
