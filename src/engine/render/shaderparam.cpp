@@ -78,7 +78,9 @@ void GlobalShaderParam::set(const matrix4 &m)
 
 //localshaderparam
 
-LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1) {}
+LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)
+{
+}
 
 LocalShaderParamState *LocalShaderParam::resolve()
 {
