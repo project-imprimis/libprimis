@@ -536,12 +536,12 @@ namespace
     float glassxscale = 0,
           glassyscale = 0;
 
-    void drawglass(const materialsurface &m, float offset, const vec *normal = nullptr)
+    void drawglass(const materialsurface &m, float offset, const vec normal = vec(0,0,0))
     {
         if(gle::attribbuf.empty())
         {
             gle::defvertex();
-            if(normal)
+            if(normal != vec(0,0,0))
             {
                 gle::defnormal();
             }
@@ -581,9 +581,9 @@ namespace
               z = m.o.z,
               csize = m.csize,
               rsize = m.rsize;
-        if(normal)
+        if(normal != vec(0,0,0))
         {
-            vec n = *normal;
+            vec n = normal;
             switch(m.orient)
             {
                 GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
@@ -655,7 +655,7 @@ namespace
             for(uint i = 0; i < surfs.size(); i++)
             {
                 materialsurface &m = surfs[i];
-                drawglass(m, 0.1f, &matnormals[m.orient]);
+                drawglass(m, 0.1f, matnormals(m.orient));
             }
             xtraverts += gle::end();
         }
@@ -664,6 +664,28 @@ namespace
 }
 
 // externally relevant functionality
+
+vec matnormals(int i)
+{
+    const vec matnormals[6] =
+    {
+        vec(-1, 0, 0),
+        vec( 1, 0, 0),
+        vec(0, -1, 0),
+        vec(0,  1, 0),
+        vec(0, 0, -1),
+        vec(0, 0,  1)
+    };
+
+    if(i < 0 || i > 6)
+    {
+        return vec(0,0,0);
+    }
+    else
+    {
+        return matnormals[i];
+    }
+}
 
 /* findmaterial
  *

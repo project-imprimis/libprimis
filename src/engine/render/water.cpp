@@ -462,12 +462,12 @@ static float wfwave = 0.0f, //waterfall wave
              wfyscale = 1.0f; //waterfall y scale
 
 //"waterfall" refers to any rendered side of water material
-static void renderwaterfall(const materialsurface &m, float offset, const vec *normal = nullptr)
+static void renderwaterfall(const materialsurface &m, float offset, const vec normal = vec(0,0,0))
 {
     if(gle::attribbuf.empty())
     {
         gle::defvertex();
-        if(normal)
+        if(normal != vec(0,0,0))
         {
             gle::defnormal();
         }
@@ -511,9 +511,9 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
                 gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll)); \
             }
 #define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
-    if(normal)
+    if(normal != vec(0,0,0))
     {
-        vec n = *normal;
+        vec n = normal;
         switch(m.orient)
         {
             GENFACEVERTSXY(x, x, y, y, zmin, zmax, /**/, + csize, /**/, + rsize, + offset, - offset)
@@ -583,7 +583,7 @@ void renderwaterfalls()
         glActiveTexture(GL_TEXTURE0);
         for(materialsurface& m : surfs)
         {
-            renderwaterfall(m, 0.1f, &matnormals[m.orient]);
+            renderwaterfall(m, 0.1f, matnormals(m.orient));
         }
         xtraverts += gle::end();
     }
