@@ -14,7 +14,7 @@
 CXXFLAGS ?= -O3 -ffast-math -Wall
 CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
 #-Ishared
-CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags` -lSDL2_ttf
+CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
 
 COVERAGE_BUILD ?= 0
 
