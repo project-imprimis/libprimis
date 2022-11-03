@@ -925,8 +925,9 @@ void setupmaterials(int start, int len)
 
 VARP(showmat, 0, 1, 1); //toggles rendering material faces
 
-int GBuffer::findmaterials()
+GBuffer::MaterialInfo GBuffer::findmaterials()
 {
+    MaterialInfo mi;
     editsurfs.clear();
     for(int i = 0; i < 4; ++i)
     {
@@ -934,10 +935,10 @@ int GBuffer::findmaterials()
         watersurfs[i].clear();
         waterfallsurfs[i].clear();
     }
-    matliquidsx1 = matliquidsy1 = matsolidsx1 = matsolidsy1 = matrefractsx1 = matrefractsy1 = 1;
-    matliquidsx2 = matliquidsy2 = matsolidsx2 = matsolidsy2 = matrefractsx2 = matrefractsy2 = -1;
-    std::memset(matliquidtiles, 0, sizeof(matliquidtiles));
-    std::memset(matsolidtiles, 0, sizeof(matsolidtiles));
+    mi.matliquidsx1 = mi.matliquidsy1 = mi.matsolidsx1 = mi.matsolidsy1 = mi.matrefractsx1 = mi.matrefractsy1 = 1;
+    mi.matliquidsx2 = mi.matliquidsy2 = mi.matsolidsx2 = mi.matsolidsy2 = mi.matrefractsx2 = mi.matrefractsy2 = -1;
+    std::memset(mi.matliquidtiles, 0, sizeof(mi.matliquidtiles));
+    std::memset(mi.matsolidtiles, 0, sizeof(mi.matsolidtiles));
     int hasmats = 0;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
@@ -956,15 +957,15 @@ int GBuffer::findmaterials()
         float sx1, sy1, sx2, sy2;
         if(va->watermin.x <= va->watermax.x && calcbbscissor(va->watermin, va->watermax, sx1, sy1, sx2, sy2))
         {
-            matliquidsx1 = std::min(matliquidsx1, sx1);
-            matliquidsy1 = std::min(matliquidsy1, sy1);
-            matliquidsx2 = std::max(matliquidsx2, sx2);
-            matliquidsy2 = std::max(matliquidsy2, sy2);
-            masktiles(matliquidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = std::min(matrefractsx1, sx1);
-            matrefractsy1 = std::min(matrefractsy1, sy1);
-            matrefractsx2 = std::max(matrefractsx2, sx2);
-            matrefractsy2 = std::max(matrefractsy2, sy2);
+            mi.matliquidsx1 = std::min(mi.matliquidsx1, sx1);
+            mi.matliquidsy1 = std::min(mi.matliquidsy1, sy1);
+            mi.matliquidsx2 = std::max(mi.matliquidsx2, sx2);
+            mi.matliquidsy2 = std::max(mi.matliquidsy2, sy2);
+            masktiles(mi.matliquidtiles, sx1, sy1, sx2, sy2);
+            mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
+            mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
+            mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);
+            mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -994,15 +995,15 @@ int GBuffer::findmaterials()
         }
         if(va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
         {
-            matsolidsx1 = std::min(matsolidsx1, sx1);
-            matsolidsy1 = std::min(matsolidsy1, sy1);
-            matsolidsx2 = std::max(matsolidsx2, sx2);
-            matsolidsy2 = std::max(matsolidsy2, sy2);
-            masktiles(matsolidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = std::min(matrefractsx1, sx1);
-            matrefractsy1 = std::min(matrefractsy1, sy1);
-            matrefractsx2 = std::max(matrefractsx2, sx2);
-            matrefractsy2 = std::max(matrefractsy2, sy2);
+            mi.matsolidsx1 = std::min(mi.matsolidsx1, sx1);
+            mi.matsolidsy1 = std::min(mi.matsolidsy1, sy1);
+            mi.matsolidsx2 = std::max(mi.matsolidsx2, sx2);
+            mi.matsolidsy2 = std::max(mi.matsolidsy2, sy2);
+            masktiles(mi.matsolidtiles, sx1, sy1, sx2, sy2);
+            mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
+            mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
+            mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);
+            mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -1020,7 +1021,8 @@ int GBuffer::findmaterials()
             }
         }
     }
-    return hasmats;
+    mi.hasmats = hasmats;
+    return mi;
 }
 
 void rendermaterialmask()

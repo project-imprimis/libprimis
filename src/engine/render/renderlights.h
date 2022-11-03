@@ -46,20 +46,6 @@ class GBuffer
             msaatonemapblit = false;
             inoq = false;
             transparentlayer = 0;
-
-            matliquidsx1  = -1,
-            matliquidsy1  = -1,
-            matliquidsx2  =  1,
-            matliquidsy2  =  1,
-            matsolidsx1   = -1,
-            matsolidsy1   = -1,
-            matsolidsx2   =  1,
-            matsolidsy2   =  1,
-            matrefractsx1 = -1,
-            matrefractsy1 = -1,
-            matrefractsx2 =  1,
-            matrefractsy2 =  1;
-
         }
         static void dummyfxn();
         //main g-buffers
@@ -100,7 +86,27 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
         void rendershadowmaps(int offset = 0);
-        int findmaterials(); //materials.cpp
+
+        struct MaterialInfo
+        {
+            float matliquidsx1,
+                  matliquidsy1,
+                  matliquidsx2,
+                  matliquidsy2;
+            float matsolidsx1,
+                  matsolidsy1,
+                  matsolidsx2,
+                  matsolidsy2;
+            float matrefractsx1,
+                  matrefractsy1,
+                  matrefractsx2,
+                  matrefractsy2;
+            uint matliquidtiles[lighttilemaxheight],
+                 matsolidtiles[lighttilemaxheight];
+            int hasmats;
+        };
+
+        MaterialInfo findmaterials(); //materials.cpp
 
         bool transparentlayer;
         bool inoq;
@@ -108,11 +114,6 @@ class GBuffer
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
         bool msaatonemapblit;
-
-        float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
-        float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
-        float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
-        uint matliquidtiles[lighttilemaxheight], matsolidtiles[lighttilemaxheight];
 
         int scalew,
             scaleh;

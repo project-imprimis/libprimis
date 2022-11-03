@@ -68,8 +68,9 @@ namespace
 
 void GBuffer::rendertransparent()
 {
+    MaterialInfo mi = findmaterials(); //generate mat* vars
     int hasalphavas = findalphavas(),
-        hasmats = findmaterials();
+        hasmats = mi.hasmats;
     bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
     if(!hasalphavas && !hasmats && !hasmodels) //don't transparent render if there is no alpha
     {
@@ -96,10 +97,10 @@ void GBuffer::rendertransparent()
         {
             glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
         }
-        float sx1 = std::min(alpharefractsx1, matrefractsx1),
-              sy1 = std::min(alpharefractsy1, matrefractsy1),
-              sx2 = std::max(alpharefractsx2, matrefractsx2),
-              sy2 = std::max(alpharefractsy2, matrefractsy2);
+        float sx1 = std::min(alpharefractsx1, mi.matrefractsx1),
+              sy1 = std::min(alpharefractsy1, mi.matrefractsy1),
+              sx2 = std::max(alpharefractsx2, mi.matrefractsx2),
+              sy2 = std::max(alpharefractsy2, mi.matrefractsy2);
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
@@ -184,11 +185,11 @@ void GBuffer::rendertransparent()
                 {
                     continue;
                 }
-                sx1 = matliquidsx1;
-                sy1 = matliquidsy1;
-                sx2 = matliquidsx2;
-                sy2 = matliquidsy2;
-                std::memcpy(tiles, matliquidtiles, sizeof(tiles));
+                sx1 = mi.matliquidsx1;
+                sy1 = mi.matliquidsy1;
+                sx2 = mi.matliquidsx2;
+                sy2 = mi.matliquidsy2;
+                std::memcpy(tiles, mi.matliquidtiles, sizeof(tiles));
                 break;
             }
             case 1:
@@ -217,13 +218,13 @@ void GBuffer::rendertransparent()
                 std::memcpy(tiles, alphatiles, sizeof(tiles));
                 if(hasmats&2)
                 {
-                    sx1 = std::min(sx1, matsolidsx1);
-                    sy1 = std::min(sy1, matsolidsy1);
-                    sx2 = std::max(sx2, matsolidsx2);
-                    sy2 = std::max(sy2, matsolidsy2);
+                    sx1 = std::min(sx1, mi.matsolidsx1);
+                    sy1 = std::min(sy1, mi.matsolidsy1);
+                    sx2 = std::max(sx2, mi.matsolidsx2);
+                    sy2 = std::max(sy2, mi.matsolidsy2);
                     for(int j = 0; j < lighttilemaxheight; ++j)
                     {
-                        tiles[j] |= matsolidtiles[j];
+                        tiles[j] |= mi.matsolidtiles[j];
                     }
                 }
                 break;
