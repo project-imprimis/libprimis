@@ -86,6 +86,7 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
         void rendershadowmaps(int offset = 0);
+        int findalphavas();
 
         struct MaterialInfo
         {

@@ -2701,7 +2701,7 @@ void cubeworld::cleanupva()
     cleanupgrass();
 }
 
-int findalphavas()
+int GBuffer::findalphavas()
 {
     alphavas.clear();
     alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;

@@ -52,7 +52,6 @@ extern uint alphatiles[];
 extern vtxarray *visibleva;
 
 extern void rendergeom();
-extern int findalphavas();
 extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();
