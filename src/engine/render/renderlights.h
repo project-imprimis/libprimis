@@ -46,6 +46,19 @@ class GBuffer
             msaatonemapblit = false;
             inoq = false;
             transparentlayer = 0;
+
+            alphafrontsx1   = -1;
+            alphafrontsx2   =  1;
+            alphafrontsy1   = -1;
+            alphafrontsy2   = -1;
+            alphabacksx1    = -1;
+            alphabacksx2    =  1;
+            alphabacksy1    = -1;
+            alphabacksy2    = -1;
+            alpharefractsx1 = -1;
+            alpharefractsx2 =  1;
+            alpharefractsy1 = -1;
+            alpharefractsy2 =  1;
         }
         static void dummyfxn();
         //main g-buffers
@@ -108,6 +121,13 @@ class GBuffer
         };
 
         MaterialInfo findmaterials(); //materials.cpp
+
+        float alphafrontsx1, alphafrontsx2,
+              alphafrontsy1, alphafrontsy2,
+              alphabacksx1, alphabacksx2,
+              alphabacksy1, alphabacksy2,
+              alpharefractsx1, alpharefractsx2,
+              alpharefractsy1, alpharefractsy2;
 
         bool transparentlayer;
         bool inoq;

@@ -34,18 +34,6 @@
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 VAR(oqfrags, 0, 8, 64); //occlusion query fragments
 CVARP(outlinecolor, 0); //color of edit mode outlines
-float alphafrontsx1   = -1,
-      alphafrontsx2   =  1,
-      alphafrontsy1   = -1,
-      alphafrontsy2   = -1,
-      alphabacksx1    = -1,
-      alphabacksx2    =  1,
-      alphabacksy1    = -1,
-      alphabacksy2    = -1,
-      alpharefractsx1 = -1,
-      alpharefractsx2 =  1,
-      alpharefractsy1 = -1,
-      alpharefractsy2 =  1;
 
 float shadowradius = 0,
       shadowbias = 0;
