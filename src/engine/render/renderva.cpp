@@ -1404,8 +1404,6 @@ namespace
     VAR(oqgeom, 0, 1, 1); //occlusion query geometry
 
     std::vector<vtxarray *> alphavas;
-    int alphabackvas    = 0,
-        alpharefractvas = 0;
 
     CVARP(explicitskycolor, 0x800080);
 
@@ -2708,7 +2706,8 @@ int findalphavas()
     alphavas.clear();
     alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
     alphafrontsx2 = alphafrontsy2 = alphabacksx2 = alphabacksy2 = alpharefractsx2 = alpharefractsy2 = -1;
-    alphabackvas = alpharefractvas = 0;
+    int alphabackvas = 0,
+        alpharefractvas = 0;
     std::memset(alphatiles, 0, sizeof(alphatiles));
     for(vtxarray *va = visibleva; va; va = va->next)
     {
