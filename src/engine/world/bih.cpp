@@ -1139,8 +1139,8 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
     for(;;)
     {
         int axis = curnode->axis();
-        const int nearidx = 0,
-                  faridx = nearidx ^ 1; //xor last bit
+        constexpr int nearidx = 0,
+                      faridx = nearidx ^ 1; //xor last bit
         int nearsplit = bmin[axis] - curnode->split[nearidx],
             farsplit = curnode->split[faridx] - bmax[axis];
         if(nearsplit > 0)
