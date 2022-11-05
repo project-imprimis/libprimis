@@ -234,15 +234,6 @@ void LocalShaderParam::setv(const plane *p, int n)
     }
 }
 
-void LocalShaderParam::setv(const matrix2 *m, int n)
-{
-    ShaderParamBinding *b = resolve();
-    if(b)
-    {
-        glUniformMatrix2fv(b->loc, n, GL_FALSE, m->a.v);
-    }
-}
-
 void LocalShaderParam::setv(const matrix3 *m, int n)
 {
     ShaderParamBinding *b = resolve();
@@ -259,11 +250,6 @@ void LocalShaderParam::setv(const matrix4 *m, int n)
     {
         glUniformMatrix4fv(b->loc, n, GL_FALSE, m->a.v);
     }
-}
-
-void LocalShaderParam::set(const matrix2 &m)
-{
-    setv(&m);
 }
 
 void LocalShaderParam::set(const matrix3 &m)
