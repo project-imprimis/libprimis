@@ -194,12 +194,12 @@ VARFP(soundvol, 0, 255, 255,
 
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
-char *musicfile    = nullptr,
-     *musicdonecmd = nullptr;
+static char *musicfile    = nullptr,
+            *musicdonecmd = nullptr;
 
-Mix_Music *music    = nullptr;
-SDL_RWops *musicrw  = nullptr;
-stream *musicstream = nullptr;
+static Mix_Music *music    = nullptr;
+static SDL_RWops *musicrw  = nullptr;
+static stream *musicstream = nullptr;
 
 static void setmusicvol(int musicvol)
 {
