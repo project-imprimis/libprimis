@@ -639,6 +639,7 @@ namespace
         int texgenorient, texgenmillis;
 
         void changebatchtmus();
+        void disablevquery();
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -676,10 +677,10 @@ namespace
         cur.vquery = true;
     }
 
-    void disablevquery(renderstate &cur)
+    void renderstate::disablevquery()
     {
         endbb(false);
-        cur.vquery = false;
+        vquery = false;
     }
 
     void renderquery(renderstate &cur, occludequery *query, vtxarray *va, bool full = true)
@@ -1181,7 +1182,7 @@ namespace
             {
                 if(cur.vquery)
                 {
-                    disablevquery(cur);
+                    cur.disablevquery();
                 }
                 enablevattribs(cur);
             }
@@ -1229,7 +1230,7 @@ namespace
         {
             if(cur.vquery)
             {
-                disablevquery(cur);
+                cur.disablevquery();
             }
             enablevattribs(cur, false);
         }
@@ -2878,7 +2879,7 @@ void rendergeom()
 
         if(cur.vquery)
         {
-            disablevquery(cur);
+            cur.disablevquery();
         }
         if(cur.vattribs)
         {
