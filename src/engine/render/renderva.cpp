@@ -638,6 +638,8 @@ namespace
         vec2 texgenscroll;
         int texgenorient, texgenmillis;
 
+        void changebatchtmus();
+
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
                         refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
@@ -944,11 +946,11 @@ namespace
         }
     }
 
-    void changebatchtmus(renderstate &cur)
+    void renderstate::changebatchtmus()
     {
-        if(cur.tmu != 0)
+        if(tmu != 0)
         {
-            cur.tmu = 0;
+            tmu = 0;
             glActiveTexture(GL_TEXTURE0);
         }
     }
@@ -1195,7 +1197,7 @@ namespace
             }
             if(pass == RenderPass_GBuffer || pass == RenderPass_ReflectiveShadowMap)
             {
-                changebatchtmus(cur);
+                cur.changebatchtmus();
             }
             if(cur.vslot != &b.vslot)
             {
