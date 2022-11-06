@@ -662,20 +662,20 @@ namespace
         vbuf = 0;
     }
 
-    void enablevquery(renderstate &cur)
+    void renderstate::enablevquery()
     {
-        if(cur.colormask)
+        if(colormask)
         {
-            cur.colormask = false;
+            colormask = false;
             glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
         }
-        if(cur.depthmask)
+        if(depthmask)
         {
-            cur.depthmask = false;
+            depthmask = false;
             glDepthMask(GL_FALSE);
         }
         startbb(false);
-        cur.vquery = true;
+        vquery = true;
     }
 
     void renderstate::disablevquery()
@@ -688,7 +688,7 @@ namespace
     {
         if(!cur.vquery)
         {
-            enablevquery(cur);
+            cur.enablevquery();
         }
         query->startquery();
         if(full)
