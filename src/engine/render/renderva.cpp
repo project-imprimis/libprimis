@@ -640,6 +640,7 @@ namespace
 
         void changebatchtmus();
         void disablevquery();
+        void disablevbuf();
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -654,11 +655,11 @@ namespace
         }
     };
 
-    void disablevbuf(renderstate &cur)
+    void renderstate::disablevbuf()
     {
         gle::clearvbo();
         gle::clearebo();
-        cur.vbuf = 0;
+        vbuf = 0;
     }
 
     void enablevquery(renderstate &cur)
@@ -1387,7 +1388,7 @@ namespace
         }
         if(cur.vbuf)
         {
-            disablevbuf(cur);
+            cur.disablevbuf();
         }
     }
 
@@ -2857,7 +2858,7 @@ void rendergeom()
                             }
                             if(cur.vbuf)
                             {
-                                disablevbuf(cur);
+                                cur.disablevbuf();
                             }
                             renderquery(cur, va->query, va);
                         }
@@ -2887,7 +2888,7 @@ void rendergeom()
         }
         if(cur.vbuf)
         {
-            disablevbuf(cur);
+            cur.disablevbuf();
         }
         glFlush();
         if(cur.colormask)
