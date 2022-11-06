@@ -495,7 +495,7 @@ VAR(wireframe, 0, 0, 1);
 
 vec worldpos, camdir, camright, camup;
 
-void setcammatrix()
+static void setcammatrix()
 {
     // move from RH to Z-up LH quake style worldspace
     cammatrix = viewmatrix;
