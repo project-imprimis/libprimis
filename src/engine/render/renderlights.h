@@ -128,6 +128,7 @@ class GBuffer
               alphabacksy1, alphabacksy2,
               alpharefractsx1, alpharefractsx2,
               alpharefractsy1, alpharefractsy2;
+        uint alphatiles[lighttilemaxheight];
 
         bool transparentlayer;
         bool inoq;

@@ -42,7 +42,6 @@ int shadowside = 0,
 vec shadoworigin(0, 0, 0),
     shadowdir(0, 0, 0);
 
-uint alphatiles[lighttilemaxheight];
 vtxarray *visibleva = nullptr;
 vfc view;
 

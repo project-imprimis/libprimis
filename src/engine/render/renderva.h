@@ -42,7 +42,6 @@ extern vec shadoworigin, shadowdir;
 extern float shadowradius, shadowbias;
 extern int shadowside, shadowspot;
 
-extern uint alphatiles[];
 extern vtxarray *visibleva;
 
 extern void rendergeom();
