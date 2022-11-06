@@ -641,6 +641,7 @@ namespace
         void changebatchtmus();
         void disablevquery();
         void disablevbuf();
+        void enablevquery();
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
