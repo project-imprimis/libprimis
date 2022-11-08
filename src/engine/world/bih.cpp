@@ -815,7 +815,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
 //==============================================================================
 //used in the tricollide templates below
 //returns true if physent is a player and passed vec is close enough to matter (determined by radius,pdist)
-static bool playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius)
+bool BIH::playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius)
 {
     float a = 2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)),
           b = (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0);
