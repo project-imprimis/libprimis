@@ -642,6 +642,7 @@ namespace
         void disablevquery();
         void disablevbuf();
         void enablevquery();
+        void cleanupgeom();
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -1381,15 +1382,15 @@ namespace
         GLOBALPARAMF(colorparams, 1, 1, 1, 1);
     }
 
-    void cleanupgeom(renderstate &cur)
+    void renderstate::cleanupgeom()
     {
-        if(cur.vattribs)
+        if(vattribs)
         {
-            disablevattribs(cur);
+            disablevattribs(*this);
         }
-        if(cur.vbuf)
+        if(vbuf)
         {
-            cur.disablevbuf();
+            disablevbuf();
         }
     }
 
@@ -2819,7 +2820,7 @@ void renderalphageom(int side)
         glCullFace(GL_BACK);
     }
 
-    cleanupgeom(cur);
+    cur.cleanupgeom();
 }
 
 void rendergeom()
@@ -2985,7 +2986,7 @@ void rendergeom()
     {
         glDepthFunc(GL_LESS);
     }
-    cleanupgeom(cur);
+    cur.cleanupgeom();
     if(!doOQ)
     {
         glFlush();
@@ -3447,7 +3448,7 @@ void renderrsmgeom(bool dyntex)
     {
         renderbatches(cur, RenderPass_ReflectiveShadowMap);
     }
-    cleanupgeom(cur);
+    cur.cleanupgeom();
 }
 
 int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
