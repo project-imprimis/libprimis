@@ -808,7 +808,7 @@ namespace
 
     std::vector<geombatch> geombatches;
     int firstbatch = -1,
-               numbatches = 0;
+        numbatches = 0;
 
     void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr, int offset = 0)
     {
