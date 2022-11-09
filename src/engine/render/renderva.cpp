@@ -643,6 +643,7 @@ namespace
         void disablevbuf();
         void enablevquery();
         void cleanupgeom();
+        void disablevattribs(bool all = true);
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -921,7 +922,7 @@ namespace
         cur.vattribs = true;
     }
 
-    void disablevattribs(renderstate &cur, bool all = true)
+    void renderstate::disablevattribs(bool all)
     {
         gle::disablevertex();
         if(all)
@@ -930,7 +931,7 @@ namespace
             gle::disablenormal();
             gle::disabletangent();
         }
-        cur.vattribs = false;
+        vattribs = false;
     }
 
     void changevbuf(renderstate &cur, int pass, vtxarray *va)
@@ -1386,7 +1387,7 @@ namespace
     {
         if(vattribs)
         {
-            disablevattribs(*this);
+            disablevattribs();
         }
         if(vbuf)
         {
@@ -2856,7 +2857,7 @@ void rendergeom()
                         {
                             if(cur.vattribs)
                             {
-                                disablevattribs(cur, false);
+                                cur.disablevattribs(false);
                             }
                             if(cur.vbuf)
                             {
@@ -2886,7 +2887,7 @@ void rendergeom()
         }
         if(cur.vattribs)
         {
-            disablevattribs(cur, false);
+            cur.disablevattribs(false);
         }
         if(cur.vbuf)
         {
@@ -3433,7 +3434,7 @@ void renderrsmgeom(bool dyntex)
         }
         if(cur.vattribs)
         {
-            disablevattribs(cur, false);
+            cur.disablevattribs(false);
         }
     }
     resetbatches();
