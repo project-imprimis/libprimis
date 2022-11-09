@@ -643,6 +643,7 @@ namespace
         void disablevbuf();
         void enablevquery();
         void cleanupgeom();
+        void enablevattribs(bool all = true);
         void disablevattribs(bool all = true);
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
@@ -910,7 +911,7 @@ namespace
         } while(++curtex < numtexs);
     }
 
-    void enablevattribs(renderstate &cur, bool all = true)
+    void renderstate::enablevattribs(bool all)
     {
         gle::enablevertex();
         if(all)
@@ -919,7 +920,7 @@ namespace
             gle::enablenormal();
             gle::enabletangent();
         }
-        cur.vattribs = true;
+        vattribs = true;
     }
 
     void renderstate::disablevattribs(bool all)
@@ -1188,7 +1189,7 @@ namespace
                 {
                     cur.disablevquery();
                 }
-                enablevattribs(cur);
+                cur.enablevattribs();
             }
         }
         while(curbatch >= 0)
@@ -1236,7 +1237,7 @@ namespace
             {
                 cur.disablevquery();
             }
-            enablevattribs(cur, false);
+            cur.enablevattribs(false);
         }
         if(cur.vbuf!=va->vbuf)
         {
@@ -1334,7 +1335,7 @@ namespace
             case RenderPass_Caustics:
                 if(!cur.vattribs)
                 {
-                    enablevattribs(cur, false);
+                    cur.enablevattribs(false);
                 }
                 if(cur.vbuf!=va->vbuf)
                 {
@@ -3413,7 +3414,7 @@ void renderrsmgeom(bool dyntex)
     setupgeom();
     if(skyshadow)
     {
-        enablevattribs(cur, false);
+        cur.enablevattribs(false);
         SETSHADER(rsmsky);
         vtxarray *prev = nullptr;
         for(vtxarray *va = shadowva; va; va = va->rnext)
