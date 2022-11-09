@@ -1415,6 +1415,8 @@ namespace
             next(-1), batch(-1)
         {}
 
+        void renderdecalbatch();
+
         int compare(const decalbatch &b) const
         {
             if(va->vbuf < b.va->vbuf)
@@ -1683,10 +1685,10 @@ namespace
         globals = GlobalShaderParamState::nextversion;
     }
 
-    void renderdecalbatch(decalbatch &b)
+    void decalbatch::renderdecalbatch()
     {
         gbatches++;
-        for(decalbatch *curbatch = &b;; curbatch = &decalbatches[curbatch->batch])
+        for(decalbatch *curbatch = this;; curbatch = &decalbatches[curbatch->batch])
         {
             ushort len = curbatch->es.length;
             if(len)
@@ -1729,7 +1731,7 @@ namespace
                 updateshader(*this);
             }
 
-            renderdecalbatch(b);
+            b.renderdecalbatch();
         }
 
         resetdecalbatches();
