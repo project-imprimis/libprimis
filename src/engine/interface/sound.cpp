@@ -87,6 +87,7 @@ struct SoundChannel
     SoundChannel(int id) : id(id) { reset(); }
 
     bool updatechannel();
+    void syncchannel();
 
     bool hasloc() const
     {
@@ -156,18 +157,18 @@ static void freechannel(int n)
     }
 }
 
-static void syncchannel(SoundChannel &chan)
+void SoundChannel::syncchannel()
 {
-    if(!chan.dirty)
+    if(!dirty)
     {
         return;
     }
-    if(!Mix_FadingChannel(chan.id))
+    if(!Mix_FadingChannel(id))
     {
-        Mix_Volume(chan.id, chan.volume);
+        Mix_Volume(id, volume);
     }
-    Mix_SetPanning(chan.id, 255-chan.pan, chan.pan);
-    chan.dirty = false;
+    Mix_SetPanning(id, 255-pan, pan);
+    dirty = false;
 }
 
 static void stopchannels()
@@ -762,7 +763,7 @@ void syncchannels()
         SoundChannel &chan = channels[i];
         if(chan.inuse && chan.hasloc() && chan.updatechannel())
         {
-            syncchannel(chan);
+            chan.syncchannel();
         }
     }
 }
@@ -929,7 +930,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
     }
     if(playing >= 0)
     {
-        syncchannel(chan);
+        chan.syncchannel();
     }
     else
     {
