@@ -86,6 +86,8 @@ struct SoundChannel
 
     SoundChannel(int id) : id(id) { reset(); }
 
+    bool updatechannel();
+
     bool hasloc() const
     {
         return loc.x >= -1e15f;
@@ -692,31 +694,31 @@ VAR(maxsoundradius, 1, 340, 0);
 
 //recalculates stereo mix & volume for a soundchannel (sound ent, or player generated sound)
 //(unless stereo is disabled, in which case the mix is only by distance)
-bool updatechannel(SoundChannel &chan)
+bool SoundChannel::updatechannel()
 {
-    if(!chan.slot)
+    if(!slot)
     {
         return false;
     }
     int vol = soundvol,
-        pan = 255/2;
-    if(chan.hasloc())
+        middlepan = 255/2;
+    if(hasloc())
     {
         vec v;
-        float dist = chan.loc.dist(camera1->o, v);
+        float dist = loc.dist(camera1->o, v);
         int rad = maxsoundradius;
-        if(chan.ent)
+        if(ent)
         {
-            rad = chan.ent->attr2;
-            if(chan.ent->attr3)
+            rad = ent->attr2;
+            if(ent->attr3)
             {
-                rad -= chan.ent->attr3;
-                dist -= chan.ent->attr3;
+                rad -= ent->attr3;
+                dist -= ent->attr3;
             }
         }
-        else if(chan.radius > 0)
+        else if(radius > 0)
         {
-            rad = maxsoundradius ? std::min(maxsoundradius, chan.radius) : chan.radius;
+            rad = maxsoundradius ? std::min(maxsoundradius, radius) : radius;
         }
         if(rad > 0) //rad = 0 means no attenuation ever
         {
@@ -728,15 +730,15 @@ bool updatechannel(SoundChannel &chan)
             pan = static_cast<int>(255.9f*(0.5f - 0.5f*v.x/v.magnitude2())); // range is from 0 (left) to 255 (right)
         }
     }
-    vol = (vol*MIX_MAX_VOLUME*chan.slot->volume)/255/255;
+    vol = (vol*MIX_MAX_VOLUME*slot->volume)/255/255;
     vol = std::min(vol, MIX_MAX_VOLUME);
-    if(vol == chan.volume && pan == chan.pan)
+    if(vol == volume && pan == middlepan)
     {
         return false;
     }
-    chan.volume = vol;
-    chan.pan = pan;
-    chan.dirty = true;
+    volume = vol;
+    pan = middlepan;
+    dirty = true;
     return true;
 }
 
@@ -758,7 +760,7 @@ void syncchannels()
     for(uint i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
-        if(chan.inuse && chan.hasloc() && updatechannel(chan))
+        if(chan.inuse && chan.hasloc() && chan.updatechannel())
         {
             syncchannel(chan);
         }
@@ -909,7 +911,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         return -1;
     }
     SoundChannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
-    updatechannel(chan);
+    chan.updatechannel();
     int playing = -1;
     //some ugly ternary assignments
     if(fade)
