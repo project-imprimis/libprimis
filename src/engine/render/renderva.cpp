@@ -729,6 +729,8 @@ namespace
             next(-1), batch(-1)
         {}
 
+        void renderbatch();
+
         int compare(const geombatch &b) const
         {
             if(va->vbuf < b.va->vbuf)
@@ -1141,10 +1143,10 @@ namespace
         }
     }
 
-    void renderbatch(geombatch &b)
+    void geombatch::renderbatch()
     {
         gbatches++;
-        for(geombatch *curbatch = &b;; curbatch = &geombatches[curbatch->batch])
+        for(geombatch *curbatch = this;; curbatch = &geombatches[curbatch->batch])
         {
             ushort len = curbatch->es.length;
             if(len)
@@ -1223,7 +1225,7 @@ namespace
                 updateshader(cur);
             }
 
-            renderbatch(b);
+            b.renderbatch();
         }
 
         resetbatches();
