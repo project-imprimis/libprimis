@@ -76,41 +76,45 @@ struct SoundConfig
 //defined in world coordinates, and position mixing is done for the player dynamically
 struct SoundChannel
 {
-    int id;
-    bool inuse;
-    vec loc;
-    soundslot *slot;
-    extentity *ent;
-    int radius, volume, pan, flags;
-    bool dirty;
+    public:
+        bool inuse;
+        vec loc;
+        soundslot *slot;
+        extentity *ent;
+        int radius, volume, flags;
 
-    SoundChannel(int id) : id(id) { reset(); }
+        SoundChannel(int id) : id(id) { reset(); }
 
-    bool updatechannel();
-    void syncchannel();
+        bool updatechannel();
+        void syncchannel();
 
-    bool hasloc() const
-    {
-        return loc.x >= -1e15f;
-    }
+        bool hasloc() const
+        {
+            return loc.x >= -1e15f;
+        }
 
-    void clearloc()
-    {
-        loc = vec(-1e16f, -1e16f, -1e16f);
-    }
+        void clearloc()
+        {
+            loc = vec(-1e16f, -1e16f, -1e16f);
+        }
 
-    void reset()
-    {
-        inuse  = false;
-        clearloc();
-        slot   = nullptr;
-        ent    = nullptr;
-        radius = 0;
-        volume = -1;
-        pan    = -1;
-        flags  = 0;
-        dirty  = false;
-    }
+        void reset()
+        {
+            inuse  = false;
+            clearloc();
+            slot   = nullptr;
+            ent    = nullptr;
+            radius = 0;
+            volume = -1;
+            pan    = -1;
+            flags  = 0;
+            dirty  = false;
+        }
+
+    private:
+        int id;
+        int pan;
+        bool dirty;
 };
 
 static std::vector<SoundChannel> channels;
