@@ -81,13 +81,13 @@ struct SoundChannel
         vec loc;
         soundslot *slot;
         extentity *ent;
-        int radius, volume, flags;
+        int volume;
 
         SoundChannel(int id) : id(id) { reset(); }
 
         bool updatechannel();
         void syncchannel();
-
+        void setupchannel(int n, soundslot *slot, const vec *loc, extentity *ent, int flags, int radius);
         bool hasloc() const
         {
             return loc.x >= -1e15f;
@@ -113,12 +113,26 @@ struct SoundChannel
 
     private:
         int id;
-        int pan;
+        int radius, pan, flags;
         bool dirty;
 };
 
 static std::vector<SoundChannel> channels;
 int maxchannels = 0;
+
+void SoundChannel::setupchannel(int newn, soundslot *newslot, const vec *newloc, extentity *newent, int newflags, int newradius)
+{
+    reset();
+    inuse = true;
+    if(newloc)
+    {
+        loc = *newloc;
+    }
+    slot = newslot;
+    ent = newent;
+    flags = 0;
+    radius = newradius;
+}
 
 //creates a new SoundChannel object with passed properties
 static SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int radius = 0)
@@ -133,16 +147,7 @@ static SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr
         channels.push_back(channels.size());
     }
     SoundChannel &chan = channels[n];
-    chan.reset();
-    chan.inuse = true;
-    if(loc)
-    {
-        chan.loc = *loc;
-    }
-    chan.slot = slot;
-    chan.ent = ent;
-    chan.flags = 0;
-    chan.radius = radius;
+    chan.setupchannel(n, slot, loc, ent, flags, radius);
     return chan;
 }
 
