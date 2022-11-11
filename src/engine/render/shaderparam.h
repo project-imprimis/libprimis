@@ -179,7 +179,6 @@ class LocalShaderParam
         void setv(const vec *v, int n = 1);
         void setv(const vec2 *v, int n = 1);
         void setv(const vec4<float> *v, int n = 1);
-        void setv(const plane *p, int n = 1);
         void setv(const float *f, int n);
         void set(const matrix3 &m);
         void set(const matrix4 &m);
