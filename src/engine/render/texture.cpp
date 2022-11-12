@@ -1876,26 +1876,27 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
     }
 }
 
-const struct slottex
-{
-    const char *name;
-    int id;
-} slottexs[] =
-{
-    {"0", Tex_Diffuse},
-    {"1", Tex_Unknown},
-
-    {"c", Tex_Diffuse},
-    {"u", Tex_Unknown},
-    {"n", Tex_Normal},
-    {"g", Tex_Glow},
-    {"s", Tex_Spec},
-    {"z", Tex_Depth},
-    {"a", Tex_Alpha}
-};
-
 int findslottex(const char *name)
 {
+
+    const struct slottex
+    {
+        const char *name;
+        int id;
+    } slottexs[] =
+    {
+        {"0", Tex_Diffuse},
+        {"1", Tex_Unknown},
+
+        {"c", Tex_Diffuse},
+        {"u", Tex_Unknown},
+        {"n", Tex_Normal},
+        {"g", Tex_Glow},
+        {"s", Tex_Spec},
+        {"z", Tex_Depth},
+        {"a", Tex_Alpha}
+    };
+
     for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
         if(!std::strcmp(slottexs[i].name, name))
