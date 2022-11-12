@@ -170,9 +170,6 @@ class LocalShaderParam
 {
     public:
         LocalShaderParam(const char *name);
-
-        LocalShaderParamState *resolve();
-
         void setf(float x = 0, float y = 0, float z = 0, float w = 0);
         void set(const vec &v, float w = 0);
         void set(const vec4<float> &v);
@@ -185,6 +182,8 @@ class LocalShaderParam
     private:
         void setv(const matrix3 *m, int n = 1);
         void setv(const matrix4 *m, int n = 1);
+        LocalShaderParamState *resolve();
+
         const char *name;
         int loc;
 };
