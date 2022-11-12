@@ -693,7 +693,7 @@ void limitfps(int &millis, int curmillis)
     }
 #endif
 
-constexpr int maxfpshistory = 60;
+static constexpr int maxfpshistory = 60;
 
 int fpspos = 0;
 std::array<int, maxfpshistory> fpshistory;
