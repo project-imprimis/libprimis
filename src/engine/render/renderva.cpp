@@ -621,7 +621,7 @@ namespace
 
     octaentities *shadowmms = nullptr;
 
-    struct renderstate
+    class renderstate
     {
         public:
             bool colormask, depthmask;
