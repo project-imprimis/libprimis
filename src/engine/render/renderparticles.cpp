@@ -218,7 +218,6 @@ class partrenderer
     public:
         uint type;
         int stain;
-        string info;
 
         partrenderer(const char *texname, int texclamp, int type, int stain = -1)
             : type(type), stain(stain), tex(nullptr), texname(texname), texclamp(texclamp)
@@ -328,6 +327,7 @@ class partrenderer
     protected:
         Texture *tex;
     private:
+        string info;
         const char *texname;
         int texclamp;
 
