@@ -623,41 +623,44 @@ namespace
 
     struct renderstate
     {
-        bool colormask, depthmask;
-        int alphaing;
-        GLuint vbuf;
-        bool vattribs, vquery;
-        vec colorscale;
-        float alphascale;
-        float refractscale;
-        vec refractcolor;
-        int globals, tmu;
-        GLuint textures[7];
-        Slot *slot, *texgenslot;
-        VSlot *vslot, *texgenvslot;
-        vec2 texgenscroll;
-        int texgenorient, texgenmillis;
+        public:
+            bool colormask, depthmask;
+            int alphaing;
+            GLuint vbuf;
+            bool vattribs, vquery;
+            vec colorscale;
+            float alphascale;
+            float refractscale;
+            vec refractcolor;
+            int globals, tmu;
+            GLuint textures[7];
+            Slot *slot;
+            VSlot *vslot, *texgenvslot;
+            int texgenorient, texgenmillis;
 
-        void changebatchtmus();
-        void disablevquery();
-        void disablevbuf();
-        void enablevquery();
-        void cleanupgeom();
-        void enablevattribs(bool all = true);
-        void disablevattribs(bool all = true);
-        void changetexgen(int orient, Slot &slot, VSlot &vslot);
+            void changebatchtmus();
+            void disablevquery();
+            void disablevbuf();
+            void enablevquery();
+            void cleanupgeom();
+            void enablevattribs(bool all = true);
+            void disablevattribs(bool all = true);
+            void changetexgen(int orient, Slot &slot, VSlot &vslot);
 
-        renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
-                        vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
-                        refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
-                        texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
-                        texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
-        {
-            for(int k = 0; k < 7; ++k)
+            renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
+                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
+                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
+                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
             {
-                textures[k] = 0;
+                for(int k = 0; k < 7; ++k)
+                {
+                    textures[k] = 0;
+                }
             }
-        }
+        private:
+            Slot *texgenslot;
+            vec2 texgenscroll;
     };
 
     void renderstate::disablevbuf()
