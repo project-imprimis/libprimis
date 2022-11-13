@@ -78,7 +78,6 @@ struct SoundChannel
 {
     public:
         bool inuse;
-        vec loc;
         soundslot *slot;
         extentity *ent;
         int volume;
@@ -88,6 +87,9 @@ struct SoundChannel
         bool updatechannel();
         void syncchannel();
         void setupchannel(int n, soundslot *slot, const vec *loc, extentity *ent, int flags, int radius);
+
+        void setloc(const vec& newloc);
+
         bool hasloc() const
         {
             return loc.x >= -1e15f;
@@ -115,10 +117,16 @@ struct SoundChannel
         int id;
         int radius, pan, flags;
         bool dirty;
+        vec loc;
 };
 
 static std::vector<SoundChannel> channels;
 int maxchannels = 0;
+
+void SoundChannel::setloc(const vec& newloc)
+{
+    loc = newloc;
+}
 
 void SoundChannel::setupchannel(int newn, soundslot *newslot, const vec *newloc, extentity *newent, int newflags, int newradius)
 {
@@ -868,7 +876,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
         {
             if(loc)
             {
-                chan.loc = *loc;
+                chan.setloc(*loc);
             }
             else if(chan.hasloc())
             {
