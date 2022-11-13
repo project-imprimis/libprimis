@@ -78,6 +78,8 @@ namespace
         GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
     }
 
+    VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
+
     void rendercaustics(float surface, float syl, float syr)
     {
         if(!caustics || !causticscale || !causticmillis)
@@ -96,8 +98,6 @@ namespace
         gle::end();
     }
 }
-
-VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
 
 void loadcaustics(bool force)
 {
@@ -329,6 +329,8 @@ namespace
 
 #undef WATERVARS
 //==============================================================================
+
+    VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 }
 
 GETMATIDXVAR(water, color, const bvec &)
@@ -344,7 +346,6 @@ GETMATIDXVAR(water, refract, float)
 GETMATIDXVAR(water, fallspec, int)
 GETMATIDXVAR(water, fallrefract, float)
 
-VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 VARR(waterreflectstep, 1, 32, 10000);
 
 void GBuffer::renderwaterfog(int mat, float surface)
