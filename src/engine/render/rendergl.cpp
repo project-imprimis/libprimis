@@ -1083,10 +1083,10 @@ void screenquad()
     gle::clearvbo();
 }
 
-static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
-
+//sets screentexcoord0,screentexcoord1 in glsl
 static void setscreentexcoord(int i, float w, float h, float x = 0, float y = 0)
 {
+    static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
     screentexcoord[i].setf(w*0.5f, h*0.5f, x + w*0.5f, y + std::fabs(h)*0.5f);
 }
 
