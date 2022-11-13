@@ -645,6 +645,7 @@ namespace
         void cleanupgeom();
         void enablevattribs(bool all = true);
         void disablevattribs(bool all = true);
+        void changetexgen(int orient, Slot &slot, VSlot &vslot);
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                         vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -1059,17 +1060,17 @@ namespace
         cur.vslot = &vslot;
     }
 
-    void changetexgen(renderstate &cur, int orient, Slot &slot, VSlot &vslot)
+    void renderstate::changetexgen(int orient, Slot &slot, VSlot &vslot)
     {
-        if(cur.texgenslot != &slot || cur.texgenvslot != &vslot)
+        if(texgenslot != &slot || texgenvslot != &vslot)
         {
-            Texture *curtex = !cur.texgenslot || cur.texgenslot->sts.empty() ? notexture : cur.texgenslot->sts[0].t,
+            Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t,
                     *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
-            if(!cur.texgenvslot || slot.sts.empty() ||
+            if(!texgenvslot || slot.sts.empty() ||
                 (curtex->xs != tex->xs || curtex->ys != tex->ys ||
-                 cur.texgenvslot->rotation != vslot.rotation || cur.texgenvslot->scale != vslot.scale ||
-                 cur.texgenvslot->offset != vslot.offset || cur.texgenvslot->scroll != vslot.scroll) ||
-                 cur.texgenvslot->angle != vslot.angle)
+                 texgenvslot->rotation != vslot.rotation || texgenvslot->scale != vslot.scale ||
+                 texgenvslot->offset != vslot.offset || texgenvslot->scroll != vslot.scroll) ||
+                 texgenvslot->angle != vslot.angle)
             {
                 const texrotation &r = texrotations[vslot.rotation];
                 float xs = r.flipx ? -tex->xs : tex->xs,
@@ -1079,25 +1080,25 @@ namespace
                 {
                     std::swap(scroll.x, scroll.y);
                 }
-                scroll.x *= cur.texgenmillis*tex->xs/xs;
-                scroll.y *= cur.texgenmillis*tex->ys/ys;
-                if(cur.texgenscroll != scroll)
+                scroll.x *= texgenmillis*tex->xs/xs;
+                scroll.y *= texgenmillis*tex->ys/ys;
+                if(texgenscroll != scroll)
                 {
-                    cur.texgenscroll = scroll;
-                    cur.texgenorient = -1;
+                    texgenscroll = scroll;
+                    texgenorient = -1;
                 }
             }
-            cur.texgenslot = &slot;
-            cur.texgenvslot = &vslot;
+            texgenslot = &slot;
+            texgenvslot = &vslot;
         }
 
-        if(cur.texgenorient == orient)
+        if(texgenorient == orient)
         {
             return;
         }
-        GLOBALPARAM(texgenscroll, cur.texgenscroll);
+        GLOBALPARAM(texgenscroll, texgenscroll);
 
-        cur.texgenorient = orient;
+        texgenorient = orient;
     }
 
     void changeshader(renderstate &cur, int pass, geombatch &b)
@@ -1212,7 +1213,7 @@ namespace
                 changeslottmus(cur, pass, *b.vslot.slot, b.vslot);
                 if(cur.texgenorient != b.es.orient || (cur.texgenorient < Orient_Any && cur.texgenvslot != &b.vslot))
                 {
-                    changetexgen(cur, b.es.orient, *b.vslot.slot, b.vslot);
+                    cur.changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
                 }
                 changeshader(cur, pass, b);
             }
@@ -1220,7 +1221,7 @@ namespace
             {
                 if(cur.texgenorient != b.es.orient)
                 {
-                    changetexgen(cur, b.es.orient, *b.vslot.slot, b.vslot);
+                    cur.changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
                 }
                 updateshader(cur);
             }
