@@ -638,7 +638,6 @@ namespace
             VSlot *vslot;
             int texgenorient, texgenmillis;
 
-            void changebatchtmus();
             void disablevquery();
             void disablevbuf();
             void enablevquery();
@@ -664,6 +663,7 @@ namespace
             vec2 texgenscroll;
 
             void changetexgen(int orient, Slot &slot, VSlot &vslot);
+            void changebatchtmus();
     };
 
     void renderstate::disablevbuf()
