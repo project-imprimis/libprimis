@@ -36,6 +36,8 @@ const char *sourcefile = nullptr,
 std::vector<char> strbuf[4];
 int stridx = 0;
 
+static constexpr int undoflag = 1<<Max_Args;
+
 static IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
              *aliasstack = &noalias;
 

@@ -8,7 +8,6 @@ enum
     Max_Results = 7,
     Max_CommandArgs = 12
 };
-const int undoflag = 1<<Max_Args;
 
 enum CubeScriptCodes
 {
