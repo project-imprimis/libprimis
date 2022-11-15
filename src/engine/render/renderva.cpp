@@ -635,7 +635,7 @@ namespace
             int globals, tmu;
             GLuint textures[7];
             Slot *slot;
-            VSlot *vslot, *texgenvslot;
+            VSlot *vslot;
             int texgenorient, texgenmillis;
 
             void changebatchtmus();
@@ -645,7 +645,7 @@ namespace
             void cleanupgeom();
             void enablevattribs(bool all = true);
             void disablevattribs(bool all = true);
-            void changetexgen(int orient, Slot &slot, VSlot &vslot);
+            void renderbatches(int pass);
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -660,7 +660,10 @@ namespace
             }
         private:
             Slot *texgenslot;
+            VSlot *texgenvslot;
             vec2 texgenscroll;
+
+            void changetexgen(int orient, Slot &slot, VSlot &vslot);
     };
 
     void renderstate::disablevbuf()
@@ -1172,30 +1175,30 @@ namespace
         numbatches = 0;
     }
 
-    void renderbatches(renderstate &cur, int pass)
+    void renderstate::renderbatches(int pass)
     {
-        cur.slot = nullptr;
-        cur.vslot = nullptr;
+        slot = nullptr;
+        vslot = nullptr;
         int curbatch = firstbatch;
         if(curbatch >= 0)
         {
-            if(!cur.depthmask)
+            if(!depthmask)
             {
-                cur.depthmask = true;
+                depthmask = true;
                 glDepthMask(GL_TRUE);
             }
-            if(!cur.colormask)
+            if(!colormask)
             {
-                cur.colormask = true;
+                colormask = true;
                 glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
             }
-            if(!cur.vattribs)
+            if(!vattribs)
             {
-                if(cur.vquery)
+                if(vquery)
                 {
-                    cur.disablevquery();
+                    disablevquery();
                 }
-                cur.enablevattribs();
+                enablevattribs();
             }
         }
         while(curbatch >= 0)
@@ -1203,30 +1206,30 @@ namespace
             geombatch &b = geombatches[curbatch];
             curbatch = b.next;
 
-            if(cur.vbuf != b.va->vbuf)
+            if(vbuf != b.va->vbuf)
             {
-                changevbuf(cur, pass, b.va);
+                changevbuf(*this, pass, b.va);
             }
             if(pass == RenderPass_GBuffer || pass == RenderPass_ReflectiveShadowMap)
             {
-                cur.changebatchtmus();
+                changebatchtmus();
             }
-            if(cur.vslot != &b.vslot)
+            if(vslot != &b.vslot)
             {
-                changeslottmus(cur, pass, *b.vslot.slot, b.vslot);
-                if(cur.texgenorient != b.es.orient || (cur.texgenorient < Orient_Any && cur.texgenvslot != &b.vslot))
+                changeslottmus(*this, pass, *b.vslot.slot, b.vslot);
+                if(texgenorient != b.es.orient || (texgenorient < Orient_Any && texgenvslot != &b.vslot))
                 {
-                    cur.changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
+                    changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
                 }
-                changeshader(cur, pass, b);
+                changeshader(*this, pass, b);
             }
             else
             {
-                if(cur.texgenorient != b.es.orient)
+                if(texgenorient != b.es.orient)
                 {
-                    cur.changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
+                    changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
                 }
-                updateshader(cur);
+                updateshader(*this);
             }
 
             b.renderbatch();
@@ -1309,32 +1312,32 @@ namespace
                 }
                 if(doquery)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) renderbatches(cur, pass); });
+                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
                 }
                 mergetexs(cur, va);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) renderbatches(cur, pass); });
+                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
                 }
                 else if(!batchgeom && geombatches.size())
                 {
-                    renderbatches(cur, pass);
+                    cur.renderbatches(pass);
                 }
                 break;
 
             case RenderPass_GBufferBlend:
                 if(doquery)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) renderbatches(cur, RenderPass_GBuffer); });
+                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
                 }
                 mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) renderbatches(cur, RenderPass_GBuffer); });
+                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
                 }
                 else if(!batchgeom && geombatches.size())
                 {
-                    renderbatches(cur, RenderPass_GBuffer);
+                    cur.renderbatches(RenderPass_GBuffer);
                 }
                 break;
 
@@ -1367,7 +1370,7 @@ namespace
                 mergetexs(cur, va);
                 if(!batchgeom && geombatches.size())
                 {
-                    renderbatches(cur, pass);
+                    cur.renderbatches(pass);
                 }
                 break;
 
@@ -1375,7 +1378,7 @@ namespace
                 mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
                 if(!batchgeom && geombatches.size())
                 {
-                    renderbatches(cur, RenderPass_ReflectiveShadowMap);
+                    cur.renderbatches(RenderPass_ReflectiveShadowMap);
                 }
                 break;
         }
@@ -2810,7 +2813,7 @@ void renderalphageom(int side)
         }
         if(geombatches.size())
         {
-            renderbatches(cur, RenderPass_GBuffer);
+            cur.renderbatches(RenderPass_GBuffer);
         }
     }
     else
@@ -2825,7 +2828,7 @@ void renderalphageom(int side)
         }
         if(geombatches.size())
         {
-            renderbatches(cur, RenderPass_GBuffer);
+            cur.renderbatches(RenderPass_GBuffer);
         }
         glCullFace(GL_BACK);
     }
@@ -2941,7 +2944,7 @@ void rendergeom()
         }
         if(geombatches.size())
         {
-            renderbatches(cur, RenderPass_GBuffer);
+            cur.renderbatches(RenderPass_GBuffer);
             glFlush();
         }
         for(vtxarray *va = visibleva; va; va = va->next)
@@ -2967,7 +2970,7 @@ void rendergeom()
         }
         if(geombatches.size())
         {
-            renderbatches(cur, RenderPass_GBuffer);
+            cur.renderbatches(RenderPass_GBuffer);
         }
     }
     else
@@ -2989,7 +2992,7 @@ void rendergeom()
         }
         if(geombatches.size())
         {
-            renderbatches(cur, RenderPass_GBuffer);
+            cur.renderbatches(RenderPass_GBuffer);
         }
     }
     if(multipassing)
@@ -3456,7 +3459,7 @@ void renderrsmgeom(bool dyntex)
     }
     if(geombatches.size())
     {
-        renderbatches(cur, RenderPass_ReflectiveShadowMap);
+        cur.renderbatches(RenderPass_ReflectiveShadowMap);
     }
     cur.cleanupgeom();
 }
