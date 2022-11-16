@@ -629,8 +629,7 @@ namespace
             GLuint vbuf;
             bool vattribs, vquery;
             float alphascale;
-            int globals, tmu;
-            GLuint textures[7];
+            int globals;
             int texgenorient, texgenmillis;
 
             void disablevquery();
@@ -653,6 +652,8 @@ namespace
                 }
             }
         private:
+            int tmu;
+            GLuint textures[7];
             vec colorscale;
             Slot *slot;
             VSlot *vslot;
@@ -665,6 +666,7 @@ namespace
             void changetexgen(int orient, Slot &slot, VSlot &vslot);
             void changebatchtmus();
             void changeslottmus(int pass, Slot &newslot, VSlot &newvslot);
+            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
     };
 
     void renderstate::disablevbuf()
@@ -971,16 +973,16 @@ namespace
         }
     }
 
-    void bindslottex(renderstate &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
+    void renderstate::bindslottex(int type, Texture *tex, GLenum target)
     {
-        if(cur.textures[type] != tex->id)
+        if(textures[type] != tex->id)
         {
-            if(cur.tmu != type)
+            if(tmu != type)
             {
-                cur.tmu = type;
+                tmu = type;
                 glActiveTexture(GL_TEXTURE0 + type);
             }
-            glBindTexture(target, cur.textures[type] = tex->id);
+            glBindTexture(target, textures[type] = tex->id);
         }
     }
 
@@ -989,7 +991,7 @@ namespace
         Texture *diffuse = newslot.sts.empty() ? notexture : newslot.sts[0].t;
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
         {
-            bindslottex(*this, Tex_Diffuse, diffuse);
+            bindslottex(Tex_Diffuse, diffuse);
 
             if(pass == RenderPass_GBuffer)
             {
@@ -1051,7 +1053,7 @@ namespace
                 case Tex_Normal:
                 case Tex_Glow:
                 {
-                    bindslottex(*this, t.type, t.t);
+                    bindslottex(t.type, t.t);
                     break;
                 }
             }
