@@ -628,14 +628,9 @@ namespace
             int alphaing;
             GLuint vbuf;
             bool vattribs, vquery;
-            vec colorscale;
             float alphascale;
-            float refractscale;
-            vec refractcolor;
             int globals, tmu;
             GLuint textures[7];
-            Slot *slot;
-            VSlot *vslot;
             int texgenorient, texgenmillis;
 
             void disablevquery();
@@ -658,12 +653,18 @@ namespace
                 }
             }
         private:
+            vec colorscale;
+            Slot *slot;
+            VSlot *vslot;
             Slot *texgenslot;
             VSlot *texgenvslot;
             vec2 texgenscroll;
+            float refractscale;
+            vec refractcolor;
 
             void changetexgen(int orient, Slot &slot, VSlot &vslot);
             void changebatchtmus();
+            void changeslottmus(int pass, Slot &newslot, VSlot &newvslot);
     };
 
     void renderstate::disablevbuf()
@@ -983,87 +984,87 @@ namespace
         }
     }
 
-    void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
+    void renderstate::changeslottmus(int pass, Slot &newslot, VSlot &newvslot)
     {
-        Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
+        Texture *diffuse = newslot.sts.empty() ? notexture : newslot.sts[0].t;
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
         {
-            bindslottex(cur, Tex_Diffuse, diffuse);
+            bindslottex(*this, Tex_Diffuse, diffuse);
 
             if(pass == RenderPass_GBuffer)
             {
                 if(msaasamples)
                 {
-                    GLOBALPARAMF(hashid, vslot.index);
+                    GLOBALPARAMF(hashid, newvslot.index);
                 }
-                if(slot.shader->type & Shader_Triplanar)
+                if(newslot.shader->type & Shader_Triplanar)
                 {
-                    float scale = defaulttexscale/vslot.scale;
+                    float scale = defaulttexscale/newvslot.scale;
                     GLOBALPARAMF(texgenscale, scale/diffuse->xs, scale/diffuse->ys);
                 }
             }
         }
 
-        if(cur.alphaing)
+        if(alphaing)
         {
-            float alpha = cur.alphaing > 1 ? vslot.alphafront : vslot.alphaback;
-            if(cur.alphascale != alpha)
+            float alpha = alphaing > 1 ? newvslot.alphafront : newvslot.alphaback;
+            if(alphascale != alpha)
             {
-                cur.alphascale = alpha;
-                cur.refractscale = 0;
+                alphascale = alpha;
+                refractscale = 0;
                 goto changecolorparams; //also run next if statement
             }
-            if(cur.colorscale != vslot.colorscale)
+            if(colorscale != newvslot.colorscale)
             {
             changecolorparams:
-                cur.colorscale = vslot.colorscale;
+                colorscale = newvslot.colorscale;
                 GLOBALPARAMF(colorparams,
-                             alpha*vslot.colorscale.x,
-                             alpha*vslot.colorscale.y,
-                             alpha*vslot.colorscale.z,
+                             alpha*newvslot.colorscale.x,
+                             alpha*newvslot.colorscale.y,
+                             alpha*newvslot.colorscale.z,
                              alpha);
             }
-            if(cur.alphaing > 1 && vslot.refractscale > 0 &&
-                  (cur.refractscale != vslot.refractscale || cur.refractcolor != vslot.refractcolor))
+            if(alphaing > 1 && newvslot.refractscale > 0 &&
+                  (refractscale != newvslot.refractscale || refractcolor != newvslot.refractcolor))
             {
-                cur.refractscale = vslot.refractscale;
-                cur.refractcolor = vslot.refractcolor;
+                refractscale = newvslot.refractscale;
+                refractcolor = newvslot.refractcolor;
                 float refractscale = 0.5f/ldrscale*(1-alpha);
                 GLOBALPARAMF(refractparams,
-                             vslot.refractcolor.x*refractscale,
-                             vslot.refractcolor.y*refractscale,
-                             vslot.refractcolor.z*refractscale,
-                             vslot.refractscale*viewh);
+                             newvslot.refractcolor.x*refractscale,
+                             newvslot.refractcolor.y*refractscale,
+                             newvslot.refractcolor.z*refractscale,
+                             newvslot.refractscale*viewh);
             }
         }
-        else if(cur.colorscale != vslot.colorscale)
+        else if(colorscale != newvslot.colorscale)
         {
-            cur.colorscale = vslot.colorscale;
-            GLOBALPARAMF(colorparams, vslot.colorscale.x, vslot.colorscale.y, vslot.colorscale.z, 1);
+            colorscale = newvslot.colorscale;
+            GLOBALPARAMF(colorparams, newvslot.colorscale.x, newvslot.colorscale.y, newvslot.colorscale.z, 1);
         }
 
-        for(uint j = 0; j < slot.sts.size(); j++)
+        for(uint j = 0; j < newslot.sts.size(); j++)
         {
-            Slot::Tex &t = slot.sts[j];
+            Slot::Tex &t = newslot.sts[j];
             switch(t.type)
             {
                 case Tex_Normal:
                 case Tex_Glow:
                 {
-                    bindslottex(cur, t.type, t.t);
+                    bindslottex(*this, t.type, t.t);
                     break;
                 }
             }
         }
-        GLOBALPARAM(rotate, vec(vslot.angle.y, vslot.angle.z, diffuse->ratio));
-        if(cur.tmu != 0)
+        GLOBALPARAM(rotate, vec(newvslot.angle.y, newvslot.angle.z, diffuse->ratio));
+        if(tmu != 0)
         {
-            cur.tmu = 0;
+            tmu = 0;
             glActiveTexture(GL_TEXTURE0);
         }
 
-        cur.slot = &slot;
-        cur.vslot = &vslot;
+        slot = &newslot;
+        vslot = &newvslot;
     }
 
     void renderstate::changetexgen(int orient, Slot &slot, VSlot &vslot)
@@ -1216,7 +1217,7 @@ namespace
             }
             if(vslot != &b.vslot)
             {
-                changeslottmus(*this, pass, *b.vslot.slot, b.vslot);
+                changeslottmus(pass, *b.vslot.slot, b.vslot);
                 if(texgenorient != b.es.orient || (texgenorient < Orient_Any && texgenvslot != &b.vslot))
                 {
                     changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
