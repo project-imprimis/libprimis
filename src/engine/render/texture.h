@@ -159,7 +159,7 @@ struct texrotation
 
 extern const texrotation texrotations[8];
 extern Texture *notexture;
-extern Shader *nullshader, *hudshader, *hudtextshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader, *stdworldshader;
+extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
 extern int maxvsuniforms, maxfsuniforms;
 
 extern Shader *lookupshaderbyname(const char *name);
