@@ -31,7 +31,6 @@
 
 #include "model/model.h"
 
-VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 VAR(oqfrags, 0, 8, 64); //occlusion query fragments
 CVARP(outlinecolor, 0); //color of edit mode outlines
 

@@ -35,7 +35,6 @@ class vfc
 
 extern vfc view;
 
-extern int outline;
 extern int oqfrags;
 
 extern vec shadoworigin, shadowdir;
