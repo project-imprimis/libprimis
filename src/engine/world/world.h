@@ -16,7 +16,6 @@ constexpr float defaulttexscale = 16.0f;
 
 extern int worldscale, worldsize;
 extern char *maptitle;
-extern int octaentsize;
 
 extern std::vector<int> entgroup;
 extern std::vector<int> outsideents;
