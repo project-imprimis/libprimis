@@ -50,7 +50,6 @@ extern void gl_checkextensions();
 extern void gl_init();
 extern void gl_resize();
 extern void gl_setupframe(bool force = false);
-extern void gl_drawframe();
 extern void cleanupgl();
 extern void enablepolygonoffset(GLenum type);
 extern void disablepolygonoffset(GLenum type);
