@@ -487,7 +487,7 @@ void animmodel::Mesh::fixqtangent(quat &q, float bt)
 
 //meshgroup
 
-animmodel::meshgroup::meshgroup() : shared(0), name(nullptr), next(nullptr)
+animmodel::meshgroup::meshgroup() : name(nullptr), next(nullptr)
 {
 }
 
@@ -1173,7 +1173,6 @@ bool animmodel::part::animated() const
 
 void animmodel::part::loaded()
 {
-    meshes->shared++;
     for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].setkey();

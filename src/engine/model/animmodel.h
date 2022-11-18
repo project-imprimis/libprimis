@@ -324,7 +324,6 @@ class animmodel : public model
         class meshgroup
         {
             public:
-                int shared;
                 char *name;
                 std::vector<Mesh *> meshes;
 
