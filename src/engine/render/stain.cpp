@@ -35,21 +35,6 @@
 
 #include "model/model.h"
 
-struct stainvert
-{
-    vec pos;
-    vec4<uchar> color;
-    vec2 tc;
-};
-
-struct staininfo
-{
-    int millis;
-    bvec color;
-    uchar owner;
-    ushort startvert, endvert;
-};
-
 //stainflag enum is local to this file
 enum
 {
@@ -72,7 +57,6 @@ class stainrenderer
     public:
         int flags, fadeintime, fadeouttime, timetolive;
         Texture *tex;
-        staininfo *stains;
         int maxstains, startstain, endstain;
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
@@ -480,6 +464,22 @@ class stainrenderer
         }
 
     private:
+        struct stainvert
+        {
+            vec pos;
+            vec4<uchar> color;
+            vec2 tc;
+        };
+
+        struct staininfo
+        {
+            int millis;
+            bvec color;
+            uchar owner;
+            ushort startvert, endvert;
+        };
+        staininfo *stains;
+
         class stainbuffer
         {
             public:
