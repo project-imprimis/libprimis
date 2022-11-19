@@ -728,11 +728,6 @@ static void renderbatchedmodel(model *m, const batchedmodel &b)
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
-static void enablecullmodelquery()
-{
-    startbb();
-}
-
 static void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
@@ -1022,7 +1017,7 @@ void rendermodelbatches()
                         {
                             aamask::set(false);
                         }
-                        enablecullmodelquery();
+                        startbb();
                         queried = true;
                     }
                     rendercullmodelquery(b.m, bm.d, bm.center, bm.radius);
@@ -1290,7 +1285,7 @@ hasboundbox:
         {
             if(culled&(Model_CullOccluded|Model_CullQuery) && flags&Model_CullQuery)
             {
-                enablecullmodelquery();
+                startbb();
                 rendercullmodelquery(m, d, center, radius);
                 endbb();
             }
