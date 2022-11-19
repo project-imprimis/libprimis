@@ -111,7 +111,7 @@ static void mdltricollide(char *collide)
     delete[] loadingmodel->collidemodel;
     loadingmodel->collidemodel = nullptr;
     char *end = nullptr;
-    int val = strtol(collide, &end, 0);
+    int val = std::strtol(collide, &end, 0);
     if(*end)
     {
         val = 1;
