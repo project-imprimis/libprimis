@@ -165,7 +165,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     ivec vkey(-1, -1, -1);
                     for(int i = 0; i < 3; ++i)
                     {
-                        vkey[i] = strtol(c, &c, 10);
+                        vkey[i] = std::strtol(c, &c, 10);
                         if(vkey[i] < 0)
                         {
                             vkey[i] = attrib[i].size() + vkey[i];
