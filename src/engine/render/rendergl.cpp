@@ -48,10 +48,6 @@ bool hasFBMSBS = false,
      hasEGPU4  = false,
      hasES3    = false,
      hasCI     = false;
-bool mesa   = false,
-     intel  = false,
-     amd    = false,
-     nvidia = false;
 
 int hasstencil = 0;
 
@@ -235,6 +231,10 @@ bool checkdepthtexstencilrb()
 
 void gl_checkextensions()
 {
+    bool mesa   = false,
+         intel  = false,
+         amd    = false,
+         nvidia = false;
     const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR)),
                *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER)),
                *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
