@@ -663,7 +663,9 @@ VARP(invmouse, 0, 0, 1);
 FVARP(mouseaccel, 0, 0, 1000);
 
 physent *camera1 = nullptr;
+//used in iengine.h
 bool detachedcamera = false;
+
 bool isthirdperson()
 {
     return player!=camera1 || detachedcamera;
