@@ -140,8 +140,7 @@ namespace
     float whscale, whoffset;
 
     float wxscale = 1.0f,
-                 wyscale = 1.0f,
-                 wscroll = 0.0f;
+          wyscale = 1.0f;
 
     void defvertwt()
     {
@@ -604,7 +603,6 @@ void renderwater()
         Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
         wxscale = defaulttexscale/(tex->xs*wslot.scale);
         wyscale = defaulttexscale/(tex->ys*wslot.scale);
-        wscroll = 0.0f;
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture(GL_TEXTURE1);
