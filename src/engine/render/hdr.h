@@ -2,7 +2,7 @@
 #define HDR_H_
 
 extern float hdrgamma;
-extern GLuint hdrfbo, hdrtex, bloompbo, bloomfbo[6], bloomtex[6];
+extern GLuint hdrfbo, hdrtex;
 extern int bloomw, bloomh;
 extern int hdrprec;
 extern GLenum hdrformat;
