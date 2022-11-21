@@ -1134,7 +1134,6 @@ GLuint shadowatlastex = 0,
 GLenum shadowatlastarget = GL_NONE;
 shadowcache shadowcache;
 bool shadowcachefull = false;
-int evictshadowcache = 0;
 
 void cleanupshadowatlas()
 {
@@ -1881,6 +1880,7 @@ void calctilesize()
 
 void resetlights()
 {
+    static int evictshadowcache = 0;
     shadowcache.reset();
     if(smcache)
     {
