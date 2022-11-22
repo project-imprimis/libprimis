@@ -1240,7 +1240,7 @@ namespace
         resetbatches();
     }
 
-    void renderzpass(renderstate &cur, vtxarray *va)
+    void renderzpass(renderstate &cur, vtxarray &va)
     {
         if(!cur.vattribs)
         {
@@ -1250,9 +1250,9 @@ namespace
             }
             cur.enablevattribs(false);
         }
-        if(cur.vbuf!=va->vbuf)
+        if(cur.vbuf!=va.vbuf)
         {
-            changevbuf(cur, RenderPass_Z, va);
+            changevbuf(cur, RenderPass_Z, &va);
         }
         if(!cur.depthmask)
         {
@@ -1265,21 +1265,21 @@ namespace
             glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
         }
         int firsttex = 0,
-            numtris = va->tris,
+            numtris = va.tris,
             offset = 0;
         if(cur.alphaing)
         {
-            firsttex += va->texs;
-            offset += 3*(va->tris);
-            numtris = va->alphabacktris + va->alphafronttris + va->refracttris;
+            firsttex += va.texs;
+            offset += 3*(va.tris);
+            numtris = va.alphabacktris + va.alphafronttris + va.refracttris;
             xtravertsva += 3*numtris;
         }
         else
         {
-            xtravertsva += va->verts;
+            xtravertsva += va.verts;
         }
         nocolorshader->set();
-        drawvatris(va, 3*numtris, offset);
+        drawvatris(&va, 3*numtris, offset);
     }
 //====================================================== STARTVAQUERY ENDVAQUERY
     #define STARTVAQUERY(va, flush) \
@@ -1361,7 +1361,7 @@ namespace
                 {
                     STARTVAQUERY(va, );
                 }
-                renderzpass(cur, va);
+                renderzpass(cur, *va);
                 if(doquery)
                 {
                     ENDVAQUERY(va, );
