@@ -135,11 +135,9 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     return true;
 }
 
-string ogzname, bakname, cfgname, picname;
-
 VARP(savebak, 0, 2, 2);
 
-void setmapfilenames(const char *fname, const char *cname = nullptr)
+void cubeworld::setmapfilenames(const char *fname, const char *cname)
 {
     string name;
     validmapname(name, fname);
