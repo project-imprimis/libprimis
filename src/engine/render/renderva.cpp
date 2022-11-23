@@ -74,9 +74,9 @@ namespace
         drawtris(numindices, (ushort *)0 + va.eoffset + offset, va.minvert, va.maxvert);
     }
 
-    void drawvaskytris(vtxarray *va)
+    void drawvaskytris(vtxarray &va)
     {
-        drawtris(va->sky, (ushort *)0 + va->skyoffset, va->minvert, va->maxvert);
+        drawtris(va.sky, (ushort *)0 + va.skyoffset, va.minvert, va.maxvert);
     }
 
     ///////// view frustrum culling ///////////////////////
@@ -2672,7 +2672,7 @@ bool renderexplicitsky(bool outline)
                 const vertex *ptr = 0;
                 gle::vertexpointer(sizeof(vertex), ptr->pos.v);
             }
-            drawvaskytris(va);
+            drawvaskytris(*va);
             xtraverts += va->sky;
             prev = va;
         }
@@ -3441,7 +3441,7 @@ void renderrsmgeom(bool dyntex)
                     const vertex *ptr = 0;
                     gle::vertexpointer(sizeof(vertex), ptr->pos.v);
                 }
-                drawvaskytris(va);
+                drawvaskytris(*va);
                 xtravertsva += va->sky/3;
                 prev = va;
             }
@@ -3574,7 +3574,7 @@ void rendershadowmapworld()
                 }
                 if(!smnodraw)
                 {
-                    drawvaskytris(va);
+                    drawvaskytris(*va);
                 }
                 xtravertsva += va->sky/3;
                 prev = va;
