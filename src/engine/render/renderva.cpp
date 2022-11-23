@@ -730,7 +730,7 @@ namespace
         const elementset &es;
         VSlot &vslot;
         int offset;
-        vtxarray *va;
+        const vtxarray * const va;
         int next, batch;
 
         geombatch(const elementset &es, int offset, vtxarray *va)
