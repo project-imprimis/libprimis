@@ -69,12 +69,12 @@ namespace
         glde++;
     }
 
-    void drawvatris(vtxarray &va, GLsizei numindices, int offset)
+    void drawvatris(const vtxarray &va, GLsizei numindices, int offset)
     {
         drawtris(numindices, (ushort *)0 + va.eoffset + offset, va.minvert, va.maxvert);
     }
 
-    void drawvaskytris(vtxarray &va)
+    void drawvaskytris(const vtxarray &va)
     {
         drawtris(va.sky, (ushort *)0 + va.skyoffset, va.minvert, va.maxvert);
     }
@@ -946,11 +946,11 @@ namespace
         vattribs = false;
     }
 
-    void changevbuf(renderstate &cur, int pass, vtxarray *va)
+    void changevbuf(renderstate &cur, int pass, const vtxarray &va)
     {
-        gle::bindvbo(va->vbuf);
-        gle::bindebo(va->ebuf);
-        cur.vbuf = va->vbuf;
+        gle::bindvbo(va.vbuf);
+        gle::bindebo(va.ebuf);
+        cur.vbuf = va.vbuf;
 
         vertex *vdata = nullptr;
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
@@ -1210,7 +1210,7 @@ namespace
 
             if(vbuf != b.va->vbuf)
             {
-                changevbuf(*this, pass, b.va);
+                changevbuf(*this, pass, *b.va);
             }
             if(pass == RenderPass_GBuffer || pass == RenderPass_ReflectiveShadowMap)
             {
@@ -1240,7 +1240,7 @@ namespace
         resetbatches();
     }
 
-    void renderzpass(renderstate &cur, vtxarray &va)
+    void renderzpass(renderstate &cur, const vtxarray &va)
     {
         if(!cur.vattribs)
         {
@@ -1252,7 +1252,7 @@ namespace
         }
         if(cur.vbuf!=va.vbuf)
         {
-            changevbuf(cur, RenderPass_Z, &va);
+            changevbuf(cur, RenderPass_Z, va);
         }
         if(!cur.depthmask)
         {
@@ -1350,7 +1350,7 @@ namespace
                 }
                 if(cur.vbuf!=va->vbuf)
                 {
-                    changevbuf(cur, pass, va);
+                    changevbuf(cur, pass, *va);
                 }
                 drawvatris(*va, 3*va->tris, 0);
                 xtravertsva += va->verts;
@@ -1598,11 +1598,11 @@ namespace
         numbatches = 0;
     }
 
-    void changevbuf(decalrenderer &cur, vtxarray *va)
+    void changevbuf(decalrenderer &cur, const vtxarray &va)
     {
-        gle::bindvbo(va->vbuf);
-        gle::bindebo(va->decalbuf);
-        cur.vbuf = va->vbuf;
+        gle::bindvbo(va.vbuf);
+        gle::bindebo(va.decalbuf);
+        cur.vbuf = va.vbuf;
         vertex *vdata = nullptr;
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
         gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
@@ -1729,7 +1729,7 @@ namespace
             }
             if(vbuf != b.va->vbuf)
             {
-                changevbuf(*this, b.va);
+                changevbuf(*this, *b.va);
             }
             changebatchtmus();
             if(slot != &b.slot)
