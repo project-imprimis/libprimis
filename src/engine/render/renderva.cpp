@@ -69,9 +69,9 @@ namespace
         glde++;
     }
 
-    void drawvatris(vtxarray *va, GLsizei numindices, int offset)
+    void drawvatris(vtxarray &va, GLsizei numindices, int offset)
     {
-        drawtris(numindices, (ushort *)0 + va->eoffset + offset, va->minvert, va->maxvert);
+        drawtris(numindices, (ushort *)0 + va.eoffset + offset, va.minvert, va.maxvert);
     }
 
     void drawvaskytris(vtxarray *va)
@@ -1279,7 +1279,7 @@ namespace
             xtravertsva += va.verts;
         }
         nocolorshader->set();
-        drawvatris(&va, 3*numtris, offset);
+        drawvatris(va, 3*numtris, offset);
     }
 //====================================================== STARTVAQUERY ENDVAQUERY
     #define STARTVAQUERY(va, flush) \
@@ -1352,7 +1352,7 @@ namespace
                 {
                     changevbuf(cur, pass, va);
                 }
-                drawvatris(va, 3*va->tris, 0);
+                drawvatris(*va, 3*va->tris, 0);
                 xtravertsva += va->verts;
                 break;
 
@@ -2612,12 +2612,12 @@ void renderoutline()
             }
             if(va->texs && va->occluded < Occlude_Geom)
             {
-                drawvatris(va, 3*va->tris, 0);
+                drawvatris(*va, 3*va->tris, 0);
                 xtravertsva += va->verts;
             }
             if(va->alphaback || va->alphafront || va->refract)
             {
-                drawvatris(va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris));
+                drawvatris(*va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris));
                 xtravertsva += 3*(va->alphabacktris + va->alphafronttris + va->refracttris);
             }
             prev = va;
@@ -2787,7 +2787,7 @@ void renderrefractmask()
             const vertex *ptr = 0;
             gle::vertexpointer(sizeof(vertex), ptr->pos.v);
         }
-        drawvatris(va, 3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
+        drawvatris(*va, 3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
         xtravertsva += 3*va->refracttris;
         prev = va;
     }
@@ -3552,7 +3552,7 @@ void rendershadowmapworld()
             }
             if(!smnodraw)
             {
-                drawvatris(va, 3*va->tris, 0);
+                drawvatris(*va, 3*va->tris, 0);
             }
             xtravertsva += va->verts;
             prev = va;
