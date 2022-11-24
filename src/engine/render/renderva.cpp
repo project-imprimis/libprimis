@@ -1284,17 +1284,17 @@ namespace
 //====================================================== STARTVAQUERY ENDVAQUERY
     #define STARTVAQUERY(va, flush) \
         do { \
-            if(va->query) \
+            if(va.query) \
             { \
                 flush; \
-                va->query->startquery(); \
+                va.query->startquery(); \
             } \
         } while(0)
 
 
     #define ENDVAQUERY(va, flush) \
         do { \
-            if(va->query) \
+            if(va.query) \
             { \
                 flush; \
                 endquery(); \
@@ -1303,20 +1303,20 @@ namespace
 
     VAR(batchgeom, 0, 1, 1);
 
-    void renderva(renderstate &cur, vtxarray *va, int pass = RenderPass_GBuffer, bool doquery = false)
+    void renderva(renderstate &cur, const vtxarray &va, int pass = RenderPass_GBuffer, bool doquery = false)
     {
         switch(pass)
         {
             case RenderPass_GBuffer:
                 if(!cur.alphaing)
                 {
-                    vverts += va->verts;
+                    vverts += va.verts;
                 }
                 if(doquery)
                 {
                     STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
                 }
-                mergetexs(cur, *va);
+                mergetexs(cur, va);
                 if(doquery)
                 {
                     ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
@@ -1332,7 +1332,7 @@ namespace
                 {
                     STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
                 }
-                mergetexs(cur, *va, &va->texelems[va->texs], 3*va->tris);
+                mergetexs(cur, va, &va.texelems[va.texs], 3*va.tris);
                 if(doquery)
                 {
                     ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
@@ -1348,12 +1348,12 @@ namespace
                 {
                     cur.enablevattribs(false);
                 }
-                if(cur.vbuf!=va->vbuf)
+                if(cur.vbuf!=va.vbuf)
                 {
-                    changevbuf(cur, pass, *va);
+                    changevbuf(cur, pass, va);
                 }
-                drawvatris(*va, 3*va->tris, 0);
-                xtravertsva += va->verts;
+                drawvatris(va, 3*va.tris, 0);
+                xtravertsva += va.verts;
                 break;
 
             case RenderPass_Z:
@@ -1361,7 +1361,7 @@ namespace
                 {
                     STARTVAQUERY(va, );
                 }
-                renderzpass(cur, *va);
+                renderzpass(cur, va);
                 if(doquery)
                 {
                     ENDVAQUERY(va, );
@@ -1369,7 +1369,7 @@ namespace
                 break;
 
             case RenderPass_ReflectiveShadowMap:
-                mergetexs(cur, *va);
+                mergetexs(cur, va);
                 if(!batchgeom && geombatches.size())
                 {
                     cur.renderbatches(pass);
@@ -1377,7 +1377,7 @@ namespace
                 break;
 
             case RenderPass_ReflectiveShadowMapBlend:
-                mergetexs(cur, *va, &va->texelems[va->texs], 3*va->tris);
+                mergetexs(cur, va, &va.texelems[va.texs], 3*va.tris);
                 if(!batchgeom && geombatches.size())
                 {
                     cur.renderbatches(RenderPass_ReflectiveShadowMap);
@@ -2811,7 +2811,7 @@ void renderalphageom(int side)
     {
         for(uint i = 0; i < alphavas.size(); i++)
         {
-            renderva(cur, alphavas[i], RenderPass_GBuffer);
+            renderva(cur, *alphavas[i], RenderPass_GBuffer);
         }
         if(geombatches.size())
         {
@@ -2825,7 +2825,7 @@ void renderalphageom(int side)
         {
             if(alphavas[i]->alphabacktris)
             {
-                renderva(cur, alphavas[i], RenderPass_GBuffer);
+                renderva(cur, *alphavas[i], RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
@@ -2891,7 +2891,7 @@ void rendergeom()
                         continue;
                     }
                 }
-                renderva(cur, va, RenderPass_Z, true);
+                renderva(cur, *va, RenderPass_Z, true);
             }
         }
 
@@ -2941,7 +2941,7 @@ void rendergeom()
         {
             if(va->texs && va->occluded < Occlude_Geom)
             {
-                renderva(cur, va, RenderPass_GBuffer);
+                renderva(cur, *va, RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
@@ -2967,7 +2967,7 @@ void rendergeom()
                     }
                 }
 
-                renderva(cur, va, RenderPass_GBuffer);
+                renderva(cur, *va, RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
@@ -2989,7 +2989,7 @@ void rendergeom()
                 {
                     continue;
                 }
-                renderva(cur, va, RenderPass_GBuffer);
+                renderva(cur, *va, RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
@@ -3456,7 +3456,7 @@ void renderrsmgeom(bool dyntex)
     {
         if(va->texs)
         {
-            renderva(cur, va, RenderPass_ReflectiveShadowMap);
+            renderva(cur, *va, RenderPass_ReflectiveShadowMap);
         }
     }
     if(geombatches.size())
