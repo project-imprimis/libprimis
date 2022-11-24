@@ -733,7 +733,7 @@ namespace
         const vtxarray * const va;
         int next, batch;
 
-        geombatch(const elementset &es, int offset, vtxarray *va)
+        geombatch(const elementset &es, int offset, const vtxarray *va)
           : es(es), vslot(lookupvslot(es.texture)), offset(offset), va(va),
             next(-1), batch(-1)
         {}
@@ -821,21 +821,21 @@ namespace
     int firstbatch = -1,
         numbatches = 0;
 
-    void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr, int offset = 0)
+    void mergetexs(renderstate &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
     {
         int numtexs = 0;
         if(!texs)
         {
-            texs = va->texelems;
-            numtexs = va->texs;
+            texs = va.texelems;
+            numtexs = va.texs;
             if(cur.alphaing)
             {
-                texs += va->texs;
-                offset += 3*(va->tris);
-                numtexs = va->alphaback;
+                texs += va.texs;
+                offset += 3*(va.tris);
+                numtexs = va.alphaback;
                 if(cur.alphaing > 1)
                 {
-                    numtexs += va->alphafront + va->refract;
+                    numtexs += va.alphafront + va.refract;
                 }
             }
         }
@@ -846,11 +846,11 @@ namespace
             numbatches = numtexs;
             for(int i = 0; i < numtexs-1; ++i)
             {
-                geombatches.emplace_back(texs[i], offset, va);
+                geombatches.emplace_back(texs[i], offset, &va);
                 geombatches.back().next = i+1;
                 offset += texs[i].length;
             }
-            geombatches.emplace_back(texs[numtexs-1], offset, va);
+            geombatches.emplace_back(texs[numtexs-1], offset, &va);
             return;
         }
 
@@ -859,7 +859,7 @@ namespace
             curtex = 0;
         do
         {
-            geombatches.emplace_back(texs[curtex], offset, va);
+            geombatches.emplace_back(texs[curtex], offset, &va);
             geombatch &b = geombatches.back();
             offset += texs[curtex].length;
             int dir = -1;
@@ -1316,7 +1316,7 @@ namespace
                 {
                     STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
                 }
-                mergetexs(cur, va);
+                mergetexs(cur, *va);
                 if(doquery)
                 {
                     ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
@@ -1332,7 +1332,7 @@ namespace
                 {
                     STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
                 }
-                mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
+                mergetexs(cur, *va, &va->texelems[va->texs], 3*va->tris);
                 if(doquery)
                 {
                     ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
@@ -1369,7 +1369,7 @@ namespace
                 break;
 
             case RenderPass_ReflectiveShadowMap:
-                mergetexs(cur, va);
+                mergetexs(cur, *va);
                 if(!batchgeom && geombatches.size())
                 {
                     cur.renderbatches(pass);
@@ -1377,7 +1377,7 @@ namespace
                 break;
 
             case RenderPass_ReflectiveShadowMapBlend:
-                mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
+                mergetexs(cur, *va, &va->texelems[va->texs], 3*va->tris);
                 if(!batchgeom && geombatches.size())
                 {
                     cur.renderbatches(RenderPass_ReflectiveShadowMap);
