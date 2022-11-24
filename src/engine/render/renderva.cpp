@@ -504,7 +504,7 @@ namespace
 
     vtxarray *shadowva = nullptr;
 
-    void addshadowva(vtxarray *va, float dist)
+    void addshadowva(vtxarray * const va, float dist)
     {
         va->rdistance = static_cast<int>(dist);
 
