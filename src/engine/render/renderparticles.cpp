@@ -363,7 +363,7 @@ class listrenderer : public partrenderer
 
         virtual void startrender() = 0;
         virtual void endrender() = 0;
-        virtual void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts) = 0;
+        virtual void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) = 0;
 
         bool haswork()
         {
@@ -379,7 +379,7 @@ class listrenderer : public partrenderer
             {
                 return false;
             }
-            renderpart(p, o, d, blend, ts);
+            renderpart(*p, o, d, blend, ts);
             return p->fade > 5;
         }
 
@@ -524,12 +524,12 @@ class meterrenderer : public listrenderer
             glEnable(GL_BLEND);
         }
 
-        void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
+        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
         {
             int basetype = type&0xFF;
-            float scale  = FONTH*p->size/80.0f,
+            float scale  = FONTH*p.size/80.0f,
                   right  = 8,
-                  left   = p->progress/100.0f*right;
+                  left   = p.progress/100.0f*right;
             matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
             m.scale(scale);
             m.translate(-right/2.0f, 0, 0);
@@ -550,7 +550,7 @@ class meterrenderer : public listrenderer
             }
             if(basetype==PT_METERVS)
             {
-                gle::colorub(p->color2[0], p->color2[1], p->color2[2]);
+                gle::colorub(p.color2[0], p.color2[1], p.color2[2]);
             }
             else
             {
@@ -581,7 +581,7 @@ class meterrenderer : public listrenderer
                 gle::end();
             }
 
-            gle::color(p->color);
+            gle::color(p.color);
             gle::begin(GL_TRIANGLE_STRIP);
             for(int k = 0; k < 10; ++k)
             {
@@ -1159,13 +1159,13 @@ struct fireballrenderer : listrenderer
         pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
     }
 
-    void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
+    void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
     {
-        float pmax = p->val,
-              size = p->fade ? static_cast<float>(ts)/p->fade : 1,
-              psize = p->size + pmax * size;
+        float pmax = p.val,
+              size = p.fade ? static_cast<float>(ts)/p.fade : 1,
+              psize = p.size + pmax * size;
 
-        if(view.isfoggedsphere(psize*wobble, p->o))
+        if(view.isfoggedsphere(psize*wobble, p.o))
         {
             return;
         }
@@ -1198,7 +1198,7 @@ struct fireballrenderer : listrenderer
 
         LOCALPARAM(center, o);
         LOCALPARAMF(blendparams, inside ? 0.5f : 4, inside ? 0.25f : 0);
-        if(2*(p->size + pmax)*wobble >= softexplosionblend)
+        if(2*(p.size + pmax)*wobble >= softexplosionblend)
         {
             LOCALPARAMF(softparams, -1.0f/softexplosionblend, 0, inside ? blend/(2*255.0f) : 0);
         }
@@ -1207,7 +1207,7 @@ struct fireballrenderer : listrenderer
             LOCALPARAMF(softparams, 0, -1, inside ? blend/(2*255.0f) : 0);
         }
 
-        vec color = p->color.tocolor().mul(ldrscale);
+        vec color = p.color.tocolor().mul(ldrscale);
         float alpha = blend/255.0f;
 
         for(int i = 0; i < (inside ? 2 : 1); ++i)
