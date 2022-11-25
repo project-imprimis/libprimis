@@ -277,11 +277,11 @@ namespace //internal functionality not seen by other files
     }
 
     // generates grass geometry for a given vertex array
-    void gengrassquads(vtxarray *va)
+    void gengrassquads(const vtxarray &va)
     {
-        for(uint i = 0; i < va->grasstris.size(); i++)
+        for(uint i = 0; i < va.grasstris.size(); i++)
         {
-            grasstri &g = va->grasstris[i];
+            const grasstri &g = va.grasstris[i];
             if(view.isfoggedsphere(g.radius, g.center))
             {
                 continue;
@@ -369,7 +369,7 @@ void generategrass()
         {
             continue;
         }
-        gengrassquads(va);
+        gengrassquads(*va);
     }
 
     if(grassgroups.empty())
