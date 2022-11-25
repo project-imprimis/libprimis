@@ -81,9 +81,9 @@ namespace
 
     ///////// view frustrum culling ///////////////////////
 
-    float vadist(vtxarray *va, const vec &p)
+    float vadist(const vtxarray &va, const vec &p)
     {
-        return p.dist_to_bb(va->bbmin, va->bbmax);
+        return p.dist_to_bb(va.bbmin, va.bbmax);
     }
 
     constexpr int vasortsize = 64;
@@ -92,7 +92,7 @@ namespace
 
     void addvisibleva(vtxarray *va)
     {
-        float dist = vadist(va, camera1->o);
+        float dist = vadist(*va, camera1->o);
         va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
 
         int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
@@ -603,7 +603,7 @@ namespace
         for(uint i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
-            float dist = vadist(&v, shadoworigin);
+            float dist = vadist(v, shadoworigin);
             if(dist < shadowradius || !smdistcull)
             {
                 v.shadowmask = !smbbcull || (v.children.size() || v.mapmodels.size() ?
@@ -3402,7 +3402,7 @@ void findshadowvas(std::vector<vtxarray *> &vas)
     for(uint i = 0; i < vas.size(); i++)
     {
         vtxarray &v = *vas[i];
-        float dist = vadist(&v, shadoworigin);
+        float dist = vadist(v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
             v.shadowmask = !smbbcull ? 0x3F : (v.children.size() || v.mapmodels.size() ?
