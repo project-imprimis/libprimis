@@ -697,7 +697,7 @@ namespace
         vquery = false;
     }
 
-    void renderquery(renderstate &cur, occludequery *query, vtxarray *va, bool full = true)
+    void renderquery(renderstate &cur, occludequery *query, const vtxarray &va, bool full = true)
     {
         if(!cur.vquery)
         {
@@ -706,11 +706,11 @@ namespace
         query->startquery();
         if(full)
         {
-            drawbb(ivec(va->bbmin).sub(1), ivec(va->bbmax).sub(va->bbmin).add(2));
+            drawbb(ivec(va.bbmin).sub(1), ivec(va.bbmax).sub(va.bbmin).add(2));
         }
         else
         {
-            drawbb(va->geommin, ivec(va->geommax).sub(va->geommin));
+            drawbb(va.geommin, ivec(va.geommax).sub(va.geommin));
         }
         endquery();
     }
@@ -2877,7 +2877,7 @@ void rendergeom()
                             {
                                 cur.disablevbuf();
                             }
-                            renderquery(cur, va->query, va);
+                            renderquery(cur, va->query, *va);
                         }
                         continue;
                     }
