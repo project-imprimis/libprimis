@@ -1418,10 +1418,10 @@ namespace
         const elementset &es;
         DecalSlot &slot;
         int offset;
-        vtxarray *va;
+        const vtxarray &va;
         int next, batch;
 
-        decalbatch(const elementset &es, int offset, vtxarray *va)
+        decalbatch(const elementset &es, int offset, const vtxarray &va)
           : es(es), slot(lookupdecalslot(es.texture)), offset(offset), va(va),
             next(-1), batch(-1)
         {}
@@ -1430,11 +1430,11 @@ namespace
 
         int compare(const decalbatch &b) const
         {
-            if(va->vbuf < b.va->vbuf)
+            if(va.vbuf < b.va.vbuf)
             {
                 return -1;
             }
-            if(va->vbuf > b.va->vbuf)
+            if(va.vbuf > b.va.vbuf)
             {
                 return 1;
             }
@@ -1503,10 +1503,10 @@ namespace
             void changeshader(int pass, decalbatch &b);
     };
 
-    void mergedecals(vtxarray *va)
+    void mergedecals(const vtxarray &va)
     {
-        elementset *texs = va->decalelems;
-        int numtexs = va->decaltexs,
+        elementset *texs = va.decalelems;
+        int numtexs = va.decaltexs,
             offset  = 0;
 
         if(firstbatch < 0)
@@ -1704,7 +1704,7 @@ namespace
             ushort len = curbatch->es.length;
             if(len)
             {
-                drawtris(len, reinterpret_cast<ushort *>(curbatch->va->decaloffset) + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert);
+                drawtris(len, reinterpret_cast<ushort *>(curbatch->va.decaloffset) + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert);
                 vtris += len/3;
             }
             if(curbatch->batch < 0)
@@ -1727,9 +1727,9 @@ namespace
             {
                 continue;
             }
-            if(vbuf != b.va->vbuf)
+            if(vbuf != b.va.vbuf)
             {
-                changevbuf(*this, *b.va);
+                changevbuf(*this, b.va);
             }
             changebatchtmus();
             if(slot != &b.slot)
@@ -3056,7 +3056,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                mergedecals(*va);
                 if(!batchdecals && decalbatches.size())
                 {
                     cur.renderdecalbatches(0);
@@ -3082,7 +3082,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                mergedecals(*va);
                 if(!batchdecals && decalbatches.size())
                 {
                     cur.renderdecalbatches(1);
@@ -3103,7 +3103,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                mergedecals(*va);
                 if(!batchdecals && decalbatches.size())
                 {
                     cur.renderdecalbatches(0);
