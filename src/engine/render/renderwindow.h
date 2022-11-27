@@ -10,7 +10,6 @@ extern int screenw, screenh;
 extern float loadprogress;
 
 extern void cleargamma();
-extern void limitfps(int &millis, int curmillis);
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
 extern void renderbackground(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr, bool force = false);
