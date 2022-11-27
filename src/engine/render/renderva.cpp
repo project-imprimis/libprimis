@@ -620,111 +620,6 @@ namespace
 
     octaentities *shadowmms = nullptr;
 
-    class renderstate
-    {
-        public:
-            bool colormask, depthmask;
-            int alphaing;
-            GLuint vbuf;
-            bool vattribs, vquery;
-            float alphascale;
-            int globals;
-            int texgenorient, texgenmillis;
-
-            void disablevquery();
-            void disablevbuf();
-            void enablevquery();
-            void cleanupgeom();
-            void enablevattribs(bool all = true);
-            void disablevattribs(bool all = true);
-            void renderbatches(int pass);
-
-            renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
-                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
-                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
-                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
-                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
-            {
-                for(int k = 0; k < 7; ++k)
-                {
-                    textures[k] = 0;
-                }
-            }
-        private:
-            int tmu;
-            GLuint textures[7];
-            vec colorscale;
-            Slot *slot;
-            VSlot *vslot;
-            Slot *texgenslot;
-            VSlot *texgenvslot;
-            vec2 texgenscroll;
-            float refractscale;
-            vec refractcolor;
-
-            void changetexgen(int orient, Slot &slot, VSlot &vslot);
-            void changebatchtmus();
-            void changeslottmus(int pass, Slot &newslot, VSlot &newvslot);
-            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
-    };
-
-    void renderstate::disablevbuf()
-    {
-        gle::clearvbo();
-        gle::clearebo();
-        vbuf = 0;
-    }
-
-    void renderstate::enablevquery()
-    {
-        if(colormask)
-        {
-            colormask = false;
-            glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        }
-        if(depthmask)
-        {
-            depthmask = false;
-            glDepthMask(GL_FALSE);
-        }
-        startbb(false);
-        vquery = true;
-    }
-
-    void renderstate::disablevquery()
-    {
-        endbb(false);
-        vquery = false;
-    }
-
-    void renderquery(renderstate &cur, occludequery *query, const vtxarray &va, bool full = true)
-    {
-        if(!cur.vquery)
-        {
-            cur.enablevquery();
-        }
-        query->startquery();
-        if(full)
-        {
-            drawbb(ivec(va.bbmin).sub(1), ivec(va.bbmax).sub(va.bbmin).add(2));
-        }
-        else
-        {
-            drawbb(va.geommin, ivec(va.geommax).sub(va.geommin));
-        }
-        endquery();
-    }
-
-    enum RenderPass
-    {
-        RenderPass_GBuffer = 0,
-        RenderPass_Z,
-        RenderPass_Caustics,
-        RenderPass_GBufferBlend,
-        RenderPass_ReflectiveShadowMap,
-        RenderPass_ReflectiveShadowMapBlend
-    };
-
     struct geombatch
     {
         const elementset &es;
@@ -815,6 +710,113 @@ namespace
             }
             return 0;
         }
+    };
+
+    class renderstate
+    {
+        public:
+            bool colormask, depthmask;
+            int alphaing;
+            GLuint vbuf;
+            bool vattribs, vquery;
+            float alphascale;
+            int globals;
+            int texgenorient, texgenmillis;
+
+            void disablevquery();
+            void disablevbuf();
+            void enablevquery();
+            void cleanupgeom();
+            void enablevattribs(bool all = true);
+            void disablevattribs(bool all = true);
+            void renderbatches(int pass);
+
+            renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
+                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
+                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
+                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+            {
+                for(int k = 0; k < 7; ++k)
+                {
+                    textures[k] = 0;
+                }
+            }
+        private:
+            int tmu;
+            GLuint textures[7];
+            vec colorscale;
+            Slot *slot;
+            VSlot *vslot;
+            Slot *texgenslot;
+            VSlot *texgenvslot;
+            vec2 texgenscroll;
+            float refractscale;
+            vec refractcolor;
+
+            void changetexgen(int orient, Slot &slot, VSlot &vslot);
+            void changebatchtmus();
+            void changeslottmus(int pass, Slot &newslot, VSlot &newvslot);
+            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
+            void changeshader(int pass, const geombatch &b);
+
+    };
+
+    void renderstate::disablevbuf()
+    {
+        gle::clearvbo();
+        gle::clearebo();
+        vbuf = 0;
+    }
+
+    void renderstate::enablevquery()
+    {
+        if(colormask)
+        {
+            colormask = false;
+            glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        }
+        if(depthmask)
+        {
+            depthmask = false;
+            glDepthMask(GL_FALSE);
+        }
+        startbb(false);
+        vquery = true;
+    }
+
+    void renderstate::disablevquery()
+    {
+        endbb(false);
+        vquery = false;
+    }
+
+    void renderquery(renderstate &cur, occludequery *query, const vtxarray &va, bool full = true)
+    {
+        if(!cur.vquery)
+        {
+            cur.enablevquery();
+        }
+        query->startquery();
+        if(full)
+        {
+            drawbb(ivec(va.bbmin).sub(1), ivec(va.bbmax).sub(va.bbmin).add(2));
+        }
+        else
+        {
+            drawbb(va.geommin, ivec(va.geommax).sub(va.geommin));
+        }
+        endquery();
+    }
+
+    enum RenderPass
+    {
+        RenderPass_GBuffer = 0,
+        RenderPass_Z,
+        RenderPass_Caustics,
+        RenderPass_GBufferBlend,
+        RenderPass_ReflectiveShadowMap,
+        RenderPass_ReflectiveShadowMapBlend
     };
 
     std::vector<geombatch> geombatches;
@@ -1109,7 +1111,7 @@ namespace
         texgenorient = orient;
     }
 
-    void changeshader(renderstate &cur, int pass, geombatch &b)
+    void renderstate::changeshader(int pass, const geombatch &b)
     {
         VSlot &vslot = b.vslot;
         Slot &slot = *vslot.slot;
@@ -1124,9 +1126,9 @@ namespace
                 rsmworldshader->set(slot, vslot);
             }
         }
-        else if(cur.alphaing)
+        else if(alphaing)
         {
-            slot.shader->setvariant(cur.alphaing > 1 && vslot.refractscale > 0 ? 1 : 0, 1, slot, vslot);
+            slot.shader->setvariant(alphaing > 1 && vslot.refractscale > 0 ? 1 : 0, 1, slot, vslot);
         }
         else if(b.es.layer&BlendLayer_Bottom)
         {
@@ -1136,7 +1138,7 @@ namespace
         {
             slot.shader->set(slot, vslot);
         }
-        cur.globals = GlobalShaderParamState::nextversion;
+        globals = GlobalShaderParamState::nextversion;
     }
 
     template<class T>
@@ -1223,7 +1225,7 @@ namespace
                 {
                     changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
                 }
-                changeshader(*this, pass, b);
+                changeshader(pass, b);
             }
             else
             {
