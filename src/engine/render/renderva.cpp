@@ -821,7 +821,7 @@ namespace
     int firstbatch = -1,
         numbatches = 0;
 
-    void mergetexs(renderstate &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
+    void mergetexs(const renderstate &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
     {
         int numtexs = 0;
         if(!texs)
