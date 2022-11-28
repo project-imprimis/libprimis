@@ -145,7 +145,7 @@ void freeocta(cube *c)
     allocnodes--;
 }
 
-void getcubevector(cube &c, int d, int x, int y, int z, ivec &p)
+void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p)
 {
     ivec v(d, x, y, z);
     for(int i = 0; i < 3; ++i)
@@ -163,7 +163,7 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     }
 }
 
-static void getcubevector(cube &c, int i, ivec &p)
+static void getcubevector(const cube &c, int i, ivec &p)
 {
     p.x = EDGE_GET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
     p.y = EDGE_GET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
