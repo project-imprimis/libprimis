@@ -9,6 +9,7 @@ var searchData=
   ['preloadmapsounds_6',['preloadmapsounds',['../iengine_8h.html#aca26d065305827e779529ea0defbd54d',1,'iengine.h']]],
   ['preloadmodel_7',['preloadmodel',['../iengine_8h.html#a6ccc97006f72d0364cad7ca6ccd8eedc',1,'iengine.h']]],
   ['preloadsound_8',['preloadsound',['../iengine_8h.html#a1818b1ca072ccbf853d44dd14207b4c3',1,'iengine.h']]],
-  ['printvar_9',['printvar',['../command_8h.html#a7a0296e4a02d14e3f16f069b69c1106f',1,'command.h']]],
-  ['put_10',['put',['../structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24',1,'databuf']]]
+  ['preloadusedmapmodels_9',['preloadusedmapmodels',['../iengine_8h.html#a15ab6703fa9f0749d6294d8a8e8fb9ce',1,'iengine.h']]],
+  ['printvar_10',['printvar',['../command_8h.html#a7a0296e4a02d14e3f16f069b69c1106f',1,'command.h']]],
+  ['put_11',['put',['../structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24',1,'databuf']]]
 ];
