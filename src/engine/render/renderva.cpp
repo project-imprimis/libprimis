@@ -730,6 +730,7 @@ namespace
             void enablevattribs(bool all = true);
             void disablevattribs(bool all = true);
             void renderbatches(int pass);
+            void renderzpass(const vtxarray &va);
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
@@ -1242,34 +1243,34 @@ namespace
         resetbatches();
     }
 
-    void renderzpass(renderstate &cur, const vtxarray &va)
+    void renderstate::renderzpass(const vtxarray &va)
     {
-        if(!cur.vattribs)
+        if(!vattribs)
         {
-            if(cur.vquery)
+            if(vquery)
             {
-                cur.disablevquery();
+                disablevquery();
             }
-            cur.enablevattribs(false);
+            enablevattribs(false);
         }
-        if(cur.vbuf!=va.vbuf)
+        if(vbuf!=va.vbuf)
         {
-            changevbuf(cur, RenderPass_Z, va);
+            changevbuf(*this, RenderPass_Z, va);
         }
-        if(!cur.depthmask)
+        if(!depthmask)
         {
-            cur.depthmask = true;
+            depthmask = true;
             glDepthMask(GL_TRUE);
         }
-        if(cur.colormask)
+        if(colormask)
         {
-            cur.colormask = false;
+            colormask = false;
             glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
         }
         int firsttex = 0,
             numtris = va.tris,
             offset = 0;
-        if(cur.alphaing)
+        if(alphaing)
         {
             firsttex += va.texs;
             offset += 3*(va.tris);
@@ -1363,7 +1364,7 @@ namespace
                 {
                     STARTVAQUERY(va, );
                 }
-                renderzpass(cur, va);
+                cur.renderzpass(va);
                 if(doquery)
                 {
                     ENDVAQUERY(va, );
