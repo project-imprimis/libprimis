@@ -998,137 +998,139 @@ struct varenderer : partrenderer
 VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
 VARP(softexplosionblend, 1, 16, 64);
 
-namespace sphere
+class sphererenderer
 {
-    struct vert
-    {
-        vec pos;
-        ushort s, t;
-    } *verts = nullptr;
-    GLushort *indices = nullptr;
-    int numverts   = 0,
-        numindices = 0;
-    GLuint vbuf = 0,
-           ebuf = 0;
-
-    void init(int slices, int stacks)
-    {
-        numverts = (stacks+1)*(slices+1);
-        verts = new vert[numverts];
-        float ds = 1.0f/slices,
-              dt = 1.0f/stacks,
-              t  = 1.0f;
-        for(int i = 0; i < stacks+1; ++i)
+    public:
+        void cleanup()
         {
-            float rho = M_PI*(1-t),
-                  s = 0.0f,
-                  sinrho = i && i < stacks ? std::sin(rho) : 0,
-                  cosrho = !i ? 1 : (i < stacks ? std::cos(rho) : -1);
-            for(int j = 0; j < slices+1; ++j)
+            if(vbuf)
             {
-                float theta = j==slices ? 0 : 2*M_PI*s;
-                vert &v = verts[i*(slices+1) + j];
-                v.pos = vec(std::sin(theta)*sinrho, std::cos(theta)*sinrho, -cosrho);
-                v.s = static_cast<ushort>(s*0xFFFF);
-                v.t = static_cast<ushort>(t*0xFFFF);
-                s += ds;
+                glDeleteBuffers(1, &vbuf);
+                vbuf = 0;
             }
-            t -= dt;
-        }
-
-        numindices = (stacks-1)*slices*3*2;
-        indices = new ushort[numindices];
-        GLushort *curindex = indices;
-        for(int i = 0; i < stacks; ++i)
-        {
-            for(int k = 0; k < slices; ++k)
+            if(ebuf)
             {
-                int j = i%2 ? slices-k-1 : k;
-                if(i)
-                {
-                    *curindex++ = i*(slices+1)+j;
-                    *curindex++ = (i+1)*(slices+1)+j;
-                    *curindex++ = i*(slices+1)+j+1;
-                }
-                if(i+1 < stacks)
-                {
-                    *curindex++ = i*(slices+1)+j+1;
-                    *curindex++ = (i+1)*(slices+1)+j;
-                    *curindex++ = (i+1)*(slices+1)+j+1;
-                }
+                glDeleteBuffers(1, &ebuf);
+                ebuf = 0;
             }
         }
-        if(!vbuf)
+
+        void enable()
         {
-            glGenBuffers(1, &vbuf);
+            if(!vbuf)
+            {
+                init(12, 6); //12 slices, 6 stacks
+            }
+            gle::bindvbo(vbuf);
+            gle::bindebo(ebuf);
+
+            gle::vertexpointer(sizeof(vert), &verts->pos);
+            gle::texcoord0pointer(sizeof(vert), &verts->s, GL_UNSIGNED_SHORT, 2, GL_TRUE);
+            gle::enablevertex();
+            gle::enabletexcoord0();
         }
-        gle::bindvbo(vbuf);
-        glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
-        delete[] verts;
-        verts = nullptr;
-        if(!ebuf)
+
+        void draw()
         {
-            glGenBuffers(1, &ebuf);
+            glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
+            xtraverts += numindices;
+            glde++;
         }
-        gle::bindebo(ebuf);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
-        delete[] indices;
-        indices = nullptr;
-    }
 
-    void cleanup()
-    {
-        if(vbuf)
+        void disable()
         {
-            glDeleteBuffers(1, &vbuf);
-            vbuf = 0;
+            gle::disablevertex();
+            gle::disabletexcoord0();
+
+            gle::clearvbo();
+            gle::clearebo();
         }
-        if(ebuf)
+    private:
+        struct vert
         {
-            glDeleteBuffers(1, &ebuf);
-            ebuf = 0;
-        }
-    }
+            vec pos;
+            ushort s, t;
+        } *verts = nullptr;
+        GLushort *indices = nullptr;
+        int numverts   = 0,
+            numindices = 0;
+        GLuint vbuf = 0,
+               ebuf = 0;
 
-    void enable()
-    {
-        if(!vbuf)
+        void init(int slices, int stacks)
         {
-            init(12, 6); //12 slices, 6 stacks
+            numverts = (stacks+1)*(slices+1);
+            verts = new vert[numverts];
+            float ds = 1.0f/slices,
+                  dt = 1.0f/stacks,
+                  t  = 1.0f;
+            for(int i = 0; i < stacks+1; ++i)
+            {
+                float rho = M_PI*(1-t),
+                      s = 0.0f,
+                      sinrho = i && i < stacks ? std::sin(rho) : 0,
+                      cosrho = !i ? 1 : (i < stacks ? std::cos(rho) : -1);
+                for(int j = 0; j < slices+1; ++j)
+                {
+                    float theta = j==slices ? 0 : 2*M_PI*s;
+                    vert &v = verts[i*(slices+1) + j];
+                    v.pos = vec(std::sin(theta)*sinrho, std::cos(theta)*sinrho, -cosrho);
+                    v.s = static_cast<ushort>(s*0xFFFF);
+                    v.t = static_cast<ushort>(t*0xFFFF);
+                    s += ds;
+                }
+                t -= dt;
+            }
+
+            numindices = (stacks-1)*slices*3*2;
+            indices = new ushort[numindices];
+            GLushort *curindex = indices;
+            for(int i = 0; i < stacks; ++i)
+            {
+                for(int k = 0; k < slices; ++k)
+                {
+                    int j = i%2 ? slices-k-1 : k;
+                    if(i)
+                    {
+                        *curindex++ = i*(slices+1)+j;
+                        *curindex++ = (i+1)*(slices+1)+j;
+                        *curindex++ = i*(slices+1)+j+1;
+                    }
+                    if(i+1 < stacks)
+                    {
+                        *curindex++ = i*(slices+1)+j+1;
+                        *curindex++ = (i+1)*(slices+1)+j;
+                        *curindex++ = (i+1)*(slices+1)+j+1;
+                    }
+                }
+            }
+            if(!vbuf)
+            {
+                glGenBuffers(1, &vbuf);
+            }
+            gle::bindvbo(vbuf);
+            glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
+            delete[] verts;
+            verts = nullptr;
+            if(!ebuf)
+            {
+                glGenBuffers(1, &ebuf);
+            }
+            gle::bindebo(ebuf);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
+            delete[] indices;
+            indices = nullptr;
         }
-        gle::bindvbo(vbuf);
-        gle::bindebo(ebuf);
-
-        gle::vertexpointer(sizeof(vert), &verts->pos);
-        gle::texcoord0pointer(sizeof(vert), &verts->s, GL_UNSIGNED_SHORT, 2, GL_TRUE);
-        gle::enablevertex();
-        gle::enabletexcoord0();
-    }
-
-    void draw()
-    {
-        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
-        xtraverts += numindices;
-        glde++;
-    }
-
-    void disable()
-    {
-        gle::disablevertex();
-        gle::disabletexcoord0();
-
-        gle::clearvbo();
-        gle::clearebo();
-    }
-}
-
-static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
+};
 
 struct fireballrenderer : listrenderer
 {
     fireballrenderer(const char *texname)
         : listrenderer(texname, 0, PT_FIREBALL|PT_SHADER)
     {}
+
+    sphererenderer sr;
+    static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
 
     void startrender()
     {
@@ -1140,17 +1142,17 @@ struct fireballrenderer : listrenderer
         {
             SETSHADER(explosion);
         }
-        sphere::enable();
+        sr.enable();
     }
 
     void endrender()
     {
-        sphere::disable();
+        sr.disable();
     }
 
     void cleanup()
     {
-        sphere::cleanup();
+        sr.cleanup();
     }
 
     void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
@@ -1217,7 +1219,7 @@ struct fireballrenderer : listrenderer
             {
                 glDepthFunc(GL_GEQUAL);
             }
-            sphere::draw();
+            sr.draw();
             if(i)
             {
                 glDepthFunc(GL_LESS);
