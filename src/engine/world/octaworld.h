@@ -201,7 +201,7 @@ extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
-extern void getcubevector(cube &c, int d, int x, int y, int z, ivec &p);
+extern void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p);
 extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
 extern void freeocta(cube *c);
