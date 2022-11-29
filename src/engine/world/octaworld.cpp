@@ -819,16 +819,6 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
 }
 //==============================================================================
 
-const uchar fv[6][4] = // indexes for cubecoords, per each vert of a face orientation
-{
-    { 2, 1, 6, 5 },
-    { 3, 4, 7, 0 },
-    { 4, 5, 6, 7 },
-    { 1, 2, 3, 0 },
-    { 6, 1, 0, 7 },
-    { 5, 4, 3, 2 },
-};
-
 bool flataxisface(const cube &c, int orient)
 {
     uint face = c.faces[DIMENSION(orient)];
@@ -1617,6 +1607,16 @@ void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p)
 
 void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide, bool noclip)
 {
+    static const uchar fv[6][4] = // indexes for cubecoords, per each vert of a face orientation
+    {
+        { 2, 1, 6, 5 },
+        { 3, 4, 7, 0 },
+        { 4, 5, 6, 7 },
+        { 1, 2, 3, 0 },
+        { 6, 1, 0, 7 },
+        { 5, 4, 3, 2 },
+    };
+
     p.visible &= ~0x80;
     if(collide || (c.visible&0xC0) == 0x40)
     {
