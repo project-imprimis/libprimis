@@ -617,9 +617,6 @@ int visibleorient(const cube &c, int orient)
 
 VAR(mipvis, 0, 0, 1);
 
-static int remipprogress = 0,
-           remiptotal = 0;
-
 static bool remip(cube &c, const ivec &co, int size)
 {
     cube *ch = c.children;
@@ -767,8 +764,6 @@ static bool remip(cube &c, const ivec &co, int size)
 
 void cubeworld::remip()
 {
-    remipprogress = 1;
-    remiptotal = allocnodes;
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, ivec(0, 0, 0), worldsize>>1);
