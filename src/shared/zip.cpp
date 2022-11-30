@@ -393,148 +393,175 @@ bool removezip(const char *name)
     return true;
 }
 
-struct zipstream : stream
+class zipstream : public stream
 {
-    enum
-    {
-        Buffer_Size  = 16384
-    };
-    ziparchive *arch;
-    zipfile *info;
-    z_stream zfile;
-    uchar *buf;
-    uint reading;
-    bool ended;
-    zipstream() : arch(nullptr), info(nullptr), buf(nullptr), reading(~0U), ended(false)
-    {
-        zfile.zalloc = nullptr;
-        zfile.zfree = nullptr;
-        zfile.opaque = nullptr;
-        zfile.next_in = zfile.next_out = nullptr;
-        zfile.avail_in = zfile.avail_out = 0;
-    }
-    ~zipstream()
-    {
-        close();
-    }
-    void readbuf(uint size = Buffer_Size)
-    {
-        if(!zfile.avail_in)
+    public:
+        enum
         {
-            zfile.next_in = (Bytef *)buf;
-        }
-        size = std::min(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
-        if(arch->owner != this)
+            Buffer_Size  = 16384
+        };
+        zipstream() : arch(nullptr), info(nullptr), buf(nullptr), reading(~0U), ended(false)
         {
-            arch->owner = nullptr;
-            if(fseek(arch->data, reading, SEEK_SET) >= 0)
-            {
-                arch->owner = this;
-            }
-            else
-            {
-                return;
-            }
+            zfile.zalloc = nullptr;
+            zfile.zfree = nullptr;
+            zfile.opaque = nullptr;
+            zfile.next_in = zfile.next_out = nullptr;
+            zfile.avail_in = zfile.avail_out = 0;
         }
-        uint remaining = info->offset + info->compressedsize - reading,
-             n = arch->owner == this ? std::fread(zfile.next_in + zfile.avail_in, 1, std::min(size, remaining), arch->data) : 0U;
-        zfile.avail_in += n;
-        reading += n;
-    }
+        ~zipstream()
+        {
+            close();
+        }
+        void readbuf(uint size = Buffer_Size)
+        {
+            if(!zfile.avail_in)
+            {
+                zfile.next_in = (Bytef *)buf;
+            }
+            size = std::min(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
+            if(arch->owner != this)
+            {
+                arch->owner = nullptr;
+                if(fseek(arch->data, reading, SEEK_SET) >= 0)
+                {
+                    arch->owner = this;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            uint remaining = info->offset + info->compressedsize - reading,
+                 n = arch->owner == this ? std::fread(zfile.next_in + zfile.avail_in, 1, std::min(size, remaining), arch->data) : 0U;
+            zfile.avail_in += n;
+            reading += n;
+        }
 
-    bool open(ziparchive *a, zipfile *f)
-    {
-        if(f->offset == ~0U)
+        bool open(ziparchive *a, zipfile *f)
         {
-            ziplocalfileheader h;
-            a->owner = nullptr;
-            if(!readlocalfileheader(a->data, h, f->header))
+            if(f->offset == ~0U)
+            {
+                ziplocalfileheader h;
+                a->owner = nullptr;
+                if(!readlocalfileheader(a->data, h, f->header))
+                {
+                    return false;
+                }
+                f->offset = f->header + Zip_LocalFileSize + h.namelength + h.extralength;
+            }
+            if(f->compressedsize && inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
             {
                 return false;
             }
-            f->offset = f->header + Zip_LocalFileSize + h.namelength + h.extralength;
+            a->openfiles++;
+            arch = a;
+            info = f;
+            reading = f->offset;
+            ended = false;
+            if(f->compressedsize)
+            {
+                buf = new uchar[Buffer_Size];
+            }
+            return true;
         }
-        if(f->compressedsize && inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
-        {
-            return false;
-        }
-        a->openfiles++;
-        arch = a;
-        info = f;
-        reading = f->offset;
-        ended = false;
-        if(f->compressedsize)
-        {
-            buf = new uchar[Buffer_Size];
-        }
-        return true;
-    }
 
-    void stopreading()
-    {
-        if(reading == ~0U)
+        void stopreading()
         {
-            return;
+            if(reading == ~0U)
+            {
+                return;
+            }
+            if(debugzip)
+            {
+                conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? static_cast<uint>(zfile.total_out) : reading - info->offset, info->size);
+            }
+            if(info->compressedsize)
+            {
+                inflateEnd(&zfile);
+            }
+            reading = ~0U;
         }
-        if(debugzip)
-        {
-            conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? static_cast<uint>(zfile.total_out) : reading - info->offset, info->size);
-        }
-        if(info->compressedsize)
-        {
-            inflateEnd(&zfile);
-        }
-        reading = ~0U;
-    }
 
-    void close()
-    {
-        stopreading();
-        delete[] buf;
-        buf = nullptr;
-        if(arch)
+        void close()
         {
-            arch->owner = nullptr;
-            arch->openfiles--;
-            arch = nullptr;
+            stopreading();
+            delete[] buf;
+            buf = nullptr;
+            if(arch)
+            {
+                arch->owner = nullptr;
+                arch->openfiles--;
+                arch = nullptr;
+            }
         }
-    }
 
-    offset size()
-    {
-        return info->size;
-    }
-    bool end()
-    {
-        return reading == ~0U || ended;
-    }
-    offset tell()
-    {
-        return reading != ~0U ? (info->compressedsize ? zfile.total_out : reading - info->offset) : offset(-1);
-    }
-    bool seek(offset pos, int whence)
-    {
-        if(reading == ~0U)
+        offset size()
         {
-            return false;
+            return info->size;
         }
-        if(!info->compressedsize)
+        bool end()
         {
+            return reading == ~0U || ended;
+        }
+        offset tell()
+        {
+            return reading != ~0U ? (info->compressedsize ? zfile.total_out : reading - info->offset) : offset(-1);
+        }
+        bool seek(offset pos, int whence)
+        {
+            if(reading == ~0U)
+            {
+                return false;
+            }
+            if(!info->compressedsize)
+            {
+                switch(whence)
+                {
+                    case SEEK_END:
+                    {
+                        pos += info->offset + info->size;
+                        break;
+                    }
+                    case SEEK_CUR:
+                    {
+                        pos += reading;
+                        break;
+                    }
+                    case SEEK_SET:
+                    {
+                        pos += info->offset;
+                        break;
+                    }
+                    default:
+                    {
+                        return false;
+                    }
+                }
+                pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
+                arch->owner = nullptr;
+                if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
+                {
+                    return false;
+                }
+                arch->owner = this;
+                reading = pos;
+                ended = false;
+                return true;
+            }
             switch(whence)
             {
                 case SEEK_END:
                 {
-                    pos += info->offset + info->size;
+                    pos += info->size;
                     break;
                 }
                 case SEEK_CUR:
                 {
-                    pos += reading;
+                    pos += zfile.total_out;
                     break;
                 }
                 case SEEK_SET:
                 {
-                    pos += info->offset;
                     break;
                 }
                 default:
@@ -542,141 +569,116 @@ struct zipstream : stream
                     return false;
                 }
             }
-            pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
-            arch->owner = nullptr;
-            if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
+            if(pos >= (offset)info->size)
+            {
+                reading = info->offset + info->compressedsize;
+                zfile.next_in += zfile.avail_in;
+                zfile.avail_in = 0;
+                zfile.total_in = info->compressedsize;
+                zfile.total_out = info->size;
+                arch->owner = nullptr;
+                ended = false;
+                return true;
+            }
+            if(pos < 0)
             {
                 return false;
             }
-            arch->owner = this;
-            reading = pos;
-            ended = false;
-            return true;
-        }
-        switch(whence)
-        {
-            case SEEK_END:
+            if(pos >= (offset)zfile.total_out)
             {
-                pos += info->size;
-                break;
-            }
-            case SEEK_CUR:
-            {
-                pos += zfile.total_out;
-                break;
-            }
-            case SEEK_SET:
-            {
-                break;
-            }
-            default:
-            {
-                return false;
-            }
-        }
-        if(pos >= (offset)info->size)
-        {
-            reading = info->offset + info->compressedsize;
-            zfile.next_in += zfile.avail_in;
-            zfile.avail_in = 0;
-            zfile.total_in = info->compressedsize;
-            zfile.total_out = info->size;
-            arch->owner = nullptr;
-            ended = false;
-            return true;
-        }
-        if(pos < 0)
-        {
-            return false;
-        }
-        if(pos >= (offset)zfile.total_out)
-        {
-            pos -= zfile.total_out;
-        }
-        else
-        {
-            if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
-            {
-                zfile.avail_in += zfile.total_in;
-                zfile.next_in -= zfile.total_in;
+                pos -= zfile.total_out;
             }
             else
             {
-                arch->owner = nullptr;
-                zfile.avail_in = 0;
-                zfile.next_in = nullptr;
-                reading = info->offset;
-            }
-            inflateReset(&zfile);
-        }
-        uchar skip[512];
-        while(pos > 0)
-        {
-            size_t skipped = static_cast<size_t>(std::min(pos, (offset)sizeof(skip)));
-            if(read(skip, skipped) != skipped)
-            {
-                return false;
-            }
-            pos -= skipped;
-        }
-
-        ended = false;
-        return true;
-    }
-    size_t read(void *buf, size_t len)
-    {
-        if(reading == ~0U || !buf || !len)
-        {
-            return 0;
-        }
-        if(!info->compressedsize)
-        {
-            if(arch->owner != this)
-            {
-                arch->owner = nullptr;
-                if(fseek(arch->data, reading, SEEK_SET) < 0)
+                if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
                 {
-                    stopreading();
-                    return 0;
-                }
-                arch->owner = this;
-            }
-            size_t n = std::fread(buf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
-            reading += n;
-            if(n < len)
-            {
-                ended = true;
-            }
-            return n;
-        }
-        zfile.next_out = (Bytef *)buf;
-        zfile.avail_out = len;
-        while(zfile.avail_out > 0)
-        {
-            if(!zfile.avail_in)
-            {
-                readbuf(Buffer_Size);
-            }
-            int err = inflate(&zfile, Z_NO_FLUSH);
-            if(err != Z_OK)
-            {
-                if(err == Z_STREAM_END)
-                {
-                    ended = true;
+                    zfile.avail_in += zfile.total_in;
+                    zfile.next_in -= zfile.total_in;
                 }
                 else
                 {
-                    if(debugzip)
-                    {
-                        conoutf(Console_Debug, "inflate error: %s", zError(err));
-                    }
-                    stopreading();
+                    arch->owner = nullptr;
+                    zfile.avail_in = 0;
+                    zfile.next_in = nullptr;
+                    reading = info->offset;
                 }
-                break;
+                inflateReset(&zfile);
             }
+            uchar skip[512];
+            while(pos > 0)
+            {
+                size_t skipped = static_cast<size_t>(std::min(pos, (offset)sizeof(skip)));
+                if(read(skip, skipped) != skipped)
+                {
+                    return false;
+                }
+                pos -= skipped;
+            }
+
+            ended = false;
+            return true;
         }
-        return len - zfile.avail_out;
-    }
+        size_t read(void *buf, size_t len)
+        {
+            if(reading == ~0U || !buf || !len)
+            {
+                return 0;
+            }
+            if(!info->compressedsize)
+            {
+                if(arch->owner != this)
+                {
+                    arch->owner = nullptr;
+                    if(fseek(arch->data, reading, SEEK_SET) < 0)
+                    {
+                        stopreading();
+                        return 0;
+                    }
+                    arch->owner = this;
+                }
+                size_t n = std::fread(buf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
+                reading += n;
+                if(n < len)
+                {
+                    ended = true;
+                }
+                return n;
+            }
+            zfile.next_out = (Bytef *)buf;
+            zfile.avail_out = len;
+            while(zfile.avail_out > 0)
+            {
+                if(!zfile.avail_in)
+                {
+                    readbuf(Buffer_Size);
+                }
+                int err = inflate(&zfile, Z_NO_FLUSH);
+                if(err != Z_OK)
+                {
+                    if(err == Z_STREAM_END)
+                    {
+                        ended = true;
+                    }
+                    else
+                    {
+                        if(debugzip)
+                        {
+                            conoutf(Console_Debug, "inflate error: %s", zError(err));
+                        }
+                        stopreading();
+                    }
+                    break;
+                }
+            }
+            return len - zfile.avail_out;
+        }
+    private:
+        ziparchive *arch;
+        zipfile *info;
+        z_stream zfile;
+        uchar *buf;
+        uint reading;
+        bool ended;
 };
 
 stream *openzipfile(const char *name, const char *mode)
