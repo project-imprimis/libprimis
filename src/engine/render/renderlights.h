@@ -93,12 +93,12 @@ class GBuffer
         bool istransparentlayer();
 
     private:
-        void bindmsdepth();
+        void bindmsdepth() const;
         void cleanupscale();
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
-        void rendercsmshadowmaps();
-        void rendershadowmaps(int offset = 0);
+        void rendercsmshadowmaps() const;
+        void rendershadowmaps(int offset = 0) const;
         int findalphavas();
 
         struct MaterialInfo
@@ -120,7 +120,7 @@ class GBuffer
             int hasmats;
         };
 
-        MaterialInfo findmaterials(); //materials.cpp
+        MaterialInfo findmaterials() const; //materials.cpp
 
         float alphafrontsx1, alphafrontsx2,
               alphafrontsy1, alphafrontsy2,

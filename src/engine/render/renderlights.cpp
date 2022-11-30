@@ -401,7 +401,7 @@ void GBuffer::cleanupmsbuffer()
     if(msrefracttex) { glDeleteTextures(1, &msrefracttex);      msrefracttex = 0; }
 }
 
-void GBuffer::bindmsdepth()
+void GBuffer::bindmsdepth() const
 {
     if(gdepthformat)
     {
@@ -3313,7 +3313,7 @@ void packlights()
     batchlights();
 }
 
-void GBuffer::rendercsmshadowmaps()
+void GBuffer::rendercsmshadowmaps() const
 {
     if(csminoq && !debugshadowatlas && !inoq && shouldworkinoq())
     {
@@ -3432,7 +3432,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
 
 matrix4 shadowmatrix;
 
-void GBuffer::rendershadowmaps(int offset)
+void GBuffer::rendershadowmaps(int offset) const
 {
     if(!(sminoq && !debugshadowatlas && !inoq && shouldworkinoq()))
     {

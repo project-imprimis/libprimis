@@ -947,7 +947,7 @@ void setupmaterials(int start, int len)
 
 VARP(showmat, 0, 1, 1); //toggles rendering material faces
 
-GBuffer::MaterialInfo GBuffer::findmaterials()
+GBuffer::MaterialInfo GBuffer::findmaterials() const
 {
     MaterialInfo mi;
     editsurfs.clear();
