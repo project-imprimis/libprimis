@@ -16,12 +16,12 @@ struct occludequery
 class vfc
 {
     public:
-        int isfoggedcube(const ivec &o, int size);
-        int isvisiblecube(const ivec &o, int size);
+        int isfoggedcube(const ivec &o, int size) const;
+        int isvisiblecube(const ivec &o, int size) const;
         void visiblecubes(bool cull = true);
-        bool isfoggedsphere(float rad, const vec &cv);
-        int isvisiblesphere(float rad, const vec &cv);
-        int isvisiblebb(const ivec &bo, const ivec &br);
+        bool isfoggedsphere(float rad, const vec &cv) const;
+        int isvisiblesphere(float rad, const vec &cv) const;
+        int isvisiblebb(const ivec &bo, const ivec &br) const;
         int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
     private:
         void calcvfcD();

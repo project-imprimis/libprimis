@@ -2177,7 +2177,7 @@ namespace
 
 // vfc - view frustum culling
 
-int vfc::isfoggedcube(const ivec &o, int size)
+int vfc::isfoggedcube(const ivec &o, int size) const
 {
     for(int i = 0; i < 4; ++i)
     {
@@ -2190,7 +2190,7 @@ int vfc::isfoggedcube(const ivec &o, int size)
     return dist < -vfcDfar[4]*size || dist > vfcDfog - vfcDnear[4]*size;
 }
 
-int vfc::isvisiblecube(const ivec &o, int size)
+int vfc::isvisiblecube(const ivec &o, int size) const
 {
     int v = ViewFrustumCull_FullyVisible;
     float dist;
@@ -2268,7 +2268,7 @@ void vfc::visiblecubes(bool cull)
     }
 }
 
-bool vfc::isfoggedsphere(float rad, const vec &cv)
+bool vfc::isfoggedsphere(float rad, const vec &cv) const
 {
     for(int i = 0; i < 4; ++i)
     {
@@ -2281,7 +2281,7 @@ bool vfc::isfoggedsphere(float rad, const vec &cv)
     return dist < -rad || dist > vfcDfog + rad; // true if abs(dist) is large
 }
 
-int vfc::isvisiblesphere(float rad, const vec &cv)
+int vfc::isvisiblesphere(float rad, const vec &cv) const
 {
     int v = ViewFrustumCull_FullyVisible;
     float dist;
@@ -2311,7 +2311,7 @@ int vfc::isvisiblesphere(float rad, const vec &cv)
     return v;
 }
 
-int vfc::isvisiblebb(const ivec &bo, const ivec &br)
+int vfc::isvisiblebb(const ivec &bo, const ivec &br) const
 {
     int v = ViewFrustumCull_FullyVisible;
     float dnear, dfar;
