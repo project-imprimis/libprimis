@@ -790,7 +790,23 @@ static bool unpackblock(block3 *&b, B &buf)
     return true;
 }
 
-std::vector<vslotmap> unpackingvslots;
+struct vslotmap
+{
+    int index;
+    VSlot *vslot;
+
+    vslotmap() {}
+    vslotmap(int index, VSlot *vslot) : index(index), vslot(vslot) {}
+};
+
+static std::vector<vslotmap> remappedvslots;
+
+//used in iengine.h so remappedvslots does not need to be exposed
+void clearremappedvslots()
+{
+    remappedvslots.clear();
+}
+static std::vector<vslotmap> unpackingvslots;
 
 static void unpackvslots(cube &c, ucharbuf &buf)
 {
@@ -1484,8 +1500,6 @@ std::vector<ushort> texmru;
 
 selinfo repsel;
 int reptex = -1;
-
-std::vector<vslotmap> remappedvslots;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {
