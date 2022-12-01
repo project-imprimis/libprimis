@@ -14,13 +14,14 @@ var searchData=
   ['renderprogress_11',['renderprogress',['../iengine_8h.html#a16f42e1b8ec15cc331db305d648e548a',1,'iengine.h']]],
   ['resetcursor_12',['resetcursor',['../iengine_8h.html#a1f3133491aa8930122b3e22542ccc48d',1,'UI']]],
   ['resetfpshistory_13',['resetfpshistory',['../iengine_8h.html#a428149eb497534b4f233ce9702e6d0f0',1,'iengine.h']]],
-  ['result_14',['result',['../command_8h.html#a0ce0f65be2f8547eba24228363753ba7',1,'command.h']]],
-  ['rotate_15',['rotate',['../classmatrix3.html#a94706f22576bc05015a3878cf432ad68',1,'matrix3::rotate(float ck, float sk, const vec &amp;axis)'],['../classmatrix3.html#ad2920582213c76b927e34d8c728788b0',1,'matrix3::rotate(float angle, const vec &amp;axis)']]],
-  ['rotate_5faround_5fx_16',['rotate_around_x',['../classmatrix3.html#aa9ee52a37dedb7274cf417c3b80dadc5',1,'matrix3::rotate_around_x(const vec2 &amp;sc)'],['../classmatrix3.html#a5a2fb2cc1bc9f4f6e0e37efb0178071f',1,'matrix3::rotate_around_x(float angle)']]],
-  ['rotate_5faround_5fy_17',['rotate_around_y',['../classmatrix3.html#af96633ad982c5dd437f0b94fe56e9aac',1,'matrix3::rotate_around_y(const vec2 &amp;sc)'],['../classmatrix3.html#a3149678da441ea68f86691bd815bc1d7',1,'matrix3::rotate_around_y(float angle)']]],
-  ['rotate_5faround_5fz_18',['rotate_around_z',['../classmatrix3.html#a1c96c8a5f7ffb9af8c34bd5b3025e171',1,'matrix3::rotate_around_z(const vec2 &amp;sc)'],['../classmatrix3.html#a6e69e571c42788f5571c04788fbaa372',1,'matrix3::rotate_around_z(float angle)']]],
-  ['rotatebb_19',['rotatebb',['../iengine_8h.html#ad3829f52d805a155e1169cee90348080',1,'iengine.h']]],
-  ['rowx_20',['rowx',['../classmatrix3.html#a2c6c8150a74fbeaf6cf3615af182124c',1,'matrix3']]],
-  ['rowy_21',['rowy',['../classmatrix3.html#af98b0332aaed09449051de82c4c76367',1,'matrix3']]],
-  ['rowz_22',['rowz',['../classmatrix3.html#aa8b1d1ca48d9aa8660951e6eeda9da90',1,'matrix3']]]
+  ['resethudshader_14',['resethudshader',['../iengine_8h.html#a64f479ed1a472d9bc1e6ea71136b8667',1,'iengine.h']]],
+  ['result_15',['result',['../command_8h.html#a0ce0f65be2f8547eba24228363753ba7',1,'command.h']]],
+  ['rotate_16',['rotate',['../classmatrix3.html#a94706f22576bc05015a3878cf432ad68',1,'matrix3::rotate(float ck, float sk, const vec &amp;axis)'],['../classmatrix3.html#ad2920582213c76b927e34d8c728788b0',1,'matrix3::rotate(float angle, const vec &amp;axis)']]],
+  ['rotate_5faround_5fx_17',['rotate_around_x',['../classmatrix3.html#aa9ee52a37dedb7274cf417c3b80dadc5',1,'matrix3::rotate_around_x(const vec2 &amp;sc)'],['../classmatrix3.html#a5a2fb2cc1bc9f4f6e0e37efb0178071f',1,'matrix3::rotate_around_x(float angle)']]],
+  ['rotate_5faround_5fy_18',['rotate_around_y',['../classmatrix3.html#af96633ad982c5dd437f0b94fe56e9aac',1,'matrix3::rotate_around_y(const vec2 &amp;sc)'],['../classmatrix3.html#a3149678da441ea68f86691bd815bc1d7',1,'matrix3::rotate_around_y(float angle)']]],
+  ['rotate_5faround_5fz_19',['rotate_around_z',['../classmatrix3.html#a1c96c8a5f7ffb9af8c34bd5b3025e171',1,'matrix3::rotate_around_z(const vec2 &amp;sc)'],['../classmatrix3.html#a6e69e571c42788f5571c04788fbaa372',1,'matrix3::rotate_around_z(float angle)']]],
+  ['rotatebb_20',['rotatebb',['../iengine_8h.html#ad3829f52d805a155e1169cee90348080',1,'iengine.h']]],
+  ['rowx_21',['rowx',['../classmatrix3.html#a2c6c8150a74fbeaf6cf3615af182124c',1,'matrix3']]],
+  ['rowy_22',['rowy',['../classmatrix3.html#af98b0332aaed09449051de82c4c76367',1,'matrix3']]],
+  ['rowz_23',['rowz',['../classmatrix3.html#aa8b1d1ca48d9aa8660951e6eeda9da90',1,'matrix3']]]
 ];

@@ -112,6 +112,7 @@ var iengine_8h =
     [ "renderprogress", "iengine_8h.html#a16f42e1b8ec15cc331db305d648e548a", null ],
     [ "resetcursor", "iengine_8h.html#a1f3133491aa8930122b3e22542ccc48d", null ],
     [ "resetfpshistory", "iengine_8h.html#a428149eb497534b4f233ce9702e6d0f0", null ],
+    [ "resethudshader", "iengine_8h.html#a64f479ed1a472d9bc1e6ea71136b8667", null ],
     [ "rotatebb", "iengine_8h.html#ad3829f52d805a155e1169cee90348080", null ],
     [ "setfont", "iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e", null ],
     [ "setup", "iengine_8h.html#a12441e8293bd0cca61dd838eb11326e3", null ],

@@ -4,6 +4,5 @@ var slot_8h =
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "Slot::Tex", "structSlot_1_1Tex.html", null ],
     [ "VSlot", "structVSlot.html", null ],
-    [ "DecalSlot", "structDecalSlot.html", null ],
-    [ "vslotmap", "structvslotmap.html", null ]
+    [ "DecalSlot", "structDecalSlot.html", null ]
 ];

@@ -62,6 +62,5 @@ var hierarchy =
     [ "vec4< float >", "structvec4.html", null ],
     [ "VSlot", "structVSlot.html", [
       [ "DecalSlot", "structDecalSlot.html", null ]
-    ] ],
-    [ "vslotmap", "structvslotmap.html", null ]
+    ] ]
 ];
