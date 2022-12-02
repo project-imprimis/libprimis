@@ -1186,7 +1186,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
     }
 }
 
-vec curfogcolor(0, 0, 0);
+static vec curfogcolor(0, 0, 0);
 
 void setfogcolor(const vec &v)
 {
@@ -1279,7 +1279,7 @@ int drawtex = 0;
 
 /* =========================== minimap functionality ======================== */
 
-GLuint minimaptex = 0;
+static GLuint minimaptex = 0;
 vec minimapcenter(0, 0, 0),
     minimapradius(0, 0, 0),
     minimapscale(0, 0, 0);
