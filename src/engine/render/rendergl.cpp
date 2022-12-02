@@ -181,7 +181,7 @@ VAR(debugexts, 0, 0, 1);
 
 static std::unordered_set<std::string> glexts;
 
-void parseglexts()
+static void parseglexts()
 {
     GLint numexts = 0;
     glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
@@ -193,12 +193,12 @@ void parseglexts()
     }
 }
 
-bool hasext(const char *ext)
+static bool hasext(const char *ext)
 {
     return glexts.find(ext)!=glexts.end();
 }
 
-bool checkdepthtexstencilrb()
+static bool checkdepthtexstencilrb()
 {
     int w = 256,
         h = 256;
