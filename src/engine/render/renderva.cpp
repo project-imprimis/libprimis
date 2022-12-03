@@ -792,13 +792,13 @@ namespace
         vquery = false;
     }
 
-    void renderquery(renderstate &cur, occludequery *query, const vtxarray &va, bool full = true)
+    void renderquery(renderstate &cur, const occludequery &query, const vtxarray &va, bool full = true)
     {
         if(!cur.vquery)
         {
             cur.enablevquery();
         }
-        query->startquery();
+        query.startquery();
         if(full)
         {
             drawbb(ivec(va.bbmin).sub(1), ivec(va.bbmax).sub(va.bbmin).add(2));
@@ -2418,7 +2418,7 @@ occludequery *newquery(void *owner)
     return queryframes[flipquery].newquery(owner);
 }
 
-void occludequery::startquery()
+void occludequery::startquery() const
 {
     glBeginQuery(querytarget(), this->id);
 }
@@ -2880,7 +2880,7 @@ void rendergeom()
                             {
                                 cur.disablevbuf();
                             }
-                            renderquery(cur, va->query, *va);
+                            renderquery(cur, *va->query, *va);
                         }
                         continue;
                     }

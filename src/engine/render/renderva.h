@@ -10,7 +10,7 @@ struct occludequery
     int fragments;
 
     void startmodelquery();
-    void startquery();
+    void startquery() const;
 };
 
 class vfc
