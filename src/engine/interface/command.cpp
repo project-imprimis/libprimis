@@ -252,7 +252,7 @@ float ident::getfloat() const
     return ::getfloat(val, valtype);
 }
 
-double getnumber(const identval &v, int type)
+static double getnumber(const identval &v, int type)
 {
     switch(type)
     {
