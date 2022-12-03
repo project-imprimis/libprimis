@@ -12,7 +12,14 @@ var geom_8h =
     [ "matrix4", "structmatrix4.html", null ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
+    [ "cos360", "geom_8h.html#ad6a0aa9eb4a0a474deddc7ef0d327497", null ],
+    [ "cotan360", "geom_8h.html#a71490c4edf25d1d2eeb9ab673b71a3e1", null ],
+    [ "mod360", "geom_8h.html#a2ff1dd8e170df783a4a3486a4304a2e6", null ],
+    [ "sin360", "geom_8h.html#a2fe0002028c63e34e8f1a892cf373bba", null ],
+    [ "sincosmod360", "geom_8h.html#a563d68893e655ed29c91f5e9a4e41a75", null ],
+    [ "tan360", "geom_8h.html#afa3ca58c8405b631ebe06c8f41eba6af", null ],
     [ "C", "geom_8h.html#aed5ba577f9756174f4bac8f51b02a91d", null ],
     [ "D", "geom_8h.html#af360aec895a04b5f852dbd4a58340ab6", null ],
-    [ "R", "geom_8h.html#ae991d89d766b25a0e9b0f07509128749", null ]
+    [ "R", "geom_8h.html#ae991d89d766b25a0e9b0f07509128749", null ],
+    [ "sincos360", "geom_8h.html#af936a273d30112cac1ddd9945c68a057", null ]
 ];

@@ -19,5 +19,8 @@ var searchData=
   ['collide_16',['collide',['../iengine_8h.html#a95645194a5c37d3cc0d58fb2e69ae86b',1,'iengine.h']]],
   ['compactvslots_17',['compactvslots',['../classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98',1,'cubeworld']]],
   ['conoutf_18',['conoutf',['../iengine_8h.html#a4db7318348a74b95e2013bae083f410f',1,'conoutf(const char *s,...) PRINTFARGS(1:&#160;iengine.h'],['../iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa',1,'conoutf(int type, const char *s,...) PRINTFARGS(2:&#160;iengine.h']]],
-  ['countselchild_19',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
+  ['cos360_19',['cos360',['../geom_8h.html#ad6a0aa9eb4a0a474deddc7ef0d327497',1,'geom.h']]],
+  ['cotan360_20',['cotan360',['../geom_8h.html#a71490c4edf25d1d2eeb9ab673b71a3e1',1,'geom.h']]],
+  ['countblock_21',['countblock',['../iengine_8h.html#ac082773606ba5eb142cd71b375f63973',1,'iengine.h']]],
+  ['countselchild_22',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
 ];
