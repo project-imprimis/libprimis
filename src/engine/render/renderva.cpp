@@ -2123,7 +2123,7 @@ namespace
         }
     }
 
-    void genshadowmesh(int idx, extentity &e)
+    void genshadowmesh(int idx, const extentity &e)
     {
         shadowmesh m;
         m.type = calcshadowinfo(e, m.origin, m.radius, m.spotloc, m.spotangle, shadowbias);
