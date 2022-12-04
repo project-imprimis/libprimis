@@ -67,7 +67,7 @@ extern void renderdecals();
 struct shadowmesh;
 extern void clearshadowmeshes();
 extern void genshadowmeshes();
-extern shadowmesh *findshadowmesh(int idx, extentity &e);
+extern shadowmesh *findshadowmesh(int idx, const extentity &e);
 extern void rendershadowmesh(shadowmesh *m);
 
 #endif

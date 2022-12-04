@@ -3168,7 +3168,7 @@ void genshadowmeshes()
     }
 }
 
-shadowmesh *findshadowmesh(int idx, extentity &e)
+shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
     shadowmesh *m = shadowmeshes.access(idx);
     if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
