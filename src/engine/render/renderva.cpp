@@ -59,7 +59,7 @@ struct shadowmesh
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-void findshadowvas(std::vector<vtxarray *> &vas);
+static void findshadowvas(std::vector<vtxarray *> &vas);
 
 namespace
 {
@@ -3400,7 +3400,7 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
     return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
 }
 
-void findshadowvas(std::vector<vtxarray *> &vas)
+static void findshadowvas(std::vector<vtxarray *> &vas)
 {
     for(uint i = 0; i < vas.size(); i++)
     {
