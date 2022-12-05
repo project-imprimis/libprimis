@@ -374,7 +374,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     swapbuffers(false);
 }
 
-bool initwindowpos = false;
+static bool initwindowpos = false;
 
 void setfullscreen(bool enable)
 {
