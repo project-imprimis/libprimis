@@ -1518,7 +1518,7 @@ void animmodel::cleanup()
     }
 }
 
-void animmodel::initmatrix(matrix4x3 &m)
+void animmodel::initmatrix(matrix4x3 &m) const
 {
     m.identity();
     if(offsetyaw)

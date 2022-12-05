@@ -471,7 +471,7 @@ class animmodel : public model
             return *p;
         }
 
-        void initmatrix(matrix4x3 &m);
+        void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
