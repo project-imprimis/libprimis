@@ -113,7 +113,7 @@ class animmodel : public model
 
                 virtual void genBIH(BIH::mesh &m) {}
 
-                void genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
                 virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
                 {

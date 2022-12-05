@@ -426,7 +426,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
 
 //Mesh
 
-void animmodel::Mesh::genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     bih.emplace_back();
     BIH::mesh &m = bih.back();
