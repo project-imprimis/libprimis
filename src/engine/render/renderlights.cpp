@@ -213,12 +213,12 @@ void GBuffer::setupscale(int sw, int sh, int w, int h)
     }
 }
 
-GLuint GBuffer::shouldscale()
+GLuint GBuffer::shouldscale() const
 {
     return scalefbo[0];
 }
 
-void GBuffer::doscale(GLuint outfbo)
+void GBuffer::doscale(GLuint outfbo) const
 {
     if(!scaletex[0])
     {
@@ -612,7 +612,7 @@ void GBuffer::setupmsbuffer(int w, int h)
     }
 }
 
-void GBuffer::bindgdepth()
+void GBuffer::bindgdepth() const
 {
     if(gdepthformat || msaalight)
     {
@@ -826,7 +826,7 @@ void GBuffer::setupgbuffer()
         cleardeferredlightshaders();
     }
 
-void GBuffer::resolvemsaadepth(int w, int h)
+void GBuffer::resolvemsaadepth(int w, int h) const
 {
     if(!msaasamples || msaalight)
     {
@@ -1992,7 +1992,7 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     gle::end();
 }
 
-void GBuffer::bindlighttexs(int msaapass, bool transparent)
+void GBuffer::bindlighttexs(int msaapass, bool transparent) const
 {
     if(msaapass)
     {
@@ -3956,7 +3956,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     glerror();
 }
 
-void GBuffer::shadesky()
+void GBuffer::shadesky() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, msaalight ? mshdrfbo : hdrfbo);
     glViewport(0, 0, vieww, viewh);
@@ -3964,7 +3964,7 @@ void GBuffer::shadesky()
     drawskybox((hdrclear > 0 ? hdrclear-- : msaalight) > 0);
 }
 
-bool GBuffer::istransparentlayer()
+bool GBuffer::istransparentlayer() const
 {
     return transparentlayer;
 }

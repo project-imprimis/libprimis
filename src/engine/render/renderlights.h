@@ -63,14 +63,14 @@ class GBuffer
         static void dummyfxn();
         //main g-buffers
         void cleanupgbuffer();
-        void renderao();                                    //ao.cpp
-        void renderradiancehints();                         //radiancehints.cpp
-        void rendertransparent();                           //rendertransparent.cpp
-        void resolvemsaadepth(int w, int h);
+        void renderao() const;                              //ao.cpp
+        void renderradiancehints() const;                   //radiancehints.cpp
+        void rendertransparent();                           //renderalpha.cpp
+        void resolvemsaadepth(int w, int h) const;
         void setupgbuffer();
-        void bindgdepth();
-        void bindlighttexs(int msaapass, bool transparent); //only used in renderlights
-        void renderparticles(int layer = 0);                //renderparticles.cpp
+        void bindgdepth() const;
+        void bindlighttexs(int msaapass, bool transparent) const; //only used in renderlights
+        void renderparticles(int layer = 0) const;                //renderparticles.cpp
         void rendervolumetric();
         void renderwaterfog(int mat, float surface);        //water.cpp
         void setaavelocityparams(GLenum tmu = GL_TEXTURE0); //aa.cpp
@@ -81,16 +81,16 @@ class GBuffer
         void setupmsbuffer(int w, int h);
         void resolvemsaacolor(int w, int h);
         void shademinimap(const vec &color = vec(-1, -1, -1));
-        void shadesky();
+        void shadesky() const;
         //refractive
         void processhdr(GLuint outfbo, int aa);
         void viewrefract();
-        void doscale(GLuint outfbo = 0);
+        void doscale(GLuint outfbo = 0) const;
         void setupscale(int sw, int sh, int w, int h);
-        GLuint shouldscale();
+        GLuint shouldscale() const;
         void workinoq();
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
-        bool istransparentlayer();
+        bool istransparentlayer() const;
 
     private:
         void bindmsdepth() const;

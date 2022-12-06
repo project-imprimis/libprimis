@@ -242,7 +242,7 @@ void viewao()
     debugquad(0, 0, w, h, 0, 0, tw, th);
 }
 
-void GBuffer::renderao()
+void GBuffer::renderao() const
 {
     if(!ao)
     {

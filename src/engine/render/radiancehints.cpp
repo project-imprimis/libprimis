@@ -852,7 +852,7 @@ void radiancehints::renderslices()
     }
 }
 
-void GBuffer::renderradiancehints()
+void GBuffer::renderradiancehints() const
 {
     if(rhinoq && !inoq && shouldworkinoq())
     {

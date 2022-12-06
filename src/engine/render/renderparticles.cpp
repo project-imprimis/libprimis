@@ -1327,7 +1327,7 @@ void removetrackedparticles(physent *owner)
 
 static int debugparts = variable("debugparticles", 0, 0, 1, &debugparts, nullptr, 0);
 
-void GBuffer::renderparticles(int layer)
+void GBuffer::renderparticles(int layer) const
 {
     canstep = layer != ParticleLayer_Under;
 
