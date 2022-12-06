@@ -191,7 +191,7 @@ enum OctaSave
 
 static int savemapprogress = 0;
 
-void cubeworld::savec(cube *c, const ivec &o, int size, stream *f)
+void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * const f)
 {
     if((savemapprogress++&0xFFF)==0)
     {
