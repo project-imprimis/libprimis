@@ -1846,7 +1846,7 @@ void animmodel::calcbb(vec &center, vec &radius)
     center.add(radius);
 }
 
-void animmodel::calctransform(matrix4x3 &m)
+void animmodel::calctransform(matrix4x3 &m) const
 {
     initmatrix(m);
     m.scale(scale);
@@ -1906,7 +1906,7 @@ void animmodel::disablevbo()
     lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = 0;
 }
 
-void animmodel::endrender()
+void animmodel::endrender() const
 {
     if(lastvbuf || lastebuf)
     {
