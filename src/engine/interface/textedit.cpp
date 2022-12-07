@@ -625,7 +625,7 @@ void Editor::insert(const char *s)
     }
 }
 
-void Editor::insertallfrom(Editor *b)
+void Editor::insertallfrom(const Editor * const b)
 {
     if(b==this)
     {
