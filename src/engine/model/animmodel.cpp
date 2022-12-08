@@ -511,7 +511,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
     LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
-void animmodel::meshgroup::genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     for(uint i = 0; i < meshes.size(); i++)
     {
@@ -660,7 +660,7 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
     }
 }
 
-void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m)
+void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
@@ -674,7 +674,7 @@ void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m)
     }
 }
 
-void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
+void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
