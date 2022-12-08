@@ -646,7 +646,7 @@ void animmodel::part::disablepitch()
     pitchscale = pitchoffset = pitchmin = pitchmax = 0;
 }
 
-void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
