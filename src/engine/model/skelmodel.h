@@ -365,7 +365,7 @@ struct skelmodel : animmodel
         void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
         void initragdoll(ragdolldata &d, skelcacheentry &sc, part *p);
         void genragdollbones(ragdolldata &d, skelcacheentry &sc, part *p);
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         void calctags(part *p, skelcacheentry *sc = nullptr);
         void cleanup(bool full = true);
         bool canpreload();
@@ -475,7 +475,7 @@ struct skelmodel : animmodel
         }
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr);
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
         int remapblend(int blend);

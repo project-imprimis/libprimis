@@ -784,7 +784,7 @@ void skelmodel::skeleton::genragdollbones(ragdolldata &d, skelcacheentry &sc, pa
     }
 }
 
-void skelmodel::skeleton::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
 {
     matrix4x3 t;
     t.mul(bones[tags[i].bone].base, tags[i].matrix);
@@ -1551,9 +1551,9 @@ void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheent
     }
 }
 
-void skelmodel::skelmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+void skelmodel::skelmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
 {
-    skel->concattagtransform(p, i, m, n);
+    skel->concattagtransform(i, m, n);
 }
 
 int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)

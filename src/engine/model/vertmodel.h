@@ -193,7 +193,7 @@ struct vertmodel : animmodel
         int findtag(const char *name);
 
         int totalframes() const;
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         void calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix);
 
         void genvbo(vbocacheentry &vc);

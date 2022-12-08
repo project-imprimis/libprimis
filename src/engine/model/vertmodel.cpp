@@ -260,7 +260,7 @@ int vertmodel::vertmeshgroup::totalframes() const
     return numframes;
 }
 
-void vertmodel::vertmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
 {
     n.mul(m, tags[i].matrix);
 }
