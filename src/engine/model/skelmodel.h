@@ -492,7 +492,7 @@ struct skelmodel : animmodel
         void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray);
         //end hitzone.h
         void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
-        void preload(part *p);
+        void preload();
 
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 

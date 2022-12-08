@@ -379,7 +379,7 @@ void vertmodel::vertmeshgroup::cleanup()
     }
 }
 
-void vertmodel::vertmeshgroup::preload(part *p)
+void vertmodel::vertmeshgroup::preload()
 {
     if(numframes > 1)
     {

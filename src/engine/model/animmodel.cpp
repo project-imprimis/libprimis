@@ -785,7 +785,7 @@ void animmodel::part::preloadmeshes()
 {
     if(meshes)
     {
-        meshes->preload(this);
+        meshes->preload();
     }
 }
 

@@ -231,7 +231,7 @@ struct vertmodel : animmodel
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc);
         void cleanup();
-        void preload(part *p);
+        void preload();
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 
         virtual bool load(const char *name, float smooth) = 0;

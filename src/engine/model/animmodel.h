@@ -367,7 +367,7 @@ class animmodel : public model
                 int clipframes(int i, int n) const;
 
                 virtual void cleanup() {}
-                virtual void preload(part *p) {}
+                virtual void preload() {}
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
                 virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 

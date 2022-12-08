@@ -1693,7 +1693,7 @@ void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const
     skel->calctags(p, &sc);
 }
 
-void skelmodel::skelmeshgroup::preload(part *p)
+void skelmodel::skelmeshgroup::preload()
 {
     if(!skel->canpreload())
     {
