@@ -80,7 +80,7 @@ struct skelmodel : animmodel
         float pitch;
         int millis;
         uchar *partmask;
-        ragdolldata *ragdoll;
+        const ragdolldata *ragdoll;
 
         animcacheentry();
 
@@ -370,7 +370,7 @@ struct skelmodel : animmodel
         void cleanup(bool full = true);
         bool canpreload();
         void preload();
-        skelcacheentry &checkskelcache(part *p, const AnimState *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata);
+        skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
         int getblendoffset(UniformLoc &u);
         void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
         bool shouldcleanup() const;

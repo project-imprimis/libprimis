@@ -853,7 +853,7 @@ void skelmodel::skeleton::preload()
     }
 }
 
-skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const AnimState *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata)
+skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
     if(skelcache.empty())
     {
