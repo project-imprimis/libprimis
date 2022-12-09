@@ -363,7 +363,7 @@ struct skelmodel : animmodel
         float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
         void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
         void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
-        void initragdoll(ragdolldata &d, skelcacheentry &sc, part *p);
+        void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
         void genragdollbones(ragdolldata &d, skelcacheentry &sc, part *p);
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         void calctags(part *p, skelcacheentry *sc = nullptr);

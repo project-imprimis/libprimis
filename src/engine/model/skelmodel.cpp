@@ -704,7 +704,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
     }
 }
 
-void skelmodel::skeleton::initragdoll(ragdolldata &d, skelcacheentry &sc, part *p)
+void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p)
 {
     const dualquat *bdata = sc.bdata;
     for(uint i = 0; i < ragdoll->joints.size(); i++)
