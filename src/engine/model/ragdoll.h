@@ -99,7 +99,7 @@ class ragdolldata
 
         void move(dynent *pl, float ts);
         void calcanimjoint(int i, const matrix4x3 &anim);
-        void init(dynent *d);
+        void init(const dynent *d);
 
     private:
         int collisions, floating, unsticks;

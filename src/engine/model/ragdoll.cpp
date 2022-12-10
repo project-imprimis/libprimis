@@ -226,7 +226,7 @@ void ragdolldata::calcboundsphere()
 VAR(ragdolltimestepmin, 1, 5, 50);
 VAR(ragdolltimestepmax, 1, 10, 50);
 
-void ragdolldata::init(dynent *d)
+void ragdolldata::init(const dynent *d)
 {
     float ts = ragdolltimestepmin/1000.0f;
     for(uint i = 0; i < skel->verts.size(); i++)
