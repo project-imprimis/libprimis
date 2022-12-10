@@ -925,7 +925,7 @@ int skelmodel::skeleton::getblendoffset(UniformLoc &u)
     return offset;
 }
 
-void skelmodel::skeleton::setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count)
+void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count)
 {
     if(u.version == bc.version && u.data == bc.bdata)
     {

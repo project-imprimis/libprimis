@@ -385,7 +385,7 @@ struct skelmodel : animmodel
                 const dualquat *fr1, *fr2, *pfr1, *pfr2;
             };
 
-            void setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count);
+            void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
     };
