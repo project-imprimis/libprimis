@@ -914,7 +914,7 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * cons
     return *sc;
 }
 
-int skelmodel::skeleton::getblendoffset(UniformLoc &u)
+int skelmodel::skeleton::getblendoffset(const UniformLoc &u)
 {
     int &offset = blendoffsets.access(Shader::lastshader->program, -1);
     if(offset < 0)
