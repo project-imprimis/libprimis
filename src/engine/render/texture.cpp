@@ -2665,7 +2665,7 @@ static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, str
     z.avail_out = buflen;
 }
 
-static void savepng(const char *filename, ImageData &image, bool flip)
+static void savepng(const char *filename, const ImageData &image, bool flip)
 {
     uchar ctype = 0;
     switch(image.bpp)
