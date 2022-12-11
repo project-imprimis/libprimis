@@ -61,7 +61,7 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     {
         return;
     }
-    TTFSurface tex = renderttfgl(msg.c_str(), col, x, y, scale, wrap);
+    TTFSurface tex = renderttfgl(msg.c_str(), col, x, y, wrap);
     if(tex.tex)
     {
         float w = tex.w*scale,
@@ -95,7 +95,7 @@ ivec2 TTFRenderer::ttfsize(const char* message)
     return size;
 }
 
-TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap) const
+TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, uint wrap) const
 {
     if(!message)
     {
