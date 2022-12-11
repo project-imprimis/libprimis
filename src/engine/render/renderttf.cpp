@@ -42,7 +42,7 @@ void TTFRenderer::openfont(const char * inpath, int size)
     path = inpath;
 }
 
-void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
+void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap) const
 {
     std::string msg = std::string(message);
     for(;;)
@@ -95,7 +95,7 @@ ivec2 TTFRenderer::ttfsize(const char* message)
     return size;
 }
 
-TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap)
+TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, float scale, uint wrap) const
 {
     if(!message)
     {
