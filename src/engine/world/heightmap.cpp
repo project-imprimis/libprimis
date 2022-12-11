@@ -56,7 +56,7 @@ class hmap
             paintbrush = false;
         }
 
-        void hbrushvert(int *x, int *y, int *v)
+        void hbrushvert(int *x, int *y, const int * const v)
         {
             *x += maxbrush2 - brushx + 1; // +1 for automatic padding
             *y += maxbrush2 - brushy + 1;
