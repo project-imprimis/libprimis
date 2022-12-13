@@ -800,7 +800,7 @@ void loadvslots(stream *f, int numvslots)
     {
         return;
     }
-    int *prev = new int[numvslots];
+    uint *prev = new uint[numvslots];
     if(!prev)
     {
         return;
