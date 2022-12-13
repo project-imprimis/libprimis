@@ -2250,7 +2250,10 @@ void vfc::visiblecubes(bool cull)
     }
     else
     {
-        std::memset(vfcP, 0, sizeof(vfcP));
+        for(int i = 0; i < 5; ++i)
+        {
+            vfcP[i].x = vfcP[i].y = vfcP[i].z = vfcP[i].offset = 0;
+        };
         vfcDfog = farplane;
         std::memset(vfcDnear, 0, sizeof(vfcDnear));
         std::memset(vfcDfar, 0, sizeof(vfcDfar));
