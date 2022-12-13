@@ -1138,7 +1138,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
 void animmodel::part::setanim(int animpart, int num, int frame, int range, float speed, int priority)
 {
-    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= animnames.size())
+    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= static_cast<int>(animnames.size()))
     {
         return;
     }
