@@ -1188,7 +1188,7 @@ void writebinds(std::fstream& f)
                 }
                 else
                 {
-                    f << cmds[j] << " " << escapestring(km.name) << " [" << escapestring(km.actions[j]) << "]\n";
+                    f << cmds[j] << " " << escapestring(km.name) << " " << escapestring(km.actions[j]) << std::endl;
                 }
             }
         }
@@ -1215,11 +1215,11 @@ void writecompletions(std::fstream& f)
         {
             if(validateblock(v->dir))
             {
-                f << escapeid(k) << " [" << v->dir << "]\n";
+                f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
             }
             else
             {
-                f << escapeid(k) << " " << escapestring(v->dir) << std::endl;
+                f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
             }
         }
         else

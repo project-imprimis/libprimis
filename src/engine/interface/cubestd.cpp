@@ -257,7 +257,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                     }
                     if(!validateblock(id.val.s))
                     {
-                        f << escapeid(id) << " " << escapestring(id.val.s) << std::endl;
+                        f << escapeid(id) << " = " << escapestring(id.val.s) << std::endl;
                         break;
                     }
                 }

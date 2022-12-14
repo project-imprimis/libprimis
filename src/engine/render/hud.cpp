@@ -406,7 +406,7 @@ void writecrosshairs(std::fstream& f)
     {
         if(crosshairs[i] && crosshairs[i]!=notexture)
         {
-            f << escapestring(crosshairs[i]->name) << " " << i << std::endl;
+            f << "loadcrosshair " << escapestring(crosshairs[i]->name) << " " << i << std::endl;
         }
     }
     f << std::endl;
