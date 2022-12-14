@@ -20,7 +20,7 @@ struct EditLine
     void set(const char *str, int slen = -1);
     void prepend(const char *str);
     void append(const char *str);
-    bool read(stream *f, int chop = -1);
+    bool read(std::fstream& f, int chop = -1);
     void del(int start, int count);
     void chop(int newlen);
     void insert(char *str, int start, int count = 0);
@@ -102,7 +102,7 @@ class Editor
         bool region(int &sx, int &sy, int &ex, int &ey);
         bool del(); // removes the current selection (if any)
         void insert(char ch);
-        bool readback(stream * file);
+        bool readback(std::fstream& file);
 };
 
 extern void readyeditors();

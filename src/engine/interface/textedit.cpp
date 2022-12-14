@@ -112,7 +112,7 @@ void EditLine::append(const char *str)
     len += slen;
 }
 
-bool EditLine::read(stream *f, int chop)
+bool EditLine::read(std::fstream& f, int chop)
 {
     if(chop < 0)
     {
@@ -123,7 +123,7 @@ bool EditLine::read(stream *f, int chop)
         chop++;
     }
     set("");
-    while(len + 1 < chop && f->getline(&text[len], std::min(maxlen, chop) - len))
+    while(len + 1 < chop && f.getline(&text[len], std::min(maxlen, chop) - len))
     {
         len += std::strlen(&text[len]);
         if(len > 0 && text[len-1] == '\n')
@@ -139,7 +139,7 @@ bool EditLine::read(stream *f, int chop)
     if(len + 1 >= chop)
     {
         char buf[Chunk_Size];
-        while(f->getline(buf, sizeof(buf)))
+        while(f.getline(buf, sizeof(buf)))
         {
             int blen = std::strlen(buf);
             if(blen > 0 && buf[blen-1] == '\n')
@@ -273,7 +273,7 @@ void Editor::setfile(const char *fname)
     }
 }
 
-bool Editor::readback(stream * file)
+bool Editor::readback(std::fstream& file)
 {
     lines.emplace_back();
     return lines.back().read(file, maxx) && (maxy < 0 || static_cast<int>(lines.size()) <= maxy);
@@ -286,7 +286,8 @@ void Editor::load()
         return;
     }
     clear(nullptr);
-    stream *file = openutf8file(filename, "r");
+    std::fstream file;
+    file.open(filename);
     if(file)
     {
         while(readback(file))
@@ -294,13 +295,13 @@ void Editor::load()
             lines.back().clear();
             lines.pop_back();
         }
-        delete file;
     }
     if(lines.empty())
     {
         lines.emplace_back();
         lines.back().set("");
     }
+    file.close();
 }
 
 void Editor::save()
@@ -309,16 +310,17 @@ void Editor::save()
     {
         return;
     }
-    stream *file = openutf8file(filename, "w");
+    std::fstream file;
+    file.open(filename);
     if(!file)
     {
         return;
     }
     for(uint i = 0; i < lines.size(); i++)
     {
-        file->putline(lines[i].text);
+        file << lines[i].text;
     }
-    delete file;
+    file.close();
 }
 
 void Editor::mark(bool enable)
