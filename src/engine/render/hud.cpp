@@ -400,16 +400,16 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
     }
 }
 
-void writecrosshairs(stream *f)
+void writecrosshairs(std::fstream& f)
 {
     for(int i = 0; i < maxcrosshairs; ++i)
     {
         if(crosshairs[i] && crosshairs[i]!=notexture)
         {
-            f->printf("loadcrosshair %s %d\n", escapestring(crosshairs[i]->name), i);
+            f << escapestring(crosshairs[i]->name) << " " << i << std::endl;
         }
     }
-    f->printf("\n");
+    f << std::endl;
 }
 
 void resethudshader()

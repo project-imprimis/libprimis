@@ -1169,7 +1169,7 @@ tagval *addreleaseaction(ident *id, int numargs)
 }
 
 //print to a stream f the binds in the binds vector
-void writebinds(stream *f)
+void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
@@ -1184,11 +1184,11 @@ void writebinds(stream *f)
             {
                 if(validateblock(km.actions[j]))
                 {
-                    f->printf("%s %s [%s]\n", cmds[j], escapestring(km.name), km.actions[j]);
+                    f << cmds[j] << " " << escapestring(km.name) << " [" << km.actions[j] << "]\n";
                 }
                 else
                 {
-                    f->printf("%s %s %s\n", cmds[j], escapestring(km.name), escapestring(km.actions[j]));
+                    f << cmds[j] << " " << escapestring(km.name) << " [" << escapestring(km.actions[j]) << "]\n";
                 }
             }
         }
@@ -1196,7 +1196,7 @@ void writebinds(stream *f)
 }
 
 //print to a stream f the listcompletions in the completions filesval
-void writecompletions(stream *f)
+void writecompletions(std::fstream& f)
 {
     std::vector<char *> cmds;
     ENUMERATE_KT(completions, char *, k, FilesVal *, v,
@@ -1215,16 +1215,16 @@ void writecompletions(stream *f)
         {
             if(validateblock(v->dir))
             {
-                f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
+                f << escapeid(k) << " [" << v->dir << "]\n";
             }
             else
             {
-                f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));
+                f << escapeid(k) << " " << escapestring(v->dir) << std::endl;
             }
         }
         else
         {
-            f->printf("complete %s %s %s\n", escapeid(k), escapestring(v->dir), escapestring(v->ext ? v->ext : "*"));
+            f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
         }
     }
 }

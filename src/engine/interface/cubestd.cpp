@@ -197,13 +197,18 @@ static const char *escapeid(ident &id)
 
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
-    stream *f = openutf8file(copypath(name && name[0] ? name : savedconfig), "w");
+    std::fstream f;
+    std::printf("writing to %s\n", copypath(name && name[0] ? name : savedconfig));
+    f.open(copypath(name && name[0] ? name : savedconfig));
     if(!f)
     {
         return;
     }
-    f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
-    f->printf("\n");
+    {
+        char temp[260];
+        std::sprintf(temp, "// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
+        f << temp;
+    }
     writecrosshairs(f);
     std::vector<ident *> ids;
     for(auto& [k, id] : idents)
@@ -220,25 +225,23 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
             {
                 case Id_Var:
                 {
-                    f->printf("%s %d\n", escapeid(id), *id.storage.i);
+                    f << escapeid(id) << " " << *id.storage.i << std::endl;
                     break;
                 }
                 case Id_FloatVar:
                 {
-                    f->printf("%s %s\n", escapeid(id), floatstr(*id.storage.f));
+                    f << escapeid(id) << " " << floatstr(*id.storage.f) << std::endl;
                     break;
                 }
                 case Id_StringVar:
                 {
-                    f->printf("%s %s\n", escapeid(id), escapestring(*id.storage.s));
+                    f << escapeid(id) << " " << escapestring(*id.storage.s) << std::endl;
                     break;
                 }
             }
         }
     }
-    f->printf("\n");
     writebinds(f);
-    f->printf("\n");
     for(uint i = 0; i < ids.size(); i++)
     {
         ident &id = *ids[i];
@@ -254,7 +257,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                     }
                     if(!validateblock(id.val.s))
                     {
-                        f->printf("%s = %s\n", escapeid(id), escapestring(id.val.s));
+                        f << escapeid(id) << " " << escapestring(id.val.s) << std::endl;
                         break;
                     }
                 }
@@ -262,15 +265,16 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                 case Value_Float:
                 case Value_Integer:
                 {
-                    f->printf("%s = [%s]\n", escapeid(id), id.getstr());
+                    char temp[100];
+                    sprintf(temp, "%s = [%s]\n", escapeid(id), id.getstr());
+                    f << temp;
                     break;
                 }
             }
         }
     }
-    f->printf("\n");
     writecompletions(f);
-    delete f;
+    f.close();
 }
 
 void changedvars()
