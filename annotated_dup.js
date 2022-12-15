@@ -33,7 +33,6 @@ var annotated_dup =
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "tagval", "structtagval.html", null ],
     [ "undoblock", "structundoblock.html", "structundoblock" ],

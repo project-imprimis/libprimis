@@ -1,7 +1,6 @@
 var tools_8h =
 [
     [ "databuf< T >", "structdatabuf.html", "structdatabuf" ],
-    [ "stringslice", "structstringslice.html", null ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", "structhashbase" ],
     [ "hashbase< H, E, K, T >::chain", "structhashbase_1_1chain.html", null ],
     [ "hashbase< H, E, K, T >::chainchunk", "structhashbase_1_1chainchunk.html", null ],

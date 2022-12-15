@@ -131,8 +131,6 @@ $(document).ready(function(){initNavTree('tools_8h.html',''); initResizable(); }
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html">databuf&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstringslice.html">stringslice</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html">hashbase&lt; H, E, K, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase_1_1chain.html">hashbase&lt; H, E, K, T &gt;::chain</a></td></tr>
@@ -310,37 +308,15 @@ uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const cha
 <tr class="memitem:a39eb2ea846ed176214a470f5a1232ca5"><td class="memItemLeft" align="right" valign="top"><a id="a39eb2ea846ed176214a470f5a1232ca5" name="a39eb2ea846ed176214a470f5a1232ca5"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const char *x, const char *y)</td></tr>
 <tr class="separator:a39eb2ea846ed176214a470f5a1232ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fc85542aa43bf5372f2afd1cadb24bc"><td class="memItemLeft" align="right" valign="top"><a id="a2fc85542aa43bf5372f2afd1cadb24bc" name="a2fc85542aa43bf5372f2afd1cadb24bc"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>newstring</b> (const <a class="el" href="structstringslice.html">stringslice</a> &amp;s)</td></tr>
-<tr class="separator:a2fc85542aa43bf5372f2afd1cadb24bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdbb6a6113672fd2818082460d487a3c"><td class="memItemLeft" align="right" valign="top"><a id="abdbb6a6113672fd2818082460d487a3c" name="abdbb6a6113672fd2818082460d487a3c"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>stringptr</b> (const char *s)</td></tr>
 <tr class="separator:abdbb6a6113672fd2818082460d487a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a501c2c16353cef23bc89d718d9fbe356"><td class="memItemLeft" align="right" valign="top"><a id="a501c2c16353cef23bc89d718d9fbe356" name="a501c2c16353cef23bc89d718d9fbe356"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>stringptr</b> (const <a class="el" href="structstringslice.html">stringslice</a> &amp;s)</td></tr>
-<tr class="separator:a501c2c16353cef23bc89d718d9fbe356"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a615c2091d8bfe93915f93296c000a9d6"><td class="memItemLeft" align="right" valign="top"><a id="a615c2091d8bfe93915f93296c000a9d6" name="a615c2091d8bfe93915f93296c000a9d6"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>stringlen</b> (const char *s)</td></tr>
 <tr class="separator:a615c2091d8bfe93915f93296c000a9d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b1a5f55914695c5f80bc033a195c5c4"><td class="memItemLeft" align="right" valign="top"><a id="a0b1a5f55914695c5f80bc033a195c5c4" name="a0b1a5f55914695c5f80bc033a195c5c4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>stringlen</b> (const <a class="el" href="structstringslice.html">stringslice</a> &amp;s)</td></tr>
-<tr class="separator:a0b1a5f55914695c5f80bc033a195c5c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a85a24b5b88936a82824c041a57abb2"><td class="memItemLeft" align="right" valign="top"><a id="a0a85a24b5b88936a82824c041a57abb2" name="a0a85a24b5b88936a82824c041a57abb2"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>copystring</b> (char *d, const <a class="el" href="structstringslice.html">stringslice</a> &amp;s, size_t len)</td></tr>
-<tr class="separator:a0a85a24b5b88936a82824c041a57abb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34cf06884f1ece216e5baa977a8a4573"><td class="memTemplParams" colspan="2"><a id="a34cf06884f1ece216e5baa977a8a4573" name="a34cf06884f1ece216e5baa977a8a4573"></a>
-template&lt;size_t N&gt; </td></tr>
-<tr class="memitem:a34cf06884f1ece216e5baa977a8a4573"><td class="memTemplItemLeft" align="right" valign="top">char *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copystring</b> (char(&amp;d)[N], const <a class="el" href="structstringslice.html">stringslice</a> &amp;s)</td></tr>
-<tr class="separator:a34cf06884f1ece216e5baa977a8a4573"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdced939833e96f4744b529fc9bf55d9"><td class="memItemLeft" align="right" valign="top"><a id="acdced939833e96f4744b529fc9bf55d9" name="acdced939833e96f4744b529fc9bf55d9"></a>
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>memhash</b> (const void *ptr, int len)</td></tr>
 <tr class="separator:acdced939833e96f4744b529fc9bf55d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf985d7f74d17bfe34c3502126d251f9"><td class="memItemLeft" align="right" valign="top"><a id="aaf985d7f74d17bfe34c3502126d251f9" name="aaf985d7f74d17bfe34c3502126d251f9"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const <a class="el" href="structstringslice.html">stringslice</a> &amp;s)</td></tr>
-<tr class="separator:aaf985d7f74d17bfe34c3502126d251f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f1919ab0095f8a3dbed8b7c855c5097"><td class="memItemLeft" align="right" valign="top"><a id="a5f1919ab0095f8a3dbed8b7c855c5097" name="a5f1919ab0095f8a3dbed8b7c855c5097"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const <a class="el" href="structstringslice.html">stringslice</a> &amp;x, const char *y)</td></tr>
-<tr class="separator:a5f1919ab0095f8a3dbed8b7c855c5097"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87c66e9396c3eef51be63fb1f28f9de2"><td class="memItemLeft" align="right" valign="top"><a id="a87c66e9396c3eef51be63fb1f28f9de2" name="a87c66e9396c3eef51be63fb1f28f9de2"></a>
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (int key)</td></tr>
 <tr class="separator:a87c66e9396c3eef51be63fb1f28f9de2"><td class="memSeparator" colspan="2">&#160;</td></tr>

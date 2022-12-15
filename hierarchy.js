@@ -50,7 +50,6 @@ var hierarchy =
     ] ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "Slot::Tex", "structSlot_1_1Tex.html", null ],
     [ "undoblock", "structundoblock.html", null ],

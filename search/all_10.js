@@ -17,7 +17,7 @@ var searchData=
   ['sin360_14',['sin360',['../geom_8h.html#a2fe0002028c63e34e8f1a892cf373bba',1,'geom.h']]],
   ['sincos360_15',['sincos360',['../geom_8h.html#af936a273d30112cac1ddd9945c68a057',1,'geom.h']]],
   ['sincosmod360_16',['sincosmod360',['../geom_8h.html#a563d68893e655ed29c91f5e9a4e41a75',1,'geom.h']]],
-  ['size_17',['size',['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()'],['../structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf',1,'hashbase::size()'],['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()']]],
+  ['size_17',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf',1,'hashbase::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
   ['slot_18',['Slot',['../structSlot.html',1,'']]],
   ['slot_2eh_19',['slot.h',['../slot_8h.html',1,'']]],
   ['slotshaderparam_20',['SlotShaderParam',['../structSlotShaderParam.html',1,'']]],
@@ -26,10 +26,9 @@ var searchData=
   ['stopsounds_23',['stopsounds',['../iengine_8h.html#a507031a90887d8f0ec5123f5ac53d3b9',1,'iengine.h']]],
   ['stream_24',['stream',['../structstream.html',1,'']]],
   ['stringret_25',['stringret',['../command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c',1,'command.h']]],
-  ['stringslice_26',['stringslice',['../structstringslice.html',1,'']]],
-  ['sub_27',['sub',['../structvec4.html#a88b17a29301062aa61e0f45bd8259482',1,'vec4::sub(const vec &amp;o)'],['../structvec4.html#a3d367eebccd78bcb86a4f206f14a66c1',1,'vec4::sub(const vec4 &amp;o)']]],
-  ['subbuf_28',['subbuf',['../structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c',1,'databuf']]],
-  ['svariable_29',['svariable',['../command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb',1,'command.h']]],
-  ['svec_30',['svec',['../structsvec.html',1,'']]],
-  ['swapbuffers_31',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
+  ['sub_26',['sub',['../structvec4.html#a88b17a29301062aa61e0f45bd8259482',1,'vec4::sub(const vec &amp;o)'],['../structvec4.html#a3d367eebccd78bcb86a4f206f14a66c1',1,'vec4::sub(const vec4 &amp;o)']]],
+  ['subbuf_27',['subbuf',['../structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c',1,'databuf']]],
+  ['svariable_28',['svariable',['../command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb',1,'command.h']]],
+  ['svec_29',['svec',['../structsvec.html',1,'']]],
+  ['swapbuffers_30',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
 ];
