@@ -86,6 +86,37 @@ enum CubeScriptCodes
     Ret_Float   = Value_Float<<Code_Ret,
 };
 
+
+struct stringslice
+{
+    const char *str;
+    int len;
+    stringslice() {}
+    stringslice(const char *str, int len) : str(str), len(len) {}
+    stringslice(const char *str, const char *end) : str(str), len(static_cast<int>(end-str)) {}
+
+    const char *end() const { return &str[len]; }
+};
+
+
+inline char *copystring(char *d, const stringslice &s, size_t len)
+{
+    size_t slen = min(size_t(s.len), len-1);
+    std::memcpy(d, s.str, slen);
+    d[slen] = 0;
+    return d;
+}
+
+template<size_t N>
+inline char *copystring(char (&d)[N], const stringslice &s) { return copystring(d, s, N); }
+
+inline uint hthash(const stringslice &s) { return memhash(s.str, s.len); }
+
+inline bool htcmp(const stringslice &x, const char *y)
+{
+    return x.len == (int)strlen(y) && !std::memcmp(x.str, y, x.len);
+}
+
 #define PARSEFLOAT(name, type) \
     inline type parse##name(const char *s) \
     { \

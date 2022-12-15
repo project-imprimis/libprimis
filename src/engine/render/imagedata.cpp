@@ -15,6 +15,7 @@
 
 #include "interface/control.h"
 #include "interface/console.h"
+#include "interface/cs.h" //for stringslice
 
 namespace
 {
