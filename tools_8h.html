@@ -131,22 +131,6 @@ $(document).ready(function(){initNavTree('tools_8h.html',''); initResizable(); }
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html">databuf&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html">hashbase&lt; H, E, K, T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase_1_1chain.html">hashbase&lt; H, E, K, T &gt;::chain</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A chain entry. Capable of being created into a singly linked list.  <a href="structhashbase_1_1chain.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase_1_1chainchunk.html">hashbase&lt; H, E, K, T &gt;::chainchunk</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A series of chains capable of being created into a singly linked list.  <a href="structhashbase_1_1chainchunk.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashset.html">hashset&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashnameset.html">hashnameset&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashtableentry.html">hashtableentry&lt; K, T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashtable.html">hashtable&lt; K, T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstream.html">stream</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -176,12 +160,6 @@ Macros</h2></td></tr>
 <tr class="memitem:acb346732fc8b8343f12d511a4cbe1b28"><td class="memItemLeft" align="right" valign="top"><a id="acb346732fc8b8343f12d511a4cbe1b28" name="acb346732fc8b8343f12d511a4cbe1b28"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFV_FORMAT_STRING</b>(d,  last,  fmt)&#160;&#160;&#160;string d; { va_list ap; va_start(ap, last); vformatstring(d, fmt, ap); va_end(ap); }</td></tr>
 <tr class="separator:acb346732fc8b8343f12d511a4cbe1b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa3f46f516bee2a8033ce1de62519b1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#afa3f46f516bee2a8033ce1de62519b1e">HTFIND</a>(success,  fail)</td></tr>
-<tr class="separator:afa3f46f516bee2a8033ce1de62519b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5b747ed0f45e8cf7eb7f18b818065f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#ad5b747ed0f45e8cf7eb7f18b818065f6">ENUMERATE_KT</a>(ht,  k,  e,  t,  f,  b)</td></tr>
-<tr class="separator:ad5b747ed0f45e8cf7eb7f18b818065f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cf670bd935dc6b0e73fde0d3fa849ce"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tools_8h.html#a9cf670bd935dc6b0e73fde0d3fa849ce">ENUMERATE</a>(ht,  t,  e,  b)</td></tr>
-<tr class="separator:a9cf670bd935dc6b0e73fde0d3fa849ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -302,12 +280,6 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><b>newstring</b> (cons
 <tr class="memitem:addefb6a939e71ab9cdfe26e32010bc89"><td class="memItemLeft" align="right" valign="top"><a id="addefb6a939e71ab9cdfe26e32010bc89" name="addefb6a939e71ab9cdfe26e32010bc89"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>newconcatstring</b> (const char *s, const char *t)</td></tr>
 <tr class="separator:addefb6a939e71ab9cdfe26e32010bc89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a913f91c14749a99b738d53456455b40c"><td class="memItemLeft" align="right" valign="top"><a id="a913f91c14749a99b738d53456455b40c" name="a913f91c14749a99b738d53456455b40c"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const char *key)</td></tr>
-<tr class="separator:a913f91c14749a99b738d53456455b40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39eb2ea846ed176214a470f5a1232ca5"><td class="memItemLeft" align="right" valign="top"><a id="a39eb2ea846ed176214a470f5a1232ca5" name="a39eb2ea846ed176214a470f5a1232ca5"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const char *x, const char *y)</td></tr>
-<tr class="separator:a39eb2ea846ed176214a470f5a1232ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abdbb6a6113672fd2818082460d487a3c"><td class="memItemLeft" align="right" valign="top"><a id="abdbb6a6113672fd2818082460d487a3c" name="abdbb6a6113672fd2818082460d487a3c"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>stringptr</b> (const char *s)</td></tr>
 <tr class="separator:abdbb6a6113672fd2818082460d487a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -317,26 +289,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>stringlen</b> (const c
 <tr class="memitem:acdced939833e96f4744b529fc9bf55d9"><td class="memItemLeft" align="right" valign="top"><a id="acdced939833e96f4744b529fc9bf55d9" name="acdced939833e96f4744b529fc9bf55d9"></a>
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>memhash</b> (const void *ptr, int len)</td></tr>
 <tr class="separator:acdced939833e96f4744b529fc9bf55d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87c66e9396c3eef51be63fb1f28f9de2"><td class="memItemLeft" align="right" valign="top"><a id="a87c66e9396c3eef51be63fb1f28f9de2" name="a87c66e9396c3eef51be63fb1f28f9de2"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (int key)</td></tr>
-<tr class="separator:a87c66e9396c3eef51be63fb1f28f9de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62cea0d3ac0715c8417b9d8159e68c0e"><td class="memItemLeft" align="right" valign="top"><a id="a62cea0d3ac0715c8417b9d8159e68c0e" name="a62cea0d3ac0715c8417b9d8159e68c0e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (int x, int y)</td></tr>
-<tr class="separator:a62cea0d3ac0715c8417b9d8159e68c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab91d9af9a8eac232516fda8a694423c4"><td class="memItemLeft" align="right" valign="top"><a id="ab91d9af9a8eac232516fda8a694423c4" name="ab91d9af9a8eac232516fda8a694423c4"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (GLuint key)</td></tr>
-<tr class="separator:ab91d9af9a8eac232516fda8a694423c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27a25fd943b2154b3bd115a82cb7426b"><td class="memItemLeft" align="right" valign="top"><a id="a27a25fd943b2154b3bd115a82cb7426b" name="a27a25fd943b2154b3bd115a82cb7426b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (GLuint x, GLuint y)</td></tr>
-<tr class="separator:a27a25fd943b2154b3bd115a82cb7426b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57ae88bb733376e3df560025af52c3b5"><td class="memTemplParams" colspan="2"><a id="a57ae88bb733376e3df560025af52c3b5" name="a57ae88bb733376e3df560025af52c3b5"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a57ae88bb733376e3df560025af52c3b5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>htrecycle</b> (const T &amp;)</td></tr>
-<tr class="separator:a57ae88bb733376e3df560025af52c3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77a0aa89c83770b93e4394f986341367"><td class="memTemplParams" colspan="2"><a id="a77a0aa89c83770b93e4394f986341367" name="a77a0aa89c83770b93e4394f986341367"></a>
-template&lt;class K , class T &gt; </td></tr>
-<tr class="memitem:a77a0aa89c83770b93e4394f986341367"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>htrecycle</b> (<a class="el" href="structhashtableentry.html">hashtableentry</a>&lt; K, T &gt; &amp;entry)</td></tr>
-<tr class="separator:a77a0aa89c83770b93e4394f986341367"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b4a5b199bf625f5bded414843ecc28"><td class="memTemplParams" colspan="2"><a id="a07b4a5b199bf625f5bded414843ecc28" name="a07b4a5b199bf625f5bded414843ecc28"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a07b4a5b199bf625f5bded414843ecc28"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>endianswap</b> (T n)</td></tr>
@@ -449,156 +401,7 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>homedir</b></td></t
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Legacy tooling inherited from the Cube engine. </p>
 <p >This file contains a collection of deprecated, standalone tooling that replicates some standard library functionality. It is highly recommended that the std library equivalents of these utilities are used in their place. </p>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a9cf670bd935dc6b0e73fde0d3fa849ce" name="a9cf670bd935dc6b0e73fde0d3fa849ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cf670bd935dc6b0e73fde0d3fa849ce">&#9670;&#160;</a></span>ENUMERATE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ENUMERATE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">ht, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">t, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">e, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">b&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; static_cast&lt;int&gt;((ht).size); ++i) \</div>
-<div class="line">    { \</div>
-<div class="line">        for(<span class="keywordtype">void</span> *ec = (ht).chains[i]; ec;) \</div>
-<div class="line">        { \</div>
-<div class="line">            t &amp;e = (ht).enumdata(ec); \</div>
-<div class="line">            ec = (ht).enumnext(ec); \</div>
-<div class="line">            b; \</div>
-<div class="line">        } \</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="ad5b747ed0f45e8cf7eb7f18b818065f6" name="ad5b747ed0f45e8cf7eb7f18b818065f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5b747ed0f45e8cf7eb7f18b818065f6">&#9670;&#160;</a></span>ENUMERATE_KT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ENUMERATE_KT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">ht, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">k, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">e, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">t, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">f, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">b&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; static_cast&lt;int&gt;((ht).size); ++i) \</div>
-<div class="line">    { \</div>
-<div class="line">        for(<span class="keywordtype">void</span> *ec = (ht).chains[i]; ec;) \</div>
-<div class="line">        { \</div>
-<div class="line">            k &amp;e = (ht).enumkey(ec); \</div>
-<div class="line">            t &amp;f = (ht).enumdata(ec); \</div>
-<div class="line">            ec = (ht).enumnext(ec); \</div>
-<div class="line">            b; \</div>
-<div class="line">        } \</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="afa3f46f516bee2a8033ce1de62519b1e" name="afa3f46f516bee2a8033ce1de62519b1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa3f46f516bee2a8033ce1de62519b1e">&#9670;&#160;</a></span>HTFIND</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define HTFIND</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">success, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">fail&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">        uint h = hthash(key)&amp;(this-&gt;size-1); \</div>
-<div class="line">        for(chain *c = this-&gt;chains[h]; c; c = c-&gt;next) \</div>
-<div class="line">        { \</div>
-<div class="line">            if(htcmp(key, H::getkey(c-&gt;elem))) \</div>
-<div class="line">            { \</div>
-<div class="line">                <span class="keywordflow">return</span> success H::getdata(c-&gt;elem); \</div>
-<div class="line">            } \</div>
-<div class="line">        } \</div>
-<div class="line">        return (fail);</div>
-</div><!-- fragment -->
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ac348a3a9d5cdd66464d88daffe36a73a" name="ac348a3a9d5cdd66464d88daffe36a73a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac348a3a9d5cdd66464d88daffe36a73a">&#9670;&#160;</a></span>initzipcmds()</h2>
 

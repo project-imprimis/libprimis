@@ -17,7 +17,7 @@ var searchData=
   ['sin360_14',['sin360',['../geom_8h.html#a2fe0002028c63e34e8f1a892cf373bba',1,'geom.h']]],
   ['sincos360_15',['sincos360',['../geom_8h.html#af936a273d30112cac1ddd9945c68a057',1,'geom.h']]],
   ['sincosmod360_16',['sincosmod360',['../geom_8h.html#a563d68893e655ed29c91f5e9a4e41a75',1,'geom.h']]],
-  ['size_17',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf',1,'hashbase::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
+  ['size_17',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
   ['slot_18',['Slot',['../structSlot.html',1,'']]],
   ['slot_2eh_19',['slot.h',['../slot_8h.html',1,'']]],
   ['slotshaderparam_20',['SlotShaderParam',['../structSlotShaderParam.html',1,'']]],
