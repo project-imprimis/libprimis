@@ -41,8 +41,6 @@ enum
     Shader_Deferred   = 1 << 9
 };
 
-extern hashnameset<GlobalShaderParamState> globalparams;
-
 struct Slot;
 struct VSlot;
 

@@ -4,6 +4,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "octarender.h"
@@ -13,6 +14,7 @@
 #include "rendertimers.h"
 #include "renderwindow.h"
 #include "shaderparam.h"
+#include "shader.h"
 #include "texture.h"
 
 #include "interface/console.h"

@@ -4,11 +4,13 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
+#include "../../shared/hashtable.h"
 
 #include "imagedata.h"
 #include "octarender.h"
 #include "renderwindow.h"
 #include "shaderparam.h"
+#include "shader.h"
 #include "texture.h"
 
 #include "world/light.h"

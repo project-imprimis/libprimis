@@ -6,6 +6,7 @@
  */
 
 #include "../libprimis-headers/cube.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/geomexts.h"
 
 #include "light.h"
@@ -75,9 +76,6 @@ template <> struct std::hash<cube::plink>
         return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
     }
 };
-
-// this cube static private object needs to be defined in a cpp file
-hashtable<cube::cfkey, cube::cfpolys> cube::cpolys;
 
 void cube::freecubeext(cube &c)
 {
@@ -712,6 +710,7 @@ uint hthash(const cube::cfkey &k)
 //recursively goes through children of cube passed and attempts to merge faces together
 void cube::genmerges(cube * root, const ivec &o, int size)
 {
+    static hashtable<cfkey, cfpolys> cpolys;
     neighborstack[++neighbordepth] = this;
     for(int i = 0; i < 8; ++i)
     {
