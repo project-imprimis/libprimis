@@ -68,6 +68,14 @@ bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, fac
     return smaller;
 }
 
+template <> struct std::hash<cube::plink>
+{
+    size_t operator()(const cube::plink& x) const
+    {
+        return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
+    }
+};
+
 // this cube static private object needs to be defined in a cpp file
 hashtable<cube::cfkey, cube::cfpolys> cube::cpolys;
 
@@ -138,16 +146,6 @@ bool cube::isvalidcube()
         }
     }
     return true;
-}
-
-uint hthash(const cube::pedge &x)
-{
-    return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
-}
-
-bool htcmp(const cube::pedge &x, const cube::pedge &y)
-{
-    return x == y;
 }
 
 bool cube::poly::clippoly(const facebounds &b)
@@ -431,7 +429,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     return true;
 }
 
-bool cube::poly::mergepolys(hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &q, const pedge &e)
+bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::vector<const plink *> &queue, int owner, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
@@ -531,12 +529,24 @@ bool cube::poly::mergepolys(hashset<plink> &links, std::vector<plink *> &queue, 
         {
             std::swap(e.from, e.to);
         }
-        plink &l = links.access(e, e);
+
+        plink l;
+        auto itr = links.find(e); //search for a plink that looks like the pedge we have
+        if(itr != links.end())
+        {
+            l = *itr;
+            links.erase(e); // we will place an updated verson of this immutable object at the end
+        }
+        else
+        {
+            l = e; //even though we searched find(e), l and e are NOT the same because they are of different types (l is derived)
+        }
         bool shouldqueue = l.polys[order] < 0 && l.polys[order^1] >= 0;
         l.polys[order] = owner;
+        links.insert(l);
         if(shouldqueue)
         {
-            queue.push_back(&l);
+            queue.push_back(&*links.find(l));
         }
         prev = j;
     }
@@ -639,8 +649,8 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
         addmerges(orient, n, offset, polys);
         return;
     }
-    hashset<plink> links(polys.size() <= 32 ? 128 : 1024);
-    std::vector<plink *> queue;
+    std::unordered_set<plink> links(polys.size() <= 32 ? 128 : 1024);
+    std::vector<const plink *> queue;
     for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
@@ -653,21 +663,28 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
             {
                 std::swap(e.from, e.to);
             }
-            plink &l = links.access(e, e);
+            plink l;
+            auto itr = links.find(e);
+            if(itr != links.end())
+            {
+                l = *itr;
+                links.erase(e);
+            }
             l.polys[order] = i;
+            links.insert(l);
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
             {
-                queue.push_back(&l);
+                queue.push_back(&*links.find(l));
             }
             prev = j;
         }
     }
-    std::vector<plink *> nextqueue;
+    std::vector<const plink *> nextqueue;
     while(queue.size())
     {
         for(uint i = 0; i < queue.size(); i++)
         {
-            plink &l = *queue[i];
+            const plink &l = *queue[i];
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
             {
                 polys[l.polys[0]].mergepolys(links, nextqueue, l.polys[0], polys[l.polys[1]], l);
