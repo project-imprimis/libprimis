@@ -17,6 +17,7 @@
 #include "renderwindow.h"
 #include "rendersky.h"
 #include "shaderparam.h"
+#include "shader.h"
 #include "texture.h"
 
 #include "interface/control.h"

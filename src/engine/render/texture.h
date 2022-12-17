@@ -28,19 +28,6 @@ extern void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint 
 extern void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
 extern GLenum texformat(int bpp, bool swizzle = false);
 
-enum
-{
-    Shader_Default    = 0,
-    Shader_World      = 1 << 0,
-    Shader_Refract    = 1 << 2,
-    Shader_Option     = 1 << 3,
-    Shader_Dynamic    = 1 << 4,
-    Shader_Triplanar  = 1 << 5,
-
-    Shader_Invalid    = 1 << 8,
-    Shader_Deferred   = 1 << 9
-};
-
 struct Slot;
 struct VSlot;
 
