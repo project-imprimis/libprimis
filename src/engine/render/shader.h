@@ -16,4 +16,6 @@ enum
 
 extern std::map<std::string, GlobalShaderParamState> globalparams;
 
+extern int getlocalparam(const char *name);
+
 #endif
