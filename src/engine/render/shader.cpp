@@ -34,7 +34,7 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-hashnameset<GlobalShaderParamState> globalparams(256);
+std::map<std::string, GlobalShaderParamState> globalparams;
 static hashtable<const char *, int> localparams(256);
 static hashnameset<Shader> shaders(256);
 static Shader *slotshader = nullptr;
@@ -433,10 +433,10 @@ void Shader::setglsluniformformat(const char *name, GLenum format, int size)
 
     name = getshaderparamname(name);
     //must explicitly enumerate scope because globalparams is a field & gvar :(
-    GlobalShaderParamState *param = ::globalparams.access(name);
-    if(param)
+    auto itr = ::globalparams.find(name);
+    if(itr != ::globalparams.end())
     {
-        addglobalparam(*this, param, loc, size, format);
+        addglobalparam(*this, &((*itr).second), loc, size, format);
     }
     else
     {
@@ -491,7 +491,10 @@ void GlobalShaderParamState::resetversions()
         }
     });
     nextversion = 0;
-    ENUMERATE(globalparams, GlobalShaderParamState, g, { g.version = ++nextversion; });
+    for(auto& [k, g] : globalparams)
+    {
+        g.version = ++nextversion;
+    }
     ENUMERATE(shaders, Shader, s,
     {
         for(uint i = 0; i < s.globalparams.size(); i++)

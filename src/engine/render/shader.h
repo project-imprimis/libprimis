@@ -14,6 +14,6 @@ enum
     Shader_Deferred   = 1 << 9
 };
 
-extern hashnameset<GlobalShaderParamState> globalparams;
+extern std::map<std::string, GlobalShaderParamState> globalparams;
 
 #endif
