@@ -31,15 +31,6 @@ extern GLenum texformat(int bpp, bool swizzle = false);
 struct Slot;
 struct VSlot;
 
-struct FragDataLoc
-{
-    const char *name;
-    int loc;
-    GLenum format;
-    int index;
-    FragDataLoc(const char *name = nullptr, int loc = -1, GLenum format = GL_FALSE, int index = 0) : name(name), loc(loc), format(format), index(index) {}
-};
-
 // management of texture slots
 // each texture slot can have multiple texture frames, of which currently only the first is used
 // additional frames can be used for various shaders
