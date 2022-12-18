@@ -52,7 +52,7 @@ struct zipfile
     }
 };
 
-struct zipstream;
+class zipstream;
 
 struct ziparchive
 {
