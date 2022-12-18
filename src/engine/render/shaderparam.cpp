@@ -82,6 +82,8 @@ void GlobalShaderParam::set(const matrix4 &m)
     std::memcpy(resolve()->fval, m.a.v, sizeof(m));
 }
 
+std::map<std::string, GlobalShaderParamState> globalparams;
+
 //localshaderparam
 
 LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)

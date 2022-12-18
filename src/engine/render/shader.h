@@ -14,8 +14,6 @@ enum
     Shader_Deferred   = 1 << 9
 };
 
-extern std::map<std::string, GlobalShaderParamState> globalparams;
-
 extern int getlocalparam(const char *name);
 
 #endif

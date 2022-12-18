@@ -34,7 +34,6 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-std::map<std::string, GlobalShaderParamState> globalparams;
 static hashtable<const char *, int> localparams(256);
 static hashnameset<Shader> shaders(256);
 static Shader *slotshader = nullptr;
