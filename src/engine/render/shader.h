@@ -14,6 +14,8 @@ enum
     Shader_Deferred   = 1 << 9
 };
 
+extern float blursigma;
+
 extern int getlocalparam(const char *name);
 
 #endif
