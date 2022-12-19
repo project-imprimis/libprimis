@@ -50,7 +50,6 @@ var iengine_8h =
     [ "getents", "iengine_8h.html#a4c17af056b4e86d540364e462367c815", null ],
     [ "getlogfile", "iengine_8h.html#a0a82fc64832d47c406b0ea6be4d162f7", null ],
     [ "getmaterial", "iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e", null ],
-    [ "getworldsize", "iengine_8h.html#acc0da2105414ddfd60e389e47d697a93", null ],
     [ "gl_checkextensions", "iengine_8h.html#a68b24a3cbcf84d995697c41934dc74d6", null ],
     [ "gl_drawframe", "iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629", null ],
     [ "gl_init", "iengine_8h.html#acc19403a720bda8d74dcad7109f33a79", null ],

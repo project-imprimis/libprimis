@@ -730,9 +730,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>slideagainst</b> (<a 
 <tr class="memitem:a4d577a3829b4d91de604f81aa4709d6e"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e">getmaterial</a> (<a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
 <tr class="memdesc:a4d577a3829b4d91de604f81aa4709d6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the material bitmask for the given cube.  <a href="iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e">More...</a><br /></td></tr>
 <tr class="separator:a4d577a3829b4d91de604f81aa4709d6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc0da2105414ddfd60e389e47d697a93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#acc0da2105414ddfd60e389e47d697a93">getworldsize</a> ()</td></tr>
-<tr class="memdesc:acc0da2105414ddfd60e389e47d697a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the size of the world.  <a href="iengine_8h.html#acc0da2105414ddfd60e389e47d697a93">More...</a><br /></td></tr>
-<tr class="separator:acc0da2105414ddfd60e389e47d697a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a535d85af13285be7cf8080694055076b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a535d85af13285be7cf8080694055076b">entcancel</a> ()</td></tr>
 <tr class="memdesc:a535d85af13285be7cf8080694055076b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels selection of selected entities.  <a href="iengine_8h.html#a535d85af13285be7cf8080694055076b">More...</a><br /></td></tr>
 <tr class="separator:a535d85af13285be7cf8080694055076b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -791,12 +788,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>paused</b></td></tr>
 <tr class="memitem:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memItemLeft" align="right" valign="top"><a id="a0673c50cdf43e2a2143d5811fdbfcbb2" name="a0673c50cdf43e2a2143d5811fdbfcbb2"></a>
 std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entgroup</b></td></tr>
 <tr class="separator:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade6abc7037f46a668d89eb056cdfcddf"><td class="memItemLeft" align="right" valign="top"><a id="ade6abc7037f46a668d89eb056cdfcddf" name="ade6abc7037f46a668d89eb056cdfcddf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>worldscale</b></td></tr>
-<tr class="separator:ade6abc7037f46a668d89eb056cdfcddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a844630d02f19cfa1aaf9376f82f7b946"><td class="memItemLeft" align="right" valign="top"><a id="a844630d02f19cfa1aaf9376f82f7b946" name="a844630d02f19cfa1aaf9376f82f7b946"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>worldsize</b></td></tr>
-<tr class="separator:a844630d02f19cfa1aaf9376f82f7b946"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memItemLeft" align="right" valign="top"><a id="af9e3626efc80a40d35f6e8c39cf8e7b0" name="af9e3626efc80a40d35f6e8c39cf8e7b0"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>xtraverts</b></td></tr>
 <tr class="separator:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2478,27 +2469,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
 <p>Returns the material bitmask for the given cube. </p>
 <p >Returns the bitmask for the cube passed, which corresponds to the sum of all materials occupying the cube. Every sum is unique due to the basis selection, and therefore any combination of materials can be represented in the output. Returns 0 (air) if there is no valid material that describes the entire cube.</p>
 <dl class="section return"><dt>Returns</dt><dd>An unsigned short integer corresponding to the material bitmask </dd></dl>
-
-</div>
-</div>
-<a id="acc0da2105414ddfd60e389e47d697a93" name="acc0da2105414ddfd60e389e47d697a93"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc0da2105414ddfd60e389e47d697a93">&#9670;&#160;</a></span>getworldsize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int getworldsize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the size of the world. </p>
-<p >This function returns the size of the currently loaded world in terms of gridpower 0 cubes (the smallest possible size). A size 10 map will be 2^10 = 1024 cubes in size.</p>
-<dl class="section return"><dt>Returns</dt><dd>the size of the world, in size 0 cubes </dd></dl>
 
 </div>
 </div>

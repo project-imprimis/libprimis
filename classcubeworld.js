@@ -8,6 +8,8 @@ var classcubeworld =
     [ "enlargemap", "classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce", null ],
     [ "getmapcrc", "classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1", null ],
     [ "lookupmaterial", "classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4", null ],
-    [ "raycube", "classcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d", null ],
+    [ "mapscale", "classcubeworld.html#aa4b5cdff5ce4ddef6e2664cb4e7827ef", null ],
+    [ "mapsize", "classcubeworld.html#a0817719a7dfd2d50bdf02198804098b7", null ],
+    [ "raycube", "classcubeworld.html#af13af1645855454bc8d889495cfe36b8", null ],
     [ "remip", "classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2", null ]
 ];
