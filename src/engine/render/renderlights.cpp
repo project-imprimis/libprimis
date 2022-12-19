@@ -2978,7 +2978,7 @@ void collectlights()
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
-            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize)
+            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= rootworld.mapsize())
             {
                 continue;
             }

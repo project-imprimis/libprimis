@@ -83,7 +83,7 @@ class hmap
             bool paintme = paintbrush;
             int cx = (sel.corner&1 ? 0 : -1),
                 cy = (sel.corner&2 ? 0 : -1);
-            hws= (worldsize>>gridpower);
+            hws= (rootworld.mapsize()>>gridpower);
             gx = (cur[R[d]] >> gridpower) + cx - maxbrush2;
             gy = (cur[C[d]] >> gridpower) + cy - maxbrush2;
             gz = (cur[D[d]] >> gridpower);
@@ -111,7 +111,7 @@ class hmap
                 bnx = std::min(nx, brushmaxx-1);
                 bny = std::min(ny, brushmaxy-1);
             }
-            nz = worldsize-gridsize;
+            nz = rootworld.mapsize()-gridsize;
             mz = 0;
             hundo.s = ivec(d,1,1,5);
             hundo.orient = sel.orient;
@@ -400,7 +400,7 @@ class hmap
             }
             else
             {
-                PULL_HEIGHTMAP(worldsize*8, <, >, 0, 8, +);
+                PULL_HEIGHTMAP(rootworld.mapsize()*8, <, >, 0, 8, +);
             }
 
             #undef PULL_HEIGHTMAP

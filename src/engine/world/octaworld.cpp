@@ -238,9 +238,9 @@ int lusize;
 
 cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
 {
-    int tx = std::clamp(to.x, 0, worldsize-1),
-        ty = std::clamp(to.y, 0, worldsize-1),
-        tz = std::clamp(to.z, 0, worldsize-1);
+    int tx = std::clamp(to.x, 0, mapsize()-1),
+        ty = std::clamp(to.y, 0, mapsize()-1),
+        tz = std::clamp(to.z, 0, mapsize()-1);
     int scale = worldscale-1,
         csize = std::abs(tsize);
     cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
@@ -304,7 +304,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         n[dim] -= size;
     }
     diff ^= n[dim];
-    if(diff >= static_cast<uint>(worldsize))
+    if(diff >= static_cast<uint>(mapsize()))
     {
         ro = n;
         rsize = size;
@@ -766,8 +766,8 @@ void cubeworld::remip()
 {
     for(int i = 0; i < 8; ++i)
     {
-        ivec o(i, ivec(0, 0, 0), worldsize>>1);
-        ::remip(worldroot[i], o, worldsize>>2);
+        ivec o(i, ivec(0, 0, 0), mapsize()>>1);
+        ::remip(worldroot[i], o, mapsize()>>2);
     }
     worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
 }

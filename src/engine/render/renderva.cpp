@@ -97,7 +97,7 @@ namespace
         float dist = vadist(*va, camera1->o);
         va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
 
-        int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
+        int hash = std::clamp(static_cast<int>(dist*vasortsize/rootworld.mapsize()), 0, vasortsize-1);
         vtxarray **prev = &vasort[hash],
                   *cur = vasort[hash];
 

@@ -829,7 +829,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         }
         else if(cur-start>=4)
         {
-            QuadNode vmats(0, 0, worldsize);
+            QuadNode vmats(0, 0, rootworld.mapsize());
             for(int i = 0; i < cur-start; ++i)
             {
                 vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);

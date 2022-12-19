@@ -371,7 +371,7 @@ class stainrenderer
             {
                 verts[i].lastvert = verts[i].endvert;
             }
-            gentris(world.worldroot, ivec(0, 0, 0), worldsize>>1);
+            gentris(world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
                 stainbuffer &buf = verts[i];

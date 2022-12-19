@@ -151,6 +151,37 @@ void boxsgrid(int orient, vec origin, vec s, int g, bool boxoutline)
 selinfo sel, lastsel; //lastsel is used only in iengine
 static selinfo savedsel;
 
+bool selinfo::validate()
+{
+    if(grid <= 0 || grid >= rootworld.mapsize())
+    {
+        return false;
+    }
+    if(o.x >= rootworld.mapsize() || o.y >= rootworld.mapsize() || o.z >= rootworld.mapsize())
+    {
+        return false;
+    }
+    if(o.x < 0)
+    {
+        s.x -= (grid - 1 - o.x)/grid;
+        o.x = 0;
+    }
+    if(o.y < 0)
+    {
+        s.y -= (grid - 1 - o.y)/grid;
+        o.y = 0;
+    }
+    if(o.z < 0)
+    {
+        s.z -= (grid - 1 - o.z)/grid;
+        o.z = 0;
+    }
+    s.x = std::clamp(s.x, 0, (rootworld.mapsize() - o.x)/grid);
+    s.y = std::clamp(s.y, 0, (rootworld.mapsize() - o.y)/grid);
+    s.z = std::clamp(s.z, 0, (rootworld.mapsize() - o.z)/grid);
+    return s.x > 0 && s.y > 0 && s.z > 0;
+}
+
 int orient = 0,
     gridsize = 8;
 ivec cor, lastcor,
@@ -208,9 +239,9 @@ VARF(gridpower, 0, 3, 12,
         return;
     }
     gridsize = 1<<gridpower;
-    if(gridsize>=worldsize)
+    if(gridsize>=rootworld.mapsize())
     {
-        gridsize = worldsize/2;
+        gridsize = rootworld.mapsize()/2;
     }
     cancelsel();
 });
@@ -443,7 +474,7 @@ void cubeworld::commitchanges(bool force)
 
 void cubeworld::changed(const ivec &bbmin, const ivec &bbmax, bool commit)
 {
-    readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), worldsize/2);
+    readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), mapsize()/2);
     haschanged = true;
 
     if(commit)
@@ -458,7 +489,7 @@ void cubeworld::changed(const block3 &sel, bool commit)
     {
         return;
     }
-    readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), worldsize/2);
+    readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), mapsize()/2);
     haschanged = true;
     if(commit)
     {
@@ -1063,7 +1094,7 @@ void cleanupprefabs()
 void pasteundoblock(block3 *b, uchar *g)
 {
     cube *s = b->c();
-    LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
+    LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), rootworld.mapscale()-1), pastecube(*s++, c));
 }
 
 //used in client prefab unpacking, handles the octree unpacking (not the entities,
@@ -1071,7 +1102,7 @@ void pasteundoblock(block3 *b, uchar *g)
 void unpackundocube(ucharbuf buf, uchar *outbuf)
 {
     block3 *b = nullptr;
-    if(!unpackblock(b, buf) || b->grid >= worldsize || buf.remaining() < b->size())
+    if(!unpackblock(b, buf) || b->grid >= rootworld.mapsize() || buf.remaining() < b->size())
     {
         freeblock(b);
         delete[] outbuf;
@@ -1313,16 +1344,13 @@ void cubeworld::genprefabmesh(prefab &p)
     b.o = ivec(0, 0, 0);
 
     cube *oldworldroot = worldroot;
-    int oldworldscale = worldscale,
-        oldworldsize = worldsize;
+    int oldworldscale = worldscale;
 
     worldroot = newcubes();
     worldscale = 1;
-    worldsize = 2;
-    while(worldsize < std::max(std::max(b.s.x, b.s.y), b.s.z)*b.grid)
+    while(mapscale() < std::max(std::max(b.s.x, b.s.y), b.s.z)*b.grid)
     {
         worldscale++;
-        worldsize *= 2;
     }
 
     cube *s = p.copy->c();
@@ -1333,7 +1361,7 @@ void cubeworld::genprefabmesh(prefab &p)
     //recursively apply to children
     for(int i = 0; i < 8; ++i)
     {
-        ::genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
+        ::genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
     --neighbordepth;
     r.setup(p);
@@ -1342,7 +1370,6 @@ void cubeworld::genprefabmesh(prefab &p)
 
     worldroot = oldworldroot;
     worldscale = oldworldscale;
-    worldsize = oldworldsize;
 
     useshaderbyname("prefab");
 }

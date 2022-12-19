@@ -403,9 +403,9 @@ void clearlightcache(int id)
         {
             return;
         }
-        for(int x = static_cast<int>(std::max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(std::min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
+        for(int x = static_cast<int>(std::max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(std::min(light.o.x+radius, rootworld.mapsize()-1.0f))>>lightcachesize; x <= ex; x++)
         {
-            for(int y = static_cast<int>(std::max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(std::min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
+            for(int y = static_cast<int>(std::max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(std::min(light.o.y+radius, rootworld.mapsize()-1.0f))>>lightcachesize; y <= ey; y++)
             {
                 lightcacheentry &lce = lightcache[lightcachehash(x, y)];
                 if(lce.x != x || lce.y != y)
@@ -649,7 +649,7 @@ void cubeworld::calclight()
     clearsurfaces(worldroot);
     lightprogress = 0;
     calcnormals(filltjoints > 0);
-    calcsurfaces(worldroot, ivec(0, 0, 0), worldsize >> 1);
+    calcsurfaces(worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
     clearnormals();
     allchanged();
 }

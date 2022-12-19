@@ -866,7 +866,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     std::memcpy(hdr.magic, "TMAP", 4);
     hdr.version = currentmapversion;
     hdr.headersize = sizeof(hdr);
-    hdr.worldsize = worldsize;
+    hdr.worldsize = mapsize();
     hdr.numents = 0;
     const std::vector<extentity *> &ents = entities::getents();
     for(extentity* const& e : ents)
@@ -956,7 +956,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
+    savec(worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;
@@ -997,13 +997,12 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
     worldroot = nullptr;
-    int worldscale = 0;
-    while(1<<worldscale < hdr.worldsize)
+    int loadedworldscale = 0;
+    while(1<<loadedworldscale < hdr.worldsize)
     {
-        worldscale++;
+        loadedworldscale++;
     }
-    setvar("mapsize", 1<<worldscale, true, false);
-    setvar("mapscale", worldscale, true, false);
+    worldscale = loadedworldscale;
     renderprogress(0, "loading vars...");
     for(int i = 0; i < hdr.numvars; ++i)
     {

@@ -27,8 +27,6 @@
 #include "render/stain.h"
 #include "render/texture.h"
 
-VARNR(mapscale, worldscale, 1, 0, 0);
-VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
@@ -477,7 +475,7 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
         {
             leafsize *= 2;
         }
-        modifyoctaentity(flags, id, e, worldroot, ivec(0, 0, 0), worldsize>>1, o, r, leafsize);
+        modifyoctaentity(flags, id, e, worldroot, ivec(0, 0, 0), mapsize()>>1, o, r, leafsize);
     }
     e.flags ^= EntFlag_Octa;
     switch(e.type)
@@ -683,8 +681,7 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
         return false;
     }
     resetmap();
-    setvar("mapscale", scale<10 ? 10 : (scale>16 ? 16 : scale), true, false);
-    setvar("mapsize", 1<<worldscale, true, false);
+    worldscale = std::clamp(scale, 10, 16);
     setvar("emptymap", 1, true, false);
     texmru.clear();
     freeocta(worldroot);
@@ -693,9 +690,9 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
     {
         setcubefaces(worldroot[i], facesolid);
     }
-    if(worldsize > 0x1000)
+    if(mapsize() > 0x1000)
     {
-        splitocta(worldroot, worldsize>>1);
+        splitocta(worldroot, mapsize()>>1);
     }
     clearmainmenu();
     if(usecfg)
@@ -723,12 +720,11 @@ bool cubeworld::enlargemap(bool force)
         conoutf(Console_Error, "mapenlarge only allowed in edit mode");
         return false;
     }
-    if(worldsize >= 1<<16)
+    if(mapsize() >= 1<<16)
     {
         return false;
     }
     worldscale++;
-    worldsize *= 2;
     cube *c = newcubes(faceempty);
     c[0].children = worldroot;
     for(int i = 0; i < 3; ++i)
@@ -737,9 +733,9 @@ bool cubeworld::enlargemap(bool force)
     }
     worldroot = c;
 
-    if(worldsize > 0x1000)
+    if(mapsize() > 0x1000)
     {
-        splitocta(worldroot, worldsize>>1);
+        splitocta(worldroot, mapsize()>>1);
     }
     allchanged();
     return true;
@@ -782,7 +778,7 @@ void cubeworld::shrinkmap()
         multiplayerwarn();
         return;
     }
-    if(worldsize <= 1<<10) //do not allow maps smaller than 2^10 cubits
+    if(mapsize() <= 1<<10) //do not allow maps smaller than 2^10 cubits
     {
         return;
     }
@@ -811,8 +807,7 @@ void cubeworld::shrinkmap()
     freeocta(worldroot);
     worldroot = root;
     worldscale--;
-    worldsize /= 2;
-    ivec offset(octant, ivec(0, 0, 0), worldsize);
+    ivec offset(octant, ivec(0, 0, 0), mapsize());
     std::vector<extentity *> &ents = entities::getents();
     for(uint i = 0; i < ents.size(); i++)
     {
@@ -822,7 +817,12 @@ void cubeworld::shrinkmap()
     conoutf("shrunk map to size %d", worldscale);
 }
 
-int getworldsize()
+int cubeworld::mapsize() const
 {
-    return worldsize;
+    return 1<<worldscale;
+}
+
+int cubeworld::mapscale() const
+{
+    return 1<<mapsize();
 }

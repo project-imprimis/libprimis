@@ -258,8 +258,8 @@ const std::vector<physent *> &checkdynentcache(int x, int y)
 
 //============================================================== LOOPDYNENTCACHE
 #define LOOPDYNENTCACHE(curx, cury, o, radius) \
-    for(int curx = std::max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = std::min(static_cast<int>(o.x+radius), worldsize-1)>>dynentsize; curx <= endx; curx++) \
-        for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), worldsize-1)>>dynentsize; cury <= endy; cury++)
+    for(int curx = std::max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = std::min(static_cast<int>(o.x+radius), rootworld.mapsize()-1)>>dynentsize; curx <= endx; curx++) \
+        for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), rootworld.mapsize()-1)>>dynentsize; cury <= endy; cury++)
 
 void updatedynentcache(physent *d)
 {
@@ -1079,9 +1079,9 @@ bool cubeworld::octacollide(physent *d, const vec &dir, float cutoff, const ivec
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = worldscale-1;
-    if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(worldsize))
+    if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(mapsize()))
     {
-       return ::octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), worldsize>>1);
+       return ::octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), mapsize()>>1);
     }
     const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
@@ -1242,11 +1242,11 @@ bool droptofloor(vec &o, float radius, float height)
     d.o = o;
     if(!insideworld(d.o))
     {
-        if(d.o.z < worldsize)
+        if(d.o.z < rootworld.mapsize())
         {
             return false;
         }
-        d.o.z = worldsize - 1e-3f;
+        d.o.z = rootworld.mapsize() - 1e-3f;
         if(!insideworld(d.o))
         {
             return false;
@@ -1254,14 +1254,14 @@ bool droptofloor(vec &o, float radius, float height)
     }
     vec v(0.0001f, 0.0001f, -1);
     v.normalize();
-    if(rootworld.raycube(d.o, v, worldsize) >= worldsize)
+    if(rootworld.raycube(d.o, v, rootworld.mapsize()) >= rootworld.mapsize())
     {
         return false;
     }
     d.radius = d.xradius = d.yradius = radius;
     d.eyeheight = height;
     d.aboveeye = radius;
-    if(!movecamera(&d, d.vel, worldsize, 1))
+    if(!movecamera(&d, d.vel, rootworld.mapsize(), 1))
     {
         o = d.o;
         return true;

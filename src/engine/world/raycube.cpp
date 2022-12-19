@@ -251,14 +251,14 @@ namespace
 //externally relevant functionality
 bool insideworld(const vec &o)
 {
-    return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
+    return o.x>=0 && o.x<rootworld.mapsize() && o.y>=0 && o.y<rootworld.mapsize() && o.z>=0 && o.z<rootworld.mapsize();
 }
 
 bool insideworld(const ivec &o)
 {
-    return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
-           static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
-           static_cast<uint>(o.z) < static_cast<uint>(worldsize);
+    return static_cast<uint>(o.x) < static_cast<uint>(rootworld.mapsize()) &&
+           static_cast<uint>(o.y) < static_cast<uint>(rootworld.mapsize()) &&
+           static_cast<uint>(o.z) < static_cast<uint>(rootworld.mapsize());
 }
 
 vec hitsurface;
@@ -283,16 +283,16 @@ vec hitsurface;
         for(int i = 0; i < 3; ++i) \
         { \
             float c = v[i]; \
-            if(c<0 || c>=worldsize) \
+            if(c<0 || c>=mapsize()) \
             { \
-                float d = ((invray[i]>0?0:worldsize)-c)*invray[i]; \
+                float d = ((invray[i]>0?0:mapsize())-c)*invray[i]; \
                 if(d<0) \
                 { \
                     return (radius>0?radius:-1); \
                 } \
                 disttoworld = std::max(disttoworld, 0.1f + d); \
             } \
-            float e = ((invray[i]>0?worldsize:0)-c)*invray[i]; \
+            float e = ((invray[i]>0?mapsize():0)-c)*invray[i]; \
             exitworld = std::min(exitworld, e); \
         } \
         if(disttoworld > exitworld) \
@@ -352,7 +352,7 @@ vec hitsurface;
         y = static_cast<int>(v.y); \
         z = static_cast<int>(v.z); \
         uint diff = static_cast<uint>(lo.x^x)|static_cast<uint>(lo.y^y)|static_cast<uint>(lo.z^z); \
-        if(diff >= static_cast<uint>(worldsize)) \
+        if(diff >= static_cast<uint>(mapsize())) \
         { \
             exitworld; \
         } \

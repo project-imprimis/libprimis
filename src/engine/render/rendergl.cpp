@@ -515,7 +515,7 @@ static void setcammatrix()
     {
         if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
         {
-            worldpos = vec(camdir).mul(2*worldsize).add(camera1->o); // if nothing is hit, just far away in the view direction
+            worldpos = vec(camdir).mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
         }
     }
 }
@@ -1155,9 +1155,9 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
             return o.z;
         }
         o.z = co.z + csize;
-    } while(o.z < worldsize);
+    } while(o.z < rootworld.mapsize());
     abovemat = Mat_Air;
-    return worldsize;
+    return rootworld.mapsize();
 }
 
 static void blendfog(int fogmat, float below, float blend, float logblend, float &start, float &end, vec &fogc)
@@ -1329,7 +1329,7 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
+void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -1381,7 +1381,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     {
         glGenTextures(1, &minimaptex);
     }
-    ivec bbmin(worldsize, worldsize, worldsize),
+    ivec bbmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
          bbmax(0, 0, 0);
     for(uint i = 0; i < valist.size(); i++)
     {
@@ -1398,7 +1398,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     }
     if(minimapclip)
     {
-        ivec clipmin(worldsize, worldsize, worldsize),
+        ivec clipmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
              clipmax(0, 0, 0);
         clipminimap(clipmin, clipmax, world.worldroot);
         for(int k = 0; k < 2; ++k)
@@ -1431,7 +1431,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     int oldfarplane = farplane,
         oldvieww    = vieww,
         oldviewh    = viewh;
-    farplane = worldsize*2;
+    farplane = rootworld.mapsize()*2;
     vieww = viewh = size;
 
     float zscale = std::max(static_cast<float>(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
@@ -1618,7 +1618,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
-    farplane = worldsize*2;
+    farplane = rootworld.mapsize()*2;
     //set the camera location
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
