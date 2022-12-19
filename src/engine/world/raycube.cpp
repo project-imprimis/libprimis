@@ -367,7 +367,7 @@ vec hitsurface;
             diff >>= 1; \
         } while(diff);
 
-float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t)
+float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t) const
 {
     if(ray.iszero())
     {

@@ -126,7 +126,7 @@ void cube::discardchildren(bool fixtex, int depth)
     }
 }
 
-bool cube::isvalidcube()
+bool cube::isvalidcube() const
 {
     clipplanes p;
     genclipbounds(*this, ivec(0, 0, 0), 256, p);
