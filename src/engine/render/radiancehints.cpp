@@ -422,7 +422,7 @@ void radiancehints::setup()
     }
 }
 
-void radiancehints::bindparams()
+void radiancehints::bindparams() const
 {
     float step = 2*splits[0].bounds/rhgrid;
     GLOBALPARAMF(rhnudge, rhnudge*step);
@@ -430,7 +430,7 @@ void radiancehints::bindparams()
     vec4<float> *rhtcv = rhtc.reserve<vec4<float>>();
     for(int i = 0; i < rhsplits; ++i)
     {
-        splitinfo &split = splits[i];
+        const splitinfo &split = splits[i];
         rhtcv[i] = vec4<float>(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
     }
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));

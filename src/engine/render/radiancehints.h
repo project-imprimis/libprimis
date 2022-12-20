@@ -39,7 +39,7 @@ class radiancehints
         vec dynmin, dynmax, prevdynmin, prevdynmax;
         void setup();
         void renderslices();
-        void bindparams();
+        void bindparams() const;
         void clearcache();
         bool allcached() const;
     private:
