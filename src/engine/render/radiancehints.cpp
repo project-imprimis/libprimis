@@ -982,8 +982,8 @@ void reflectiveshadowmap::gencullplanes()
     matrix4 mvp;
     mvp.mul(proj, model);
     vec4<float> px = mvp.rowx(),
-         py = mvp.rowy(),
-         pw = mvp.roww();
+                py = mvp.rowy(),
+                pw = mvp.roww();
     cull[0] = plane(vec4<float>(pw).add(px)).normalize(); // left plane
     cull[1] = plane(vec4<float>(pw).sub(px)).normalize(); // right plane
     cull[2] = plane(vec4<float>(pw).add(py)).normalize(); // bottom plane
