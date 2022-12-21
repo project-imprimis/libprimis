@@ -767,12 +767,13 @@ std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt; &
 <tr class="memitem:a1cd3ecdc07ab5ba10895c4df2d325580"><td class="memItemLeft" align="right" valign="top"><a id="a1cd3ecdc07ab5ba10895c4df2d325580" name="a1cd3ecdc07ab5ba10895c4df2d325580"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>entities::deleteentity</b> (<a class="el" href="structextentity.html">extentity</a> *e)</td></tr>
 <tr class="separator:a1cd3ecdc07ab5ba10895c4df2d325580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad28673035e991bbf7b7ea6aeea6e78e2"><td class="memItemLeft" align="right" valign="top"><a id="ad28673035e991bbf7b7ea6aeea6e78e2" name="ad28673035e991bbf7b7ea6aeea6e78e2"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>getclientmap</b> ()</td></tr>
+<tr class="memdesc:ad28673035e991bbf7b7ea6aeea6e78e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the name of the map currently loaded. <br /></td></tr>
+<tr class="separator:ad28673035e991bbf7b7ea6aeea6e78e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacf5cb7ca04b015dac62e8499275a03b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aacf5cb7ca04b015dac62e8499275a03b">initworldiocmds</a> ()</td></tr>
 <tr class="memdesc:aacf5cb7ca04b015dac62e8499275a03b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes worldio Cubescript commands.  <a href="iengine_8h.html#aacf5cb7ca04b015dac62e8499275a03b">More...</a><br /></td></tr>
 <tr class="separator:aacf5cb7ca04b015dac62e8499275a03b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a46e5679d080c44b3b86c1f2fb00d80f8">fixmapname</a> (char *name)</td></tr>
-<tr class="memdesc:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the passed string to conform to valid map names.  <a href="iengine_8h.html#a46e5679d080c44b3b86c1f2fb00d80f8">More...</a><br /></td></tr>
-<tr class="separator:a46e5679d080c44b3b86c1f2fb00d80f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -988,9 +989,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>octaentsize</b></td></
 std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entities::ents</b></td></tr>
 <tr class="memdesc:a32f3aa96a4c463476d35e04a1b938e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of extentities corresponding to the cube world's entities. <br /></td></tr>
 <tr class="separator:a32f3aa96a4c463476d35e04a1b938e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab70f24d9b3a5f623a87d075ce4e04bed"><td class="memItemLeft" align="right" valign="top"><a id="ab70f24d9b3a5f623a87d075ce4e04bed" name="ab70f24d9b3a5f623a87d075ce4e04bed"></a>
-string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td></tr>
-<tr class="separator:ab70f24d9b3a5f623a87d075ce4e04bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >The interface the game uses to access the engine. </p>
@@ -2145,33 +2143,6 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>an integer corresponding to the bitmask value of the material </dd></dl>
-
-</div>
-</div>
-<a id="a46e5679d080c44b3b86c1f2fb00d80f8" name="a46e5679d080c44b3b86c1f2fb00d80f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46e5679d080c44b3b86c1f2fb00d80f8">&#9670;&#160;</a></span>fixmapname()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void fixmapname </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Changes the passed string to conform to valid map names. </p>
-<p >This function modifies the input parameter, passed by pointer, to comply with the requirements for Cube map names. This ensures it can be rendered with the engine's text library.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>The name of the string to modify to compliance </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
