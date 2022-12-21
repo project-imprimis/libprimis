@@ -714,15 +714,6 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
  */
 bool cubeworld::enlargemap(bool force)
 {
-    if(!force && !editmode)
-    {
-        conoutf(Console_Error, "mapenlarge only allowed in edit mode");
-        return false;
-    }
-    if(mapsize() >= 1<<16)
-    {
-        return false;
-    }
     worldscale++;
     cube *c = newcubes(faceempty);
     c[0].children = worldroot;
