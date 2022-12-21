@@ -740,7 +740,7 @@ bool cubeworld::enlargemap(bool force)
  * returns false if any cube or child cube is not empty (has geometry)
  *
  */
-static bool isallempty(cube &c)
+static bool isallempty(const cube &c)
 {
     if(!c.children)
     {
