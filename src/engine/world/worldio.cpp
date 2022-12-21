@@ -22,7 +22,7 @@
 
 VARR(mapversion, 1, currentmapversion, 0);
 
-static string clientmap = "";
+static std::string clientmap = "";
 
 static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
 {
@@ -60,23 +60,14 @@ static void validmapname(char *dst, const char *src, const char *prefix = nullpt
 }
 
 //used in iengine.h
-const char *getclientmap()
+const char * getclientmap()
 {
-    return clientmap;
+    return clientmap.c_str();
 }
 
-/**
- * @brief Changes the passed string to conform to valid map names.
- *
- * This function modifies the input parameter, passed by pointer, to comply with
- * the requirements for Cube map names. This ensures it can be rendered with the
- * engine's text library.
- *
- * @param name The name of the string to modify to compliance
- */
-static void fixmapname(char *name)
+void setmapname(const char * newname)
 {
-    validmapname(name, name, nullptr, "");
+    clientmap = std::string(newname);
 }
 
 static void fixent(entity &e, int version)
@@ -179,7 +170,7 @@ void cubeworld::setmapfilenames(const char *fname, const char *cname)
 
 void mapcfgname()
 {
-    const char *mname = clientmap;
+    const char *mname = clientmap.c_str();
     string name;
     validmapname(name, mname);
     DEF_FORMAT_STRING(cfgname, "media/map/%s.cfg", name);
@@ -853,7 +844,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
-        mname = clientmap;
+        mname = clientmap.c_str();
     }
     setmapfilenames(*mname ? mname : "untitled");
     if(savebak)
