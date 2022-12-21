@@ -22,9 +22,9 @@
 
 VARR(mapversion, 1, currentmapversion, 0);
 
-string clientmap = "";
+static string clientmap = "";
 
-void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
+static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
 {
     if(prefix)
     {
@@ -59,7 +59,22 @@ void validmapname(char *dst, const char *src, const char *prefix = nullptr, cons
     }
 }
 
-void fixmapname(char *name)
+//used in iengine.h
+const char *getclientmap()
+{
+    return clientmap;
+}
+
+/**
+ * @brief Changes the passed string to conform to valid map names.
+ *
+ * This function modifies the input parameter, passed by pointer, to comply with
+ * the requirements for Cube map names. This ensures it can be rendered with the
+ * engine's text library.
+ *
+ * @param name The name of the string to modify to compliance
+ */
+static void fixmapname(char *name)
 {
     validmapname(name, name, nullptr, "");
 }
