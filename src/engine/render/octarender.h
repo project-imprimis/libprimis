@@ -102,7 +102,6 @@ extern int allocva;
 extern ushort encodenormal(const vec &n);
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
-extern void findtjoints();
 extern void clearvas(cube *c);
 extern void destroyva(vtxarray *va, bool reparent = true);
 extern void updatevabb(vtxarray *va, bool force = false);
