@@ -735,10 +735,10 @@ namespace
             void renderzpass(const vtxarray &va);
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
-                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
-                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
-                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
-                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+                            vquery(false), alphascale(0), globals(-1), texgenorient(-1),
+                            texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1), slot(nullptr),
+                            vslot(nullptr), texgenslot(nullptr), texgenvslot(nullptr),
+                            texgenscroll(0, 0), refractscale(0), refractcolor(1, 1, 1)
             {
                 for(int k = 0; k < 7; ++k)
                 {
