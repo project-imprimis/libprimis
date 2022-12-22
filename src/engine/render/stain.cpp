@@ -63,8 +63,8 @@ class stainrenderer
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
               tex(nullptr),
-              stains(nullptr), maxstains(0), startstain(0), endstain(0),
-              stainu(0), stainv(0), texname(texname)
+              maxstains(0), startstain(0), endstain(0),
+              stainu(0), stainv(0), stains(nullptr), texname(texname)
         {
         }
 
