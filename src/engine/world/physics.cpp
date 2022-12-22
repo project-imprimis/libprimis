@@ -67,7 +67,10 @@ void cubeworld::resetclipplanes()
     clipcacheversion += maxclipoffset;
     if(!clipcacheversion)
     {
-        std::memset(clipcache, 0, sizeof(clipcache));
+        for(int i = 0; i < maxclipplanes; ++i)
+        {
+            clipcache[i].clear();
+        }
         clipcacheversion = maxclipoffset;
     }
 }

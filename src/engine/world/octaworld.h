@@ -89,6 +89,25 @@ struct clipplanes
           visible;
     const cube *owner;
     int version;
+
+    void clear()
+    {
+        o = vec(0,0,0);
+        r = vec(0,0,0);
+        for(int i = 0; i < 8; ++i)
+        {
+          v[i] = vec(0,0,0);
+        }
+        for(int i = 0; i < 12; ++i)
+        {
+            p[i] = plane {0,0,0,0};
+            side[i] = 0;
+        }
+        size = 0;
+        visible = 0;
+        owner = nullptr;
+        version = 0;
+    }
 };
 
 struct surfaceinfo
