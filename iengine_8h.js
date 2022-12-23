@@ -121,6 +121,7 @@ var iengine_8h =
     [ "resethudshader", "iengine_8h.html#a64f479ed1a472d9bc1e6ea71136b8667", null ],
     [ "rotatebb", "iengine_8h.html#ad3829f52d805a155e1169cee90348080", null ],
     [ "setfont", "iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e", null ],
+    [ "setmapname", "iengine_8h.html#ab70b009b90ca142f05d728c4e033e8ba", null ],
     [ "setup", "iengine_8h.html#a12441e8293bd0cca61dd838eb11326e3", null ],
     [ "setupscreen", "iengine_8h.html#a3df935d35abe37506eee13e37519c290", null ],
     [ "showui", "iengine_8h.html#a909e67dd85e4409604f3573f04bd0b05", null ],
