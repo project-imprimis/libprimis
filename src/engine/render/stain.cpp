@@ -857,7 +857,7 @@ class stainrenderer
             const std::vector<extentity *> &ents = entities::getents();
             for(uint i = 0; i < oe.mapmodels.size(); i++)
             {
-                extentity &e = *ents[oe.mapmodels[i]];
+                const extentity &e = *ents[oe.mapmodels[i]];
                 model *m = loadmapmodel(e.attr1);
                 if(!m)
                 {
