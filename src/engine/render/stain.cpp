@@ -1091,9 +1091,8 @@ VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer& d : stains)
     {
-        stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf)
         {
             continue;
