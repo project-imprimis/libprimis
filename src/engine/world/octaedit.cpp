@@ -645,7 +645,7 @@ void addundo(undoblock *u)
 
 VARP(nompedit, 0, 1, 1);
 
-static int countblock(cube *c, int n = 8)
+static int countblock(const cube *c, int n = 8)
 {
     int r = 0;
     for(int i = 0; i < n; ++i)
