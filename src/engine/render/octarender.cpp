@@ -244,7 +244,7 @@ namespace
         protected:
             void clearverts()
             {
-                memset(table, -1, sizeof(table));
+                std::memset(table, -1, sizeof(table));
                 chain.clear();
                 verts.clear();
             }
