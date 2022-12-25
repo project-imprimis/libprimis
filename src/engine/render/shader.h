@@ -15,6 +15,7 @@ enum
 };
 
 extern float blursigma;
+extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
 
 extern int getlocalparam(const char *name);
 

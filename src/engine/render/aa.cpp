@@ -16,6 +16,7 @@
 #include "renderlights.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 

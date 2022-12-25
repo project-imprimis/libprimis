@@ -35,6 +35,7 @@
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
 #include "render/renderttf.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
