@@ -573,10 +573,10 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
 // 2: Collide_OrientedBoundingBox
 VAR(testtricol, 0, 0, 2);
 
-bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
+static bool mmcollide(physent *d, const vec &dir, float cutoff, const octaentities &oc) // collide with a mapmodel
 {
     const std::vector<extentity *> &ents = entities::getents();
-    for(int &i : oc.mapmodels)
+    for(const int &i : oc.mapmodels)
     {
         extentity &e = *ents[i];
         if(e.flags&EntFlag_NoCollide || !(static_cast<int>(mapmodels.size()) > e.attr1))
