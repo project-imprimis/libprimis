@@ -7,7 +7,6 @@ extern int collideinside;
 extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
 extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
 extern void dropenttofloor(entity *e);
-extern bool droptofloor(vec &o, float radius, float height);
 
 extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
 extern void modifyorient(float yaw, float pitch);

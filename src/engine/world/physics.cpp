@@ -1232,7 +1232,7 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
     return true;
 }
 
-bool droptofloor(vec &o, float radius, float height)
+const bool droptofloor(vec &o, float radius, float height)
 {
     static struct dropent : physent
     {
