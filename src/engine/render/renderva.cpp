@@ -3194,7 +3194,7 @@ shadowmesh *findshadowmesh(int idx, const extentity &e)
     return m;
 }
 
-void rendershadowmesh(shadowmesh *m)
+void rendershadowmesh(const shadowmesh *m)
 {
     int draw = m->draws[shadowside];
     if(draw < 0)

@@ -68,6 +68,6 @@ struct shadowmesh;
 extern void clearshadowmeshes();
 extern void genshadowmeshes();
 extern shadowmesh *findshadowmesh(int idx, const extentity &e);
-extern void rendershadowmesh(shadowmesh *m);
+extern void rendershadowmesh(const shadowmesh *m);
 
 #endif
