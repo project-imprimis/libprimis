@@ -246,7 +246,7 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
     }
 }
 
-static void uniformtex(const char * name, int tmu, Shader &s)
+static void uniformtex(const char * name, int tmu, const Shader &s)
 {
     int loc = glGetUniformLocation(s.program, name);
     if(loc != -1)
