@@ -205,7 +205,7 @@ static void compileglslshader(const Shader &s, GLenum type, GLuint &obj, const c
     }
 }
 
-static void bindglsluniform(Shader &s, UniformLoc &u)
+static void bindglsluniform(const Shader &s, UniformLoc &u)
 {
     static VAR(debugubo, 0, 0, 1); //print out to console information about ubos when bindglsluniform is called
 
