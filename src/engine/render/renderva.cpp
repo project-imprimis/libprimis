@@ -1503,7 +1503,7 @@ namespace
             DecalSlot *slot;
 
             void changebatchtmus();
-            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
+            void bindslottex(int type, const Texture *tex, GLenum target = GL_TEXTURE_2D);
             void changeslottmus(DecalSlot &slot);
             void changeshader(int pass, decalbatch &b);
     };
@@ -1624,7 +1624,7 @@ namespace
         }
     }
 
-    void decalrenderer::bindslottex(int type, Texture *tex, GLenum target)
+    void decalrenderer::bindslottex(int type, const Texture *tex, GLenum target)
     {
         if(textures[type] != tex->id)
         {
