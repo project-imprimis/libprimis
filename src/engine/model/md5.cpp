@@ -83,9 +83,9 @@ md5::md5meshgroup::md5meshgroup()
 }
 
 //main anim loading functionality
-md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
+const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
 {
-    skelanimspec *sa = skel->findskelanim(filename);
+    const skelanimspec *sa = skel->findskelanim(filename);
     if(sa)
     {
         return sa;
@@ -103,6 +103,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     dualquat *animbones = nullptr;
     char buf[512]; //presumably lines over 512 char long will break this loader
     //for each line in the opened file
+    skelanimspec * sas;
     while(f->getline(buf, sizeof(buf)))
     {
         int tmp;
@@ -194,9 +195,9 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             skel->framebones = animbones;
             animbones += skel->numframes*skel->numbones;
 
-            sa = &skel->addskelanim(filename);
-            sa->frame = skel->numframes;
-            sa->range = animframes;
+            sas = &skel->addskelanim(filename);
+            sas->frame = skel->numframes;
+            sas->range = animframes;
 
             skel->numframes += animframes;
         }
@@ -275,7 +276,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     }
     delete f;
 
-    return sa;
+    return sas;
 }
 
 bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)

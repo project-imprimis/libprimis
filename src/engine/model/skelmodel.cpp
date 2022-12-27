@@ -91,7 +91,7 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
     return !(*this == c);
 }
 
-skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
+const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep) const
 {
     int len = sep ? std::strlen(name) : 0;
     for(uint i = 0; i < skelanims.size(); i++)

@@ -346,7 +346,7 @@ struct skelmodel : animmodel
             }
         }
 
-        skelanimspec *findskelanim(const char *name, char sep = '\0');
+        const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
         skelanimspec &addskelanim(const char *name);
         int findbone(const char *name) const;
         int findtag(const char *name) const;
@@ -425,7 +425,7 @@ struct skelmodel : animmodel
         void *animkey();
         int totalframes() const;
 
-        virtual skelanimspec *loadanim(const char *filename)
+        virtual const skelanimspec *loadanim(const char *filename)
         {
             return nullptr;
         }
@@ -733,7 +733,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-        animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
+        const animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
             conoutf("could not load %s anim file %s", MDL::formatname(), filename);
@@ -843,7 +843,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 return;
             }
             DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-            animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
+            const animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
             if(!sa)
             {
                 conoutf("could not load %s anim file %s", MDL::formatname(), filename);
