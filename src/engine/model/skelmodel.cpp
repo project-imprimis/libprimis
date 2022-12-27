@@ -837,7 +837,7 @@ void skelmodel::skeleton::cleanup(bool full)
     }
 }
 
-bool skelmodel::skeleton::canpreload()
+bool skelmodel::skeleton::canpreload() const
 {
     return !numframes || gpuaccelerate();
 }

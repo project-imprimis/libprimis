@@ -368,7 +368,7 @@ struct skelmodel : animmodel
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         void calctags(part *p, skelcacheentry *sc = nullptr);
         void cleanup(bool full = true);
-        bool canpreload();
+        bool canpreload() const;
         void preload();
         skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
         int getblendoffset(const UniformLoc &u);
