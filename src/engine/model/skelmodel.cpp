@@ -124,7 +124,7 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     return skelanims.back();
 }
 
-int skelmodel::skeleton::findbone(const char *name)
+int skelmodel::skeleton::findbone(const char *name) const
 {
     for(int i = 0; i < numbones; ++i)
     {
@@ -136,7 +136,7 @@ int skelmodel::skeleton::findbone(const char *name)
     return -1;
 }
 
-int skelmodel::skeleton::findtag(const char *name)
+int skelmodel::skeleton::findtag(const char *name) const
 {
     for(uint i = 0; i < tags.size(); i++)
     {
@@ -377,7 +377,7 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
     }
 }
 
-int skelmodel::skeleton::findpitchdep(int bone)
+int skelmodel::skeleton::findpitchdep(int bone) const
 {
     for(uint i = 0; i < pitchdeps.size(); i++)
     {
@@ -389,7 +389,7 @@ int skelmodel::skeleton::findpitchdep(int bone)
     return -1;
 }
 
-int skelmodel::skeleton::findpitchcorrect(int bone)
+int skelmodel::skeleton::findpitchcorrect(int bone) const
 {
     for(uint i = 0; i < pitchcorrects.size(); i++)
     {
