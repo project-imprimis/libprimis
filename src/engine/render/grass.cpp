@@ -94,7 +94,7 @@ namespace //internal functionality not seen by other files
     //generate the grass geometry placed above cubes
     //grass always faces the camera (billboarded)
     //and therefore grass geom is calculated realtime to face the cam
-    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
+    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, const Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
         int tstep = static_cast<int>(std::ceil(t/grassstep));
