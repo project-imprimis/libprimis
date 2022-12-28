@@ -554,7 +554,7 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
-    auto itr = idents.find(id.name);
+    const auto itr = idents.find(id.name);
     if(itr == idents.end())
     {
         //we need to make a new entry
@@ -803,7 +803,7 @@ template<class T>
 static ident *newident(const T &name, int flags)
 {
     ident *id = nullptr;
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr == idents.end())
     {
         if(checknumber(name))
@@ -866,7 +866,7 @@ ident *writeident(const char *name, int flags)
 
 static void resetvar(char *name)
 {
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr == idents.end())
     {
         return;
@@ -916,7 +916,7 @@ void setalias(ident &id, tagval &v)
 
 static void setalias(const char *name, tagval &v)
 {
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         ident *id = &(*(itr)).second;
@@ -1032,7 +1032,7 @@ hashnameset<DefVar> defvars;
  */
 ident* getvar(int vartype, const char *name)
 {
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         ident *id = &(*(itr)).second;
@@ -1232,7 +1232,7 @@ bool identexists(const char *name)
 
 ident *getident(const char *name)
 {
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         return &(*(itr)).second;
@@ -1242,7 +1242,7 @@ ident *getident(const char *name)
 
 void touchvar(const char *name)
 {
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         ident* id = &(*(itr)).second;
@@ -1262,7 +1262,7 @@ void touchvar(const char *name)
 const char *getalias(const char *name)
 {
     ident *i = nullptr;
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         i = &(*(itr)).second;
@@ -3240,7 +3240,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
         {
             ident *id = nullptr;
             std::string lookupsubstr = std::string(idname.str).substr(0, idname.len);
-            auto itr = idents.find(lookupsubstr);
+            const auto itr = idents.find(lookupsubstr);
             if(itr != idents.end())
             {
                 id = &(*(itr)).second;
@@ -4961,7 +4961,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
-                    auto itr = idents.find(arg.s); \
+                    const auto itr = idents.find(arg.s); \
                     if(itr != idents.end()) \
                     { \
                         ident* id = &(*(itr)).second; \
@@ -5398,7 +5398,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     continue;
                 }
                 ident *id = nullptr;
-                auto itr = idents.find(idarg.s);
+                const auto itr = idents.find(idarg.s);
                 if(itr != idents.end())
                 {
                     id = &(*(itr)).second;
@@ -5667,7 +5667,7 @@ int execute(ident *id, tagval *args, int numargs, bool lookup)
 int execident(const char *name, int noid, bool lookup)
 {
     ident *id = nullptr;
-    auto itr = idents.find(name);
+    const auto itr = idents.find(name);
     if(itr != idents.end())
     {
         id = &(*(itr)).second;
@@ -5714,7 +5714,7 @@ void initcscmds()
     addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
-            auto itr = idents.find(name);
+            const auto itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5730,7 +5730,7 @@ void initcscmds()
     addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
-            auto itr = idents.find(name);
+            const auto itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5746,7 +5746,7 @@ void initcscmds()
     addcommand("deffvar", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
-            auto itr = idents.find(name);
+            const auto itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5762,7 +5762,7 @@ void initcscmds()
     addcommand("deffvarp", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
-            auto itr = idents.find(name);
+            const auto itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5778,7 +5778,7 @@ void initcscmds()
     addcommand("defsvar", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
     {
         {
-            auto itr = idents.find(name);
+            const auto itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5793,7 +5793,7 @@ void initcscmds()
     addcommand("defsvarp", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
     {
         {
-            auto itr = idents.find(std::string(name));
+            const auto itr = idents.find(std::string(name));
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name); return;
