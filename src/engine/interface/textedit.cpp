@@ -988,9 +988,9 @@ Editor *textfocus = nullptr;
 
 void readyeditors()
 {
-    for(uint i = 0; i < editors.size(); i++)
+    for(Editor * i : editors)
     {
-        editors[i]->active = (editors[i]->mode==Editor_Forever);
+        i->active = (i->mode==Editor_Forever);
     }
 }
 
