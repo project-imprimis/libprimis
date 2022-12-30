@@ -789,7 +789,7 @@ void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x
     n.mul(m, t);
 }
 
-void skelmodel::skeleton::calctags(part *p, skelcacheentry *sc)
+void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc)
 {
     for(uint i = 0; i < p->links.size(); i++)
     {

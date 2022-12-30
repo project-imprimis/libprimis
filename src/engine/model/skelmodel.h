@@ -366,7 +366,7 @@ struct skelmodel : animmodel
         void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
         void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
-        void calctags(part *p, skelcacheentry *sc = nullptr);
+        void calctags(part *p, const skelcacheentry *sc = nullptr);
         void cleanup(bool full = true);
         bool canpreload() const;
         void preload();
