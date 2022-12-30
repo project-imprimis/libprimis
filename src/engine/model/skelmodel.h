@@ -483,8 +483,8 @@ struct skelmodel : animmodel
         void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
         static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
         void cleanup();
-        vbocacheentry &checkvbocache(skelcacheentry &sc, int owner);
-        blendcacheentry &checkblendcache(skelcacheentry &sc, int owner);
+        vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
+        blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
         //hitzone
         void cleanuphitdata();
         void deletehitdata();

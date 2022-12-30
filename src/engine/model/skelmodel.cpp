@@ -1358,12 +1358,12 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v)
     } \
     return cache[cachesize-1];
 
-skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(skelcacheentry &sc, int owner)
+skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(const skelcacheentry &sc, int owner)
 {
     SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
 }
 
-skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcacheentry &sc, int owner)
+skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skelcacheentry &sc, int owner)
 {
     SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
 }
