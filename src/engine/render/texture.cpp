@@ -1806,7 +1806,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
     return true;
 }
 
-VSlot *findvslot(Slot &slot, const VSlot &src, const VSlot &delta)
+VSlot *findvslot(const Slot &slot, const VSlot &src, const VSlot &delta)
 {
     for(VSlot *dst = slot.variants; dst; dst = dst->next)
     {
