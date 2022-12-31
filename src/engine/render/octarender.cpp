@@ -1571,7 +1571,7 @@ namespace
         --neighbordepth;
     }
 
-    void gencubeverts(cube &c, const ivec &co, int size)
+    void gencubeverts(const cube &c, const ivec &co, int size)
     {
         if(!(c.visible&0xC0))
         {
