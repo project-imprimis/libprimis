@@ -541,14 +541,14 @@ void renderwaterfalls()
 {
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = waterfallsurfs[k];
+        const std::vector<materialsurface> &surfs = waterfallsurfs[k];
         if(surfs.empty())
         {
             continue;
         }
-        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
+        const MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.size() > 2 ? wslot.sts[2].t : (wslot.sts.size() ? wslot.sts[0].t : notexture);
+        const Texture *tex = wslot.sts.size() > 2 ? wslot.sts[2].t : (wslot.sts.size() ? wslot.sts[0].t : notexture);
         float angle = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
         s *= 8 - std::fabs(s)*16;
@@ -581,7 +581,7 @@ void renderwaterfalls()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
         glActiveTexture(GL_TEXTURE0);
-        for(materialsurface& m : surfs)
+        for(const materialsurface& m : surfs)
         {
             renderwaterfall(m, 0.1f, matnormals(m.orient));
         }
