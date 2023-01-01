@@ -26,7 +26,7 @@ var iengine_8h =
     [ "detachentity", "iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1", null ],
     [ "disablepolygonoffset", "iengine_8h.html#a28922cb2d03164846434602c0c870b4f", null ],
     [ "disablezoom", "iengine_8h.html#a22c96f585456f856035322b5bb4a6169", null ],
-    [ "drawminimap", "iengine_8h.html#af0178542cfb4893bbdc375c1d2da7adb", null ],
+    [ "drawminimap", "iengine_8h.html#a6412efa5c44b1df2a377f92491c4b1c5", null ],
     [ "dropenttofloor", "iengine_8h.html#a0ad347f2277926b638e58f460536b2b8", null ],
     [ "edittexcube", "iengine_8h.html#affcfb00260ac3ea3762dfed37eef8097", null ],
     [ "enablepolygonoffset", "iengine_8h.html#ab95034437a216ed552b80a0f260dbf1e", null ],
