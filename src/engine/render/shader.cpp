@@ -623,18 +623,18 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
 #define SETSLOTPARAMS(slotparams) \
     for(uint i = 0; i < slotparams.size(); i++) \
     { \
-        SlotShaderParam &p = slotparams[i]; \
+        SlotShaderParam &p = slotparams.at(i); \
         if(!(static_cast<int>(defaultparams.size()) > p.loc)) \
         { \
             continue; \
         } \
-        SlotShaderParamState &l = defaultparams[p.loc]; \
+        SlotShaderParamState &l = defaultparams.at(p.loc); \
         SETSLOTPARAM(l, unimask, p.loc, p.val); \
     }
 #define SETDEFAULTPARAMS \
     for(uint i = 0; i < defaultparams.size(); i++) \
     { \
-        SlotShaderParamState &l = defaultparams[i]; \
+        SlotShaderParamState &l = defaultparams.at(i); \
         SETSLOTPARAM(l, unimask, i, l.val); \
     }
 
@@ -832,12 +832,11 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
         SETSLOTPARAMS(vslot.params)
         for(uint i = 0; i < slot.params.size(); i++)
         {
-            SlotShaderParam &p = slot.params[i];
+            SlotShaderParam &p = slot.params.at(i);
             if(!(static_cast<int>(defaultparams.size()) > p.loc))
             {
                 continue;
             }
-            SlotShaderParamState &l = defaultparams[p.loc];
             if(p.loc < 0)
             {
                 if(!thrown)
@@ -848,6 +847,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
             }
             else if(!(unimask&(1<<p.loc)))
             {
+                SlotShaderParamState &l = defaultparams.at(p.loc);
                 unimask |= 1<<p.loc;
                 setslotparam(l, p.val);
             }
@@ -859,7 +859,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
         SETSLOTPARAMS(slot.params)
         for(uint i = 0; i < defaultparams.size(); i++)
         {
-            SlotShaderParamState &l = defaultparams[i];
+            SlotShaderParamState &l = defaultparams.at(i);
             SETSLOTPARAM(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
         }
     }
