@@ -1281,9 +1281,9 @@ int drawtex = 0;
 /* =========================== minimap functionality ======================== */
 
 static GLuint minimaptex = 0;
-vec minimapcenter(0, 0, 0),
-    minimapradius(0, 0, 0),
-    minimapscale(0, 0, 0);
+static vec minimapcenter(0, 0, 0),
+           minimapradius(0, 0, 0),
+           minimapscale(0, 0, 0);
 
 float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
 {
