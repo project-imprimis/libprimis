@@ -1505,7 +1505,7 @@ namespace
             void changebatchtmus();
             void bindslottex(int type, const Texture *tex, GLenum target = GL_TEXTURE_2D);
             void changeslottmus(DecalSlot &slot);
-            void changeshader(int pass, decalbatch &b);
+            void changeshader(int pass, const decalbatch &b);
     };
 
     void mergedecals(const vtxarray &va)
@@ -1675,7 +1675,7 @@ namespace
         slot = &dslot;
     }
 
-    void decalrenderer::changeshader(int pass, decalbatch &b)
+    void decalrenderer::changeshader(int pass, const decalbatch &b)
     {
         DecalSlot &slot = b.slot;
         if(b.es.reuse)
