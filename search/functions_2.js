@@ -12,7 +12,7 @@ var searchData=
   ['cleanupva_9',['cleanupva',['../classcubeworld.html#a445b1bb007a38a2449bac939748c0d92',1,'cubeworld']]],
   ['clear_5fconsole_10',['clear_console',['../iengine_8h.html#a3cffe15b7e5d10a108f1734a9640a2c7',1,'iengine.h']]],
   ['clear_5fmodels_11',['clear_models',['../iengine_8h.html#a7ea6b77f12dede55eb7098cf756e7679',1,'iengine.h']]],
-  ['clear_5fsound_12',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
+  ['clear_5fsound_12',['clear_sound',['../classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e',1,'SoundEngine']]],
   ['cleargamma_13',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
   ['clearmapcrc_14',['clearmapcrc',['../classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070',1,'cubeworld']]],
   ['clearshadowcache_15',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],

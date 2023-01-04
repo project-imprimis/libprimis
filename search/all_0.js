@@ -10,10 +10,12 @@ var searchData=
   ['addcommand_7',['addcommand',['../command_8h.html#a843cea4bbdaf36111b913f0fb86a5662',1,'command.h']]],
   ['addundo_8',['addundo',['../iengine_8h.html#af97643af5b0551175e77ee18cf64256a',1,'iengine.h']]],
   ['addw_9',['addw',['../structvec4.html#a5debeec4c3d94b10d78d39d5f4be241b',1,'vec4']]],
-  ['animinfo_10',['animinfo',['../structaniminfo.html',1,'']]],
-  ['animinterpinfo_11',['animinterpinfo',['../structaniminterpinfo.html',1,'']]],
-  ['animnames_12',['animnames',['../iengine_8h.html#afdd20b46ef682bee2391dc9887e4ddc3',1,'iengine.h']]],
-  ['attachentities_13',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
-  ['attachentity_14',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
-  ['attr5_15',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]]
+  ['altmapsound_10',['altmapsound',['../classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8',1,'SoundEngine']]],
+  ['altsound_11',['altsound',['../classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a',1,'SoundEngine']]],
+  ['animinfo_12',['animinfo',['../structaniminfo.html',1,'']]],
+  ['animinterpinfo_13',['animinterpinfo',['../structaniminterpinfo.html',1,'']]],
+  ['animnames_14',['animnames',['../iengine_8h.html#afdd20b46ef682bee2391dc9887e4ddc3',1,'iengine.h']]],
+  ['attachentities_15',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
+  ['attachentity_16',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
+  ['attr5_17',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]]
 ];

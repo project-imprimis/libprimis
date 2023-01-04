@@ -11,9 +11,15 @@ var searchData=
   ['getlogfile_8',['getlogfile',['../iengine_8h.html#a0a82fc64832d47c406b0ea6be4d162f7',1,'iengine.h']]],
   ['getmapcrc_9',['getmapcrc',['../classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1',1,'cubeworld']]],
   ['getmaterial_10',['getmaterial',['../iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e',1,'iengine.h']]],
-  ['gl_5fcheckextensions_11',['gl_checkextensions',['../iengine_8h.html#a68b24a3cbcf84d995697c41934dc74d6',1,'iengine.h']]],
-  ['gl_5fdrawframe_12',['gl_drawframe',['../iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629',1,'iengine.h']]],
-  ['gl_5finit_13',['gl_init',['../iengine_8h.html#acc19403a720bda8d74dcad7109f33a79',1,'iengine.h']]],
-  ['gl_5fresize_14',['gl_resize',['../iengine_8h.html#a444f839aefe4337c63821a9a5953a067',1,'iengine.h']]],
-  ['gl_5fsetupframe_15',['gl_setupframe',['../iengine_8h.html#a32f3b0225eb75fb287a510e709f8b82e',1,'iengine.h']]]
+  ['getmaxradius_11',['getmaxradius',['../classSoundEngine.html#affc9e12d3ecefce4bb87e0a4580c2a08',1,'SoundEngine']]],
+  ['getmusicvol_12',['getmusicvol',['../classSoundEngine.html#aab239c1a4af55d26ca06f20f87a88d1d',1,'SoundEngine']]],
+  ['getsound_13',['getsound',['../classSoundEngine.html#ab17185ed263fd9af0c97b2efd1fc7137',1,'SoundEngine']]],
+  ['getsoundchans_14',['getsoundchans',['../classSoundEngine.html#a866ebe588b0fc9cd41313a07414ef2e5',1,'SoundEngine']]],
+  ['getsoundvol_15',['getsoundvol',['../classSoundEngine.html#a9f6eeb82d4a5c75f4254db69078e8bea',1,'SoundEngine']]],
+  ['getstereo_16',['getstereo',['../classSoundEngine.html#aefa9fa93a16745fa97e24dfbb00a41a8',1,'SoundEngine']]],
+  ['gl_5fcheckextensions_17',['gl_checkextensions',['../iengine_8h.html#a68b24a3cbcf84d995697c41934dc74d6',1,'iengine.h']]],
+  ['gl_5fdrawframe_18',['gl_drawframe',['../iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629',1,'iengine.h']]],
+  ['gl_5finit_19',['gl_init',['../iengine_8h.html#acc19403a720bda8d74dcad7109f33a79',1,'iengine.h']]],
+  ['gl_5fresize_20',['gl_resize',['../iengine_8h.html#a444f839aefe4337c63821a9a5953a067',1,'iengine.h']]],
+  ['gl_5fsetupframe_21',['gl_setupframe',['../iengine_8h.html#a32f3b0225eb75fb287a510e709f8b82e',1,'iengine.h']]]
 ];

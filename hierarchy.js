@@ -33,6 +33,7 @@ var hierarchy =
       [ "DecalSlot", "structDecalSlot.html", null ]
     ] ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
+    [ "SoundEngine", "classSoundEngine.html", null ],
     [ "stream", "structstream.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "Slot::Tex", "structSlot_1_1Tex.html", null ],

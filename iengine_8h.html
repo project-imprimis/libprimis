@@ -228,36 +228,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>menuprocess</b> ()</t
 <tr class="separator:a4f73863c62770026706fd0a863e36e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a335eb34dc97ba437441552260d778844"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a335eb34dc97ba437441552260d778844">initmenuscmds</a> ()</td></tr>
 <tr class="separator:a335eb34dc97ba437441552260d778844"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0648e225e7e419257b098595733c4220"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a0648e225e7e419257b098595733c4220">initsoundcmds</a> ()</td></tr>
-<tr class="memdesc:a0648e225e7e419257b098595733c4220"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes sound Cubescript commands.  <br /></td></tr>
-<tr class="separator:a0648e225e7e419257b098595733c4220"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a0596fee228e89becb6a6fa6f332ff7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a8a0596fee228e89becb6a6fa6f332ff7">playsound</a> (int n, const <a class="el" href="structvec.html">vec</a> *loc=nullptr, <a class="el" href="structextentity.html">extentity</a> *ent=nullptr, int flags=0, int loops=0, int fade=0, int chanid=-1, int radius=0, int expire=-1)</td></tr>
-<tr class="memdesc:a8a0596fee228e89becb6a6fa6f332ff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plays a sound with the given attributes.  <br /></td></tr>
-<tr class="separator:a8a0596fee228e89becb6a6fa6f332ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5ac73b888445708898fd13a64eb962a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ad5ac73b888445708898fd13a64eb962a">playsoundname</a> (const char *s, const <a class="el" href="structvec.html">vec</a> *loc=nullptr, int vol=0, int flags=0, int loops=0, int fade=0, int chanid=-1, int radius=0, int expire=-1)</td></tr>
-<tr class="memdesc:ad5ac73b888445708898fd13a64eb962a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plays a sound with the given attributes.  <br /></td></tr>
-<tr class="separator:ad5ac73b888445708898fd13a64eb962a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1818b1ca072ccbf853d44dd14207b4c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a1818b1ca072ccbf853d44dd14207b4c3">preloadsound</a> (int n)</td></tr>
-<tr class="memdesc:a1818b1ca072ccbf853d44dd14207b4c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the approriate sound file at the given index.  <br /></td></tr>
-<tr class="separator:a1818b1ca072ccbf853d44dd14207b4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca26d065305827e779529ea0defbd54d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aca26d065305827e779529ea0defbd54d">preloadmapsounds</a> ()</td></tr>
-<tr class="memdesc:aca26d065305827e779529ea0defbd54d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the sounds for every element in the map sounds vector.  <br /></td></tr>
-<tr class="separator:aca26d065305827e779529ea0defbd54d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae9922a13a2b42ba5c093ae7f53f43e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aae9922a13a2b42ba5c093ae7f53f43e6">stopsound</a> (int n, int chanid, int fade=0)</td></tr>
-<tr class="memdesc:aae9922a13a2b42ba5c093ae7f53f43e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops playing a sound of index n in the specificied channel.  <br /></td></tr>
-<tr class="separator:aae9922a13a2b42ba5c093ae7f53f43e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a507031a90887d8f0ec5123f5ac53d3b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a507031a90887d8f0ec5123f5ac53d3b9">stopsounds</a> ()</td></tr>
-<tr class="memdesc:a507031a90887d8f0ec5123f5ac53d3b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Immediately kills all active sounds.  <br /></td></tr>
-<tr class="separator:a507031a90887d8f0ec5123f5ac53d3b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f6f31af749d7c6f20319e004dccedf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a1f6f31af749d7c6f20319e004dccedf7">initsound</a> ()</td></tr>
-<tr class="memdesc:a1f6f31af749d7c6f20319e004dccedf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts SDL_Mixer and initializes startup sound channels.  <br /></td></tr>
-<tr class="separator:a1f6f31af749d7c6f20319e004dccedf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac653f024a647e5f7a6b76924fa0b1f21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ac653f024a647e5f7a6b76924fa0b1f21">updatesounds</a> ()</td></tr>
-<tr class="memdesc:ac653f024a647e5f7a6b76924fa0b1f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restarts and updates all sound indices.  <br /></td></tr>
-<tr class="separator:ac653f024a647e5f7a6b76924fa0b1f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:accdda0ec78bdb369b1e7bf8df2b611ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff">clear_sound</a> ()</td></tr>
-<tr class="memdesc:accdda0ec78bdb369b1e7bf8df2b611ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down sound system.  <br /></td></tr>
-<tr class="separator:accdda0ec78bdb369b1e7bf8df2b611ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adda9e606682fce0834745c4df169815f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#adda9e606682fce0834745c4df169815f">inittextcmds</a> ()</td></tr>
 <tr class="memdesc:adda9e606682fce0834745c4df169815f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes textedit cubescript commands.  <br /></td></tr>
 <tr class="separator:adda9e606682fce0834745c4df169815f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1459,26 +1429,6 @@ std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#
 
 <p>Clears all loaded models' basic information. </p>
 <p>Clears the model information from its associated hashmap. Does not clear preloaded model information. </p>
-
-</div>
-</div>
-<a id="accdda0ec78bdb369b1e7bf8df2b611ff" name="accdda0ec78bdb369b1e7bf8df2b611ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#accdda0ec78bdb369b1e7bf8df2b611ff">&#9670;&#160;</a></span>clear_sound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void clear_sound </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Shuts down sound system. </p>
-<p>Stops playing any active music, cleans up game and map sound vectors, and shuts down SDL_Mixer. </p>
 
 </div>
 </div>
@@ -3234,56 +3184,6 @@ false if the window was not previously shown or did not exist </dd></dl>
 
 </div>
 </div>
-<a id="a1f6f31af749d7c6f20319e004dccedf7" name="a1f6f31af749d7c6f20319e004dccedf7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f6f31af749d7c6f20319e004dccedf7">&#9670;&#160;</a></span>initsound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void initsound </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Starts SDL_Mixer and initializes startup sound channels. </p>
-<p>Fails and disables sound output if SDL is v2.0.6. </p>
-
-</div>
-</div>
-<a id="a0648e225e7e419257b098595733c4220" name="a0648e225e7e419257b098595733c4220"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0648e225e7e419257b098595733c4220">&#9670;&#160;</a></span>initsoundcmds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void initsoundcmds </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initializes sound Cubescript commands. </p>
-<p><code>music</code></p>
-<p><code>playsound</code></p>
-<p><code>resetsound</code></p>
-<p><code>registersound</code></p>
-<p><code>mapsound</code></p>
-<p><code>altsound</code></p>
-<p><code>altmapsound</code></p>
-<p><code>numsounds</code></p>
-<p><code>nummapsounds</code></p>
-<p><code>soundreset</code></p>
-<p><code>mapsoundreset</code> </p>
-
-</div>
-</div>
 <a id="aa31e3758c7277c026c3c241156abc909" name="aa31e3758c7277c026c3c241156abc909"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa31e3758c7277c026c3c241156abc909">&#9670;&#160;</a></span>initstains()</h2>
 
@@ -4077,178 +3977,6 @@ false if the vector is outside the world </dd></dl>
 
 </div>
 </div>
-<a id="a8a0596fee228e89becb6a6fa6f332ff7" name="a8a0596fee228e89becb6a6fa6f332ff7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a0596fee228e89becb6a6fa6f332ff7">&#9670;&#160;</a></span>playsound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int playsound </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> *&#160;</td>
-          <td class="paramname"><em>loc</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structextentity.html">extentity</a> *&#160;</td>
-          <td class="paramname"><em>ent</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>loops</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fade</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>chanid</em> = <code>-1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>radius</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>expire</em> = <code>-1</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Plays a sound with the given attributes. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">n</td><td>index of the sound to play </td></tr>
-    <tr><td class="paramname">loc</td><td>world location to play at </td></tr>
-    <tr><td class="paramname">ent</td><td>entity to associate with (overwrites location) </td></tr>
-    <tr><td class="paramname">flags</td><td>music option flags </td></tr>
-    <tr><td class="paramname">loops</td><td>number of times to loop </td></tr>
-    <tr><td class="paramname">fade</td><td>ms to fade in over </td></tr>
-    <tr><td class="paramname">chanid</td><td>music channel index to use </td></tr>
-    <tr><td class="paramname">radius</td><td>distance over which sound is audible (in size 0 cubes) </td></tr>
-    <tr><td class="paramname">expire</td><td>maximum time before the sound stops playing </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad5ac73b888445708898fd13a64eb962a" name="ad5ac73b888445708898fd13a64eb962a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5ac73b888445708898fd13a64eb962a">&#9670;&#160;</a></span>playsoundname()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int playsoundname </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> *&#160;</td>
-          <td class="paramname"><em>loc</em> = <code>nullptr</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>vol</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>loops</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fade</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>chanid</em> = <code>-1</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>radius</em> = <code>0</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>expire</em> = <code>-1</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Plays a sound with the given attributes. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>name of the sound to play </td></tr>
-    <tr><td class="paramname">loc</td><td>world location to play at </td></tr>
-    <tr><td class="paramname">ent</td><td>entity to associate with (overwrites location) </td></tr>
-    <tr><td class="paramname">flags</td><td>music option flags </td></tr>
-    <tr><td class="paramname">loops</td><td>number of times to loop </td></tr>
-    <tr><td class="paramname">fade</td><td>ms to fade in over </td></tr>
-    <tr><td class="paramname">chanid</td><td>music channel index to use </td></tr>
-    <tr><td class="paramname">radius</td><td>distance over which sound is audible (in size 0 cubes) </td></tr>
-    <tr><td class="paramname">expire</td><td>maximum time before the sound stops playing </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="ad0e8b74def0ed6a4b978838e037bd8be" name="ad0e8b74def0ed6a4b978838e037bd8be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0e8b74def0ed6a4b978838e037bd8be">&#9670;&#160;</a></span>pointinsel()</h2>
 
@@ -4290,26 +4018,6 @@ false if the vector is outside the selinfo object </dd></dl>
 
 </div>
 </div>
-<a id="aca26d065305827e779529ea0defbd54d" name="aca26d065305827e779529ea0defbd54d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca26d065305827e779529ea0defbd54d">&#9670;&#160;</a></span>preloadmapsounds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void preloadmapsounds </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads the sounds for every element in the map sounds vector. </p>
-<p>Loads the related sound file for every valid map sound index (map entity sounds). </p>
-
-</div>
-</div>
 <a id="a6ccc97006f72d0364cad7ca6ccd8eedc" name="a6ccc97006f72d0364cad7ca6ccd8eedc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6ccc97006f72d0364cad7ca6ccd8eedc">&#9670;&#160;</a></span>preloadmodel()</h2>
 
@@ -4328,33 +4036,6 @@ false if the vector is outside the selinfo object </dd></dl>
 
 <p>Adds a model to the cache of models to load. </p>
 <p>When <a class="el" href="iengine_8h.html#a95b4e3078d70b43f1c604cf664003190" title="Clears the loaded model cache.">flushpreloadedmodels()</a> is called, the entries added to the preloadedmodels vector by this function are loaded. Silently fails and does nothing if the model name passed is not valid or already exists in the vector. </p>
-
-</div>
-</div>
-<a id="a1818b1ca072ccbf853d44dd14207b4c3" name="a1818b1ca072ccbf853d44dd14207b4c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1818b1ca072ccbf853d44dd14207b4c3">&#9670;&#160;</a></span>preloadsound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void preloadsound </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads the approriate sound file at the given index. </p>
-<p>Fails silently if index is invalid.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">n</td><td>the sound index to use </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -5021,70 +4702,6 @@ false if the window was hidden, or if no window exists </dd></dl>
 
 </div>
 </div>
-<a id="aae9922a13a2b42ba5c093ae7f53f43e6" name="aae9922a13a2b42ba5c093ae7f53f43e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae9922a13a2b42ba5c093ae7f53f43e6">&#9670;&#160;</a></span>stopsound()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool stopsound </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>chanid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fade</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Stops playing a sound of index n in the specificied channel. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">n</td><td>the sound index to stop playing </td></tr>
-    <tr><td class="paramname">chanid</td><td>the channel id to use </td></tr>
-    <tr><td class="paramname">fade</td><td>milliseconds to spend fading out the sound </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a507031a90887d8f0ec5123f5ac53d3b9" name="a507031a90887d8f0ec5123f5ac53d3b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a507031a90887d8f0ec5123f5ac53d3b9">&#9670;&#160;</a></span>stopsounds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void stopsounds </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Immediately kills all active sounds. </p>
-<p>Halts all sound channels in use and frees them. </p>
-
-</div>
-</div>
 <a id="aef6750cb30230be48e99f7298276e1f1" name="aef6750cb30230be48e99f7298276e1f1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef6750cb30230be48e99f7298276e1f1">&#9670;&#160;</a></span>swapbuffers()</h2>
 
@@ -5190,26 +4807,6 @@ false if the window does not exist or is closed </dd></dl>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="ac653f024a647e5f7a6b76924fa0b1f21" name="ac653f024a647e5f7a6b76924fa0b1f21"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac653f024a647e5f7a6b76924fa0b1f21">&#9670;&#160;</a></span>updatesounds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void updatesounds </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Restarts and updates all sound indices. </p>
-<p>Pauses, reloads, and resumes playback of all active sounds. Does not play sounds if on the main menu. </p>
 
 </div>
 </div>

@@ -8,6 +8,8 @@ var searchData=
   ['addcommand_5',['addcommand',['../command_8h.html#a843cea4bbdaf36111b913f0fb86a5662',1,'command.h']]],
   ['addundo_6',['addundo',['../iengine_8h.html#af97643af5b0551175e77ee18cf64256a',1,'iengine.h']]],
   ['addw_7',['addw',['../structvec4.html#a5debeec4c3d94b10d78d39d5f4be241b',1,'vec4']]],
-  ['attachentities_8',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
-  ['attachentity_9',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]]
+  ['altmapsound_8',['altmapsound',['../classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8',1,'SoundEngine']]],
+  ['altsound_9',['altsound',['../classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a',1,'SoundEngine']]],
+  ['attachentities_10',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
+  ['attachentity_11',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]]
 ];

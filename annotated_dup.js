@@ -27,6 +27,7 @@ var annotated_dup =
     [ "selinfo", "structselinfo.html", "structselinfo" ],
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
+    [ "SoundEngine", "classSoundEngine.html", "classSoundEngine" ],
     [ "stream", "structstream.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "tagval", "structtagval.html", null ],
