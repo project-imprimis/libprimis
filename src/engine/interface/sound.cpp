@@ -19,11 +19,9 @@ SoundEngine::SoundEngine() : gamesounds("game/", *this), mapsounds("mapsound/", 
 {
 }
 
-SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(nullptr), chunk(nullptr) {}
+SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), chunk(nullptr) {}
 SoundEngine::SoundSample::~SoundSample()
 {
-    delete[] name;
-    name = nullptr;
 }
 
 void SoundEngine::SoundSample::cleanup()
@@ -488,7 +486,7 @@ bool SoundEngine::SoundSample::load(const char *dir)
     {
         return true;
     }
-    if(!name[0])
+    if(!name.size())
     {
         return false;
     }
@@ -496,7 +494,7 @@ bool SoundEngine::SoundSample::load(const char *dir)
     string filename;
     for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
     {
-        formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
+        formatstring(filename, "media/sound/%s%s%s", dir, name.c_str(), exts[i]);
         path(filename);
         chunk = parent->loadwav(filename);
         if(chunk)
@@ -504,7 +502,7 @@ bool SoundEngine::SoundSample::load(const char *dir)
             return true;
         }
     }
-    conoutf(Console_Error, "failed to load sample: media/sound/%s%s", dir, name);
+    conoutf(Console_Error, "failed to load sample: media/sound/%s%s", dir, name.c_str());
     return false;
 }
 
@@ -519,7 +517,7 @@ int SoundEngine::SoundType::findsound(const char *name, int vol)
         for(int j = 0; j < s.numslots; ++j)
         {
             soundslot &c = slots[s.slots+j];
-            if(!std::strcmp(c.sample->name, name) && (!vol || c.volume==vol))
+            if(!std::strcmp(c.sample->name.c_str(), name) && (!vol || c.volume==vol))
             {
                 return i;
             }
@@ -533,11 +531,11 @@ int SoundEngine::SoundType::addslot(const char *name, int vol)
     auto itr = samples.find(std::string(name));
     if(itr == samples.end())
     {
-        char *n = newstring(name);
-        SoundSample &s = samples.find(n)->second;
-        sample = &s;
-        s.name = n;
+        SoundSample s(*parent);
+        s.name = std::string(name);
         s.chunk = nullptr;
+        samples.insert(std::pair<std::string, SoundSample>(std::string(name), s));
+        itr = samples.find(std::string(name));
     }
     else
     {
@@ -565,13 +563,14 @@ int SoundEngine::SoundType::addslot(const char *name, int vol)
 }
 int SoundEngine::SoundType::addsound(const char *name, int vol, int maxuses)
 {
-    configs.emplace_back();
-    SoundConfig &s = configs.back();
+    SoundConfig s;
     s.slots = addslot(name, vol);
     s.numslots = 1;
     s.maxuses = maxuses;
+    configs.push_back(s);
     return configs.size()-1;
 }
+
 void SoundEngine::SoundType::addalt(const char *name, int vol)
 {
     if(configs.empty())
@@ -900,7 +899,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     }
     if(debugsound)
     {
-        conoutf("sound: %s%s", sounds.dir, slot.sample->name);
+        conoutf("sound: %s%s", sounds.dir, slot.sample->name.c_str());
     }
     chanid = -1;
     for(uint i = 0; i < channels.size(); i++)
@@ -968,7 +967,7 @@ bool SoundEngine::stopsound(int n, int chanid, int fade)
     }
     if(debugsound)
     {
-        conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
+        conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name.c_str());
     }
     if(!fade || !Mix_FadeOutChannel(chanid, fade)) //clear and free channel allocation
     {
