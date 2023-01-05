@@ -230,10 +230,19 @@ static void checkmousemotion(int &dx, int &dy)
     }
 }
 
+
 //handle different input types
 // map: which keymap to map the pressed key to
 void checkinput(int map)
 {
+    constexpr int minthreshhold = 5000; // minimum value to register inputs
+    constexpr int maxthreshhold = 27000; // maximum value to register inputs to triggers
+    constexpr int strafethreshhold = 16384; //value when to assign movement in strafe pad
+    constexpr int inverseindex = 16;
+    //carry over joystick states
+    static vec2 lpad;
+    static vec2 rpad;
+    static vec2 triggers; //x = left, y = right
     SDL_Event event;
     bool mousemoved = false;
     while(events.size() || pollevent(event))
@@ -394,7 +403,93 @@ void checkinput(int map)
                 }
                 break;
             }
+            case SDL_CONTROLLERBUTTONDOWN:
+            case SDL_CONTROLLERBUTTONUP:
+            {
+                processkey(event.cbutton.button + (1<<29), event.cbutton.state == SDL_PRESSED, map); //1<<30 is used for non-char keybinds, 1<<29 is an unused part of the namespace
+                break;
+            }
+            case SDL_CONTROLLERAXISMOTION:
+            {
+                int axis = event.caxis.axis;
+                int value = event.caxis.value;
+                switch(axis)
+                {
+                    case 0: //left x axis
+                        //these processkeys will push back 1<<28 to keep out of the way of other binds
+                        if(lpad.x >= strafethreshhold)
+                        {
+                            processkey(axis + (1<<28), true, map); //strafe in +x direction
+                        }
+                        else if(lpad.x <= -strafethreshhold)
+                        {
+                            processkey(axis + (1<<28) + inverseindex, true, map); //-x dir
+                        }
+                        else //no input
+                        {
+                            processkey(axis + (1<<28), false, map);
+                            processkey(axis + (1<<28) + inverseindex, false, map);
+                        }
+                        lpad.x = value;
+                        break;
+                    case 1: //left y axis
+                        //these processkeys will push back 1<<28 to keep out of the way of other binds
+                        if(lpad.y >= strafethreshhold)
+                        {
+                            processkey(axis + (1<<28), true, map);
+                        }
+                        else if(lpad.y <= -strafethreshhold)
+                        {
+                            processkey(axis + (1<<28) + inverseindex, true, map);
+                        }
+                        else
+                        {
+                            processkey(axis + (1<<28), false, map);
+                            processkey(axis + (1<<28) + inverseindex, false, map);
+                        }
+                        lpad.y = value;
+                        break;
+                    case 2: //right x axis
+                        rpad.x = value;
+                        break;
+                    case 3: //right y axis
+                        rpad.y = value;
+                        break;
+                    case 4: //left trigger
+                        //these processkeys will push back 1<<28 to keep out of the way of other binds
+                        if(triggers.x >= minthreshhold && value < minthreshhold)
+                        {
+                            processkey(axis + (1<<28), false, map); //left trigger has been unpressed
+                        }
+                        else if(triggers.x <= maxthreshhold && value > maxthreshhold)
+                        {
+                            processkey(axis + (1<<28), true, map); //left trigger has been pressed
+                        }
+                        triggers.x = value;
+                        break;
+                    case 5: //right trigger
+                        if(triggers.y >= minthreshhold && value < minthreshhold)
+                        {
+                            processkey(axis + (1<<28), false, map); //right trigger has been unpressed
+                        }
+                        else if(triggers.y <= maxthreshhold && value > maxthreshhold)
+                        {
+                            processkey(axis + (1<<28), true, map); //right trigger has been pressed
+                        }
+                        triggers.y = value;
+                }
+                break;
+            }
         }
+    }
+    { //scoping brakets
+        static int oldmillis;
+        int delta = lastmillis-oldmillis;
+        if(std::abs(rpad.x) > 5000 || std::abs(rpad.y) > 5000)
+        {
+            mousemove(delta*rpad.x/25000, delta*rpad.y/25000);
+        }
+        oldmillis = lastmillis;
     }
     if(mousemoved)
     {

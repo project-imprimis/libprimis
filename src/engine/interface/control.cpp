@@ -72,7 +72,7 @@ FILE *getlogfile()
  */
 bool initsdl()
 {
-    return (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0 ? false : true);
+    return (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_GAMECONTROLLER) < 0 ? false : true);
 }
 
 void logoutfv(const char *fmt, va_list args, FILE *f)

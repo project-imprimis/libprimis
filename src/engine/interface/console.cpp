@@ -294,7 +294,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(128);
+    hashtable<int, KeyM> keyms(256);
 
     void keymap(int *code, char *key)
     {
