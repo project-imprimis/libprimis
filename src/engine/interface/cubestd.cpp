@@ -265,9 +265,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                 case Value_Float:
                 case Value_Integer:
                 {
-                    char temp[100];
-                    sprintf(temp, "%s = [%s]\n", escapeid(id), id.getstr());
-                    f << temp;
+                    f << escapeid(id) << " = [" << id.getstr() << "]" << std::endl;
                     break;
                 }
             }
