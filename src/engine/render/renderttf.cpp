@@ -43,9 +43,8 @@ void TTFRenderer::openfont(const char * inpath, int size)
     path = inpath;
 }
 
-void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap) const
+std::string TTFRenderer::trimstring(std::string msg) const
 {
-    std::string msg = std::string(message);
     for(;;)
     {
         size_t itr = msg.find("^f");
@@ -58,10 +57,20 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
             break;
         }
     }
+    return msg;
+}
+
+void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, float scale, uint wrap) const
+{
+    std::string msg = std::string(message);
+
     if(!msg.size())
     {
         return;
     }
+
+    msg = trimstring(msg);
+
     TTFSurface tex = renderttfgl(msg.c_str(), col, x, y, wrap);
     if(tex.tex)
     {
@@ -98,8 +107,13 @@ void TTFRenderer::ttfbounds(const char *str, float &width, float &height)
 
 ivec2 TTFRenderer::ttfsize(const char* message)
 {
+    if(!std::strlen(message))
+    {
+        return ivec2(0,0);
+    }
+    std::string msg = trimstring(std::string(message));
     ivec2 size;
-    TTF_SizeUTF8(f, message, &size.x, &size.y);
+    TTF_SizeUTF8(f, msg.c_str(), &size.x, &size.y);
     return size;
 }
 
