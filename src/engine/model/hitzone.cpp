@@ -291,7 +291,7 @@ void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const v
     }
 }
 
-void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax)
+void skelbih::build(const skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax)
 {
     int axis = 2;
     for(int k = 0; k < 2; ++k)
@@ -313,7 +313,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         for(left = 0, right = numindices, splitleft = SHRT_MIN, splitright = SHRT_MAX; left < right;)
         {
             tri &tri = tris[indices[left]];
-            skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
+            const skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
