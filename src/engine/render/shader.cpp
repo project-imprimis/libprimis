@@ -621,19 +621,20 @@ static void setslotparam(const SlotShaderParamState& l, uint& mask, uint i, cons
     }
 }
 
-//=============================================== SETSLOTPARAMS SETDEFAULTPARAMS
-
-#define SETSLOTPARAMS(slotparams) \
-    for(uint i = 0; i < slotparams.size(); i++) \
-    { \
-        const SlotShaderParam &p = slotparams.at(i); \
-        if(!(static_cast<int>(defaultparams.size()) > p.loc)) \
-        { \
-            continue; \
-        } \
-        SlotShaderParamState &l = defaultparams.at(p.loc); \
-        setslotparam(l, unimask, p.loc, p.val); \
+static void setslotparams(const std::vector<SlotShaderParam>& p, uint& unimask, const std::vector<SlotShaderParamState>& defaultparams)
+{
+    for(SlotShaderParam &p : slotparams)
+    {
+        if(!(static_cast<int>(defaultparams.size()) > p.loc))
+        {
+            continue;
+        }
+        const SlotShaderParamState &l = defaultparams.at(p.loc);
+        setslotparam(l, unimask, p.loc, p.val);
     }
+}
+//============================================================= SETDEFAULTPARAMS
+
 #define SETDEFAULTPARAMS \
     for(uint i = 0; i < defaultparams.size(); i++) \
     { \
@@ -822,7 +823,7 @@ void Shader::set(Slot &slot, VSlot &vslot)
 void Shader::setslotparams(Slot &slot)
 {
     uint unimask = 0;
-    SETSLOTPARAMS(slot.params)
+    ::setslotparams(slot.params, unimask, defaultparams);
     SETDEFAULTPARAMS
 }
 
@@ -832,7 +833,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
     uint unimask = 0;
     if(vslot.slot == &slot)
     {
-        SETSLOTPARAMS(vslot.params)
+        ::setslotparams(vslot.params, unimask, defaultparams);
         for(uint i = 0; i < slot.params.size(); i++)
         {
             SlotShaderParam &p = slot.params.at(i);
@@ -859,7 +860,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
     }
     else
     {
-        SETSLOTPARAMS(slot.params)
+        ::setslotparams(slot.params, unimask, defaultparams);
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             SlotShaderParamState &l = defaultparams.at(i);
@@ -867,7 +868,6 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         }
     }
 }
-#undef SETSLOTPARAMS
 #undef SETDEFAULTPARAMS
 //==============================================================================
 void Shader::bindprograms()
