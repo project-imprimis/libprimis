@@ -623,7 +623,7 @@ static void setslotparam(const SlotShaderParamState& l, uint& mask, uint i, cons
 
 static void setslotparams(const std::vector<SlotShaderParam>& p, uint& unimask, const std::vector<SlotShaderParamState>& defaultparams)
 {
-    for(SlotShaderParam &p : slotparams)
+    for(const SlotShaderParam &p : slotparams)
     {
         if(!(static_cast<int>(defaultparams.size()) > p.loc))
         {
