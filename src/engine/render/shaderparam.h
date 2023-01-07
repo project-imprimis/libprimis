@@ -134,7 +134,7 @@ class Shader
         bool used;
         void allocparams();
         void setslotparams(Slot &slot);
-        void setslotparams(Slot &slot, VSlot &vslot);
+        void setslotparams(Slot &slot, const VSlot &vslot);
         void bindprograms();
         void setvariant_(int col, int row);
         void set_();

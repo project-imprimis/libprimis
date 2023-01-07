@@ -541,7 +541,7 @@ static const float *findslotparam(const VSlot &s, const char *name, float *noval
     return findslotparam(*s.slot, name, noval);
 }
 
-static void setslotparam(SlotShaderParamState &l, const float *val)
+static void setslotparam(const SlotShaderParamState &l, const float *val)
 {
     switch(l.format)
     {
@@ -623,7 +623,7 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
 #define SETSLOTPARAMS(slotparams) \
     for(uint i = 0; i < slotparams.size(); i++) \
     { \
-        SlotShaderParam &p = slotparams.at(i); \
+        const SlotShaderParam &p = slotparams.at(i); \
         if(!(static_cast<int>(defaultparams.size()) > p.loc)) \
         { \
             continue; \
@@ -823,7 +823,7 @@ void Shader::setslotparams(Slot &slot)
     SETDEFAULTPARAMS
 }
 
-void Shader::setslotparams(Slot &slot, VSlot &vslot)
+void Shader::setslotparams(Slot &slot, const VSlot &vslot)
 {
     static bool thrown = false; //only throw error message once (will spam per frame otherwise)
     uint unimask = 0;
@@ -847,7 +847,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
             }
             else if(!(unimask&(1<<p.loc)))
             {
-                SlotShaderParamState &l = defaultparams.at(p.loc);
+                const SlotShaderParamState &l = defaultparams.at(p.loc);
                 unimask |= 1<<p.loc;
                 setslotparam(l, p.val);
             }
