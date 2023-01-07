@@ -507,11 +507,11 @@ void GlobalShaderParamState::resetversions()
     });
 }
 
-static float *findslotparam(Slot &s, const char *name, float *noval = nullptr)
+static const float *findslotparam(const Slot &s, const char *name, float *noval = nullptr)
 {
     for(uint i = 0; i < s.params.size(); i++)
     {
-        SlotShaderParam &param = s.params[i];
+        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
@@ -519,7 +519,7 @@ static float *findslotparam(Slot &s, const char *name, float *noval = nullptr)
     }
     for(uint i = 0; i < s.shader->defaultparams.size(); i++)
     {
-        SlotShaderParamState &param = s.shader->defaultparams[i];
+        const SlotShaderParamState &param = s.shader->defaultparams[i];
         if(name == param.name)
         {
             return param.val;
@@ -528,11 +528,11 @@ static float *findslotparam(Slot &s, const char *name, float *noval = nullptr)
     return noval;
 }
 
-static float *findslotparam(VSlot &s, const char *name, float *noval = nullptr)
+static const float *findslotparam(const VSlot &s, const char *name, float *noval = nullptr)
 {
     for(uint i = 0; i < s.params.size(); i++)
     {
-        SlotShaderParam &param = s.params[i];
+        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
