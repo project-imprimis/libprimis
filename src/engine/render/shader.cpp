@@ -611,14 +611,17 @@ static void setslotparam(const SlotShaderParamState &l, const float *val)
         }
     }
 }
-//===================================SETSLOTPARAM SETSLOTPARAMS SETDEFAULTPARAMS
-#define SETSLOTPARAM(l, mask, i, val) do { \
-    if(!(mask&(1<<i))) \
-    { \
-        mask |= 1<<i; \
-        setslotparam(l, val); \
-    } \
-} while(0)
+
+static void setslotparam(const SlotShaderParamState& l, uint& mask, uint i, const float* val)
+{
+    if(!(mask&(1<<i)))
+    {
+        mask |= 1<<i;
+        setslotparam(l, val);
+    }
+}
+
+//=============================================== SETSLOTPARAMS SETDEFAULTPARAMS
 
 #define SETSLOTPARAMS(slotparams) \
     for(uint i = 0; i < slotparams.size(); i++) \
@@ -629,13 +632,13 @@ static void setslotparam(const SlotShaderParamState &l, const float *val)
             continue; \
         } \
         SlotShaderParamState &l = defaultparams.at(p.loc); \
-        SETSLOTPARAM(l, unimask, p.loc, p.val); \
+        setslotparam(l, unimask, p.loc, p.val); \
     }
 #define SETDEFAULTPARAMS \
     for(uint i = 0; i < defaultparams.size(); i++) \
     { \
         SlotShaderParamState &l = defaultparams.at(i); \
-        SETSLOTPARAM(l, unimask, i, l.val); \
+        setslotparam(l, unimask, i, l.val); \
     }
 
 //shader
@@ -860,11 +863,10 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             SlotShaderParamState &l = defaultparams.at(i);
-            SETSLOTPARAM(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
+            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
         }
     }
 }
-#undef SETSLOTPARAM
 #undef SETSLOTPARAMS
 #undef SETDEFAULTPARAMS
 //==============================================================================
