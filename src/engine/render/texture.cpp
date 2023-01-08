@@ -36,12 +36,14 @@ extern const texrotation texrotations[8] =
     {  true,  true,  true }, // 7: flipped transpose
 };
 
+//copies every other pixel into a destination buffer
+//sw,sh are source width/height
 template<int BPP>
-static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
+static void halvetexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {
-    for(uchar *yend = &src[sh*stride]; src < yend;)
+    for(const uchar *yend = &src[sh*stride]; src < yend;)
     {
-        for(uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += 2*BPP, dst += BPP)
+        for(const uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += 2*BPP, dst += BPP)
         {
             for(int i = 0; i < BPP; ++i)
             {
@@ -53,7 +55,7 @@ static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 }
 
 template<int BPP>
-static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+static void shifttexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = sw/dw,
          hfrac = sh/dh,
@@ -68,18 +70,18 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
         hshift++;
     }
     uint tshift = wshift + hshift;
-    for(uchar *yend = &src[sh*stride]; src < yend;)
+    for(const uchar *yend = &src[sh*stride]; src < yend;)
     {
-        for(uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
+        for(const uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
         {
 
             uint t[BPP] = {0};
-            for(uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
+            for(const uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
                 ycur < yend;
                 ycur += stride, xend += stride)
             {
                 //going to (xend - 1) seems to be necessary to avoid buffer overrun
-                for(uchar *xcur = ycur; xcur < xend -1; xcur += BPP)
+                for(const uchar *xcur = ycur; xcur < xend -1; xcur += BPP)
                 {
                     for(int i = 0; i < BPP; ++i)
                     {
@@ -97,7 +99,7 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 }
 
 template<int BPP>
-static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = (sw<<12)/dw,
          hfrac = (sh<<12)/dh,
@@ -183,7 +185,7 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     }
 }
 
-void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
+void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
 {
     if(sw == dw*2 && sh == dh*2)
     {
@@ -218,7 +220,7 @@ void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, 
 }
 
 template<int BPP>
-static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+static void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     int stridex = BPP,
         stridey = BPP;
@@ -240,10 +242,13 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uc
         dst += (sh-1)*stridey;
         stridey = -stridey;
     }
-    uchar *srcrow = src;
+    const uchar *srcrow = src;
     for(int i = 0; i < sh; ++i)
     {
-        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*BPP]; src < end;)
+        uchar* curdst;
+        const uchar* src;
+        const uchar* end;
+        for(curdst = dst, src = srcrow, end = &srcrow[sw*BPP]; src < end;)
         {
             for(int k = 0; k < BPP; ++k)
             {
@@ -256,7 +261,7 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uc
     }
 }
 
-void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     switch(bpp)
     {
