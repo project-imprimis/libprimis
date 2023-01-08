@@ -507,7 +507,7 @@ void GlobalShaderParamState::resetversions()
     });
 }
 
-static const float *findslotparam(const Slot &s, const char *name, float *noval = nullptr)
+static const float *findslotparam(const Slot &s, const char *name, const float *noval = nullptr)
 {
     for(uint i = 0; i < s.params.size(); i++)
     {
@@ -528,7 +528,7 @@ static const float *findslotparam(const Slot &s, const char *name, float *noval 
     return noval;
 }
 
-static const float *findslotparam(const VSlot &s, const char *name, float *noval = nullptr)
+static const float *findslotparam(const VSlot &s, const char *name, const float *noval = nullptr)
 {
     for(uint i = 0; i < s.params.size(); i++)
     {
@@ -810,7 +810,7 @@ void Shader::set(Slot &slot)
     lastshader->setslotparams(slot);
 }
 
-void Shader::set(Slot &slot, VSlot &vslot)
+void Shader::set(Slot &slot, const VSlot &vslot)
 {
     if(!loaded())
     {
@@ -864,7 +864,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         ::setslotparams(slot.params, unimask, defaultparams);
         for(uint i = 0; i < defaultparams.size(); i++)
         {
-            SlotShaderParamState &l = defaultparams.at(i);
+            const SlotShaderParamState &l = defaultparams.at(i);
             setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
         }
     }
