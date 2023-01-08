@@ -119,8 +119,8 @@ class Shader
         Shader *getvariant(int col, int row) const;
         void addvariant(int row, Shader *s);
         void setvariant(int col, int row);
-        void setvariant(int col, int row, Slot &slot);
-        void setvariant(int col, int row, Slot &slot, VSlot &vslot);
+        void setvariant(int col, int row, const Slot &slot);
+        void setvariant(int col, int row, Slot &slot, const VSlot &vslot);
         void set();
         void set(Slot &slot);
         void set(Slot &slot, VSlot &vslot);
@@ -133,7 +133,7 @@ class Shader
         ushort *variantrows;
         bool used;
         void allocparams();
-        void setslotparams(Slot &slot);
+        void setslotparams(const Slot &slot);
         void setslotparams(Slot &slot, const VSlot &vslot);
         void bindprograms();
         void setvariant_(int col, int row);

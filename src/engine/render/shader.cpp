@@ -759,7 +759,7 @@ void Shader::setvariant(int col, int row)
     lastshader->flushparams();
 }
 
-void Shader::setvariant(int col, int row, Slot &slot)
+void Shader::setvariant(int col, int row, const Slot &slot)
 {
     if(!loaded())
     {
@@ -770,7 +770,7 @@ void Shader::setvariant(int col, int row, Slot &slot)
     lastshader->setslotparams(slot);
 }
 
-void Shader::setvariant(int col, int row, Slot &slot, VSlot &vslot)
+void Shader::setvariant(int col, int row, Slot &slot, const VSlot &vslot)
 {
     if(!loaded())
     {
@@ -821,7 +821,7 @@ void Shader::set(Slot &slot, VSlot &vslot)
     lastshader->setslotparams(slot, vslot);
 }
 
-void Shader::setslotparams(Slot &slot)
+void Shader::setslotparams(const Slot &slot)
 {
     uint unimask = 0;
     ::setslotparams(slot.params, unimask, defaultparams);
