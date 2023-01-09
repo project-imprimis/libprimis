@@ -1111,6 +1111,11 @@ static int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, ivec
     cy <<= 3;
     size <<= 3;
     int r = 0;
+    if(numo <= 0)
+    {
+        logoutf("Invalid clipface index %d\n", numo);
+        return 0; //protection agains numo negative array access
+    }
     ivec2 prev = o[numo-1];
     for(int i = 0; i < numo; ++i)
     {
