@@ -625,7 +625,7 @@ static void setslotparams(const std::vector<SlotShaderParam>& p, uint& unimask, 
 {
     for(const SlotShaderParam &p : slotparams)
     {
-        if(!(static_cast<int>(defaultparams.size()) > p.loc))
+        if(!(defaultparams.size() > p.loc))
         {
             continue;
         }
@@ -835,14 +835,14 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
     if(vslot.slot == &slot)
     {
         ::setslotparams(vslot.params, unimask, defaultparams);
-        for(uint i = 0; i < slot.params.size(); i++)
+        for(size_t i = 0; i < slot.params.size(); i++)
         {
             SlotShaderParam &p = slot.params.at(i);
-            if(!(static_cast<int>(defaultparams.size()) > p.loc))
+            if(!(defaultparams.size() > p.loc))
             {
                 continue;
             }
-            if(p.loc < 0)
+            if(p.loc == SIZE_MAX)
             {
                 if(!thrown)
                 {
@@ -1795,7 +1795,7 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, Shader *s
     {
         for(uint i = 0; i < params.size(); i++)
         {
-            params[i].loc = -1;
+            params[i].loc = SIZE_MAX;
         }
     }
 }
@@ -1897,7 +1897,7 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
             return;
         }
     }
-    SlotShaderParam param = {name, -1, flags, {x, y, z, w}};
+    SlotShaderParam param = {name, SIZE_MAX, flags, {x, y, z, w}};
     slotparams.push_back(param);
 }
 

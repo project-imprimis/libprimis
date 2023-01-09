@@ -735,7 +735,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
                 f->seek(nlen - (maxstrlen-1), SEEK_CUR);
             }
             p.name = getshaderparamname(name);
-            p.loc = -1;
+            p.loc = SIZE_MAX;
             for(int k = 0; k < 4; ++k)
             {
                 p.val[k] = f->get<float>();

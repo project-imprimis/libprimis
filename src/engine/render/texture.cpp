@@ -1722,7 +1722,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             {
                 string name;
                 getstring(name, buf);
-                SlotShaderParam p = { name[0] ? getshaderparamname(name) : nullptr, -1, 0, { 0, 0, 0, 0 } };
+                SlotShaderParam p = { name[0] ? getshaderparamname(name) : nullptr, SIZE_MAX, 0, { 0, 0, 0, 0 } };
                 for(int i = 0; i < 4; ++i)
                 {
                     p.val[i] = getfloat(buf);
