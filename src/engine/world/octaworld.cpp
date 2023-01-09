@@ -21,6 +21,7 @@
 #include "world.h"
 
 #include "interface/console.h"
+#include "interface/control.h"
 
 #include "render/octarender.h"
 #include "render/renderwindow.h"
