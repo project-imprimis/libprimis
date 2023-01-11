@@ -21,7 +21,7 @@ var iengine_8h =
     [ "conoutf", "iengine_8h.html#a4db7318348a74b95e2013bae083f410f", null ],
     [ "conoutf", "iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa", null ],
     [ "countblock", "iengine_8h.html#ac082773606ba5eb142cd71b375f63973", null ],
-    [ "countselchild", "iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95", null ],
+    [ "countselchild", "iengine_8h.html#a15c82f66b08505178557860ed81693be", null ],
     [ "detachentity", "iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1", null ],
     [ "disablepolygonoffset", "iengine_8h.html#a28922cb2d03164846434602c0c870b4f", null ],
     [ "disablezoom", "iengine_8h.html#a22c96f585456f856035322b5bb4a6169", null ],
@@ -141,8 +141,9 @@ var iengine_8h =
     [ "mainmenu", "iengine_8h.html#a9b5e4eda15cadf57421162408f73fb77", null ],
     [ "minimized", "iengine_8h.html#a8d95ae57866fef3a044e4af3960f1682", null ],
     [ "player", "iengine_8h.html#abbb4a07dd121a95d83242f3d774d30f7", null ],
-    [ "redos", "iengine_8h.html#a7d50b8aac2b66d39422da67007fb6a94", null ],
+    [ "redos", "iengine_8h.html#ae9f66502ac9a6818cf75bad5fc0ba9f9", null ],
+    [ "showmat", "iengine_8h.html#aa83c0cc7361cec162e53fef69bf0e57c", null ],
     [ "texpaneltimer", "iengine_8h.html#aa0ad0488d1e0da4a8dcdcc358b06422f", null ],
     [ "totalmillis", "iengine_8h.html#ad1ab636b9ead358e52c9ba42c2027bb2", null ],
-    [ "undos", "iengine_8h.html#a2c7bc6a1d61cfcda3779d865e188f377", null ]
+    [ "undos", "iengine_8h.html#a8020a85a3cdd03bc7c6071c2afac1159", null ]
 ];

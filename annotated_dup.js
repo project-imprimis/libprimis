@@ -33,7 +33,6 @@ var annotated_dup =
     [ "tagval", "structtagval.html", null ],
     [ "undoblock", "structundoblock.html", "structundoblock" ],
     [ "undoent", "structundoent.html", null ],
-    [ "undolist", "structundolist.html", null ],
     [ "vec", "structvec.html", "structvec" ],
     [ "vec2", "structvec2.html", null ],
     [ "vec4", "structvec4.html", "structvec4" ],
