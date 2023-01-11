@@ -591,7 +591,7 @@ static int undosize(undoblock *u)
     }
 }
 
-undolist undos, redos;
+std::deque<undoblock *> undos, redos;
 VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
 int totalundos = 0;
 
@@ -599,14 +599,16 @@ void pruneundos(int maxremain)                          // bound memory
 {
     while(totalundos > maxremain && !undos.empty())
     {
-        undoblock *u = undos.popfirst();
+        undoblock *u = undos.front();
+        undos.pop_front();
         totalundos -= u->size;
         freeundo(u);
     }
     //conoutf(CON_DEBUG, "undo: %d of %d(%%%d)", totalundos, undomegs<<20, totalundos*100/(undomegs<<20));
     while(!redos.empty())
     {
-        undoblock *u = redos.popfirst();
+        undoblock *u = redos.front();
+        redos.pop_front();
         totalundos -= u->size;
         freeundo(u);
     }
@@ -638,7 +640,7 @@ void addundo(undoblock *u)
 {
     u->size = undosize(u);
     u->timestamp = totalmillis;
-    undos.add(u);
+    undos.push_back(u);
     totalundos += u->size;
     pruneundos(undomegs<<20);
 }
@@ -1044,11 +1046,11 @@ bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
 {
     if(undo)
     {
-        return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+        return !undos.empty() && packundo(undos.back(), inlen, outbuf, outlen);
     }
     else
     {
-        return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
+        return !redos.empty() && packundo(redos.back(), inlen, outbuf, outlen);
     }
 }
 
@@ -1484,14 +1486,14 @@ void compacteditvslots()
         editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
     }
-    for(undoblock *u = undos.first; u; u = u->next)
+    for(undoblock *u : undos)
     {
         if(!u->numents)
         {
             compactvslots(u->block()->c(), u->block()->size());
         }
     }
-    for(undoblock *u = redos.first; u; u = u->next)
+    for(undoblock *u : redos)
     {
         if(!u->numents)
         {
