@@ -178,9 +178,9 @@ static void setcubevector(cube &c, int i, const ivec &p)
     EDGE_SET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
 }
 
-void optiface(uchar *p, cube &c)
+void optiface(const uchar *p, cube &c)
 {
-    uint f = *reinterpret_cast<uint *>(p);
+    uint f = *reinterpret_cast<const uint *>(p);
     if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU))
     {
         setcubefaces(c, faceempty);

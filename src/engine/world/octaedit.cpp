@@ -334,7 +334,7 @@ int selchildcount = 0,
     selchildmat = -1;
 
 //used in iengine.h
-void countselchild(cube *c, const ivec &cor, int size)
+void countselchild(const cube *c, const ivec &cor, int size)
 {
     ivec ss = ivec(sel.s).mul(sel.grid);
     uchar possible = octaboxoverlap(cor, size, sel.o, ivec(sel.o).add(ss));
