@@ -760,7 +760,7 @@ namespace
             void changetexgen(int orient, Slot &slot, VSlot &vslot);
             void changebatchtmus();
             void changeslottmus(int pass, Slot &newslot, VSlot &newvslot);
-            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
+            void bindslottex(int type, const Texture *tex, GLenum target = GL_TEXTURE_2D);
             void changeshader(int pass, const geombatch &b);
 
     };
@@ -977,7 +977,7 @@ namespace
         }
     }
 
-    void renderstate::bindslottex(int type, Texture *tex, GLenum target)
+    void renderstate::bindslottex(int type, const Texture *tex, GLenum target)
     {
         if(textures[type] != tex->id)
         {
