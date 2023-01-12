@@ -126,9 +126,6 @@ $(document).ready(function(){initNavTree('iengine_8h.html',''); initResizable();
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af76e7259f19e6e5588e9d75c39e8e4f2"><td class="memItemLeft" align="right" valign="top"><a id="af76e7259f19e6e5588e9d75c39e8e4f2" name="af76e7259f19e6e5588e9d75c39e8e4f2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>settexture</b> (const char *name, int clamp=0)</td></tr>
-<tr class="separator:af76e7259f19e6e5588e9d75c39e8e4f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5224620d2d59336ecac1bd337c2d21d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a5224620d2d59336ecac1bd337c2d21d8">moveragdoll</a> (<a class="el" href="structdynent.html">dynent</a> *d)</td></tr>
 <tr class="memdesc:a5224620d2d59336ecac1bd337c2d21d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a ragdoll's position and physics.  <br /></td></tr>
 <tr class="separator:a5224620d2d59336ecac1bd337c2d21d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -492,6 +489,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>packvslot</b> (std::v
 <tr class="memitem:aa70c13b7799789b305932676b8fc3ce3"><td class="memItemLeft" align="right" valign="top"><a id="aa70c13b7799789b305932676b8fc3ce3" name="aa70c13b7799789b305932676b8fc3ce3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>packvslot</b> (std::vector&lt; uchar &gt; &amp;buf, const <a class="el" href="structVSlot.html">VSlot</a> *vs)</td></tr>
 <tr class="separator:aa70c13b7799789b305932676b8fc3ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af76e7259f19e6e5588e9d75c39e8e4f2"><td class="memItemLeft" align="right" valign="top"><a id="af76e7259f19e6e5588e9d75c39e8e4f2" name="af76e7259f19e6e5588e9d75c39e8e4f2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>settexture</b> (const char *name, int clamp=0)</td></tr>
+<tr class="separator:af76e7259f19e6e5588e9d75c39e8e4f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e3f73f0c68d63de6b4556397de076da"><td class="memItemLeft" align="right" valign="top"><a id="a7e3f73f0c68d63de6b4556397de076da" name="a7e3f73f0c68d63de6b4556397de076da"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>adddynlight</b> (const <a class="el" href="structvec.html">vec</a> &amp;o, float radius, const <a class="el" href="structvec.html">vec</a> &amp;color, int fade=0, int peak=0, int flags=0, float initradius=0, const <a class="el" href="structvec.html">vec</a> &amp;initcolor=<a class="el" href="structvec.html">vec</a>(0, 0, 0), <a class="el" href="structphysent.html">physent</a> *owner=nullptr, const <a class="el" href="structvec.html">vec</a> &amp;dir=<a class="el" href="structvec.html">vec</a>(0, 0, 0), int spot=0)</td></tr>
 <tr class="separator:a7e3f73f0c68d63de6b4556397de076da"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -748,27 +748,6 @@ const void&#160;</td><td class="memItemRight" valign="bottom"><b>setmapname</b> 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a8739819d82b82fd851bb2f95a56f4ba6"><td class="memItemLeft" align="right" valign="top"><a id="a8739819d82b82fd851bb2f95a56f4ba6" name="a8739819d82b82fd851bb2f95a56f4ba6"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>totalsecs</b></td></tr>
-<tr class="separator:a8739819d82b82fd851bb2f95a56f4ba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb141106360a5f8fbc38c05cdf76d03e"><td class="memItemLeft" align="right" valign="top"><a id="aeb141106360a5f8fbc38c05cdf76d03e" name="aeb141106360a5f8fbc38c05cdf76d03e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>gamespeed</b></td></tr>
-<tr class="separator:aeb141106360a5f8fbc38c05cdf76d03e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a868659a2f991de87c2b0dcbe6cea6175"><td class="memItemLeft" align="right" valign="top"><a id="a868659a2f991de87c2b0dcbe6cea6175" name="a868659a2f991de87c2b0dcbe6cea6175"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>paused</b></td></tr>
-<tr class="separator:a868659a2f991de87c2b0dcbe6cea6175"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memItemLeft" align="right" valign="top"><a id="a0673c50cdf43e2a2143d5811fdbfcbb2" name="a0673c50cdf43e2a2143d5811fdbfcbb2"></a>
-std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entgroup</b></td></tr>
-<tr class="separator:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memItemLeft" align="right" valign="top"><a id="af9e3626efc80a40d35f6e8c39cf8e7b0" name="af9e3626efc80a40d35f6e8c39cf8e7b0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>xtraverts</b></td></tr>
-<tr class="separator:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fb1d7c75fffae8ea79f50478f27ebdd"><td class="memItemLeft" align="right" valign="top"><a id="a9fb1d7c75fffae8ea79f50478f27ebdd" name="a9fb1d7c75fffae8ea79f50478f27ebdd"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>xtravertsva</b></td></tr>
-<tr class="separator:a9fb1d7c75fffae8ea79f50478f27ebdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae04e09e4e3831bfc1632c509ae37dcec"><td class="memItemLeft" align="right" valign="top"><a id="ae04e09e4e3831bfc1632c509ae37dcec" name="ae04e09e4e3831bfc1632c509ae37dcec"></a>
-SDL_Window *&#160;</td><td class="memItemRight" valign="bottom"><b>screen</b></td></tr>
-<tr class="separator:ae04e09e4e3831bfc1632c509ae37dcec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afce18ca763d1e7219f1acd70d9e3519a"><td class="memItemLeft" align="right" valign="top"><a id="afce18ca763d1e7219f1acd70d9e3519a" name="afce18ca763d1e7219f1acd70d9e3519a"></a>
 void void int&#160;</td><td class="memItemRight" valign="bottom"><b>initing</b></td></tr>
 <tr class="separator:afce18ca763d1e7219f1acd70d9e3519a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -830,6 +809,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>grabinput</b></td></t
 <tr class="separator:ab8b6bac71429352489e9c023bc346e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83cbb429c7fcf7be669949cdc33217c3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a83cbb429c7fcf7be669949cdc33217c3">detachedcamera</a></td></tr>
 <tr class="separator:a83cbb429c7fcf7be669949cdc33217c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memItemLeft" align="right" valign="top"><a id="af9e3626efc80a40d35f6e8c39cf8e7b0" name="af9e3626efc80a40d35f6e8c39cf8e7b0"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>xtraverts</b></td></tr>
+<tr class="separator:af9e3626efc80a40d35f6e8c39cf8e7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a120b673b15e832f7282261bc25f0af27"><td class="memItemLeft" align="right" valign="top"><a id="a120b673b15e832f7282261bc25f0af27" name="a120b673b15e832f7282261bc25f0af27"></a>
 <a class="el" href="structvec.html">vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>minimapcenter</b></td></tr>
 <tr class="separator:a120b673b15e832f7282261bc25f0af27"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -846,6 +828,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>grabinput</b></td></t
 <tr class="separator:afdd20b46ef682bee2391dc9887e4ddc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ae9953d6c1b187be52959f075643ab8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a1ae9953d6c1b187be52959f075643ab8">entnames</a></td></tr>
 <tr class="separator:a1ae9953d6c1b187be52959f075643ab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae04e09e4e3831bfc1632c509ae37dcec"><td class="memItemLeft" align="right" valign="top"><a id="ae04e09e4e3831bfc1632c509ae37dcec" name="ae04e09e4e3831bfc1632c509ae37dcec"></a>
+SDL_Window *&#160;</td><td class="memItemRight" valign="bottom"><b>screen</b></td></tr>
+<tr class="separator:ae04e09e4e3831bfc1632c509ae37dcec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc359d0ba0a207e69da999c40bf762c8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#adc359d0ba0a207e69da999c40bf762c8">fullscreen</a></td></tr>
 <tr class="separator:adc359d0ba0a207e69da999c40bf762c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3382a1d6c7b4f6498f6c0768bfc60a98"><td class="memItemLeft" align="right" valign="top"><a id="a3382a1d6c7b4f6498f6c0768bfc60a98" name="a3382a1d6c7b4f6498f6c0768bfc60a98"></a>
@@ -955,6 +940,9 @@ std::vector&lt; <a class="el" href="structdynent.html">dynent</a> * &gt;&#160;</
 <tr class="memitem:a0437f68e4171a8c6df6e158ce73176ee"><td class="memItemLeft" align="right" valign="top"><a id="a0437f68e4171a8c6df6e158ce73176ee" name="a0437f68e4171a8c6df6e158ce73176ee"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>octaentsize</b></td></tr>
 <tr class="separator:a0437f68e4171a8c6df6e158ce73176ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memItemLeft" align="right" valign="top"><a id="a0673c50cdf43e2a2143d5811fdbfcbb2" name="a0673c50cdf43e2a2143d5811fdbfcbb2"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entgroup</b></td></tr>
+<tr class="separator:a0673c50cdf43e2a2143d5811fdbfcbb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32f3aa96a4c463476d35e04a1b938e0b"><td class="memItemLeft" align="right" valign="top"><a id="a32f3aa96a4c463476d35e04a1b938e0b" name="a32f3aa96a4c463476d35e04a1b938e0b"></a>
 std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>entities::ents</b></td></tr>
 <tr class="memdesc:a32f3aa96a4c463476d35e04a1b938e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The list of extentities corresponding to the cube world's entities. <br /></td></tr>
