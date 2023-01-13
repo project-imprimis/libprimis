@@ -2525,7 +2525,7 @@ namespace UI
     VARP(uitextrows, 1, 24, 200);
     FVAR(uitextscale, 1, 0, 0);
 
-    static void setstring(char * dst, const char * src)
+    static void setstring(char*& dst, const char* src)
     {
         if(dst)
         {
