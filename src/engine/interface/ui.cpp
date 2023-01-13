@@ -2525,17 +2525,21 @@ namespace UI
     VARP(uitextrows, 1, 24, 200);
     FVAR(uitextscale, 1, 0, 0);
 
-    #define SETSTR(dst, src) do { \
-        if(dst) \
-        { \
-            if(dst != src && std::strcmp(dst, src)) \
-            { \
-                delete[] dst; \
-                dst = newstring(src); \
-            } \
-        } \
-        else dst = newstring(src); \
-    } while(0)
+    static void setstring(char * dst, const char * src)
+    {
+        if(dst)
+        {
+            if(dst != src && std::strcmp(dst, src))
+            {
+                delete[] dst;
+                dst = newstring(src);
+            }
+        }
+        else
+        {
+            dst = newstring(src);
+        }
+    }
 
     struct Text : Object
     {
@@ -2621,7 +2625,7 @@ namespace UI
         {
             Text::setup(scale_, color_, wrap_);
 
-            SETSTR(str, str_);
+            setstring(str, str_);
         }
 
         static const char *typestr()
@@ -3677,7 +3681,7 @@ namespace UI
             scale = scale_;
             if(keyfilter_)
             {
-                SETSTR(keyfilter, keyfilter_);
+                setstring(keyfilter, keyfilter_);
             }
             else
             {
@@ -4112,7 +4116,7 @@ namespace UI
         void setup(const char *name_, const char *animspec, float minw_, float minh_)
         {
             Preview::setup(minw_, minh_);
-            SETSTR(name, name_);
+            setstring(name, name_);
 
             anim = Anim_All;
             if(animspec[0])
@@ -4191,7 +4195,7 @@ namespace UI
             void setup(const char *name_, int color_, float minw_, float minh_)
             {
                 Preview::setup(minw_, minh_);
-                SETSTR(name, name_);
+                setstring(name, name_);
                 color = vec::hexcolor(color_);
             }
 
