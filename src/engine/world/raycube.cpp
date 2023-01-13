@@ -347,25 +347,28 @@ vec hitsurface;
         v.add(vec(ray).mul(disttonext)); \
         dist += disttonext;
 
-#define UPOCTREE(exitworld) \
-        x = static_cast<int>(v.x); \
-        y = static_cast<int>(v.y); \
-        z = static_cast<int>(v.z); \
-        uint diff = static_cast<uint>(lo.x^x)|static_cast<uint>(lo.y^y)|static_cast<uint>(lo.z^z); \
-        if(diff >= static_cast<uint>(mapsize())) \
-        { \
-            exitworld; \
-        } \
-        diff >>= lshift; \
-        if(!diff) \
-        { \
-            exitworld; \
-        } \
-        do \
-        { \
-            lshift++; \
-            diff >>= 1; \
-        } while(diff);
+bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, int& lshift) const
+{
+    x = static_cast<int>(v.x);
+    y = static_cast<int>(v.y);
+    z = static_cast<int>(v.z);
+    uint diff = static_cast<uint>(lo.x^x)|static_cast<uint>(lo.y^y)|static_cast<uint>(lo.z^z);
+    if(diff >= static_cast<uint>(mapsize()))
+    {
+        return true;
+    }
+    diff >>= lshift;
+    if(!diff)
+    {
+        return true;
+    }
+    do
+    {
+        lshift++;
+        diff >>= 1;
+    } while(diff);
+    return false;
+}
 
 float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t) const
 {
@@ -427,7 +430,10 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
         {
             return std::min(dent, dist);
         }
-        UPOCTREE(return std::min(dent, radius>0 ? radius : dist));
+        if(upoctree(v, x, y, z, lo, lshift))
+        {
+            return std::min(dent, radius>0 ? radius : dist);
+        }
     }
 }
 
@@ -469,13 +475,15 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
         {
             return dist;
         }
-        UPOCTREE(return radius);
+        if(upoctree(v, x, y, z, lo, lshift))
+        {
+            return radius;
+        }
     }
 }
 #undef FINDCLOSEST
 #undef INITRAYCUBE
 #undef CHECKINSIDEWORLD
-#undef UPOCTREE
 #undef DOWNOCTREE
 #undef INTERSECTBOX
 #undef INTERSECTPLANES
