@@ -706,7 +706,7 @@ static bool mmcollide(physent *d, const vec &dir, float cutoff, const octaentiti
     return false;
 }
 
-static bool checkside(physent &d, int side, const vec &dir, const int visible, const float cutoff, float distval, float dotval, float margin, vec normal, vec &collidewall, float &bestdist)
+static bool checkside(const physent &d, int side, const vec &dir, const int visible, const float cutoff, float distval, float dotval, float margin, vec normal, vec &collidewall, float &bestdist)
 {
     if(visible&(1<<side))
     {
