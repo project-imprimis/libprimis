@@ -6,13 +6,6 @@
 #ifndef GLEXTS_H_
 #define GLEXTS_H_
 
-#ifndef APIENTRY
-#define APIENTRY
-#endif
-#ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
-#endif
-
 // OpenGL deprecated functionality
 #ifndef GL_QUADS
 #define GL_QUADS                      0x0007
@@ -108,11 +101,6 @@ extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
-#endif
-
-#if GL_GLEXT_VERSION < 43
-typedef void (APIENTRYP PFNGLBINDBUFFERRANGEPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-typedef void (APIENTRYP PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, GLuint buffer);
 #endif
 
 // GL_EXT_draw_buffers2
