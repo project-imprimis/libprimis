@@ -729,7 +729,7 @@ static void renderbatchedmodel(model *m, const batchedmodel &b)
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
-static void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
+static void rendercullmodelquery(const model *m, dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
        std::fabs(camera1->o.y-center.y) < radius+1 &&
@@ -749,7 +749,7 @@ static void rendercullmodelquery(model *m, dynent *d, const vec &center, float r
     endquery();
 }
 
-static int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
+static int cullmodel(const model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
