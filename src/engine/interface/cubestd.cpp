@@ -50,7 +50,7 @@ bool execfile(const char *cfgfile, bool msg)
 }
 
 //cmd
-static void exec(char *file, int *msg)
+static void exec(const char *file, int *msg)
 {
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
