@@ -462,7 +462,7 @@ static float wfwave = 0.0f, //waterfall wave
              wfyscale = 1.0f; //waterfall y scale
 
 //"waterfall" refers to any rendered side of water material
-static void renderwaterfall(const materialsurface &m, float offset, const vec normal = vec(0,0,0))
+static void renderwaterfall(const materialsurface &m, float offset, vec normal = vec(0,0,0))
 {
     if(gle::attribbuf.empty())
     {
