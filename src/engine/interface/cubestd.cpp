@@ -720,7 +720,7 @@ static void at(tagval *args, int numargs)
     commandret->setstr(listelem(start, end, qstart));
 }
 
-void sublist(const char *s, int *skip, int *count, int *numargs)
+static void sublist(const char *s, const int *skip, const int *count, const int *numargs)
 {
     int offset = std::max(*skip, 0),
         len = *numargs >= 3 ? std::max(*count, 0) : -1;
