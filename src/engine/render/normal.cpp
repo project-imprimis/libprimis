@@ -209,7 +209,7 @@ namespace //internal functionality not seen by other files
     VARR(lerpsubdiv, 0, 2, 4);      //Linear intERPolation SUBDIVisions
     VARR(lerpsubdivsize, 4, 4, 128);//Linear intERPolation SUBDIVision cube SIZE
 
-    void addnormals(cube &c, const ivec &o, int size)
+    void addnormals(const cube &c, const ivec &o, int size)
     {
         if(c.children)
         {
