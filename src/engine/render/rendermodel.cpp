@@ -616,7 +616,7 @@ void cleanupmodels()
     ENUMERATE(models, model *, m, m->cleanup());
 }
 
-static void clearmodel(char *name)
+static void clearmodel(const char *name)
 {
     model *m = models.find(name, nullptr);
     if(!m)
