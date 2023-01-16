@@ -145,7 +145,7 @@ extern void setslotshader(Slot &s);
 extern void linkslotshader(Slot &s, bool load = true);
 extern void linkvslotshader(VSlot &s, bool load = true);
 extern void linkslotshaders();
-extern bool shouldreuseparams(Slot &s, VSlot &p);
+extern bool shouldreuseparams(const Slot &s, const VSlot &p);
 extern void setupshaders();
 extern void reloadshaders();
 extern void cleanupshaders();

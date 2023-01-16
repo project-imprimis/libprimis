@@ -1835,16 +1835,16 @@ void linkvslotshader(VSlot &s, bool load)
     }
 }
 
-bool shouldreuseparams(Slot &s, VSlot &p)
+bool shouldreuseparams(const Slot &s, const VSlot &p)
 {
     if(!s.shader)
     {
         return false;
     }
-    Shader &sh = *s.shader;
+    const Shader &sh = *s.shader;
     for(uint i = 0; i < sh.defaultparams.size(); i++)
     {
-        SlotShaderParamState &param = sh.defaultparams[i];
+        const SlotShaderParamState &param = sh.defaultparams[i];
         if(param.flags & SlotShaderParam::REUSE)
         {
             const float *val = findslotparam(p, param.name);

@@ -706,7 +706,7 @@ namespace
                 }
             }
 
-            void gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
+            void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key)
             {
                 matrix3 orient;
                 orient.identity();
