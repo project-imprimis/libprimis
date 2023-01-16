@@ -1769,17 +1769,17 @@ void setslotshader(Slot &s)
     }
 }
 
-static void linkslotshaderparams(std::vector<SlotShaderParam> &params, Shader *sh, bool load)
+static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Shader &sh, bool load)
 {
-    if(sh->loaded())
+    if(sh.loaded())
     {
         for(uint i = 0; i < params.size(); i++)
         {
             int loc = -1;
             SlotShaderParam &param = params[i];
-            for(uint i = 0; i < sh->defaultparams.size(); i++)
+            for(uint i = 0; i < sh.defaultparams.size(); i++)
             {
-                SlotShaderParamState &dparam = sh->defaultparams[i];
+                const SlotShaderParamState &dparam = sh.defaultparams[i];
                 if(dparam.name==param.name)
                 {
                     if(std::memcmp(param.val, dparam.val, sizeof(param.val)))
@@ -1811,7 +1811,7 @@ void linkslotshader(Slot &s, bool load)
     {
         s.shader->force();
     }
-    linkslotshaderparams(s.params, s.shader, load);
+    linkslotshaderparams(s.params, *s.shader, load);
 }
 
 void linkvslotshader(VSlot &s, bool load)
@@ -1820,7 +1820,7 @@ void linkvslotshader(VSlot &s, bool load)
     {
         return;
     }
-    linkslotshaderparams(s.params, s.slot->shader, load);
+    linkslotshaderparams(s.params, *(s.slot->shader), load);
     if(!s.slot->shader->loaded())
     {
         return;
