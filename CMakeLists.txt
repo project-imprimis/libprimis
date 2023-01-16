@@ -62,6 +62,8 @@ add_library(primis SHARED
         src/engine/render/normal.cpp
         src/engine/render/octarender.cpp
         src/engine/render/octarender.h
+        src/engine/render/postfx.cpp
+        src/engine/render/postfx.h
         src/engine/render/radiancehints.cpp
         src/engine/render/radiancehints.h
         src/engine/render/renderalpha.cpp

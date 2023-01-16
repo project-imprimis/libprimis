@@ -17,6 +17,7 @@
 #include "hdr.h"
 #include "lightsphere.h"
 #include "octarender.h"
+#include "postfx.h"
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "renderlights.h"

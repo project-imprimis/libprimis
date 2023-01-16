@@ -69,6 +69,7 @@ CLIENT_OBJS= \
 	engine/render/lightsphere.o \
 	engine/render/normal.o \
 	engine/render/octarender.o \
+	engine/render/postfx.o \
 	engine/render/radiancehints.o \
 	engine/render/renderalpha.o \
 	engine/render/rendergl.o \

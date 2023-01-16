@@ -44,6 +44,7 @@
     <ClCompile Include="..\engine\render\lightsphere.cpp" />
     <ClCompile Include="..\engine\render\normal.cpp" />
     <ClCompile Include="..\engine\render\octarender.cpp" />
+    <ClCompile Include="..\engine\render\postfx.cpp" />
     <ClCompile Include="..\engine\render\radiancehints.cpp" />
     <ClCompile Include="..\engine\render\rendergl.cpp" />
     <ClCompile Include="..\engine\render\renderlights.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="..\engine\render\imagedata.h" />
     <ClInclude Include="..\engine\render\lightsphere.h" />
     <ClInclude Include="..\engine\render\octarender.h" />
+    <ClInclude Include="..\engine\render\postfx.h" />
     <ClInclude Include="..\engine\render\radiancehints.h" />
     <ClInclude Include="..\engine\render\rendergl.h" />
     <ClInclude Include="..\engine\render\rendermodel.h" />
