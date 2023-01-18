@@ -30,9 +30,9 @@ namespace mpr
 
     struct Ent
     {
-        physent *ent;
+        const physent *ent;
 
-        Ent(physent *ent) : ent(ent) {}
+        Ent(const physent *ent) : ent(ent) {}
 
         vec center() const;
     };
@@ -40,7 +40,7 @@ namespace mpr
     class EntOBB : public Ent
     {
         public:
-            EntOBB(physent *ent);
+            EntOBB(const physent *ent);
 
             vec contactface(const vec &wn, const vec &wdir) const;
             vec localsupportpoint(const vec &ln) const;
@@ -60,7 +60,7 @@ namespace mpr
 
     struct EntFuzzy : Ent
     {
-        EntFuzzy(physent *ent) : Ent(ent) {}
+        EntFuzzy(const physent *ent) : Ent(ent) {}
 
         float left()   const;
         float right()  const;
@@ -72,7 +72,7 @@ namespace mpr
 
     struct EntCylinder : EntFuzzy
     {
-        EntCylinder(physent *ent) : EntFuzzy(ent) {}
+        EntCylinder(const physent *ent) : EntFuzzy(ent) {}
 
         vec contactface(const vec &n, const vec &dir) const;
         vec supportpoint(const vec &n) const;
@@ -80,14 +80,14 @@ namespace mpr
 
     struct EntCapsule : EntFuzzy
     {
-        EntCapsule(physent *ent) : EntFuzzy(ent) {}
+        EntCapsule(const physent *ent) : EntFuzzy(ent) {}
 
         vec supportpoint(const vec &n) const;
     };
 
     struct EntEllipsoid : EntFuzzy
     {
-        EntEllipsoid(physent *ent) : EntFuzzy(ent) {}
+        EntEllipsoid(const physent *ent) : EntFuzzy(ent) {}
 
         vec supportpoint(const vec &dir) const;
     };
