@@ -135,7 +135,7 @@ namespace
     float hitentdist;
     int hitent, hitorient;
 
-    float disttoent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    float disttoent(const octaentities *oc, const vec &o, const vec &ray, float radius, int mode, const extentity *t)
     {
         vec eo, es;
         int orient = -1;
@@ -192,7 +192,7 @@ namespace
     #undef ENT_INTERSECT
     #undef ENT_SEL_INTERSECT
     //======================================
-    float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, const extentity *t)
     {
         vec eo, es;
         int orient;
@@ -222,14 +222,14 @@ namespace
     }
 
     // optimized shadow version
-    float shadowent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    float shadowent(const octaentities *oc, const vec &o, const vec &ray, float radius, int mode, const extentity *t)
     {
         float dist = radius,
               f = 0.0f;
         const std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < oc->mapmodels.size(); i++)
         {
-            extentity &e = *ents[oc->mapmodels[i]];
+            const extentity &e = *ents[oc->mapmodels[i]];
             if(!(e.flags&EntFlag_Octa) || &e==t)
             {
                 continue;
@@ -369,7 +369,7 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
     return false;
 }
 
-float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t) const
+float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, const extentity *t) const
 {
     if(ray.iszero())
     {
@@ -437,7 +437,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
 }
 
 // optimized version for light shadowing... every cycle here counts!!!
-float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode, extentity *t)
+float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode, const extentity *t)
 {
     INITRAYCUBE;
     CHECKINSIDEWORLD;
