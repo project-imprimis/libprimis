@@ -634,6 +634,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>unpackundocube</b> (<
 <tr class="memitem:a3936b7d01fe2a882592c97234f8dcf28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a3936b7d01fe2a882592c97234f8dcf28">multiplayerwarn</a> ()</td></tr>
 <tr class="memdesc:a3936b7d01fe2a882592c97234f8dcf28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a warning message to the console.  <br /></td></tr>
 <tr class="separator:a3936b7d01fe2a882592c97234f8dcf28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d577a3829b4d91de604f81aa4709d6e"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e">getmaterial</a> (<a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
+<tr class="memdesc:a4d577a3829b4d91de604f81aa4709d6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the material bitmask for the given cube.  <br /></td></tr>
+<tr class="separator:a4d577a3829b4d91de604f81aa4709d6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae18d06933ae2dd87e478835b5c7e700b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ae18d06933ae2dd87e478835b5c7e700b">raycubepos</a> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, <a class="el" href="structvec.html">vec</a> &amp;hit, float radius=0, int mode=Ray_ClipMat, int size=0)</td></tr>
 <tr class="memdesc:ae18d06933ae2dd87e478835b5c7e700b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance before a ray hits a cube.  <br /></td></tr>
 <tr class="separator:ae18d06933ae2dd87e478835b5c7e700b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -652,9 +655,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>rayent</b> (const <a
 <tr class="memitem:a78cab1ab3f1088bee83818bc2a65f046"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdynent.html">dynent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046">iterdynents</a> (int i)</td></tr>
 <tr class="memdesc:a78cab1ab3f1088bee83818bc2a65f046"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the dynent at index i.  <br /></td></tr>
 <tr class="separator:a78cab1ab3f1088bee83818bc2a65f046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95645194a5c37d3cc0d58fb2e69ae86b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a95645194a5c37d3cc0d58fb2e69ae86b">collide</a> (<a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir=<a class="el" href="structvec.html">vec</a>(0, 0, 0), float cutoff=0.0f, bool playercol=true, bool insideplayercol=false)</td></tr>
-<tr class="memdesc:a95645194a5c37d3cc0d58fb2e69ae86b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the specified physent has collided with the octree world.  <br /></td></tr>
-<tr class="separator:a95645194a5c37d3cc0d58fb2e69ae86b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af02d96b4d3813974594eaca18823bc84"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#af02d96b4d3813974594eaca18823bc84">collide</a> (const <a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir=<a class="el" href="structvec.html">vec</a>(0, 0, 0), float cutoff=0.0f, bool playercol=true, bool insideplayercol=false)</td></tr>
+<tr class="memdesc:af02d96b4d3813974594eaca18823bc84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the specified physent has collided with the octree world.  <br /></td></tr>
+<tr class="separator:af02d96b4d3813974594eaca18823bc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad589f30ed5599c864a3e328c68fb82f"><td class="memItemLeft" align="right" valign="top"><a id="aad589f30ed5599c864a3e328c68fb82f" name="aad589f30ed5599c864a3e328c68fb82f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>avoidcollision</b> (<a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir, <a class="el" href="structphysent.html">physent</a> *obstacle, float space)</td></tr>
 <tr class="separator:aad589f30ed5599c864a3e328c68fb82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -679,12 +682,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>updatedynentcache</b>
 <tr class="memitem:ab55c33bfd6ad0a305627cb69c3e4dadc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ab55c33bfd6ad0a305627cb69c3e4dadc">entinmap</a> (<a class="el" href="structdynent.html">dynent</a> *d, bool avoidplayers=false)</td></tr>
 <tr class="memdesc:ab55c33bfd6ad0a305627cb69c3e4dadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Brute force but effective way to find a free spawn spot in the map.  <br /></td></tr>
 <tr class="separator:ab55c33bfd6ad0a305627cb69c3e4dadc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af107e1efa488d39ac70982e6273f5702"><td class="memItemLeft" align="right" valign="top"><a id="af107e1efa488d39ac70982e6273f5702" name="af107e1efa488d39ac70982e6273f5702"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>modifyvelocity</b> (<a class="el" href="structphysent.html">physent</a> *pl, bool local, bool water, bool floating, int curtime)</td></tr>
-<tr class="separator:af107e1efa488d39ac70982e6273f5702"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec37a167eae2ebf1d646d2c2ca17d6c5"><td class="memItemLeft" align="right" valign="top"><a id="aec37a167eae2ebf1d646d2c2ca17d6c5" name="aec37a167eae2ebf1d646d2c2ca17d6c5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>recalcdir</b> (<a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;oldvel, <a class="el" href="structvec.html">vec</a> &amp;dir)</td></tr>
-<tr class="separator:aec37a167eae2ebf1d646d2c2ca17d6c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b8a4b960ed21a72ef05df6b7483fc45"><td class="memItemLeft" align="right" valign="top"><a id="a6b8a4b960ed21a72ef05df6b7483fc45" name="a6b8a4b960ed21a72ef05df6b7483fc45"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>recalcdir</b> (const <a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;oldvel, <a class="el" href="structvec.html">vec</a> &amp;dir)</td></tr>
+<tr class="separator:a6b8a4b960ed21a72ef05df6b7483fc45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af08385dd19d0b6d3f079b8cb6610b1d9"><td class="memItemLeft" align="right" valign="top"><a id="af08385dd19d0b6d3f079b8cb6610b1d9" name="af08385dd19d0b6d3f079b8cb6610b1d9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>slideagainst</b> (<a class="el" href="structphysent.html">physent</a> *d, <a class="el" href="structvec.html">vec</a> &amp;dir, const <a class="el" href="structvec.html">vec</a> &amp;obstacle, bool foundfloor, bool slidecollide)</td></tr>
 <tr class="separator:af08385dd19d0b6d3f079b8cb6610b1d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -694,9 +694,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>slideagainst</b> (<a 
 <tr class="memitem:af313ec3bed9112963bb471d9754bc63d"><td class="memItemLeft" align="right" valign="top"><a id="af313ec3bed9112963bb471d9754bc63d" name="af313ec3bed9112963bb471d9754bc63d"></a>
 <a class="el" href="structblock3.html">block3</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>blockcopy</b> (const <a class="el" href="structblock3.html">block3</a> &amp;s, int rgrid)</td></tr>
 <tr class="separator:af313ec3bed9112963bb471d9754bc63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d577a3829b4d91de604f81aa4709d6e"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e">getmaterial</a> (<a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
-<tr class="memdesc:a4d577a3829b4d91de604f81aa4709d6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the material bitmask for the given cube.  <br /></td></tr>
-<tr class="separator:a4d577a3829b4d91de604f81aa4709d6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a535d85af13285be7cf8080694055076b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a535d85af13285be7cf8080694055076b">entcancel</a> ()</td></tr>
 <tr class="memdesc:a535d85af13285be7cf8080694055076b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels selection of selected entities.  <br /></td></tr>
 <tr class="separator:a535d85af13285be7cf8080694055076b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1456,8 +1453,8 @@ std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#
 
 </div>
 </div>
-<a id="a95645194a5c37d3cc0d58fb2e69ae86b" name="a95645194a5c37d3cc0d58fb2e69ae86b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95645194a5c37d3cc0d58fb2e69ae86b">&#9670;&#160;</a></span>collide()</h2>
+<a id="af02d96b4d3813974594eaca18823bc84" name="af02d96b4d3813974594eaca18823bc84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af02d96b4d3813974594eaca18823bc84">&#9670;&#160;</a></span>collide()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1465,7 +1462,7 @@ std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#
         <tr>
           <td class="memname">bool collide </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structphysent.html">physent</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structphysent.html">physent</a> *&#160;</td>
           <td class="paramname"><em>d</em>, </td>
         </tr>
         <tr>
