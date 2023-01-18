@@ -17,7 +17,6 @@
 #include "bih.h"
 #include "entities.h"
 #include "octaworld.h"
-#include "physics.h"
 #include "raycube.h"
 #include "world/world.h"
 

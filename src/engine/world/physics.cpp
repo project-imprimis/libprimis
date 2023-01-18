@@ -82,7 +82,7 @@ int collideinside; // whether an internal collision happened
 physent *collideplayer; // whether the collection hit a player
 vec collidewall; // just the normal vectors.
 
-bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
     float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),
           above = (d->o.z-d->eyeheight) - (origin.z+center.z+hi);
@@ -140,7 +140,7 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec 
     return false;
 }
 
-bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipsecollide(const physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
     float below = (o.z+center.z-lo) - (d->o.z+d->aboveeye),
           above = (d->o.z-d->eyeheight) - (o.z+center.z+hi);
@@ -278,7 +278,7 @@ void updatedynentcache(physent *d)
 }
 
 template<class E, class O>
-static bool plcollide(physent *d, const vec &dir, physent *o)
+static bool plcollide(const physent *d, const vec &dir, const physent *o)
 {
     E entvol(d);
     O obvol(o);
@@ -296,7 +296,7 @@ static bool plcollide(physent *d, const vec &dir, physent *o)
     return false;
 }
 
-static bool plcollide(physent *d, const vec &dir, physent *o)
+static bool plcollide(const physent *d, const vec &dir, const physent *o)
 {
     switch(d->collidetype)
     {
@@ -329,7 +329,7 @@ static bool plcollide(physent *d, const vec &dir, physent *o)
     }
 }
 
-bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide with player
+bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // collide with player
 {
     if(d->type==physent::PhysEnt_Camera)
     {
@@ -370,7 +370,7 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
 //==============================================================================
 
 template<class E, class M>
-static bool mmcollide(physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
     E entvol(d);
     M mdlvol(e.o, center, radius, yaw, pitch, roll);
@@ -389,7 +389,7 @@ static bool mmcollide(physent *d, const vec &dir, const extentity &e, const vec 
 }
 
 template<class E>
-static bool fuzzycollidebox(physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
     mpr::ModelOBB mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
@@ -483,7 +483,7 @@ static bool fuzzycollidebox(physent *d, const vec &dir, float cutoff, const vec 
 }
 
 template<class E>
-static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
     mpr::ModelEllipse mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
@@ -573,7 +573,7 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
 // 2: Collide_OrientedBoundingBox
 VAR(testtricol, 0, 0, 2);
 
-static bool mmcollide(physent *d, const vec &dir, float cutoff, const octaentities &oc) // collide with a mapmodel
+static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octaentities &oc) // collide with a mapmodel
 {
     const std::vector<extentity *> &ents = entities::getents();
     for(const int &i : oc.mapmodels)
@@ -737,7 +737,7 @@ static bool checkside(const physent &d, int side, const vec &dir, const int visi
 }
 
 template<class E>
-static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
+static bool fuzzycollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
     if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
@@ -808,7 +808,7 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
 }
 
 template<class E>
-static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
+static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, *d);
 
@@ -884,7 +884,7 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
 }
 
 template<class E>
-static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
+static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
     if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
@@ -922,7 +922,7 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
 }
 
 template<class E>
-static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
+static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, *d);
     if(std::fabs(d->o.x - p.o.x) > p.r.x + d->radius || std::fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
@@ -995,7 +995,7 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     return true;
 }
 
-static bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
+static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
     switch(d->collidetype)
     {
@@ -1028,7 +1028,7 @@ static bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c,
     }
 }
 
-static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
+static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
 {
     LOOP_OCTA_BOX(cor, size, bo, bs)
     {
@@ -1078,7 +1078,7 @@ static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo
     return false;
 }
 
-bool cubeworld::octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
+bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = worldscale-1;
@@ -1131,7 +1131,7 @@ bool cubeworld::octacollide(physent *d, const vec &dir, float cutoff, const ivec
 }
 
 // all collision happens here
-bool collide(physent *d, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
+bool collide(const physent *d, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
 {
     collideinside = 0;
     collideplayer = nullptr;
@@ -1143,7 +1143,7 @@ bool collide(physent *d, const vec &dir, float cutoff, bool playercol, bool insi
     return rootworld.octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol)); // collide with world
 }
 
-void recalcdir(physent *d, const vec &oldvel, vec &dir)
+void recalcdir(const physent *d, const vec &oldvel, vec &dir)
 {
     float speed = oldvel.magnitude();
     if(speed > 1e-6f)
@@ -1232,7 +1232,7 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
     return true;
 }
 
-const bool droptofloor(vec &o, float radius, float height)
+bool droptofloor(vec &o, float radius, float height)
 {
     static struct dropent : physent
     {

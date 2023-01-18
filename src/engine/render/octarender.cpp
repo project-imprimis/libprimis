@@ -21,7 +21,6 @@
 #include "world/light.h"
 #include "world/material.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/world.h"
 
 
