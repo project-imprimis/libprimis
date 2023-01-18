@@ -815,7 +815,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
 //==============================================================================
 //used in the tricollide templates below
 //returns true if physent is a player and passed vec is close enough to matter (determined by radius,pdist)
-bool BIH::playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius)
+bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec radius)
 {
     float a = 2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)),
           b = (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0);
@@ -830,7 +830,7 @@ bool BIH::playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius
 }
 
 template<>
-void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -871,7 +871,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const
 }
 
 template<>
-void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -915,7 +915,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physe
 }
 
 template<int C>
-void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br)
+void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br)
 {
     node *stack[128];
     int stacksize = 0;
@@ -993,7 +993,7 @@ void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const
     }
 }
 
-bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
+bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
 {
     if(!numnodes)
     {
@@ -1049,7 +1049,7 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
     return dist > maxcollidedistance;
 }
 
-bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
+bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
 {
     if(!numnodes)
     {
