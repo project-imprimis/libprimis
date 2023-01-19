@@ -186,18 +186,18 @@ $(document).ready(function(){initNavTree('geom_8h_source.html',''); initResizabl
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;lerp(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;a, <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;b, <span class="keywordtype">float</span> t) { x = a.x + (b.x-a.x)*t; y = a.y + (b.y-a.y)*t; <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;avg(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;b) { add(b); mul(0.5f); <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v2)</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec2.html">vec2</a>(x+v2.x, y+v2.y);</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    }</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v2)</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec2.html">vec2</a>(x-v2.x, y-v2.y);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    }</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator-()</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> operator-()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec2.html">vec2</a>(-x, -y);</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    }</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
@@ -805,40 +805,40 @@ $(document).ready(function(){initNavTree('geom_8h_source.html',''); initResizabl
 <div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;clamp(T l, T h) { x = ::std::clamp(x, l, h); y = ::std::clamp(y, l, h); z = ::std::clamp(z, l, h); w = ::std::clamp(w, l, h); <span class="keywordflow">return</span> *<span class="keyword">this</span>; }</div>
 <div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span> </div>
 <div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span> </div>
-<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)</div>
-<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span>    {</div>
+<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(x+v2.x, y+v2.y, z+v2.z, w+v2.w);</div>
 <div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    }</div>
 <div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span> </div>
-<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)</div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    {</div>
+<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(x-v2.x, y-v2.y, z-v2.z, w+v2.w);</div>
 <div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>    }</div>
 <div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span> </div>
-<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator-()</div>
-<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span>    {</div>
+<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator-()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00902" name="l00902"></a><span class="lineno">  902</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(-x, -y, -z, -w);</div>
 <div class="line"><a id="l00903" name="l00903"></a><span class="lineno">  903</span>    }</div>
 <div class="line"><a id="l00904" name="l00904"></a><span class="lineno">  904</span> </div>
 <div class="line"><a id="l00905" name="l00905"></a><span class="lineno">  905</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a id="l00906" name="l00906"></a><span class="lineno">  906</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator*(<span class="keyword">const</span> U &amp;n)</div>
-<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>    {</div>
+<div class="line"><a id="l00906" name="l00906"></a><span class="lineno">  906</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator*(<span class="keyword">const</span> U &amp;n)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(n*x, n*y, n*z, n*w);</div>
 <div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span>    }</div>
 <div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span> </div>
-<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator*(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)</div>
-<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>    {</div>
+<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator*(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(x*v2.x, y*v2.y, z*v2.z, w*v2.w);</div>
 <div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span>    }</div>
 <div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span> </div>
 <div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator/(<span class="keyword">const</span> U &amp;n)</div>
-<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span>    {</div>
+<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator/(<span class="keyword">const</span> U &amp;n)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00919" name="l00919"></a><span class="lineno">  919</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(x/n, y/n, z/n, w/n);</div>
 <div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span>    }</div>
 <div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span> </div>
-<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator/(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)</div>
-<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>    {</div>
+<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>    <a class="code hl_struct" href="structvec4.html">vec4</a> operator/(<span class="keyword">const</span> <a class="code hl_struct" href="structvec4.html">vec4</a> &amp;v2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec4.html">vec4</a>(x/v2.x, y/v2.y, z/v2.z, w/v2.w);</div>
 <div class="line"><a id="l00925" name="l00925"></a><span class="lineno">  925</span>    }</div>
 <div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span> </div>

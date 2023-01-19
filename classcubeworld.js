@@ -10,6 +10,6 @@ var classcubeworld =
     [ "lookupmaterial", "classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4", null ],
     [ "mapscale", "classcubeworld.html#aa4b5cdff5ce4ddef6e2664cb4e7827ef", null ],
     [ "mapsize", "classcubeworld.html#a0817719a7dfd2d50bdf02198804098b7", null ],
-    [ "raycube", "classcubeworld.html#af13af1645855454bc8d889495cfe36b8", null ],
+    [ "raycube", "classcubeworld.html#ae5ff48e06bbb4581e3856ead73fb3a18", null ],
     [ "remip", "classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2", null ]
 ];
