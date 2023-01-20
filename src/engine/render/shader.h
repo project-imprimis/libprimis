@@ -16,7 +16,10 @@ enum
 
 extern float blursigma;
 extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
+const int maxblurradius = 7;
 
 extern int getlocalparam(const char *name);
+extern void setupblurkernel(int radius, float *weights, float *offsets);
+extern void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target = GL_TEXTURE_2D);
 
 #endif

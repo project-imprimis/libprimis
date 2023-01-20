@@ -1103,7 +1103,7 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
     }
 }
 
-Shader *newshader(int type, const char *name, const char *vs, const char *ps, Shader *variant = nullptr, int row = 0)
+static Shader *newshader(int type, const char *name, const char *vs, const char *ps, Shader *variant = nullptr, int row = 0)
 {
     if(Shader::lastshader)
     {
