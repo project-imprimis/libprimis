@@ -274,33 +274,40 @@ vec hitsurface;
         elvl = mode&Ray_BB ? worldscale : 0; \
     ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0); \
 
-#define CHECKINSIDEWORLD \
-    if(!insideworld(o)) \
-    { \
-        float disttoworld = 0, \
-              exitworld = 1e16f; \
-        for(int i = 0; i < 3; ++i) \
-        { \
-            float c = v[i]; \
-            if(c<0 || c>=mapsize()) \
-            { \
-                float d = ((invray[i]>0?0:mapsize())-c)*invray[i]; \
-                if(d<0) \
-                { \
-                    return (radius>0?radius:-1); \
-                } \
-                disttoworld = std::max(disttoworld, 0.1f + d); \
-            } \
-            float e = ((invray[i]>0?mapsize():0)-c)*invray[i]; \
-            exitworld = std::min(exitworld, e); \
-        } \
-        if(disttoworld > exitworld) \
-        { \
-            return (radius>0?radius:-1); \
-        } \
-        v.add(vec(ray).mul(disttoworld)); \
-        dist += disttoworld; \
+//will only change &outrad and &dist if not inside the world
+//true if outside world, false if inside
+bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad, const vec &o, vec &v, const vec& ray, float &dist) const
+{
+    if(!insideworld(o))
+    {
+        float disttoworld = 0,
+              exitworld = 1e16f;
+        for(int i = 0; i < 3; ++i)
+        {
+            float c = v[i];
+            if(c<0 || c>=mapsize())
+            {
+                float d = ((invray[i]>0?0:mapsize())-c)*invray[i];
+                if(d<0)
+                {
+                    outrad =  radius>0 ? radius :-1;
+                    return true;
+                }
+                disttoworld = std::max(disttoworld, 0.1f + d);
+            }
+            float e = ((invray[i]>0?mapsize():0)-c)*invray[i];
+            exitworld = std::min(exitworld, e);
+        }
+        if(disttoworld > exitworld)
+        {
+            outrad = (radius>0?radius:-1);
+            return true;
+        }
+        v.add(vec(ray).mul(disttoworld));
+        dist += disttoworld;
     }
+    return false;
+}
 
 #define DOWNOCTREE(disttoent, earlyexit) \
         cube *lc = levels[lshift]; \
@@ -378,8 +385,14 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
         return 0;
     }
     INITRAYCUBE;
-    CHECKINSIDEWORLD;
-
+    //scope limiting brackets
+    {
+        float outrad = 0.f;
+        if(checkinsideworld(invray, radius, outrad, o, v, ray, dist))
+        {
+            return outrad;
+        }
+    }
     int closest = -1,
         x = static_cast<int>(v.x),
         y = static_cast<int>(v.y),
@@ -442,8 +455,14 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
 float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode, const extentity *t)
 {
     INITRAYCUBE;
-    CHECKINSIDEWORLD;
-
+    //scope limiting brackets
+    {
+        float outrad = 0.f;
+        if(checkinsideworld(invray, radius, outrad, o, v, ray, dist))
+        {
+            return outrad;
+        }
+    }
     int side = Orient_Bottom,
         x = static_cast<int>(v.x),
         y = static_cast<int>(v.y),
@@ -483,7 +502,6 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
     }
 }
 #undef INITRAYCUBE
-#undef CHECKINSIDEWORLD
 #undef DOWNOCTREE
 #undef INTERSECTBOX
 #undef INTERSECTPLANES
