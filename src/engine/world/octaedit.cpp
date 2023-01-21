@@ -671,7 +671,7 @@ int countblock(block3 *b)
 std::vector<editinfo *> editinfos;
 
 template<class B>
-static void packcube(cube &c, B &buf)
+static void packcube(const cube &c, B &buf)
 {
     //recursvely apply to children
     if(c.children)
@@ -699,7 +699,7 @@ static void packcube(cube &c, B &buf)
 }
 
 template<class B>
-static bool packblock(block3 &b, B &buf)
+static bool packblock(const block3 &b, B &buf)
 {
     if(b.size() <= 0 || b.size() > (1<<20))
     {
@@ -710,7 +710,7 @@ static bool packblock(block3 &b, B &buf)
     {
         buf.push_back(reinterpret_cast<const uchar *>(&hdr)[i]);
     }
-    cube *c = b.c();
+    const cube *c = b.getcube();
     for(uint i = 0; i < static_cast<uint>(b.size()); ++i)
     {
         packcube(c[i], buf);
@@ -724,7 +724,7 @@ struct vslothdr
     ushort slot;
 };
 
-static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &used)
+static void packvslots(const cube &c, std::vector<uchar> &buf, std::vector<ushort> &used)
 {
     //recursively apply to children
     if(c.children)
@@ -756,10 +756,10 @@ static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &us
     }
 }
 
-static void packvslots(block3 &b, std::vector<uchar> &buf)
+static void packvslots(const block3 &b, std::vector<uchar> &buf)
 {
     std::vector<ushort> used;
-    cube *c = b.c();
+    const cube *c = b.getcube();
     for(int i = 0; i < b.size(); ++i)
     {
         packvslots(c[i], buf, used);
@@ -938,7 +938,7 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
 }
 
 //used in iengine.h
-bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
+bool packeditinfo(const editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
     std::vector<uchar> buf;
     if(!e || !e->copy || !packblock(*e->copy, buf))
