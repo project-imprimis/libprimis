@@ -1100,7 +1100,7 @@ void pasteundoblock(block3 *b, const uchar *g)
 
 //used in client prefab unpacking, handles the octree unpacking (not the entities,
 // which are game-dependent)
-void unpackundocube(ucharbuf buf, uchar *outbuf)
+void unpackundocube(ucharbuf &buf, uchar *outbuf)
 {
     block3 *b = nullptr;
     if(!unpackblock(b, buf) || b->grid >= rootworld.mapsize() || buf.remaining() < b->size())
