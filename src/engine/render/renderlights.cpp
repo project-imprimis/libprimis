@@ -1935,7 +1935,10 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
     gle::attribf(sx1, sy1, z);
     gle::attribf(sx1, sy2, z);
     gle::attribf(sx2, sy2, z);
+    gle::attribf(sx1, sy1, z);
+    gle::attribf(sx2, sy2, z);
     gle::attribf(sx2, sy1, z);
+
 }
 
 static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
@@ -1990,7 +1993,7 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
 
-    gle::begin(GL_TRIANGLE_FAN);
+    gle::begin(GL_TRIANGLES);
     lightquads(sz1, bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2, tilemask);
     gle::end();
 }
@@ -2349,7 +2352,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
         {
             glDepthBounds_(sz1*0.5f + 0.5f, std::min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         }
-        gle::begin(GL_QUADS);
+        gle::begin(GL_TRIANGLES);
         for(uint j = 0; j < batch.rects.size(); j++)
         {
             const lightrect &r = batch.rects[j];
