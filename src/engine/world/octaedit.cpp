@@ -1092,7 +1092,7 @@ void cleanupprefabs()
     ENUMERATE(prefabs, prefab, p, p.cleanup());
 }
 
-void pasteundoblock(block3 *b, uchar *g)
+void pasteundoblock(block3 *b, const uchar *g)
 {
     cube *s = b->c();
     LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), rootworld.mapscale()-1), pastecube(*s++, c));
