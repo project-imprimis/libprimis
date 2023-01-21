@@ -552,9 +552,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>normalizelookupcube</
 <tr class="memitem:a378463bc62973962655a88692c5a37bb"><td class="memItemLeft" align="right" valign="top"><a id="a378463bc62973962655a88692c5a37bb" name="a378463bc62973962655a88692c5a37bb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>updateselection</b> ()</td></tr>
 <tr class="separator:a378463bc62973962655a88692c5a37bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e8490cf8c9058ebbe87f33511a2653e"><td class="memItemLeft" align="right" valign="top"><a id="a2e8490cf8c9058ebbe87f33511a2653e" name="a2e8490cf8c9058ebbe87f33511a2653e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>packeditinfo</b> (<a class="el" href="structeditinfo.html">editinfo</a> *e, int &amp;inlen, uchar *&amp;outbuf, int &amp;outlen)</td></tr>
-<tr class="separator:a2e8490cf8c9058ebbe87f33511a2653e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af081815a0f578f981be5f204fb1e9fd2"><td class="memItemLeft" align="right" valign="top"><a id="af081815a0f578f981be5f204fb1e9fd2" name="af081815a0f578f981be5f204fb1e9fd2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>packeditinfo</b> (const <a class="el" href="structeditinfo.html">editinfo</a> *e, int &amp;inlen, uchar *&amp;outbuf, int &amp;outlen)</td></tr>
+<tr class="separator:af081815a0f578f981be5f204fb1e9fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ddc5131db36902ad5cf239d1b77f6c0"><td class="memItemLeft" align="right" valign="top"><a id="a5ddc5131db36902ad5cf239d1b77f6c0" name="a5ddc5131db36902ad5cf239d1b77f6c0"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>unpackeditinfo</b> (<a class="el" href="structeditinfo.html">editinfo</a> *&amp;e, const uchar *inbuf, int inlen, int outlen)</td></tr>
 <tr class="separator:a5ddc5131db36902ad5cf239d1b77f6c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -622,15 +622,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>remapvslots</b> (<a c
 <tr class="memitem:a63feefc628e2bcde49ef21bbec3cc27f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a63feefc628e2bcde49ef21bbec3cc27f">pastecube</a> (const <a class="el" href="classcube.html">cube</a> &amp;src, <a class="el" href="classcube.html">cube</a> &amp;dst)</td></tr>
 <tr class="memdesc:a63feefc628e2bcde49ef21bbec3cc27f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies and pastes a single cube (with its children).  <br /></td></tr>
 <tr class="separator:a63feefc628e2bcde49ef21bbec3cc27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05008d6e98cdc5e83cd095e1db45d749"><td class="memItemLeft" align="right" valign="top"><a id="a05008d6e98cdc5e83cd095e1db45d749" name="a05008d6e98cdc5e83cd095e1db45d749"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>pasteundoblock</b> (<a class="el" href="structblock3.html">block3</a> *b, uchar *g)</td></tr>
-<tr class="separator:a05008d6e98cdc5e83cd095e1db45d749"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a471d2e27929281437e5f40dec6d7b953"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a471d2e27929281437e5f40dec6d7b953">pasteundoblock</a> (<a class="el" href="structblock3.html">block3</a> *b, const uchar *g)</td></tr>
+<tr class="memdesc:a471d2e27929281437e5f40dec6d7b953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pastes an undo block associated with the passed <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> object.  <br /></td></tr>
+<tr class="separator:a471d2e27929281437e5f40dec6d7b953"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3854db2899999c9032a7cc76a3aea97a"><td class="memItemLeft" align="right" valign="top"><a id="a3854db2899999c9032a7cc76a3aea97a" name="a3854db2899999c9032a7cc76a3aea97a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>uncompresseditinfo</b> (const uchar *inbuf, int inlen, uchar *&amp;outbuf, int &amp;outlen)</td></tr>
 <tr class="separator:a3854db2899999c9032a7cc76a3aea97a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7203eb3a81771a28e8918b71b372b90c"><td class="memItemLeft" align="right" valign="top"><a id="a7203eb3a81771a28e8918b71b372b90c" name="a7203eb3a81771a28e8918b71b372b90c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unpackundocube</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> buf, uchar *outbuf)</td></tr>
-<tr class="separator:a7203eb3a81771a28e8918b71b372b90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70c0f2c66a8c36dc73c55b2b84713dcb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a70c0f2c66a8c36dc73c55b2b84713dcb">unpackundocube</a> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;buf, uchar *outbuf)</td></tr>
+<tr class="memdesc:a70c0f2c66a8c36dc73c55b2b84713dcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unpacks a buffer containing an undo action into a unsigned char array.  <br /></td></tr>
+<tr class="separator:a70c0f2c66a8c36dc73c55b2b84713dcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3936b7d01fe2a882592c97234f8dcf28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a3936b7d01fe2a882592c97234f8dcf28">multiplayerwarn</a> ()</td></tr>
 <tr class="memdesc:a3936b7d01fe2a882592c97234f8dcf28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a warning message to the console.  <br /></td></tr>
 <tr class="separator:a3936b7d01fe2a882592c97234f8dcf28"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -3958,6 +3958,43 @@ false if the vector is outside the world </dd></dl>
 
 </div>
 </div>
+<a id="a471d2e27929281437e5f40dec6d7b953" name="a471d2e27929281437e5f40dec6d7b953"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a471d2e27929281437e5f40dec6d7b953">&#9670;&#160;</a></span>pasteundoblock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pasteundoblock </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structblock3.html">block3</a> *&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uchar *&#160;</td>
+          <td class="paramname"><em>g</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pastes an undo block associated with the passed <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">b</td><td>the <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> to use to paste </td></tr>
+    <tr><td class="paramname">g</td><td>the gridscale array to pass </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ad0e8b74def0ed6a4b978838e037bd8be" name="ad0e8b74def0ed6a4b978838e037bd8be"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0e8b74def0ed6a4b978838e037bd8be">&#9670;&#160;</a></span>pointinsel()</h2>
 
@@ -4761,6 +4798,44 @@ false if the window was hidden, or if no window exists </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the window is open </dd>
 <dd>
 false if the window does not exist or is closed </dd></dl>
+
+</div>
+</div>
+<a id="a70c0f2c66a8c36dc73c55b2b84713dcb" name="a70c0f2c66a8c36dc73c55b2b84713dcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70c0f2c66a8c36dc73c55b2b84713dcb">&#9670;&#160;</a></span>unpackundocube()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unpackundocube </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structdatabuf.html">ucharbuf</a> &amp;&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uchar *&#160;</td>
+          <td class="paramname"><em>outbuf</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Unpacks a buffer containing an undo action into a unsigned char array. </p>
+<p>This function does not preserve the original buffer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer to unpack </td></tr>
+    <tr><td class="paramname">outbuf</td><td>the buffer to unpack into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
