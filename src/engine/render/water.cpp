@@ -488,53 +488,227 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
     }
     int csize = m.csize,
         rsize = m.rsize;
-//we need to undefine and redefine these macros such that GENFACEVERTSXY has the appropriate code substituted into it
-#define GENFACEORIENT(orient, v0, v1, v2, v3) \
-        case orient: \
-        { \
-            v0 v1 v2 v3 break; \
-        }
-#undef GENFACEVERTX
-#define GENFACEVERTX(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll)); \
-            }
-#undef GENFACEVERTY
-#define GENFACEVERTY(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll)); \
-            }
-#define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
     if(normal != vec(0,0,0))
     {
         vec n = normal;
         switch(m.orient)
         {
-            GENFACEVERTSXY(x, x, y, y, zmin, zmax, /**/, + csize, /**/, + rsize, + offset, - offset)
+            case 0:
+            {
+                {
+                    vec v(x + offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 1:
+            {
+                {
+                    vec v(x - offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 2:
+            {
+                {
+                    vec v(x + csize, y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 3:
+            {
+                {
+                    vec v(x , y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
         }
     }
-#undef GENFACENORMAL
-#define GENFACENORMAL //empty macro
     else
     {
         switch(m.orient)
         {
-            GENFACEVERTSXY(x, x, y, y, zmin, zmax, /**/, + csize, /**/, + rsize, + offset, - offset)
+            case 0:
+            {
+                {
+                    vec v(x + offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 1:
+            {
+                {
+                    vec v(x - offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 2:
+            {
+                {
+                    vec v(x + csize, y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
+            case 3:
+            {
+                {
+                    vec v(x , y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                break;
+            }
         }
     }
-#undef GENFACENORMAL
-#undef GENFACEORIENT
-//restore GENFACEVERTX/Y
-#undef GENFACEVERTX
-#define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-#undef GENFACEVERTY
-#define GENFACEVERTY(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 }
 
 void renderwaterfalls()
