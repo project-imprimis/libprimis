@@ -772,9 +772,9 @@ void renderwater()
         {
             continue;
         }
-        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
+        const MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
+        const Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
         wxscale = defaulttexscale/(tex->xs*wslot.scale);
         wyscale = defaulttexscale/(tex->ys*wslot.scale);
 
