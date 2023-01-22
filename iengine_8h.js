@@ -44,7 +44,7 @@ var iengine_8h =
     [ "getclientmap", "iengine_8h.html#ad28673035e991bbf7b7ea6aeea6e78e2", null ],
     [ "getclockmillis", "iengine_8h.html#a0834d53419f37bf4891ce417e2d9ef16", null ],
     [ "getcursorpos", "iengine_8h.html#a3161f6bab070a19e58191cc1e37193f8", null ],
-    [ "getdecalslotdepth", "iengine_8h.html#a055cfb70731e0d3a171b146a5f37e0b8", null ],
+    [ "getdecalslotdepth", "iengine_8h.html#a8dd54be8d5d863dcdee0ca80e3e4182c", null ],
     [ "getentname", "iengine_8h.html#a853d4e87f20b02673dd8e15ad53fff7d", null ],
     [ "getents", "iengine_8h.html#a4c17af056b4e86d540364e462367c815", null ],
     [ "getlogfile", "iengine_8h.html#a0a82fc64832d47c406b0ea6be4d162f7", null ],

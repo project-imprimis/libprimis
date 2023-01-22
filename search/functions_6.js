@@ -4,7 +4,7 @@ var searchData=
   ['getclientmap_1',['getclientmap',['../iengine_8h.html#ad28673035e991bbf7b7ea6aeea6e78e2',1,'iengine.h']]],
   ['getclockmillis_2',['getclockmillis',['../iengine_8h.html#a0834d53419f37bf4891ce417e2d9ef16',1,'iengine.h']]],
   ['getcursorpos_3',['getcursorpos',['../iengine_8h.html#a3161f6bab070a19e58191cc1e37193f8',1,'UI']]],
-  ['getdecalslotdepth_4',['getdecalslotdepth',['../iengine_8h.html#a055cfb70731e0d3a171b146a5f37e0b8',1,'iengine.h']]],
+  ['getdecalslotdepth_4',['getdecalslotdepth',['../iengine_8h.html#a8dd54be8d5d863dcdee0ca80e3e4182c',1,'iengine.h']]],
   ['getentname_5',['getentname',['../iengine_8h.html#a853d4e87f20b02673dd8e15ad53fff7d',1,'iengine.h']]],
   ['getents_6',['getents',['../iengine_8h.html#a4c17af056b4e86d540364e462367c815',1,'entities']]],
   ['getident_7',['getident',['../command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f',1,'command.h']]],
