@@ -218,7 +218,51 @@ static void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radiu
     rotatebb(center, radius, e.attr2, e.attr3, e.attr4);
 }
 
-void freeoctaentities(cube &c);
+static bool modifyoctaent(int flags, int id)
+{
+    std::vector<extentity *> &ents = entities::getents();
+    return (static_cast<int>(ents.size()) > id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
+}
+
+static void removeentity(int id)
+{
+    modifyoctaent(ModOctaEnt_UpdateBB, id);
+}
+
+void freeoctaentities(cube &c)
+{
+    if(!c.ext)
+    {
+        return;
+    }
+    if(entities::getents().size())
+    {
+        while(c.ext->ents && !c.ext->ents->mapmodels.empty())
+        {
+            removeentity(c.ext->ents->decals.back());
+            c.ext->ents->mapmodels.pop_back();
+        }
+        while(c.ext->ents && !c.ext->ents->decals.empty())
+        {
+            removeentity(c.ext->ents->decals.back());
+            c.ext->ents->decals.pop_back();
+        }
+        while(c.ext->ents && !c.ext->ents->other.empty())
+        {
+            removeentity(c.ext->ents->other.back());
+            //guard against recursive freeoctaentities() deleting this vector
+            if(c.ext->ents)
+            {
+                c.ext->ents->other.pop_back();
+            }
+        }
+    }
+    if(c.ext->ents)
+    {
+        delete c.ext->ents;
+        c.ext->ents = nullptr;
+    }
+}
 
 static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
 {
@@ -263,7 +307,7 @@ static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
     return true;
 }
 
-void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
+static void modifyoctaentity(int flags, int id, const extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
 {
     LOOP_OCTA_BOX(cor, size, bo, br)
     {
@@ -528,60 +572,14 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
     return true;
 }
 
-static bool modifyoctaent(int flags, int id)
-{
-    std::vector<extentity *> &ents = entities::getents();
-    return (static_cast<int>(ents.size()) > id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
-}
-
 void addentityedit(int id)
 {
     modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
 }
 
-static void removeentity(int id)
-{
-    modifyoctaent(ModOctaEnt_UpdateBB, id);
-}
-
 void removeentityedit(int id)
 {
     modifyoctaent(ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
-}
-
-void freeoctaentities(cube &c)
-{
-    if(!c.ext)
-    {
-        return;
-    }
-    if(entities::getents().size())
-    {
-        while(c.ext->ents && !c.ext->ents->mapmodels.empty())
-        {
-            removeentity(c.ext->ents->decals.back());
-            c.ext->ents->mapmodels.pop_back();
-        }
-        while(c.ext->ents && !c.ext->ents->decals.empty())
-        {
-            removeentity(c.ext->ents->decals.back());
-            c.ext->ents->decals.pop_back();
-        }
-        while(c.ext->ents && !c.ext->ents->other.empty())
-        {
-            removeentity(c.ext->ents->other.back());
-            //guard against recursive freeoctaentities() deleting this vector
-            if(c.ext->ents)
-            {
-                c.ext->ents->other.pop_back();
-            }
-        }
-    }
-    if(c.ext->ents)
-    {
-        delete c.ext->ents;
-        c.ext->ents = nullptr;
-    }
 }
 
 void cubeworld::entitiesinoctanodes()
