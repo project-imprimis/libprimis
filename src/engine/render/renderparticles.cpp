@@ -1763,7 +1763,7 @@ void regular_particle_flame(int type, const vec &p, float radius, float height, 
     }
     regularflame(type, p, radius, height, color, density, scale, speed, fade, gravity);
 }
-void cubeworld::makeparticles(entity &e)
+void cubeworld::makeparticles(const entity &e)
 {
     switch(e.attr1)
     {

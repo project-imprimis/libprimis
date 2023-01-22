@@ -77,7 +77,7 @@ void entcancel()
 }
 
 //need a getter fxn because decalslot obj not exposed to the game
-float getdecalslotdepth(DecalSlot &s)
+float getdecalslotdepth(const DecalSlot &s)
 {
     return s.depth;
 }
