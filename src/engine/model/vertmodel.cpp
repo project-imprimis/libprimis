@@ -161,7 +161,7 @@ int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
     return numverts;
 }
 
-void vertmodel::vertmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
+void vertmodel::vertmesh::render()
 {
     if(!Shader::lastshader)
     {

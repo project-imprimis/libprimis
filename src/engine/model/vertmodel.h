@@ -157,7 +157,7 @@ struct vertmodel : animmodel
             //==================================================================
         }
 
-        void render(const AnimState *as, skin &s, vbocacheentry &vc);
+        void render();
     };
 
     struct tag
