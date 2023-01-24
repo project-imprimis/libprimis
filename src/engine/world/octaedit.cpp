@@ -1280,7 +1280,7 @@ class prefabmesh
 
 };
 
-static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
+static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size)
 {
     //recursively apply to children
     if(c.children)
