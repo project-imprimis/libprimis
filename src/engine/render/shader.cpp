@@ -1995,7 +1995,7 @@ void setupblurkernel(int radius, float *weights, float *offsets)
     }
 }
 
-void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target)
+void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target)
 {
     if(radius<1 || radius>maxblurradius)
     {
