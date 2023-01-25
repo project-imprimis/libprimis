@@ -214,11 +214,6 @@ static void fontalias(const char *dst, const char *src)
     fontdeftex = d->texs.size()-1;
 }
 
-font *findfont(const char *name)
-{
-    return fonts.access(name);
-}
-
 bool setfont(const char *name)
 {
     font *f = fonts.access(name);

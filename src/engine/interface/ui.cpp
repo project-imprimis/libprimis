@@ -2721,11 +2721,6 @@ namespace UI
         void setup(const char *name)
         {
             Object::setup();
-
-            if(!font || !std::strcmp(font->name, name))
-            {
-                font = findfont(name);
-            }
         }
 
         void layout()

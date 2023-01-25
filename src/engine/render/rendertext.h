@@ -34,7 +34,6 @@ constexpr int minreswidth = 640,
 
 extern float textscale;
 
-extern font *findfont(const char *name);
 extern void reloadfonts();
 
 inline void setfont(font *f)
