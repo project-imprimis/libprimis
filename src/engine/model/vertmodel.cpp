@@ -313,15 +313,6 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     {
         vertsize = sizeof(vvertg);
         gle::bindvbo(vc.vbuf);
-
-        #define GENVBO(type) \
-            do \
-            { \
-                std::vector<type> vverts; \
-                LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
-                glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(type), vverts.data(), GL_STATIC_DRAW); \
-            } while(0)
-
         int numverts = 0,
             htlen = 128;
         LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
@@ -335,11 +326,11 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         }
         int *htdata = new int[htlen];
         std::memset(htdata, -1, htlen*sizeof(int));
-        GENVBO(vvertg);
+        std::vector<vvertg> vverts;
+        LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen));
+        glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(vvertg), vverts.data(), GL_STATIC_DRAW);
         delete[] htdata;
         htdata = nullptr;
-        #undef GENVBO
-
         gle::clearvbo();
     }
 
