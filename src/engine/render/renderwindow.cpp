@@ -739,7 +739,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     worstdiff = fps-1000/worst;
 }
 
-void getfpscmd(int *raw)
+void getfpscmd(const int *raw)
 {
     if(*raw)
     {
