@@ -9,7 +9,7 @@ class skelbih
         };
         vec calccenter() const;
         float calcradius() const;
-        skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris);
+        skelbih(const skelmodel::skelmeshgroup *m, int numtris, tri *tris);
 
         ~skelbih()
         {
@@ -26,7 +26,7 @@ class skelbih
             bool isleaf(int which) const;
         };
 
-        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray);
+        void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray);
 
     private:
         node *nodes;
@@ -35,9 +35,9 @@ class skelbih
 
         vec bbmin, bbmax;
 
-        bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray);
+        bool triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const;
         void build(const skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax);
-        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax);
+        void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax) const;
 
         struct skelbihstack
         {
@@ -71,7 +71,7 @@ class skelhitzone
         skelhitzone();
         ~skelhitzone();
 
-        void intersect(skelmodel::skelmeshgroup *m,
+        void intersect(const skelmodel::skelmeshgroup *m,
                        skelmodel::skin *s,
                        const dualquat *bdata1,
                        const dualquat *bdata2,
@@ -79,14 +79,14 @@ class skelhitzone
                        const vec &o,
                        const vec &ray);
 
-        void propagate(skelmodel::skelmeshgroup *m,
+        void propagate(const skelmodel::skelmeshgroup *m,
                        const dualquat *bdata1,
                        const dualquat *bdata2,
                        int numblends);
 
     private:
         vec animcenter;
-        static bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray);
+        static bool triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray);
         bool shellintersect(const vec &o, const vec &ray);
 
 };
@@ -109,7 +109,7 @@ class skelzonekey
 
         int numbones();
         void addbone(int n);
-        void addbones(skelmodel::skelmesh *m, const skelmodel::tri &t);
+        void addbones(const skelmodel::skelmesh *m, const skelmodel::tri &t);
 };
 
 class skelzonebounds
@@ -133,19 +133,19 @@ class skelhitdata
         skelmodel::blendcacheentry blendcache;
         skelhitdata();
         ~skelhitdata();
-        void build(skelmodel::skelmeshgroup *g, const uchar *ids);
+        void build(const skelmodel::skelmeshgroup *g, const uchar *ids);
 
-        void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2);
+        void propagate(const skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2);
 
         void cleanup();
-        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray);
+        void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray);
     private:
         int numzones, rootzones, visited;
         skelhitzone *zones;
         skelhitzone **links;
         skelhitzone::tri *tris;
 
-        uchar chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids);
+        uchar chooseid(const skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids);
 
         class skelzoneinfo
         {
