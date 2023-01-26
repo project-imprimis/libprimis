@@ -63,9 +63,6 @@ class skelhitdata
         };
     //need to set htcmp to friend because it must be in global scope for hashtable macro to find it
     friend bool htcmp(const skelzonekey &x, const skelhitdata::skelzoneinfo &y);
-
 };
-
-uint hthash(const skelzonekey &k);
 
 #endif
