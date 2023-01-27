@@ -117,16 +117,25 @@ inline bool htcmp(const stringslice &x, const char *y)
     return x.len == (int)strlen(y) && !std::memcmp(x.str, y, x.len);
 }
 
-#define PARSEFLOAT(name, type) \
-    inline type parse##name(const char *s) \
-    { \
-        /* not all platforms (windows) can parse hexadecimal integers via strtod */ \
-        char *end; \
-        double val = std::strtod(s, &end); \
-        return val || end==s || (*end!='x' && *end!='X') ? type(val) : type(parseint(s)); \
-    }
-PARSEFLOAT(float, float)
-PARSEFLOAT(number, double)
+// not all platforms (windows) can parse hexadecimal integers via strtod
+inline float parsefloat(const char *s)
+{
+    char *end;
+    double val = std::strtod(s, &end);
+    return val
+        || end==s
+        || (*end!='x' && *end!='X') ? static_cast<float>(val) : static_cast<float>(parseint(s));
+}
+
+inline double parsenumber(const char *s)
+{
+    char *end;
+    double val = std::strtod(s, &end);
+    return val
+        || end==s
+        || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
+}
+
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
