@@ -653,7 +653,7 @@ skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
     std::memset(&bones[1], 0xFF, sizeof(bones)-1);
 }
 
-skelzonekey::skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
+skelzonekey::skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
 {
     std::memset(bones, 0xFF, sizeof(bones));
     addbones(m, t);
@@ -859,7 +859,7 @@ void skelhitdata::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *
     }
 }
 
-uchar skelhitdata::chooseid(const skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
+uchar skelhitdata::chooseid(const skelmodel::skelmeshgroup *g, const skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
 {
     int numused = 0;
     uchar used[12];

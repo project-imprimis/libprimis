@@ -13,7 +13,7 @@ class skelzonekey
     public:
         skelzonekey();
         skelzonekey(int bone);
-        skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t);
+        skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t);
 
         bool includes(const skelzonekey &o);
         void subtract(const skelzonekey &o);
@@ -48,7 +48,7 @@ class skelhitdata
         skelhitzone **links;
         skelhittri *tris;
 
-        uchar chooseid(const skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids);
+        uchar chooseid(const skelmodel::skelmeshgroup *g, const skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids);
 
         class skelzoneinfo
         {
