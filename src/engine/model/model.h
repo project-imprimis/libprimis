@@ -127,13 +127,6 @@ class model
             return rejectradius;
         }
 
-        float boundsphere(vec &center)
-        {
-            vec radius;
-            boundbox(center, radius);
-            return radius.magnitude();
-        }
-
         float above()
         {
             vec center, radius;
