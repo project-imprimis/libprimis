@@ -22,4 +22,17 @@ extern int getlocalparam(const char *name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 
+extern Shader *lookupshaderbyname(const char *name);
+extern Shader *useshaderbyname(const char *name);
+extern Shader *generateshader(const char *name, const char *cmd, ...);
+extern void resetslotshader();
+extern void setslotshader(Slot &s);
+extern void linkslotshader(Slot &s, bool load = true);
+extern void linkvslotshader(VSlot &s, bool load = true);
+extern void linkslotshaders();
+extern bool shouldreuseparams(const Slot &s, const VSlot &p);
+extern void setupshaders();
+extern void reloadshaders();
+extern void cleanupshaders();
+
 #endif

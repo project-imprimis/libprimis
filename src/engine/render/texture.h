@@ -136,19 +136,6 @@ extern const texrotation texrotations[8];
 extern Texture *notexture;
 extern int maxvsuniforms, maxfsuniforms;
 
-extern Shader *lookupshaderbyname(const char *name);
-extern Shader *useshaderbyname(const char *name);
-extern Shader *generateshader(const char *name, const char *cmd, ...);
-extern void resetslotshader();
-extern void setslotshader(Slot &s);
-extern void linkslotshader(Slot &s, bool load = true);
-extern void linkvslotshader(VSlot &s, bool load = true);
-extern void linkslotshaders();
-extern bool shouldreuseparams(const Slot &s, const VSlot &p);
-extern void setupshaders();
-extern void reloadshaders();
-extern void cleanupshaders();
-
 extern SDL_Surface *loadsurface(const char *name);
 
 extern MatSlot &lookupmaterialslot(int slot, bool load = true);

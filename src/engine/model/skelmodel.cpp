@@ -23,6 +23,7 @@
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 

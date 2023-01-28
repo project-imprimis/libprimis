@@ -22,6 +22,7 @@
 #include "rendermodel.h"
 #include "renderwindow.h"
 #include "stain.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 

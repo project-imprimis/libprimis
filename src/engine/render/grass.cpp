@@ -13,6 +13,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderva.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 

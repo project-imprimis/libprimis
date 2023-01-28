@@ -21,6 +21,7 @@
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 

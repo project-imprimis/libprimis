@@ -12,6 +12,7 @@
 #include "renderparticles.h"
 #include "rendersky.h"
 #include "renderva.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 

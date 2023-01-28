@@ -21,6 +21,7 @@
 #include "renderttf.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "stain.h"
 #include "texture.h"
