@@ -32,17 +32,19 @@ class skelzonekey
 class skelhitdata
 {
     public:
-        int numblends;
-        skelmodel::blendcacheentry blendcache;
         skelhitdata();
         ~skelhitdata();
         void build(const skelmodel::skelmeshgroup *g, const uchar *ids);
-
         void propagate(const skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2);
-
         void cleanup();
         void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray);
+
+        int getblendcount();
+        skelmodel::blendcacheentry &getcache();
+
     private:
+        int numblends;
+        skelmodel::blendcacheentry blendcache;
         int numzones, rootzones, visited;
         skelhitzone *zones;
         skelhitzone **links;

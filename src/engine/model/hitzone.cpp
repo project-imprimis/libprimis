@@ -827,6 +827,16 @@ skelhitdata::~skelhitdata()
     delete[] blendcache.bdata;
 }
 
+int skelhitdata::getblendcount()
+{
+    return numblends;
+}
+
+skelmodel::blendcacheentry &skelhitdata::getcache()
+{
+    return blendcache;
+}
+
 void skelhitdata::propagate(const skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2)
 {
     visited = 0;
@@ -1155,13 +1165,13 @@ void skelmodel::skelmeshgroup::deletehitdata()
 void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray) const
 {
     int owner = &sc - &skel->skelcache[0];
-    skelmodel::blendcacheentry &bc = z->blendcache;
+    skelmodel::blendcacheentry &bc = z->getcache();
     if(bc.owner != owner || bc != sc)
     {
         bc.owner = owner;
         bc.millis = lastmillis;
         (animcacheentry &)bc = sc;
-        blendbones(sc.bdata, bc.bdata, blendcombos.data(), z->numblends);
+        blendbones(sc.bdata, bc.bdata, blendcombos.data(), z->getblendcount());
         z->propagate(this, sc.bdata, bc.bdata);
     }
     z->intersect(this, p->skins.data(), sc.bdata, bc.bdata, o, ray);
