@@ -198,7 +198,6 @@ inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const iv
 #define LOOP_OCTA_BOX(o, size, bbmin, bbmax) uchar possible = octaboxoverlap(o, size, bbmin, bbmax); for(int i = 0; i < 8; ++i) if(possible&(1<<i))
 
 #define OCTA_COORD(d, i)     (((i)&octadim(d))>>(d))
-#define OPPOSITE_OCTA(d, i)  ((i)^octadim(D[d]))
 #define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 
 extern int wtris, wverts,

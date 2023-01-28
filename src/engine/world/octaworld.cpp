@@ -374,7 +374,7 @@ int getmippedtexture(const cube &p, int orient)
             int n = octacubeindex(d, x, y, dc);
             if(c[n].isempty())
             {
-                n = OPPOSITE_OCTA(d, n);
+                n = n^octadim(D[d]);
                 if(c[n].isempty())
                 {
                     continue;
