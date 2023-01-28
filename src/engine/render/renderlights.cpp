@@ -1047,7 +1047,7 @@ class lightinfo
             return query && query->owner == this && ::checkquery(query);
         }
 
-        void calcbb(vec &bbmin, vec &bbmax)
+        void calcbb(vec &bbmin, vec &bbmax) const
         {
             if(spot > 0)
             {
