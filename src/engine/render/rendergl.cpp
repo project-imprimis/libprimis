@@ -121,7 +121,7 @@ void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
     for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
 }
 
-void *getprocaddress(const char *name)
+static void *getprocaddress(const char *name)
 {
     return SDL_GL_GetProcAddress(name);
 }
