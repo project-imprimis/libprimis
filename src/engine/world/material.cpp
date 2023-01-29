@@ -849,6 +849,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
     return matsurfs - (end-matbuf);
 }
 
+//treats `rootworld` as const
 void setupmaterials(int start, int len)
 {
     int hasmat = 0;
@@ -877,7 +878,7 @@ void setupmaterials(int start, int len)
                 int csize;
                 while(o[dim^1] < maxc)
                 {
-                    cube &c = rootworld.lookupcube(o, 0, co, csize);
+                    const cube &c = rootworld.lookupcube(o, 0, co, csize);
                     if(IS_LIQUID(c.material&MatFlag_Volume))
                     {
                         m.ends |= 1;
@@ -890,7 +891,7 @@ void setupmaterials(int start, int len)
                 o[dim] -= coord ? 2 : -2;
                 while(o[dim^1] < maxc)
                 {
-                    cube &c = rootworld.lookupcube(o, 0, co, csize);
+                    const cube &c = rootworld.lookupcube(o, 0, co, csize);
                     if(visiblematerial(c, Orient_Top, co, csize))
                     {
                         m.ends |= 2;
