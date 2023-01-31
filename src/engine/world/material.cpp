@@ -163,7 +163,7 @@ namespace
         if(gle::attribbuf.empty())
         {
             gle::defvertex();
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLE_FAN);
         }
         float x = m.o.x,
               y = m.o.y,
@@ -172,20 +172,56 @@ namespace
               rsize = m.rsize;
         switch(m.orient)
         {
-    //================================================ GENFACEORIENT GENFACEVERT
-
-    //passing /**/ empty comments instead of nothing (they have the same effect)
-    #define GENFACEORIENT(orient, v0, v1, v2, v3) \
-            case orient: v0 v1 v2 v3 break;
-    #define GENFACEVERT(orient, vert, mx,my,mz, sx,sy,sz) \
-                gle::attribf(mx sx, my sy, mz sz);
-
-            GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
-
-    #undef GENFACEORIENT
-    #undef GENFACEVERT
-    //==========================================================================
+            case 0:
+            {
+                gle::attribf(x + offset, y + rsize, z + csize);
+                gle::attribf(x + offset, y + rsize, z);
+                gle::attribf(x + offset, y, z);
+                gle::attribf(x + offset, y, z + csize);
+                break;
+            }
+            case 1:
+            {
+                gle::attribf(x - offset, y + rsize, z + csize);
+                gle::attribf(x - offset, y, z + csize);
+                gle::attribf(x - offset, y, z);
+                gle::attribf(x - offset, y + rsize, z);
+                break;
+            }
+            case 2:
+            {
+                gle::attribf(x + csize, y + offset, z + rsize);
+                gle::attribf(x, y + offset, z + rsize);
+                gle::attribf(x, y + offset, z);
+                gle::attribf(x + csize, y + offset, z);
+                break;
+            }
+            case 3:
+            {
+                gle::attribf(x, y - offset, z);
+                gle::attribf(x, y - offset, z + rsize);
+                gle::attribf(x + csize, y - offset, z + rsize);
+                gle::attribf(x + csize, y - offset, z);
+                break;
+            }
+            case 4:
+            {
+                gle::attribf(x, y, z + offset);
+                gle::attribf(x, y + csize, z + offset);
+                gle::attribf(x + rsize, y + csize, z + offset);
+                gle::attribf(x + rsize, y, z + offset);
+                break;
+            }
+            case 5:
+            {
+                gle::attribf(x, y, z - offset);
+                gle::attribf(x + rsize, y, z - offset);
+                gle::attribf(x + rsize, y + csize, z - offset);
+                gle::attribf(x, y + csize, z - offset);
+                break;
+            }
         }
+        gle::end();
     }
 
     const struct material
