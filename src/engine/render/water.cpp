@@ -473,7 +473,6 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
             gle::defnormal();
         }
         gle::deftexcoord0();
-        gle::begin(GL_QUADS);
     }
     float x = m.o.x,
           y = m.o.y,
@@ -496,6 +495,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
         {
             case 0:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x + offset, y + rsize, zmax + csize);
                     gle::attribf(v.x, v.y, v.z);
@@ -520,10 +520,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(n.x, n.y, n.z);
                     gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 1:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x - offset, y + rsize, zmax + csize);
                     gle::attribf(v.x, v.y, v.z);
@@ -548,10 +550,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(n.x, n.y, n.z);
                     gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 2:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x + csize, y + offset, zmax + rsize);
                     gle::attribf(v.x, v.y, v.z);
@@ -576,10 +580,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(n.x, n.y, n.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 3:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x , y - offset, zmin );
                     gle::attribf(v.x, v.y, v.z);
@@ -604,6 +610,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(n.x, n.y, n.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
         }
@@ -614,6 +621,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
         {
             case 0:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x + offset, y + rsize, zmax + csize);
                     gle::attribf(v.x, v.y, v.z);
@@ -634,10 +642,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 1:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x - offset, y + rsize, zmax + csize);
                     gle::attribf(v.x, v.y, v.z);
@@ -658,10 +668,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 2:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x + csize, y + offset, zmax + rsize);
                     gle::attribf(v.x, v.y, v.z);
@@ -682,10 +694,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
             case 3:
             {
+                gle::begin(GL_TRIANGLE_FAN);
                 {
                     vec v(x , y - offset, zmin );
                     gle::attribf(v.x, v.y, v.z);
@@ -706,6 +720,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
+                gle::end();
                 break;
             }
         }
