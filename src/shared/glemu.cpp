@@ -339,46 +339,28 @@ namespace gle
         if(vertexsize == lastvertexsize && buf >= lastbuf)
         {
             start = static_cast<int>(buf - lastbuf)/vertexsize;
-            if(primtype == GL_QUADS && (start%4 || start + attribbuf.length()/vertexsize >= 4*maxquads))
-            {
-                start = 0;
-            }
-            else
-            {
-                buf = lastbuf;
-            }
+            buf = lastbuf;
         }
         vbooffset += attribbuf.length();
         setattribs(buf);
         int numvertexes = attribbuf.length()/vertexsize;
-        if(primtype == GL_QUADS)
+        if(multidrawstart.size())
         {
-            if(!quadsenabled)
+            multidraw();
+            if(start)
             {
-                enablequads();
+                for(uint i = 0; i < multidrawstart.size(); i++)
+                {
+                    multidrawstart[i] += start;
+                }
             }
-            drawquads(start/4, numvertexes/4);
+            glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
+            multidrawstart.resize(0);
+            multidrawcount.resize(0);
         }
         else
         {
-            if(multidrawstart.size())
-            {
-                multidraw();
-                if(start)
-                {
-                    for(uint i = 0; i < multidrawstart.size(); i++)
-                    {
-                        multidrawstart[i] += start;
-                    }
-                }
-                glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
-                multidrawstart.resize(0);
-                multidrawcount.resize(0);
-            }
-            else
-            {
-                glDrawArrays(primtype, start, numvertexes);
-            }
+            glDrawArrays(primtype, start, numvertexes);
         }
         attribbuf.reset(attribdata, maxvbosize);
         return numvertexes;
