@@ -583,66 +583,314 @@ namespace
                 gle::defnormal();
             }
             gle::deftexcoord0();
-            gle::begin(GL_QUADS);
         }
-        //undefine GENFACEVERT* helper macros so they can be redefined here
-        #define GENFACEORIENT(orient, v0, v1, v2, v3) \
-            case orient: v0 v1 v2 v3 break;
-        #undef GENFACEVERTX
-        #define GENFACEVERTX(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.y, -glassyscale*v.z); \
-            }
-        #undef GENFACEVERTY
-        #define GENFACEVERTY(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.x, -glassyscale*v.z); \
-            }
-        #undef GENFACEVERTZ
-        #define GENFACEVERTZ(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.x, glassyscale*v.y); \
-            }
-        #define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
         float x = m.o.x,
               y = m.o.y,
-              z = m.o.z,
-              csize = m.csize,
+              z = m.o.z, csize = m.csize,
               rsize = m.rsize;
-        if(normal != vec(0,0,0))
+        gle::begin(GL_TRIANGLE_FAN);
+        if (normal != vec(0, 0, 0))
         {
             vec n = normal;
-            switch(m.orient)
+            switch (m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
+                case 0:
+                    {
+                        vec v(x + offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 1:
+                    {
+                        vec v(x - offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 2:
+                    {
+                        vec v(x + csize, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 3:
+                    {
+                        vec v(x, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 4:
+                    {
+                        vec v(x, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                case 5:
+                    {
+                        vec v(x, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                }
             }
-        }
-        #undef GENFACENORMAL
-        #define GENFACENORMAL
         else
         {
-            switch(m.orient)
+            switch (m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
+                case 0:
+                    {
+                        vec v(x + offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 1:
+                    {
+                        vec v(x - offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 2:
+                    {
+                        vec v(x + csize, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 3:
+                    {
+                        vec v(x, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 4:
+                    {
+                        vec v(x, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                case 5:
+                    {
+                        vec v(x, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
             }
         }
-        #undef GENFACENORMAL
-        #undef GENFACEORIENT
-        #undef GENFACEVERTX
-        #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-        #undef GENFACEVERTY
-        #define GENFACEVERTY(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-        #undef GENFACEVERTZ
-        #define GENFACEVERTZ(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
+        gle::end();
     }
 
     //these are the variables defined for each specific glass material (there are 4)
