@@ -721,7 +721,6 @@ namespace
             int alphaing;
             GLuint vbuf;
             bool vattribs, vquery;
-            float alphascale;
             int globals;
 
             void disablevquery();
@@ -733,10 +732,11 @@ namespace
             void renderbatches(int pass);
             void renderzpass(const vtxarray &va);
             void invalidatetexgenorient();
+            void invalidatealphascale();
             void cleartexgenmillis();
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
-                            vquery(false), alphascale(0), globals(-1), texgenorient(-1),
+                            vquery(false), globals(-1), alphascale(0), texgenorient(-1),
                             texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1), slot(nullptr),
                             vslot(nullptr), texgenslot(nullptr), texgenvslot(nullptr),
                             texgenscroll(0, 0), refractscale(0), refractcolor(1, 1, 1)
@@ -748,6 +748,7 @@ namespace
             }
         private:
 
+            float alphascale;
             int texgenorient, texgenmillis;
             int tmu;
             GLuint textures[7];
@@ -771,6 +772,11 @@ namespace
     void renderstate::invalidatetexgenorient()
     {
         texgenorient = -1;
+    }
+
+    void renderstate::invalidatealphascale()
+    {
+        alphascale = -1;
     }
 
     void renderstate::cleartexgenmillis()
@@ -2824,7 +2830,7 @@ void renderalphageom(int side)
 
     renderstate cur;
     cur.alphaing = side;
-    cur.alphascale = -1;
+    cur.invalidatealphascale();
 
     setupgeom();
 
