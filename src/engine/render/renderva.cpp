@@ -723,7 +723,6 @@ namespace
             bool vattribs, vquery;
             float alphascale;
             int globals;
-            int texgenorient, texgenmillis;
 
             void disablevquery();
             void disablevbuf();
@@ -733,6 +732,8 @@ namespace
             void disablevattribs(bool all = true);
             void renderbatches(int pass);
             void renderzpass(const vtxarray &va);
+            void invalidatetexgenorient();
+            void cleartexgenmillis();
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), alphascale(0), globals(-1), texgenorient(-1),
@@ -746,6 +747,8 @@ namespace
                 }
             }
         private:
+
+            int texgenorient, texgenmillis;
             int tmu;
             GLuint textures[7];
             vec colorscale;
@@ -764,6 +767,16 @@ namespace
             void changeshader(int pass, const geombatch &b);
 
     };
+
+    void renderstate::invalidatetexgenorient()
+    {
+        texgenorient = -1;
+    }
+
+    void renderstate::cleartexgenmillis()
+    {
+        texgenmillis = 0;
+    }
 
     void renderstate::disablevbuf()
     {
@@ -2942,7 +2955,7 @@ void rendergeom()
             multipassing = true;
             glDepthFunc(GL_LEQUAL);
         }
-        cur.texgenorient = -1;
+        cur.invalidatetexgenorient();
         setupgeom();
         resetbatches();
         for(vtxarray *va = visibleva; va; va = va->next)
@@ -3430,7 +3443,7 @@ void renderrsmgeom(bool dyntex)
     renderstate cur;
     if(!dyntex)
     {
-        cur.texgenmillis = 0;
+        cur.cleartexgenmillis();
     }
     setupgeom();
     if(skyshadow)
