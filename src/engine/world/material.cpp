@@ -333,7 +333,7 @@ namespace
         return 0;
     }
 
-    int mergematc(materialsurface &m, materialsurface &n)
+    int mergematc(const materialsurface &m, materialsurface &n)
     {
         int dim = DIMENSION(n.orient),
             c   = C[dim],
