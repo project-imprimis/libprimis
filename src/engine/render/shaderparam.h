@@ -47,7 +47,7 @@ struct ShaderParamBinding
 struct GlobalShaderParamUse : ShaderParamBinding
 {
 
-    GlobalShaderParamState *param;
+    const GlobalShaderParamState *param;
     int version;
 
     void flush();
