@@ -1056,13 +1056,12 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     }
 }
 
-void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
+void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs)
 {
     va->watermax = va->glassmax = co;
     va->watermin = va->glassmin = ivec(co).add(size);
-    for(uint i = 0; i < matsurfs.size(); i++)
+    for(const materialsurface &m : matsurfs)
     {
-        materialsurface &m = matsurfs[i];
         switch(m.material&MatFlag_Volume)
         {
             case Mat_Water:

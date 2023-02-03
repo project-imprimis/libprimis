@@ -13,7 +13,7 @@ extern int findmaterial(const char *name);
 extern const char *findmaterialname(int mat);
 extern const char *getmaterialdesc(int mat, const char *prefix = "");
 extern void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs);
-extern void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurface> &matsurfs);
+extern void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs);
 extern int optimizematsurfs(materialsurface *matbuf, int matsurfs);
 extern void setupmaterials(int start = 0, int len = 0);
 extern void rendermaterialmask();
