@@ -1338,26 +1338,23 @@ void rendermaterialmask()
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
     {
-        const std::vector<materialsurface> &surfs = glasssurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : glasssurfs[k])
         {
-            drawmaterial(surfs[i], 0.1f);
+            drawmaterial(i, 0.1f);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        const std::vector<materialsurface> &surfs = watersurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : watersurfs[k])
         {
-            drawmaterial(surfs[i], wateroffset);
+            drawmaterial(i, wateroffset);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        const std::vector<materialsurface> &surfs = waterfallsurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : waterfallsurfs[k])
         {
-            drawmaterial(surfs[i], 0.1f);
+            drawmaterial(i, 0.1f);
         }
     }
     xtraverts += gle::end();
