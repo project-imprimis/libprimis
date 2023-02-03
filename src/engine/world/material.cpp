@@ -513,7 +513,7 @@ namespace
         int lastmat = -1;
         for(int i = static_cast<int>(editsurfs.size()); --i >=0;) //note reverse iteration
         {
-            materialsurface &m = editsurfs[i];
+            const materialsurface &m = editsurfs[i];
             if(m.material != lastmat)
             {
                 xtraverts += gle::end();
@@ -1338,7 +1338,7 @@ void rendermaterialmask()
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = glasssurfs[k];
+        const std::vector<materialsurface> &surfs = glasssurfs[k];
         for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
@@ -1346,7 +1346,7 @@ void rendermaterialmask()
     }
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = watersurfs[k];
+        const std::vector<materialsurface> &surfs = watersurfs[k];
         for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], wateroffset);
@@ -1354,7 +1354,7 @@ void rendermaterialmask()
     }
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = waterfallsurfs[k];
+        const std::vector<materialsurface> &surfs = waterfallsurfs[k];
         for(uint i = 0; i < surfs.size(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
