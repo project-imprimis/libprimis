@@ -1397,9 +1397,8 @@ void rendereditmaterials()
     glEnable(GL_BLEND);
 
     int lastmat = -1;
-    for(uint i = 0; i < editsurfs.size(); i++)
+    for(const materialsurface &m : editsurfs)
     {
-        const materialsurface &m = editsurfs[i];
         if(lastmat!=m.material)
         {
             xtraverts += gle::end();
