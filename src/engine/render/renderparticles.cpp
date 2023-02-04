@@ -1859,9 +1859,8 @@ void cubeworld::seedparticles()
     renderprogress(0, "seeding particles");
     addparticleemitters();
     canemit = true;
-    for(uint i = 0; i < emitters.size(); i++)
+    for(particleemitter &pe : emitters)
     {
-        particleemitter &pe = emitters[i];
         extentity &e = *pe.ent;
         seedemitter = &pe;
         for(int millis = 0; millis < seedmillis; millis += std::min(emitmillis, seedmillis/10))
