@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['o_0',['o',['../structentity.html#a525c90c5512cbb504f7ac9ab7014336f',1,'entity::o()'],['../structselinfo.html#ae8353821d8834bf1fd29564adadc742d',1,'selinfo::o()']]],
-  ['orient_1',['orient',['../structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7',1,'selinfo']]]
+  ['newpos_0',['newpos',['../structphysent.html#a3fba674449f2c9f4a07838b7430fc768',1,'physent']]],
+  ['numargs_1',['numargs',['../structident.html#a5ddc1c739b47cb43e7e075708029964a',1,'ident']]],
+  ['numents_2',['numents',['../structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663',1,'undoblock']]]
 ];

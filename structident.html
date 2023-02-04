@@ -135,12 +135,15 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a62b2bfd5ecf100a5d735e597aeb5ae31"><td class="memItemLeft" align="right" valign="top"><a id="a62b2bfd5ecf100a5d735e597aeb5ae31" name="a62b2bfd5ecf100a5d735e597aeb5ae31"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, int m, int x, int *s, void *f=nullptr, int flags=0)</td></tr>
+<tr class="memdesc:a62b2bfd5ecf100a5d735e597aeb5ae31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an ident for an int variable. <br /></td></tr>
 <tr class="separator:a62b2bfd5ecf100a5d735e597aeb5ae31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9bc6b24573db095dc1544474d140cf"><td class="memItemLeft" align="right" valign="top"><a id="adf9bc6b24573db095dc1544474d140cf" name="adf9bc6b24573db095dc1544474d140cf"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, float m, float x, float *s, void *f=nullptr, int flags=0)</td></tr>
+<tr class="memdesc:adf9bc6b24573db095dc1544474d140cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an ident for a float variable. <br /></td></tr>
 <tr class="separator:adf9bc6b24573db095dc1544474d140cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23422a2118965b45b6bce53cb6a37a34"><td class="memItemLeft" align="right" valign="top"><a id="a23422a2118965b45b6bce53cb6a37a34" name="a23422a2118965b45b6bce53cb6a37a34"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, char **s, void *f=nullptr, int flags=0)</td></tr>
+<tr class="memdesc:a23422a2118965b45b6bce53cb6a37a34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an ident for a string variable. <br /></td></tr>
 <tr class="separator:a23422a2118965b45b6bce53cb6a37a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a688f3403b66806f95638c925f5afe86f"><td class="memItemLeft" align="right" valign="top"><a id="a688f3403b66806f95638c925f5afe86f" name="a688f3403b66806f95638c925f5afe86f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, char *a, int flags)</td></tr>
@@ -158,7 +161,8 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, const <a class="el" href="structtagval.html">tagval</a> &amp;v, int flags)</td></tr>
 <tr class="separator:ac680cb604154989900b58f26821113e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1ce0e67d4154b58fc254be6b348c7ed"><td class="memItemLeft" align="right" valign="top"><a id="aa1ce0e67d4154b58fc254be6b348c7ed" name="aa1ce0e67d4154b58fc254be6b348c7ed"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, const char *args, uint argmask, int numargs, void *f=nullptr, int flags=0)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ident</b> (int t, const char *n, const char *args, uint argmask, int <a class="el" href="structident.html#a5ddc1c739b47cb43e7e075708029964a">numargs</a>, void *f=nullptr, int flags=0)</td></tr>
+<tr class="memdesc:aa1ce0e67d4154b58fc254be6b348c7ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for an ident for a C++ bound command. <br /></td></tr>
 <tr class="separator:aa1ce0e67d4154b58fc254be6b348c7ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2987d0a13aa0f742fce35433e0afaeb4"><td class="memItemLeft" align="right" valign="top"><a id="a2987d0a13aa0f742fce35433e0afaeb4" name="a2987d0a13aa0f742fce35433e0afaeb4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>changed</b> ()</td></tr>
@@ -196,16 +200,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>getcval</b> (<a class
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a89f53b6ecbddf478efd372ffe0ae6eda"><td class="memItemLeft" align="right" valign="top"><a id="a89f53b6ecbddf478efd372ffe0ae6eda" name="a89f53b6ecbddf478efd372ffe0ae6eda"></a>
-uchar&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
+<tr class="memitem:a89f53b6ecbddf478efd372ffe0ae6eda"><td class="memItemLeft" align="right" valign="top">uchar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html#a89f53b6ecbddf478efd372ffe0ae6eda">type</a></td></tr>
 <tr class="separator:a89f53b6ecbddf478efd372ffe0ae6eda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34b26ff3ef3e6f83c0effc776606a717"><td class="memItemLeft" ><a id="a34b26ff3ef3e6f83c0effc776606a717" name="a34b26ff3ef3e6f83c0effc776606a717"></a>
 union {</td></tr>
-<tr class="memitem:a1cac48a29c405730bf813fffcc8ff083"><td class="memItemLeft" >
-&#160;&#160;&#160;uchar&#160;&#160;&#160;<b>valtype</b></td></tr>
+<tr class="memitem:a1cac48a29c405730bf813fffcc8ff083"><td class="memItemLeft" >&#160;&#160;&#160;uchar&#160;&#160;&#160;<a class="el" href="structident.html#a4444564c2aa6f406aec66760cc03f646">valtype</a></td></tr>
 <tr class="separator:a1cac48a29c405730bf813fffcc8ff083"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe1dcb9e0bcad84c3f08606e1adea6b8"><td class="memItemLeft" >
-&#160;&#160;&#160;uchar&#160;&#160;&#160;<b>numargs</b></td></tr>
+<tr class="memitem:abe1dcb9e0bcad84c3f08606e1adea6b8"><td class="memItemLeft" >&#160;&#160;&#160;uchar&#160;&#160;&#160;<a class="el" href="structident.html#a5ddc1c739b47cb43e7e075708029964a">numargs</a></td></tr>
 <tr class="separator:abe1dcb9e0bcad84c3f08606e1adea6b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34b26ff3ef3e6f83c0effc776606a717"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:a34b26ff3ef3e6f83c0effc776606a717"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -226,21 +227,17 @@ union {</td></tr>
 &#160;&#160;&#160;&#160;&#160;&#160;union {</td></tr>
 <tr class="memitem:a3e59bad3f57682e51da54fa9121ae450"><td class="memItemLeft" ><a id="a3e59bad3f57682e51da54fa9121ae450" name="a3e59bad3f57682e51da54fa9121ae450"></a>
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;struct {</td></tr>
-<tr class="memitem:ae43d1baf93d61c55c4c53bc898af69dd"><td class="memItemLeft" >
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;int&#160;&#160;&#160;<b>minval</b></td></tr>
+<tr class="memitem:ae43d1baf93d61c55c4c53bc898af69dd"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;int&#160;&#160;&#160;<a class="el" href="structident.html#a39d8e547c2c460b115cffb49cb193096">minval</a></td></tr>
 <tr class="separator:ae43d1baf93d61c55c4c53bc898af69dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af029cf05c9ef1a977f1a56044bd1fb17"><td class="memItemLeft" >
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;int&#160;&#160;&#160;<b>maxval</b></td></tr>
+<tr class="memitem:af029cf05c9ef1a977f1a56044bd1fb17"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;int&#160;&#160;&#160;<a class="el" href="structident.html#a6f479d4e8f0e0d940c2406b5f3b84168">maxval</a></td></tr>
 <tr class="separator:af029cf05c9ef1a977f1a56044bd1fb17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e59bad3f57682e51da54fa9121ae450"><td class="memItemLeft" valign="top">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;}&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:a3e59bad3f57682e51da54fa9121ae450"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfb791c26b16621e926315fd01d77284"><td class="memItemLeft" ><a id="adfb791c26b16621e926315fd01d77284" name="adfb791c26b16621e926315fd01d77284"></a>
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;struct {</td></tr>
-<tr class="memitem:aa59206e4dab0c3933606de0b2cde5422"><td class="memItemLeft" >
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;float&#160;&#160;&#160;<b>minvalf</b></td></tr>
+<tr class="memitem:aa59206e4dab0c3933606de0b2cde5422"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;float&#160;&#160;&#160;<a class="el" href="structident.html#ae463d84ebcfe30f88057b2f1ef85166a">minvalf</a></td></tr>
 <tr class="separator:aa59206e4dab0c3933606de0b2cde5422"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54d99e89ac92c0e1f8815732faee4a62"><td class="memItemLeft" >
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;float&#160;&#160;&#160;<b>maxvalf</b></td></tr>
+<tr class="memitem:a54d99e89ac92c0e1f8815732faee4a62"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;float&#160;&#160;&#160;<a class="el" href="structident.html#ab6119e9e01cb5b5000fc4a7ed28695af">maxvalf</a></td></tr>
 <tr class="separator:a54d99e89ac92c0e1f8815732faee4a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfb791c26b16621e926315fd01d77284"><td class="memItemLeft" valign="top">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;}&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:adfb791c26b16621e926315fd01d77284"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -279,14 +276,134 @@ union {</td></tr>
 <tr class="separator:ac5464773479f11562325da8aa9f68eec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada0baf0f42b16a0ae51dd93665317800"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:ada0baf0f42b16a0ae51dd93665317800"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4f7f6450c494347ba695e547085a913"><td class="memItemLeft" align="right" valign="top"><a id="ab4f7f6450c494347ba695e547085a913" name="ab4f7f6450c494347ba695e547085a913"></a>
-identfun&#160;</td><td class="memItemRight" valign="bottom"><b>fun</b></td></tr>
+<tr class="memitem:ab4f7f6450c494347ba695e547085a913"><td class="memItemLeft" align="right" valign="top">identfun&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html#ab4f7f6450c494347ba695e547085a913">fun</a></td></tr>
 <tr class="separator:ab4f7f6450c494347ba695e547085a913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An object representing all Cubescript objects. </p>
 <p>This object defines all possible state for any object in Cubescript. Different types will have different members due to the union types, but the ident object is common to them regardless. This allows storage of CS objects in a uniform map consisting of one type. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab4f7f6450c494347ba695e547085a913" name="ab4f7f6450c494347ba695e547085a913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4f7f6450c494347ba695e547085a913">&#9670;&#160;</a></span>fun</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">identfun ident::fun</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>the pointer a command or variable points to (the on-change command for a var) </p>
+
+</div>
+</div>
+<a id="a6f479d4e8f0e0d940c2406b5f3b84168" name="a6f479d4e8f0e0d940c2406b5f3b84168"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f479d4e8f0e0d940c2406b5f3b84168">&#9670;&#160;</a></span>maxval</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ident::maxval</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if an int variable, its max allowed value </p>
+
+</div>
+</div>
+<a id="ab6119e9e01cb5b5000fc4a7ed28695af" name="ab6119e9e01cb5b5000fc4a7ed28695af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6119e9e01cb5b5000fc4a7ed28695af">&#9670;&#160;</a></span>maxvalf</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ident::maxvalf</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if a float variable, its max allowed value </p>
+
+</div>
+</div>
+<a id="a39d8e547c2c460b115cffb49cb193096" name="a39d8e547c2c460b115cffb49cb193096"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39d8e547c2c460b115cffb49cb193096">&#9670;&#160;</a></span>minval</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ident::minval</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if an int variable, its min allowed value </p>
+
+</div>
+</div>
+<a id="ae463d84ebcfe30f88057b2f1ef85166a" name="ae463d84ebcfe30f88057b2f1ef85166a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae463d84ebcfe30f88057b2f1ef85166a">&#9670;&#160;</a></span>minvalf</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ident::minvalf</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if a float variable, its min allowed value </p>
+
+</div>
+</div>
+<a id="a5ddc1c739b47cb43e7e075708029964a" name="a5ddc1c739b47cb43e7e075708029964a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ddc1c739b47cb43e7e075708029964a">&#9670;&#160;</a></span>numargs</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar ident::numargs</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if command, number of commands the Id_Command has </p>
+
+</div>
+</div>
+<a id="a89f53b6ecbddf478efd372ffe0ae6eda" name="a89f53b6ecbddf478efd372ffe0ae6eda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89f53b6ecbddf478efd372ffe0ae6eda">&#9670;&#160;</a></span>type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar ident::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>one of Id_* in Id_ enum </p>
+
+</div>
+</div>
+<a id="a4444564c2aa6f406aec66760cc03f646" name="a4444564c2aa6f406aec66760cc03f646"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4444564c2aa6f406aec66760cc03f646">&#9670;&#160;</a></span>valtype</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar ident::valtype</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>if alias, points to Id_Alias's type </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="command_8h_source.html">command.h</a></li>
 </ul>
 </div><!-- contents -->

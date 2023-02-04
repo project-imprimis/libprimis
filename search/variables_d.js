@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['physstate_0',['physstate',['../structphysent.html#aa48b48d6e8ef099842e6102061f9c45e',1,'physent']]],
-  ['player_1',['player',['../iengine_8h.html#abbb4a07dd121a95d83242f3d774d30f7',1,'iengine.h']]]
+  ['o_0',['o',['../structentity.html#a525c90c5512cbb504f7ac9ab7014336f',1,'entity::o()'],['../structselinfo.html#ae8353821d8834bf1fd29564adadc742d',1,'selinfo::o()']]],
+  ['orient_1',['orient',['../structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7',1,'selinfo']]]
 ];

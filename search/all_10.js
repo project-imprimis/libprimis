@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['s_0',['s',['../structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00',1,'selinfo']]],
+  ['s_0',['s',['../unionident_1_1identvalptr.html#a1d837c2727f78c63a333eafcad27fc03',1,'ident::identvalptr::s()'],['../structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00',1,'selinfo::s()']]],
   ['scalartriple_1',['scalartriple',['../structvec.html#a7569fdf206ec0be0beb74d8f4a21961c',1,'vec']]],
   ['scale_2',['scale',['../classmatrix3.html#a37c6fb6ef012187e7a164fb4a9c998fe',1,'matrix3']]],
   ['selinfo_3',['selinfo',['../structselinfo.html',1,'']]],
