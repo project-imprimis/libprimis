@@ -171,22 +171,22 @@ class LocalShaderParam
 {
     public:
         LocalShaderParam(const char *name);
-        void setf(float x = 0, float y = 0, float z = 0, float w = 0);
-        void set(const vec &v, float w = 0);
-        void set(const vec4<float> &v);
-        void setv(const vec *v, int n = 1);
-        void setv(const vec2 *v, int n = 1);
-        void setv(const vec4<float> *v, int n = 1);
-        void setv(const float *f, int n);
-        void set(const matrix3 &m);
-        void set(const matrix4 &m);
+        void setf(float x = 0, float y = 0, float z = 0, float w = 0) const;
+        void set(const vec &v, float w = 0) const;
+        void set(const vec4<float> &v) const;
+        void setv(const vec *v, int n = 1) const;
+        void setv(const vec2 *v, int n = 1) const;
+        void setv(const vec4<float> *v, int n = 1) const;
+        void setv(const float *f, int n) const;
+        void set(const matrix3 &m) const;
+        void set(const matrix4 &m) const;
     private:
-        void setv(const matrix3 *m, int n = 1);
-        void setv(const matrix4 *m, int n = 1);
-        LocalShaderParamState *resolve();
+        void setv(const matrix3 *m, int n = 1) const;
+        void setv(const matrix4 *m, int n = 1) const;
+        const LocalShaderParamState *resolve() const;
 
-        const char *name;
-        int loc;
+        const char *name const;
+        mutable int loc;
 };
 
 /**

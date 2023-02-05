@@ -90,7 +90,7 @@ LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)
 {
 }
 
-LocalShaderParamState *LocalShaderParam::resolve()
+const LocalShaderParamState *LocalShaderParam::resolve() const
 {
     Shader *s = Shader::lastshader;
     if(!s)
@@ -112,9 +112,9 @@ LocalShaderParamState *LocalShaderParam::resolve()
     return (s->localparams.size() > remap) ? &s->localparams[remap] : nullptr;
 }
 
-void LocalShaderParam::setf(float x, float y, float z, float w)
+void LocalShaderParam::setf(float x, float y, float z, float w) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         switch(b->format)
@@ -187,76 +187,76 @@ void LocalShaderParam::setf(float x, float y, float z, float w)
     }
 }
 
-void LocalShaderParam::set(const vec &v, float w)
+void LocalShaderParam::set(const vec &v, float w) const
 {
     setf(v.x, v.y, v.z, w);
 }
 
-void LocalShaderParam::set(const vec4<float> &v)
+void LocalShaderParam::set(const vec4<float> &v) const
 {
     setf(v.x, v.y, v.z, v.w);
 }
 
-void LocalShaderParam::setv(const float *f, int n)
+void LocalShaderParam::setv(const float *f, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniform1fv(b->loc, n, f);
     }
 }
 
-void LocalShaderParam::setv(const vec *v, int n)
+void LocalShaderParam::setv(const vec *v, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniform3fv(b->loc, n, v->v);
     }
 }
 
-void LocalShaderParam::setv(const vec2 *v, int n)
+void LocalShaderParam::setv(const vec2 *v, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniform2fv(b->loc, n, v->v);
     }
 }
 
-void LocalShaderParam::setv(const vec4<float> *v, int n)
+void LocalShaderParam::setv(const vec4<float> *v, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniform4fv(b->loc, n, v->v);
     }
 }
 
-void LocalShaderParam::setv(const matrix3 *m, int n)
+void LocalShaderParam::setv(const matrix3 *m, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniformMatrix3fv(b->loc, n, GL_FALSE, m->a.v);
     }
 }
 
-void LocalShaderParam::setv(const matrix4 *m, int n)
+void LocalShaderParam::setv(const matrix4 *m, int n) const
 {
-    ShaderParamBinding *b = resolve();
+    const ShaderParamBinding *b = resolve();
     if(b)
     {
         glUniformMatrix4fv(b->loc, n, GL_FALSE, m->a.v);
     }
 }
 
-void LocalShaderParam::set(const matrix3 &m)
+void LocalShaderParam::set(const matrix3 &m) const
 {
     setv(&m);
 }
 
-void LocalShaderParam::set(const matrix4 &m)
+void LocalShaderParam::set(const matrix4 &m) const
 {
     setv(&m);
 }
