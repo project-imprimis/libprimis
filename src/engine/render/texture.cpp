@@ -348,7 +348,7 @@ static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum targ
     }
 }
 
-static int texalign(const void *data, int w, int bpp)
+static int texalign(int w, int bpp)
 {
     int stride = w*bpp;
     if(stride&1)
@@ -380,7 +380,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
     else if(tw*bpp != pitch)
     {
         row = pitch/bpp;
-        rowalign = texalign(pixels, pitch, 1);
+        rowalign = texalign(pitch, 1);
         while(rowalign > 0 && ((row*bpp + rowalign - 1)/rowalign)*rowalign != pitch)
         {
             rowalign >>= 1;
@@ -402,7 +402,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
         {
             pitch = tw*bpp;
         }
-        int srcalign = row > 0 ? rowalign : texalign(src, pitch, 1);
+        int srcalign = row > 0 ? rowalign : texalign(pitch, 1);
         if(align != srcalign)
         {
             glPixelStorei(GL_UNPACK_ALIGNMENT, align = srcalign);
@@ -2839,7 +2839,7 @@ void screenshot(char *filename)
     }
 
     ImageData image(screenw, screenh, 3);
-    glPixelStorei(GL_PACK_ALIGNMENT, texalign(image.data, screenw, 3));
+    glPixelStorei(GL_PACK_ALIGNMENT, texalign(screenw, 3));
     glReadPixels(0, 0, screenw, screenh, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     savepng(path(buf), image, true);
 }
