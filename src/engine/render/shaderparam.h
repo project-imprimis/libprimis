@@ -185,7 +185,7 @@ class LocalShaderParam
         void setv(const matrix4 *m, int n = 1) const;
         const LocalShaderParamState *resolve() const;
 
-        const char *name const;
+        const char * const name;
         mutable int loc;
 };
 
