@@ -41,121 +41,122 @@ namespace
 {
     std::vector<materialsurface> editsurfs;
 
-    struct QuadNode
+    class QuadNode
     {
-        int x, y, size;
-        uint filled;
-        QuadNode *child[4];
-
-        QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
-        {
-            for(int i = 0; i < 4; ++i)
+        public:
+            QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
             {
-                child[i] = 0;
-            }
-        }
-
-        void clear()
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                if(child[i])
-                {
-                    delete child[i];
-                    child[i] = nullptr;
-                }
-            }
-        }
-
-        ~QuadNode()
-        {
-            clear();
-        }
-
-        void insert(int mx, int my, int msize)
-        {
-            if(size == msize)
-            {
-                filled = 0xF;
-                return;
-            }
-            int csize = size>>1,
-                i = 0;
-            if(mx >= x+csize)
-            {
-                i |= 1;
-            }
-            if(my >= y+csize)
-            {
-                i |= 2;
-            }
-            if(csize == msize)
-            {
-                filled |= (1 << i);
-                return;
-            }
-            if(!child[i])
-            {
-                child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
-            }
-            child[i]->insert(mx, my, msize);
-            for(int j = 0; j < 4; ++j)
-            {
-                if(child[j])
-                {
-                    if(child[j]->filled == 0xF)
-                    {
-                        if(child[j])
-                        {
-                            delete child[j];
-                            child[j] = nullptr;
-                        }
-                        filled |= (1 << j);
-                    }
-                }
-            }
-        }
-
-        void genmatsurf(ushort mat, uchar orient, uchar visible, int x, int y, int z, int size, materialsurface *&matbuf)
-        {
-            materialsurface &m = *matbuf++;
-            m.material = mat;
-            m.orient = orient;
-            m.visible = visible;
-            m.csize = size;
-            m.rsize = size;
-            int dim = DIMENSION(orient);
-            m.o[C[dim]] = x;
-            m.o[R[dim]] = y;
-            m.o[dim] = z;
-        }
-
-        void genmatsurfs(ushort mat, uchar orient, uchar visible, int z, materialsurface *&matbuf)
-        {
-            if(filled == 0xF)
-            {
-                genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
-            }
-            else if(filled)
-            {
-                int csize = size>>1;
                 for(int i = 0; i < 4; ++i)
                 {
-                    if(filled & (1 << i))
-                    {
-                        genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
-                    }
+                    child[i] = 0;
+                }
+            }
 
-                }
-            }
-            for(int i = 0; i < 4; ++i)
+            ~QuadNode()
             {
-                if(child[i])
+                clear();
+            }
+
+            void insert(int mx, int my, int msize)
+            {
+                if(size == msize)
                 {
-                    child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+                    filled = 0xF;
+                    return;
+                }
+                int csize = size>>1,
+                    i = 0;
+                if(mx >= x+csize)
+                {
+                    i |= 1;
+                }
+                if(my >= y+csize)
+                {
+                    i |= 2;
+                }
+                if(csize == msize)
+                {
+                    filled |= (1 << i);
+                    return;
+                }
+                if(!child[i])
+                {
+                    child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
+                }
+                child[i]->insert(mx, my, msize);
+                for(int j = 0; j < 4; ++j)
+                {
+                    if(child[j])
+                    {
+                        if(child[j]->filled == 0xF)
+                        {
+                            if(child[j])
+                            {
+                                delete child[j];
+                                child[j] = nullptr;
+                            }
+                            filled |= (1 << j);
+                        }
+                    }
                 }
             }
-        }
+
+            void genmatsurfs(ushort mat, uchar orient, uchar visible, int z, materialsurface *&matbuf)
+            {
+                if(filled == 0xF)
+                {
+                    genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
+                }
+                else if(filled)
+                {
+                    int csize = size>>1;
+                    for(int i = 0; i < 4; ++i)
+                    {
+                        if(filled & (1 << i))
+                        {
+                            genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
+                        }
+
+                    }
+                }
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(child[i])
+                    {
+                        child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+                    }
+                }
+            }
+        private:
+            int x, y, size;
+            uint filled;
+            QuadNode *child[4];
+
+            void clear()
+            {
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(child[i])
+                    {
+                        delete child[i];
+                        child[i] = nullptr;
+                    }
+                }
+            }
+
+            void genmatsurf(ushort mat, uchar orient, uchar visible, int x, int y, int z, int size, materialsurface *&matbuf)
+            {
+                materialsurface &m = *matbuf++;
+                m.material = mat;
+                m.orient = orient;
+                m.visible = visible;
+                m.csize = size;
+                m.rsize = size;
+                int dim = DIMENSION(orient);
+                m.o[C[dim]] = x;
+                m.o[R[dim]] = y;
+                m.o[dim] = z;
+            }
     };
 
     static void drawmaterial(const materialsurface &m, float offset)
