@@ -1151,7 +1151,7 @@ void materialreset()
     }
 }
 
-void decalreset(int *n)
+void decalreset(const int *n)
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
     {
