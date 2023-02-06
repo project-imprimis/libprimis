@@ -571,10 +571,7 @@ namespace
         disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
     }
 
-    float glassxscale = 0,
-          glassyscale = 0;
-
-    void drawglass(const materialsurface &m, float offset, const vec normal = vec(0,0,0))
+    void drawglass(const materialsurface &m, float offset, float glassxscale, float glassyscale, const vec normal = vec(0,0,0))
     {
         if(gle::attribbuf.empty())
         {
@@ -924,8 +921,8 @@ namespace
             MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
             Texture *tex = gslot.sts.size() ? gslot.sts[0].t : notexture;
-            glassxscale = defaulttexscale/(tex->xs*gslot.scale);
-            glassyscale = defaulttexscale/(tex->ys*gslot.scale);
+            float glassxscale = defaulttexscale/(tex->xs*gslot.scale);
+            float glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, tex->id);
@@ -941,7 +938,7 @@ namespace
             for(uint i = 0; i < surfs.size(); i++)
             {
                 materialsurface &m = surfs[i];
-                drawglass(m, 0.1f, matnormals(m.orient));
+                drawglass(m, 0.1f, glassxscale, glassyscale, matnormals(m.orient));
             }
             xtraverts += gle::end();
         }
