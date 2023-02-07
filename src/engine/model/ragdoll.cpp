@@ -169,7 +169,7 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     {
         return;
     }
-    ragdollskel::joint &j = skel->joints[i];
+    const ragdollskel::joint &j = skel->joints[i];
     vec pos(0, 0, 0);
     for(int k = 0; k < 3; ++k)
     {
@@ -180,7 +180,7 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     }
     pos.mul(j.weight);
 
-    ragdollskel::tri &t = skel->tris[j.tri];
+    const ragdollskel::tri &t = skel->tris[j.tri];
     matrix4x3 m;
     const vec &v1 = verts[t.vert[0]].pos,
               &v2 = verts[t.vert[1]].pos,
