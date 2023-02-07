@@ -446,7 +446,7 @@ Spacing</h4>
 <li><code>light.h/cpp</code> light entity support</li>
 <li><code>material.cpp</code> in-world special materials (water, lava, etc.)</li>
 <li><code>mpr.h</code> minkowski portal refinement (model collision)</li>
-<li><code><a class="el" href="octa_8h.html">octa.h</a>/cpp</code> octree geometry for the world</li>
+<li><code><a class="el" href="octa_8h.html" title="Objects representing the octree and its manipulation methods.">octa.h</a>/cpp</code> octree geometry for the world</li>
 <li><code>octaedit.cpp</code> octree modification by clients</li>
 <li><code>physics.cpp</code> player model modification</li>
 <li><code>raycube.h/cpp</code> octree geometry querying</li>
@@ -1917,7 +1917,7 @@ Persistent Variables `*VARP`</h4>
 <div class="line"> </div>
 <div class="line"><span class="comment">// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state</span></div>
 <div class="line"><a class="code hl_struct" href="structvec.html">vec</a> c = a.mul(b);</div>
-<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
+<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:161</div></div>
 </div><!-- fragment --><p> To work around this, it is typical to see what appears to be an unnecessary constructor call <code><a class="el" href="structvec.html" title="three dimensional vector object">vec(vec T)</a></code>. This is to create a new tempoary object using the constructor call which can have member functions applied to it without mangling the original vector.</p>
 <p>While this property of <code>vec</code>'s many member functions is most commonly seen in <code>vec</code> objects, the same behavior also applies to other related objects, such as <code><a class="el" href="structvec2.html" title="2 dimensional vector object">vec2</a></code> or <code>ivec</code>.</p>
 <h4><a class="anchor" id="autotoc_md205"></a>

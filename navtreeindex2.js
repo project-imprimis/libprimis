@@ -52,6 +52,7 @@ var NAVTREEINDEX2 =
 "pages.html":[],
 "slot_8h.html":[11,0,0,0,7],
 "slot_8h_source.html":[11,0,0,0,7],
+"sound_8h.html":[11,0,0,0,8],
 "sound_8h_source.html":[11,0,0,0,8],
 "structDecalSlot.html":[10,0,7],
 "structGenericVec2.html":[10,0,12],

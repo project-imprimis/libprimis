@@ -115,249 +115,250 @@ $(document).ready(function(){initNavTree('sound_8h_source.html',''); initResizab
   <div class="headertitle"><div class="title">sound.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SOUND_H_</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SOUND_H_</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//incomplete types from SDL</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">struct </span>musicrw;</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">struct </span>_Mix_Music;</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">typedef</span> <span class="keyword">struct </span>_Mix_Music Mix_Music;</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">struct </span>Mix_Chunk;</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classSoundEngine.html">   16</a></span><span class="keyword">class </span><a class="code hl_class" href="classSoundEngine.html">SoundEngine</a></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>{</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>();</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e">   27</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e">clear_sound</a>();</div>
+<a href="sound_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef SOUND_H_</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define SOUND_H_</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">//incomplete types from SDL</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">struct </span>musicrw;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">struct </span>_Mix_Music;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">typedef</span> <span class="keyword">struct </span>_Mix_Music Mix_Music;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">struct </span>Mix_Chunk;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classSoundEngine.html">   24</a></span><span class="keyword">class </span><a class="code hl_class" href="classSoundEngine.html">SoundEngine</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>();</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a4a54b477762fc77aea3221c2d3f2577a">   36</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a4a54b477762fc77aea3221c2d3f2577a">preloadsound</a>(<span class="keywordtype">int</span> n);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a7f3844b9ae646a8800ed4e0740f895d3">   43</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a7f3844b9ae646a8800ed4e0740f895d3">preloadmapsounds</a>(); </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a7119ad2e7fc5900a61ceb3016e0560e0">   58</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a7119ad2e7fc5900a61ceb3016e0560e0">playsound</a>(<span class="keywordtype">int</span> n, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc = <span class="keyword">nullptr</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent = <span class="keyword">nullptr</span>, <span class="keywordtype">int</span> flags = 0, <span class="keywordtype">int</span> loops = 0, <span class="keywordtype">int</span> fade = 0, <span class="keywordtype">int</span> chanid = -1, <span class="keywordtype">int</span> radius = 0, <span class="keywordtype">int</span> expire = -1);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af6a7c80160a360ced5c5fbfd4b28b62f">   67</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classSoundEngine.html#af6a7c80160a360ced5c5fbfd4b28b62f">stopsound</a>(<span class="keywordtype">int</span> n, <span class="keywordtype">int</span> chanid, <span class="keywordtype">int</span> fade);</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab65dcac2950d64e835188bb971c68f1f">   74</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ab65dcac2950d64e835188bb971c68f1f">stopsounds</a>(); </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ae4cb3a14b4b7dc6e7f48cb8b909d8bd2">   82</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ae4cb3a14b4b7dc6e7f48cb8b909d8bd2">updatesounds</a>(); </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e">   35</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e">clear_sound</a>();</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a4a54b477762fc77aea3221c2d3f2577a">   44</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a4a54b477762fc77aea3221c2d3f2577a">preloadsound</a>(<span class="keywordtype">int</span> n);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a7f3844b9ae646a8800ed4e0740f895d3">   51</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a7f3844b9ae646a8800ed4e0740f895d3">preloadmapsounds</a>(); </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a7119ad2e7fc5900a61ceb3016e0560e0">   66</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a7119ad2e7fc5900a61ceb3016e0560e0">playsound</a>(<span class="keywordtype">int</span> n, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc = <span class="keyword">nullptr</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent = <span class="keyword">nullptr</span>, <span class="keywordtype">int</span> flags = 0, <span class="keywordtype">int</span> loops = 0, <span class="keywordtype">int</span> fade = 0, <span class="keywordtype">int</span> chanid = -1, <span class="keywordtype">int</span> radius = 0, <span class="keywordtype">int</span> expire = -1);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af6a7c80160a360ced5c5fbfd4b28b62f">   75</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classSoundEngine.html#af6a7c80160a360ced5c5fbfd4b28b62f">stopsound</a>(<span class="keywordtype">int</span> n, <span class="keywordtype">int</span> chanid, <span class="keywordtype">int</span> fade);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab65dcac2950d64e835188bb971c68f1f">   82</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ab65dcac2950d64e835188bb971c68f1f">stopsounds</a>(); </div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab417c186e578e173a8e46f6fe232f3ce">   97</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#ab417c186e578e173a8e46f6fe232f3ce">playsoundname</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *s, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc, <span class="keywordtype">int</span> vol, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> loops, <span class="keywordtype">int</span> fade, <span class="keywordtype">int</span> chanid, <span class="keywordtype">int</span> radius, <span class="keywordtype">int</span> expire);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classSoundEngine.html#abc78e9166a96d7216cc1dc323e234039">  104</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#abc78e9166a96d7216cc1dc323e234039">initsound</a>();</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aa507042352f2ac5d8c04fe12e595f13f">  112</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aa507042352f2ac5d8c04fe12e595f13f">startmusic</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">char</span> *cmd);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ae4cb3a14b4b7dc6e7f48cb8b909d8bd2">   90</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ae4cb3a14b4b7dc6e7f48cb8b909d8bd2">updatesounds</a>(); </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab417c186e578e173a8e46f6fe232f3ce">  105</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#ab417c186e578e173a8e46f6fe232f3ce">playsoundname</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *s, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc, <span class="keywordtype">int</span> vol, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> loops, <span class="keywordtype">int</span> fade, <span class="keywordtype">int</span> chanid, <span class="keywordtype">int</span> radius, <span class="keywordtype">int</span> expire);</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="classSoundEngine.html#abc78e9166a96d7216cc1dc323e234039">  112</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#abc78e9166a96d7216cc1dc323e234039">initsound</a>();</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="classSoundEngine.html#afd112607f8ad0d60f45f187ee2ae957e">  117</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#afd112607f8ad0d60f45f187ee2ae957e">resetsound</a>();</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ace7a740640bff44276dd1cffd6b138c5">  124</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ace7a740640bff44276dd1cffd6b138c5">setstereo</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> on);</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aefa9fa93a16745fa97e24dfbb00a41a8">  133</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#aefa9fa93a16745fa97e24dfbb00a41a8">getstereo</a>();</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a464888c747418158aa829cd9d65d2de0">  142</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a464888c747418158aa829cd9d65d2de0">setmaxradius</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> dist);</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        </div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="classSoundEngine.html#affc9e12d3ecefce4bb87e0a4580c2a08">  151</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#affc9e12d3ecefce4bb87e0a4580c2a08">getmaxradius</a>();</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab5339a53c730dbc26fdacc5442ef954e">  160</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ab5339a53c730dbc26fdacc5442ef954e">setsoundchans</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> val);</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a866ebe588b0fc9cd41313a07414ef2e5">  167</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a866ebe588b0fc9cd41313a07414ef2e5">getsoundchans</a>();</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a89378355e6916d8cdc2d66934e91acea">  176</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a89378355e6916d8cdc2d66934e91acea">setsoundvol</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> vol);</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a9f6eeb82d4a5c75f4254db69078e8bea">  183</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a9f6eeb82d4a5c75f4254db69078e8bea">getsoundvol</a>();</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">  192</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">setmusicvol</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> musicvol);</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aab239c1a4af55d26ca06f20f87a88d1d">  199</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#aab239c1a4af55d26ca06f20f87a88d1d">getmusicvol</a>();</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a96e58b57c99a23ed48140478b71bebc4">  208</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a96e58b57c99a23ed48140478b71bebc4">setaudiodriver</a>(<span class="keywordtype">char</span> * f);</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ad958b50464ba437515e571acb61d5bda">  215</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ad958b50464ba437515e571acb61d5bda">setsound</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> on);</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab17185ed263fd9af0c97b2efd1fc7137">  222</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#ab17185ed263fd9af0c97b2efd1fc7137">getsound</a>();</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af3d367a4fd90a40d589f151e07e45d63">  230</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#af3d367a4fd90a40d589f151e07e45d63">registersound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        </div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a3d4c3a068139b42e2430c74cff8168c7">  239</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a3d4c3a068139b42e2430c74cff8168c7">mapsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol, <span class="keywordtype">int</span> *maxuses);</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a">  247</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a">altsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8">  255</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8">altmapsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        </div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aa385f6601138b659809149ced2dbae9d">  262</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aa385f6601138b659809149ced2dbae9d">numsounds</a>();</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>        </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a8671736c3621164223461a1ed359b6b7">  269</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a8671736c3621164223461a1ed359b6b7">nummapsounds</a>();</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        </div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a6c31c71d05fb2157fb56b31c6c02b897">  277</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a6c31c71d05fb2157fb56b31c6c02b897">soundreset</a>();</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aa507042352f2ac5d8c04fe12e595f13f">  120</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aa507042352f2ac5d8c04fe12e595f13f">startmusic</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">char</span> *cmd);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno"><a class="line" href="classSoundEngine.html#afd112607f8ad0d60f45f187ee2ae957e">  125</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#afd112607f8ad0d60f45f187ee2ae957e">resetsound</a>();</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ace7a740640bff44276dd1cffd6b138c5">  132</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ace7a740640bff44276dd1cffd6b138c5">setstereo</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> on);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aefa9fa93a16745fa97e24dfbb00a41a8">  141</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#aefa9fa93a16745fa97e24dfbb00a41a8">getstereo</a>();</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a464888c747418158aa829cd9d65d2de0">  150</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a464888c747418158aa829cd9d65d2de0">setmaxradius</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> dist);</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="classSoundEngine.html#affc9e12d3ecefce4bb87e0a4580c2a08">  159</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#affc9e12d3ecefce4bb87e0a4580c2a08">getmaxradius</a>();</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab5339a53c730dbc26fdacc5442ef954e">  168</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ab5339a53c730dbc26fdacc5442ef954e">setsoundchans</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> val);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a866ebe588b0fc9cd41313a07414ef2e5">  175</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a866ebe588b0fc9cd41313a07414ef2e5">getsoundchans</a>();</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a89378355e6916d8cdc2d66934e91acea">  184</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a89378355e6916d8cdc2d66934e91acea">setsoundvol</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> vol);</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        </div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a9f6eeb82d4a5c75f4254db69078e8bea">  191</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#a9f6eeb82d4a5c75f4254db69078e8bea">getsoundvol</a>();</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">  200</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">setmusicvol</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> musicvol);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aab239c1a4af55d26ca06f20f87a88d1d">  207</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#aab239c1a4af55d26ca06f20f87a88d1d">getmusicvol</a>();</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a96e58b57c99a23ed48140478b71bebc4">  216</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a96e58b57c99a23ed48140478b71bebc4">setaudiodriver</a>(<span class="keywordtype">char</span> * f);</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ad958b50464ba437515e571acb61d5bda">  223</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ad958b50464ba437515e571acb61d5bda">setsound</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> on);</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        </div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ab17185ed263fd9af0c97b2efd1fc7137">  230</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="classSoundEngine.html#ab17185ed263fd9af0c97b2efd1fc7137">getsound</a>();</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af3d367a4fd90a40d589f151e07e45d63">  238</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#af3d367a4fd90a40d589f151e07e45d63">registersound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a3d4c3a068139b42e2430c74cff8168c7">  247</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a3d4c3a068139b42e2430c74cff8168c7">mapsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol, <span class="keywordtype">int</span> *maxuses);</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        </div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a">  255</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a">altsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8">  263</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8">altmapsound</a>(<span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> *vol);</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>        </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno"><a class="line" href="classSoundEngine.html#aa385f6601138b659809149ced2dbae9d">  270</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aa385f6601138b659809149ced2dbae9d">numsounds</a>();</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        </div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a8671736c3621164223461a1ed359b6b7">  277</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a8671736c3621164223461a1ed359b6b7">nummapsounds</a>();</div>
 <div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        </div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ad84273c53ed51a0c1c3dc16cd7907f90">  285</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ad84273c53ed51a0c1c3dc16cd7907f90">mapsoundreset</a>();</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        <span class="keywordtype">void</span> stopmapsound(<a class="code hl_struct" href="structextentity.html">extentity</a> *e);</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        <span class="keywordtype">bool</span> stereo = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        <span class="keywordtype">int</span> maxsoundradius = 340;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>        <span class="comment">//free channels that are not playing sounds</span></div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <span class="keywordtype">void</span> reclaimchannels();</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        <span class="keywordtype">void</span> syncchannels();</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        <span class="keywordtype">bool</span> minimizedsounds = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        <span class="keywordtype">int</span> getminimizedsounds();</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>        <span class="keywordtype">void</span> setminimizedsounds(<span class="keywordtype">int</span> minimize);</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        <span class="keywordtype">void</span> stopmapsounds();</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        <span class="comment">//check map entities to see what sounds need to be played because of them</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        <span class="keywordtype">void</span> checkmapsounds();</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span> </div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>        <span class="comment">//number of sounds before the game will refuse to play another sound (with `playsound()`);</span></div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        <span class="comment">//set to 0 to disable checking (0 does not set no sounds to be playable)</span></div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        <span class="keywordtype">int</span> maxsoundsatonce = 7;</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>        <span class="keywordtype">int</span> getmaxsoundsatonce();</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        <span class="keywordtype">void</span> setmaxsoundsatonce(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> num);</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordtype">int</span> debugsound = 0;</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        <span class="keywordtype">bool</span> nosound = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span> </div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <span class="keyword">struct </span>SoundSample</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>        {</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>            <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>            std::string name;</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>            Mix_Chunk *chunk;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="classSoundEngine.html#a6c31c71d05fb2157fb56b31c6c02b897">  285</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#a6c31c71d05fb2157fb56b31c6c02b897">soundreset</a>();</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        </div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno"><a class="line" href="classSoundEngine.html#ad84273c53ed51a0c1c3dc16cd7907f90">  293</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#ad84273c53ed51a0c1c3dc16cd7907f90">mapsoundreset</a>();</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span> </div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        <span class="keywordtype">void</span> stopmapsound(<a class="code hl_struct" href="structextentity.html">extentity</a> *e);</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        <span class="keywordtype">bool</span> stereo = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>        <span class="keywordtype">int</span> maxsoundradius = 340;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        <span class="comment">//free channels that are not playing sounds</span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        <span class="keywordtype">void</span> reclaimchannels();</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        <span class="keywordtype">void</span> syncchannels();</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>        <span class="keywordtype">bool</span> minimizedsounds = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        <span class="keywordtype">int</span> getminimizedsounds();</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        <span class="keywordtype">void</span> setminimizedsounds(<span class="keywordtype">int</span> minimize);</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span> </div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        <span class="keywordtype">void</span> stopmapsounds();</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="comment">//check map entities to see what sounds need to be played because of them</span></div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        <span class="keywordtype">void</span> checkmapsounds();</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        <span class="comment">//number of sounds before the game will refuse to play another sound (with `playsound()`);</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <span class="comment">//set to 0 to disable checking (0 does not set no sounds to be playable)</span></div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>        <span class="keywordtype">int</span> maxsoundsatonce = 7;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        <span class="keywordtype">int</span> getmaxsoundsatonce();</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        <span class="keywordtype">void</span> setmaxsoundsatonce(<span class="keyword">const</span> <span class="keywordtype">int</span> * <span class="keyword">const</span> num);</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <span class="keywordtype">int</span> debugsound = 0;</div>
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>            SoundSample(<a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>            ~SoundSample();</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>            <span class="keywordtype">void</span> cleanup();</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>            <span class="keywordtype">bool</span> load(<span class="keyword">const</span> <span class="keywordtype">char</span> *dir);</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        };</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        <span class="keywordtype">bool</span> nosound = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        <span class="keyword">struct </span>SoundSample</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        {</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>            <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>            std::string name;</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>            Mix_Chunk *chunk;</div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>        <span class="keyword">struct </span>soundslot</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        {</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>            SoundSample *sample;</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>            <span class="keywordtype">int</span> volume;</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        };</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keyword">struct </span>SoundConfig</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        {</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>            <span class="keywordtype">int</span> slots, numslots;</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>            <span class="keywordtype">int</span> maxuses;</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span> </div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>            <span class="keywordtype">bool</span> hasslot(<span class="keyword">const</span> soundslot *p, <span class="keyword">const</span> std::vector&lt;soundslot&gt; &amp;v) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span> </div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>            <span class="keywordtype">int</span> chooseslot(<span class="keywordtype">int</span> flags) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        };</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="comment">//sound channel object that is allocated to every sound emitter in use</span></div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>        <span class="comment">//(entities, players, weapons, etc.)</span></div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="comment">//defined in world coordinates, and position mixing is done for the player dynamically</span></div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        <span class="keyword">class </span>SoundChannel</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        {</div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>            <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>                <span class="keywordtype">bool</span> inuse;</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>                soundslot *slot;</div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>                <a class="code hl_struct" href="structextentity.html">extentity</a> *ent;</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>                <span class="keywordtype">int</span> volume;</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span> </div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>                SoundChannel(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span> </div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>                <span class="keywordtype">bool</span> updatechannel();</div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>                <span class="keywordtype">void</span> syncchannel();</div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>                <span class="keywordtype">void</span> setupchannel(<span class="keywordtype">int</span> n, soundslot *slot, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> radius);</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>                <span class="keywordtype">void</span> setloc(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a>&amp; newloc);</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>            SoundSample(<a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>            ~SoundSample();</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>            <span class="keywordtype">void</span> cleanup();</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>            <span class="keywordtype">bool</span> load(<span class="keyword">const</span> <span class="keywordtype">char</span> *dir);</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        };</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keyword">struct </span>soundslot</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        {</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            SoundSample *sample;</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>            <span class="keywordtype">int</span> volume;</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        };</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span> </div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>        <span class="keyword">struct </span>SoundConfig</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        {</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>            <span class="keywordtype">int</span> slots, numslots;</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            <span class="keywordtype">int</span> maxuses;</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            <span class="keywordtype">bool</span> hasslot(<span class="keyword">const</span> soundslot *p, <span class="keyword">const</span> std::vector&lt;soundslot&gt; &amp;v) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>            <span class="keywordtype">int</span> chooseslot(<span class="keywordtype">int</span> flags) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        };</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>        <span class="comment">//sound channel object that is allocated to every sound emitter in use</span></div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>        <span class="comment">//(entities, players, weapons, etc.)</span></div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="comment">//defined in world coordinates, and position mixing is done for the player dynamically</span></div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <span class="keyword">class </span>SoundChannel</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>        {</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>            <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>                <span class="keywordtype">bool</span> inuse;</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>                soundslot *slot;</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>                <a class="code hl_struct" href="structextentity.html">extentity</a> *ent;</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>                <span class="keywordtype">int</span> volume;</div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span> </div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                <span class="keywordtype">bool</span> hasloc() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>                SoundChannel(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
 <div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span> </div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                <span class="keywordtype">void</span> clearloc();</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>                <span class="keywordtype">void</span> reset();</div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>            <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>                <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>                <span class="keywordtype">int</span> id;</div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>                <span class="keywordtype">int</span> radius, pan, flags;</div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>                <span class="keywordtype">bool</span> dirty;</div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>                <a class="code hl_struct" href="structvec.html">vec</a> loc;</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>        };</div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span> </div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>        std::vector&lt;SoundChannel&gt; channels;</div>
-<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        <span class="keywordtype">int</span> maxchannels = 0;</div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span> </div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>        <span class="keywordtype">int</span> soundvol = 255;</div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span> </div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="keywordtype">int</span> musicvol = 60;</div>
-<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span> </div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>        <span class="keywordtype">bool</span> shouldinitaudio = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span> </div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span><span class="preprocessor">    #ifdef WIN32</span></div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span><span class="preprocessor">        #define AUDIODRIVER &quot;directsound winmm&quot;</span></div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span><span class="preprocessor">    #else</span></div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span><span class="preprocessor">        #define AUDIODRIVER &quot;pulseaudio alsa arts esd jack pipewire dsp&quot;</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>                <span class="keywordtype">bool</span> updatechannel();</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>                <span class="keywordtype">void</span> syncchannel();</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>                <span class="keywordtype">void</span> setupchannel(<span class="keywordtype">int</span> n, soundslot *slot, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent, <span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> radius);</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>                <span class="keywordtype">void</span> setloc(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a>&amp; newloc);</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span> </div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>                <span class="keywordtype">bool</span> hasloc() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span> </div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>                <span class="keywordtype">void</span> clearloc();</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>                <span class="keywordtype">void</span> reset();</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>            <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>                <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>                <span class="keywordtype">int</span> id;</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>                <span class="keywordtype">int</span> radius, pan, flags;</div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>                <span class="keywordtype">bool</span> dirty;</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>                <a class="code hl_struct" href="structvec.html">vec</a> loc;</div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>        };</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>        std::vector&lt;SoundChannel&gt; channels;</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>        <span class="keywordtype">int</span> maxchannels = 0;</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span> </div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>        <span class="keywordtype">int</span> soundvol = 255;</div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span> </div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>        <span class="keywordtype">int</span> musicvol = 60;</div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span> </div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        std::string audiodriver = AUDIODRIVER;</div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>        <span class="keywordtype">bool</span> sound;</div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span> </div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>        <span class="comment">//# of sound channels (not physical output channels, but individual sound samples in use, such as weaps and light ents)</span></div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>        <span class="keywordtype">int</span> soundchans = 32;</div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>        <span class="comment">//max sound frequency (44.1KHz = CD)</span></div>
-<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>        <span class="keywordtype">int</span> soundfreq = 44100;</div>
-<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>        <span class="comment">//length of sound buffer in milliseconds</span></div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>        <span class="keywordtype">int</span> soundbufferlen = 1024;</div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span> </div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>        <span class="keywordtype">bool</span> initaudio();</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span> </div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>        <span class="keyword">struct </span>SoundType</div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>        {</div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>            <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>            std::map&lt;std::string, SoundSample&gt; samples;</div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>            std::vector&lt;soundslot&gt; slots;</div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>            std::vector&lt;SoundConfig&gt; configs;</div>
-<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>            <span class="keyword">const</span> <span class="keywordtype">char</span> *dir;</div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>            SoundType(<span class="keyword">const</span> <span class="keywordtype">char</span> *dir, <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>            <span class="keywordtype">int</span> findsound(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
-<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>            <span class="keywordtype">int</span> addslot(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
-<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>            <span class="keywordtype">int</span> addsound(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol, <span class="keywordtype">int</span> maxuses = 0);</div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>            <span class="keywordtype">void</span> addalt(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
-<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>            <span class="keywordtype">void</span> clear();</div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>            <span class="keywordtype">void</span> reset();</div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>            <span class="keywordtype">void</span> cleanupsamples();</div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>            <span class="keywordtype">void</span> <a class="code hl_function" href="iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca">cleanup</a>();</div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>            <span class="keywordtype">void</span> preloadsound(<span class="keywordtype">int</span> n);</div>
-<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>            <span class="keywordtype">bool</span> playing(<span class="keyword">const</span> SoundChannel &amp;chan, <span class="keyword">const</span> SoundConfig &amp;config) <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>        };</div>
-<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>        SoundType gamesounds;</div>
-<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>        SoundType mapsounds;</div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span> </div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>        <span class="comment">//free all channels</span></div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>        <span class="keywordtype">void</span> resetchannels();</div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span> </div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>        <span class="keywordtype">void</span> musicdone();</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>        Mix_Music *loadmusic(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>        Mix_Chunk *loadwav(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
-<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span> </div>
-<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>        <span class="comment">//creates a new SoundChannel object with passed properties</span></div>
-<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>        SoundChannel &amp;newchannel(<span class="keywordtype">int</span> n, soundslot *slot, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc = <span class="keyword">nullptr</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent = <span class="keyword">nullptr</span>, <span class="keywordtype">int</span> flags = 0, <span class="keywordtype">int</span> radius = 0);</div>
-<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span> </div>
-<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>        <span class="comment">//sets a channel as not being in use</span></div>
-<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>        <span class="keywordtype">void</span> freechannel(<span class="keywordtype">int</span> n);</div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span> </div>
-<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>        <span class="keywordtype">void</span> stopchannels();</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        <span class="keywordtype">bool</span> shouldinitaudio = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span> </div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span><span class="preprocessor">    #ifdef WIN32</span></div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span><span class="preprocessor">        #define AUDIODRIVER &quot;directsound winmm&quot;</span></div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span><span class="preprocessor">    #else</span></div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span><span class="preprocessor">        #define AUDIODRIVER &quot;pulseaudio alsa arts esd jack pipewire dsp&quot;</span></div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span><span class="preprocessor">    #endif</span></div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span> </div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>        std::string audiodriver = AUDIODRIVER;</div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>        <span class="keywordtype">bool</span> sound;</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span> </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>        <span class="comment">//# of sound channels (not physical output channels, but individual sound samples in use, such as weaps and light ents)</span></div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>        <span class="keywordtype">int</span> soundchans = 32;</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>        <span class="comment">//max sound frequency (44.1KHz = CD)</span></div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>        <span class="keywordtype">int</span> soundfreq = 44100;</div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>        <span class="comment">//length of sound buffer in milliseconds</span></div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>        <span class="keywordtype">int</span> soundbufferlen = 1024;</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span> </div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>        <span class="keywordtype">bool</span> initaudio();</div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span> </div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>        <span class="keyword">struct </span>SoundType</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>        {</div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>            <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a> * <span class="keyword">const</span> parent;</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>            std::map&lt;std::string, SoundSample&gt; samples;</div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>            std::vector&lt;soundslot&gt; slots;</div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>            std::vector&lt;SoundConfig&gt; configs;</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>            <span class="keyword">const</span> <span class="keywordtype">char</span> *dir;</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>            SoundType(<span class="keyword">const</span> <span class="keywordtype">char</span> *dir, <a class="code hl_class" href="classSoundEngine.html">SoundEngine</a>&amp; p);</div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>            <span class="keywordtype">int</span> findsound(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>            <span class="keywordtype">int</span> addslot(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span>            <span class="keywordtype">int</span> addsound(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol, <span class="keywordtype">int</span> maxuses = 0);</div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span>            <span class="keywordtype">void</span> addalt(<span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> vol);</div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>            <span class="keywordtype">void</span> clear();</div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span>            <span class="keywordtype">void</span> reset();</div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span>            <span class="keywordtype">void</span> cleanupsamples();</div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span>            <span class="keywordtype">void</span> <a class="code hl_function" href="iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca">cleanup</a>();</div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>            <span class="keywordtype">void</span> preloadsound(<span class="keywordtype">int</span> n);</div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>            <span class="keywordtype">bool</span> playing(<span class="keyword">const</span> SoundChannel &amp;chan, <span class="keyword">const</span> SoundConfig &amp;config) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>        };</div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>        SoundType gamesounds;</div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>        SoundType mapsounds;</div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span> </div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>        <span class="comment">//free all channels</span></div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>        <span class="keywordtype">void</span> resetchannels();</div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span> </div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>        <span class="keywordtype">void</span> musicdone();</div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>        Mix_Music *loadmusic(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>        Mix_Chunk *loadwav(<span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
 <div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span> </div>
-<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">setmusicvol</a>(<span class="keywordtype">int</span> musicvol);</div>
-<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span> </div>
-<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>        <span class="keywordtype">char</span> *musicfile    = <span class="keyword">nullptr</span>,</div>
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>             *musicdonecmd = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span> </div>
-<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>        Mix_Music *music    = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>        SDL_RWops *musicrw  = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>        <a class="code hl_struct" href="structstream.html">stream</a> *musicstream = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span> </div>
-<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span>        <span class="keywordtype">void</span> stopmusic();</div>
-<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>};</div>
-<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassSoundEngine_html"><div class="ttname"><a href="classSoundEngine.html">SoundEngine</a></div><div class="ttdoc">The wrapper around SDL_Mixer that plays sounds ingame.</div><div class="ttdef"><b>Definition:</b> sound.h:17</div></div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>        <span class="comment">//creates a new SoundChannel object with passed properties</span></div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span>        SoundChannel &amp;newchannel(<span class="keywordtype">int</span> n, soundslot *slot, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *loc = <span class="keyword">nullptr</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> *ent = <span class="keyword">nullptr</span>, <span class="keywordtype">int</span> flags = 0, <span class="keywordtype">int</span> radius = 0);</div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span> </div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>        <span class="comment">//sets a channel as not being in use</span></div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>        <span class="keywordtype">void</span> freechannel(<span class="keywordtype">int</span> n);</div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span> </div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>        <span class="keywordtype">void</span> stopchannels();</div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span> </div>
+<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classSoundEngine.html#aeea1abcb6f852b61238d1b939c56d998">setmusicvol</a>(<span class="keywordtype">int</span> musicvol);</div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span> </div>
+<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>        <span class="keywordtype">char</span> *musicfile    = <span class="keyword">nullptr</span>,</div>
+<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span>             *musicdonecmd = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span> </div>
+<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>        Mix_Music *music    = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>        SDL_RWops *musicrw  = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>        <a class="code hl_struct" href="structstream.html">stream</a> *musicstream = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span> </div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>        <span class="keywordtype">void</span> stopmusic();</div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>};</div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassSoundEngine_html"><div class="ttname"><a href="classSoundEngine.html">SoundEngine</a></div><div class="ttdoc">The wrapper around SDL_Mixer that plays sounds ingame.</div><div class="ttdef"><b>Definition:</b> sound.h:25</div></div>
 <div class="ttc" id="aclassSoundEngine_html_a0d658a3173ad1f7a6b26c36fe454c7d8"><div class="ttname"><a href="classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8">SoundEngine::altmapsound</a></div><div class="ttdeci">void altmapsound(char *name, int *vol)</div><div class="ttdoc">Adds an alternative map sound.</div></div>
 <div class="ttc" id="aclassSoundEngine_html_a37f2c4dd78143584f7cdbf5b28390e9e"><div class="ttname"><a href="classSoundEngine.html#a37f2c4dd78143584f7cdbf5b28390e9e">SoundEngine::clear_sound</a></div><div class="ttdeci">void clear_sound()</div><div class="ttdoc">Shuts down sound system.</div></div>
 <div class="ttc" id="aclassSoundEngine_html_a3d4c3a068139b42e2430c74cff8168c7"><div class="ttname"><a href="classSoundEngine.html#a3d4c3a068139b42e2430c74cff8168c7">SoundEngine::mapsound</a></div><div class="ttdeci">void mapsound(char *name, int *vol, int *maxuses)</div><div class="ttdoc">Adds a sound to the list of map sounds.</div></div>
@@ -393,13 +394,13 @@ $(document).ready(function(){initNavTree('sound_8h_source.html',''); initResizab
 <div class="ttc" id="aiengine_8h_html_a45e6a820c52945de0b31c1083648b8ca"><div class="ttname"><a href="iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca">UI::cleanup</a></div><div class="ttdeci">void cleanup()</div><div class="ttdoc">Deletes all of the open windows exposed and deletes the UI world object.</div></div>
 <div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdoc">Extended entity data not of the subset which is saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:93</div></div>
 <div class="ttc" id="astructstream_html"><div class="ttname"><a href="structstream.html">stream</a></div><div class="ttdef"><b>Definition:</b> tools.h:461</div></div>
-<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
+<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:161</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_10e7c0f1162619d79ac1e2722ec6e40f.html">libprimis-headers</a></li><li class="navelem"><b>sound.h</b></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_10e7c0f1162619d79ac1e2722ec6e40f.html">libprimis-headers</a></li><li class="navelem"><a class="el" href="sound_8h.html">sound.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.6 </li>
   </ul>
 </div>
