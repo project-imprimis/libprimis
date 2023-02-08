@@ -217,15 +217,12 @@ static constexpr float collideerror  = 1.0f;
 class partrenderer
 {
     public:
-        uint type;
-        int stain;
-
         partrenderer(const char *texname, int texclamp, int type, int stain = -1)
-            : type(type), stain(stain), tex(nullptr), texname(texname), texclamp(texclamp)
+            : tex(nullptr), type(type), stain(stain), texname(texname), texclamp(texclamp)
         {
         }
         partrenderer(int type, int stain = -1)
-            : type(type), stain(stain), tex(nullptr), texname(nullptr), texclamp(0)
+            : tex(nullptr), type(type), stain(stain), texname(nullptr), texclamp(0)
         {
         }
         virtual ~partrenderer()
@@ -255,7 +252,7 @@ class partrenderer
         }
 
         //blend = 0 => remove it
-        void calc(particle *p, int &blend, int &ts, vec &o, vec &d, bool step = true)
+        void calc(particle *p, int &blend, int &ts, vec &o, vec &d, bool step = true) const
         {
             o = p->o;
             d = p->d;
@@ -325,9 +322,21 @@ class partrenderer
                 }
             }
         }
+
+        bool hasstain() const
+        {
+            return stain >= 0;
+        }
+
+        uint parttype() const
+        {
+            return type;
+        }
     protected:
-        Texture *tex;
+        const Texture *tex;
     private:
+        uint type;
+        int stain;
         string info;
         const char *texname;
         int texclamp;
@@ -443,7 +452,7 @@ class listrenderer : public partrenderer
 
         void resettracked(physent *owner)
         {
-            if(!(type&PT_TRACK))
+            if(!(parttype()&PT_TRACK))
             {
                 return;
             }
@@ -527,7 +536,7 @@ class meterrenderer : public listrenderer
 
         void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
         {
-            int basetype = type&0xFF;
+            int basetype = parttype()&0xFF;
             float scale  = FONTH*p.size/80.0f,
                   right  = 8,
                   left   = p.progress/100.0f*right;
@@ -774,7 +783,7 @@ struct varenderer : partrenderer
 
     void resettracked(physent *owner)
     {
-        if(!(type&PT_TRACK))
+        if(!(parttype()&PT_TRACK))
         {
             return;
         }
@@ -865,7 +874,7 @@ struct varenderer : partrenderer
                 vs[2].tc = vec2(u2, v2); \
                 vs[3].tc = vec2(u1, v2); \
             }
-            if(type&PT_RND4)
+            if(parttype()&PT_RND4)
             {
                 float tx = 0.5f*((p->flags>>5)&1),
                       ty = 0.5f*((p->flags>>6)&1);
@@ -881,7 +890,7 @@ struct varenderer : partrenderer
                     }
                 });
             }
-            else if(type&PT_ICON)
+            else if(parttype()&PT_ICON)
             {
                 float tx = 0.25f*(p->flags&3),
                       ty = 0.25f*((p->flags>>2)&3);
@@ -894,7 +903,7 @@ struct varenderer : partrenderer
             #undef SETTEXCOORDS
             //==================================================================
 
-            if(type&PT_MOD)
+            if(parttype()&PT_MOD)
             {
                 setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs);
             }
@@ -904,7 +913,7 @@ struct varenderer : partrenderer
             }
 
         }
-        else if(type&PT_MOD)
+        else if(parttype()&PT_MOD)
         {
             //note: same call as `if(type&PT_MOD)` above
             setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs);
@@ -916,7 +925,7 @@ struct varenderer : partrenderer
                 vs[i].color.a = blend;
             }
         }
-        if(type&PT_ROT)
+        if(parttype()&PT_ROT)
         {
             genrotpos<T>(o, d, p->size, ts, p->gravity, vs, (p->flags>>2)&0x1F);
         }
@@ -1293,7 +1302,7 @@ void initparticles()
     }
     for(int i = 0; i < numpartparts(); ++i)
     {
-        parts[i]->init(parts[i]->type&PT_FEW ? std::min(fewparticles, maxparticles) : maxparticles);
+        parts[i]->init(parts[i]->parttype()&PT_FEW ? std::min(fewparticles, maxparticles) : maxparticles);
     }
     for(int i = 0; i < numpartparts(); ++i)
     {
@@ -1351,7 +1360,7 @@ void GBuffer::renderparticles(int layer) const
     for(int i = 0; i < numpartparts(); ++i)
     {
         partrenderer *p = parts[i];
-        if((p->type&PT_NOLAYER) == excludemask || !p->haswork())
+        if((p->parttype()&PT_NOLAYER) == excludemask || !p->haswork())
         {
             continue;
         }
@@ -1374,7 +1383,7 @@ void GBuffer::renderparticles(int layer) const
             glActiveTexture(GL_TEXTURE0);
         }
 
-        uint flags = p->type & flagmask,
+        uint flags = p->parttype() & flagmask,
              changedbits = flags ^ lastflags;
         if(changedbits)
         {
@@ -1478,8 +1487,8 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
         return;
     }
     //ugly ternary assignment
-    float collidez = parts[type]->type&PT_COLLIDE ?
-                     p.z - rootworld.raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
+    float collidez = parts[type]->parttype()&PT_COLLIDE ?
+                     p.z - rootworld.raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->hasstain() ? collideerror : 0) :
                      -1;
     int fmin = 1,
         fmax = fade*3;
@@ -1629,7 +1638,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
     {
         return;
     }
-    int basetype = parts[type]->type&0xFF;
+    int basetype = parts[type]->parttype()&0xFF;
     bool flare = (basetype == PT_TAPE),
          inv = (dir&0x20)!=0,
          taper = (dir&0x40)!=0 && !seedemitter;
@@ -1728,12 +1737,12 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         {
             vec d = vec(to).sub(from).rescale(vel); //velocity
             particle *n = newparticle(from, d, randomint(fade*3)+1, type, color, size, gravity);
-            if(parts[type]->type&PT_COLLIDE)
+            if(parts[type]->parttype()&PT_COLLIDE)
             {
                 //long nasty ternary assignment
-                n->val = from.z - rootworld.raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ?
+                n->val = from.z - rootworld.raycube(from, vec(0, 0, -1), parts[type]->hasstain() ?
                          collideradius :
-                         std::max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0);
+                         std::max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->hasstain() ? collideerror : 0);
             }
         }
     }
