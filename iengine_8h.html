@@ -3152,7 +3152,13 @@ false if the window was not previously shown or did not exist </dd></dl>
 <p>Initializes shader Cubescript commands. </p>
 <p><code>defershader</code></p>
 <p><code>forceshader</code></p>
-<p><code>shader</code></p>
+<p><code>shader</code> type name ps vs</p><ul>
+<li>Adds a shader to the engine's catalog.</li>
+<li><code>type</code> a bitmask describing the properties of the shader</li>
+<li><code>name</code> the name of the shader for calls from e.g. <code>useshaderbyname</code></li>
+<li><code>ps</code> the pixel shader</li>
+<li><code>vs</code> the vertex shader</li>
+</ul>
 <p><code>variantshader</code></p>
 <p><code>setshader</code></p>
 <p><code>isshaderdefined</code></p>
