@@ -1011,106 +1011,106 @@ VARP(softexplosionblend, 1, 16, 64);
 class fireballrenderer : public listrenderer
 {
     public:
-    fireballrenderer(const char *texname)
-        : listrenderer(texname, 0, PT_FIREBALL|PT_SHADER)
-    {}
+        fireballrenderer(const char *texname)
+            : listrenderer(texname, 0, PT_FIREBALL|PT_SHADER)
+        {}
 
-    static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
+        static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
 
-    void startrender()
-    {
-        if(softexplosion)
+        void startrender()
         {
-            SETSHADER(explosionsoft);
-        }
-        else
-        {
-            SETSHADER(explosion);
-        }
-        sr.enable();
-    }
-
-    void endrender()
-    {
-        sr.disable();
-    }
-
-    void cleanup()
-    {
-        sr.cleanup();
-    }
-
-    void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
-    {
-        pe.maxfade = std::max(pe.maxfade, fade);
-        pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
-    }
-
-    void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
-    {
-        float pmax = p.val,
-              size = p.fade ? static_cast<float>(ts)/p.fade : 1,
-              psize = p.size + pmax * size;
-
-        if(view.isfoggedsphere(psize*wobble, p.o))
-        {
-            return;
-        }
-        vec dir = static_cast<vec>(o).sub(camera1->o), s, t;
-        float dist = dir.magnitude();
-        bool inside = dist <= psize*wobble;
-        if(inside)
-        {
-            s = camright;
-            t = camup;
-        }
-        else
-        {
-            float mag2 = dir.magnitude2();
-            dir.x /= mag2;
-            dir.y /= mag2;
-            dir.z /= dist;
-            s = vec(dir.y, -dir.x, 0);
-            t = vec(dir.x*dir.z, dir.y*dir.z, -mag2/dist);
-        }
-
-        matrix3 rot(lastmillis/1000.0f*143/RAD, vec(1/SQRT3, 1/SQRT3, 1/SQRT3));
-        LOCALPARAM(texgenS, rot.transposedtransform(s));
-        LOCALPARAM(texgenT, rot.transposedtransform(t));
-
-        matrix4 m(rot, o);
-        m.scale(psize, psize, inside ? -psize : psize);
-        m.mul(camprojmatrix, m);
-        LOCALPARAM(explosionmatrix, m);
-
-        LOCALPARAM(center, o);
-        LOCALPARAMF(blendparams, inside ? 0.5f : 4, inside ? 0.25f : 0);
-        if(2*(p.size + pmax)*wobble >= softexplosionblend)
-        {
-            LOCALPARAMF(softparams, -1.0f/softexplosionblend, 0, inside ? blend/(2*255.0f) : 0);
-        }
-        else
-        {
-            LOCALPARAMF(softparams, 0, -1, inside ? blend/(2*255.0f) : 0);
-        }
-
-        vec color = p.color.tocolor().mul(ldrscale);
-        float alpha = blend/255.0f;
-
-        for(int i = 0; i < (inside ? 2 : 1); ++i)
-        {
-            gle::color(color, i ? alpha/2 : alpha);
-            if(i)
+            if(softexplosion)
             {
-                glDepthFunc(GL_GEQUAL);
+                SETSHADER(explosionsoft);
             }
-            sr.draw();
-            if(i)
+            else
             {
-                glDepthFunc(GL_LESS);
+                SETSHADER(explosion);
+            }
+            sr.enable();
+        }
+
+        void endrender()
+        {
+            sr.disable();
+        }
+
+        void cleanup()
+        {
+            sr.cleanup();
+        }
+
+        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
+        {
+            pe.maxfade = std::max(pe.maxfade, fade);
+            pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
+        }
+
+        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
+        {
+            float pmax = p.val,
+                  size = p.fade ? static_cast<float>(ts)/p.fade : 1,
+                  psize = p.size + pmax * size;
+
+            if(view.isfoggedsphere(psize*wobble, p.o))
+            {
+                return;
+            }
+            vec dir = static_cast<vec>(o).sub(camera1->o), s, t;
+            float dist = dir.magnitude();
+            bool inside = dist <= psize*wobble;
+            if(inside)
+            {
+                s = camright;
+                t = camup;
+            }
+            else
+            {
+                float mag2 = dir.magnitude2();
+                dir.x /= mag2;
+                dir.y /= mag2;
+                dir.z /= dist;
+                s = vec(dir.y, -dir.x, 0);
+                t = vec(dir.x*dir.z, dir.y*dir.z, -mag2/dist);
+            }
+
+            matrix3 rot(lastmillis/1000.0f*143/RAD, vec(1/SQRT3, 1/SQRT3, 1/SQRT3));
+            LOCALPARAM(texgenS, rot.transposedtransform(s));
+            LOCALPARAM(texgenT, rot.transposedtransform(t));
+
+            matrix4 m(rot, o);
+            m.scale(psize, psize, inside ? -psize : psize);
+            m.mul(camprojmatrix, m);
+            LOCALPARAM(explosionmatrix, m);
+
+            LOCALPARAM(center, o);
+            LOCALPARAMF(blendparams, inside ? 0.5f : 4, inside ? 0.25f : 0);
+            if(2*(p.size + pmax)*wobble >= softexplosionblend)
+            {
+                LOCALPARAMF(softparams, -1.0f/softexplosionblend, 0, inside ? blend/(2*255.0f) : 0);
+            }
+            else
+            {
+                LOCALPARAMF(softparams, 0, -1, inside ? blend/(2*255.0f) : 0);
+            }
+
+            vec color = p.color.tocolor().mul(ldrscale);
+            float alpha = blend/255.0f;
+
+            for(int i = 0; i < (inside ? 2 : 1); ++i)
+            {
+                gle::color(color, i ? alpha/2 : alpha);
+                if(i)
+                {
+                    glDepthFunc(GL_GEQUAL);
+                }
+                sr.draw();
+                if(i)
+                {
+                    glDepthFunc(GL_LESS);
+                }
             }
         }
-    }
     private:
         class sphererenderer
         {
