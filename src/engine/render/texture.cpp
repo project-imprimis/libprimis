@@ -880,7 +880,6 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     }
     t->w = t->xs = s.w;
     t->h = t->ys = s.h;
-    t->ratio = t->w / static_cast<float>(t->h);
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
     glGenTextures(1, &t->id);
     if(s.compressed)
@@ -1055,6 +1054,11 @@ const uchar * Texture::loadalphamask()
         srcrow += s.pitch;
     }
     return alphamask;
+}
+
+float Texture::ratio() const
+{
+    return (w / static_cast<float>(h));
 }
 
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
@@ -2538,18 +2542,18 @@ Texture *Slot::loadthumbnail()
 
 // environment mapped reflections
 
-void cleanuptexture(Texture *t)
+void Texture::cleanup()
 {
-    delete[] t->alphamask;
-    t->alphamask = nullptr;
-    if(t->id)
+    delete[] alphamask;
+    alphamask = nullptr;
+    if(id)
     {
-        glDeleteTextures(1, &t->id);
-        t->id = 0;
+        glDeleteTextures(1, &id);
+        id = 0;
     }
-    if(t->type&Texture::TRANSIENT)
+    if(type&Texture::TRANSIENT)
     {
-        textures.remove(t->name);
+        textures.remove(name);
     }
 }
 
@@ -2571,7 +2575,7 @@ void cleanuptextures()
     {
         decalslots[i]->cleanup();
     }
-    ENUMERATE(textures, Texture, tex, cleanuptexture(&tex));
+    ENUMERATE(textures, Texture, tex, tex.cleanup());
 }
 
 bool reloadtexture(const char *name)

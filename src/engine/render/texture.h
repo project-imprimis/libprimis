@@ -51,14 +51,14 @@ struct Texture
 
     char *name;
     int type, w, h, xs, ys, bpp, clamp;
-    float ratio;
     bool mipmap, canreduce;
     GLuint id;
     uchar *alphamask;
 
     Texture() : alphamask(nullptr) {}
     const uchar * loadalphamask();
-
+    void cleanup();
+    float ratio() const;
 };
 
 enum

@@ -1081,7 +1081,7 @@ namespace
                 }
             }
         }
-        GLOBALPARAM(rotate, vec(newvslot.angle.y, newvslot.angle.z, diffuse->ratio));
+        GLOBALPARAM(rotate, vec(newvslot.angle.y, newvslot.angle.z, diffuse->ratio()));
         if(tmu != 0)
         {
             tmu = 0;
