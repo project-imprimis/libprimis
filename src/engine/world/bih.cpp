@@ -121,7 +121,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         }
     }
     float invdet = 1/det;
-    if(m.flags&Mesh_Alpha && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || loadalphamask(m.tex)))
+    if(m.flags&Mesh_Alpha && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || m.tex->loadalphamask()))
     {
         vec2 at = m.gettc(t.vert[0]),
              bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet),

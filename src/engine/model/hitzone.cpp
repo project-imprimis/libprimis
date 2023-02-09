@@ -194,7 +194,7 @@ static bool skeltriintersect(vec a, vec b, vec c, vec o,
     if((skelmodel::intersectmode&Ray_AlphaPoly)==Ray_AlphaPoly)
     {
         Texture *tex = s[t.Mesh].tex;
-        if(tex->type&Texture::ALPHA && (tex->alphamask || loadalphamask(tex)))
+        if(tex->type&Texture::ALPHA && (tex->alphamask || tex->loadalphamask()))
         {
             int si = std::clamp(static_cast<int>(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1),
                 ti = std::clamp(static_cast<int>(tex->ys * (va.tc.y + u*(vb.tc.y - va.tc.y) + v*(vc.tc.y - va.tc.y))), 0, tex->ys-1);

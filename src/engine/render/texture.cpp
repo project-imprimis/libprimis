@@ -1018,24 +1018,24 @@ SDL_Surface *loadsurface(const char *name)
     return fixsurfaceformat(s);
 }
 
-uchar *loadalphamask(Texture *t)
+const uchar * Texture::loadalphamask()
 {
-    if(t->alphamask)
+    if(alphamask)
     {
-        return t->alphamask;
+        return alphamask;
     }
-    if(!(t->type&Texture::ALPHA))
+    if(!(type&Texture::ALPHA))
     {
         return nullptr;
     }
     ImageData s;
-    if(!s.texturedata(t->name, false) || !s.data || s.compressed)
+    if(!s.texturedata(name, false) || !s.data || s.compressed)
     {
         return nullptr;
     }
-    t->alphamask = new uchar[s.h * ((s.w+7)/8)];
+    alphamask = new uchar[s.h * ((s.w+7)/8)];
     uchar *srcrow = s.data,
-          *dst = t->alphamask-1;
+          *dst = alphamask-1;
     for(int y = 0; y < s.h; ++y)
     {
         uchar *src = srcrow+s.bpp-1;
@@ -1054,7 +1054,7 @@ uchar *loadalphamask(Texture *t)
         }
         srcrow += s.pitch;
     }
-    return t->alphamask;
+    return alphamask;
 }
 
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)

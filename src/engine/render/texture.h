@@ -5,7 +5,6 @@ extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexu
 
 extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 extern bool floatformat(GLenum format);
-extern uchar *loadalphamask(Texture *t);
 extern void loadshaders();
 extern void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_2D, int pw = 0, int ph = 0, int pitch = 0, bool resize = true, GLenum format = GL_FALSE, bool swizzle = false);
 extern void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_3D, bool swizzle = false);
@@ -58,6 +57,8 @@ struct Texture
     uchar *alphamask;
 
     Texture() : alphamask(nullptr) {}
+    const uchar * loadalphamask();
+
 };
 
 enum

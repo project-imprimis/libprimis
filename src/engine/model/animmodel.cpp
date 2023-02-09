@@ -334,7 +334,7 @@ void animmodel::skin::preloadBIH()
 {
     if(alphatested() && !tex->alphamask)
     {
-        loadalphamask(tex);
+        tex->loadalphamask();
     }
 }
 

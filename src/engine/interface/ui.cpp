@@ -1921,7 +1921,7 @@ namespace UI
     {
         if(!tex->alphamask)
         {
-            loadalphamask(tex);
+            tex->loadalphamask();
             if(!tex->alphamask)
             {
                 return true;
