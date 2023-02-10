@@ -555,7 +555,7 @@ void hbrushvert(int *x, int *y, int *v)
 }
 
 //engine interface functions
-bool isheightmap(int o, bool empty, cube &c)
+bool isheightmap(int o, bool empty, const cube &c)
 {
     return heightmapper.isheightmap(o, empty, c);
 }
