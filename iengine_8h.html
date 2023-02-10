@@ -498,9 +498,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>adddynlight</b> (cons
 <tr class="memitem:aeabfe8837546351717a4eaf4be20593b"><td class="memItemLeft" align="right" valign="top"><a id="aeabfe8837546351717a4eaf4be20593b" name="aeabfe8837546351717a4eaf4be20593b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>removetrackeddynlights</b> (const <a class="el" href="structphysent.html">physent</a> *owner=nullptr)</td></tr>
 <tr class="separator:aeabfe8837546351717a4eaf4be20593b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ea0dfcea3fe41983b0dd52122e09cbd"><td class="memItemLeft" align="right" valign="top"><a id="a9ea0dfcea3fe41983b0dd52122e09cbd" name="a9ea0dfcea3fe41983b0dd52122e09cbd"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isheightmap</b> (int o, bool empty, <a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
-<tr class="separator:a9ea0dfcea3fe41983b0dd52122e09cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a019aa3d124abe988a96d0df76b163204"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a019aa3d124abe988a96d0df76b163204">isheightmap</a> (int o, bool empty, const <a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
+<tr class="memdesc:a019aa3d124abe988a96d0df76b163204"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a heightmap is active for the current selection.  <br /></td></tr>
+<tr class="separator:a019aa3d124abe988a96d0df76b163204"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e8eb7e1eeca7a3ce68cdc97a141dbc8"><td class="memItemLeft" align="right" valign="top"><a id="a4e8eb7e1eeca7a3ce68cdc97a141dbc8" name="a4e8eb7e1eeca7a3ce68cdc97a141dbc8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>heightmaprun</b> (int dir, int mode)</td></tr>
 <tr class="separator:a4e8eb7e1eeca7a3ce68cdc97a141dbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -3494,6 +3494,45 @@ false if the window was not previously shown or did not exist </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the vector is inside the world boundaries </dd>
 <dd>
 false if the vector is outside the world </dd></dl>
+
+</div>
+</div>
+<a id="a019aa3d124abe988a96d0df76b163204" name="a019aa3d124abe988a96d0df76b163204"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a019aa3d124abe988a96d0df76b163204">&#9670;&#160;</a></span>isheightmap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isheightmap </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>empty</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcube.html">cube</a> &amp;&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines if a heightmap is active for the current selection. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if there is a heightmap active </dd>
+<dd>
+false if no heightmap is active </dd></dl>
 
 </div>
 </div>

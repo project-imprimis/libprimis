@@ -34,7 +34,8 @@ var searchData=
   ['intret_31',['intret',['../command_8h.html#a21cd226150059e3a302cfdbb389541c5',1,'command.h']]],
   ['invert_32',['invert',['../classmatrix3.html#a58a461e313094a5350567277678e0d2c',1,'matrix3::invert(const matrix3 &amp;o)'],['../classmatrix3.html#a75239d9aa6d5a9ed3d35ce8e549733a1',1,'matrix3::invert()']]],
   ['isempty_33',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
-  ['issolid_34',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
-  ['isvalidcube_35',['isvalidcube',['../classcube.html#a6eb323daa7488b5e9e70f97bad203070',1,'cube']]],
-  ['iterdynents_36',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
+  ['isheightmap_34',['isheightmap',['../iengine_8h.html#a019aa3d124abe988a96d0df76b163204',1,'iengine.h']]],
+  ['issolid_35',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
+  ['isvalidcube_36',['isvalidcube',['../classcube.html#a6eb323daa7488b5e9e70f97bad203070',1,'cube']]],
+  ['iterdynents_37',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
 ];

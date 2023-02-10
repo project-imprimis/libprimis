@@ -85,6 +85,7 @@ var iengine_8h =
     [ "inituicmds", "iengine_8h.html#acd92a89f1ab2250b271c931797e178f4", null ],
     [ "initworldiocmds", "iengine_8h.html#aacf5cb7ca04b015dac62e8499275a03b", null ],
     [ "insideworld", "iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9", null ],
+    [ "isheightmap", "iengine_8h.html#a019aa3d124abe988a96d0df76b163204", null ],
     [ "iterdynents", "iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046", null ],
     [ "keyrepeat", "iengine_8h.html#a1c71a06f841f817f8f2467b52c017b22", null ],
     [ "limitfps", "iengine_8h.html#a1738c13bae99737597bd32a9fde99c1e", null ],
