@@ -1068,9 +1068,8 @@ namespace
             GLOBALPARAMF(colorparams, newvslot.colorscale.x, newvslot.colorscale.y, newvslot.colorscale.z, 1);
         }
 
-        for(uint j = 0; j < newslot.sts.size(); j++)
+        for(const Slot::Tex &t : newslot.sts)
         {
-            Slot::Tex &t = newslot.sts[j];
             switch(t.type)
             {
                 case Tex_Normal:
