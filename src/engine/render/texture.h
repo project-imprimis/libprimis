@@ -10,7 +10,6 @@ extern void createtexture(int tnum, int w, int h, const void *pixels, int clamp,
 extern void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_3D, bool swizzle = false);
 extern GLuint setuppostfx(int w, int h, GLuint outfbo = 0);
 extern void renderpostfx(GLuint outfbo = 0);
-extern bool reloadtexture(Texture &tex);
 extern bool reloadtexture(const char *name);
 extern void clearslots();
 extern void compacteditvslots();
@@ -59,6 +58,8 @@ struct Texture
     const uchar * loadalphamask();
     void cleanup();
     float ratio() const;
+    bool reload(); //if the texture does not have a valid GL texture, attempts to reload it
+
 };
 
 enum

@@ -2583,24 +2583,24 @@ bool reloadtexture(const char *name)
     Texture *t = textures.access(copypath(name));
     if(t)
     {
-        return reloadtexture(*t);
+        return t->reload();
     }
     return true;
 }
 
-bool reloadtexture(Texture &tex)
+bool Texture::reload()
 {
-    if(tex.id)
+    if(id)
     {
         return true;
     }
-    switch(tex.type&Texture::TYPE)
+    switch(type&TYPE)
     {
-        case Texture::IMAGE:
+        case IMAGE:
         {
             int compress = 0;
             ImageData s;
-            if(!s.texturedata(tex.name, true, &compress) || !newtexture(&tex, nullptr, s, tex.clamp, tex.mipmap, false, false, compress))
+            if(!s.texturedata(name, true, &compress) || !newtexture(this, nullptr, s, clamp, mipmap, false, false, compress))
             {
                 return false;
             }
@@ -2627,7 +2627,7 @@ void reloadtex(char *name)
     t->alphamask = nullptr;
     Texture oldtex = *t;
     t->id = 0;
-    if(!reloadtexture(*t))
+    if(!t->reload())
     {
         if(t->id)
         {
@@ -2644,7 +2644,7 @@ void reloadtextures()
     ENUMERATE(textures, Texture, tex,
     {
         loadprogress = static_cast<float>(++reloaded)/textures.numelems;
-        reloadtexture(tex);
+        tex.reload();
     });
     loadprogress = 0;
 }

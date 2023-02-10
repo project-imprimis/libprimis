@@ -477,7 +477,7 @@ void reloadfonts()
     ENUMERATE(fonts, font, f,
         for(uint i = 0; i < f.texs.size(); i++)
         {
-            if(!reloadtexture(*f.texs[i]))
+            if(!f.texs[i]->reload())
             {
                 fatal("failed to reload font texture");
             }
