@@ -851,7 +851,7 @@ namespace //internal functions incl. AA implementations
         gensmaasearchdata();
         gensmaaareadata();
         createtexture(  smaaareatex,   smaaareatexwidth,   smaaareatexheight,   smaaareadata, 3, 1, GL_RG8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
-        createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
+        createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_2D, 0, 0, 0, false);
         bool split = multisampledaa();
         smaasubsampleorder = split ? (msaapositions[0].x < 0.5f ? 1 : 0) : -1;
         smaat2x = tqaa ? 1 : 0;
@@ -990,9 +990,9 @@ namespace //internal functions incl. AA implementations
             }
             case 5:
             {
-                glBindTexture(GL_TEXTURE_RECTANGLE, smaasearchtex);
-                tw = smaasearchtexwidth;
-                th = smaasearchtexheight;
+                glBindTexture(GL_TEXTURE_2D, smaasearchtex);
+                tw = 1;
+                th = 1;
                 break;
             }
         }
@@ -1073,7 +1073,7 @@ namespace //internal functions incl. AA implementations
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaaareatex);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_RECTANGLE, smaasearchtex);
+            glBindTexture(GL_TEXTURE_2D, smaasearchtex);
             glActiveTexture(GL_TEXTURE0);
             screenquad(vieww, viewh);
             if(depthmask)
