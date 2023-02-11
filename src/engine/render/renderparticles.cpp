@@ -72,12 +72,12 @@ VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info 
 class particleemitter
 {
     public:
-        extentity *ent;
+        const extentity *ent;
         vec center;
         float radius;
         int maxfade, lastemit, lastcull;
 
-        particleemitter(extentity *ent)
+        particleemitter(const extentity *ent)
             : ent(ent), maxfade(-1), lastemit(0), lastcull(0), bbmin(ent->o), bbmax(ent->o)
         {}
 
@@ -138,14 +138,13 @@ void addparticleemitters()
 {
     emitters.clear();
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(const extentity *e : ents)
     {
-        extentity &e = *ents[i];
-        if(e.type != EngineEnt_Particles)
+        if(e->type != EngineEnt_Particles)
         {
             continue;
         }
-        emitters.emplace_back(particleemitter(&e));
+        emitters.emplace_back(particleemitter(e));
     }
     regenemitters = false;
 }
@@ -1870,7 +1869,7 @@ void cubeworld::seedparticles()
     canemit = true;
     for(particleemitter &pe : emitters)
     {
-        extentity &e = *pe.ent;
+        const extentity &e = *pe.ent;
         seedemitter = &pe;
         for(int millis = 0; millis < seedmillis; millis += std::min(emitmillis, seedmillis/10))
         {
@@ -1916,7 +1915,7 @@ void cubeworld::updateparticles()
         addedparticles = 0;
         for(particleemitter& pe : emitters) //foreach particle emitter
         {
-            extentity &e = *pe.ent; //get info for the entity associated w/ent
+            const extentity &e = *pe.ent; //get info for the entity associated w/ent
             if(e.o.dist(camera1->o) > maxparticledistance) //distance check (don't update faraway particle ents)
             {
                 pe.lastemit = lastmillis;
