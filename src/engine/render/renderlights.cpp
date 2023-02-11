@@ -194,9 +194,9 @@ void GBuffer::setupscale(int sw, int sh, int w, int h)
         }
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[i]);
 
-        createtexture(scaletex[i], sw, i ? h : sh, nullptr, 3, gscalecubic || !gscalenearest ? 1 : 0, GL_RGB, GL_TEXTURE_RECTANGLE);
+        createtexture(scaletex[i], sw, i ? h : sh, nullptr, 3, gscalecubic || !gscalenearest ? 1 : 0, GL_RGB, GL_TEXTURE_2D);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, scaletex[i], 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scaletex[i], 0);
         if(!i)
         {
             gbuf.bindgdepth();
@@ -232,22 +232,22 @@ void GBuffer::doscale(GLuint outfbo) const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[1]);
         glViewport(0, 0, gw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[0]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalecubicy);
-        screenquad(gw, gh);
+        screenquad(1, 1);
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[1]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[1]);
         SETSHADER(scalecubicx);
-        screenquad(gw, hudh);
+        screenquad(1, 1);
     }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[0]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalelinear);
-        screenquad(gw, gh);
+        screenquad(1, 1);
     }
 
     endtimer(scaletimer);
