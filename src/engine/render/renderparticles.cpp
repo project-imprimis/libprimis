@@ -1950,10 +1950,9 @@ void cubeworld::updateparticles()
     if(editmode) // show sparkly thingies for map entities in edit mode
     {
         const std::vector<extentity *> &ents = entities::getents();
-        for(uint i = 0; i < ents.size(); i++)
+        for(extentity * const &e : ents)
         {
-            entity &e = *ents[i];
-            regular_particle_splash(Part_Edit, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
+            regular_particle_splash(Part_Edit, 2, 40, e->o, 0x3232FF, 0.32f*particlesize/100.0f);
         }
     }
 }
