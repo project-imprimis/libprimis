@@ -207,7 +207,7 @@ void clearpostfx()
     cleanuppostfx(false);
 }
 
-void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w)
+void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
 {
     int inputmask = inputs[0] ? 0 : 1,
         freemask = inputs[0] ? 0 : 1;
@@ -236,7 +236,7 @@ void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, flo
     addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(*x, *y, *z, *w));
 }
 
-void setpostfx(char *name, float *x, float *y, float *z, float *w)
+void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
 {
     clearpostfx();
     if(name[0])
