@@ -8,12 +8,15 @@ var command_8h =
     [ "addcommand", "command_8h.html#a843cea4bbdaf36111b913f0fb86a5662", null ],
     [ "checksleep", "command_8h.html#ad97d745d2a01ec6f7b780d792e082e08", null ],
     [ "clampvar", "command_8h.html#a8e8bc55a9398bb67e53e15a0cde66e08", null ],
+    [ "clear_command", "command_8h.html#ab00d3f04f513b9d9534c8975d8972526", null ],
     [ "escapestring", "command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2", null ],
     [ "execfile", "command_8h.html#a6e5803cc209ddd0bfcbbb57c0480f974", null ],
+    [ "execident", "command_8h.html#a93c2484e04b478cd5ac6cdef26a8edf1", null ],
     [ "execute", "command_8h.html#a997e6a66f75a4018e093db453af70dad", null ],
     [ "floatret", "command_8h.html#a3d7aa3bf7cb9299fbde9e836d399e50a", null ],
     [ "fvariable", "command_8h.html#ac66ac8708b0006348290d7f34d799723", null ],
     [ "getident", "command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f", null ],
+    [ "initidents", "command_8h.html#a7f0e73b474d1509b303b501465b025ef", null ],
     [ "intret", "command_8h.html#a21cd226150059e3a302cfdbb389541c5", null ],
     [ "parseint", "command_8h.html#a79bba01336acd4dc1bdf874c2593e224", null ],
     [ "printvar", "command_8h.html#a7a0296e4a02d14e3f16f069b69c1106f", null ],
@@ -24,5 +27,6 @@ var command_8h =
     [ "stringret", "command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c", null ],
     [ "svariable", "command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb", null ],
     [ "variable", "command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc", null ],
+    [ "identflags", "command_8h.html#abf183f2dd9db02ed8e5199922459cbaa", null ],
     [ "triggerqueue", "command_8h.html#ae653e8a430e6baa97073fbaa061abfb2", null ]
 ];
