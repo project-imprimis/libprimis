@@ -702,6 +702,11 @@ bool htcmp(const cube::cfkey &x, const cube::cfkey &y)
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
 }
 
+inline uint hthash(const ivec2 &k)
+{
+    return k.x^k.y;
+}
+
 uint hthash(const cube::cfkey &k)
 {
     return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
