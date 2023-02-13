@@ -175,7 +175,10 @@ bool animmodel::ShaderParamsKey::checkversion()
     version = lastversion;
     if(++lastversion <= 0)
     {
-        for(auto& [k, key] : keys) { key.version = -1; }
+        for(auto& [k, key] : keys) 
+        {
+            key.version = -1;
+        }
         firstversion = 0;
         lastversion = 1;
         version = 0;
