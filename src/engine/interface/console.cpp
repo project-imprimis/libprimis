@@ -1174,7 +1174,10 @@ void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
-    for(auto &[k, km] : keyms) { binds.push_back(&km); }
+    for(auto &[k, km] : keyms)
+    { 
+        binds.push_back(&km);
+    }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
@@ -1307,25 +1310,37 @@ void initconsolecmds()
 
     static auto clearbinds = [] ()
     {
-        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Default); }
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyM::Action_Default);
+        }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Spectator); }
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyM::Action_Spectator);
+        }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Editing); }
+        for(auto &[k, km] : keyms) 
+        {
+            km.clear(KeyM::Action_Editing);
+        }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-       for(auto &[k, km] : keyms) { km.clear(); }
+        for(auto &[k, km] : keyms)
+        { 
+            km.clear();
+        }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
