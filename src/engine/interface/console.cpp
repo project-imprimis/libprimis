@@ -294,7 +294,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(256);
+    std::map<int, KeyM> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -312,7 +312,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -325,20 +325,20 @@ namespace
                     names.push_back(km.name[i]);
                 }
             }
-        });
+        };
         names.push_back('\0');
         result(names.data());
     }
 
     KeyM *findbind(char *key)
     {
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
-        });
+        };
         return nullptr;
     }
 
@@ -1067,7 +1067,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = keyms.access(code);
+    KeyM *haskey = &keyms[code];
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown, map); // allow pressed keys to release
@@ -1151,7 +1151,7 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyM *km = keyms.access(code);
+    KeyM *km = &keyms[code];
     return km ? km->name : nullptr;
 }
 
@@ -1174,7 +1174,7 @@ void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    for(auto &[k, km] : keyms) { binds.push_back(&km); }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
@@ -1307,25 +1307,25 @@ void initconsolecmds()
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Default); }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Spectator); }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+        for(auto &[k, km] : keyms) { km.clear(KeyM::Action_Editing); }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear());
+       for(auto &[k, km] : keyms) { km.clear(); }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
