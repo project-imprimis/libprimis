@@ -20,7 +20,9 @@
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendermodel.h"
+#include "renderwindow.h"
 #include "stain.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -33,21 +35,6 @@
 #include "world/world.h"
 
 #include "model/model.h"
-
-struct stainvert
-{
-    vec pos;
-    vec4<uchar> color;
-    vec2 tc;
-};
-
-struct staininfo
-{
-    int millis;
-    bvec color;
-    uchar owner;
-    ushort startvert, endvert;
-};
 
 //stainflag enum is local to this file
 enum
@@ -71,15 +58,14 @@ class stainrenderer
     public:
         int flags, fadeintime, fadeouttime, timetolive;
         Texture *tex;
-        staininfo *stains;
         int maxstains, startstain, endstain;
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
               tex(nullptr),
-              stains(nullptr), maxstains(0), startstain(0), endstain(0),
-              stainu(0), stainv(0), texname(texname)
+              maxstains(0), startstain(0), endstain(0),
+              stainu(0), stainv(0), stains(nullptr), texname(texname)
         {
         }
 
@@ -386,7 +372,7 @@ class stainrenderer
             {
                 verts[i].lastvert = verts[i].endvert;
             }
-            gentris(world.worldroot, ivec(0, 0, 0), worldsize>>1);
+            gentris(world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
                 stainbuffer &buf = verts[i];
@@ -479,6 +465,22 @@ class stainrenderer
         }
 
     private:
+        struct stainvert
+        {
+            vec pos;
+            vec4<uchar> color;
+            vec2 tc;
+        };
+
+        struct staininfo
+        {
+            int millis;
+            bvec color;
+            uchar owner;
+            ushort startvert, endvert;
+        };
+        staininfo *stains;
+
         class stainbuffer
         {
             public:
@@ -597,6 +599,8 @@ class stainrenderer
                     {
                         count += endvert;
                     }
+                    //note: using -> on address `0` aka nullptr is undefined behavior
+                    //this allows passing the location of the fields' position in the object to opengl
                     const stainvert *ptr = 0;
                     gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
                     gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
@@ -854,7 +858,7 @@ class stainrenderer
             const std::vector<extentity *> &ents = entities::getents();
             for(uint i = 0; i < oe.mapmodels.size(); i++)
             {
-                extentity &e = *ents[oe.mapmodels[i]];
+                const extentity &e = *ents[oe.mapmodels[i]];
                 model *m = loadmapmodel(e.attr1);
                 if(!m)
                 {
@@ -1088,9 +1092,8 @@ VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer& d : stains)
     {
-        stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf)
         {
             continue;

@@ -14,12 +14,12 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "light.h"
 #include "octaedit.h"
 #include "octaworld.h"
-#include "physics.h"
 #include "raycube.h"
 
 #include "interface/console.h"
@@ -31,6 +31,7 @@
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/renderva.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -150,6 +151,37 @@ void boxsgrid(int orient, vec origin, vec s, int g, bool boxoutline)
 selinfo sel, lastsel; //lastsel is used only in iengine
 static selinfo savedsel;
 
+bool selinfo::validate()
+{
+    if(grid <= 0 || grid >= rootworld.mapsize())
+    {
+        return false;
+    }
+    if(o.x >= rootworld.mapsize() || o.y >= rootworld.mapsize() || o.z >= rootworld.mapsize())
+    {
+        return false;
+    }
+    if(o.x < 0)
+    {
+        s.x -= (grid - 1 - o.x)/grid;
+        o.x = 0;
+    }
+    if(o.y < 0)
+    {
+        s.y -= (grid - 1 - o.y)/grid;
+        o.y = 0;
+    }
+    if(o.z < 0)
+    {
+        s.z -= (grid - 1 - o.z)/grid;
+        o.z = 0;
+    }
+    s.x = std::clamp(s.x, 0, (rootworld.mapsize() - o.x)/grid);
+    s.y = std::clamp(s.y, 0, (rootworld.mapsize() - o.y)/grid);
+    s.z = std::clamp(s.z, 0, (rootworld.mapsize() - o.z)/grid);
+    return s.x > 0 && s.y > 0 && s.z > 0;
+}
+
 int orient = 0,
     gridsize = 8;
 ivec cor, lastcor,
@@ -207,9 +239,9 @@ VARF(gridpower, 0, 3, 12,
         return;
     }
     gridsize = 1<<gridpower;
-    if(gridsize>=worldsize)
+    if(gridsize>=rootworld.mapsize())
     {
-        gridsize = worldsize/2;
+        gridsize = rootworld.mapsize()/2;
     }
     cancelsel();
 });
@@ -302,7 +334,7 @@ int selchildcount = 0,
     selchildmat = -1;
 
 //used in iengine.h
-void countselchild(cube *c, const ivec &cor, int size)
+void countselchild(const cube *c, const ivec &cor, int size)
 {
     ivec ss = ivec(sel.s).mul(sel.grid);
     uchar possible = octaboxoverlap(cor, size, sel.o, ivec(sel.o).add(ss));
@@ -442,7 +474,7 @@ void cubeworld::commitchanges(bool force)
 
 void cubeworld::changed(const ivec &bbmin, const ivec &bbmax, bool commit)
 {
-    readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), worldsize/2);
+    readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), mapsize()/2);
     haschanged = true;
 
     if(commit)
@@ -457,7 +489,7 @@ void cubeworld::changed(const block3 &sel, bool commit)
     {
         return;
     }
-    readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), worldsize/2);
+    readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), mapsize()/2);
     haschanged = true;
     if(commit)
     {
@@ -559,7 +591,7 @@ static int undosize(undoblock *u)
     }
 }
 
-undolist undos, redos;
+std::deque<undoblock *> undos, redos;
 VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
 int totalundos = 0;
 
@@ -567,14 +599,16 @@ void pruneundos(int maxremain)                          // bound memory
 {
     while(totalundos > maxremain && !undos.empty())
     {
-        undoblock *u = undos.popfirst();
+        undoblock *u = undos.front();
+        undos.pop_front();
         totalundos -= u->size;
         freeundo(u);
     }
     //conoutf(CON_DEBUG, "undo: %d of %d(%%%d)", totalundos, undomegs<<20, totalundos*100/(undomegs<<20));
     while(!redos.empty())
     {
-        undoblock *u = redos.popfirst();
+        undoblock *u = redos.front();
+        redos.pop_front();
         totalundos -= u->size;
         freeundo(u);
     }
@@ -606,14 +640,14 @@ void addundo(undoblock *u)
 {
     u->size = undosize(u);
     u->timestamp = totalmillis;
-    undos.add(u);
+    undos.push_back(u);
     totalundos += u->size;
     pruneundos(undomegs<<20);
 }
 
 VARP(nompedit, 0, 1, 1);
 
-static int countblock(cube *c, int n = 8)
+static int countblock(const cube *c, int n = 8)
 {
     int r = 0;
     for(int i = 0; i < n; ++i)
@@ -638,7 +672,7 @@ int countblock(block3 *b)
 std::vector<editinfo *> editinfos;
 
 template<class B>
-static void packcube(cube &c, B &buf)
+static void packcube(const cube &c, B &buf)
 {
     //recursvely apply to children
     if(c.children)
@@ -666,7 +700,7 @@ static void packcube(cube &c, B &buf)
 }
 
 template<class B>
-static bool packblock(block3 &b, B &buf)
+static bool packblock(const block3 &b, B &buf)
 {
     if(b.size() <= 0 || b.size() > (1<<20))
     {
@@ -677,7 +711,7 @@ static bool packblock(block3 &b, B &buf)
     {
         buf.push_back(reinterpret_cast<const uchar *>(&hdr)[i]);
     }
-    cube *c = b.c();
+    const cube *c = b.getcube();
     for(uint i = 0; i < static_cast<uint>(b.size()); ++i)
     {
         packcube(c[i], buf);
@@ -691,7 +725,7 @@ struct vslothdr
     ushort slot;
 };
 
-static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &used)
+static void packvslots(const cube &c, std::vector<uchar> &buf, std::vector<ushort> &used)
 {
     //recursively apply to children
     if(c.children)
@@ -723,10 +757,10 @@ static void packvslots(cube &c, std::vector<uchar> &buf, std::vector<ushort> &us
     }
 }
 
-static void packvslots(block3 &b, std::vector<uchar> &buf)
+static void packvslots(const block3 &b, std::vector<uchar> &buf)
 {
     std::vector<ushort> used;
-    cube *c = b.c();
+    const cube *c = b.getcube();
     for(int i = 0; i < b.size(); ++i)
     {
         packvslots(c[i], buf, used);
@@ -790,7 +824,23 @@ static bool unpackblock(block3 *&b, B &buf)
     return true;
 }
 
-std::vector<vslotmap> unpackingvslots;
+struct vslotmap
+{
+    int index;
+    VSlot *vslot;
+
+    vslotmap() {}
+    vslotmap(int index, VSlot *vslot) : index(index), vslot(vslot) {}
+};
+
+static std::vector<vslotmap> remappedvslots;
+
+//used in iengine.h so remappedvslots does not need to be exposed
+void clearremappedvslots()
+{
+    remappedvslots.clear();
+}
+static std::vector<vslotmap> unpackingvslots;
 
 static void unpackvslots(cube &c, ucharbuf &buf)
 {
@@ -889,7 +939,7 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
 }
 
 //used in iengine.h
-bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
+bool packeditinfo(const editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
     std::vector<uchar> buf;
     if(!e || !e->copy || !packblock(*e->copy, buf))
@@ -996,11 +1046,11 @@ bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
 {
     if(undo)
     {
-        return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+        return !undos.empty() && packundo(undos.back(), inlen, outbuf, outlen);
     }
     else
     {
-        return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
+        return !redos.empty() && packundo(redos.back(), inlen, outbuf, outlen);
     }
 }
 
@@ -1043,18 +1093,18 @@ void cleanupprefabs()
     ENUMERATE(prefabs, prefab, p, p.cleanup());
 }
 
-void pasteundoblock(block3 *b, uchar *g)
+void pasteundoblock(block3 *b, const uchar *g)
 {
     cube *s = b->c();
-    LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
+    LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), rootworld.mapscale()-1), pastecube(*s++, c));
 }
 
 //used in client prefab unpacking, handles the octree unpacking (not the entities,
 // which are game-dependent)
-void unpackundocube(ucharbuf buf, uchar *outbuf)
+void unpackundocube(ucharbuf &buf, uchar *outbuf)
 {
     block3 *b = nullptr;
-    if(!unpackblock(b, buf) || b->grid >= worldsize || buf.remaining() < b->size())
+    if(!unpackblock(b, buf) || b->grid >= rootworld.mapsize() || buf.remaining() < b->size())
     {
         freeblock(b);
         delete[] outbuf;
@@ -1231,7 +1281,7 @@ class prefabmesh
 
 };
 
-static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
+static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size)
 {
     //recursively apply to children
     if(c.children)
@@ -1296,16 +1346,13 @@ void cubeworld::genprefabmesh(prefab &p)
     b.o = ivec(0, 0, 0);
 
     cube *oldworldroot = worldroot;
-    int oldworldscale = worldscale,
-        oldworldsize = worldsize;
+    int oldworldscale = worldscale;
 
     worldroot = newcubes();
     worldscale = 1;
-    worldsize = 2;
-    while(worldsize < std::max(std::max(b.s.x, b.s.y), b.s.z)*b.grid)
+    while(mapscale() < std::max(std::max(b.s.x, b.s.y), b.s.z)*b.grid)
     {
         worldscale++;
-        worldsize *= 2;
     }
 
     cube *s = p.copy->c();
@@ -1316,7 +1363,7 @@ void cubeworld::genprefabmesh(prefab &p)
     //recursively apply to children
     for(int i = 0; i < 8; ++i)
     {
-        ::genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
+        ::genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
     --neighbordepth;
     r.setup(p);
@@ -1325,7 +1372,6 @@ void cubeworld::genprefabmesh(prefab &p)
 
     worldroot = oldworldroot;
     worldscale = oldworldscale;
-    worldsize = oldworldsize;
 
     useshaderbyname("prefab");
 }
@@ -1440,14 +1486,14 @@ void compacteditvslots()
         editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
     }
-    for(undoblock *u = undos.first; u; u = u->next)
+    for(undoblock *u : undos)
     {
         if(!u->numents)
         {
             compactvslots(u->block()->c(), u->block()->size());
         }
     }
-    for(undoblock *u = redos.first; u; u = u->next)
+    for(undoblock *u : redos)
     {
         if(!u->numents)
         {
@@ -1484,8 +1530,6 @@ std::vector<ushort> texmru;
 
 selinfo repsel;
 int reptex = -1;
-
-std::vector<vslotmap> remappedvslots;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {

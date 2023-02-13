@@ -40,7 +40,7 @@ class md5 : public skelloader<md5>
             public:
                 md5meshgroup();
                 //main anim loading functionality
-                skelanimspec * loadanim(const char *filename);
+                const skelanimspec * loadanim(const char *filename);
 
             private:
                 bool loadmesh(const char *filename, float smooth);

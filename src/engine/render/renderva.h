@@ -10,18 +10,18 @@ struct occludequery
     int fragments;
 
     void startmodelquery();
-    void startquery();
+    void startquery() const;
 };
 
 class vfc
 {
     public:
-        int isfoggedcube(const ivec &o, int size);
-        int isvisiblecube(const ivec &o, int size);
+        int isfoggedcube(const ivec &o, int size) const;
+        int isvisiblecube(const ivec &o, int size) const;
         void visiblecubes(bool cull = true);
-        bool isfoggedsphere(float rad, const vec &cv);
-        int isvisiblesphere(float rad, const vec &cv);
-        int isvisiblebb(const ivec &bo, const ivec &br);
+        bool isfoggedsphere(float rad, const vec &cv) const;
+        int isvisiblesphere(float rad, const vec &cv) const;
+        int isvisiblebb(const ivec &bo, const ivec &br) const;
         int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
     private:
         void calcvfcD();
@@ -35,24 +35,15 @@ class vfc
 
 extern vfc view;
 
-extern int outline;
 extern int oqfrags;
 
 extern vec shadoworigin, shadowdir;
 extern float shadowradius, shadowbias;
 extern int shadowside, shadowspot;
 
-extern float alphafrontsx1, alphafrontsx2,
-             alphafrontsy1, alphafrontsy2,
-             alphabacksx1, alphabacksx2,
-             alphabacksy1, alphabacksy2,
-             alpharefractsx1, alpharefractsx2,
-             alpharefractsy1, alpharefractsy2;
-extern uint alphatiles[];
 extern vtxarray *visibleva;
 
 extern void rendergeom();
-extern int findalphavas();
 extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();
@@ -76,7 +67,7 @@ extern void renderdecals();
 struct shadowmesh;
 extern void clearshadowmeshes();
 extern void genshadowmeshes();
-extern shadowmesh *findshadowmesh(int idx, extentity &e);
-extern void rendershadowmesh(shadowmesh *m);
+extern shadowmesh *findshadowmesh(int idx, const extentity &e);
+extern void rendershadowmesh(const shadowmesh *m);
 
 #endif

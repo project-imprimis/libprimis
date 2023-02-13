@@ -29,6 +29,7 @@
 #include "render/renderlights.h"
 #include "render/renderva.h"
 #include "render/water.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -40,121 +41,122 @@ namespace
 {
     std::vector<materialsurface> editsurfs;
 
-    struct QuadNode
+    class QuadNode
     {
-        int x, y, size;
-        uint filled;
-        QuadNode *child[4];
-
-        QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
-        {
-            for(int i = 0; i < 4; ++i)
+        public:
+            QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
             {
-                child[i] = 0;
-            }
-        }
-
-        void clear()
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                if(child[i])
-                {
-                    delete child[i];
-                    child[i] = nullptr;
-                }
-            }
-        }
-
-        ~QuadNode()
-        {
-            clear();
-        }
-
-        void insert(int mx, int my, int msize)
-        {
-            if(size == msize)
-            {
-                filled = 0xF;
-                return;
-            }
-            int csize = size>>1,
-                i = 0;
-            if(mx >= x+csize)
-            {
-                i |= 1;
-            }
-            if(my >= y+csize)
-            {
-                i |= 2;
-            }
-            if(csize == msize)
-            {
-                filled |= (1 << i);
-                return;
-            }
-            if(!child[i])
-            {
-                child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
-            }
-            child[i]->insert(mx, my, msize);
-            for(int j = 0; j < 4; ++j)
-            {
-                if(child[j])
-                {
-                    if(child[j]->filled == 0xF)
-                    {
-                        if(child[j])
-                        {
-                            delete child[j];
-                            child[j] = nullptr;
-                        }
-                        filled |= (1 << j);
-                    }
-                }
-            }
-        }
-
-        void genmatsurf(ushort mat, uchar orient, uchar visible, int x, int y, int z, int size, materialsurface *&matbuf)
-        {
-            materialsurface &m = *matbuf++;
-            m.material = mat;
-            m.orient = orient;
-            m.visible = visible;
-            m.csize = size;
-            m.rsize = size;
-            int dim = DIMENSION(orient);
-            m.o[C[dim]] = x;
-            m.o[R[dim]] = y;
-            m.o[dim] = z;
-        }
-
-        void genmatsurfs(ushort mat, uchar orient, uchar visible, int z, materialsurface *&matbuf)
-        {
-            if(filled == 0xF)
-            {
-                genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
-            }
-            else if(filled)
-            {
-                int csize = size>>1;
                 for(int i = 0; i < 4; ++i)
                 {
-                    if(filled & (1 << i))
-                    {
-                        genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
-                    }
+                    child[i] = 0;
+                }
+            }
 
-                }
-            }
-            for(int i = 0; i < 4; ++i)
+            ~QuadNode()
             {
-                if(child[i])
+                clear();
+            }
+
+            void insert(int mx, int my, int msize)
+            {
+                if(size == msize)
                 {
-                    child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+                    filled = 0xF;
+                    return;
+                }
+                int csize = size>>1,
+                    i = 0;
+                if(mx >= x+csize)
+                {
+                    i |= 1;
+                }
+                if(my >= y+csize)
+                {
+                    i |= 2;
+                }
+                if(csize == msize)
+                {
+                    filled |= (1 << i);
+                    return;
+                }
+                if(!child[i])
+                {
+                    child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
+                }
+                child[i]->insert(mx, my, msize);
+                for(int j = 0; j < 4; ++j)
+                {
+                    if(child[j])
+                    {
+                        if(child[j]->filled == 0xF)
+                        {
+                            if(child[j])
+                            {
+                                delete child[j];
+                                child[j] = nullptr;
+                            }
+                            filled |= (1 << j);
+                        }
+                    }
                 }
             }
-        }
+
+            void genmatsurfs(ushort mat, uchar orient, uchar visible, int z, materialsurface *&matbuf)
+            {
+                if(filled == 0xF)
+                {
+                    genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
+                }
+                else if(filled)
+                {
+                    int csize = size>>1;
+                    for(int i = 0; i < 4; ++i)
+                    {
+                        if(filled & (1 << i))
+                        {
+                            genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
+                        }
+
+                    }
+                }
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(child[i])
+                    {
+                        child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+                    }
+                }
+            }
+        private:
+            int x, y, size;
+            uint filled;
+            QuadNode *child[4];
+
+            void clear()
+            {
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(child[i])
+                    {
+                        delete child[i];
+                        child[i] = nullptr;
+                    }
+                }
+            }
+
+            void genmatsurf(ushort mat, uchar orient, uchar visible, int x, int y, int z, int size, materialsurface *&matbuf)
+            {
+                materialsurface &m = *matbuf++;
+                m.material = mat;
+                m.orient = orient;
+                m.visible = visible;
+                m.csize = size;
+                m.rsize = size;
+                int dim = DIMENSION(orient);
+                m.o[C[dim]] = x;
+                m.o[R[dim]] = y;
+                m.o[dim] = z;
+            }
     };
 
     static void drawmaterial(const materialsurface &m, float offset)
@@ -162,7 +164,7 @@ namespace
         if(gle::attribbuf.empty())
         {
             gle::defvertex();
-            gle::begin(GL_QUADS);
+            gle::begin(GL_TRIANGLE_FAN);
         }
         float x = m.o.x,
               y = m.o.y,
@@ -171,20 +173,56 @@ namespace
               rsize = m.rsize;
         switch(m.orient)
         {
-    //================================================ GENFACEORIENT GENFACEVERT
-
-    //passing /**/ empty comments instead of nothing (they have the same effect)
-    #define GENFACEORIENT(orient, v0, v1, v2, v3) \
-            case orient: v0 v1 v2 v3 break;
-    #define GENFACEVERT(orient, vert, mx,my,mz, sx,sy,sz) \
-                gle::attribf(mx sx, my sy, mz sz);
-
-            GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
-
-    #undef GENFACEORIENT
-    #undef GENFACEVERT
-    //==========================================================================
+            case 0:
+            {
+                gle::attribf(x + offset, y + rsize, z + csize);
+                gle::attribf(x + offset, y + rsize, z);
+                gle::attribf(x + offset, y, z);
+                gle::attribf(x + offset, y, z + csize);
+                break;
+            }
+            case 1:
+            {
+                gle::attribf(x - offset, y + rsize, z + csize);
+                gle::attribf(x - offset, y, z + csize);
+                gle::attribf(x - offset, y, z);
+                gle::attribf(x - offset, y + rsize, z);
+                break;
+            }
+            case 2:
+            {
+                gle::attribf(x + csize, y + offset, z + rsize);
+                gle::attribf(x, y + offset, z + rsize);
+                gle::attribf(x, y + offset, z);
+                gle::attribf(x + csize, y + offset, z);
+                break;
+            }
+            case 3:
+            {
+                gle::attribf(x, y - offset, z);
+                gle::attribf(x, y - offset, z + rsize);
+                gle::attribf(x + csize, y - offset, z + rsize);
+                gle::attribf(x + csize, y - offset, z);
+                break;
+            }
+            case 4:
+            {
+                gle::attribf(x, y, z + offset);
+                gle::attribf(x, y + csize, z + offset);
+                gle::attribf(x + rsize, y + csize, z + offset);
+                gle::attribf(x + rsize, y, z + offset);
+                break;
+            }
+            case 5:
+            {
+                gle::attribf(x, y, z - offset);
+                gle::attribf(x + rsize, y, z - offset);
+                gle::attribf(x + rsize, y + csize, z - offset);
+                gle::attribf(x, y + csize, z - offset);
+                break;
+            }
         }
+        gle::end();
     }
 
     const struct material
@@ -296,7 +334,7 @@ namespace
         return 0;
     }
 
-    int mergematc(materialsurface &m, materialsurface &n)
+    int mergematc(const materialsurface &m, materialsurface &n)
     {
         int dim = DIMENSION(n.orient),
             c   = C[dim],
@@ -337,7 +375,7 @@ namespace
 
     int mergemats(materialsurface *m, int sz)
     {
-        quicksort(m, sz, mergematcmp);
+        std::sort(m, m+sz, mergematcmp);
 
         int nsz = 0;
         for(int i = 0; i < sz; ++i)
@@ -476,7 +514,7 @@ namespace
         int lastmat = -1;
         for(int i = static_cast<int>(editsurfs.size()); --i >=0;) //note reverse iteration
         {
-            materialsurface &m = editsurfs[i];
+            const materialsurface &m = editsurfs[i];
             if(m.material != lastmat)
             {
                 xtraverts += gle::end();
@@ -533,79 +571,324 @@ namespace
         disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
     }
 
-    float glassxscale = 0,
-          glassyscale = 0;
-
-    void drawglass(const materialsurface &m, float offset, const vec *normal = nullptr)
+    void drawglass(const materialsurface &m, float offset, float glassxscale, float glassyscale, const vec normal = vec(0,0,0))
     {
         if(gle::attribbuf.empty())
         {
             gle::defvertex();
-            if(normal)
+            if(normal != vec(0,0,0))
             {
                 gle::defnormal();
             }
             gle::deftexcoord0();
-            gle::begin(GL_QUADS);
         }
-        //undefine GENFACEVERT* helper macros so they can be redefined here
-        #define GENFACEORIENT(orient, v0, v1, v2, v3) \
-            case orient: v0 v1 v2 v3 break;
-        #undef GENFACEVERTX
-        #define GENFACEVERTX(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.y, -glassyscale*v.z); \
-            }
-        #undef GENFACEVERTY
-        #define GENFACEVERTY(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.x, -glassyscale*v.z); \
-            }
-        #undef GENFACEVERTZ
-        #define GENFACEVERTZ(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(glassxscale*v.x, glassyscale*v.y); \
-            }
-        #define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
         float x = m.o.x,
               y = m.o.y,
-              z = m.o.z,
-              csize = m.csize,
+              z = m.o.z, csize = m.csize,
               rsize = m.rsize;
-        if(normal)
+        gle::begin(GL_TRIANGLE_FAN);
+        if (normal != vec(0, 0, 0))
         {
-            vec n = *normal;
-            switch(m.orient)
+            vec n = normal;
+            switch (m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
+                case 0:
+                    {
+                        vec v(x + offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 1:
+                    {
+                        vec v(x - offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 2:
+                    {
+                        vec v(x + csize, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 3:
+                    {
+                        vec v(x, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 4:
+                    {
+                        vec v(x, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                case 5:
+                    {
+                        vec v(x, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(n.x, n.y, n.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                }
             }
-        }
-        #undef GENFACENORMAL
-        #define GENFACENORMAL
         else
         {
-            switch(m.orient)
+            switch (m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
+                case 0:
+                    {
+                        vec v(x + offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 1:
+                    {
+                        vec v(x - offset, y + rsize, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z + csize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x - offset, y + rsize, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.y, -glassyscale * v.z);
+                    }
+                    break;
+                case 2:
+                    {
+                        vec v(x + csize, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y + offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 3:
+                    {
+                        vec v(x, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z + rsize);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    {
+                        vec v(x + csize, y - offset, z);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, -glassyscale * v.z);
+                    }
+                    break;
+                case 4:
+                    {
+                        vec v(x, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z + offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
+                case 5:
+                    {
+                        vec v(x, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x + rsize, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    {
+                        vec v(x, y + csize, z - offset);
+                        gle::attribf(v.x, v.y, v.z);
+                        gle::attribf(glassxscale * v.x, glassyscale * v.y);
+                    }
+                    break;
             }
         }
-        #undef GENFACENORMAL
-        #undef GENFACEORIENT
-        #undef GENFACEVERTX
-        #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-        #undef GENFACEVERTY
-        #define GENFACEVERTY(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-        #undef GENFACEVERTZ
-        #define GENFACEVERTZ(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
+        gle::end();
     }
 
     //these are the variables defined for each specific glass material (there are 4)
@@ -638,8 +921,8 @@ namespace
             MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
             Texture *tex = gslot.sts.size() ? gslot.sts[0].t : notexture;
-            glassxscale = defaulttexscale/(tex->xs*gslot.scale);
-            glassyscale = defaulttexscale/(tex->ys*gslot.scale);
+            float glassxscale = defaulttexscale/(tex->xs*gslot.scale);
+            float glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, tex->id);
@@ -655,7 +938,7 @@ namespace
             for(uint i = 0; i < surfs.size(); i++)
             {
                 materialsurface &m = surfs[i];
-                drawglass(m, 0.1f, &matnormals[m.orient]);
+                drawglass(m, 0.1f, glassxscale, glassyscale, matnormals(m.orient));
             }
             xtraverts += gle::end();
         }
@@ -664,6 +947,28 @@ namespace
 }
 
 // externally relevant functionality
+
+vec matnormals(int i)
+{
+    const vec matnormals[6] =
+    {
+        vec(-1, 0, 0),
+        vec( 1, 0, 0),
+        vec(0, -1, 0),
+        vec(0,  1, 0),
+        vec(0, 0, -1),
+        vec(0, 0,  1)
+    };
+
+    if(i < 0 || i > 6)
+    {
+        return vec(0,0,0);
+    }
+    else
+    {
+        return matnormals[i];
+    }
+}
 
 /* findmaterial
  *
@@ -749,13 +1054,12 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     }
 }
 
-void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
+void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs)
 {
     va->watermax = va->glassmax = co;
     va->watermin = va->glassmin = ivec(co).add(size);
-    for(uint i = 0; i < matsurfs.size(); i++)
+    for(const materialsurface &m : matsurfs)
     {
-        materialsurface &m = matsurfs[i];
         switch(m.material&MatFlag_Volume)
         {
             case Mat_Water:
@@ -782,7 +1086,7 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurfa
 
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
-    quicksort(matbuf, matsurfs, optmatcmp);
+    std::sort(matbuf, matbuf+matsurfs, optmatcmp);
     materialsurface *cur = matbuf,
                     *end = matbuf+matsurfs;
     while(cur < end)
@@ -807,7 +1111,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         }
         else if(cur-start>=4)
         {
-            QuadNode vmats(0, 0, worldsize);
+            QuadNode vmats(0, 0, rootworld.mapsize());
             for(int i = 0; i < cur-start; ++i)
             {
                 vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);
@@ -826,6 +1130,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
     return matsurfs - (end-matbuf);
 }
 
+//treats `rootworld` as const
 void setupmaterials(int start, int len)
 {
     int hasmat = 0;
@@ -854,7 +1159,7 @@ void setupmaterials(int start, int len)
                 int csize;
                 while(o[dim^1] < maxc)
                 {
-                    cube &c = rootworld.lookupcube(o, 0, co, csize);
+                    const cube &c = rootworld.lookupcube(o, 0, co, csize);
                     if(IS_LIQUID(c.material&MatFlag_Volume))
                     {
                         m.ends |= 1;
@@ -867,7 +1172,7 @@ void setupmaterials(int start, int len)
                 o[dim] -= coord ? 2 : -2;
                 while(o[dim^1] < maxc)
                 {
-                    cube &c = rootworld.lookupcube(o, 0, co, csize);
+                    const cube &c = rootworld.lookupcube(o, 0, co, csize);
                     if(visiblematerial(c, Orient_Top, co, csize))
                     {
                         m.ends |= 2;
@@ -925,23 +1230,9 @@ void setupmaterials(int start, int len)
 
 VARP(showmat, 0, 1, 1); //toggles rendering material faces
 
-float matliquidsx1  = -1,
-      matliquidsy1  = -1,
-      matliquidsx2  =  1,
-      matliquidsy2  =  1,
-      matsolidsx1   = -1,
-      matsolidsy1   = -1,
-      matsolidsx2   =  1,
-      matsolidsy2   =  1,
-      matrefractsx1 = -1,
-      matrefractsy1 = -1,
-      matrefractsx2 =  1,
-      matrefractsy2 =  1;
-uint matliquidtiles[lighttilemaxheight],
-     matsolidtiles[lighttilemaxheight];
-
-int findmaterials()
+GBuffer::MaterialInfo GBuffer::findmaterials() const
 {
+    MaterialInfo mi;
     editsurfs.clear();
     for(int i = 0; i < 4; ++i)
     {
@@ -949,10 +1240,10 @@ int findmaterials()
         watersurfs[i].clear();
         waterfallsurfs[i].clear();
     }
-    matliquidsx1 = matliquidsy1 = matsolidsx1 = matsolidsy1 = matrefractsx1 = matrefractsy1 = 1;
-    matliquidsx2 = matliquidsy2 = matsolidsx2 = matsolidsy2 = matrefractsx2 = matrefractsy2 = -1;
-    std::memset(matliquidtiles, 0, sizeof(matliquidtiles));
-    std::memset(matsolidtiles, 0, sizeof(matsolidtiles));
+    mi.matliquidsx1 = mi.matliquidsy1 = mi.matsolidsx1 = mi.matsolidsy1 = mi.matrefractsx1 = mi.matrefractsy1 = 1;
+    mi.matliquidsx2 = mi.matliquidsy2 = mi.matsolidsx2 = mi.matsolidsy2 = mi.matrefractsx2 = mi.matrefractsy2 = -1;
+    std::memset(mi.matliquidtiles, 0, sizeof(mi.matliquidtiles));
+    std::memset(mi.matsolidtiles, 0, sizeof(mi.matsolidtiles));
     int hasmats = 0;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
@@ -971,15 +1262,15 @@ int findmaterials()
         float sx1, sy1, sx2, sy2;
         if(va->watermin.x <= va->watermax.x && calcbbscissor(va->watermin, va->watermax, sx1, sy1, sx2, sy2))
         {
-            matliquidsx1 = std::min(matliquidsx1, sx1);
-            matliquidsy1 = std::min(matliquidsy1, sy1);
-            matliquidsx2 = std::max(matliquidsx2, sx2);
-            matliquidsy2 = std::max(matliquidsy2, sy2);
-            masktiles(matliquidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = std::min(matrefractsx1, sx1);
-            matrefractsy1 = std::min(matrefractsy1, sy1);
-            matrefractsx2 = std::max(matrefractsx2, sx2);
-            matrefractsy2 = std::max(matrefractsy2, sy2);
+            mi.matliquidsx1 = std::min(mi.matliquidsx1, sx1);
+            mi.matliquidsy1 = std::min(mi.matliquidsy1, sy1);
+            mi.matliquidsx2 = std::max(mi.matliquidsx2, sx2);
+            mi.matliquidsy2 = std::max(mi.matliquidsy2, sy2);
+            masktiles(mi.matliquidtiles, sx1, sy1, sx2, sy2);
+            mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
+            mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
+            mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);
+            mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -1009,15 +1300,15 @@ int findmaterials()
         }
         if(va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
         {
-            matsolidsx1 = std::min(matsolidsx1, sx1);
-            matsolidsy1 = std::min(matsolidsy1, sy1);
-            matsolidsx2 = std::max(matsolidsx2, sx2);
-            matsolidsy2 = std::max(matsolidsy2, sy2);
-            masktiles(matsolidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = std::min(matrefractsx1, sx1);
-            matrefractsy1 = std::min(matrefractsy1, sy1);
-            matrefractsx2 = std::max(matrefractsx2, sx2);
-            matrefractsy2 = std::max(matrefractsy2, sy2);
+            mi.matsolidsx1 = std::min(mi.matsolidsx1, sx1);
+            mi.matsolidsy1 = std::min(mi.matsolidsy1, sy1);
+            mi.matsolidsx2 = std::max(mi.matsolidsx2, sx2);
+            mi.matsolidsy2 = std::max(mi.matsolidsy2, sy2);
+            masktiles(mi.matsolidtiles, sx1, sy1, sx2, sy2);
+            mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
+            mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
+            mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);
+            mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -1035,7 +1326,8 @@ int findmaterials()
             }
         }
     }
-    return hasmats;
+    mi.hasmats = hasmats;
+    return mi;
 }
 
 void rendermaterialmask()
@@ -1043,26 +1335,23 @@ void rendermaterialmask()
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = glasssurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : glasssurfs[k])
         {
-            drawmaterial(surfs[i], 0.1f);
+            drawmaterial(i, 0.1f);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = watersurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : watersurfs[k])
         {
-            drawmaterial(surfs[i], wateroffset);
+            drawmaterial(i, wateroffset);
         }
     }
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = waterfallsurfs[k];
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &i : waterfallsurfs[k])
         {
-            drawmaterial(surfs[i], 0.1f);
+            drawmaterial(i, 0.1f);
         }
     }
     xtraverts += gle::end();
@@ -1106,9 +1395,8 @@ void rendereditmaterials()
     glEnable(GL_BLEND);
 
     int lastmat = -1;
-    for(uint i = 0; i < editsurfs.size(); i++)
+    for(const materialsurface &m : editsurfs)
     {
-        const materialsurface &m = editsurfs[i];
         if(lastmat!=m.material)
         {
             xtraverts += gle::end();

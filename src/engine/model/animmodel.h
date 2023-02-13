@@ -114,7 +114,7 @@ class animmodel : public model
 
                 virtual void genBIH(BIH::mesh &m) {}
 
-                void genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
                 virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
                 {
@@ -325,7 +325,6 @@ class animmodel : public model
         class meshgroup
         {
             public:
-                int shared;
                 char *name;
                 std::vector<Mesh *> meshes;
 
@@ -337,7 +336,7 @@ class animmodel : public model
                     return -1;
                 }
 
-                virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
+                virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) {}
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(uint i = 0; i < meshes.size(); i++) \
@@ -351,7 +350,7 @@ class animmodel : public model
                 } while(0)
 
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-                void genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
                 virtual void *animkey()
@@ -369,7 +368,7 @@ class animmodel : public model
                 int clipframes(int i, int n) const;
 
                 virtual void cleanup() {}
-                virtual void preload(part *p) {}
+                virtual void preload() {}
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
                 virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
@@ -413,9 +412,9 @@ class animmodel : public model
 
                 virtual void cleanup();
                 void disablepitch();
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m);
-                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const;
+                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const;
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const;
                 bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
                 bool unlink(part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
@@ -473,7 +472,7 @@ class animmodel : public model
             return *p;
         }
 
-        void initmatrix(matrix4x3 &m);
+        void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
@@ -536,7 +535,7 @@ class animmodel : public model
         void setcolor(const vec &color);
 
         void calcbb(vec &center, vec &radius);
-        void calctransform(matrix4x3 &m);
+        void calctransform(matrix4x3 &m) const;
 
         virtual void loaded()
         {
@@ -554,7 +553,7 @@ class animmodel : public model
         static void disabletangents();
         static void disabletc();
         static void disablevbo();
-        void endrender();
+        void endrender() const;
     protected:
         virtual int linktype(animmodel *m, part *p) const
         {

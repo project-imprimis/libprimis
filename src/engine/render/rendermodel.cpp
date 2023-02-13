@@ -10,6 +10,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "aa.h"
@@ -20,6 +21,7 @@
 #include "rendermodel.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -30,16 +32,14 @@
 #include "world/entities.h"
 #include "world/octaedit.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/bih.h"
 #include "world/world.h"
 
 VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 
-int numanims; //set by game at runtime
 std::vector<std::string> animnames; //set by game at runtime
 
-model *loadingmodel = nullptr;
+static model *loadingmodel = nullptr;
 
 //need the above vars inited before these headers will load properly
 
@@ -112,7 +112,7 @@ static void mdltricollide(char *collide)
     delete[] loadingmodel->collidemodel;
     loadingmodel->collidemodel = nullptr;
     char *end = nullptr;
-    int val = strtol(collide, &end, 0);
+    int val = std::strtol(collide, &end, 0);
     if(*end)
     {
         val = 1;
@@ -616,7 +616,7 @@ void cleanupmodels()
     for(auto &[k, m] : models) { m->cleanup(); }
 }
 
-static void clearmodel(char *name)
+static void clearmodel(const char *name)
 {
     auto search = models.find(name);
     if(search == models.end())
@@ -730,12 +730,7 @@ static void renderbatchedmodel(model *m, const batchedmodel &b)
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
-static void enablecullmodelquery()
-{
-    startbb();
-}
-
-static void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
+static void rendercullmodelquery(const model *m, dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
        std::fabs(camera1->o.y-center.y) < radius+1 &&
@@ -755,7 +750,7 @@ static void rendercullmodelquery(model *m, dynent *d, const vec &center, float r
     endquery();
 }
 
-static int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
+static int cullmodel(const model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
@@ -1024,7 +1019,7 @@ void rendermodelbatches()
                         {
                             aamask::set(false);
                         }
-                        enablecullmodelquery();
+                        startbb();
                         queried = true;
                     }
                     rendercullmodelquery(b.m, bm.d, bm.center, bm.radius);
@@ -1292,7 +1287,7 @@ hasboundbox:
         {
             if(culled&(Model_CullOccluded|Model_CullQuery) && flags&Model_CullQuery)
             {
-                enablecullmodelquery();
+                startbb();
                 rendercullmodelquery(m, d, center, radius);
                 endbb();
             }

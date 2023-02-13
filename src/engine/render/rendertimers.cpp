@@ -12,6 +12,7 @@
 
 #include "rendergl.h"
 #include "rendertext.h"
+#include "renderttf.h"
 #include "renderva.h"
 
 #include "interface/control.h"
@@ -128,9 +129,8 @@ void synctimers()
 {
     timercycle = (timercycle + 1) % timer::Timer_MaxQuery;
 
-    for(uint i = 0; i < timers.size(); i++)
+    for(timer& t : timers)
     {
-        timer &t = timers[i];
         if(t.waiting&(1<<timercycle))
         {
             GLint available = 0;
@@ -158,9 +158,8 @@ void synctimers()
  */
 void cleanuptimers()
 {
-    for(uint i = 0; i < timers.size(); i++)
+    for(const timer& t : timers)
     {
-        timer &t = timers[i];
         if(t.gpu)
         {
             glDeleteQueries(timer::Timer_MaxQuery, t.query);
@@ -191,14 +190,19 @@ void printtimers(int conw, int conh, int framemillis)
         {
             printmillis = framemillis;
         }
-        draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
+        char framestring[200];
+        constexpr int size = 42;
+        std::sprintf(framestring, "frame time %i ms", printmillis);
+        ttr.fontsize(size);
+        ttr.renderttf(framestring, {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
+        //draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
         offset++;
     }
     if(usetimers)
     {
-        for(uint i = 0; i < timerorder.size(); i++)
+        for(int i : timerorder)
         {
-            timer &t = timers[timerorder[i]];
+            timer &t = timers[i];
             if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200)
             {
                 t.print = t.result;
@@ -207,7 +211,13 @@ void printtimers(int conw, int conh, int framemillis)
             {
                 continue;
             }
-            draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
+            char framestring[200];
+            constexpr int size = 42;
+            std::sprintf(framestring, "%s%s %5.2f ms", t.name, t.gpu ? "" : " (cpu)", t.print);
+            ttr.fontsize(size);
+            ttr.renderttf(framestring, {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
+
+            //draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
             offset++;
         }
     }

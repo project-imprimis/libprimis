@@ -39,6 +39,8 @@ class ImageData
         void replace(ImageData &d);
         void wraptex(SDL_Surface *s);
 
+        void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
+
         void texreorient(bool flipx, bool flipy, bool swapxy, int type = 0);
         void texrotate(int numrots, int type = 0);
         void texoffset(int xoffset, int yoffset);

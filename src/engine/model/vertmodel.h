@@ -59,7 +59,7 @@ struct vertmodel : animmodel
         void genBIH(BIH::mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
 
-        static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v);
+        static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
 
         template<class T>
         int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
@@ -106,7 +106,7 @@ struct vertmodel : animmodel
         int genvbo(std::vector<ushort> &idxs, int offset);
 
         template<class T>
-        static void fillvert(T &vv, int j, tcvert &tc, vert &v)
+        static void fillvert(T &vv, tcvert &tc, vert &v)
         {
             vv.tc = tc.tc;
         }
@@ -117,12 +117,12 @@ struct vertmodel : animmodel
             vdata += voffset;
             for(int i = 0; i < numverts; ++i)
             {
-                fillvert(vdata[i], i, tcverts[i], verts[i]);
+                fillvert(vdata[i], tcverts[i], verts[i]);
             }
         }
 
         template<class T>
-        void interpverts(const AnimState &as, T * RESTRICT vdata, skin &s)
+        void interpverts(const AnimState &as, T * RESTRICT vdata)
         {
             vdata += voffset;
             const vert * RESTRICT vert1 = &verts[as.cur.fr1 * numverts],
@@ -157,7 +157,7 @@ struct vertmodel : animmodel
             //==================================================================
         }
 
-        void render(const AnimState *as, skin &s, vbocacheentry &vc);
+        void render();
     };
 
     struct tag
@@ -193,13 +193,13 @@ struct vertmodel : animmodel
         int findtag(const char *name);
 
         int totalframes() const;
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
-        void calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
+        void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix);
 
         void genvbo(vbocacheentry &vc);
 
         template<class T>
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -229,10 +229,10 @@ struct vertmodel : animmodel
             }
         }
 
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc);
+        void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
         void cleanup();
-        void preload(part *p);
-        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
+        void preload();
+        void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p);
 
         virtual bool load(const char *name, float smooth) = 0;
     };

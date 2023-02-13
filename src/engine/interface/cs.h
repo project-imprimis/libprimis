@@ -8,7 +8,6 @@ enum
     Max_Results = 7,
     Max_CommandArgs = 12
 };
-const int undoflag = 1<<Max_Args;
 
 enum CubeScriptCodes
 {
@@ -87,16 +86,56 @@ enum CubeScriptCodes
     Ret_Float   = Value_Float<<Code_Ret,
 };
 
-#define PARSEFLOAT(name, type) \
-    inline type parse##name(const char *s) \
-    { \
-        /* not all platforms (windows) can parse hexadecimal integers via strtod */ \
-        char *end; \
-        double val = std::strtod(s, &end); \
-        return val || end==s || (*end!='x' && *end!='X') ? type(val) : type(parseint(s)); \
-    }
-PARSEFLOAT(float, float)
-PARSEFLOAT(number, double)
+
+struct stringslice
+{
+    const char *str;
+    int len;
+    stringslice() {}
+    stringslice(const char *str, int len) : str(str), len(len) {}
+    stringslice(const char *str, const char *end) : str(str), len(static_cast<int>(end-str)) {}
+
+    const char *end() const { return &str[len]; }
+};
+
+
+inline char *copystring(char *d, const stringslice &s, size_t len)
+{
+    size_t slen = min(size_t(s.len), len-1);
+    std::memcpy(d, s.str, slen);
+    d[slen] = 0;
+    return d;
+}
+
+template<size_t N>
+inline char *copystring(char (&d)[N], const stringslice &s) { return copystring(d, s, N); }
+
+inline uint hthash(const stringslice &s) { return memhash(s.str, s.len); }
+
+inline bool htcmp(const stringslice &x, const char *y)
+{
+    return x.len == (int)strlen(y) && !std::memcmp(x.str, y, x.len);
+}
+
+// not all platforms (windows) can parse hexadecimal integers via strtod
+inline float parsefloat(const char *s)
+{
+    char *end;
+    double val = std::strtod(s, &end);
+    return val
+        || end==s
+        || (*end!='x' && *end!='X') ? static_cast<float>(val) : static_cast<float>(parseint(s));
+}
+
+inline double parsenumber(const char *s)
+{
+    char *end;
+    double val = std::strtod(s, &end);
+    return val
+        || end==s
+        || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
+}
+
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }

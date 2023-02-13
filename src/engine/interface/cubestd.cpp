@@ -50,7 +50,7 @@ bool execfile(const char *cfgfile, bool msg)
 }
 
 //cmd
-static void exec(char *file, int *msg)
+static void exec(const char *file, int *msg)
 {
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
@@ -197,13 +197,18 @@ static const char *escapeid(ident &id)
 
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
-    stream *f = openutf8file(copypath(name && name[0] ? name : savedconfig), "w");
+    std::fstream f;
+    std::printf("writing to %s\n", copypath(name && name[0] ? name : savedconfig));
+    f.open(copypath(name && name[0] ? name : savedconfig));
     if(!f)
     {
         return;
     }
-    f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
-    f->printf("\n");
+    {
+        char temp[260];
+        std::sprintf(temp, "// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
+        f << temp;
+    }
     writecrosshairs(f);
     std::vector<ident *> ids;
     for(auto& [k, id] : idents)
@@ -220,25 +225,23 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
             {
                 case Id_Var:
                 {
-                    f->printf("%s %d\n", escapeid(id), *id.storage.i);
+                    f << escapeid(id) << " " << *id.storage.i << std::endl;
                     break;
                 }
                 case Id_FloatVar:
                 {
-                    f->printf("%s %s\n", escapeid(id), floatstr(*id.storage.f));
+                    f << escapeid(id) << " " << floatstr(*id.storage.f) << std::endl;
                     break;
                 }
                 case Id_StringVar:
                 {
-                    f->printf("%s %s\n", escapeid(id), escapestring(*id.storage.s));
+                    f << escapeid(id) << " " << escapestring(*id.storage.s) << std::endl;
                     break;
                 }
             }
         }
     }
-    f->printf("\n");
     writebinds(f);
-    f->printf("\n");
     for(uint i = 0; i < ids.size(); i++)
     {
         ident &id = *ids[i];
@@ -254,7 +257,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                     }
                     if(!validateblock(id.val.s))
                     {
-                        f->printf("%s = %s\n", escapeid(id), escapestring(id.val.s));
+                        f << escapeid(id) << " = " << escapestring(id.val.s) << std::endl;
                         break;
                     }
                 }
@@ -262,15 +265,14 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                 case Value_Float:
                 case Value_Integer:
                 {
-                    f->printf("%s = [%s]\n", escapeid(id), id.getstr());
+                    f << escapeid(id) << " = [" << id.getstr() << "]" << std::endl;
                     break;
                 }
             }
         }
     }
-    f->printf("\n");
     writecompletions(f);
-    delete f;
+    f.close();
 }
 
 void changedvars()
@@ -718,7 +720,7 @@ static void at(tagval *args, int numargs)
     commandret->setstr(listelem(start, end, qstart));
 }
 
-void sublist(const char *s, int *skip, int *count, int *numargs)
+static void sublist(const char *s, const int *skip, const int *count, const int *numargs)
 {
     int offset = std::max(*skip, 0),
         len = *numargs >= 3 ? std::max(*count, 0) : -1;
@@ -1346,16 +1348,13 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
 //external api function, for loading the string manip functions into the global hashtable
 void initstrcmds()
 {
-    addcommand("echo", reinterpret_cast<identfun>(+[] (char *s) { conoutf("\f1%s", s); }), "C", Id_Command);
+    addcommand("echo", reinterpret_cast<identfun>(+[] (char *s) { conoutf("^f1%s", s); }), "C", Id_Command);
     addcommand("error", reinterpret_cast<identfun>(+[] (char *s) { conoutf(Console_Error, "%s", s); }), "C", Id_Command);
     addcommand("strstr", reinterpret_cast<identfun>(+[] (char *a, char *b) { { char *s = std::strstr(a, b); intret(s ? s-a : -1); }; }), "ss", Id_Command);
     addcommand("strlen", reinterpret_cast<identfun>(+[] (char *s) { intret(std::strlen(s)); }), "s", Id_Command);
     addcommand("strcode", reinterpret_cast<identfun>(+[] (char *s, int *i) { intret(*i > 0 ? (std::memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])); }), "si", Id_Command);
 
     addcommand("codestr", reinterpret_cast<identfun>(+[] (int *i) { { char *s = newstring(1); s[0] = static_cast<char>(*i); s[1] = '\0'; stringret(s); }; }), "i", Id_Command);
-
-    addcommand("struni", reinterpret_cast<identfun>(+[] (char *s, int *i) { intret(*i > 0 ? (std::memchr(s, 0, *i) ? 0 : cube2uni(s[*i])) : cube2uni(s[0])); }), "si", Id_Command);
-    addcommand("unistr", reinterpret_cast<identfun>(+[] (int *i) { { char *s = newstring(1); s[0] = uni2cube(*i); s[1] = '\0'; stringret(s); }; }), "i", Id_Command);
 
     addcommand("strlower", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
     addcommand("strupper", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
@@ -1488,7 +1487,22 @@ void initcontrolcmds()
     addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
     addcommand("?", reinterpret_cast<identfun>(+[] (tagval *cond, tagval *t, tagval *f) { result(*(getbool(*cond) ? t : f)); }), "tTT", Id_Command);
 
-    addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code) { { if(id->type != Id_Alias || id->index < Max_Args) { return; } if(getbool(*v)) { identstack stack; pusharg(*id, *v, stack); v->type = Value_Null; id->flags &= ~Idf_Unknown; executeret(code, *commandret); poparg(*id); } }; }), "rTe", Id_Command);
+    addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code)
+    {
+        if(id->type != Id_Alias || id->index < Max_Args)
+        {
+            return;
+        }
+        if(getbool(*v))
+        {
+            identstack stack;
+            pusharg(*id, *v, stack);
+            v->type = Value_Null;
+            id->flags &= ~Idf_Unknown;
+            executeret(code, *commandret);
+            poparg(*id);
+        }
+    }), "rTe", Id_Command);
     addcommand("do", reinterpret_cast<identfun>(+[] (uint *body) { executeret(body, *commandret); }), "e", Id_Do);
     addcommand("append", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, true); }), "rt", Id_Command);
     addcommand("result", reinterpret_cast<identfun>(+[] (tagval *v) { { *commandret = *v; v->type = Value_Null; }; }), "T", Id_Result);

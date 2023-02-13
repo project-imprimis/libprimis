@@ -1,8 +1,7 @@
 #ifndef WATER_H_
 #define WATER_H_
 
-extern int vertwater, waterreflect, caustics;
-extern float watersx1, watersy1, watersx2, watersy2;
+extern int vertwater;
 
 /* creates a set of functions by appending name & var to "get" and of the type "type"
  * e.g. GETMATIDXVAR(water, deep, int) creates `int getwaterdeep(int mat)`
@@ -22,8 +21,6 @@ extern float watersx1, watersy1, watersx2, watersy2;
 
 extern const bvec &getwatercolor(int mat);
 extern const bvec &getwaterdeepcolor(int mat);
-extern const bvec &getwaterdeepfade(int mat);
-extern const bvec &getwaterrefractcolor(int mat);
 extern const bvec &getwaterfallcolor(int mat);
 extern int getwaterfog(int mat);
 extern int getwaterdeep(int mat);

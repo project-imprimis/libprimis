@@ -28,6 +28,7 @@
 #include "rendertimers.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -422,7 +423,7 @@ void radiancehints::setup()
     }
 }
 
-void radiancehints::bindparams()
+void radiancehints::bindparams() const
 {
     float step = 2*splits[0].bounds/rhgrid;
     GLOBALPARAMF(rhnudge, rhnudge*step);
@@ -430,7 +431,7 @@ void radiancehints::bindparams()
     vec4<float> *rhtcv = rhtc.reserve<vec4<float>>();
     for(int i = 0; i < rhsplits; ++i)
     {
-        splitinfo &split = splits[i];
+        const splitinfo &split = splits[i];
         rhtcv[i] = vec4<float>(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
     }
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
@@ -454,6 +455,22 @@ bool radiancehints::allcached() const
         }
     }
     return true;
+}
+
+static void bindslice(int sx, int sy, int sw, int sh, int i, int j)
+{
+    if(rhrect)
+    {
+        glViewport(sx, sy, sw, sh);
+        glScissor(sx, sy, sw, sh);
+    }
+    else
+    {
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j);
+        glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j);
+    }
 }
 
 void radiancehints::renderslices()
@@ -604,21 +621,6 @@ void radiancehints::renderslices()
         for(int j = sh; --j >= 0;) //note reverse iteration
         {
             int sx = rhrect ? j*sw : 0;
-//=================================================================== BIND_SLICE
-            #define BIND_SLICE do { \
-                if(rhrect) \
-                { \
-                    glViewport(sx, sy, sw, sh); \
-                    glScissor(sx, sy, sw, sh); \
-                } \
-                else \
-                { \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j); \
-                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j); \
-                } \
-            } while(0)
 
             float x1  = split.center.x - split.bounds,
                   x2  = split.center.x + split.bounds,
@@ -680,7 +682,7 @@ void radiancehints::renderslices()
                 bty1 = bty1*next.scale.y + next.offset.y;
                 bty2 = bty2*next.scale.y + next.offset.y;
                 bz = bz*next.scale.z + next.offset.z;
-                BIND_SLICE;
+                bindslice(sx, sy, sw, sh, i, j);
                 if(clipped)
                 {
                     glClear(GL_COLOR_BUFFER_BIT);
@@ -696,7 +698,7 @@ void radiancehints::renderslices()
             skipped:
                 if(clearmasks[j/32] & (1 << (j%32)) && (!rhrect || cx < 0) && !(rhclearmasks[0][i][j/32] & (1 << (j%32))))
                 {
-                    BIND_SLICE;
+                    bindslice(sx, sy, sw, sh, i, j);
                     glClear(GL_COLOR_BUFFER_BIT);
                     cx = sx;
                     cy = sy;
@@ -729,16 +731,13 @@ void radiancehints::renderslices()
             }
             if(clearmasks[j/32] & (1 << (j%32)))
             {
-                BIND_SLICE;
+                bindslice(sx, sy, sw, sh, i, j);
                 if(clipped || (rhborder && i + 1 >= rhsplits))
                 {
                     glClear(GL_COLOR_BUFFER_BIT);
                 }
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
-
-            #undef BIND_SLICE
-//==============================================================================
 
             if(rhcache && z > split.cached.z - split.bounds && z < split.cached.z + split.bounds)
             {
@@ -854,7 +853,7 @@ void radiancehints::renderslices()
     }
 }
 
-void GBuffer::renderradiancehints()
+void GBuffer::renderradiancehints() const
 {
     if(rhinoq && !inoq && shouldworkinoq())
     {
@@ -984,8 +983,8 @@ void reflectiveshadowmap::gencullplanes()
     matrix4 mvp;
     mvp.mul(proj, model);
     vec4<float> px = mvp.rowx(),
-         py = mvp.rowy(),
-         pw = mvp.roww();
+                py = mvp.rowy(),
+                pw = mvp.roww();
     cull[0] = plane(vec4<float>(pw).add(px)).normalize(); // left plane
     cull[1] = plane(vec4<float>(pw).sub(px)).normalize(); // right plane
     cull[2] = plane(vec4<float>(pw).add(py)).normalize(); // bottom plane

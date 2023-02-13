@@ -1,6 +1,9 @@
 #ifndef RENDERLIGHTS_H_
 #define RENDERLIGHTS_H_
 
+const int lighttilemaxwidth  = 16;
+const int lighttilemaxheight = 16;
+
 /* gbuffer: a singleton object used to store the graphics buffers
  * (as OpenGL uints) and the functions which act upon the g-buffers.
  */
@@ -41,42 +44,94 @@ class GBuffer
             hdrfloat     = false;
             msaadepthblit= false;
             msaatonemapblit = false;
+            inoq = false;
+            transparentlayer = 0;
+
+            alphafrontsx1   = -1;
+            alphafrontsx2   =  1;
+            alphafrontsy1   = -1;
+            alphafrontsy2   = -1;
+            alphabacksx1    = -1;
+            alphabacksx2    =  1;
+            alphabacksy1    = -1;
+            alphabacksy2    = -1;
+            alpharefractsx1 = -1;
+            alpharefractsx2 =  1;
+            alpharefractsy1 = -1;
+            alpharefractsy2 =  1;
         }
+        static void dummyfxn();
         //main g-buffers
         void cleanupgbuffer();
-        void preparegbuffer(bool depthclear = true);
-        void rendercsmshadowmaps();
-        void rendershadowmaps(int offset = 0);
-        void renderao();                                    //ao.cpp
-        void renderradiancehints();                         //radiancehints.cpp
-        void rendertransparent();                           //rendertransparent.cpp
-        void resolvemsaadepth(int w, int h);
+        void renderao() const;                              //ao.cpp
+        void renderradiancehints() const;                   //radiancehints.cpp
+        void rendertransparent();                           //renderalpha.cpp
+        void resolvemsaadepth(int w, int h) const;
         void setupgbuffer();
-        void bindgdepth();
-        void bindlighttexs(int msaapass, bool transparent); //only used in renderlights
-        void renderparticles(int layer = 0);                //renderparticles.cpp
+        void bindgdepth() const;
+        void bindlighttexs(int msaapass, bool transparent) const; //only used in renderlights
+        void renderparticles(int layer = 0) const;                //renderparticles.cpp
         void rendervolumetric();
         void renderwaterfog(int mat, float surface);        //water.cpp
         void setaavelocityparams(GLenum tmu = GL_TEXTURE0); //aa.cpp
         void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
         void viewdepth();
+        void rendershadowatlas();
         //multisample antialiasing specific buffers
         void setupmsbuffer(int w, int h);
         void resolvemsaacolor(int w, int h);
         void shademinimap(const vec &color = vec(-1, -1, -1));
-        void shadesky();
+        void shadesky() const;
         //refractive
         void processhdr(GLuint outfbo, int aa);
         void viewrefract();
-        void doscale(GLuint outfbo = 0);
+        void doscale(GLuint outfbo = 0) const;
         void setupscale(int sw, int sh, int w, int h);
-        GLuint shouldscale();
+        GLuint shouldscale() const;
+        void workinoq();
+        void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
+        bool istransparentlayer() const;
 
     private:
-        void bindmsdepth();
+        void bindmsdepth() const;
         void cleanupscale();
         void cleanupmsbuffer();
+        void preparegbuffer(bool depthclear = true);
+        void rendercsmshadowmaps() const;
+        void rendershadowmaps(int offset = 0) const;
+        int findalphavas();
 
+        struct MaterialInfo
+        {
+            float matliquidsx1,
+                  matliquidsy1,
+                  matliquidsx2,
+                  matliquidsy2;
+            float matsolidsx1,
+                  matsolidsy1,
+                  matsolidsx2,
+                  matsolidsy2;
+            float matrefractsx1,
+                  matrefractsy1,
+                  matrefractsx2,
+                  matrefractsy2;
+            uint matliquidtiles[lighttilemaxheight],
+                 matsolidtiles[lighttilemaxheight];
+            int hasmats;
+        };
+
+        MaterialInfo findmaterials() const; //materials.cpp
+
+        float alphafrontsx1, alphafrontsx2,
+              alphafrontsy1, alphafrontsy2,
+              alphabacksx1, alphabacksx2,
+              alphabacksy1, alphabacksy2,
+              alpharefractsx1, alpharefractsx2,
+              alpharefractsy1, alpharefractsy2;
+        uint alphatiles[lighttilemaxheight];
+
+        bool transparentlayer;
+        bool inoq;
         bool gdepthinit;
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
@@ -195,9 +250,6 @@ extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1,
 
 constexpr int shadowatlassize = 4096;
 
-const int lighttilemaxwidth  = 16;
-const int lighttilemaxheight = 16;
-
 extern int smborder, smborder2;
 
 extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
@@ -208,9 +260,7 @@ extern int nospeclights;
 extern int debugfullscreen;
 extern int msaaedgedetect;
 extern int hdrclear;
-
 extern int msaatonemap;
-extern int msaatonemapblit;
 
 extern int vieww, viewh;
 
@@ -246,9 +296,7 @@ extern int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &s
 extern int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax);
 extern void rendershadowmapworld();
 extern void batchshadowmapmodels(bool skipmesh = false);
-extern void rendershadowatlas();
 extern void renderrsmgeom(bool dyntex = false);
-extern void workinoq();
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
@@ -272,23 +320,14 @@ extern int gw, gh, gdepthformat, ghasstencil;
 extern int msaasamples, msaalight;
 extern std::vector<vec2> msaapositions;
 
-extern bool inoq;
 extern int rhinoq;
 extern int rsmcull;
 extern GLuint rhfbo;
-
-//allows passing nothing to internal uses of gbuffer fxn
-//(the parameter is for taking a game function to be rendered onscreen)
-inline void dummyfxn()
-{
-    return;
-}
 
 extern bool shouldworkinoq();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
-extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void setuplights();
 extern bool debuglights();

@@ -47,7 +47,9 @@ struct vertinfo
 
 struct octaentities
 {
-    std::vector<int> mapmodels, decals, other;
+    std::vector<int> mapmodels, //set of indices refering to a position in the getentities() vector corresponding to a mapmodel
+                     decals,    //set of indices refering to a position in the getentities() vector corresponding to a decal
+                     other;     //set of indices refering to a position in the getentities() vector corresponding to a non-mapmodel non-decal entity (sound etc.)
     occludequery *query;
     octaentities *next, *rnext;
     int distance;
@@ -83,9 +85,29 @@ struct clipplanes
     vec o, r, v[8];
     plane p[12];
     uchar side[12];
-    uchar size, visible;
+    uchar size, //should always be between 0..11 (a valid index to p/side arrays above)
+          visible;
     const cube *owner;
     int version;
+
+    void clear()
+    {
+        o = vec(0,0,0);
+        r = vec(0,0,0);
+        for(int i = 0; i < 8; ++i)
+        {
+          v[i] = vec(0,0,0);
+        }
+        for(int i = 0; i < 12; ++i)
+        {
+            p[i] = plane {0,0,0,0};
+            side[i] = 0;
+        }
+        size = 0;
+        visible = 0;
+        owner = nullptr;
+        version = 0;
+    }
 };
 
 struct surfaceinfo
@@ -176,7 +198,6 @@ inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const iv
 #define LOOP_OCTA_BOX(o, size, bbmin, bbmax) uchar possible = octaboxoverlap(o, size, bbmin, bbmax); for(int i = 0; i < 8; ++i) if(possible&(1<<i))
 
 #define OCTA_COORD(d, i)     (((i)&octadim(d))>>(d))
-#define OPPOSITE_OCTA(d, i)  ((i)^octadim(D[d]))
 #define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 
 extern int wtris, wverts,
@@ -198,7 +219,7 @@ extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
-extern void getcubevector(cube &c, int d, int x, int y, int z, ivec &p);
+extern void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p);
 extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
 extern void freeocta(cube *c);

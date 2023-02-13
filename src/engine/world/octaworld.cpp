@@ -21,6 +21,7 @@
 #include "world.h"
 
 #include "interface/console.h"
+#include "interface/control.h"
 
 #include "render/octarender.h"
 #include "render/renderwindow.h"
@@ -145,7 +146,7 @@ void freeocta(cube *c)
     allocnodes--;
 }
 
-void getcubevector(cube &c, int d, int x, int y, int z, ivec &p)
+void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p)
 {
     ivec v(d, x, y, z);
     for(int i = 0; i < 3; ++i)
@@ -163,7 +164,7 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     }
 }
 
-static void getcubevector(cube &c, int i, ivec &p)
+static void getcubevector(const cube &c, int i, ivec &p)
 {
     p.x = EDGE_GET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
     p.y = EDGE_GET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
@@ -177,9 +178,9 @@ static void setcubevector(cube &c, int i, const ivec &p)
     EDGE_SET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
 }
 
-void optiface(uchar *p, cube &c)
+void optiface(const uchar *p, cube &c)
 {
-    uint f = *reinterpret_cast<uint *>(p);
+    uint f = *reinterpret_cast<const uint *>(p);
     if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU))
     {
         setcubefaces(c, faceempty);
@@ -238,9 +239,9 @@ int lusize;
 
 cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
 {
-    int tx = std::clamp(to.x, 0, worldsize-1),
-        ty = std::clamp(to.y, 0, worldsize-1),
-        tz = std::clamp(to.z, 0, worldsize-1);
+    int tx = std::clamp(to.x, 0, mapsize()-1),
+        ty = std::clamp(to.y, 0, mapsize()-1),
+        tz = std::clamp(to.z, 0, mapsize()-1);
     int scale = worldscale-1,
         csize = std::abs(tsize);
     cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
@@ -304,7 +305,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         n[dim] -= size;
     }
     diff ^= n[dim];
-    if(diff >= static_cast<uint>(worldsize))
+    if(diff >= static_cast<uint>(mapsize()))
     {
         ro = n;
         rsize = size;
@@ -373,7 +374,7 @@ int getmippedtexture(const cube &p, int orient)
             int n = octacubeindex(d, x, y, dc);
             if(c[n].isempty())
             {
-                n = OPPOSITE_OCTA(d, n);
+                n = n^octadim(D[d]);
                 if(c[n].isempty())
                 {
                     continue;
@@ -617,9 +618,6 @@ int visibleorient(const cube &c, int orient)
 
 VAR(mipvis, 0, 0, 1);
 
-static int remipprogress = 0,
-           remiptotal = 0;
-
 static bool remip(cube &c, const ivec &co, int size)
 {
     cube *ch = c.children;
@@ -767,12 +765,10 @@ static bool remip(cube &c, const ivec &co, int size)
 
 void cubeworld::remip()
 {
-    remipprogress = 1;
-    remiptotal = allocnodes;
     for(int i = 0; i < 8; ++i)
     {
-        ivec o(i, ivec(0, 0, 0), worldsize>>1);
-        ::remip(worldroot[i], o, worldsize>>2);
+        ivec o(i, ivec(0, 0, 0), mapsize()>>1);
+        ::remip(worldroot[i], o, mapsize()>>2);
     }
     worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
 }
@@ -823,16 +819,6 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
     }
 }
 //==============================================================================
-
-const uchar fv[6][4] = // indexes for cubecoords, per each vert of a face orientation
-{
-    { 2, 1, 6, 5 },
-    { 3, 4, 7, 0 },
-    { 4, 5, 6, 7 },
-    { 1, 2, 3, 0 },
-    { 6, 1, 0, 7 },
-    { 5, 4, 3, 2 },
-};
 
 bool flataxisface(const cube &c, int orient)
 {
@@ -1126,6 +1112,11 @@ static int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, ivec
     cy <<= 3;
     size <<= 3;
     int r = 0;
+    if(numo <= 0)
+    {
+        logoutf("Invalid clipface index %d\n", numo);
+        return 0; //protection agains numo negative array access
+    }
     ivec2 prev = o[numo-1];
     for(int i = 0; i < numo; ++i)
     {
@@ -1622,6 +1613,16 @@ void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p)
 
 void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide, bool noclip)
 {
+    static const uchar fv[6][4] = // indexes for cubecoords, per each vert of a face orientation
+    {
+        { 2, 1, 6, 5 },
+        { 3, 4, 7, 0 },
+        { 4, 5, 6, 7 },
+        { 1, 2, 3, 0 },
+        { 6, 1, 0, 7 },
+        { 5, 4, 3, 2 },
+    };
+
     p.visible &= ~0x80;
     if(collide || (c.visible&0xC0) == 0x40)
     {

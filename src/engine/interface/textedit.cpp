@@ -14,6 +14,8 @@
 
 #include "textedit.h"
 #include "render/rendertext.h"
+#include "render/renderttf.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -111,7 +113,7 @@ void EditLine::append(const char *str)
     len += slen;
 }
 
-bool EditLine::read(stream *f, int chop)
+bool EditLine::read(std::fstream& f, int chop)
 {
     if(chop < 0)
     {
@@ -122,7 +124,7 @@ bool EditLine::read(stream *f, int chop)
         chop++;
     }
     set("");
-    while(len + 1 < chop && f->getline(&text[len], std::min(maxlen, chop) - len))
+    while(len + 1 < chop && f.getline(&text[len], std::min(maxlen, chop) - len))
     {
         len += std::strlen(&text[len]);
         if(len > 0 && text[len-1] == '\n')
@@ -138,7 +140,7 @@ bool EditLine::read(stream *f, int chop)
     if(len + 1 >= chop)
     {
         char buf[Chunk_Size];
-        while(f->getline(buf, sizeof(buf)))
+        while(f.getline(buf, sizeof(buf)))
         {
             int blen = std::strlen(buf);
             if(blen > 0 && buf[blen-1] == '\n')
@@ -272,7 +274,7 @@ void Editor::setfile(const char *fname)
     }
 }
 
-bool Editor::readback(stream * file)
+bool Editor::readback(std::fstream& file)
 {
     lines.emplace_back();
     return lines.back().read(file, maxx) && (maxy < 0 || static_cast<int>(lines.size()) <= maxy);
@@ -285,7 +287,8 @@ void Editor::load()
         return;
     }
     clear(nullptr);
-    stream *file = openutf8file(filename, "r");
+    std::fstream file;
+    file.open(filename);
     if(file)
     {
         while(readback(file))
@@ -293,13 +296,13 @@ void Editor::load()
             lines.back().clear();
             lines.pop_back();
         }
-        delete file;
     }
     if(lines.empty())
     {
         lines.emplace_back();
         lines.back().set("");
     }
+    file.close();
 }
 
 void Editor::save()
@@ -308,16 +311,17 @@ void Editor::save()
     {
         return;
     }
-    stream *file = openutf8file(filename, "w");
+    std::fstream file;
+    file.open(filename);
     if(!file)
     {
         return;
     }
     for(uint i = 0; i < lines.size(); i++)
     {
-        file->putline(lines[i].text);
+        file << lines[i].text;
     }
-    delete file;
+    file.close();
 }
 
 void Editor::mark(bool enable)
@@ -624,7 +628,7 @@ void Editor::insert(const char *s)
     }
 }
 
-void Editor::insertallfrom(Editor *b)
+void Editor::insertallfrom(const Editor * const b)
 {
     if(b==this)
     {
@@ -959,7 +963,8 @@ void Editor::draw(int x, int y, int color, bool hit)
         {
             break;
         }
-        draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
+        //draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
+        ttr.renderttf(lines[i].text, {static_cast<uchar>(color>>16), static_cast<uchar>((color>>8)&0xFF), static_cast<uchar>(color&0xFF), 0}, x, y+h);
         if(linewrap && height > FONTH) // line wrap indicator
         {
             hudnotextureshader->set();
@@ -983,9 +988,9 @@ Editor *textfocus = nullptr;
 
 void readyeditors()
 {
-    for(uint i = 0; i < editors.size(); i++)
+    for(Editor * i : editors)
     {
-        editors[i]->active = (editors[i]->mode==Editor_Forever);
+        i->active = (i->mode==Editor_Forever);
     }
 }
 

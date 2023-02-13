@@ -16,6 +16,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 #include "water.h"
@@ -31,9 +32,73 @@
 //caustics: lightening on surfaces underwater due to lensing effects from an
 // uneven water surface
 
-static constexpr int numcaustics = 32; //number of separate caustics textures to load
+namespace
+{
+    constexpr int numcaustics = 32; //number of separate caustics textures to load
+    Texture *caustictex[numcaustics] = {nullptr};
+    VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
+    VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
+    FVARR(causticcontrast, 0, 0.6f, 2);
+    FVARR(causticoffset, 0, 0.7f, 1);
 
-static Texture *caustictex[numcaustics] = {nullptr};
+    void setupcaustics(int tmu, float surface = -1e16f)
+    {
+        if(!caustictex[0])
+        {
+            loadcaustics(true);
+        }
+        vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale),
+            t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
+        int tex = (lastmillis/causticmillis)%numcaustics;
+        float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
+        for(int i = 0; i < 2; ++i)
+        {
+            glActiveTexture(GL_TEXTURE0+tmu+i);
+            glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
+        }
+        glActiveTexture(GL_TEXTURE0);
+        float blendscale = causticcontrast,
+              blendoffset = 1;
+        if(surface > -1e15f)
+        {
+            float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
+            matrix4 m(vec4<float>(s.x, t.x,  0, 0),
+                      vec4<float>(s.y, t.y,  0, 0),
+                      vec4<float>(s.z, t.z, -1, 0),
+                      vec4<float>(  0,   0, bz, 1));
+            m.mul(worldmatrix);
+            GLOBALPARAM(causticsmatrix, m);
+            blendscale *= 0.5f;
+            blendoffset = 0;
+        }
+        else
+        {
+            GLOBALPARAM(causticsS, s);
+            GLOBALPARAM(causticsT, t);
+        }
+        GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
+    }
+
+    VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
+
+    void rendercaustics(float surface, float syl, float syr)
+    {
+        if(!caustics || !causticscale || !causticmillis)
+        {
+            return;
+        }
+        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+        setupcaustics(0, surface);
+        SETSHADER(caustics);
+        gle::defvertex(2);
+        gle::begin(GL_TRIANGLE_STRIP);
+        gle::attribf(1, -1);
+        gle::attribf(-1, -1);
+        gle::attribf(1, syr);
+        gle::attribf(-1, syl);
+        gle::end();
+    }
+}
 
 void loadcaustics(bool force)
 {
@@ -58,67 +123,230 @@ void loadcaustics(bool force)
     }
 }
 
-VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
-VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
-FVARR(causticcontrast, 0, 0.6f, 2);
-FVARR(causticoffset, 0, 0.7f, 1);
-VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
+/* vertex water */
 
-void setupcaustics(int tmu, float surface = -1e16f)
+// vertex water refers to the ability for the engine to dynamically create geom
+// for the water material's surface, to simulate waviness directly by creating
+// 3d geometry
+
+//these variables control the vertex water geometry intensity
+//(nothing to do with any other rendering)
+VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
+VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
+VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
+
+namespace
 {
-    if(!caustictex[0])
+    int wx1, wy1, wx2, wy2, wsize;
+    float whscale, whoffset;
+
+    float wxscale = 1.0f,
+          wyscale = 1.0f;
+
+    void defvertwt()
     {
-        loadcaustics(true);
+        gle::defvertex();
+        gle::deftexcoord0();
     }
-    vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale),
-        t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
-    int tex = (lastmillis/causticmillis)%numcaustics;
-    float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
-    for(int i = 0; i < 2; ++i)
+
+    void vertwt(float v1, float v2, float v3)
     {
-        glActiveTexture(GL_TEXTURE0+tmu+i);
-        glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
+        float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
+        float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
+        float h = wateramplitude*s-wateroffset;
+        gle::attribf(v1, v2, v3+h);
+        gle::attribf(wxscale*v1, wyscale*v2);
     }
-    glActiveTexture(GL_TEXTURE0);
-    float blendscale = causticcontrast,
-          blendoffset = 1;
-    if(surface > -1e15f)
+
+    void defvertwtn()
     {
-        float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
-        matrix4 m(vec4<float>(s.x, t.x,  0, 0),
-                  vec4<float>(s.y, t.y,  0, 0),
-                  vec4<float>(s.z, t.z, -1, 0),
-                  vec4<float>(  0,   0, bz, 1));
-        m.mul(worldmatrix);
-        GLOBALPARAM(causticsmatrix, m);
-        blendscale *= 0.5f;
-        blendoffset = 0;
+        gle::defvertex();
+        gle::deftexcoord0();
     }
-    else
+
+    void vertwtn(float v1, float v2, float v3)
     {
-        GLOBALPARAM(causticsS, s);
-        GLOBALPARAM(causticsT, t);
+        float h = -wateroffset;
+        gle::attribf(v1, v2, v3+h);
+        gle::attribf(wxscale*v1, wyscale*v2);
     }
-    GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
+
+    void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
+    {
+        wx1 = xo;
+        wy1 = yo;
+        wx2 = wx1 + size,
+        wy2 = wy1 + size;
+        wsize = size;
+        whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
+        if(mat == Mat_Water)
+        {
+            whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+            defvertwt();
+            gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
+            for(int x = wx1; x<wx2; x += subdiv)
+            {
+                vertwt(x,        wy1, z);
+                vertwt(x+subdiv, wy1, z);
+                for(int y = wy1; y<wy2; y += subdiv)
+                {
+                    vertwt(x,        y+subdiv, z);
+                    vertwt(x+subdiv, y+subdiv, z);
+                }
+                gle::multidraw();
+            }
+            xtraverts += gle::end();
+        }
+    }
+
+    int calcwatersubdiv(int x, int y, int z, int size)
+    {
+        float dist;
+        if(camera1->o.x >= x && camera1->o.x < x + size &&
+           camera1->o.y >= y && camera1->o.y < y + size)
+        {
+            dist = std::fabs(camera1->o.z - static_cast<float>(z));
+        }
+        else
+        {
+            dist = vec(x + size/2, y + size/2, z + size/2).dist(camera1->o) - size*1.42f/2;
+        }
+        int subdiv = watersubdiv + static_cast<int>(dist) / (32 << waterlod);
+        return subdiv >= 31 ? INT_MAX : 1<<subdiv;
+    }
+
+    int renderwaterlod(int x, int y, int z, int size, int mat)
+    {
+        if(size <= (32 << waterlod))
+        {
+            int subdiv = calcwatersubdiv(x, y, z, size);
+            if(subdiv < size * 2)
+            {
+                rendervertwater(std::min(subdiv, size), x, y, z, size, mat);
+            }
+            return subdiv;
+        }
+        else
+        {
+            int subdiv = calcwatersubdiv(x, y, z, size);
+            if(subdiv >= size)
+            {
+                if(subdiv < size * 2)
+                {
+                    rendervertwater(size, x, y, z, size, mat);
+                }
+                return subdiv;
+            }
+            int childsize = size / 2,
+                subdiv1 = renderwaterlod(x, y, z, childsize, mat),
+                subdiv2 = renderwaterlod(x + childsize, y, z, childsize, mat),
+                subdiv3 = renderwaterlod(x + childsize, y + childsize, z, childsize, mat),
+                subdiv4 = renderwaterlod(x, y + childsize, z, childsize, mat),
+                minsubdiv = subdiv1;
+            minsubdiv = std::min(minsubdiv, subdiv2);
+            minsubdiv = std::min(minsubdiv, subdiv3);
+            minsubdiv = std::min(minsubdiv, subdiv4);
+            if(minsubdiv < size * 2)
+            {
+                if(minsubdiv >= size)
+                {
+                    rendervertwater(size, x, y, z, size, mat);
+                }
+                else
+                {
+                    if(subdiv1 >= size)
+                    {
+                        rendervertwater(childsize, x, y, z, childsize, mat);
+                    }
+                    if(subdiv2 >= size)
+                    {
+                        rendervertwater(childsize, x + childsize, y, z, childsize, mat);
+                    }
+                    if(subdiv3 >= size)
+                    {
+                        rendervertwater(childsize, x + childsize, y + childsize, z, childsize, mat);
+                    }
+                    if(subdiv4 >= size)
+                    {
+                        rendervertwater(childsize, x, y + childsize, z, childsize, mat);
+                    }
+                }
+            }
+            return minsubdiv;
+        }
+    }
+
+    /* renderflatwater: renders water with no vertex water subdivision
+     */
+    void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
+    {
+        if(mat == Mat_Water)
+        {
+            if(gle::attribbuf.empty())
+            {
+                defvertwtn();
+                gle::begin(GL_TRIANGLE_FAN);
+            }
+            vertwtn(x, y, z);
+            vertwtn(x+rsize, y, z);
+            vertwtn(x+rsize, y+csize, z);
+            vertwtn(x, y+csize, z);
+            xtraverts += 4;
+        }
+    }
+
+    void renderwater(const materialsurface &m, int mat = Mat_Water)
+    {
+        if(!vertwater || drawtex == Draw_TexMinimap)
+        {
+            renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
+        }
+        else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= static_cast<int>(m.csize) * 2)
+        {
+            rendervertwater(m.csize, m.o.x, m.o.y, m.o.z, m.csize, mat);
+        }
+    }
+
+    //==================================================================== WATERVARS
+    #define WATERVARS(name) \
+        CVAR0R(name##color, 0x01212C); \
+        CVAR0R(name##deepcolor, 0x010A10); \
+        CVAR0R(name##deepfade, 0x60BFFF); \
+        CVAR0R(name##refractcolor, 0xFFFFFF); \
+        VARR(name##fog, 0, 30, 10000); \
+        VARR(name##deep, 0, 50, 10000); \
+        VARR(name##spec, 0, 150, 200); \
+        FVARR(name##refract, 0, 0.1f, 1e3f); \
+        CVARR(name##fallcolor, 0); \
+        CVARR(name##fallrefractcolor, 0); \
+        VARR(name##fallspec, 0, 150, 200); \
+        FVARR(name##fallrefract, 0, 0.1f, 1e3f);
+
+    WATERVARS(water)
+    WATERVARS(water2)
+    WATERVARS(water3)
+    WATERVARS(water4)
+
+#undef WATERVARS
+//==============================================================================
+
+    VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 }
 
-void rendercaustics(float surface, float syl, float syr)
-{
-    if(!caustics || !causticscale || !causticmillis)
-    {
-        return;
-    }
-    glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-    setupcaustics(0, surface);
-    SETSHADER(caustics);
-    gle::defvertex(2);
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(1, -1);
-    gle::attribf(-1, -1);
-    gle::attribf(1, syr);
-    gle::attribf(-1, syl);
-    gle::end();
-}
+GETMATIDXVAR(water, color, const bvec &)
+GETMATIDXVAR(water, deepcolor, const bvec &)
+GETMATIDXVAR(water, deepfade, const bvec &)
+GETMATIDXVAR(water, refractcolor, const bvec &)
+GETMATIDXVAR(water, fallcolor, const bvec &)
+GETMATIDXVAR(water, fallrefractcolor, const bvec &)
+GETMATIDXVAR(water, fog, int)
+GETMATIDXVAR(water, deep, int)
+GETMATIDXVAR(water, spec, int)
+GETMATIDXVAR(water, refract, float)
+GETMATIDXVAR(water, fallspec, int)
+GETMATIDXVAR(water, fallrefract, float)
+
+VARR(waterreflectstep, 1, 32, 10000);
 
 void GBuffer::renderwaterfog(int mat, float surface)
 {
@@ -190,229 +418,6 @@ void GBuffer::renderwaterfog(int mat, float surface)
     glDepthRange(0, 1);
 }
 
-/* vertex water */
-
-// vertex water refers to the ability for the engine to dynamically create geom
-// for the water material's surface, to simulate waviness directly by creating
-// 3d geometry
-
-//these variables control the vertex water geometry intensity
-//(nothing to do with any other rendering)
-VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
-VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
-
-static int wx1, wy1, wx2, wy2, wsize;
-static float whscale, whoffset;
-
-static float wxscale = 1.0f,
-             wyscale = 1.0f,
-             wscroll = 0.0f;
-
-static void defvertwt()
-{
-    gle::defvertex();
-    gle::deftexcoord0();
-}
-
-static void vertwt(float v1, float v2, float v3)
-{
-    float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
-    float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
-    float h = wateramplitude*s-wateroffset;
-    gle::attribf(v1, v2, v3+h);
-    gle::attribf(wxscale*v1, wyscale*v2);
-}
-
-static void defvertwtn()
-{
-    gle::defvertex();
-    gle::deftexcoord0();
-}
-
-static void vertwtn(float v1, float v2, float v3)
-{
-    float h = -wateroffset;
-    gle::attribf(v1, v2, v3+h);
-    gle::attribf(wxscale*v1, wyscale*v2);
-}
-
-static void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
-{
-    wx1 = xo;
-    wy1 = yo;
-    wx2 = wx1 + size,
-    wy2 = wy1 + size;
-    wsize = size;
-    whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
-    if(mat == Mat_Water)
-    {
-        whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
-        defvertwt();
-        gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
-        for(int x = wx1; x<wx2; x += subdiv)
-        {
-            vertwt(x,        wy1, z);
-            vertwt(x+subdiv, wy1, z);
-            for(int y = wy1; y<wy2; y += subdiv)
-            {
-                vertwt(x,        y+subdiv, z);
-                vertwt(x+subdiv, y+subdiv, z);
-            }
-            gle::multidraw();
-        }
-        xtraverts += gle::end();
-    }
-}
-
-static int calcwatersubdiv(int x, int y, int z, int size)
-{
-    float dist;
-    if(camera1->o.x >= x && camera1->o.x < x + size &&
-       camera1->o.y >= y && camera1->o.y < y + size)
-    {
-        dist = std::fabs(camera1->o.z - static_cast<float>(z));
-    }
-    else
-    {
-        dist = vec(x + size/2, y + size/2, z + size/2).dist(camera1->o) - size*1.42f/2;
-    }
-    int subdiv = watersubdiv + static_cast<int>(dist) / (32 << waterlod);
-    return subdiv >= 31 ? INT_MAX : 1<<subdiv;
-}
-
-static int renderwaterlod(int x, int y, int z, int size, int mat)
-{
-    if(size <= (32 << waterlod))
-    {
-        int subdiv = calcwatersubdiv(x, y, z, size);
-        if(subdiv < size * 2)
-        {
-            rendervertwater(std::min(subdiv, size), x, y, z, size, mat);
-        }
-        return subdiv;
-    }
-    else
-    {
-        int subdiv = calcwatersubdiv(x, y, z, size);
-        if(subdiv >= size)
-        {
-            if(subdiv < size * 2)
-            {
-                rendervertwater(size, x, y, z, size, mat);
-            }
-            return subdiv;
-        }
-        int childsize = size / 2,
-            subdiv1 = renderwaterlod(x, y, z, childsize, mat),
-            subdiv2 = renderwaterlod(x + childsize, y, z, childsize, mat),
-            subdiv3 = renderwaterlod(x + childsize, y + childsize, z, childsize, mat),
-            subdiv4 = renderwaterlod(x, y + childsize, z, childsize, mat),
-            minsubdiv = subdiv1;
-        minsubdiv = std::min(minsubdiv, subdiv2);
-        minsubdiv = std::min(minsubdiv, subdiv3);
-        minsubdiv = std::min(minsubdiv, subdiv4);
-        if(minsubdiv < size * 2)
-        {
-            if(minsubdiv >= size)
-            {
-                rendervertwater(size, x, y, z, size, mat);
-            }
-            else
-            {
-                if(subdiv1 >= size)
-                {
-                    rendervertwater(childsize, x, y, z, childsize, mat);
-                }
-                if(subdiv2 >= size)
-                {
-                    rendervertwater(childsize, x + childsize, y, z, childsize, mat);
-                }
-                if(subdiv3 >= size)
-                {
-                    rendervertwater(childsize, x + childsize, y + childsize, z, childsize, mat);
-                }
-                if(subdiv4 >= size)
-                {
-                    rendervertwater(childsize, x, y + childsize, z, childsize, mat);
-                }
-            }
-        }
-        return minsubdiv;
-    }
-}
-
-/* renderflatwater: renders water with no vertex water subdivision
- */
-void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
-{
-    if(mat == Mat_Water)
-    {
-        if(gle::attribbuf.empty())
-        {
-            defvertwtn();
-            gle::begin(GL_TRIANGLE_FAN);
-        }
-        vertwtn(x, y, z);
-        vertwtn(x+rsize, y, z);
-        vertwtn(x+rsize, y+csize, z);
-        vertwtn(x, y+csize, z);
-        xtraverts += 4;
-    }
-}
-
-VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
-
-static void renderwater(const materialsurface &m, int mat = Mat_Water)
-{
-    if(!vertwater || drawtex == Draw_TexMinimap)
-    {
-        renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
-    }
-    else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= static_cast<int>(m.csize) * 2)
-    {
-        rendervertwater(m.csize, m.o.x, m.o.y, m.o.z, m.csize, mat);
-    }
-}
-
-//==================================================================== WATERVARS
-#define WATERVARS(name) \
-    static CVAR0R(name##color, 0x01212C); \
-    static CVAR0R(name##deepcolor, 0x010A10); \
-    static CVAR0R(name##deepfade, 0x60BFFF); \
-    static CVAR0R(name##refractcolor, 0xFFFFFF); \
-    static VARR(name##fog, 0, 30, 10000); \
-    static VARR(name##deep, 0, 50, 10000); \
-    static VARR(name##spec, 0, 150, 200); \
-    static FVARR(name##refract, 0, 0.1f, 1e3f); \
-    static CVARR(name##fallcolor, 0); \
-    static CVARR(name##fallrefractcolor, 0); \
-    static VARR(name##fallspec, 0, 150, 200); \
-    static FVARR(name##fallrefract, 0, 0.1f, 1e3f);
-
-WATERVARS(water)
-WATERVARS(water2)
-WATERVARS(water3)
-WATERVARS(water4)
-
-#undef WATERVARS
-//==============================================================================
-
-GETMATIDXVAR(water, color, const bvec &)
-GETMATIDXVAR(water, deepcolor, const bvec &)
-GETMATIDXVAR(water, deepfade, const bvec &)
-GETMATIDXVAR(water, refractcolor, const bvec &)
-GETMATIDXVAR(water, fallcolor, const bvec &)
-GETMATIDXVAR(water, fallrefractcolor, const bvec &)
-GETMATIDXVAR(water, fog, int)
-GETMATIDXVAR(water, deep, int)
-GETMATIDXVAR(water, spec, int)
-GETMATIDXVAR(water, refract, float)
-GETMATIDXVAR(water, fallspec, int)
-GETMATIDXVAR(water, fallrefract, float)
-
-VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
-VARR(waterreflectstep, 1, 32, 10000);
-
 void preloadwatershaders(bool force)
 {
     static bool needwater = false;
@@ -458,17 +463,16 @@ static float wfwave = 0.0f, //waterfall wave
              wfyscale = 1.0f; //waterfall y scale
 
 //"waterfall" refers to any rendered side of water material
-static void renderwaterfall(const materialsurface &m, float offset, const vec *normal = nullptr)
+static void renderwaterfall(const materialsurface &m, float offset, vec normal = vec(0,0,0))
 {
     if(gle::attribbuf.empty())
     {
         gle::defvertex();
-        if(normal)
+        if(normal != vec(0,0,0))
         {
             gle::defnormal();
         }
         gle::deftexcoord0();
-        gle::begin(GL_QUADS);
     }
     float x = m.o.x,
           y = m.o.y,
@@ -484,67 +488,257 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
     }
     int csize = m.csize,
         rsize = m.rsize;
-//we need to undefine and redefine these macros such that GENFACEVERTSXY has the appropriate code substituted into it
-#define GENFACEORIENT(orient, v0, v1, v2, v3) \
-        case orient: \
-        { \
-            v0 v1 v2 v3 break; \
-        }
-#undef GENFACEVERTX
-#define GENFACEVERTX(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll)); \
-            }
-#undef GENFACEVERTY
-#define GENFACEVERTY(orient, vert, mx,my,mz, sx,sy,sz) \
-            { \
-                vec v(mx sx, my sy, mz sz); \
-                gle::attribf(v.x, v.y, v.z); \
-                GENFACENORMAL \
-                gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll)); \
-            }
-#define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
-    if(normal)
+    if(normal != vec(0,0,0))
     {
-        vec n = *normal;
+        vec n = normal;
         switch(m.orient)
         {
-            GENFACEVERTSXY(x, x, y, y, zmin, zmax, /**/, + csize, /**/, + rsize, + offset, - offset)
+            case 0:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x + offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 1:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x - offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 2:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x + csize, y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 3:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x , y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(n.x, n.y, n.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
         }
     }
-#undef GENFACENORMAL
-#define GENFACENORMAL //empty macro
     else
     {
         switch(m.orient)
         {
-            GENFACEVERTSXY(x, x, y, y, zmin, zmax, /**/, + csize, /**/, + rsize, + offset, - offset)
+            case 0:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x + offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 1:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x - offset, y + rsize, zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmax + csize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y , zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x - offset, y + rsize, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.y, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 2:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x + csize, y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y + offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
+            case 3:
+            {
+                gle::begin(GL_TRIANGLE_FAN);
+                {
+                    vec v(x , y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x , y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmax + rsize);
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                {
+                    vec v(x + csize, y - offset, zmin );
+                    gle::attribf(v.x, v.y, v.z);
+                    gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
+                }
+                gle::end();
+                break;
+            }
         }
     }
-#undef GENFACENORMAL
-#undef GENFACEORIENT
-//restore GENFACEVERTX/Y
-#undef GENFACEVERTX
-#define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-#undef GENFACEVERTY
-#define GENFACEVERTY(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 }
 
 void renderwaterfalls()
 {
     for(int k = 0; k < 4; ++k)
     {
-        std::vector<materialsurface> &surfs = waterfallsurfs[k];
+        const std::vector<materialsurface> &surfs = waterfallsurfs[k];
         if(surfs.empty())
         {
             continue;
         }
-        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
+        const MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.size() > 2 ? wslot.sts[2].t : (wslot.sts.size() ? wslot.sts[0].t : notexture);
+        const Texture *tex = wslot.sts.size() > 2 ? wslot.sts[2].t : (wslot.sts.size() ? wslot.sts[0].t : notexture);
         float angle = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
         s *= 8 - std::fabs(s)*16;
@@ -577,10 +771,9 @@ void renderwaterfalls()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.size() > 2 ? (wslot.sts.size() > 3 ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.size() > 1 ? wslot.sts[1].t->id : notexture->id));
         glActiveTexture(GL_TEXTURE0);
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface& m : surfs)
         {
-            materialsurface &m = surfs[i];
-            renderwaterfall(m, 0.1f, &matnormals[m.orient]);
+            renderwaterfall(m, 0.1f, matnormals(m.orient));
         }
         xtraverts += gle::end();
     }
@@ -595,12 +788,11 @@ void renderwater()
         {
             continue;
         }
-        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
+        const MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
-        Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
+        const Texture *tex = wslot.sts.size() ? wslot.sts[0].t: notexture;
         wxscale = defaulttexscale/(tex->xs*wslot.scale);
         wyscale = defaulttexscale/(tex->ys*wslot.scale);
-        wscroll = 0.0f;
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture(GL_TEXTURE1);
@@ -677,7 +869,7 @@ void renderwater()
         Shader *belowshader = nullptr;
         if(drawtex != Draw_TexMinimap)
         {
-            SETWATERSHADER(below, underwater);
+            SETWATERSHADER(below, underwater); //if rendering water, and not rendering a minimap, sets belowshader to non-null
         }
         #undef SETWATERSHADER
         //======================================================================
@@ -696,9 +888,8 @@ void renderwater()
         if(belowshader)
         {
             belowshader->set();
-            for(uint i = 0; i < surfs.size(); i++)
+            for(materialsurface& m : surfs)
             {
-                materialsurface &m = surfs[i];
                 if(camera1->o.z >= m.o.z - wateroffset)
                 {
                     continue;

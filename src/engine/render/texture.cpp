@@ -3,6 +3,7 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "SDL_image.h"
@@ -10,6 +11,7 @@
 #include "imagedata.h"
 #include "octarender.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -34,12 +36,14 @@ extern const texrotation texrotations[8] =
     {  true,  true,  true }, // 7: flipped transpose
 };
 
+//copies every other pixel into a destination buffer
+//sw,sh are source width/height
 template<int BPP>
-static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
+static void halvetexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {
-    for(uchar *yend = &src[sh*stride]; src < yend;)
+    for(const uchar *yend = &src[sh*stride]; src < yend;)
     {
-        for(uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += 2*BPP, dst += BPP)
+        for(const uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += 2*BPP, dst += BPP)
         {
             for(int i = 0; i < BPP; ++i)
             {
@@ -51,7 +55,7 @@ static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 }
 
 template<int BPP>
-static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+static void shifttexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = sw/dw,
          hfrac = sh/dh,
@@ -66,18 +70,18 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
         hshift++;
     }
     uint tshift = wshift + hshift;
-    for(uchar *yend = &src[sh*stride]; src < yend;)
+    for(const uchar *yend = &src[sh*stride]; src < yend;)
     {
-        for(uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
+        for(const uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
         {
 
             uint t[BPP] = {0};
-            for(uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
+            for(const uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
                 ycur < yend;
                 ycur += stride, xend += stride)
             {
                 //going to (xend - 1) seems to be necessary to avoid buffer overrun
-                for(uchar *xcur = ycur; xcur < xend -1; xcur += BPP)
+                for(const uchar *xcur = ycur; xcur < xend -1; xcur += BPP)
                 {
                     for(int i = 0; i < BPP; ++i)
                     {
@@ -95,7 +99,7 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 }
 
 template<int BPP>
-static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = (sw<<12)/dw,
          hfrac = (sh<<12)/dh,
@@ -181,7 +185,7 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     }
 }
 
-void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
+void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
 {
     if(sw == dw*2 && sh == dh*2)
     {
@@ -215,62 +219,8 @@ void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, 
     }
 }
 
-void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
-{
-    int stridex = bpp,
-        stridey = bpp;
-    if(swapxy)
-    {
-        stridex *= sh;
-    }
-    else
-    {
-        stridey *= sw;
-    }
-    if(flipx)
-    {
-        dst += (sw-1)*stridex;
-        stridex = -stridex;
-    }
-    if(flipy)
-    {
-        dst += (sh-1)*stridey;
-        stridey = -stridey;
-    }
-    uchar *srcrow = src;
-    for(int i = 0; i < sh; ++i)
-    {
-        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*bpp]; src < end;)
-        {
-            uchar nx = *src++, ny = *src++;
-            if(flipx)
-            {
-                nx = 255-nx;
-            }
-            if(flipy)
-            {
-                ny = 255-ny;
-            }
-            if(swapxy)
-            {
-                std::swap(nx, ny);
-            }
-            curdst[0] = nx;
-            curdst[1] = ny;
-            curdst[2] = *src++;
-            if(bpp > 3)
-            {
-                curdst[3] = *src++;
-            }
-            curdst += stridex;
-        }
-        srcrow += stride;
-        dst += stridey;
-    }
-}
-
 template<int BPP>
-static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+static void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     int stridex = BPP,
         stridey = BPP;
@@ -292,10 +242,13 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uc
         dst += (sh-1)*stridey;
         stridey = -stridey;
     }
-    uchar *srcrow = src;
+    const uchar *srcrow = src;
     for(int i = 0; i < sh; ++i)
     {
-        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*BPP]; src < end;)
+        uchar* curdst;
+        const uchar* src;
+        const uchar* end;
+        for(curdst = dst, src = srcrow, end = &srcrow[sw*BPP]; src < end;)
         {
             for(int k = 0; k < BPP; ++k)
             {
@@ -308,7 +261,7 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uc
     }
 }
 
-void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     switch(bpp)
     {
@@ -330,7 +283,7 @@ VARF(trilinear,     0,   1,      1,     initwarning("texture filtering", Init_Lo
 VARF(bilinear,      0,   1,      1,     initwarning("texture filtering", Init_Load));
 VARFP(aniso,        0,   0,      16,    initwarning("texture filtering", Init_Load));
 
-int formatsize(GLenum format)
+static int formatsize(GLenum format)
 {
     switch(format)
     {
@@ -395,7 +348,7 @@ static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum targ
     }
 }
 
-static int texalign(const void *data, int w, int bpp)
+static int texalign(int w, int bpp)
 {
     int stride = w*bpp;
     if(stride&1)
@@ -427,7 +380,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
     else if(tw*bpp != pitch)
     {
         row = pitch/bpp;
-        rowalign = texalign(pixels, pitch, 1);
+        rowalign = texalign(pitch, 1);
         while(rowalign > 0 && ((row*bpp + rowalign - 1)/rowalign)*rowalign != pitch)
         {
             rowalign >>= 1;
@@ -449,7 +402,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
         {
             pitch = tw*bpp;
         }
-        int srcalign = row > 0 ? rowalign : texalign(src, pitch, 1);
+        int srcalign = row > 0 ? rowalign : texalign(pitch, 1);
         if(align != srcalign)
         {
             glPixelStorei(GL_UNPACK_ALIGNMENT, align = srcalign);
@@ -574,7 +527,7 @@ const GLint *swizzlemask(GLenum format)
     return nullptr;
 }
 
-void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
+static void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
 {
     glBindTexture(target, tnum);
     glTexParameteri(target, GL_TEXTURE_WRAP_S, clamp&1 ? GL_CLAMP_TO_EDGE : (clamp&0x100 ? GL_MIRRORED_REPEAT : GL_REPEAT));
@@ -799,7 +752,7 @@ void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int fi
     uploadtexture(subtarget, component, tw, th, format, type, pixels, pw, ph, pitch, mipmap);
 }
 
-void createcompressedtexture(int tnum, int w, int h, const uchar *data, int align, int blocksize, int levels, int clamp, int filter, GLenum format, GLenum subtarget, bool swizzle = false)
+static void createcompressedtexture(int tnum, int w, int h, const uchar *data, int align, int blocksize, int levels, int clamp, int filter, GLenum format, GLenum subtarget, bool swizzle = false)
 {
     GLenum target = textarget(subtarget);
     if(tnum)
@@ -927,7 +880,6 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     }
     t->w = t->xs = s.w;
     t->h = t->ys = s.h;
-    t->ratio = t->w / static_cast<float>(t->h);
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
     glGenTextures(1, &t->id);
     if(s.compressed)
@@ -1065,24 +1017,24 @@ SDL_Surface *loadsurface(const char *name)
     return fixsurfaceformat(s);
 }
 
-uchar *loadalphamask(Texture *t)
+const uchar * Texture::loadalphamask()
 {
-    if(t->alphamask)
+    if(alphamask)
     {
-        return t->alphamask;
+        return alphamask;
     }
-    if(!(t->type&Texture::ALPHA))
+    if(!(type&Texture::ALPHA))
     {
         return nullptr;
     }
     ImageData s;
-    if(!s.texturedata(t->name, false) || !s.data || s.compressed)
+    if(!s.texturedata(name, false) || !s.data || s.compressed)
     {
         return nullptr;
     }
-    t->alphamask = new uchar[s.h * ((s.w+7)/8)];
+    alphamask = new uchar[s.h * ((s.w+7)/8)];
     uchar *srcrow = s.data,
-          *dst = t->alphamask-1;
+          *dst = alphamask-1;
     for(int y = 0; y < s.h; ++y)
     {
         uchar *src = srcrow+s.bpp-1;
@@ -1101,7 +1053,12 @@ uchar *loadalphamask(Texture *t)
         }
         srcrow += s.pitch;
     }
-    return t->alphamask;
+    return alphamask;
+}
+
+float Texture::ratio() const
+{
+    return (w / static_cast<float>(h));
 }
 
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
@@ -1198,7 +1155,7 @@ void materialreset()
     }
 }
 
-void decalreset(int *n)
+void decalreset(const int *n)
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
     {
@@ -1769,7 +1726,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             {
                 string name;
                 getstring(name, buf);
-                SlotShaderParam p = { name[0] ? getshaderparamname(name) : nullptr, -1, 0, { 0, 0, 0, 0 } };
+                SlotShaderParam p = { name[0] ? getshaderparamname(name) : nullptr, SIZE_MAX, 0, { 0, 0, 0, 0 } };
                 for(int i = 0; i < 4; ++i)
                 {
                     p.val[i] = getfloat(buf);
@@ -1858,7 +1815,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
     return true;
 }
 
-VSlot *findvslot(Slot &slot, const VSlot &src, const VSlot &delta)
+VSlot *findvslot(const Slot &slot, const VSlot &src, const VSlot &delta)
 {
     for(VSlot *dst = slot.variants; dst; dst = dst->next)
     {
@@ -1930,26 +1887,27 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
     }
 }
 
-const struct slottex
-{
-    const char *name;
-    int id;
-} slottexs[] =
-{
-    {"0", Tex_Diffuse},
-    {"1", Tex_Unknown},
-
-    {"c", Tex_Diffuse},
-    {"u", Tex_Unknown},
-    {"n", Tex_Normal},
-    {"g", Tex_Glow},
-    {"s", Tex_Spec},
-    {"z", Tex_Depth},
-    {"a", Tex_Alpha}
-};
-
 int findslottex(const char *name)
 {
+
+    const struct slottex
+    {
+        const char *name;
+        int id;
+    } slottexs[] =
+    {
+        {"0", Tex_Diffuse},
+        {"1", Tex_Unknown},
+
+        {"c", Tex_Diffuse},
+        {"u", Tex_Unknown},
+        {"n", Tex_Normal},
+        {"g", Tex_Glow},
+        {"s", Tex_Spec},
+        {"z", Tex_Depth},
+        {"a", Tex_Alpha}
+    };
+
     for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
         if(!std::strcmp(slottexs[i].name, name))
@@ -2584,18 +2542,18 @@ Texture *Slot::loadthumbnail()
 
 // environment mapped reflections
 
-void cleanuptexture(Texture *t)
+void Texture::cleanup()
 {
-    delete[] t->alphamask;
-    t->alphamask = nullptr;
-    if(t->id)
+    delete[] alphamask;
+    alphamask = nullptr;
+    if(id)
     {
-        glDeleteTextures(1, &t->id);
-        t->id = 0;
+        glDeleteTextures(1, &id);
+        id = 0;
     }
-    if(t->type&Texture::TRANSIENT)
+    if(type&Texture::TRANSIENT)
     {
-        textures.remove(t->name);
+        textures.remove(name);
     }
 }
 
@@ -2617,7 +2575,7 @@ void cleanuptextures()
     {
         decalslots[i]->cleanup();
     }
-    ENUMERATE(textures, Texture, tex, cleanuptexture(&tex));
+    ENUMERATE(textures, Texture, tex, tex.cleanup());
 }
 
 bool reloadtexture(const char *name)
@@ -2625,24 +2583,24 @@ bool reloadtexture(const char *name)
     Texture *t = textures.access(copypath(name));
     if(t)
     {
-        return reloadtexture(*t);
+        return t->reload();
     }
     return true;
 }
 
-bool reloadtexture(Texture &tex)
+bool Texture::reload()
 {
-    if(tex.id)
+    if(id)
     {
         return true;
     }
-    switch(tex.type&Texture::TYPE)
+    switch(type&TYPE)
     {
-        case Texture::IMAGE:
+        case IMAGE:
         {
             int compress = 0;
             ImageData s;
-            if(!s.texturedata(tex.name, true, &compress) || !newtexture(&tex, nullptr, s, tex.clamp, tex.mipmap, false, false, compress))
+            if(!s.texturedata(name, true, &compress) || !newtexture(this, nullptr, s, clamp, mipmap, false, false, compress))
             {
                 return false;
             }
@@ -2669,7 +2627,7 @@ void reloadtex(char *name)
     t->alphamask = nullptr;
     Texture oldtex = *t;
     t->id = 0;
-    if(!reloadtexture(*t))
+    if(!t->reload())
     {
         if(t->id)
         {
@@ -2686,7 +2644,7 @@ void reloadtextures()
     ENUMERATE(textures, Texture, tex,
     {
         loadprogress = static_cast<float>(++reloaded)/textures.numelems;
-        reloadtexture(tex);
+        tex.reload();
     });
     loadprogress = 0;
 }
@@ -2708,7 +2666,17 @@ static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, ui
 
 VARP(compresspng, 0, 9, 9);
 
-static void savepng(const char *filename, ImageData &image, bool flip)
+static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, stream* f, uint& crc)
+{
+    int flush = buflen- z.avail_out;
+    crc = crc32(crc, buf, flush);
+    len += flush;
+    f->write(buf, flush);
+    z.next_out = static_cast<Bytef *>(buf);
+    z.avail_out = buflen;
+}
+
+static void savepng(const char *filename, const ImageData &image, bool flip)
 {
     uchar ctype = 0;
     switch(image.bpp)
@@ -2749,9 +2717,24 @@ static void savepng(const char *filename, ImageData &image, bool flip)
     f->write(signature, sizeof(signature));
     struct pngihdr
     {
-        uint width, height;
-        uchar bitdepth, colortype, compress, filter, interlace;
-    } ihdr = { static_cast<uint>(endianswap(image.w)), static_cast<uint>(endianswap(image.h)), 8, ctype, 0, 0, 0 };
+        uint width,
+             height;
+        uchar bitdepth,
+              colortype,
+              compress,
+              filter,
+              interlace;
+    };
+    pngihdr ihdr =
+    {
+        static_cast<uint>(endianswap(image.w)),
+        static_cast<uint>(endianswap(image.h)),
+        8,
+        ctype,
+        0,
+        0,
+        0
+    };
     writepngchunk(f, "IHDR", reinterpret_cast<uchar *>(&ihdr), 13);
     stream::offset idat = f->tell();
     uint len = 0;
@@ -2782,16 +2765,7 @@ static void savepng(const char *filename, ImageData &image, bool flip)
                 {
                     goto cleanuperror; //goto is beneath FLUSHZ macro
                 }
-//========================================================================FLUSHZ
-                #define FLUSHZ do { \
-                    int flush = sizeof(buf) - z.avail_out; \
-                    crc = crc32(crc, buf, flush); \
-                    len += flush; \
-                    f->write(buf, flush); \
-                    z.next_out = static_cast<Bytef *>(buf); \
-                    z.avail_out = sizeof(buf); \
-                } while(0)
-                FLUSHZ;
+                flushzip(z, buf, sizeof(buf), len, f, crc);
             }
         }
     }
@@ -2803,14 +2777,12 @@ static void savepng(const char *filename, ImageData &image, bool flip)
         {
             goto cleanuperror;
         }
-        FLUSHZ;
+        flushzip(z, buf, sizeof(buf), len, f, crc);
         if(err == Z_STREAM_END)
         {
             break;
         }
     }
-#undef FLUSHZ
-//==============================================================================
     deflateEnd(&z);
 
     f->seek(idat, SEEK_SET);
@@ -2871,7 +2843,7 @@ void screenshot(char *filename)
     }
 
     ImageData image(screenw, screenh, 3);
-    glPixelStorei(GL_PACK_ALIGNMENT, texalign(image.data, screenw, 3));
+    glPixelStorei(GL_PACK_ALIGNMENT, texalign(screenw, 3));
     glReadPixels(0, 0, screenw, screenh, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     savepng(path(buf), image, true);
 }

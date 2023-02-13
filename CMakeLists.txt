@@ -62,10 +62,11 @@ add_library(primis SHARED
         src/engine/render/normal.cpp
         src/engine/render/octarender.cpp
         src/engine/render/octarender.h
+        src/engine/render/postfx.cpp
+        src/engine/render/postfx.h
         src/engine/render/radiancehints.cpp
         src/engine/render/radiancehints.h
         src/engine/render/renderalpha.cpp
-        src/engine/render/renderalpha.h
         src/engine/render/rendergl.cpp
         src/engine/render/rendergl.h
         src/engine/render/renderlights.cpp
@@ -85,6 +86,7 @@ add_library(primis SHARED
         src/engine/render/renderwindow.cpp
         src/engine/render/renderwindow.h
         src/engine/render/shader.cpp
+        src/engine/render/shader.h
         src/engine/render/stain.cpp
         src/engine/render/stain.h
         src/engine/render/texture.cpp
@@ -115,7 +117,6 @@ add_library(primis SHARED
         src/engine/world/world.cpp
         src/engine/world/world.h
         src/engine/world/worldio.cpp
-        src/engine/world/worldio.h
         src/libprimis-headers/command.h
         src/libprimis-headers/consts.h
         src/libprimis-headers/cube.h
@@ -123,6 +124,7 @@ add_library(primis SHARED
         src/libprimis-headers/geom.h
         src/libprimis-headers/iengine.h
         src/libprimis-headers/octa.h
+        src/libprimis-headers/sound.h
         src/libprimis-headers/tools.h
         src/shared/geom.cpp
         src/shared/geomexts.h

@@ -11,7 +11,7 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void conoutfv(int type, const char *fmt, va_list args);
 const char *getkeyname(int code);
 extern tagval *addreleaseaction(ident *id, int numargs);
-extern void writebinds(stream *f);
-extern void writecompletions(stream *f);
+extern void writebinds(std::fstream& f);
+extern void writecompletions(std::fstream& f);
 
 #endif

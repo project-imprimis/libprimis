@@ -21,6 +21,7 @@
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendertimers.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -34,13 +35,14 @@ int bloomw = -1,
 
 //gl buffers needed for bloom effect
 GLuint hdrfbo = 0,
-       hdrtex = 0,
-       bloompbo = 0,
-       bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
-       bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
+       hdrtex = 0;
 
 namespace
 {
+    GLuint bloompbo = 0,
+           bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
+           bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
+
     GLenum bloomformat = 0;
     int lasthdraccum = 0;
 

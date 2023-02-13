@@ -10,17 +10,15 @@ namespace lightsphere
 {
     namespace
     {
-        vec *verts = nullptr;
-        GLushort *indices = nullptr;
         int numverts   = 0,
             numindices = 0;
-        GLuint vbuf = 0,
-               ebuf = 0;
+        GLuint vbuf = 0, //the GLuint pointing to the lightsphere vertex buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
+               ebuf = 0; //the GLuint pointing to the lightsphere element buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
 
         void init(int slices, int stacks)
         {
             numverts = (stacks+1)*(slices+1);
-            verts = new vec[numverts];
+            vec * verts = new vec[numverts];
             float ds = 1.0f/slices,
                   dt = 1.0f/stacks,
                   t  = 1.0f;
@@ -40,7 +38,7 @@ namespace lightsphere
             }
 
             numindices = (stacks-1)*slices*3*2;
-            indices = new ushort[numindices];
+            GLushort *indices = new ushort[numindices];
             GLushort *curindex = indices;
             for(int i = 0; i < stacks; ++i)
             {
@@ -101,13 +99,13 @@ namespace lightsphere
         }
         gle::bindvbo(vbuf);
         gle::bindebo(ebuf);
-        gle::vertexpointer(sizeof(vec), verts);
+        gle::vertexpointer(sizeof(vec), nullptr);
         gle::enablevertex();
     }
 
     void draw()
     {
-        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, indices);
+        glDrawRangeElements(GL_TRIANGLES, 0, numverts-1, numindices, GL_UNSIGNED_SHORT, nullptr);
         xtraverts += numindices;
         glde++;
     }

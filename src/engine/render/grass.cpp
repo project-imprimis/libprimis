@@ -13,6 +13,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderva.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -94,7 +95,7 @@ namespace //internal functionality not seen by other files
     //generate the grass geometry placed above cubes
     //grass always faces the camera (billboarded)
     //and therefore grass geom is calculated realtime to face the cam
-    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
+    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, const Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
         int tstep = static_cast<int>(std::ceil(t/grassstep));
@@ -277,11 +278,11 @@ namespace //internal functionality not seen by other files
     }
 
     // generates grass geometry for a given vertex array
-    void gengrassquads(vtxarray *va)
+    void gengrassquads(const vtxarray &va)
     {
-        for(uint i = 0; i < va->grasstris.size(); i++)
+        for(uint i = 0; i < va.grasstris.size(); i++)
         {
-            grasstri &g = va->grasstris[i];
+            const grasstri &g = va.grasstris[i];
             if(view.isfoggedsphere(g.radius, g.center))
             {
                 continue;
@@ -369,7 +370,7 @@ void generategrass()
         {
             continue;
         }
-        gengrassquads(va);
+        gengrassquads(*va);
     }
 
     if(grassgroups.empty())

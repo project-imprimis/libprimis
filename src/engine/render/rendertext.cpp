@@ -18,8 +18,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-
-#include "SDL_ttf.h"
+#include "../../shared/hashtable.h"
 
 #include "rendergl.h"
 #include "rendertext.h"
@@ -215,11 +214,6 @@ static void fontalias(const char *dst, const char *src)
     fontdeftex = d->texs.size()-1;
 }
 
-font *findfont(const char *name)
-{
-    return &fonts[name];
-}
-
 bool setfont(const char *name)
 {
     font *f = &fonts[name];
@@ -284,162 +278,7 @@ static int texttab(float x)
     return (static_cast<int>((x)/fonttab())+1.0f)*fonttab();
 }
 
-void tabify(const char *str, int *numtabs)
-{
-    int tw   = std::max(*numtabs, 0)*fonttab()-1,
-        tabs = 0;
-    for(float w = text_widthf(str); w <= tw; w = texttab(w))
-    {
-        ++tabs;
-    }
-    int len = std::strlen(str);
-    char *tstr = newstring(len + tabs);
-    std::memcpy(tstr, str, len);
-    std::memset(&tstr[len], '\t', tabs);
-    tstr[len+tabs] = '\0';
-    stringret(tstr);
-}
-
-void draw_textf(const char *fstr, float left, float top, ...)
-{
-    DEFV_FORMAT_STRING(str, top, fstr);
-    draw_text(str, left, top);
-}
-
-const matrix4x3 *textmatrix = nullptr;
 float textscale = 1;
-
-static float draw_char(Texture *&tex, int c, float x, float y, float scale)
-{
-    font::charinfo &info = curfont->chars[c-curfont->charoffset];
-    if(tex != curfont->texs[info.tex])
-    {
-        xtraverts += gle::end();
-        tex = curfont->texs[info.tex];
-        glBindTexture(GL_TEXTURE_2D, tex->id);
-    }
-    x *= textscale;
-    y *= textscale;
-    scale *= textscale;
-    float x1 = x + scale*info.offsetx,
-          y1 = y + scale*info.offsety,
-          x2 = x + scale*(info.offsetx + info.w),
-          y2 = y + scale*(info.offsety + info.h),
-          tx1 = info.x / tex->xs,
-          ty1 = info.y / tex->ys,
-          tx2 = (info.x + info.w) / tex->xs,
-          ty2 = (info.y + info.h) / tex->ys;
-    //GL_TRIANGLE_FAN and GL_TRIANGLE_STRIP seem to create artifacts, so both triangles are defined explicitly
-    if(textmatrix)
-    {
-        gle::attrib(textmatrix->transform(vec2(x1, y1))); gle::attribf(tx1, ty1);
-        gle::attrib(textmatrix->transform(vec2(x2, y1))); gle::attribf(tx2, ty1);
-        gle::attrib(textmatrix->transform(vec2(x1, y2))); gle::attribf(tx1, ty2);
-        gle::attrib(textmatrix->transform(vec2(x2, y2))); gle::attribf(tx2, ty2);
-        gle::attrib(textmatrix->transform(vec2(x1, y2))); gle::attribf(tx1, ty2);
-        gle::attrib(textmatrix->transform(vec2(x2, y1))); gle::attribf(tx2, ty1);
-    }
-    else
-    {
-        gle::attribf(x1, y1); gle::attribf(tx1, ty1);
-        gle::attribf(x2, y1); gle::attribf(tx2, ty1);
-        gle::attribf(x1, y2); gle::attribf(tx1, ty2);
-        gle::attribf(x2, y2); gle::attribf(tx2, ty2);
-        gle::attribf(x1, y2); gle::attribf(tx1, ty2);
-        gle::attribf(x2, y1); gle::attribf(tx2, ty1);
-    }
-    return scale*info.advance;
-}
-
-VARP(textbright, 0, 85, 100);  //brightness factor for rendered text (no change if at 100)
-
-//stack[sp] is current color index
-static void text_color(char c, char *stack, int size, int &sp, bvec color, int a)
-{
-    if(c=='s') // save color
-    {
-        c = stack[sp];
-        if(sp<size-1) stack[++sp] = c;
-    }
-    else
-    {
-        xtraverts += gle::end();
-        if(c=='r')
-        {
-            if(sp > 0)
-            {
-                --sp; c = stack[sp];
-            } // restore color
-        }
-        else
-        {
-            stack[sp] = c;
-        }
-        switch(c)
-        {
-            case '0':
-            {
-                color = bvec( 64, 255, 128);
-                break;   // green: player talk
-            }
-            case '1':
-            {
-                color = bvec( 96, 160, 255);
-                break;   // blue: "echo" command
-            }
-            case '2':
-            {
-                color = bvec(255, 192,  64);
-                break;   // yellow: gameplay messages
-            }
-            case '3':
-            {
-                color = bvec(255,  64,  64);
-                break;   // red: important errors
-            }
-            case '4':
-            {
-                color = bvec(128, 128, 128);
-                break;   // gray
-            }
-            case '5':
-            {
-                color = bvec(192,  64, 192);
-                break;   // magenta
-            }
-            case '6':
-            {
-                color = bvec(255, 128,   0);
-                break;   // orange
-            }
-            case '7':
-            {
-                color = bvec(255, 255, 255);
-                break;   // white
-            }
-            case '8':
-            {
-                color = bvec( 80, 207, 229);
-                break;   // "Tesseract Blue"
-            }
-            case '9':
-            {
-                color = bvec(160, 240, 120);
-                break;
-            }
-            default:
-            {
-                gle::color(color, a);
-                return;          // provided color: everything else
-            }
-        }
-        if(textbright != 100)
-        {
-            color.scale(textbright, 100);
-        }
-        gle::color(color, a);
-    }
-}
 
 #define TEXTSKELETON \
     float y = 0, \
@@ -633,87 +472,13 @@ void text_boundsf(const char *str, float &width, float &height, int maxwidth)
     #undef TEXTWORD
 }
 
-Shader *textshader = nullptr;
-
-void draw_text(const char *str, float left, float top, int r, int g, int b, int a, int cursor, int maxwidth)
-{
-    #define TEXTINDEX(idx) \
-    { \
-        if(idx == cursor) \
-        { \
-            cx = x; \
-            cy = y; \
-        } \
-    }
-    #define TEXTWHITE(idx)
-    #define TEXTLINE(idx)
-    #define TEXTCOLOR(idx) \
-    { \
-        if(usecolor) \
-        { \
-            text_color(str[idx], colorstack, sizeof(colorstack), colorpos, color, a); \
-        } \
-    }
-    #define TEXTCHAR(idx) \
-    { \
-        draw_char(tex, c, left+x, top+y, scale); \
-        x += cw; \
-    }
-    #define TEXTWORD TEXTWORDSKELETON
-    char colorstack[10];
-    colorstack[0] = '\0'; //indicate user color
-    bvec color(r, g, b);
-    if(textbright != 100)
-    {
-        color.scale(textbright, 100);
-    }
-    int colorpos = 0;
-    float cx = -fontwidth(),
-          cy = 0;
-    bool usecolor = true;
-    if(a < 0)
-    {
-        usecolor = false;
-        a = -a;
-    }
-    Texture *tex = curfont->texs[0];
-    (textshader ? textshader : hudtextshader)->set();
-    LOCALPARAMF(textparams, curfont->bordermin, curfont->bordermax, curfont->outlinemin, curfont->outlinemax);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindTexture(GL_TEXTURE_2D, tex->id);
-    gle::color(color, a);
-    gle::defvertex(textmatrix ? 3 : 2);
-    gle::deftexcoord0();
-    gle::begin(GL_TRIANGLES);
-    TEXTSKELETON
-    TEXTEND(cursor)
-    xtraverts += gle::end();
-    if(cursor >= 0 && (totalmillis/250)&1)
-    {
-        gle::color(color, a);
-        if(maxwidth >= 0 && cx >= maxwidth && cx > 0)
-        {
-            cx = 0;
-            cy += FONTH;
-        }
-        draw_char(tex, '_', left+cx, top+cy, scale);
-        xtraverts += gle::end();
-    }
-    #undef TEXTINDEX
-    #undef TEXTWHITE
-    #undef TEXTLINE
-    #undef TEXTCOLOR
-    #undef TEXTCHAR
-    #undef TEXTWORD
-}
-
 void reloadfonts()
 {
     for(auto &[k, f] : fonts)
     {
         for(uint i = 0; i < f.texs.size(); i++)
         {
-            if(!reloadtexture(*f.texs[i]))
+            if(!f.texs[i]->reload())
             {
                 fatal("failed to reload font texture");
             }
@@ -724,7 +489,6 @@ void reloadfonts()
 void initrendertextcmds()
 {
     addcommand("fontalias", reinterpret_cast<identfun>(fontalias), "ss", Id_Command);
-    addcommand("tabify", reinterpret_cast<identfun>(tabify), "si", Id_Command);
     addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
     addcommand("fontborder", reinterpret_cast<identfun>(fontborder), "ff", Id_Command);
     addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);

@@ -9,7 +9,6 @@
 #include "octaedit.h"
 #include "octaworld.h"
 #include "raycube.h"
-#include "worldio.h"
 #include "world.h"
 
 #include "interface/console.h"
@@ -23,9 +22,9 @@
 
 VARR(mapversion, 1, currentmapversion, 0);
 
-string clientmap = "";
+static std::string clientmap = "";
 
-void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
+static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
 {
     if(prefix)
     {
@@ -60,9 +59,15 @@ void validmapname(char *dst, const char *src, const char *prefix = nullptr, cons
     }
 }
 
-void fixmapname(char *name)
+//used in iengine.h
+const char * getclientmap()
 {
-    validmapname(name, name, nullptr, "");
+    return clientmap.c_str();
+}
+
+void setmapname(const char * newname)
+{
+    clientmap = std::string(newname);
 }
 
 static void fixent(entity &e, int version)
@@ -135,11 +140,9 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     return true;
 }
 
-string ogzname, bakname, cfgname, picname;
-
 VARP(savebak, 0, 2, 2);
 
-void setmapfilenames(const char *fname, const char *cname = nullptr)
+void cubeworld::setmapfilenames(const char *fname, const char *cname)
 {
     string name;
     validmapname(name, fname);
@@ -167,7 +170,7 @@ void setmapfilenames(const char *fname, const char *cname = nullptr)
 
 void mapcfgname()
 {
-    const char *mname = clientmap;
+    const char *mname = clientmap.c_str();
     string name;
     validmapname(name, mname);
     DEF_FORMAT_STRING(cfgname, "media/map/%s.cfg", name);
@@ -193,7 +196,7 @@ enum OctaSave
 
 static int savemapprogress = 0;
 
-void cubeworld::savec(cube *c, const ivec &o, int size, stream *f)
+void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * const f)
 {
     if((savemapprogress++&0xFFF)==0)
     {
@@ -602,9 +605,8 @@ void savevslot(stream *f, VSlot &vs, int prev)
     if(vs.changed & (1 << VSlot_ShParam))
     {
         f->put<ushort>(vs.params.size());
-        for(uint i = 0; i < vs.params.size(); i++)
+        for(const SlotShaderParam& p : vs.params)
         {
-            SlotShaderParam &p = vs.params[i];
             f->put<ushort>(std::strlen(p.name));
             f->write(p.name, std::strlen(p.name));
             for(int k = 0; k < 4; ++k)
@@ -733,7 +735,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
                 f->seek(nlen - (maxstrlen-1), SEEK_CUR);
             }
             p.name = getshaderparamname(name);
-            p.loc = -1;
+            p.loc = SIZE_MAX;
             for(int k = 0; k < 4; ++k)
             {
                 p.val[k] = f->get<float>();
@@ -803,7 +805,7 @@ void loadvslots(stream *f, int numvslots)
     {
         return;
     }
-    int *prev = new int[numvslots];
+    uint *prev = new uint[numvslots];
     if(!prev)
     {
         return;
@@ -842,7 +844,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
-        mname = clientmap;
+        mname = clientmap.c_str();
     }
     setmapfilenames(*mname ? mname : "untitled");
     if(savebak)
@@ -869,12 +871,12 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     std::memcpy(hdr.magic, "TMAP", 4);
     hdr.version = currentmapversion;
     hdr.headersize = sizeof(hdr);
-    hdr.worldsize = worldsize;
+    hdr.worldsize = mapsize();
     hdr.numents = 0;
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity* const& e : ents)
     {
-        if(ents[i]->type!=EngineEnt_Empty)
+        if(e->type!=EngineEnt_Empty)
         {
             hdr.numents++;
         }
@@ -959,7 +961,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
+    savec(worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;
@@ -1000,13 +1002,12 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
     worldroot = nullptr;
-    int worldscale = 0;
-    while(1<<worldscale < hdr.worldsize)
+    int loadedworldscale = 0;
+    while(1<<loadedworldscale < hdr.worldsize)
     {
-        worldscale++;
+        loadedworldscale++;
     }
-    setvar("mapsize", 1<<worldscale, true, false);
-    setvar("mapscale", worldscale, true, false);
+    worldscale = loadedworldscale;
     renderprogress(0, "loading vars...");
     for(int i = 0; i < hdr.numvars; ++i)
     {

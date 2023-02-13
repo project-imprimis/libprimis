@@ -24,22 +24,21 @@ namespace gle
     inline const char * const attribnames[Attribute_NumAttributes] = { "vvertex", "vcolor", "vtexcoord0", "vtexcoord1", "vnormal", "vtangent", "vboneweight", "vboneindex" };
     extern ucharbuf attribbuf;
 
-    extern int enabled;
-    extern void forcedisable();
-    inline void disable() { if(enabled) forcedisable(); }
+    extern void disable();
 
     extern void begin(GLenum mode);
     extern void begin(GLenum mode, int numverts);
     extern void multidraw();
-    extern void defattrib(int type, int size, int format);
 
     extern void defvertex(int size = 3, int format = GL_FLOAT);
     extern void defcolor(int size = 3, int format = GL_FLOAT);
     extern void deftexcoord0(int size = 2, int format = GL_FLOAT);
     extern void defnormal(int size = 3, int format = GL_FLOAT);
 
-    extern void colorf(float x, float y, float z);
-    extern void colorf(float x, float y, float z, float w);
+    /**
+     *  if w = 0, then glvertexattrib3f is called, else glvertexattrib4f
+     */
+    extern void colorf(float x, float y, float z, float w = 0.0f);
 
     extern void color(const vec &v);
     extern void color(const vec &v, float w);

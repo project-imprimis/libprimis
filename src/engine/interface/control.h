@@ -25,9 +25,6 @@ enum
 };
 extern bool initwarning(const char *desc, int level = Init_Reset, int type = Change_Graphics);
 
-extern float loadprogress;
-
 extern int getclockmillis();
-
 
 #endif

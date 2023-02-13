@@ -11,6 +11,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 #include "aa.h"
 #include "grass.h"
@@ -18,7 +19,6 @@
 #include "hud.h"
 #include "octarender.h"
 #include "radiancehints.h"
-#include "renderalpha.h"
 #include "rendergl.h"
 #include "renderlights.h"
 #include "rendermodel.h"
@@ -27,6 +27,7 @@
 #include "rendertimers.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 #include "water.h"
@@ -49,12 +50,10 @@ bool hasFBMSBS = false,
      hasEGPU4  = false,
      hasES3    = false,
      hasCI     = false;
-bool mesa   = false,
-     intel  = false,
-     amd    = false,
-     nvidia = false;
 
 int hasstencil = 0;
+
+VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 
 //read-only info for gl debugging
 VAR(glversion, 1, 0, 0);
@@ -72,11 +71,7 @@ PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_ = null
 // GL_ARB_texture_multisample
 PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_ = nullptr;
 PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_ = nullptr;
-PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_      = nullptr;
 PFNGLSAMPLEMASKIPROC           glSampleMaski_           = nullptr;
-
-// GL_ARB_sample_shading
-PFNGLMINSAMPLESHADINGPROC glMinSampleShading_ = nullptr;
 
 // OpenGL 1.3
 #ifdef WIN32
@@ -100,31 +95,8 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC   glGetCompressedTexImage_   = nullptr;
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 #endif
 
-// OpenGL 3.0
-PFNGLGETSTRINGIPROC           glGetStringi_           = nullptr;
-PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation_ = nullptr;
-PFNGLUNIFORM1UIPROC           glUniform1ui_           = nullptr;
-PFNGLUNIFORM2UIPROC           glUniform2ui_           = nullptr;
-PFNGLUNIFORM3UIPROC           glUniform3ui_           = nullptr;
-PFNGLUNIFORM4UIPROC           glUniform4ui_           = nullptr;
-PFNGLUNIFORM1UIVPROC          glUniform1uiv_          = nullptr;
-PFNGLUNIFORM2UIVPROC          glUniform2uiv_          = nullptr;
-PFNGLUNIFORM3UIVPROC          glUniform3uiv_          = nullptr;
-PFNGLUNIFORM4UIVPROC          glUniform4uiv_          = nullptr;
-
 // GL_EXT_draw_buffers2
 PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
-PFNGLENABLEIPROC    glEnablei_    = nullptr;
-PFNGLDISABLEIPROC   glDisablei_   = nullptr;
-
-// GL_EXT_texture_integer
-PFNGLTEXPARAMETERIIVPROC     glTexParameterIiv_     = nullptr;
-PFNGLTEXPARAMETERIUIVPROC    glTexParameterIuiv_    = nullptr;
-PFNGLGETTEXPARAMETERIIVPROC  glGetTexParameterIiv_  = nullptr;
-PFNGLGETTEXPARAMETERIUIVPROC glGetTexParameterIuiv_ = nullptr;
-
-// GL_ARB_uniform_buffer_object
-PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_     = nullptr;
 
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
@@ -134,13 +106,10 @@ PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
 
 // GL_ARB_map_buffer_range
 PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
-PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_ = nullptr;
 
 // GL_ARB_vertex_array_object
-PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_    = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
-PFNGLISVERTEXARRAYPROC      glIsVertexArray_      = nullptr;
 
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
@@ -152,7 +121,7 @@ void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
     for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
 }
 
-void *getprocaddress(const char *name)
+static void *getprocaddress(const char *name)
 {
     return SDL_GL_GetProcAddress(name);
 }
@@ -214,24 +183,24 @@ VAR(debugexts, 0, 0, 1);
 
 static std::unordered_set<std::string> glexts;
 
-void parseglexts()
+static void parseglexts()
 {
     GLint numexts = 0;
     glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
     for(int i = 0; i < numexts; ++i)
     {
         //cast from uchar * to char *
-        const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
+        const char *ext = reinterpret_cast<const char *>(glGetStringi(GL_EXTENSIONS, i));
         glexts.insert(ext);
     }
 }
 
-bool hasext(const char *ext)
+static bool hasext(const char *ext)
 {
     return glexts.find(ext)!=glexts.end();
 }
 
-bool checkdepthtexstencilrb()
+static bool checkdepthtexstencilrb()
 {
     int w = 256,
         h = 256;
@@ -264,6 +233,10 @@ bool checkdepthtexstencilrb()
 
 void gl_checkextensions()
 {
+    bool mesa   = false,
+         intel  = false,
+         amd    = false,
+         nvidia = false;
     const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR)),
                *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER)),
                *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
@@ -304,8 +277,6 @@ void gl_checkextensions()
     {
         fatal("OpenGL 4.0 or greater is required!");
     }
-
-    glGetStringi_          =      (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
     const char *glslstr = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
@@ -352,20 +323,9 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 4 draw buffers.");
     }
     //OpenGL 3.0
-    glBindVertexArray_    = (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
     glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
-    glIsVertexArray_      = (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
 
-    glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)    getprocaddress("glBindFragDataLocation");
-    glUniform1ui_     =           (PFNGLUNIFORM1UIPROC)          getprocaddress("glUniform1ui");
-    glUniform2ui_     =           (PFNGLUNIFORM2UIPROC)          getprocaddress("glUniform2ui");
-    glUniform3ui_     =           (PFNGLUNIFORM3UIPROC)          getprocaddress("glUniform3ui");
-    glUniform4ui_     =           (PFNGLUNIFORM4UIPROC)          getprocaddress("glUniform4ui");
-    glUniform1uiv_    =           (PFNGLUNIFORM1UIVPROC)         getprocaddress("glUniform1uiv");
-    glUniform2uiv_    =           (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
-    glUniform3uiv_    =           (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
-    glUniform4uiv_    =           (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
@@ -376,21 +336,15 @@ void gl_checkextensions()
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
-    glEnablei_    = (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
-    glDisablei_   = (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
 
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
     glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
-    glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
-    //OpenGL 3.1
-    glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
     useubo = 1;
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
     glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
-    glGetMultisamplefv_      = (PFNGLGETMULTISAMPLEFVPROC)     getprocaddress("glGetMultisamplefv");
     glSampleMaski_           = (PFNGLSAMPLEMASKIPROC)          getprocaddress("glSampleMaski");
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
@@ -428,8 +382,6 @@ void gl_checkextensions()
     GLint dualbufs = 0;
     glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
     maxdualdrawbufs = dualbufs;
-    //OpenGL 4.0
-    glMinSampleShading_       = (PFNGLMINSAMPLESHADINGPROC)      getprocaddress("glMinSampleShading");
     usetexgather = !intel && !nvidia ? 2 : 1;
     //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
@@ -547,7 +499,7 @@ VAR(wireframe, 0, 0, 1);
 
 vec worldpos, camdir, camright, camup;
 
-void setcammatrix()
+static void setcammatrix()
 {
     // move from RH to Z-up LH quake style worldspace
     cammatrix = viewmatrix;
@@ -564,7 +516,7 @@ void setcammatrix()
     {
         if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
         {
-            worldpos = vec(camdir).mul(2*worldsize).add(camera1->o); // if nothing is hit, just far away in the view direction
+            worldpos = vec(camdir).mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
         }
     }
 }
@@ -713,7 +665,9 @@ VARP(invmouse, 0, 0, 1);
 FVARP(mouseaccel, 0, 0, 1000);
 
 physent *camera1 = nullptr;
+//used in iengine.h
 bool detachedcamera = false;
+
 bool isthirdperson()
 {
     return player!=camera1 || detachedcamera;
@@ -775,29 +729,6 @@ void mousemove(int dx, int dy)
     }
     cursens /= (sensitivityscale/4); //hard factor of 4 for 40 dots/deg like Quake/Source/etc.
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
-}
-
-float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
-{
-    if(drawtex == Draw_TexMinimap)
-    {
-        center = minimapcenter;
-        return minimapradius.magnitude();
-    }
-
-    float width = std::tan(fov/(2.0f*RAD)),
-          height = width / aspect,
-          cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
-    if(cdist <= farplane)
-    {
-        center = vec(view).mul(cdist).add(pos);
-        return vec(width*nearplane, height*nearplane, cdist-nearplane).magnitude();
-    }
-    else
-    {
-        center = vec(view).mul(farplane).add(pos);
-        return vec(width*farplane, height*farplane, 0).magnitude();
-    }
 }
 
 matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
@@ -1158,10 +1089,10 @@ void screenquad()
     gle::clearvbo();
 }
 
-static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
-
+//sets screentexcoord0,screentexcoord1 in glsl
 static void setscreentexcoord(int i, float w, float h, float x = 0, float y = 0)
 {
+    static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
     screentexcoord[i].setf(w*0.5f, h*0.5f, x + w*0.5f, y + std::fabs(h)*0.5f);
 }
 
@@ -1225,9 +1156,9 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
             return o.z;
         }
         o.z = co.z + csize;
-    } while(o.z < worldsize);
+    } while(o.z < rootworld.mapsize());
     abovemat = Mat_Air;
-    return worldsize;
+    return rootworld.mapsize();
 }
 
 static void blendfog(int fogmat, float below, float blend, float logblend, float &start, float &end, vec &fogc)
@@ -1257,7 +1188,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
     }
 }
 
-vec curfogcolor(0, 0, 0);
+static vec curfogcolor(0, 0, 0);
 
 void setfogcolor(const vec &v)
 {
@@ -1350,10 +1281,33 @@ int drawtex = 0;
 
 /* =========================== minimap functionality ======================== */
 
-GLuint minimaptex = 0;
+static GLuint minimaptex = 0;
 vec minimapcenter(0, 0, 0),
     minimapradius(0, 0, 0),
     minimapscale(0, 0, 0);
+
+float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
+{
+    if(drawtex == Draw_TexMinimap)
+    {
+        center = minimapcenter;
+        return minimapradius.magnitude();
+    }
+
+    float width = std::tan(fov/(2.0f*RAD)),
+          height = width / aspect,
+          cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
+    if(cdist <= farplane)
+    {
+        center = vec(view).mul(cdist).add(pos);
+        return vec(width*nearplane, height*nearplane, cdist-nearplane).magnitude();
+    }
+    else
+    {
+        center = vec(view).mul(farplane).add(pos);
+        return vec(width*farplane, height*farplane, 0).magnitude();
+    }
+}
 
 void clearminimap()
 {
@@ -1376,7 +1330,7 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
+void clipminimap(ivec &bbmin, ivec &bbmax, const cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -1399,7 +1353,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 
     }
 }
 
-void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
+void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalefactor)
 {
     if(!showminimap)
     {
@@ -1428,7 +1382,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     {
         glGenTextures(1, &minimaptex);
     }
-    ivec bbmin(worldsize, worldsize, worldsize),
+    ivec bbmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
          bbmax(0, 0, 0);
     for(uint i = 0; i < valist.size(); i++)
     {
@@ -1445,7 +1399,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     }
     if(minimapclip)
     {
-        ivec clipmin(worldsize, worldsize, worldsize),
+        ivec clipmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
              clipmax(0, 0, 0);
         clipminimap(clipmin, clipmax, world.worldroot);
         for(int k = 0; k < 2; ++k)
@@ -1478,7 +1432,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     int oldfarplane = farplane,
         oldvieww    = vieww,
         oldviewh    = viewh;
-    farplane = worldsize*2;
+    farplane = rootworld.mapsize()*2;
     vieww = viewh = size;
 
     float zscale = std::max(static_cast<float>(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
@@ -1496,8 +1450,8 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
     ldrscaleb = ldrscale/255;
 
     view.visiblecubes(false);
-    rendergbuffer();
-    rendershadowatlas();
+    gbuf.rendergbuffer();
+    gbuf.rendershadowatlas();
 
     gbuf.shademinimap(minimapcolor.tocolor().mul(ldrscale));
 
@@ -1506,7 +1460,7 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world, int scalefactor)
         camera1->o.z = minimapcenter.z + minimapradius.z + 1;
         projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, -zscale, zscale);
         setcamprojmatrix();
-        rendergbuffer(false);
+        gbuf.rendergbuffer(false);
         gbuf.shademinimap();
     }
 
@@ -1665,7 +1619,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
-    farplane = worldsize*2;
+    farplane = rootworld.mapsize()*2;
     //set the camera location
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
@@ -1683,7 +1637,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     //construct g-buffer (build basic scene)
-    rendergbuffer(true, gamefxn);
+    gbuf.rendergbuffer(true, gamefxn);
     if(wireframe && editmode) //done with wireframe mode now
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1711,7 +1665,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     gbuf.renderradiancehints();
     glerror();
     //lighting
-    rendershadowatlas();
+    gbuf.rendershadowatlas();
     glerror();
     //shading
     shadegbuffer();

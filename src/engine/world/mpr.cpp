@@ -73,7 +73,7 @@ namespace mpr
 
     //EntOBB
 
-    EntOBB::EntOBB(physent *ent) : Ent(ent)
+    EntOBB::EntOBB(const physent *ent) : Ent(ent)
     {
         orient.setyaw(ent->yaw/RAD);
     }

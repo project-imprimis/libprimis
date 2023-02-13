@@ -8,11 +8,13 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -22,7 +24,6 @@
 
 #include "world/entities.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/bih.h"
 
 #include "model.h"
@@ -165,7 +166,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     ivec vkey(-1, -1, -1);
                     for(int i = 0; i < 3; ++i)
                     {
-                        vkey[i] = strtol(c, &c, 10);
+                        vkey[i] = std::strtol(c, &c, 10);
                         if(vkey[i] < 0)
                         {
                             vkey[i] = attrib[i].size() + vkey[i];

@@ -13,6 +13,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 #include "console.h"
 #include "control.h"
@@ -33,6 +34,8 @@
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
+#include "render/renderttf.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -1918,7 +1921,7 @@ namespace UI
     {
         if(!tex->alphamask)
         {
-            loadalphamask(tex);
+            tex->loadalphamask();
             if(!tex->alphamask)
             {
                 return true;
@@ -2522,17 +2525,21 @@ namespace UI
     VARP(uitextrows, 1, 24, 200);
     FVAR(uitextscale, 1, 0, 0);
 
-    #define SETSTR(dst, src) do { \
-        if(dst) \
-        { \
-            if(dst != src && std::strcmp(dst, src)) \
-            { \
-                delete[] dst; \
-                dst = newstring(src); \
-            } \
-        } \
-        else dst = newstring(src); \
-    } while(0)
+    static void setstring(char*& dst, const char* src)
+    {
+        if(dst)
+        {
+            if(dst != src && std::strcmp(dst, src))
+            {
+                delete[] dst;
+                dst = newstring(src);
+            }
+        }
+        else
+        {
+            dst = newstring(src);
+        }
+    }
 
     struct Text : Object
     {
@@ -2566,7 +2573,12 @@ namespace UI
 
                 float oldscale = textscale;
                 textscale = drawscale();
-                draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
+                ttr.fontsize(36);
+                pushhudscale(conscale/490);
+                ttr.renderttf(getstr(), {color.r, color.g, color.b, color.a}, sx*1500, sy*1500, scale*33);
+                pophudmatrix();
+                //draw_text(getstr(), sx/textscale, sy/textscale, 0, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
+
                 textscale = oldscale;
             }
 
@@ -2575,7 +2587,7 @@ namespace UI
                 Object::layout();
 
                 float k = drawscale(), tw, th;
-                text_boundsf(getstr(), tw, th, wrap >= 0 ? static_cast<int>(wrap/k) : -1);
+                ttr.ttfbounds(getstr(), tw, th);
                 w = std::max(w, tw*k);
                 h = std::max(h, th*k);
             }
@@ -2600,14 +2612,20 @@ namespace UI
     {
         char *str;
 
-        TextString() : str(nullptr) {}
-        ~TextString() { delete[] str; }
+        TextString() : str(nullptr)
+        {
+        }
+
+        ~TextString()
+        {
+            delete[] str;
+        }
 
         void setup(const char *str_, float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
         {
             Text::setup(scale_, color_, wrap_);
 
-            SETSTR(str, str_);
+            setstring(str, str_);
         }
 
         static const char *typestr()
@@ -2703,11 +2721,6 @@ namespace UI
         void setup(const char *name)
         {
             Object::setup();
-
-            if(!font || !std::strcmp(font->name, name))
-            {
-                font = findfont(name);
-            }
         }
 
         void layout()
@@ -3663,7 +3676,7 @@ namespace UI
             scale = scale_;
             if(keyfilter_)
             {
-                SETSTR(keyfilter, keyfilter_);
+                setstring(keyfilter, keyfilter_);
             }
             else
             {
@@ -4098,7 +4111,7 @@ namespace UI
         void setup(const char *name_, const char *animspec, float minw_, float minh_)
         {
             Preview::setup(minw_, minh_);
-            SETSTR(name, name_);
+            setstring(name, name_);
 
             anim = Anim_All;
             if(animspec[0])
@@ -4162,42 +4175,52 @@ namespace UI
         }
     };
 
-    struct PrefabPreview : Preview
+    class PrefabPreview : public Preview
     {
-        char *name;
-        vec color;
-
-        PrefabPreview() : name(nullptr) {}
-        ~PrefabPreview() { delete[] name; }
-
-        void setup(const char *name_, int color_, float minw_, float minh_)
-        {
-            Preview::setup(minw_, minh_);
-            SETSTR(name, name_);
-            color = vec::hexcolor(color_);
-        }
-
-        static const char *typestr()
-        {
-            return "#PrefabPreview";
-        }
-
-        const char *gettype() const { return typestr(); }
-
-        void draw(float sx, float sy)
-        {
-            Object::draw(sx, sy);
-            changedraw(Change_Shader);
-            int sx1, sy1, sx2, sy2;
-            window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
-            previewprefab(name, color);
-            if(clipstack.size())
+        public:
+            PrefabPreview() : name(nullptr)
             {
-                clipstack.back().scissor();
             }
-            modelpreview.end();
-        }
+
+            ~PrefabPreview()
+            {
+                delete[] name;
+            }
+
+            void setup(const char *name_, int color_, float minw_, float minh_)
+            {
+                Preview::setup(minw_, minh_);
+                setstring(name, name_);
+                color = vec::hexcolor(color_);
+            }
+
+            static const char *typestr()
+            {
+                return "#PrefabPreview";
+            }
+
+            const char *gettype() const
+            {
+                return typestr();
+            }
+
+            void draw(float sx, float sy)
+            {
+                Object::draw(sx, sy);
+                changedraw(Change_Shader);
+                int sx1, sy1, sx2, sy2;
+                window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
+                modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
+                previewprefab(name, color);
+                if(clipstack.size())
+                {
+                    clipstack.back().scissor();
+                }
+                modelpreview.end();
+            }
+        private:
+            char *name;
+            vec color;
     };
 
     VARP(uislotviewtime, 0, 25, 1000);
@@ -4670,7 +4693,10 @@ namespace UI
         addcommand("uicircleoutline", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::OUTLINE), children); }), "ife", Id_Command);
         addcommand("uimodcircle", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children); }), "ife", Id_Command);
         addcommand("uicolortext", reinterpret_cast<identfun>(+[] (tagval *text, int *c, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(*c), -1, children); }), "tife", Id_Command);
-        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children); }), "tfe", Id_Command);
+        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, float *scale, uint *children)
+        {
+            buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children);
+        }), "tfe", Id_Command);
         addcommand("uitextfill", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Filler, o, o->setup(*minw * uitextscale*0.5f, *minh * uitextscale), children); }), "ffe", Id_Command);
         addcommand("uiwrapcolortext", reinterpret_cast<identfun>(+[] (tagval *text, float *wrap, int *c, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(*c), *wrap, children); }), "tfife", Id_Command);
         addcommand("uiwraptext", reinterpret_cast<identfun>(+[] (tagval *text, float *wrap, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(255, 255, 255), *wrap, children); }), "tffe", Id_Command);

@@ -46,13 +46,12 @@ bool ragdollskel::tri::shareverts(const tri &t) const
 
 void ragdollskel::setupjoints()
 {
-    for(uint i = 0; i < verts.size(); i++)
+    for(vert &i : verts)
     {
-        verts[i].weight = 0;
+        i.weight = 0;
     }
-    for(uint i = 0; i < joints.size(); i++)
+    for(joint &j : joints)
     {
-        joint &j = joints[i];
         j.weight = 0;
         vec pos(0, 0, 0);
         for(int k = 0; k < 3; ++k)
@@ -81,11 +80,11 @@ void ragdollskel::setupjoints()
         m.d = pos;
         m.transpose();
     }
-    for(uint i = 0; i < verts.size(); i++)
+    for(vert &i : verts)
     {
-        if(verts[i].weight)
+        if(i.weight)
         {
-            verts[i].weight = 1/verts[i].weight;
+            i.weight = 1/i.weight;
         }
     }
     reljoints.clear();
@@ -170,7 +169,7 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     {
         return;
     }
-    ragdollskel::joint &j = skel->joints[i];
+    const ragdollskel::joint &j = skel->joints[i];
     vec pos(0, 0, 0);
     for(int k = 0; k < 3; ++k)
     {
@@ -181,7 +180,7 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     }
     pos.mul(j.weight);
 
-    ragdollskel::tri &t = skel->tris[j.tri];
+    const ragdollskel::tri &t = skel->tris[j.tri];
     matrix4x3 m;
     const vec &v1 = verts[t.vert[0]].pos,
               &v2 = verts[t.vert[1]].pos,
@@ -226,7 +225,7 @@ void ragdolldata::calcboundsphere()
 VAR(ragdolltimestepmin, 1, 5, 50);
 VAR(ragdolltimestepmax, 1, 10, 50);
 
-void ragdolldata::init(dynent *d)
+void ragdolldata::init(const dynent *d)
 {
     float ts = ragdolltimestepmin/1000.0f;
     for(uint i = 0; i < skel->verts.size(); i++)

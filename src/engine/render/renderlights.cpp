@@ -9,6 +9,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 #include "aa.h"
 #include "ao.h"
@@ -16,6 +17,7 @@
 #include "hdr.h"
 #include "lightsphere.h"
 #include "octarender.h"
+#include "postfx.h"
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "renderlights.h"
@@ -24,6 +26,7 @@
 #include "rendertimers.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "stain.h"
 #include "texture.h"
@@ -191,9 +194,9 @@ void GBuffer::setupscale(int sw, int sh, int w, int h)
         }
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[i]);
 
-        createtexture(scaletex[i], sw, i ? h : sh, nullptr, 3, gscalecubic || !gscalenearest ? 1 : 0, GL_RGB, GL_TEXTURE_RECTANGLE);
+        createtexture(scaletex[i], sw, i ? h : sh, nullptr, 3, gscalecubic || !gscalenearest ? 1 : 0, GL_RGB, GL_TEXTURE_2D);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, scaletex[i], 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scaletex[i], 0);
         if(!i)
         {
             gbuf.bindgdepth();
@@ -213,12 +216,12 @@ void GBuffer::setupscale(int sw, int sh, int w, int h)
     }
 }
 
-GLuint GBuffer::shouldscale()
+GLuint GBuffer::shouldscale() const
 {
     return scalefbo[0];
 }
 
-void GBuffer::doscale(GLuint outfbo)
+void GBuffer::doscale(GLuint outfbo) const
 {
     if(!scaletex[0])
     {
@@ -229,22 +232,22 @@ void GBuffer::doscale(GLuint outfbo)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[1]);
         glViewport(0, 0, gw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[0]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalecubicy);
-        screenquad(gw, gh);
+        screenquad(1, 1);
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[1]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[1]);
         SETSHADER(scalecubicx);
-        screenquad(gw, hudh);
+        screenquad(1, 1);
     }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw, hudh);
-        glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[0]);
+        glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalelinear);
-        screenquad(gw, gh);
+        screenquad(1, 1);
     }
 
     endtimer(scaletimer);
@@ -401,7 +404,7 @@ void GBuffer::cleanupmsbuffer()
     if(msrefracttex) { glDeleteTextures(1, &msrefracttex);      msrefracttex = 0; }
 }
 
-void GBuffer::bindmsdepth()
+void GBuffer::bindmsdepth() const
 {
     if(gdepthformat)
     {
@@ -532,7 +535,7 @@ void GBuffer::setupmsbuffer(int w, int h)
     for(int i = 0; i < msaasamples; ++i)
     {
         GLfloat vals[2];
-        glGetMultisamplefv_(GL_SAMPLE_POSITION, i, vals);
+        glGetMultisamplefv(GL_SAMPLE_POSITION, i, vals);
         msaapositions.emplace_back(vec2(vals[0], vals[1]));
     }
 
@@ -612,7 +615,7 @@ void GBuffer::setupmsbuffer(int w, int h)
     }
 }
 
-void GBuffer::bindgdepth()
+void GBuffer::bindgdepth() const
 {
     if(gdepthformat || msaalight)
     {
@@ -826,7 +829,7 @@ void GBuffer::setupgbuffer()
         cleardeferredlightshaders();
     }
 
-void GBuffer::resolvemsaadepth(int w, int h)
+void GBuffer::resolvemsaadepth(int w, int h) const
 {
     if(!msaasamples || msaalight)
     {
@@ -1044,7 +1047,7 @@ class lightinfo
             return query && query->owner == this && ::checkquery(query);
         }
 
-        void calcbb(vec &bbmin, vec &bbmax)
+        void calcbb(vec &bbmin, vec &bbmax) const
         {
             if(spot > 0)
             {
@@ -1134,7 +1137,6 @@ GLuint shadowatlastex = 0,
 GLenum shadowatlastarget = GL_NONE;
 shadowcache shadowcache;
 bool shadowcachefull = false;
-int evictshadowcache = 0;
 
 void cleanupshadowatlas()
 {
@@ -1881,6 +1883,7 @@ void calctilesize()
 
 void resetlights()
 {
+    static int evictshadowcache = 0;
     shadowcache.reset();
     if(smcache)
     {
@@ -1932,7 +1935,10 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
     gle::attribf(sx1, sy1, z);
     gle::attribf(sx1, sy2, z);
     gle::attribf(sx2, sy2, z);
+    gle::attribf(sx1, sy1, z);
+    gle::attribf(sx2, sy2, z);
     gle::attribf(sx2, sy1, z);
+
 }
 
 static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
@@ -1987,12 +1993,12 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
 
-    gle::begin(GL_TRIANGLE_FAN);
+    gle::begin(GL_TRIANGLES);
     lightquads(sz1, bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2, tilemask);
     gle::end();
 }
 
-void GBuffer::bindlighttexs(int msaapass, bool transparent)
+void GBuffer::bindlighttexs(int msaapass, bool transparent) const
 {
     if(msaapass)
     {
@@ -2346,7 +2352,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
         {
             glDepthBounds_(sz1*0.5f + 0.5f, std::min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         }
-        gle::begin(GL_QUADS);
+        gle::begin(GL_TRIANGLES);
         for(uint j = 0; j < batch.rects.size(); j++)
         {
             const lightrect &r = batch.rects[j];
@@ -2976,7 +2982,7 @@ void collectlights()
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
-            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize)
+            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= rootworld.mapsize())
             {
                 continue;
             }
@@ -3076,8 +3082,6 @@ void collectlights()
         }
     }
 }
-
-bool inoq = false;
 
 VAR(csminoq, 0, 1, 1); //cascaded shadow maps in occlusion queries
 VAR(sminoq, 0, 1, 1);  //shadow maps in occlusion queries
@@ -3315,7 +3319,7 @@ void packlights()
     batchlights();
 }
 
-void GBuffer::rendercsmshadowmaps()
+void GBuffer::rendercsmshadowmaps() const
 {
     if(csminoq && !debugshadowatlas && !inoq && shouldworkinoq())
     {
@@ -3434,7 +3438,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
 
 matrix4 shadowmatrix;
 
-void GBuffer::rendershadowmaps(int offset)
+void GBuffer::rendershadowmaps(int offset) const
 {
     if(!(sminoq && !debugshadowatlas && !inoq && shouldworkinoq()))
     {
@@ -3639,7 +3643,7 @@ void GBuffer::rendershadowmaps(int offset)
     }
 }
 
-void rendershadowatlas()
+void GBuffer::rendershadowatlas()
 {
     timer *smcputimer = begintimer("shadow map", false),
           *smtimer = begintimer("shadow map");
@@ -3655,14 +3659,14 @@ void rendershadowatlas()
     }
 
     // sun light
-    gbuf.rendercsmshadowmaps();
+    rendercsmshadowmaps();
 
     int smoffset = shadowmaps.size();
 
     packlights();
 
     // point lights
-    gbuf.rendershadowmaps(smoffset);
+    rendershadowmaps(smoffset);
 
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
@@ -3670,7 +3674,7 @@ void rendershadowatlas()
     endtimer(smcputimer);
 }
 
-void workinoq()
+void GBuffer::workinoq()
 {
     collectlights();
 
@@ -3685,15 +3689,15 @@ void workinoq()
 
         if(csminoq && !debugshadowatlas)
         {
-            gbuf.rendercsmshadowmaps();
+            rendercsmshadowmaps();
         }
         if(sminoq && !debugshadowatlas)
         {
-            gbuf.rendershadowmaps();
+            rendershadowmaps();
         }
         if(rhinoq)
         {
-            gbuf.renderradiancehints();
+            renderradiancehints();
         }
 
         inoq = false;
@@ -3815,6 +3819,14 @@ void GBuffer::preparegbuffer(bool depthclear)
     resetmodelbatches();
 }
 
+
+//allows passing nothing to internal uses of rendergbuffer
+//(the parameter is for taking a game function to be rendered onscreen)
+void GBuffer::dummyfxn()
+{
+    return;
+}
+
 /* rendergbuffer: creates the geometry buffer for the scene
  * args:
  *      bool depthclear: toggles clearing the depth buffer
@@ -3825,12 +3837,12 @@ void GBuffer::preparegbuffer(bool depthclear)
  *      renders and copies a fbo (framebuffer object) to msfbo (multisample framebuffer object)
  *      or gfbo (geometry buffer framebuffer object) depending on whether msaa is enabled
  */
-void rendergbuffer(bool depthclear, void (*gamefxn)())
+void GBuffer::rendergbuffer(bool depthclear, void (*gamefxn)())
 {
     timer *gcputimer = drawtex ? nullptr : begintimer("g-buffer", false),
           *gtimer = drawtex ? nullptr : begintimer("g-buffer");
 
-    gbuf.preparegbuffer(depthclear);
+    preparegbuffer(depthclear);
 
     if(limitsky())
     {
@@ -3950,12 +3962,17 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     glerror();
 }
 
-void GBuffer::shadesky()
+void GBuffer::shadesky() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, msaalight ? mshdrfbo : hdrfbo);
     glViewport(0, 0, vieww, viewh);
 
     drawskybox((hdrclear > 0 ? hdrclear-- : msaalight) > 0);
+}
+
+bool GBuffer::istransparentlayer() const
+{
+    return transparentlayer;
 }
 
 void shadegbuffer()

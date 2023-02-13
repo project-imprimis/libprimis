@@ -12,11 +12,13 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -26,7 +28,6 @@
 
 #include "world/entities.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/bih.h"
 
 #include "model.h"
@@ -82,9 +83,9 @@ md5::md5meshgroup::md5meshgroup()
 }
 
 //main anim loading functionality
-md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
+const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
 {
-    skelanimspec *sa = skel->findskelanim(filename);
+    const skelanimspec *sa = skel->findskelanim(filename);
     if(sa)
     {
         return sa;
@@ -102,6 +103,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     dualquat *animbones = nullptr;
     char buf[512]; //presumably lines over 512 char long will break this loader
     //for each line in the opened file
+    skelanimspec * sas;
     while(f->getline(buf, sizeof(buf)))
     {
         int tmp;
@@ -193,9 +195,9 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             skel->framebones = animbones;
             animbones += skel->numframes*skel->numbones;
 
-            sa = &skel->addskelanim(filename);
-            sa->frame = skel->numframes;
-            sa->range = animframes;
+            sas = &skel->addskelanim(filename);
+            sas->frame = skel->numframes;
+            sas->range = animframes;
 
             skel->numframes += animframes;
         }
@@ -274,7 +276,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     }
     delete f;
 
-    return sa;
+    return sas;
 }
 
 bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)

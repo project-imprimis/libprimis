@@ -7,7 +7,6 @@ extern matrix4 nojittermatrix;
 
 extern void setupaa(int w, int h);
 extern void jitteraa();
-extern bool multisampledaa();
 
 namespace aamask
 {

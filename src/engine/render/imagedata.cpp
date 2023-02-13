@@ -15,6 +15,7 @@
 
 #include "interface/control.h"
 #include "interface/console.h"
+#include "interface/cs.h" //for stringslice
 
 namespace
 {
@@ -551,18 +552,24 @@ void ImageData::texblend(ImageData &s, ImageData &m)
             return;
         }
         //need to declare int for each var because it's inside a macro body
-        if(bpp < 3) READ_WRITE_TEX((*this), s,
-            int srcblend = src[1];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-        );
-        else READ_WRITE_TEX((*this), s,
-            int srcblend = src[3];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
-        );
+        if(bpp < 3)
+        {
+            READ_WRITE_TEX((*this), s,
+                int srcblend = src[1];
+                int dstblend = 255 - srcblend;
+                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            );
+        }
+        else
+        {
+            READ_WRITE_TEX((*this), s,
+                int srcblend = src[3];
+                int dstblend = 255 - srcblend;
+                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+                dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
+                dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
+            );
+        }
     }
     else
     {
@@ -691,9 +698,9 @@ void ImageData::texnormal(int emphasis)
             normal.y += src[((y+h-1)%h)*pitch + x*bpp];
             normal.y -= src[((y+1)%h)*pitch + x*bpp];
             normal.normalize();
-            *dst++ = static_cast<uchar>(127.5f + normal.x*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.y*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.z*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.x*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.y*127.5f);
+            *(dst++) = static_cast<uchar>(127.5f + normal.z*127.5f);
         }
     }
     replace(d);
@@ -915,4 +922,58 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
 bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress, int *wrap)
 {
     return texturedata(tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
+}
+
+void ImageData::reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+{
+    int stridex = bpp,
+        stridey = bpp;
+    if(swapxy)
+    {
+        stridex *= sh;
+    }
+    else
+    {
+        stridey *= sw;
+    }
+    if(flipx)
+    {
+        dst += (sw-1)*stridex;
+        stridex = -stridex;
+    }
+    if(flipy)
+    {
+        dst += (sh-1)*stridey;
+        stridey = -stridey;
+    }
+    uchar *srcrow = src;
+    for(int i = 0; i < sh; ++i)
+    {
+        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*bpp]; src < end;)
+        {
+            uchar nx = *src++, ny = *src++;
+            if(flipx)
+            {
+                nx = 255-nx;
+            }
+            if(flipy)
+            {
+                ny = 255-ny;
+            }
+            if(swapxy)
+            {
+                std::swap(nx, ny);
+            }
+            curdst[0] = nx;
+            curdst[1] = ny;
+            curdst[2] = *src++;
+            if(bpp > 3)
+            {
+                curdst[3] = *src++;
+            }
+            curdst += stridex;
+        }
+        srcrow += stride;
+        dst += stridey;
+    }
 }

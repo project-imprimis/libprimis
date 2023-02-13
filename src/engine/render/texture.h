@@ -5,14 +5,11 @@ extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexu
 
 extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 extern bool floatformat(GLenum format);
-extern uchar *loadalphamask(Texture *t);
 extern void loadshaders();
 extern void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_2D, int pw = 0, int ph = 0, int pitch = 0, bool resize = true, GLenum format = GL_FALSE, bool swizzle = false);
 extern void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_3D, bool swizzle = false);
 extern GLuint setuppostfx(int w, int h, GLuint outfbo = 0);
-extern void cleanuppostfx(bool fullclean = false);
 extern void renderpostfx(GLuint outfbo = 0);
-extern bool reloadtexture(Texture &tex);
 extern bool reloadtexture(const char *name);
 extern void clearslots();
 extern void compacteditvslots();
@@ -24,37 +21,12 @@ extern void cleanuptextures();
 extern bool settexture(const char *name, int clamp = 0);
 
 //for imagedata manipulation
-extern void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh);
-extern void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
-extern void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
+extern void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh);
+extern void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
 extern GLenum texformat(int bpp, bool swizzle = false);
-
-enum
-{
-    Shader_Default    = 0,
-    Shader_World      = 1 << 0,
-    Shader_Refract    = 1 << 2,
-    Shader_Option     = 1 << 3,
-    Shader_Dynamic    = 1 << 4,
-    Shader_Triplanar  = 1 << 5,
-
-    Shader_Invalid    = 1 << 8,
-    Shader_Deferred   = 1 << 9
-};
-
-const int maxvariantrows = 32;
 
 struct Slot;
 struct VSlot;
-
-struct FragDataLoc
-{
-    const char *name;
-    int loc;
-    GLenum format;
-    int index;
-    FragDataLoc(const char *name = nullptr, int loc = -1, GLenum format = GL_FALSE, int index = 0) : name(name), loc(loc), format(format), index(index) {}
-};
 
 // management of texture slots
 // each texture slot can have multiple texture frames, of which currently only the first is used
@@ -78,12 +50,16 @@ struct Texture
 
     char *name;
     int type, w, h, xs, ys, bpp, clamp;
-    float ratio;
     bool mipmap, canreduce;
     GLuint id;
     uchar *alphamask;
 
     Texture() : alphamask(nullptr) {}
+    const uchar * loadalphamask();
+    void cleanup();
+    float ratio() const;
+    bool reload(); //if the texture does not have a valid GL texture, attempts to reload it
+
 };
 
 enum
@@ -160,28 +136,7 @@ struct texrotation
 
 extern const texrotation texrotations[8];
 extern Texture *notexture;
-extern Shader *nullshader, *hudshader, *hudtextshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader, *stdworldshader;
 extern int maxvsuniforms, maxfsuniforms;
-
-extern Shader *lookupshaderbyname(const char *name);
-extern Shader *useshaderbyname(const char *name);
-extern Shader *generateshader(const char *name, const char *cmd, ...);
-extern void resetslotshader();
-extern void setslotshader(Slot &s);
-extern void linkslotshader(Slot &s, bool load = true);
-extern void linkvslotshader(VSlot &s, bool load = true);
-extern void linkslotshaders();
-extern bool shouldreuseparams(Slot &s, VSlot &p);
-extern void setupshaders();
-extern void reloadshaders();
-extern void cleanupshaders();
-extern int getlocalparam(const char *name);
-
-const int maxblurradius = 7;
-
-extern float blursigma;
-extern void setupblurkernel(int radius, float *weights, float *offsets);
-extern void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target = GL_TEXTURE_2D);
 
 extern SDL_Surface *loadsurface(const char *name);
 

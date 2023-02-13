@@ -35,6 +35,9 @@ struct GlobalShaderParamState
     }
 };
 
+extern std::map<std::string, GlobalShaderParamState> globalparams;
+extern GlobalShaderParamState *getglobalparam(const char *name);
+
 struct ShaderParamBinding
 {
     int loc, size;
@@ -44,7 +47,7 @@ struct ShaderParamBinding
 struct GlobalShaderParamUse : ShaderParamBinding
 {
 
-    GlobalShaderParamState *param;
+    const GlobalShaderParamState *param;
     int version;
 
     void flush();
@@ -72,12 +75,16 @@ struct SlotShaderParamState : LocalShaderParamState
     }
 };
 
+//a container containing a GLSL shader
 class Shader
 {
     public:
         static Shader *lastshader;
 
-        char *name, *vsstr, *psstr, *defer;
+        char *name,
+            *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
+            *psstr, //a pointer to a `p`ixel `s`hader `str`ing
+            *defer; //a pointer to a deferred shader
         int type;
         GLuint program, vsobj, psobj;
         std::vector<SlotShaderParamState> defaultparams;
@@ -112,11 +119,11 @@ class Shader
         Shader *getvariant(int col, int row) const;
         void addvariant(int row, Shader *s);
         void setvariant(int col, int row);
-        void setvariant(int col, int row, Slot &slot);
-        void setvariant(int col, int row, Slot &slot, VSlot &vslot);
+        void setvariant(int col, int row, const Slot &slot);
+        void setvariant(int col, int row, Slot &slot, const VSlot &vslot);
         void set();
         void set(Slot &slot);
-        void set(Slot &slot, VSlot &vslot);
+        void set(Slot &slot, const VSlot &vslot);
         bool compile();
         void cleanup(bool full = false);
 
@@ -126,11 +133,14 @@ class Shader
         ushort *variantrows;
         bool used;
         void allocparams();
-        void setslotparams(Slot &slot);
-        void setslotparams(Slot &slot, VSlot &vslot);
+        void setslotparams(const Slot &slot);
+        void setslotparams(Slot &slot, const VSlot &vslot);
         void bindprograms();
         void setvariant_(int col, int row);
         void set_();
+        void allocglslactiveuniforms();
+        void setglsluniformformat(const char *name, GLenum format, int size);
+
 };
 
 class GlobalShaderParam
@@ -142,16 +152,8 @@ class GlobalShaderParam
         void setf(float x = 0, float y = 0, float z = 0, float w = 0);
         void set(const vec &v, float w = 0);
         void set(const vec2 &v, float z = 0, float w = 0);
-        void set(const vec4<float> &v);
-        void set(const plane &p);
-        void set(const matrix2 &m);
         void set(const matrix3 &m);
         void set(const matrix4 &m);
-        void seti(int x = 0, int y = 0, int z = 0, int w = 0);
-        void set(const ivec &v, int w = 0);
-        void set(const ivec2 &v, int z = 0, int w = 0);
-        void set(const vec4<int> &v);
-        void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
 
         template<class T>
         T *reserve()
@@ -161,44 +163,30 @@ class GlobalShaderParam
     private:
         const char *name;
         GlobalShaderParamState *param;
+        GlobalShaderParamState *getglobalparam(const char *name) const;
+
 };
 
 class LocalShaderParam
 {
     public:
         LocalShaderParam(const char *name);
-
-        LocalShaderParamState *resolve();
-
-        void setf(float x = 0, float y = 0, float z = 0, float w = 0);
-        void set(const vec &v, float w = 0);
-        void set(const vec2 &v, float z = 0, float w = 0);
-        void set(const vec4<float> &v);
-        void set(const plane &p);
-        void setv(const vec *v, int n = 1);
-        void setv(const vec2 *v, int n = 1);
-        void setv(const vec4<float> *v, int n = 1);
-        void setv(const plane *p, int n = 1);
-        void setv(const float *f, int n);
-        void setv(const matrix2 *m, int n = 1);
-        void setv(const matrix3 *m, int n = 1);
-        void setv(const matrix4 *m, int n = 1);
-        void set(const matrix2 &m);
-        void set(const matrix3 &m);
-        void set(const matrix4 &m);
-        void seti(int x = 0, int y = 0, int z = 0, int w = 0);
-        void set(const ivec &v, int w = 0);
-        void set(const ivec2 &v, int z = 0, int w = 0);
-        void set(const vec4<int> &v);
-        void setv(const int *i, int n = 1);
-        void setv(const ivec *v, int n = 1);
-        void setv(const ivec2 *v, int n = 1);
-        void setv(const vec4<int> *v, int n = 1);
-        void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
-        void setv(const uint *u, int n = 1);
+        void setf(float x = 0, float y = 0, float z = 0, float w = 0) const;
+        void set(const vec &v, float w = 0) const;
+        void set(const vec4<float> &v) const;
+        void setv(const vec *v, int n = 1) const;
+        void setv(const vec2 *v, int n = 1) const;
+        void setv(const vec4<float> *v, int n = 1) const;
+        void setv(const float *f, int n) const;
+        void set(const matrix3 &m) const;
+        void set(const matrix4 &m) const;
     private:
-        const char *name;
-        int loc;
+        void setv(const matrix3 *m, int n = 1) const;
+        void setv(const matrix4 *m, int n = 1) const;
+        const LocalShaderParamState *resolve() const;
+
+        const char * const name;
+        mutable int loc;
 };
 
 /**
@@ -220,8 +208,19 @@ class LocalShaderParam
     while(0)
 
 //creates a localshaderparam like above but calls setf() instead
-#define LOCALPARAMF(name, ...) do { static LocalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
-#define LOCALPARAMV(name, vals, num) do { static LocalShaderParam param( #name ); param.setv(vals, num); } while(0)
+#define LOCALPARAMF(name, ...) \
+    do \
+    { \
+        static LocalShaderParam param( #name ); \
+        param.setf(__VA_ARGS__); \
+    } while(0)
+
+#define LOCALPARAMV(name, vals, num) \
+    do \
+    { \
+        static LocalShaderParam param( #name ); \
+        param.setv(vals, num); \
+    } while(0)
 
 //creates a globalshaderparam, either by calling set(), setf() or setv()
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
@@ -231,11 +230,18 @@ class LocalShaderParam
 //creates a new static variable inside the function called <name>setshader
 //then sets to it any(if present) args passed to set to the shader
 //can only be called once per function, and not in the global scope
+//upon calling set(), the shader associated with the name is loaded into OpenGL
 #define SETSHADER(name, ...) \
     do { \
         static Shader *name##shader = nullptr; \
-        if(!name##shader) name##shader = lookupshaderbyname(#name); \
-        name##shader->set(__VA_ARGS__); \
+        if(!name##shader) \
+        { \
+            name##shader = lookupshaderbyname(#name); \
+        } \
+        if(name##shader) \
+        { \
+            name##shader->set(__VA_ARGS__); \
+        } \
     } while(0)
 #define SETVARIANT(name, ...) \
     do { \

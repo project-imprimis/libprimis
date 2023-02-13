@@ -5,10 +5,9 @@ extern int xtraverts, xtravertsva;
 extern int renderw, renderh;
 extern vec worldpos, camdir, camright, camup;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
-extern int glversion, glslversion, glcompat;
+extern int glversion, glslversion;
 extern int mesa_swap_bug;
-extern int maxdrawbufs, maxdualdrawbufs;
-extern vec minimapcenter, minimapradius, minimapscale;
+extern int maxdualdrawbufs;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
 enum
@@ -18,7 +17,7 @@ enum
     Draw_TexModelPreview,
 };
 
-extern float curfov, aspect, forceaspect;
+extern float forceaspect;
 extern float nearplane;
 extern int farplane;
 extern float ldrscale, ldrscaleb;
@@ -28,9 +27,6 @@ extern const matrix4 viewmatrix;
 inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
 
 extern matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
-extern int fog;
-extern bvec fogcolor;
-extern vec curfogcolor;
 extern int wireframe;
 extern int usetexgather;
 
@@ -50,11 +46,9 @@ inline void glerror()
     }
 }
 extern void mousemove(int dx, int dy);
-extern void gl_checkextensions();
 extern void gl_init();
 extern void gl_resize();
 extern void gl_setupframe(bool force = false);
-extern void gl_drawframe();
 extern void cleanupgl();
 extern void enablepolygonoffset(GLenum type);
 extern void disablepolygonoffset(GLenum type);

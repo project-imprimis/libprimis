@@ -4,6 +4,7 @@
  * also handles stuff such as main menu rendering and other non-intensive rendering
  * as well as global rendering settings such as gamma
  */
+#include "SDL_ttf.h"
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
@@ -17,8 +18,10 @@
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertext.h"
+#include "renderttf.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "stain.h"
 #include "texture.h"
@@ -42,7 +45,6 @@ int screenw = 0,
     screenh = 0;
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
-static SDL_Renderer *renderer  = nullptr;
 
 //helper function for main menu rendering routines
 //returns w and h if both are above 1024x768
@@ -69,7 +71,7 @@ static string backgroundcaption   = "",
 static Texture *backgroundmapshot = nullptr;
 static char *backgroundmapinfo    = nullptr;
 
-void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
+static void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
     gle::begin(GL_TRIANGLE_STRIP);
     gle::attribf(x,   y);   gle::attribf(tx,      ty);
@@ -87,7 +89,7 @@ Notes:
     * Unsure what 'w' and 'h' refers to, maybe screen resolution?
 */
 
-void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
+static void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
 {
     static int lastupdate  = -1,
                lastw       = -1,
@@ -148,7 +150,8 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
               tx  = 0.5f*(win_w - tw*tsz),
               ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
-        draw_text(caption, 0, 0);
+        //draw_text(caption, 0, 0);
+        ttr.renderttf(caption, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
         pophudmatrix();
     }
     if(mapshot || mapname)
@@ -188,7 +191,9 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
                   tsz = sz/(8*FONTH),
                   tx  = std::max(0.5f * (mw*msz - tw * tsz), 0.0f);
             pushhudtranslate(x + mx + tx, y, tsz);
-            draw_text(mapname, 0, 0);
+            //draw_text(mapname, 0, 0);
+            ttr.fontsize(42);
+            ttr.renderttf(mapname, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
             pophudmatrix();
             my = 1.5f*FONTH*tsz;
         }
@@ -196,7 +201,9 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         if(mapinfo)
         {
             pushhudtranslate(x + mx, y + my, msz);
-            draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
+            //draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
+            ttr.fontsize(42);
+            ttr.renderttf(mapinfo, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
             pophudmatrix();
         }
     }
@@ -321,7 +328,9 @@ static void renderprogressview(int w, int h, float bar, const char *text)   // a
             tsz = mw/tw;
         }
         pushhudtranslate(bx+sw, by + (bh - FONTH*tsz)/2, tsz);
-        draw_text(text, 0, 0);
+        //draw_text(text, 0, 0);
+        ttr.fontsize(50);
+        ttr.renderttf(text, {0xFF, 0xFF, 0xFF, 0}, 0, 4);
         pophudmatrix();
     }
     glDisable(GL_BLEND);
@@ -366,7 +375,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     swapbuffers(false);
 }
 
-bool initwindowpos = false;
+static bool initwindowpos = false;
 
 void setfullscreen(bool enable)
 {
@@ -432,7 +441,7 @@ static void setgamma(int val)
 }
 
 static int curgamma = 100;
-VARFNP(gamma, reqgamma, 30, 100, 300,
+static VARFNP(gamma, reqgamma, 30, 100, 300,
 {
     if(initing || reqgamma == curgamma)
     {
@@ -538,7 +547,8 @@ void setupscreen()
     uint32_t windowflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags;
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
-    renderer = SDL_CreateRenderer(screen, -1, 0);
+    ttr.initttf();
+    ttr.openfont("media/interface/font/default.ttf", 24);
 
     if(!screen)
     {
@@ -605,7 +615,7 @@ void resetgl()
 
     inbetweenframes = false;
     //texture reloading
-    if(!reloadtexture(*notexture) ||
+    if(!notexture->reload() ||
        !reloadtexture("<premul>media/interface/logo.png") ||
        !reloadtexture("<premul>media/interface/logo_1024.png") ||
        !reloadtexture("media/interface/background.png") ||
@@ -684,7 +694,7 @@ void limitfps(int &millis, int curmillis)
     }
 #endif
 
-constexpr int maxfpshistory = 60;
+static constexpr int maxfpshistory = 60;
 
 int fpspos = 0;
 std::array<int, maxfpshistory> fpshistory;
@@ -730,7 +740,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     worstdiff = fps-1000/worst;
 }
 
-void getfpscmd(int *raw)
+void getfpscmd(const int *raw)
 {
     if(*raw)
     {

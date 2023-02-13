@@ -9,7 +9,6 @@
 #include "entities.h"
 
 #include "bih.h"
-#include "physics.h"
 
 #include "interface/control.h"
 

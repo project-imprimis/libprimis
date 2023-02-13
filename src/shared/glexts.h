@@ -1,22 +1,10 @@
 /**
  * @file glexts.h
- * @brief 
+ * @brief
  */
 
 #ifndef GLEXTS_H_
 #define GLEXTS_H_
-
-#ifndef APIENTRY
-#define APIENTRY
-#endif
-#ifndef APIENTRYP
-#define APIENTRYP APIENTRY *
-#endif
-
-// OpenGL deprecated functionality
-#ifndef GL_QUADS
-#define GL_QUADS                      0x0007
-#endif
 
 #ifndef GL_EXT_texture_filter_anisotropic
 #define GL_EXT_texture_filter_anisotropic 1
@@ -39,43 +27,13 @@ extern PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_;
 // GL_EXT_framebuffer_multisample
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;
 
-#ifndef GL_ARB_texture_multisample
-#define GL_ARB_texture_multisample 1
-#define GL_SAMPLE_POSITION                0x8E50
-#define GL_SAMPLE_MASK                    0x8E51
-#define GL_SAMPLE_MASK_VALUE              0x8E52
-#define GL_MAX_SAMPLE_MASK_WORDS          0x8E59
-#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE   0x9101
-#define GL_TEXTURE_2D_MULTISAMPLE_ARRAY   0x9102
-#define GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY 0x9103
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE 0x9104
-#define GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY 0x9105
-#define GL_TEXTURE_SAMPLES                0x9106
-#define GL_TEXTURE_FIXED_SAMPLE_LOCATIONS 0x9107
-#define GL_SAMPLER_2D_MULTISAMPLE         0x9108
-#define GL_INT_SAMPLER_2D_MULTISAMPLE     0x9109
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE 0x910A
-#define GL_SAMPLER_2D_MULTISAMPLE_ARRAY   0x910B
-#define GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910C
-#define GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY 0x910D
-#define GL_MAX_COLOR_TEXTURE_SAMPLES      0x910E
-#define GL_MAX_DEPTH_TEXTURE_SAMPLES      0x910F
-#define GL_MAX_INTEGER_SAMPLES            0x9110
-typedef void (APIENTRYP PFNGLTEXIMAGE2DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-typedef void (APIENTRYP PFNGLTEXIMAGE3DMULTISAMPLEPROC) (GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
-typedef void (APIENTRYP PFNGLGETMULTISAMPLEFVPROC) (GLenum pname, GLuint index, GLfloat *val);
-typedef void (APIENTRYP PFNGLSAMPLEMASKIPROC) (GLuint index, GLbitfield mask);
-#endif
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_;
 extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
-extern PFNGLGETMULTISAMPLEFVPROC      glGetMultisamplefv_;
 extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled
 #define GL_EXT_framebuffer_multisample_blit_scaled 1
 #define GL_SCALED_RESOLVE_FASTEST_EXT     0x90BA
-#define GL_SCALED_RESOLVE_NICEST_EXT      0x90BB
 #endif
 
 #ifndef GL_ARB_texture_rg
@@ -133,38 +91,15 @@ extern PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_;
 #define GL_MAP_FLUSH_EXPLICIT_BIT         0x0010
 #define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
 typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
-typedef void (APIENTRYP PFNGLFLUSHMAPPEDBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length);
 #endif
 extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
-extern PFNGLFLUSHMAPPEDBUFFERRANGEPROC glFlushMappedBufferRange_;
 
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
-extern PFNGLUNIFORMBLOCKBINDINGPROC     glUniformBlockBinding_;
-
-#if GL_GLEXT_VERSION < 43
-typedef void (APIENTRYP PFNGLBINDBUFFERRANGEPROC) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-typedef void (APIENTRYP PFNGLBINDBUFFERBASEPROC) (GLenum target, GLuint index, GLuint buffer);
-#endif
-
-extern PFNGLGETSTRINGIPROC glGetStringi_;
-
-// GL_EXT_gpu_shader4
-extern PFNGLBINDFRAGDATALOCATIONPROC glBindFragDataLocation_;
-extern PFNGLUNIFORM1UIPROC glUniform1ui_;
-extern PFNGLUNIFORM2UIPROC glUniform2ui_;
-extern PFNGLUNIFORM3UIPROC glUniform3ui_;
-extern PFNGLUNIFORM4UIPROC glUniform4ui_;
-extern PFNGLUNIFORM1UIVPROC glUniform1uiv_;
-extern PFNGLUNIFORM2UIVPROC glUniform2uiv_;
-extern PFNGLUNIFORM3UIVPROC glUniform3uiv_;
-extern PFNGLUNIFORM4UIVPROC glUniform4uiv_;
 
 // GL_EXT_draw_buffers2
 extern PFNGLCOLORMASKIPROC glColorMaski_;
-extern PFNGLENABLEIPROC glEnablei_;
-extern PFNGLDISABLEIPROC glDisablei_;
 
 // GL_ARB_color_buffer_float
 extern PFNGLCLAMPCOLORPROC glClampColor_;
@@ -180,14 +115,6 @@ typedef void (APIENTRYP PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GL
 #define GL_HALF_FLOAT                     0x140B
 #endif
 
-#ifndef GL_ARB_copy_buffer
-#define GL_ARB_copy_buffer 1
-#define GL_COPY_READ_BUFFER_BINDING       0x8F36
-#define GL_COPY_READ_BUFFER               GL_COPY_READ_BUFFER_BINDING
-#define GL_COPY_WRITE_BUFFER_BINDING      0x8F37
-#define GL_COPY_WRITE_BUFFER              GL_COPY_WRITE_BUFFER_BINDING
-typedef void (APIENTRYP PFNGLCOPYBUFFERSUBDATAPROC) (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
-#endif
 
 #ifndef GL_ARB_vertex_array_object
 #define GL_ARB_vertex_array_object 1
@@ -195,17 +122,9 @@ typedef void (APIENTRYP PFNGLCOPYBUFFERSUBDATAPROC) (GLenum readTarget, GLenum w
 typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
 typedef void (APIENTRYP PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint *arrays);
 typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
-typedef GLboolean (APIENTRYP PFNGLISVERTEXARRAYPROC) (GLuint array);
 #endif
-extern PFNGLBINDVERTEXARRAYPROC    glBindVertexArray_;
 extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_;
 extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_;
-extern PFNGLISVERTEXARRAYPROC      glIsVertexArray_;
-
-#ifndef GL_ARB_depth_clamp
-#define GL_ARB_depth_clamp 1
-#define GL_DEPTH_CLAMP                    0x864F
-#endif
 
 #ifndef GL_ARB_texture_swizzle
 #define GL_ARB_texture_swizzle 1
@@ -229,20 +148,6 @@ extern PFNGLISVERTEXARRAYPROC      glIsVertexArray_;
 #define GL_MAX_DUAL_SOURCE_DRAW_BUFFERS   0x88FC
 typedef void (APIENTRYP PFNGLBINDFRAGDATALOCATIONINDEXEDPROC) (GLuint program, GLuint colorNumber, GLuint index, const GLchar *name);
 #endif
-
-#ifndef GL_VERSION_4_0
-#define GL_VERSION_4_0 1
-#define GL_SAMPLE_SHADING                 0x8C36
-#define GL_MIN_SAMPLE_SHADING_VALUE       0x8C37
-typedef void (APIENTRYP PFNGLMINSAMPLESHADINGPROC) (GLfloat value);
-typedef void (APIENTRYP PFNGLBLENDEQUATIONIPROC) (GLuint buf, GLenum mode);
-typedef void (APIENTRYP PFNGLBLENDEQUATIONSEPARATEIPROC) (GLuint buf, GLenum modeRGB, GLenum modeAlpha);
-typedef void (APIENTRYP PFNGLBLENDFUNCIPROC) (GLuint buf, GLenum src, GLenum dst);
-typedef void (APIENTRYP PFNGLBLENDFUNCSEPARATEIPROC) (GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
-#endif
-
-// GL_ARB_sample_shading
-extern PFNGLMINSAMPLESHADINGPROC glMinSampleShading_;
 
 #ifndef GL_VERSION_4_3
 typedef void (APIENTRYP PFNGLCOPYIMAGESUBDATAPROC) (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);

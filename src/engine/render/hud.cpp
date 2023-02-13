@@ -13,8 +13,10 @@
 #include "renderlights.h"
 #include "renderparticles.h"
 #include "rendertext.h"
+#include "renderttf.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -286,8 +288,6 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
 
     glEnable(GL_BLEND);
 
-    debugparticles();
-
     if(!mainmenu)
     {
         drawdamagescreen(w, h);
@@ -302,7 +302,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
         if(showstats)
         {
             pushhudscale(conscale);
-
+            ttr.fontsize(42);
             int roffset = 0;
             if(showfps)
             {
@@ -325,11 +325,16 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                 }
                 if(showfpsrange)
                 {
-                    draw_textf("fps %d+%d-%d", conw-7*FONTH, conh-FONTH*3/2, curfps[0], curfps[1], curfps[2]);
+                    char fpsstring[20];
+                    std::sprintf(fpsstring, "fps %d+%d-%d", curfps[0], curfps[1], curfps[2]);
+                    ttr.renderttf(fpsstring, {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
+                    //draw_textf("fps %d+%d-%d", conw-7*FONTH, conh-FONTH*3/2, curfps[0], curfps[1], curfps[2]);
                 }
                 else
                 {
-                    draw_textf("fps %d", conw-5*FONTH, conh-FONTH*3/2, curfps[0]);
+                    char fpsstring[20];
+                    std::sprintf(fpsstring, "fps %d", curfps[0]);
+                    ttr.renderttf(fpsstring, {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
                 }
                 roffset += FONTH;
             }
@@ -359,7 +364,9 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                         *dst++ = tolower(*src++);
                     }
                     *dst++ = '\0';
-                    draw_text(buf, conw-5*FONTH, conh-FONTH*3/2-roffset);
+
+                    ttr.renderttf(buf, { 0xFF, 0xFF, 0xFF, 0 }, conw-(1000*conscale), conh-(540*conscale));
+                    //draw_text(buf, conw-5*FONTH, conh-FONTH*3/2-roffset);
                     roffset += FONTH;
                 }
             }
@@ -394,16 +401,16 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
     }
 }
 
-void writecrosshairs(stream *f)
+void writecrosshairs(std::fstream& f)
 {
     for(int i = 0; i < maxcrosshairs; ++i)
     {
         if(crosshairs[i] && crosshairs[i]!=notexture)
         {
-            f->printf("loadcrosshair %s %d\n", escapestring(crosshairs[i]->name), i);
+            f << "loadcrosshair " << escapestring(crosshairs[i]->name) << " " << i << std::endl;
         }
     }
-    f->printf("\n");
+    f << std::endl;
 }
 
 void resethudshader()

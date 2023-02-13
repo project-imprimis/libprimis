@@ -2,6 +2,7 @@
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/stream.h"
+#include "../../shared/hashtable.h"
 
 #include "console.h"
 #include "control.h"
@@ -11,6 +12,7 @@
 
 //input.h needs rendertext's objects
 #include "render/rendertext.h"
+#include "render/renderttf.h"
 #include "input.h"
 
 #include "world/octaedit.h"
@@ -219,7 +221,9 @@ namespace
             {
                 y -= height;
             }
-            draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
+            //draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
+            ttr.fontsize(50);
+            ttr.renderttf(line, {0xFF, 0xFF, 0xFF, 0}, conoff, y);
             if(dir > 0)
             {
                 y += height;
@@ -444,9 +448,12 @@ namespace
             return;
         }
         size_t cblen = std::strlen(cb),
-               commandlen = std::strlen(commandbuf),
-               decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<const uchar *>(cb), cblen);
-        commandbuf[commandlen + decoded] = '\0';
+               commandlen = std::strlen(commandbuf);
+        if(strlen(commandbuf) + cblen < 260)
+        {
+            std::memcpy(reinterpret_cast<uchar *>(&commandbuf[commandlen]), cb, cblen);
+        }
+        commandbuf[commandlen + cblen] = '\0';
         SDL_free(cb);
     }
 
@@ -1089,7 +1096,9 @@ float rendercommand(float x, float y, float w)
     float width, height;
     text_boundsf(buf, width, height, w);
     y -= height;
-    draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + std::strlen(prompt) : std::strlen(buf), w);
+    ttr.fontsize(50);
+    ttr.renderttf(buf, {0xFF, 0xFF, 0xFF, 0}, x, y);
+    //draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + std::strlen(prompt) : std::strlen(buf), w);
     return height;
 }
 
@@ -1161,7 +1170,7 @@ tagval *addreleaseaction(ident *id, int numargs)
 }
 
 //print to a stream f the binds in the binds vector
-void writebinds(stream *f)
+void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
@@ -1176,11 +1185,11 @@ void writebinds(stream *f)
             {
                 if(validateblock(km.actions[j]))
                 {
-                    f->printf("%s %s [%s]\n", cmds[j], escapestring(km.name), km.actions[j]);
+                    f << cmds[j] << " " << escapestring(km.name) << " [" << km.actions[j] << "]\n";
                 }
                 else
                 {
-                    f->printf("%s %s %s\n", cmds[j], escapestring(km.name), escapestring(km.actions[j]));
+                    f << cmds[j] << " " << escapestring(km.name) << " " << escapestring(km.actions[j]) << std::endl;
                 }
             }
         }
@@ -1188,7 +1197,7 @@ void writebinds(stream *f)
 }
 
 //print to a stream f the listcompletions in the completions filesval
-void writecompletions(stream *f)
+void writecompletions(std::fstream& f)
 {
     std::vector<char *> cmds;
     ENUMERATE_KT(completions, char *, k, FilesVal *, v,
@@ -1207,16 +1216,16 @@ void writecompletions(stream *f)
         {
             if(validateblock(v->dir))
             {
-                f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
+                f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
             }
             else
             {
-                f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));
+                f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
             }
         }
         else
         {
-            f->printf("complete %s %s %s\n", escapeid(k), escapestring(v->dir), escapestring(v->ext ? v->ext : "*"));
+            f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
         }
     }
 }

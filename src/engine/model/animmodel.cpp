@@ -11,16 +11,17 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 #include "interface/console.h"
 #include "interface/control.h"
 
 #include "render/radiancehints.h"
-#include "render/renderalpha.h"
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -338,7 +339,7 @@ void animmodel::skin::preloadBIH()
 {
     if(alphatested() && !tex->alphamask)
     {
-        loadalphamask(tex);
+        tex->loadalphamask();
     }
 }
 
@@ -354,7 +355,7 @@ void animmodel::skin::preloadshader()
 
 void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 {
-    m.setshader(loadshader(), transparentlayer ? 1 : 0);
+    m.setshader(loadshader(), gbuf.istransparentlayer());
 }
 
 void animmodel::skin::bind(Mesh &b, const AnimState *as)
@@ -432,7 +433,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
 
 //Mesh
 
-void animmodel::Mesh::genBIH(skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     bih.emplace_back();
     BIH::mesh &m = bih.back();
@@ -493,7 +494,7 @@ void animmodel::Mesh::fixqtangent(quat &q, float bt)
 
 //meshgroup
 
-animmodel::meshgroup::meshgroup() : shared(0), name(nullptr), next(nullptr)
+animmodel::meshgroup::meshgroup() : name(nullptr), next(nullptr)
 {
 }
 
@@ -517,7 +518,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
     LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
-void animmodel::meshgroup::genBIH(std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     for(uint i = 0; i < meshes.size(); i++)
     {
@@ -652,7 +653,7 @@ void animmodel::part::disablepitch()
     pitchscale = pitchoffset = pitchmin = pitchmax = 0;
 }
 
-void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
@@ -660,13 +661,13 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     for(linkedpart i : links)
     {
         matrix4x3 n;
-        meshes->concattagtransform(this, i.tag, m, n);
+        meshes->concattagtransform(i.tag, m, n);
         n.translate(i.translate, model->scale);
         i.p->calcbb(bbmin, bbmax, n);
     }
 }
 
-void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m)
+void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
@@ -674,13 +675,13 @@ void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m)
     for(linkedpart i : links)
     {
         matrix4x3 n;
-        meshes->concattagtransform(this, i.tag, m, n);
+        meshes->concattagtransform(i.tag, m, n);
         n.translate(i.translate, model->scale);
         i.p->genBIH(bih, n);
     }
 }
 
-void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
+void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const
 {
     matrix4x3 t = m;
     t.scale(model->scale);
@@ -688,7 +689,7 @@ void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3
     for(linkedpart i : links)
     {
         matrix4x3 n;
-        meshes->concattagtransform(this, i.tag, m, n);
+        meshes->concattagtransform(i.tag, m, n);
         n.translate(i.translate, model->scale);
         i.p->genshadowmesh(tris, n);
     }
@@ -791,7 +792,7 @@ void animmodel::part::preloadmeshes()
 {
     if(meshes)
     {
-        meshes->preload(this);
+        meshes->preload();
     }
 }
 
@@ -1144,7 +1145,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
 void animmodel::part::setanim(int animpart, int num, int frame, int range, float speed, int priority)
 {
-    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= numanims)
+    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= static_cast<int>(animnames.size()))
     {
         return;
     }
@@ -1155,7 +1156,7 @@ void animmodel::part::setanim(int animpart, int num, int frame, int range, float
     }
     if(!anims[animpart])
     {
-        anims[animpart] = new std::vector<animspec>[numanims];
+        anims[animpart] = new std::vector<animspec>[animnames.size()];
     }
     anims[animpart][num].emplace_back();
     animspec &spec = anims[animpart][num].back();
@@ -1179,7 +1180,6 @@ bool animmodel::part::animated() const
 
 void animmodel::part::loaded()
 {
-    meshes->shared++;
     for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].setkey();
@@ -1525,7 +1525,7 @@ void animmodel::cleanup()
     }
 }
 
-void animmodel::initmatrix(matrix4x3 &m)
+void animmodel::initmatrix(matrix4x3 &m) const
 {
     m.identity();
     if(offsetyaw)
@@ -1853,7 +1853,7 @@ void animmodel::calcbb(vec &center, vec &radius)
     center.add(radius);
 }
 
-void animmodel::calctransform(matrix4x3 &m)
+void animmodel::calctransform(matrix4x3 &m) const
 {
     initmatrix(m);
     m.scale(scale);
@@ -1913,7 +1913,7 @@ void animmodel::disablevbo()
     lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = 0;
 }
 
-void animmodel::endrender()
+void animmodel::endrender() const
 {
     if(lastvbuf || lastebuf)
     {

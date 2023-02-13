@@ -8,7 +8,7 @@
 
   - [API Documentation Website](https://project-imprimis.github.io/libprimis/)
   - [Engine](doc/engine.md)
-  - [Interaface](doc/interface.md)
+  - [Interface](doc/interface.md)
   - [Tesseract Renderer](doc/tesseract-renderer.md)
   - [Timeline](doc/timeline.md)
 
@@ -50,6 +50,7 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * support for OpenGL 4.0+ contexts
 * support for Windows and Linux-based operating systems
 * support for realtime geometry modification during gameplay
+* Unicode UTF-8 text support
 
 For documentation on the engine, see [engine](doc/engine.md).
 
@@ -86,10 +87,10 @@ and drivers for OpenGL (usually already installed). To compile the library, the 
 versions of the libraries are required (on distros that seperate standard and dev packages).
 
 Once the library has been compiled, it should be placed the standard shared library folder
-(usually `/usr/lib/`) where it can be linked to. Alternatively, use `make -Csrc install` to
-automatically compile and install the library to `/usr/lib/`. Distros without `sudo` or
-which do not have their `ld` library path at `/usr/lib` can configure the Makefile to
-point to the appropriate location or copy the file manually to their `ld` library path.
+(usually `/usr/lib/` or `/usr/local/lib`) where it can be linked to. Alternatively, use
+`make -Csrc install` to automatically compile and install the library to `/usr/lib/`. Distros
+without `sudo` or which do not have their `ld` library path at `/usr/lib` can configure the
+Makefile to point to the appropriate location or copy the file manually to their `ld` library path.
 
 To build a game on libprimis, you will then need to get the required headers (located in
 a separate repository) and build your game against these headers and the shared library.

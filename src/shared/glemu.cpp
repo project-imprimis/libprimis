@@ -1,3 +1,9 @@
+/**
+ * @brief GL immediate mode EMUlation layer (glemu).
+ *
+ * This file replicates some of the functionality of the long since removed glBegin/glEnd
+ * features from extremely outdated versions of OpenGL.
+ */
 #include "../libprimis-headers/cube.h"
 
 #include "glemu.h"
@@ -23,7 +29,7 @@ namespace gle
     ucharbuf attribbuf;
     static uchar *attribdata;
     static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
-    int enabled = 0;
+    static int enabled = 0;
     static int numattribs = 0,
                attribmask = 0,
                numlastattribs = 0,
@@ -95,7 +101,7 @@ namespace gle
         glDrawRangeElements(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, (ushort *)0 + offset*6);
     }
 
-    void defattrib(int type, int size, int format)
+    static void defattrib(int type, int size, int format)
     {
         if(type == Attribute_Vertex)
         {
@@ -321,7 +327,7 @@ namespace gle
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
             }
             //void pointer warning!
-            void *dst = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
+            void *dst = glMapBufferRange(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
             std::memcpy(dst, attribbuf.getbuf(), attribbuf.length());
             glUnmapBuffer(GL_ARRAY_BUFFER);
         }
@@ -333,52 +339,34 @@ namespace gle
         if(vertexsize == lastvertexsize && buf >= lastbuf)
         {
             start = static_cast<int>(buf - lastbuf)/vertexsize;
-            if(primtype == GL_QUADS && (start%4 || start + attribbuf.length()/vertexsize >= 4*maxquads))
-            {
-                start = 0;
-            }
-            else
-            {
-                buf = lastbuf;
-            }
+            buf = lastbuf;
         }
         vbooffset += attribbuf.length();
         setattribs(buf);
         int numvertexes = attribbuf.length()/vertexsize;
-        if(primtype == GL_QUADS)
+        if(multidrawstart.size())
         {
-            if(!quadsenabled)
+            multidraw();
+            if(start)
             {
-                enablequads();
+                for(uint i = 0; i < multidrawstart.size(); i++)
+                {
+                    multidrawstart[i] += start;
+                }
             }
-            drawquads(start/4, numvertexes/4);
+            glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
+            multidrawstart.resize(0);
+            multidrawcount.resize(0);
         }
         else
         {
-            if(multidrawstart.size())
-            {
-                multidraw();
-                if(start)
-                {
-                    for(uint i = 0; i < multidrawstart.size(); i++)
-                    {
-                        multidrawstart[i] += start;
-                    }
-                }
-                glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
-                multidrawstart.resize(0);
-                multidrawcount.resize(0);
-            }
-            else
-            {
-                glDrawArrays(primtype, start, numvertexes);
-            }
+            glDrawArrays(primtype, start, numvertexes);
         }
         attribbuf.reset(attribdata, maxvbosize);
         return numvertexes;
     }
 
-    void forcedisable()
+    static void forcedisable()
     {
         for(int i = 0; enabled; i++)
         {
@@ -397,13 +385,21 @@ namespace gle
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    void disable()
+    {
+        if(enabled)
+        {
+            forcedisable();
+        }
+    }
+
     void setup()
     {
         if(!defaultvao)
         {
             glGenVertexArrays_(1, &defaultvao);
         }
-        glBindVertexArray_(defaultvao);
+        glBindVertexArray(defaultvao);
         attribdata = new uchar[maxvbosize];
         attribbuf.reset(attribdata, maxvbosize);
     }
@@ -434,8 +430,17 @@ namespace gle
     void deftexcoord0(int size, int format) { defattrib(Attribute_TexCoord0, size, format); }
     void defnormal(int size, int format) { defattrib(Attribute_Normal, size, format); }
 
-    void colorf(float x, float y, float z) { glVertexAttrib3f(Attribute_Color, x, y, z); }
-    void colorf(float x, float y, float z, float w) { glVertexAttrib4f(Attribute_Color, x, y, z, w); }
+    void colorf(float x, float y, float z, float w)
+    {
+        if(w != 0.0f)
+        {
+            glVertexAttrib4f(Attribute_Color, x, y, z, w);
+        }
+        else
+        {
+            glVertexAttrib3f(Attribute_Color, x, y, z);
+        }
+    }
 
     void color(const vec &v) { glVertexAttrib3fv(Attribute_Color, v.v); }
     void color(const vec &v, float w) { glVertexAttrib4f(Attribute_Color, v.x, v.y, v.z, w); }

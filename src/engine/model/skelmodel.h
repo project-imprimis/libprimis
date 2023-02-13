@@ -80,7 +80,7 @@ struct skelmodel : animmodel
         float pitch;
         int millis;
         uchar *partmask;
-        ragdolldata *ragdoll;
+        const ragdolldata *ragdoll;
 
         animcacheentry();
 
@@ -346,14 +346,14 @@ struct skelmodel : animmodel
             }
         }
 
-        skelanimspec *findskelanim(const char *name, char sep = '\0');
+        const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
         skelanimspec &addskelanim(const char *name);
-        int findbone(const char *name);
-        int findtag(const char *name);
+        int findbone(const char *name) const;
+        int findtag(const char *name) const;
         bool addtag(const char *name, int bone, const matrix4x3 &matrix);
         void addpitchdep(int bone, int frame);
-        int findpitchdep(int bone);
-        int findpitchcorrect(int bone);
+        int findpitchdep(int bone) const;
+        int findpitchcorrect(int bone) const;
         void initpitchdeps();
         void optimize();
         void expandbonemask(uchar *expansion, int bone, int val);
@@ -363,15 +363,15 @@ struct skelmodel : animmodel
         float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
         void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
         void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
-        void initragdoll(ragdolldata &d, skelcacheentry &sc, part *p);
-        void genragdollbones(ragdolldata &d, skelcacheentry &sc, part *p);
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
-        void calctags(part *p, skelcacheentry *sc = nullptr);
+        void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
+        void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
+        void calctags(part *p, const skelcacheentry *sc = nullptr);
         void cleanup(bool full = true);
-        bool canpreload();
+        bool canpreload() const;
         void preload();
-        skelcacheentry &checkskelcache(part *p, const AnimState *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata);
-        int getblendoffset(UniformLoc &u);
+        skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
+        int getblendoffset(const UniformLoc &u);
         void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
         bool shouldcleanup() const;
 
@@ -385,7 +385,7 @@ struct skelmodel : animmodel
                 const dualquat *fr1, *fr2, *pfr1, *pfr2;
             };
 
-            void setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count);
+            void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
     };
@@ -425,7 +425,7 @@ struct skelmodel : animmodel
         void *animkey();
         int totalframes() const;
 
-        virtual skelanimspec *loadanim(const char *filename)
+        virtual const skelanimspec *loadanim(const char *filename)
         {
             return nullptr;
         }
@@ -475,7 +475,7 @@ struct skelmodel : animmodel
         }
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr);
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
         int remapblend(int blend);
@@ -483,16 +483,16 @@ struct skelmodel : animmodel
         void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
         static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
         void cleanup();
-        vbocacheentry &checkvbocache(skelcacheentry &sc, int owner);
-        blendcacheentry &checkblendcache(skelcacheentry &sc, int owner);
+        vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
+        blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
         //hitzone
         void cleanuphitdata();
         void deletehitdata();
         void buildhitdata(const uchar *hitzones);
-        void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray);
+        void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray) const;
         //end hitzone.h
         void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
-        void preload(part *p);
+        void preload();
 
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 
@@ -562,14 +562,15 @@ struct skelmodel : animmodel
     }
 };
 
-struct skeladjustment
+class skeladjustment
 {
-    float yaw, pitch, roll;
-    vec translate;
+    public:
+        skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
+        void adjust(dualquat &dq);
 
-    skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
-
-    void adjust(dualquat &dq);
+    private:
+        float yaw, pitch, roll;
+        vec translate;
 };
 
 template<class MDL>
@@ -723,7 +724,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
-            conoutf("\frnot loading an %s", MDL::formatname());
+            conoutf("not loading an %s", MDL::formatname());
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
@@ -732,17 +733,17 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-        animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
+        const animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
-            conoutf("\frcould not load %s anim file %s", MDL::formatname(), filename);
+            conoutf("could not load %s anim file %s", MDL::formatname(), filename);
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
-            conoutf("\frcould not find bone %s to pitch target", name);
+            conoutf("could not find bone %s to pitch target", name);
             return;
         }
         for(uint i = 0; i < skel->pitchtargets.size(); i++)
@@ -764,7 +765,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
-            conoutf("\frnot loading an %s", MDL::formatname());
+            conoutf("not loading an %s", MDL::formatname());
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
@@ -776,7 +777,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
-            conoutf("\frcould not find bone %s to pitch correct", name);
+            conoutf("could not find bone %s to pitch correct", name);
             return;
         }
         if(skel->findpitchcorrect(bone) >= 0)
@@ -798,7 +799,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         if(target < 0)
         {
-            conoutf("\frcould not find pitch target %s to pitch correct %s", targetname, name);
+            conoutf("could not find pitch target %s to pitch correct %s", targetname, name);
             return;
         }
         pitchcorrect c;
@@ -842,7 +843,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 return;
             }
             DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-            animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
+            const animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
             if(!sa)
             {
                 conoutf("could not load %s anim file %s", MDL::formatname(), filename);

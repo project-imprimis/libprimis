@@ -4,6 +4,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 
 #include "interface/console.h"
@@ -12,6 +13,7 @@
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
+#include "render/shader.h"
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
@@ -135,7 +137,7 @@ void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void vertmodel::vertmesh::assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
+void vertmodel::vertmesh::assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = tc.tc;
@@ -160,7 +162,7 @@ int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
     return numverts;
 }
 
-void vertmodel::vertmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
+void vertmodel::vertmesh::render()
 {
     if(!Shader::lastshader)
     {
@@ -260,12 +262,12 @@ int vertmodel::vertmeshgroup::totalframes() const
     return numframes;
 }
 
-void vertmodel::vertmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
 {
     n.mul(m, tags[i].matrix);
 }
 
-void vertmodel::vertmeshgroup::calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix)
+void vertmodel::vertmeshgroup::calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix)
 {
     const matrix4x3 &tag1 = tags[as.cur.fr1*numtags + i].matrix,
                     &tag2 = tags[as.cur.fr2*numtags + i].matrix;
@@ -312,15 +314,6 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     {
         vertsize = sizeof(vvertg);
         gle::bindvbo(vc.vbuf);
-
-        #define GENVBO(type) \
-            do \
-            { \
-                std::vector<type> vverts; \
-                LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
-                glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(type), vverts.data(), GL_STATIC_DRAW); \
-            } while(0)
-
         int numverts = 0,
             htlen = 128;
         LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
@@ -334,11 +327,11 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         }
         int *htdata = new int[htlen];
         std::memset(htdata, -1, htlen*sizeof(int));
-        GENVBO(vvertg);
+        std::vector<vvertg> vverts;
+        LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen));
+        glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(vvertg), vverts.data(), GL_STATIC_DRAW);
         delete[] htdata;
         htdata = nullptr;
-        #undef GENVBO
-
         gle::clearvbo();
     }
 
@@ -348,7 +341,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     gle::clearebo();
 }
 
-void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
+void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
 {
     if(numframes>1)
     {
@@ -379,7 +372,7 @@ void vertmodel::vertmeshgroup::cleanup()
     }
 }
 
-void vertmodel::vertmeshgroup::preload(part *p)
+void vertmodel::vertmeshgroup::preload()
 {
     if(numframes > 1)
     {
@@ -391,7 +384,7 @@ void vertmodel::vertmeshgroup::preload(part *p)
     }
 }
 
-void vertmodel::vertmeshgroup::render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
+void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p)
 {
     if(as->cur.anim & Anim_NoRender)
     {
@@ -445,7 +438,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float pitch, const ve
             vc->millis = lastmillis;
             LOOP_RENDER_MESHES(vertmesh, m,
             {
-                m.interpverts(*as, reinterpret_cast<vvert *>(vdata), p->skins[i]);
+                m.interpverts(*as, reinterpret_cast<vvert *>(vdata));
             });
             gle::bindvbo(vc->vbuf);
             glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
@@ -456,7 +449,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float pitch, const ve
     LOOP_RENDER_MESHES(vertmesh, m,
     {
         p->skins[i].bind(m, as);
-        m.render(as, p->skins[i], *vc);
+        m.render();
     });
     for(uint i = 0; i < p->links.size(); i++)
     {

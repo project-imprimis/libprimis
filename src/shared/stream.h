@@ -33,31 +33,20 @@ inline int iscubeprint(uchar c) { return cubectype[c] & CubeType_Print; }
 inline int iscubespace(uchar c) { return cubectype[c] & CubeType_Space; }
 inline int iscubealpha(uchar c) { return cubectype[c] & CubeType_Alpha; }
 inline int iscubealnum(uchar c) { return cubectype[c]&(CubeType_Alpha | CubeType_Digit); }
-inline int iscubelower(uchar c) { return cubectype[c] & CubeType_Lower; }
-inline int iscubeupper(uchar c) { return cubectype[c] & CubeType_Upper; }
 inline int iscubepunct(uchar c) { return cubectype[c] == CubeType_Print; }
 inline int cube2uni(uchar c)
 {
-    extern const int cube2unichars[256];
-    return cube2unichars[c];
+    return c;
 }
-inline uchar uni2cube(int c)
-{
-    extern const int uni2cubeoffsets[8];
-    extern const uchar uni2cubechars[];
-    return static_cast<uint>(c) <= 0x7FF ? uni2cubechars[uni2cubeoffsets[c>>8] + (c&0xFF)] : 0;
-}
+
 inline uchar cubelower(uchar c)
 {
-    extern const uchar cubelowerchars[256];
-    return cubelowerchars[c];
+    return c;
 }
 inline uchar cubeupper(uchar c)
 {
-    extern const uchar cubeupperchars[256];
-    return cubeupperchars[c];
+    return c;
 }
-extern size_t decodeutf8(uchar *dst, size_t dstlen, const uchar *src, size_t srclen, size_t *carry = nullptr);
 extern size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry = nullptr);
 
 extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);

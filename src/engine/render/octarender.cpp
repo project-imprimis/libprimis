@@ -3,6 +3,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/hashtable.h"
 
 #include "grass.h"
 #include "octarender.h"
@@ -11,6 +12,7 @@
 #include "renderparticles.h"
 #include "rendersky.h"
 #include "renderva.h"
+#include "shader.h"
 #include "shaderparam.h"
 #include "texture.h"
 
@@ -20,7 +22,6 @@
 #include "world/light.h"
 #include "world/material.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/world.h"
 
 
@@ -243,7 +244,7 @@ namespace
         protected:
             void clearverts()
             {
-                memset(table, -1, sizeof(table));
+                std::memset(table, -1, sizeof(table));
                 chain.clear();
                 verts.clear();
             }
@@ -705,7 +706,7 @@ namespace
                 }
             }
 
-            void gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
+            void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key)
             {
                 matrix3 orient;
                 orient.identity();
@@ -1143,7 +1144,7 @@ namespace
         g.texture = texture;
     }
 
-    void calctexgen(VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
+    void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
     {
         Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
         const texrotation &r = texrotations[vslot.rotation];
@@ -1318,7 +1319,7 @@ namespace
         {
             for(int i = 0; i < numverts; ++i)
             {
-                if(pos[i][orient>>1] != ((orient&1)<<worldscale))
+                if(pos[i][orient>>1] != ((orient&1)<<rootworld.mapscale()))
                 {
                     for(int k = 0; k < numverts; ++k)
                     {
@@ -1548,7 +1549,7 @@ namespace
         }
     }
 
-    void gencubeedges(cube *c, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
+    void gencubeedges(cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
     {
         neighborstack[++neighbordepth] = c;
         for(int i = 0; i < 8; ++i)
@@ -1570,7 +1571,7 @@ namespace
         --neighbordepth;
     }
 
-    void gencubeverts(cube &c, const ivec &co, int size)
+    void gencubeverts(const cube &c, const ivec &co, int size)
     {
         if(!(c.visible&0xC0))
         {
@@ -1955,7 +1956,7 @@ namespace
         }
         int maxlevel = -1;
         rendercube(c, co, size, csi, maxlevel);
-        if(size == std::min(0x1000, worldsize/2) || !vc.emptyva())
+        if(size == std::min(0x1000, rootworld.mapsize()/2) || !vc.emptyva())
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
@@ -2061,7 +2062,7 @@ namespace
                     count += setcubevisibility(c[i], o, size);
                 }
                 int tcount = count + (csi <= maxmergelevel ? vamerges[csi].size() : 0);
-                if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, worldsize/2))
+                if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, rootworld.mapsize()/2))
                 {
                     setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
@@ -2441,7 +2442,7 @@ void updatevabbs(bool force)
 {
     if(force)
     {
-        worldmin = ivec(worldsize, worldsize, worldsize);
+        worldmin = ivec(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize());
         worldmax = ivec(0, 0, 0);
         for(uint i = 0; i < varoot.size(); i++)
         {
@@ -2450,7 +2451,7 @@ void updatevabbs(bool force)
         if(worldmin.x >= worldmax.x)
         {
             worldmin = ivec(0, 0, 0);
-            worldmax = ivec(worldsize, worldsize, worldsize);
+            worldmax = ivec(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize());
         }
     }
     else
@@ -2475,13 +2476,13 @@ void cubeworld::findtjoints()
 void cubeworld::octarender()                               // creates va s for all leaf cubes that don't already have them
 {
     int csi = 0;
-    while(1<<csi < worldsize)
+    while(1<<csi < mapsize())
     {
         csi++;
     }
     recalcprogress = 0;
     varoot.clear();
-    updateva(worldroot, ivec(0, 0, 0), worldsize/2, csi-1);
+    updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
     explicitsky = 0;
     for(uint i = 0; i < valist.size(); i++)
