@@ -715,7 +715,7 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
     return true;
 }
 
-bool animmodel::part::unlink(part *p)
+bool animmodel::part::unlink(const part *p)
 {
     for(int i = links.size(); --i >=0;) //note reverse iteration
     {
@@ -725,7 +725,7 @@ bool animmodel::part::unlink(part *p)
             return true;
         }
     }
-    for(linkedpart i : links)
+    for(const linkedpart &i : links)
     {
         if(i.p && i.p->unlink(p))
         {
