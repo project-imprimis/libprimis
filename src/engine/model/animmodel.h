@@ -475,7 +475,7 @@ class animmodel : public model
         void genBIH(std::vector<BIH::mesh> &bih);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
-        BIH *setBIH();
+        bool setBIH();
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
 
         bool unlink(const part *p)

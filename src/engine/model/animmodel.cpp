@@ -1599,16 +1599,17 @@ void animmodel::preloadBIH()
     }
 }
 
-BIH *animmodel::setBIH()
+//always will return true (note that this overloads model::setBIH())
+bool animmodel::setBIH()
 {
     if(bih)
     {
-        return bih;
+        return true;
     }
     std::vector<BIH::mesh> meshes;
     genBIH(meshes);
     bih = new BIH(meshes);
-    return bih;
+    return true;
 }
 
 bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
