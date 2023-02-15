@@ -812,5 +812,5 @@ int cubeworld::mapsize() const
 
 int cubeworld::mapscale() const
 {
-    return 1<<mapsize();
+    return worldscale;
 }
