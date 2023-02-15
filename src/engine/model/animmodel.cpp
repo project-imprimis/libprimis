@@ -777,7 +777,7 @@ void animmodel::part::preloadBIH() const
 
 void animmodel::part::preloadshaders()
 {
-    for(skin i : skins)
+    for(skin &i : skins)
     {
         i.preloadshader();
     }
