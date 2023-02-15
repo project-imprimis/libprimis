@@ -330,7 +330,7 @@ void animmodel::skin::cleanup()
     }
 }
 
-void animmodel::skin::preloadBIH()
+void animmodel::skin::preloadBIH() const
 {
     if(alphatested() && !tex->alphamask)
     {
@@ -767,9 +767,9 @@ bool animmodel::part::alphatested() const
     return false;
 }
 
-void animmodel::part::preloadBIH()
+void animmodel::part::preloadBIH() const
 {
-    for(skin i : skins)
+    for(const skin &i : skins)
     {
         i.preloadBIH();
     }

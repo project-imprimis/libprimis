@@ -85,7 +85,7 @@ class animmodel : public model
             void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
             Shader *loadshader();
             void cleanup();
-            void preloadBIH();
+            void preloadBIH() const;
             void preloadshader();
             void setshader(Mesh &m, const AnimState *as);
             void bind(Mesh &b, const AnimState *as);
@@ -418,7 +418,7 @@ class animmodel : public model
                 bool unlink(const part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
                 bool alphatested() const;
-                void preloadBIH();
+                void preloadBIH() const;
                 void preloadshaders();
                 void preloadmeshes();
                 virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
