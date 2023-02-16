@@ -210,7 +210,7 @@ static void mmcollisionbox(const entity &e, model *m, vec &center, vec &radius)
     transformbb(e, center, radius);
 }
 
-static void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
+static void decalboundbox(const entity &e, const DecalSlot &s, vec &center, vec &radius)
 {
     float size = std::max(static_cast<float>(e.attr5), 1.0f);
     center = vec(0, s.depth * size/2, 0);
