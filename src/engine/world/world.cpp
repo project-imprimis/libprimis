@@ -797,9 +797,9 @@ void cubeworld::shrinkmap()
     worldscale--;
     ivec offset(octant, ivec(0, 0, 0), mapsize());
     std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity * const i : ents)
     {
-        ents[i]->o.sub(vec(offset));
+        i->o.sub(vec(offset));
     }
     allchanged();
     conoutf("shrunk map to size %d", worldscale);
