@@ -637,9 +637,9 @@ void animmodel::part::cleanup()
     {
         meshes->cleanup();
     }
-    for(uint i = 0; i < skins.size(); i++)
+    for(skin &i : skins)
     {
-        skins[i].cleanup();
+        i.cleanup();
     }
 }
 
@@ -757,9 +757,9 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
 
 bool animmodel::part::alphatested() const
 {
-    for(uint i = 0; i < skins.size(); i++)
+    for(const skin &i : skins)
     {
-        if(skins[i].alphatested())
+        if(i.alphatested())
         {
             return true;
         }
@@ -988,9 +988,8 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
-        for(uint i = 0; i < links.size(); i++)
+        for(linkedpart &link : links)
         {
-            linkedpart &link = links[i];
             if(!link.p)
             {
                 continue;
@@ -1106,9 +1105,8 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
-        for(uint i = 0; i < links.size(); i++)
+        for(linkedpart &link : links)
         {
-            linkedpart &link = links[i];
             link.matrix.translate(link.translate, resize);
             matrixpos++;
             matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
@@ -1175,9 +1173,9 @@ bool animmodel::part::animated() const
 
 void animmodel::part::loaded()
 {
-    for(uint i = 0; i < skins.size(); i++)
+    for(skin &i : skins)
     {
-        skins[i].setkey();
+        i.setkey();
     }
 }
 
@@ -1220,9 +1218,8 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     AnimState as[maxanimparts];
     parts[0]->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 
-    for(uint i = 1; i < parts.size(); i++)
+    for(part *p : parts)
     {
-        part *p = parts[i];
         switch(linktype(this, p))
         {
             case Link_Coop:
@@ -1829,9 +1826,8 @@ void animmodel::calcbb(vec &center, vec &radius)
     matrix4x3 m;
     initmatrix(m);
     parts[0]->calcbb(bbmin, bbmax, m);
-    for(uint i = 1; i < parts.size(); i++)
+    for(part *p : parts)
     {
-        part *p = parts[i];
         switch(linktype(this, p))
         {
             case Link_Coop:
