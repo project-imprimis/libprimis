@@ -151,6 +151,7 @@ void attachentity(extentity &e)
     ents[closest]->attached = &e;
 }
 
+//used in iengine
 void attachentities()
 {
     std::vector<extentity *> &ents = entities::getents();
@@ -198,6 +199,7 @@ static void transformbb(const entity &e, vec &center, vec &radius)
     rotatebb(center, radius, e.attr2, e.attr3, e.attr4);
 }
 
+//used in iengine
 void mmboundbox(const entity &e, model *m, vec &center, vec &radius)
 {
     m->boundbox(center, radius);
