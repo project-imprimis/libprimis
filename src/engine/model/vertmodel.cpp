@@ -388,9 +388,9 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
 {
     if(as->cur.anim & Anim_NoRender)
     {
-        for(uint i = 0; i < p->links.size(); i++)
+        for(linkedpart &l : p->links)
         {
-            calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+            calctagmatrix(p, l.tag, *as, l.matrix);
         }
         return;
     }
@@ -451,8 +451,8 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         p->skins[i].bind(m, as);
         m.render();
     });
-    for(uint i = 0; i < p->links.size(); i++)
+    for(linkedpart &l : p->links)
     {
-        calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+        calctagmatrix(p, l.tag, *as, l.matrix);
     }
 }
