@@ -289,7 +289,7 @@ namespace //internal functionality not seen by other files
                     }
                 }
 
-                VSlot &vslot = lookupvslot(c.texture[i], false);
+                const VSlot &vslot = lookupvslot(c.texture[i], false);
                 int smooth = vslot.slot->smooth;
 
                 if(!numplanes)
