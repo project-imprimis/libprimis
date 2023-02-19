@@ -783,7 +783,7 @@ void renderwater()
 {
     for(int k = 0; k < 4; ++k) //four types of water hardcoded
     {
-        std::vector<materialsurface> &surfs = watersurfs[k];
+        const std::vector<materialsurface> &surfs = watersurfs[k];
         if(surfs.empty())
         {
             continue;
@@ -875,9 +875,8 @@ void renderwater()
         //======================================================================
 
         aboveshader->set();
-        for(uint i = 0; i < surfs.size(); i++)
+        for(const materialsurface &m: surfs)
         {
-            materialsurface &m = surfs[i];
             if(camera1->o.z < m.o.z - wateroffset)
             {
                 continue;
@@ -888,7 +887,7 @@ void renderwater()
         if(belowshader)
         {
             belowshader->set();
-            for(materialsurface& m : surfs)
+            for(const materialsurface& m : surfs)
             {
                 if(camera1->o.z >= m.o.z - wateroffset)
                 {
