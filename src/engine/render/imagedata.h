@@ -8,9 +8,14 @@ class ImageData
         ImageData(int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE);
         ~ImageData();
 
-        int w, h, bpp, levels, align, pitch;
-        GLenum compressed;
-        uchar *data;
+        int w, // image's width
+            h, // image's height
+            bpp, //bits per image pixel
+            levels,
+            align,
+            pitch;
+        GLenum compressed; //type of GL compression
+        uchar *data; //the raw array of pixel data
 
         int calclevelsize(int level) const;
 
@@ -29,7 +34,7 @@ class ImageData
         bool texturedata(Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
 
     private:
-        void *owner;
+        void *owner; //the owner of the pixel data, generally an SDL_Surface
         void (*freefunc)(void *); //the function that is called to free the surface associated with the object, SDL_FreeSurface()
 
         void setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE);
