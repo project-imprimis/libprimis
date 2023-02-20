@@ -42,7 +42,7 @@ class ImageData
         void disown();
         void cleanup();
         void replace(ImageData &d);
-        void wraptex(SDL_Surface *s);
+        void wraptex(SDL_Surface *s); //wraps a SDL_Surface's data in this object
 
         void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
 
