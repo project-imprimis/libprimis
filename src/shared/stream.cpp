@@ -448,9 +448,8 @@ const char *findfile(const char *filename, const char *mode)
     {
         return filename;
     }
-    for(uint i = 0; i < packagedirs.size(); i++)
+    for(const packagedir &pf : packagedirs)
     {
-        packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(filename, pf.filter, pf.filterlen))
         {
             continue;
@@ -557,9 +556,8 @@ int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
             dirs++;
         }
     }
-    for(uint i = 0; i < packagedirs.size(); i++)
+    for(const packagedir &pf : packagedirs)
     {
-        packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
         {
             continue;
