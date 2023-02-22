@@ -17,5 +17,6 @@ var searchData=
   ['animnames_14',['animnames',['../iengine_8h.html#afdd20b46ef682bee2391dc9887e4ddc3',1,'iengine.h']]],
   ['attachentities_15',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
   ['attachentity_16',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
-  ['attr5_17',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]]
+  ['attr5_17',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]],
+  ['avg_18',['avg',['../structvec4.html#aeb1e9327842a67e5b9a0638a8c38fabc',1,'vec4']]]
 ];

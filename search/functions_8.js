@@ -1,7 +1,7 @@
 var searchData=
 [
   ['ident_0',['ident',['../structident.html#adf9bc6b24573db095dc1544474d140cf',1,'ident::ident(int t, const char *n, float m, float x, float *s, void *f=nullptr, int flags=0)'],['../structident.html#a23422a2118965b45b6bce53cb6a37a34',1,'ident::ident(int t, const char *n, char **s, void *f=nullptr, int flags=0)'],['../structident.html#aa1ce0e67d4154b58fc254be6b348c7ed',1,'ident::ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f=nullptr, int flags=0)'],['../structident.html#a62b2bfd5ecf100a5d735e597aeb5ae31',1,'ident::ident(int t, const char *n, int m, int x, int *s, void *f=nullptr, int flags=0)']]],
-  ['identity_1',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3']]],
+  ['identity_1',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3::identity()'],['../structmatrix4x3.html#aeecc3880a5ef3c598060523fe4f1632c',1,'matrix4x3::identity()']]],
   ['ignoremousemotion_2',['ignoremousemotion',['../iengine_8h.html#a29a5087ad1fa01a38dd91c79cec01d7a',1,'iengine.h']]],
   ['initconsolecmds_3',['initconsolecmds',['../iengine_8h.html#a1d335c95207001c4e062514051278169',1,'iengine.h']]],
   ['initcontrolcmds_4',['initcontrolcmds',['../iengine_8h.html#aa501d4482fd280a413f71443b73f8666',1,'iengine.h']]],

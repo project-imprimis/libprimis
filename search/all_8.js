@@ -3,7 +3,7 @@ var searchData=
   ['i_0',['i',['../unionident_1_1identvalptr.html#ab12d0d9206ee7eca8137501e2618eea1',1,'ident::identvalptr']]],
   ['ident_1',['ident',['../structident.html#aa1ce0e67d4154b58fc254be6b348c7ed',1,'ident::ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f=nullptr, int flags=0)'],['../structident.html#a23422a2118965b45b6bce53cb6a37a34',1,'ident::ident(int t, const char *n, char **s, void *f=nullptr, int flags=0)'],['../structident.html#adf9bc6b24573db095dc1544474d140cf',1,'ident::ident(int t, const char *n, float m, float x, float *s, void *f=nullptr, int flags=0)'],['../structident.html',1,'ident'],['../structident.html#a62b2bfd5ecf100a5d735e597aeb5ae31',1,'ident::ident()']]],
   ['identflags_2',['identflags',['../command_8h.html#abf183f2dd9db02ed8e5199922459cbaa',1,'command.h']]],
-  ['identity_3',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3']]],
+  ['identity_3',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3::identity()'],['../structmatrix4x3.html#aeecc3880a5ef3c598060523fe4f1632c',1,'matrix4x3::identity()']]],
   ['identstack_4',['identstack',['../structidentstack.html',1,'']]],
   ['identval_5',['identval',['../structidentval.html',1,'']]],
   ['identvalptr_6',['identvalptr',['../unionident_1_1identvalptr.html',1,'ident']]],

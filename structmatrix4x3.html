@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('structmatrix4x3.html',''); initResizab
 </div><!--header-->
 <div class="contents">
 
-<p>floating point 4x3 matrix object defined as four column vectors, a-d takes the form as follows: [ a1 b1 c1 d1 a2 b2 c2 d2 a3 b3 c3 d3 ]  
+<p>floating point 4x3 matrix object defined as four column vectors, a-d takes the form as follows: [ a1 b1 c1 d1 (x) a2 b2 c2 d2 (y) a3 b3 c3 d3 ] (z)  
  <a href="structmatrix4x3.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="geom_8h_source.html">geom.h</a>&gt;</code></p>
@@ -142,29 +142,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3947833fb2ca74aa63a447105f65f5f"><td class="memItemLeft" align="right" valign="top"><a id="af3947833fb2ca74aa63a447105f65f5f" name="af3947833fb2ca74aa63a447105f65f5f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (float k)</td></tr>
 <tr class="separator:af3947833fb2ca74aa63a447105f65f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16fd801f0e98cf6fe5ed547eb53b5638"><td class="memItemLeft" align="right" valign="top"><a id="a16fd801f0e98cf6fe5ed547eb53b5638" name="a16fd801f0e98cf6fe5ed547eb53b5638"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setscale</b> (float x, float y, float z)</td></tr>
+<tr class="memitem:a16fd801f0e98cf6fe5ed547eb53b5638"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a16fd801f0e98cf6fe5ed547eb53b5638">setscale</a> (float x, float y, float z)</td></tr>
+<tr class="memdesc:a16fd801f0e98cf6fe5ed547eb53b5638"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the diagonals a.x, b.y, c.z to the given values.  <br /></td></tr>
 <tr class="separator:a16fd801f0e98cf6fe5ed547eb53b5638"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b6729c2362d5bbffa69271ad4ec216f"><td class="memItemLeft" align="right" valign="top"><a id="a4b6729c2362d5bbffa69271ad4ec216f" name="a4b6729c2362d5bbffa69271ad4ec216f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setscale</b> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memitem:a4b6729c2362d5bbffa69271ad4ec216f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a4b6729c2362d5bbffa69271ad4ec216f">setscale</a> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memdesc:a4b6729c2362d5bbffa69271ad4ec216f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the diagonals a.x, b.y, c.z to the given vector's x, y, z values.  <br /></td></tr>
 <tr class="separator:a4b6729c2362d5bbffa69271ad4ec216f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78106c2afeef687e48be8a2728ffe03d"><td class="memItemLeft" align="right" valign="top"><a id="a78106c2afeef687e48be8a2728ffe03d" name="a78106c2afeef687e48be8a2728ffe03d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setscale</b> (float n)</td></tr>
+<tr class="memitem:a78106c2afeef687e48be8a2728ffe03d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a78106c2afeef687e48be8a2728ffe03d">setscale</a> (float n)</td></tr>
+<tr class="memdesc:a78106c2afeef687e48be8a2728ffe03d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the diagonals a.x, b.y, c.z identically to a given value.  <br /></td></tr>
 <tr class="separator:a78106c2afeef687e48be8a2728ffe03d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f790e023b6776b933759593c3bf6040"><td class="memItemLeft" align="right" valign="top"><a id="a8f790e023b6776b933759593c3bf6040" name="a8f790e023b6776b933759593c3bf6040"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>scale</b> (float x, float y, float z)</td></tr>
+<tr class="memitem:a8f790e023b6776b933759593c3bf6040"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a8f790e023b6776b933759593c3bf6040">scale</a> (float x, float y, float z)</td></tr>
+<tr class="memdesc:a8f790e023b6776b933759593c3bf6040"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scales the first three vectors by x, y, and z respectively.  <br /></td></tr>
 <tr class="separator:a8f790e023b6776b933759593c3bf6040"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8f269327591b40e00169eef76d2a1cf"><td class="memItemLeft" align="right" valign="top"><a id="af8f269327591b40e00169eef76d2a1cf" name="af8f269327591b40e00169eef76d2a1cf"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>scale</b> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memitem:af8f269327591b40e00169eef76d2a1cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#af8f269327591b40e00169eef76d2a1cf">scale</a> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memdesc:af8f269327591b40e00169eef76d2a1cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplies the first three vectors by v.x, v.y, and v.z respectively.  <br /></td></tr>
 <tr class="separator:af8f269327591b40e00169eef76d2a1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1f23e996a6b47d01e0fc01ff111c239"><td class="memItemLeft" align="right" valign="top"><a id="aa1f23e996a6b47d01e0fc01ff111c239" name="aa1f23e996a6b47d01e0fc01ff111c239"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>scale</b> (float n)</td></tr>
+<tr class="memitem:aa1f23e996a6b47d01e0fc01ff111c239"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#aa1f23e996a6b47d01e0fc01ff111c239">scale</a> (float n)</td></tr>
+<tr class="memdesc:aa1f23e996a6b47d01e0fc01ff111c239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scales the first three vector elements in the matrix by the specified amount.  <br /></td></tr>
 <tr class="separator:aa1f23e996a6b47d01e0fc01ff111c239"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae80b196ace13b43a81984dd52377c595"><td class="memItemLeft" align="right" valign="top"><a id="ae80b196ace13b43a81984dd52377c595" name="ae80b196ace13b43a81984dd52377c595"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>settranslation</b> (const <a class="el" href="structvec.html">vec</a> &amp;p)</td></tr>
+<tr class="memitem:ae80b196ace13b43a81984dd52377c595"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#ae80b196ace13b43a81984dd52377c595">settranslation</a> (const <a class="el" href="structvec.html">vec</a> &amp;p)</td></tr>
+<tr class="memdesc:ae80b196ace13b43a81984dd52377c595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the <code>p</code> vector into the fourth column vector (<code>d</code>).  <br /></td></tr>
 <tr class="separator:ae80b196ace13b43a81984dd52377c595"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f9b079c1873af80a5619530f85b52b6"><td class="memItemLeft" align="right" valign="top"><a id="a7f9b079c1873af80a5619530f85b52b6" name="a7f9b079c1873af80a5619530f85b52b6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>settranslation</b> (float x, float y, float z)</td></tr>
+<tr class="memitem:a7f9b079c1873af80a5619530f85b52b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a7f9b079c1873af80a5619530f85b52b6">settranslation</a> (float x, float y, float z)</td></tr>
+<tr class="memdesc:a7f9b079c1873af80a5619530f85b52b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies x, y, z into the fourth column vector (<code>d</code>).  <br /></td></tr>
 <tr class="separator:a7f9b079c1873af80a5619530f85b52b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76b0d5cb3e5cc1b459bf572e3cb30e78"><td class="memItemLeft" align="right" valign="top"><a id="a76b0d5cb3e5cc1b459bf572e3cb30e78" name="a76b0d5cb3e5cc1b459bf572e3cb30e78"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>translate</b> (const <a class="el" href="structvec.html">vec</a> &amp;p)</td></tr>
@@ -173,13 +173,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>translate</b> (const 
 void&#160;</td><td class="memItemRight" valign="bottom"><b>translate</b> (float x, float y, float z)</td></tr>
 <tr class="separator:ac05e517ba54f3b0148bfab7c8105ce1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27711a504c193f613c1269b910f0668e"><td class="memItemLeft" align="right" valign="top"><a id="a27711a504c193f613c1269b910f0668e" name="a27711a504c193f613c1269b910f0668e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>translate</b> (const <a class="el" href="structvec.html">vec</a> &amp;p, float scale)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>translate</b> (const <a class="el" href="structvec.html">vec</a> &amp;p, float <a class="el" href="structmatrix4x3.html#a8f790e023b6776b933759593c3bf6040">scale</a>)</td></tr>
 <tr class="separator:a27711a504c193f613c1269b910f0668e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab520672043a0ae67cc6768af9a87d291"><td class="memItemLeft" align="right" valign="top"><a id="ab520672043a0ae67cc6768af9a87d291" name="ab520672043a0ae67cc6768af9a87d291"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>accumulate</b> (const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;m, float k)</td></tr>
 <tr class="separator:ab520672043a0ae67cc6768af9a87d291"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a942640f941f8c9327c293d7e76f364b5"><td class="memItemLeft" align="right" valign="top"><a id="a942640f941f8c9327c293d7e76f364b5" name="a942640f941f8c9327c293d7e76f364b5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>normalize</b> ()</td></tr>
+<tr class="memitem:a942640f941f8c9327c293d7e76f364b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a942640f941f8c9327c293d7e76f364b5">normalize</a> ()</td></tr>
+<tr class="memdesc:a942640f941f8c9327c293d7e76f364b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalizes the first three column vectors.  <br /></td></tr>
 <tr class="separator:a942640f941f8c9327c293d7e76f364b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaacd55df0550f9483a27b58c38c054fc"><td class="memItemLeft" align="right" valign="top"><a id="aaacd55df0550f9483a27b58c38c054fc" name="aaacd55df0550f9483a27b58c38c054fc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>lerp</b> (const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;to, float t)</td></tr>
@@ -187,8 +187,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>lerp</b> (const <a cl
 <tr class="memitem:a3a14e90868c448812bbcc26ec96c2677"><td class="memItemLeft" align="right" valign="top"><a id="a3a14e90868c448812bbcc26ec96c2677" name="a3a14e90868c448812bbcc26ec96c2677"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>lerp</b> (const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;from, const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;to, float t)</td></tr>
 <tr class="separator:a3a14e90868c448812bbcc26ec96c2677"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeecc3880a5ef3c598060523fe4f1632c"><td class="memItemLeft" align="right" valign="top"><a id="aeecc3880a5ef3c598060523fe4f1632c" name="aeecc3880a5ef3c598060523fe4f1632c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>identity</b> ()</td></tr>
+<tr class="memitem:aeecc3880a5ef3c598060523fe4f1632c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#aeecc3880a5ef3c598060523fe4f1632c">identity</a> ()</td></tr>
+<tr class="memdesc:aeecc3880a5ef3c598060523fe4f1632c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets this matrix to the identity matrix.  <br /></td></tr>
 <tr class="separator:aeecc3880a5ef3c598060523fe4f1632c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a2a72c7bf948812df19d9964d78c7bb"><td class="memItemLeft" align="right" valign="top"><a id="a1a2a72c7bf948812df19d9964d78c7bb" name="a1a2a72c7bf948812df19d9964d78c7bb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;m, const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;n)</td></tr>
@@ -268,14 +268,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rotate_around_z</b> (
 <tr class="memitem:ab2b41a7a4eb1317f832e8a2e64d65000"><td class="memItemLeft" align="right" valign="top"><a id="ab2b41a7a4eb1317f832e8a2e64d65000" name="ab2b41a7a4eb1317f832e8a2e64d65000"></a>
 <a class="el" href="structvec.html">vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>transform</b> (const <a class="el" href="structvec2.html">vec2</a> &amp;o) const</td></tr>
 <tr class="separator:ab2b41a7a4eb1317f832e8a2e64d65000"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7477dea298d032bfd86df7d845a319c"><td class="memItemLeft" align="right" valign="top"><a id="ab7477dea298d032bfd86df7d845a319c" name="ab7477dea298d032bfd86df7d845a319c"></a>
-<a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rowx</b> () const</td></tr>
+<tr class="memitem:ab7477dea298d032bfd86df7d845a319c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#ab7477dea298d032bfd86df7d845a319c">rowx</a> () const</td></tr>
+<tr class="memdesc:ab7477dea298d032bfd86df7d845a319c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the x values of the four vectors as a four-vector.  <br /></td></tr>
 <tr class="separator:ab7477dea298d032bfd86df7d845a319c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfa3cbfc14435ea253c3ea6253575230"><td class="memItemLeft" align="right" valign="top"><a id="acfa3cbfc14435ea253c3ea6253575230" name="acfa3cbfc14435ea253c3ea6253575230"></a>
-<a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rowy</b> () const</td></tr>
+<tr class="memitem:acfa3cbfc14435ea253c3ea6253575230"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#acfa3cbfc14435ea253c3ea6253575230">rowy</a> () const</td></tr>
+<tr class="memdesc:acfa3cbfc14435ea253c3ea6253575230"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the y values of the four vectors as a four-vector.  <br /></td></tr>
 <tr class="separator:acfa3cbfc14435ea253c3ea6253575230"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a520452aa8393a2eb4673f13240621699"><td class="memItemLeft" align="right" valign="top"><a id="a520452aa8393a2eb4673f13240621699" name="a520452aa8393a2eb4673f13240621699"></a>
-<a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rowz</b> () const</td></tr>
+<tr class="memitem:a520452aa8393a2eb4673f13240621699"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4x3.html#a520452aa8393a2eb4673f13240621699">rowz</a> () const</td></tr>
+<tr class="memdesc:a520452aa8393a2eb4673f13240621699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the z values of the four vectors as a four-vector.  <br /></td></tr>
 <tr class="separator:a520452aa8393a2eb4673f13240621699"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -294,9 +294,375 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac422a9092203335b414f4b66918beb50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>floating point 4x3 matrix object defined as four column vectors, a-d takes the form as follows: [ a1 b1 c1 d1 a2 b2 c2 d2 a3 b3 c3 d3 ] </p>
+<div class="textblock"><p>floating point 4x3 matrix object defined as four column vectors, a-d takes the form as follows: [ a1 b1 c1 d1 (x) a2 b2 c2 d2 (y) a3 b3 c3 d3 ] (z) </p>
 <p>used in animation along with dualquats </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aeecc3880a5ef3c598060523fe4f1632c" name="aeecc3880a5ef3c598060523fe4f1632c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeecc3880a5ef3c598060523fe4f1632c">&#9670;&#160;</a></span>identity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::identity </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets this matrix to the identity matrix. </p>
+<div class="fragment"><div class="line">  a b c d</div>
+<div class="line">x 1 0 0 0</div>
+<div class="line">y 0 1 0 0</div>
+<div class="line">z 0 0 1 0</div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="a942640f941f8c9327c293d7e76f364b5" name="a942640f941f8c9327c293d7e76f364b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a942640f941f8c9327c293d7e76f364b5">&#9670;&#160;</a></span>normalize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::normalize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Normalizes the first three column vectors. </p>
+<p>Sets the three first vectors to have a magnitude of 1. That is, sqrt(x^2 + y^2 + z^2) = 1. </p>
+
+</div>
+</div>
+<a id="ab7477dea298d032bfd86df7d845a319c" name="ab7477dea298d032bfd86df7d845a319c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7477dea298d032bfd86df7d845a319c">&#9670;&#160;</a></span>rowx()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt; matrix4x3::rowx </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the x values of the four vectors as a four-vector. </p>
+<dl class="section return"><dt>Returns</dt><dd>a vector containing four x values </dd></dl>
+
+</div>
+</div>
+<a id="acfa3cbfc14435ea253c3ea6253575230" name="acfa3cbfc14435ea253c3ea6253575230"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfa3cbfc14435ea253c3ea6253575230">&#9670;&#160;</a></span>rowy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt; matrix4x3::rowy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the y values of the four vectors as a four-vector. </p>
+<dl class="section return"><dt>Returns</dt><dd>a vector containing four y values </dd></dl>
+
+</div>
+</div>
+<a id="a520452aa8393a2eb4673f13240621699" name="a520452aa8393a2eb4673f13240621699"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a520452aa8393a2eb4673f13240621699">&#9670;&#160;</a></span>rowz()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">vec4</a>&lt; float &gt; matrix4x3::rowz </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the z values of the four vectors as a four-vector. </p>
+<dl class="section return"><dt>Returns</dt><dd>a vector containing four z values </dd></dl>
+
+</div>
+</div>
+<a id="af8f269327591b40e00169eef76d2a1cf" name="af8f269327591b40e00169eef76d2a1cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8f269327591b40e00169eef76d2a1cf">&#9670;&#160;</a></span>scale() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::scale </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Multiplies the first three vectors by v.x, v.y, and v.z respectively. </p>
+<p>Does not modify the fourth matrix element vector<code>d</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the vector to multiply by </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa1f23e996a6b47d01e0fc01ff111c239" name="aa1f23e996a6b47d01e0fc01ff111c239"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1f23e996a6b47d01e0fc01ff111c239">&#9670;&#160;</a></span>scale() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::scale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Scales the first three vector elements in the matrix by the specified amount. </p>
+<p>Does not modify the fourth matrix element vector<code>d</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>the scale factor to multiply by </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8f790e023b6776b933759593c3bf6040" name="a8f790e023b6776b933759593c3bf6040"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f790e023b6776b933759593c3bf6040">&#9670;&#160;</a></span>scale() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::scale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Scales the first three vectors by x, y, and z respectively. </p>
+<p>Does not modify the fourth matrix element vector<code>d</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the scale to multiply the first vector by </td></tr>
+    <tr><td class="paramname">y</td><td>the scale to multiply the second vector by </td></tr>
+    <tr><td class="paramname">z</td><td>the scale to multiply the third vector by </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4b6729c2362d5bbffa69271ad4ec216f" name="a4b6729c2362d5bbffa69271ad4ec216f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b6729c2362d5bbffa69271ad4ec216f">&#9670;&#160;</a></span>setscale() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::setscale </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the diagonals a.x, b.y, c.z to the given vector's x, y, z values. </p>
+<p>Does not modify any of the values except for a.x, b.y, c.z.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the vector to assign from </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a78106c2afeef687e48be8a2728ffe03d" name="a78106c2afeef687e48be8a2728ffe03d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78106c2afeef687e48be8a2728ffe03d">&#9670;&#160;</a></span>setscale() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::setscale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the diagonals a.x, b.y, c.z identically to a given value. </p>
+<p>@parm n the value to set to </p>
+
+</div>
+</div>
+<a id="a16fd801f0e98cf6fe5ed547eb53b5638" name="a16fd801f0e98cf6fe5ed547eb53b5638"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16fd801f0e98cf6fe5ed547eb53b5638">&#9670;&#160;</a></span>setscale() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::setscale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the diagonals a.x, b.y, c.z to the given values. </p>
+<p>Does not modify any of the values except for a.x, b.y, c.z.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the first value to set in the diagonal </td></tr>
+    <tr><td class="paramname">y</td><td>the second value to set in the diagonal </td></tr>
+    <tr><td class="paramname">z</td><td>the third value to set in the diagonal </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae80b196ace13b43a81984dd52377c595" name="ae80b196ace13b43a81984dd52377c595"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae80b196ace13b43a81984dd52377c595">&#9670;&#160;</a></span>settranslation() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::settranslation </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies the <code>p</code> vector into the fourth column vector (<code>d</code>). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the vector to copy to the <code>d</code> vector. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7f9b079c1873af80a5619530f85b52b6" name="a7f9b079c1873af80a5619530f85b52b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f9b079c1873af80a5619530f85b52b6">&#9670;&#160;</a></span>settranslation() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void matrix4x3::settranslation </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies x, y, z into the fourth column vector (<code>d</code>). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>the first value to copy into d.x </td></tr>
+    <tr><td class="paramname">y</td><td>the second value to copy into d.y </td></tr>
+    <tr><td class="paramname">z</td><td>the third value to copy into d.z </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="geom_8h_source.html">geom.h</a></li>
 </ul>
 </div><!-- contents -->

@@ -11,5 +11,6 @@ var searchData=
   ['altmapsound_8',['altmapsound',['../classSoundEngine.html#a0d658a3173ad1f7a6b26c36fe454c7d8',1,'SoundEngine']]],
   ['altsound_9',['altsound',['../classSoundEngine.html#af158942502f24a0a8202bc03d6fcee4a',1,'SoundEngine']]],
   ['attachentities_10',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
-  ['attachentity_11',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]]
+  ['attachentity_11',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
+  ['avg_12',['avg',['../structvec4.html#aeb1e9327842a67e5b9a0638a8c38fabc',1,'vec4']]]
 ];
