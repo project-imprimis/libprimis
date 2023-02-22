@@ -280,9 +280,8 @@ namespace //internal functionality not seen by other files
     // generates grass geometry for a given vertex array
     void gengrassquads(const vtxarray &va)
     {
-        for(uint i = 0; i < va.grasstris.size(); i++)
+        for(const grasstri &g : va.grasstris)
         {
-            const grasstri &g = va.grasstris[i];
             if(view.isfoggedsphere(g.radius, g.center))
             {
                 continue;
