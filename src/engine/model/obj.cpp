@@ -82,7 +82,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     while(file->getline(buf, sizeof(buf)))
     {
         char *c = buf;
-        while(isspace(*c))
+        while(std::isspace(*c))
         {
             c++;
         }
@@ -94,7 +94,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
             }
             case 'v':
             {
-                if(isspace(c[1]))
+                if(std::isspace(c[1]))
                 {
                     parsevert(c, attrib[0]);
                 }
@@ -114,13 +114,13 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 {
                     c++;
                 }
-                while(isspace(*c))
+                while(std::isspace(*c))
                 {
                     c++;
                 }
                 char *name = c;
                 size_t namelen = std::strlen(name);
-                while(namelen > 0 && isspace(name[namelen-1]))
+                while(namelen > 0 && std::isspace(name[namelen-1]))
                 {
                     namelen--;
                 }
@@ -155,7 +155,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 }
                 for(;;)
                 {
-                    while(isspace(*c))
+                    while(std::isspace(*c))
                     {
                         c++;
                     }
@@ -241,7 +241,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     for(int i = 0; i < 3; ++i)
     {
         v[i] = std::strtod(s, &s);
-        while(isspace(*s))
+        while(std::isspace(*s))
         {
             s++;
         }
