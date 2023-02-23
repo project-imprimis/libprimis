@@ -289,7 +289,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
+        const part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         float cx = *rx ? std::cos(*rx/(2*RAD)) : 1,
               sx = *rx ? std::sin(*rx/(2*RAD)) : 0,
               cy = *ry ? std::cos(*ry/(2*RAD)) : 1,
@@ -313,7 +313,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *MDL::loading->parts.back();
+        const part &mdl = *MDL::loading->parts.back();
         mdl.pitchscale = *pitchscale;
         mdl.pitchoffset = *pitchoffset;
         if(*pitchmin || *pitchmax)
