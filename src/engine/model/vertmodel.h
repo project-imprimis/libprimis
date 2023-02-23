@@ -313,7 +313,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        const part &mdl = *MDL::loading->parts.back();
+        part &mdl = *MDL::loading->parts.back();
         mdl.pitchscale = *pitchscale;
         mdl.pitchoffset = *pitchoffset;
         if(*pitchmin || *pitchmax)
