@@ -198,6 +198,7 @@ static struct dynentcacheentry
 } dynentcache[dynentcachesize];
 
 //resets the dynentcache[] array entries
+//used in iengine
 void cleardynentcache()
 {
     dynentframe++;
@@ -215,6 +216,7 @@ void cleardynentcache()
 }
 
 //returns the dynent at location i in the dynents vector
+//used in iengine
 dynent *iterdynents(int i)
 {
     if(i < static_cast<int>(dynents.size()))
@@ -231,7 +233,7 @@ static int dynenthash(int x, int y)
     return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1));
 }
 
-const std::vector<physent *> &checkdynentcache(int x, int y)
+static const std::vector<physent *> &checkdynentcache(int x, int y)
 {
     dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
     if(dec.x == x && dec.y == y && dec.frame == dynentframe)
@@ -264,6 +266,7 @@ const std::vector<physent *> &checkdynentcache(int x, int y)
     for(int curx = std::max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = std::min(static_cast<int>(o.x+radius), rootworld.mapsize()-1)>>dynentsize; curx <= endx; curx++) \
         for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), rootworld.mapsize()-1)>>dynentsize; cury <= endy; cury++)
 
+//used in iengine
 void updatedynentcache(physent *d)
 {
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
