@@ -637,7 +637,7 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
 
 ////////////////////////////// world size/octa /////////////////////////////////
 
-void splitocta(cube *c, int size)
+static void splitocta(cube *c, int size)
 {
     if(size <= 0x1000)
     {
