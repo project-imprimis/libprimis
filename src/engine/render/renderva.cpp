@@ -633,7 +633,7 @@ namespace
             next(-1), batch(-1)
         {}
 
-        void renderbatch();
+        void renderbatch() const;
 
         int compare(const geombatch &b) const
         {
@@ -1173,10 +1173,10 @@ namespace
         }
     }
 
-    void geombatch::renderbatch()
+    void geombatch::renderbatch() const
     {
         gbatches++;
-        for(geombatch *curbatch = this;; curbatch = &geombatches[curbatch->batch])
+        for(const geombatch *curbatch = this;; curbatch = &geombatches[curbatch->batch])
         {
             ushort len = curbatch->es.length;
             if(len)
