@@ -1226,7 +1226,7 @@ namespace
         }
         while(curbatch >= 0)
         {
-            geombatch &b = geombatches[curbatch];
+            const geombatch &b = geombatches[curbatch];
             curbatch = b.next;
 
             if(vbuf != b.va->vbuf)
