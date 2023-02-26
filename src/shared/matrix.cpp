@@ -37,7 +37,7 @@ static double det3x3(double a1, double a2, double a3,
 //  matrix3 (3x3) object
 // =============================================================================
 
-matrix3::matrix3()
+matrix3::matrix3() : a(0,0,0), b(0,0,0), c(0,0,0)
 {
 }
 
@@ -774,7 +774,7 @@ vec2 matrix4::lineardepthscale() const
 //  matrix4x3 object
 // =============================================================================
 
-matrix4x3::matrix4x3()
+matrix4x3::matrix4x3() : a(0,0,0), b(0,0,0), c(0,0,0), d(0,0,0)
 {
 }
 
