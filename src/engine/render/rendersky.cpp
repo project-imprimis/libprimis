@@ -35,7 +35,7 @@
 
 VARFR(skyshadow, 0, 0, 1, clearshadowcache());   //toggles rsm features in renderva.cpp
 
-int explicitsky = 0;
+bool explicitsky = false;
 
 // internally relevant functionality
 namespace

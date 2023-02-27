@@ -2484,11 +2484,11 @@ void cubeworld::octarender()                               // creates va s for a
     varoot.clear();
     updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
-    explicitsky = 0;
+    explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
     {
         vtxarray *va = valist[i];
-        explicitsky += va->sky;
+        explicitsky = true;
     }
     visibleva = nullptr;
 }
