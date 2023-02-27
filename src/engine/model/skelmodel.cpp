@@ -777,9 +777,9 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
         const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
         sc.bdata[br.interpindex].mul(sc.bdata[bj.interpindex], d.reljoints[i]);
     }
-    for(uint i = 0; i < antipodes.size(); i++)
+    for(const antipode &i : antipodes)
     {
-        sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+        sc.bdata[i.child].fixantipodal(sc.bdata[i.parent]);
     }
 }
 
@@ -826,9 +826,9 @@ void skelmodel::skeleton::cleanup(bool full)
     blendoffsets.clear();
     if(full)
     {
-        for(uint i = 0; i < users.size(); i++)
+        for(skelmeshgroup *i : users)
         {
-            users[i]->cleanup();
+            i->cleanup();
         }
     }
 }
