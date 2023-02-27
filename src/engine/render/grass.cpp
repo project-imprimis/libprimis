@@ -301,7 +301,7 @@ namespace //internal functionality not seen by other files
                 s.grasstex = textureload(s.grass, 2);
             }
             grassgroup *group = nullptr;
-            for(grasswedge w : grasswedges)
+            for(const grasswedge &w : grasswedges)
             {
                 if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
                 {
