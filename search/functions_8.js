@@ -1,7 +1,7 @@
 var searchData=
 [
   ['ident_0',['ident',['../structident.html#adf9bc6b24573db095dc1544474d140cf',1,'ident::ident(int t, const char *n, float m, float x, float *s, void *f=nullptr, int flags=0)'],['../structident.html#a23422a2118965b45b6bce53cb6a37a34',1,'ident::ident(int t, const char *n, char **s, void *f=nullptr, int flags=0)'],['../structident.html#aa1ce0e67d4154b58fc254be6b348c7ed',1,'ident::ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f=nullptr, int flags=0)'],['../structident.html#a62b2bfd5ecf100a5d735e597aeb5ae31',1,'ident::ident(int t, const char *n, int m, int x, int *s, void *f=nullptr, int flags=0)']]],
-  ['identity_1',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3::identity()'],['../structmatrix4x3.html#aeecc3880a5ef3c598060523fe4f1632c',1,'matrix4x3::identity()']]],
+  ['identity_1',['identity',['../classmatrix3.html#a64df5fd0717bdfd4f6357570810775e7',1,'matrix3::identity()'],['../structmatrix4x3.html#aeecc3880a5ef3c598060523fe4f1632c',1,'matrix4x3::identity()'],['../structmatrix4.html#ad86fb87f9059e56b804f3fa912bc87be',1,'matrix4::identity()']]],
   ['ignoremousemotion_2',['ignoremousemotion',['../iengine_8h.html#a29a5087ad1fa01a38dd91c79cec01d7a',1,'iengine.h']]],
   ['initconsolecmds_3',['initconsolecmds',['../iengine_8h.html#a1d335c95207001c4e062514051278169',1,'iengine.h']]],
   ['initcontrolcmds_4',['initcontrolcmds',['../iengine_8h.html#aa501d4482fd280a413f71443b73f8666',1,'iengine.h']]],
@@ -33,10 +33,11 @@ var searchData=
   ['initzipcmds_30',['initzipcmds',['../tools_8h.html#ac348a3a9d5cdd66464d88daffe36a73a',1,'tools.h']]],
   ['insideworld_31',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
   ['intret_32',['intret',['../command_8h.html#a21cd226150059e3a302cfdbb389541c5',1,'command.h']]],
-  ['invert_33',['invert',['../classmatrix3.html#a58a461e313094a5350567277678e0d2c',1,'matrix3::invert(const matrix3 &amp;o)'],['../classmatrix3.html#a75239d9aa6d5a9ed3d35ce8e549733a1',1,'matrix3::invert()']]],
-  ['isempty_34',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
-  ['isheightmap_35',['isheightmap',['../iengine_8h.html#a019aa3d124abe988a96d0df76b163204',1,'iengine.h']]],
-  ['issolid_36',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
-  ['isvalidcube_37',['isvalidcube',['../classcube.html#a6eb323daa7488b5e9e70f97bad203070',1,'cube']]],
-  ['iterdynents_38',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
+  ['inverse_33',['inverse',['../structmatrix4.html#a4fd91ece1626be70bdf436a04339c8a7',1,'matrix4']]],
+  ['invert_34',['invert',['../classmatrix3.html#a58a461e313094a5350567277678e0d2c',1,'matrix3::invert(const matrix3 &amp;o)'],['../classmatrix3.html#a75239d9aa6d5a9ed3d35ce8e549733a1',1,'matrix3::invert()'],['../structmatrix4.html#a8c2b2259f2ba5c6866a9b26291446dab',1,'matrix4::invert()']]],
+  ['isempty_35',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
+  ['isheightmap_36',['isheightmap',['../iengine_8h.html#a019aa3d124abe988a96d0df76b163204',1,'iengine.h']]],
+  ['issolid_37',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
+  ['isvalidcube_38',['isvalidcube',['../classcube.html#a6eb323daa7488b5e9e70f97bad203070',1,'cube']]],
+  ['iterdynents_39',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]]
 ];

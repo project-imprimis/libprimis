@@ -9,7 +9,7 @@ var geom_8h =
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
     [ "svec", "structsvec.html", null ],
-    [ "matrix4", "structmatrix4.html", null ],
+    [ "matrix4", "structmatrix4.html", "structmatrix4" ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
     [ "cos360", "geom_8h.html#ad6a0aa9eb4a0a474deddc7ef0d327497", null ],

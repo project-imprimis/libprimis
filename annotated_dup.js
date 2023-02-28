@@ -20,7 +20,7 @@ var annotated_dup =
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
     [ "matrix3", "classmatrix3.html", "classmatrix3" ],
-    [ "matrix4", "structmatrix4.html", null ],
+    [ "matrix4", "structmatrix4.html", "structmatrix4" ],
     [ "matrix4x3", "structmatrix4x3.html", "structmatrix4x3" ],
     [ "modelattach", "structmodelattach.html", null ],
     [ "physent", "structphysent.html", "structphysent" ],

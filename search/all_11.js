@@ -15,9 +15,9 @@ var searchData=
   ['totalmillis_12',['totalmillis',['../iengine_8h.html#ad1ab636b9ead358e52c9ba42c2027bb2',1,'iengine.h']]],
   ['trace_13',['trace',['../classmatrix3.html#a84eaa28f72320d029973f052a1f3b7dd',1,'matrix3']]],
   ['transform_14',['transform',['../classmatrix3.html#a186cca4edc595931f87b75f8f9ef0490',1,'matrix3::transform(const vec2 &amp;o)'],['../classmatrix3.html#a58452d12508596c22554aa1b2d894f0d',1,'matrix3::transform(const vec &amp;o) const']]],
-  ['transpose_15',['transpose',['../classmatrix3.html#accf661a3b5cbba59d81d4a1828066b45',1,'matrix3']]],
+  ['transpose_15',['transpose',['../structmatrix4.html#ae286bd9aec8651a3e8da22b7e7d78c43',1,'matrix4::transpose(const matrix4 &amp;m)'],['../structmatrix4.html#a3149cea5649dabf36554b2dacf3c502f',1,'matrix4::transpose()'],['../classmatrix3.html#accf661a3b5cbba59d81d4a1828066b45',1,'matrix3::transpose()']]],
   ['transposedtransform_16',['transposedtransform',['../classmatrix3.html#a913fd35c7f822140a5e00169c9c2e831',1,'matrix3::transposedtransform(const vec2 &amp;o) const'],['../classmatrix3.html#ad80c0868a7fd8239d25853969d888074',1,'matrix3::transposedtransform(const vec &amp;o) const']]],
   ['transposemul_17',['transposemul',['../classmatrix3.html#ace55aa434ded31ecefa54f0ffc3172b5',1,'matrix3::transposemul(const matrix3 &amp;n)'],['../classmatrix3.html#a9981ee9f9df8c61bed812bef9559f0fa',1,'matrix3::transposemul(const matrix3 &amp;m, const matrix3 &amp;n)']]],
   ['triggerqueue_18',['triggerqueue',['../command_8h.html#ae653e8a430e6baa97073fbaa061abfb2',1,'command.h']]],
-  ['type_19',['type',['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type()'],['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type()'],['../structident.html#a89f53b6ecbddf478efd372ffe0ae6eda',1,'ident::type()']]]
+  ['type_19',['type',['../structident.html#a89f53b6ecbddf478efd372ffe0ae6eda',1,'ident::type()'],['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type()'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type()']]]
 ];
