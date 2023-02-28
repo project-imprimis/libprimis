@@ -393,6 +393,19 @@ bool matrix4::invert(const matrix4 &m, double mindet)
     return true;
 }
 
+matrix4 matrix4::inverse(double mindet) const
+{
+    matrix4 ret;
+    if(ret.invert(*this, mindet))
+    {
+        return ret;
+    }
+    else
+    {
+        return { vec4<float>(0,0,0,0), vec4<float>(0,0,0,0), vec4<float>(0,0,0,0), vec4<float>(0,0,0,0) };
+    }
+}
+
 matrix4::matrix4()
 {
 }
@@ -733,11 +746,6 @@ void matrix4::transposedtransformnormal(const vec &in, vec &out) const
     out.x = a.dot3(in);
     out.y = b.dot3(in);
     out.z = c.dot3(in);
-}
-
-float matrix4::getscale() const
-{
-    return sqrtf(a.x*a.y + b.x*b.x + c.x*c.x);
 }
 
 vec matrix4::gettranslation() const
