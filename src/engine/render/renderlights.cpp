@@ -3754,7 +3754,8 @@ void GBuffer::preparegbuffer(bool depthclear)
     invscreenmatrix.identity();
     invscreenmatrix.settranslation(-1.0f, -1.0f, -1.0f);
     invscreenmatrix.setscale(2.0f/vieww, 2.0f/viewh, 2.0f);
-    eyematrix.muld(invprojmatrix, invscreenmatrix);
+
+    eyematrix.muld(projmatrix.inverse(), invscreenmatrix);
     if(drawtex == Draw_TexMinimap)
     {
         linearworldmatrix.muld(invcamprojmatrix, invscreenmatrix);

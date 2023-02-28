@@ -532,7 +532,6 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     if(init)
     {
         invcammatrix.invert(cammatrix);
-        invprojmatrix.invert(projmatrix);
         invcamprojmatrix.invert(camprojmatrix);
     }
     GLOBALPARAM(camprojmatrix, camprojmatrix);
@@ -731,7 +730,7 @@ void mousemove(int dx, int dy)
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
-matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
+matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
 

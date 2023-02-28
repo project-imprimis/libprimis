@@ -297,7 +297,7 @@ namespace
 
         matrix4 sunmatrix = invcammatrix;
         sunmatrix.settranslation(0, 0, 0);
-        sunmatrix.mul(invprojmatrix);
+        sunmatrix.mul(projmatrix.inverse());
         LOCALPARAM(sunmatrix, sunmatrix);
 
         LOCALPARAM(sunlight, (!atmosunlight.iszero() ? atmosunlight.tocolor().mul(atmosunlightscale) : sunlight.tocolor().mul(sunlightscale)).mul(atmobright*ldrscale));
