@@ -531,7 +531,7 @@ namespace
                     std::memcpy(skydata, skyindices.data(), va->sky*sizeof(ushort));
                     if(va->voffset)
                     {
-                        for(int i = 0; i < va->sky; ++i)
+                        for(uint i = 0; i < va->sky; ++i)
                         {
                             skydata[i] += va->voffset;
                         }
@@ -2487,8 +2487,11 @@ void cubeworld::octarender()                               // creates va s for a
     explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
     {
-        vtxarray *va = valist[i];
-        explicitsky = true;
+        if(valist[i]->sky)
+        {
+            explicitsky = true;
+            break;
+        }
     }
     visibleva = nullptr;
 }
