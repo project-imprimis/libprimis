@@ -25,17 +25,31 @@ struct FilesKey
 
     FilesKey() {}
     FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
-};
 
+};
+/*
 static inline bool htcmp(const FilesKey &x, const FilesKey &y)
 {
     return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
 }
-
+*/
+static inline bool operator==(const FilesKey &x, const FilesKey &y) {
+    return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
+}
+/*
 static inline uint hthash(const FilesKey &k)
 {
     return hthash(k.dir);
 }
+*/
+template<>
+struct std::hash<FilesKey> {
+    size_t operator()(const FilesKey &k) const noexcept {
+        return hthash(k.dir);
+    }
+};
+
+
 
 namespace
 {
@@ -294,7 +308,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(256);
+    std::map<int, KeyM> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -312,7 +326,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -325,20 +339,20 @@ namespace
                     names.push_back(km.name[i]);
                 }
             }
-        });
+        };
         names.push_back('\0');
         result(names.data());
     }
 
     KeyM *findbind(char *key)
     {
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
-        });
+        };
         return nullptr;
     }
 
@@ -896,8 +910,9 @@ namespace
         return d;
     }
 
-    hashtable<FilesKey, FilesVal *> completefiles;
-    hashtable<char *, FilesVal *> completions;
+    std::unordered_map<FilesKey, FilesVal *> completefiles;
+    std::unordered_map<std::string, FilesVal *> completions;
+
 
     int completesize = 0;
     char *lastcomplete = nullptr;
@@ -916,10 +931,10 @@ namespace
         }
         if(!dir[0])
         {
-            FilesVal **hasfiles = completions.access(command);
-            if(hasfiles)
+            auto hasfilesiterator = completions.find(command);
+            if(hasfilesiterator == completions.end())
             {
-                *hasfiles = nullptr;
+                hasfilesiterator->second = nullptr;
             }
             return;
         }
@@ -943,25 +958,28 @@ namespace
             }
         }
         FilesKey key(type, dir, ext);
-        FilesVal **val = completefiles.access(key);
-        if(!val)
+        auto valiterator = completefiles.find(key);
+        FilesVal *val = nullptr;
+        if(valiterator != completefiles.end())
         {
+            val = valiterator->second;
             FilesVal *f = new FilesVal(type, dir, ext);
             if(type==Files_List)
             {
                 explodelist(dir, f->files);
             }
-            val = &completefiles[FilesKey(type, f->dir, f->ext)];
-            *val = f;
+            val = completefiles[FilesKey(type, f->dir, f->ext)];
+            val = f;
         }
-        FilesVal **hasfiles = completions.access(command);
-        if(hasfiles)
+        auto hasfilesiterator = completions.find(command);
+        FilesVal *hasfiles = nullptr; 
+        if(hasfilesiterator == completions.end())
         {
-            *hasfiles = *val;
+            hasfiles = val;
         }
         else
         {
-            completions[newstring(command)] = *val;
+            completions[command] = val;
         }
     }
 
@@ -1002,7 +1020,9 @@ namespace
             char *end = std::strchr(&s[cmdlen], ' ');
             if(end)
             {
-                f = completions.find(stringslice(&s[cmdlen], end), nullptr);
+                const char *slice = stringslice(&s[cmdlen], end).str;
+                auto findf = completions.find(slice);
+                f = findf->second;
             }
         }
         const char *nextcomplete = nullptr;
@@ -1067,7 +1087,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = keyms.access(code);
+    KeyM *haskey = &keyms[code];
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown, map); // allow pressed keys to release
@@ -1151,7 +1171,7 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyM *km = keyms.access(code);
+    KeyM *km = &keyms[code];
     return km ? km->name : nullptr;
 }
 
@@ -1174,7 +1194,10 @@ void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    for(auto &[k, km] : keyms)
+    { 
+        binds.push_back(&km);
+    }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
@@ -1199,18 +1222,18 @@ void writebinds(std::fstream& f)
 //print to a stream f the listcompletions in the completions filesval
 void writecompletions(std::fstream& f)
 {
-    std::vector<char *> cmds;
-    ENUMERATE_KT(completions, char *, k, FilesVal *, v,
+    std::vector<const char *> cmds;
+    for (auto& [k,v]: completions)
     {
         if(v)
         {
-            cmds.push_back(k);
+            cmds.push_back(k.c_str());
         }
-    });
+    }
     std::sort(cmds.begin(), cmds.end());
     for(uint i = 0; i < cmds.size(); i++)
     {
-        char *k = cmds[i];
+        const char *k = cmds[i];
         FilesVal *v = completions[k];
         if(v->type==Files_List)
         {
@@ -1307,25 +1330,37 @@ void initconsolecmds()
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyM::Action_Default);
+        }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyM::Action_Spectator);
+        }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+        for(auto &[k, km] : keyms) 
+        {
+            km.clear(KeyM::Action_Editing);
+        }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear());
+        for(auto &[k, km] : keyms)
+        { 
+            km.clear();
+        }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
