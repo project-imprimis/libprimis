@@ -448,10 +448,9 @@ const char *findfile(const char *filename, const char *mode)
     {
         return filename;
     }
-    for(uint i = 0; i < packagedirs.size(); i++)
+    for(const packagedir &pf : packagedirs)
     {
-        packagedir &pf = packagedirs[i];
-        if(pf.filter && strncmp(filename, pf.filter, pf.filterlen))
+        if(pf.filter && std::strncmp(filename, pf.filter, pf.filterlen))
         {
             continue;
         }
@@ -488,7 +487,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, std::vector<char *>
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
-                    if(FindFileData.cFileName[namelen] == '.' && strncmp(FindFileData.cFileName+namelen+1, ext, extsize-1)==0)
+                    if(FindFileData.cFileName[namelen] == '.' && std::strncmp(FindFileData.cFileName+namelen+1, ext, extsize-1)==0)
                     {
                         files.push_back(newstring(FindFileData.cFileName, namelen));
                     }
@@ -516,7 +515,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, std::vector<char *>
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
-                    if(de->d_name[namelen] == '.' && strncmp(de->d_name+namelen+1, ext, extsize-1)==0)
+                    if(de->d_name[namelen] == '.' && std::strncmp(de->d_name+namelen+1, ext, extsize-1)==0)
                     {
                         files.push_back(newstring(de->d_name, namelen));
                     }
@@ -557,10 +556,9 @@ int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
             dirs++;
         }
     }
-    for(uint i = 0; i < packagedirs.size(); i++)
+    for(const packagedir &pf : packagedirs)
     {
-        packagedir &pf = packagedirs[i];
-        if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
+        if(pf.filter && std::strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
         {
             continue;
         }

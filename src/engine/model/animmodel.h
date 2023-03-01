@@ -86,7 +86,7 @@ class animmodel : public model
             void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
             Shader *loadshader();
             void cleanup();
-            void preloadBIH();
+            void preloadBIH() const;
             void preloadshader();
             void setshader(Mesh &m, const AnimState *as);
             void bind(Mesh &b, const AnimState *as);
@@ -416,10 +416,10 @@ class animmodel : public model
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const;
                 bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
-                bool unlink(part *p);
+                bool unlink(const part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
                 bool alphatested() const;
-                void preloadBIH();
+                void preloadBIH() const;
                 void preloadshaders();
                 void preloadmeshes();
                 virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
@@ -476,10 +476,10 @@ class animmodel : public model
         void genBIH(std::vector<BIH::mesh> &bih);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
-        BIH *setBIH();
+        bool setBIH();
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
 
-        bool unlink(part *p)
+        bool unlink(const part *p)
         {
             if(parts.empty())
             {

@@ -35,7 +35,7 @@
 
 VARFR(skyshadow, 0, 0, 1, clearshadowcache());   //toggles rsm features in renderva.cpp
 
-int explicitsky = 0;
+bool explicitsky = false;
 
 // internally relevant functionality
 namespace
@@ -297,7 +297,7 @@ namespace
 
         matrix4 sunmatrix = invcammatrix;
         sunmatrix.settranslation(0, 0, 0);
-        sunmatrix.mul(invprojmatrix);
+        sunmatrix.mul(projmatrix.inverse());
         LOCALPARAM(sunmatrix, sunmatrix);
 
         LOCALPARAM(sunlight, (!atmosunlight.iszero() ? atmosunlight.tocolor().mul(atmosunlightscale) : sunlight.tocolor().mul(sunlightscale)).mul(atmobright*ldrscale));

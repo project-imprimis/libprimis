@@ -911,7 +911,7 @@ float ldrscale = 1.0f,
 
 VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
-void GBuffer::viewdepth()
+void GBuffer::viewdepth() const
 {
     int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
@@ -3754,7 +3754,8 @@ void GBuffer::preparegbuffer(bool depthclear)
     invscreenmatrix.identity();
     invscreenmatrix.settranslation(-1.0f, -1.0f, -1.0f);
     invscreenmatrix.setscale(2.0f/vieww, 2.0f/viewh, 2.0f);
-    eyematrix.muld(invprojmatrix, invscreenmatrix);
+
+    eyematrix.muld(projmatrix.inverse(), invscreenmatrix);
     if(drawtex == Draw_TexMinimap)
     {
         linearworldmatrix.muld(invcamprojmatrix, invscreenmatrix);

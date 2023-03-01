@@ -331,7 +331,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
                 char *curbuf = buf,
                      *curname = name;
                 bool allowspace = false;
-                while(*curbuf && isspace(*curbuf))
+                while(*curbuf && std::isspace(*curbuf))
                 {
                     curbuf++;
                 }
@@ -347,7 +347,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
                     {
                         break;
                     }
-                    if(isspace(c) && !allowspace)
+                    if(std::isspace(c) && !allowspace)
                     {
                         break;
                     }
@@ -510,7 +510,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
                 start++;
             }
             char *end = start + std::strlen(start)-1;
-            while(end >= start && isspace(*end))
+            while(end >= start && std::isspace(*end))
             {
                 end--;
             }

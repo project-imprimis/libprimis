@@ -75,7 +75,7 @@ class GBuffer
         void renderwaterfog(int mat, float surface);        //water.cpp
         void setaavelocityparams(GLenum tmu = GL_TEXTURE0); //aa.cpp
         void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
-        void viewdepth();
+        void viewdepth() const;
         void rendershadowatlas();
         //multisample antialiasing specific buffers
         void setupmsbuffer(int w, int h);

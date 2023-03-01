@@ -963,7 +963,7 @@ int listincludes(const char *list, const char *needle, int needlelen)
     for(const char *s = list, *start, *end; parselist(s, start, end);)
     {
         int len = end - start;
-        if(needlelen == len && !strncmp(needle, start, len))
+        if(needlelen == len && !std::strncmp(needle, start, len))
         {
             return offset;
         }

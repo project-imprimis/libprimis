@@ -531,7 +531,7 @@ namespace
                     std::memcpy(skydata, skyindices.data(), va->sky*sizeof(ushort));
                     if(va->voffset)
                     {
-                        for(int i = 0; i < va->sky; ++i)
+                        for(uint i = 0; i < va->sky; ++i)
                         {
                             skydata[i] += va->voffset;
                         }
@@ -898,19 +898,6 @@ namespace
 
     int recalcprogress = 0;
 
-    // [rotation][orient]
-    const vec orientation_tangent[8][6] =
-    {
-        { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
-        { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
-        { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
-        { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
-        { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
-        { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
-        { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
-        { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
-    };
-
     const vec orientation_bitangent[8][6] =
     {
         { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
@@ -1257,6 +1244,19 @@ namespace
 
     void addcubeverts(VSlot &vslot, int orient, vec *pos, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
     {
+        // [rotation][orient]
+        const vec orientation_tangent[8][6] =
+        {
+            { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
+            { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
+            { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
+            { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
+            { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
+            { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
+            { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
+            { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
+        };
+
         vec4<float> sgen, tgen;
         calctexgen(vslot, orient, sgen, tgen);
         vertex verts[Face_MaxVerts];
@@ -2484,11 +2484,14 @@ void cubeworld::octarender()                               // creates va s for a
     varoot.clear();
     updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
-    explicitsky = 0;
+    explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
     {
-        vtxarray *va = valist[i];
-        explicitsky += va->sky;
+        if(valist[i]->sky)
+        {
+            explicitsky = true;
+            break;
+        }
     }
     visibleva = nullptr;
 }

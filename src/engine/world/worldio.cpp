@@ -947,15 +947,15 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     f->write(0, 0);
     //=== end of padding
     f->put<ushort>(texmru.size());
-    for(uint i = 0; i < texmru.size(); i++)
+    for(const ushort &i : texmru)
     {
-        f->put<ushort>(texmru[i]);
+        f->put<ushort>(i);
     }
-    for(uint i = 0; i < ents.size(); i++)
+    for(const entity *i : ents)
     {
-        if(ents[i]->type!=EngineEnt_Empty)
+        if(i->type!=EngineEnt_Empty)
         {
-            entity tmp = *ents[i];
+            entity tmp = *i;
             f->write(&tmp, sizeof(entity));
         }
     }

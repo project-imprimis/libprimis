@@ -71,11 +71,11 @@ struct vtxarray
         alphafronttris, alphafront,
         refracttris, refract,
         texmask,
-        sky,
         matsurfs, matmask,
         distance, rdistance,
         dyntexs, //dynamic if vscroll presentss
         decaltris, decaltexs;
+    uint sky;
     ivec o;
     int size;                // location and size of cube.
     ivec geommin, geommax;   // BB of geom

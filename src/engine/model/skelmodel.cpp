@@ -777,9 +777,9 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
         const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
         sc.bdata[br.interpindex].mul(sc.bdata[bj.interpindex], d.reljoints[i]);
     }
-    for(uint i = 0; i < antipodes.size(); i++)
+    for(const antipode &i : antipodes)
     {
-        sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+        sc.bdata[i.child].fixantipodal(sc.bdata[i.parent]);
     }
 }
 
@@ -792,9 +792,8 @@ void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x
 
 void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc)
 {
-    for(uint i = 0; i < p->links.size(); i++)
+    for(linkedpart &l : p->links)
     {
-        linkedpart &l = p->links[i];
         tag &t = tags[l.tag];
         dualquat q;
         if(sc)
@@ -814,9 +813,8 @@ void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc)
 
 void skelmodel::skeleton::cleanup(bool full)
 {
-    for(uint i = 0; i < skelcache.size(); i++)
+    for(skelcacheentry &sc : skelcache)
     {
-        skelcacheentry &sc = skelcache[i];
         for(int j = 0; j < maxanimparts; ++j)
         {
             sc.as[j].cur.fr1 = -1;
@@ -828,9 +826,9 @@ void skelmodel::skeleton::cleanup(bool full)
     blendoffsets.clear();
     if(full)
     {
-        for(uint i = 0; i < users.size(); i++)
+        for(skelmeshgroup *i : users)
         {
-            users[i]->cleanup();
+            i->cleanup();
         }
     }
 }
@@ -862,9 +860,8 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * cons
     uchar *partmask = (reinterpret_cast<skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
     bool match = false;
-    for(uint i = 0; i < skelcache.size(); i++)
+    for(skelcacheentry &c : skelcache)
     {
-        skelcacheentry &c = skelcache[i];
         for(int j = 0; j < numanimparts; ++j)
         {
             if(c.as[j]!=as[j])
@@ -1016,9 +1013,8 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
     if(skel->numframes && !skel->usegpuskel)
     {
         vweights = 1;
-        for(uint i = 0; i < blendcombos.size(); i++)
+        for(blendcombo &c : blendcombos)
         {
-            blendcombo &c = blendcombos[i];
             c.interpindex = c.weights[1] ? skel->numgpubones + vblends++ : -1;
         }
 
@@ -1041,18 +1037,17 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             {
                 availbones -= numblends[--vweights];
             }
-            for(uint i = 0; i < blendcombos.size(); i++)
+            for(blendcombo &c : blendcombos)
             {
-                blendcombo &c = blendcombos[i];
                 c.interpindex = c.size() > vweights ? skel->numgpubones + vblends++ : -1;
             }
         }
         else
         {
             vweights = 0;
-            for(uint i = 0; i < blendcombos.size(); i++)
+            for(blendcombo &i : blendcombos)
             {
-                blendcombos[i].interpindex = -1;
+                i.interpindex = -1;
             }
         }
 
@@ -1620,9 +1615,8 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
     }
     dualquat *dst = bc.bdata - skel->numgpubones;
     bool normalize = !skel->usegpuskel || vweights<=1;
-    for(uint i = 0; i < blendcombos.size(); i++)
+    for(const blendcombo &c : blendcombos)
     {
-        const blendcombo &c = blendcombos[i];
         if(c.interpindex<0)
         {
             break;

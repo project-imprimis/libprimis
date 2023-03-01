@@ -549,7 +549,7 @@ void clearhbrush()
     heightmapper.clearhbrush();
 }
 
-void hbrushvert(int *x, int *y, int *v)
+void hbrushvert(int *x, int *y, const int *v)
 {
     heightmapper.hbrushvert(x, y, v);
 }

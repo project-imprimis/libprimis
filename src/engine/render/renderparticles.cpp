@@ -234,8 +234,8 @@ class partrenderer
         virtual particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity = 0) = 0;
         virtual void update() { }
         virtual void render() = 0;
-        virtual bool haswork() = 0;
-        virtual int count() = 0; //for debug
+        virtual bool haswork() const = 0;
+        virtual int count() const = 0; //for debug
         virtual void cleanup() {}
 
         virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
@@ -301,8 +301,9 @@ class partrenderer
         }
 
         //prints out info for a particle, with its letter denoting particle type
-        void debuginfo()
+        void debuginfo() const
         {
+            string info;
             formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
             if(type&PT_LERP)    concatstring(info, "l,");
             if(type&PT_MOD)     concatstring(info, "m,");
@@ -336,7 +337,6 @@ class partrenderer
     private:
         uint type;
         int stain;
-        string info;
         const char *texname;
         int texclamp;
 
@@ -374,7 +374,7 @@ class listrenderer : public partrenderer
         virtual void endrender() = 0;
         virtual void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) = 0;
 
-        bool haswork()
+        bool haswork() const
         {
             return (list != nullptr);
         }
@@ -498,10 +498,10 @@ class listrenderer : public partrenderer
             return p;
         }
 
-        int count()
+        int count() const
         {
             int num = 0;
-            listparticle *lp;
+            const listparticle *lp;
             for(lp = list; lp; lp = lp->next)
             {
                 num++;
@@ -797,12 +797,12 @@ struct varenderer : partrenderer
         lastupdate = -1;
     }
 
-    int count()
+    int count() const
     {
         return numparts;
     }
 
-    bool haswork()
+    bool haswork() const
     {
         return (numparts > 0);
     }

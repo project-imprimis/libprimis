@@ -151,6 +151,7 @@ void attachentity(extentity &e)
     ents[closest]->attached = &e;
 }
 
+//used in iengine
 void attachentities()
 {
     std::vector<extentity *> &ents = entities::getents();
@@ -198,6 +199,7 @@ static void transformbb(const entity &e, vec &center, vec &radius)
     rotatebb(center, radius, e.attr2, e.attr3, e.attr4);
 }
 
+//used in iengine
 void mmboundbox(const entity &e, model *m, vec &center, vec &radius)
 {
     m->boundbox(center, radius);
@@ -210,7 +212,7 @@ static void mmcollisionbox(const entity &e, model *m, vec &center, vec &radius)
     transformbb(e, center, radius);
 }
 
-static void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
+static void decalboundbox(const entity &e, const DecalSlot &s, vec &center, vec &radius)
 {
     float size = std::max(static_cast<float>(e.attr5), 1.0f);
     center = vec(0, s.depth * size/2, 0);
@@ -635,7 +637,7 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
 
 ////////////////////////////// world size/octa /////////////////////////////////
 
-void splitocta(cube *c, int size)
+static void splitocta(cube *c, int size)
 {
     if(size <= 0x1000)
     {
@@ -797,9 +799,9 @@ void cubeworld::shrinkmap()
     worldscale--;
     ivec offset(octant, ivec(0, 0, 0), mapsize());
     std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity * const i : ents)
     {
-        ents[i]->o.sub(vec(offset));
+        i->o.sub(vec(offset));
     }
     allchanged();
     conoutf("shrunk map to size %d", worldscale);
@@ -812,5 +814,5 @@ int cubeworld::mapsize() const
 
 int cubeworld::mapscale() const
 {
-    return 1<<mapsize();
+    return worldscale;
 }
