@@ -1101,12 +1101,14 @@ struct shadowcachekey
     shadowcachekey(const lightinfo &l) : o(l.o), radius(l.radius), dir(l.dir), spot(l.spot) {}
 };
 
-static inline uint hthash(const shadowcachekey &k)
-{
-    return hthash(k.o);
-}
+struct shadowcachekey_hash {
+    size_t operator()(const shadowcachekey &k) const noexcept
+    {
+        return hthash(k.o);
+    }
+};
 
-static inline bool htcmp(const shadowcachekey &x, const shadowcachekey &y)
+inline bool operator==(const shadowcachekey &x, const shadowcachekey &y)
 {
     return x.o == y.o && x.radius == y.radius && x.dir == y.dir && x.spot == y.spot;
 }
@@ -1120,22 +1122,12 @@ struct shadowcacheval
     shadowcacheval(const shadowmapinfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
 };
 
-struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
-{
-    shadowcache() : hashtable<shadowcachekey, shadowcacheval>(256) {}
-
-    void reset()
-    {
-        clear();
-    }
-};
-
 static constexpr int shadowcacheevict = 2;
 
 GLuint shadowatlastex = 0,
        shadowatlasfbo = 0;
 GLenum shadowatlastarget = GL_NONE;
-shadowcache shadowcache;
+std::unordered_map<shadowcachekey, shadowcacheval, shadowcachekey_hash> shadowcache;
 bool shadowcachefull = false;
 
 void cleanupshadowatlas()
@@ -1884,7 +1876,7 @@ void calctilesize()
 void resetlights()
 {
     static int evictshadowcache = 0;
-    shadowcache.reset();
+    shadowcache.clear();
     if(smcache)
     {
         int evictx = ((evictshadowcache%shadowcacheevict)*shadowatlaspacker.w)/shadowcacheevict,
@@ -3015,7 +3007,7 @@ void collectlights()
 
     smused = 0;
 
-    if(smcache && !smnoshadow && shadowcache.numelems)
+    if(smcache && !smnoshadow && shadowcache.size())
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
@@ -3027,11 +3019,13 @@ void collectlights()
                 {
                     continue;
                 }
-                shadowcacheval *cached = shadowcache.access(l);
-                if(!cached)
+                //shadowcacheval *cached = shadowcache.access(l);
+                auto findcached = shadowcache.find(l);
+                if(findcached == shadowcache.end())
                 {
                     continue;
                 }
+                auto cached = findcached->second;
                 float prec = smprec,
                       lod;
                 int w, h;
@@ -3054,7 +3048,7 @@ void collectlights()
                 h *= size;
                 if(mismatched)
                 {
-                    if(cached->size == size)
+                    if(cached.size == size)
                     {
                         continue;
                     }
@@ -3068,14 +3062,14 @@ void collectlights()
                 }
                 else
                 {
-                    if(cached->size != size)
+                    if(cached.size != size)
                     {
                         continue;
                     }
-                    ushort x = cached->x,
-                           y = cached->y;
+                    ushort x = cached.x,
+                           y = cached.y;
                     shadowatlaspacker.reserve(x, y, w, h);
-                    addshadowmap(x, y, size, l.shadowmap, idx, cached);
+                    addshadowmap(x, y, size, l.shadowmap, idx, &cached);
                 }
                 smused += w*h;
             }
