@@ -251,7 +251,8 @@ static const std::vector<physent *> &checkdynentcache(int x, int y)
     for(int i = 0; i < numdyns; ++i)
     {
         dynent *d = iterdynents(i);
-        if(d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
+        if(d->ragdoll ||
+           d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
            d->o.y+d->radius <= dy || d->o.y-d->radius >= dy+dsize)
         {
             continue;
