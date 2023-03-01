@@ -356,10 +356,13 @@ namespace
         return x == y;
     }
 
-    inline uint hthash(const sortkey &k)
-    {
-        return k.tex;
-    }
+    struct sortkey_hash {
+        size_t operator()(const sortkey &k) const noexcept
+        {
+            return k.tex;
+        }
+    };
+
 
     struct decalkey
     {
@@ -422,10 +425,11 @@ namespace
         return x == y;
     }
 
-    inline uint hthash(const decalkey &k)
-    {
-        return k.tex;
-    }
+    struct decalkey_hash {
+        size_t operator()(const decalkey &k) const noexcept{
+                return k.tex;
+        }
+    };
 
     struct sortval
     {
@@ -448,7 +452,7 @@ namespace
             int worldtris, skytris;
             std::vector<ushort> skyindices;
             //hashtable<sortkey, sortval> indices;
-            std::unordered_map<sortkey, sortval> indices;
+            std::unordered_map<sortkey, sortval, sortkey_hash> indices;
 
             void clear()
             {
@@ -677,7 +681,7 @@ namespace
             }
 
         private:
-            std::unordered_map<decalkey, sortval> decalindices;
+            std::unordered_map<decalkey, sortval, decalkey_hash> decalindices;
             //hashtable<decalkey, sortval> decalindices;
             std::vector<sortkey> texs;
             std::vector<decalkey> decaltexs;
@@ -1381,7 +1385,7 @@ namespace
     {
         axis = 0;
     }
-    
+
     struct edgegroup_hash {
         size_t operator()(const edgegroup &g) const noexcept
         {
@@ -2480,7 +2484,10 @@ void cubeworld::findtjoints()
     recalcprogress = 0;
     gencubeedges(worldroot);
     tjoints.clear();
-    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
+    //ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
+    for (auto& [g,e] : edgegroups) {
+        ::findtjoints(e, g);
+    }
     cubeedges.clear();
     edgegroups.clear();
 }
