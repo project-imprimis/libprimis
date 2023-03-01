@@ -35,7 +35,6 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-static std::map<std::string, GlobalShaderParamState> globalparams;
 static std::map<std::string, int> localparams;
 static std::unordered_map<std::string, Shader> shaders;
 static Shader *slotshader = nullptr;
