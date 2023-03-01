@@ -25,17 +25,31 @@ struct FilesKey
 
     FilesKey() {}
     FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
-};
 
+};
+/*
 static inline bool htcmp(const FilesKey &x, const FilesKey &y)
 {
     return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
 }
-
+*/
+static inline bool operator==(const FilesKey &x, const FilesKey &y) {
+    return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
+}
+/*
 static inline uint hthash(const FilesKey &k)
 {
     return hthash(k.dir);
 }
+*/
+template<>
+struct std::hash<FilesKey> {
+    size_t operator()(const FilesKey &k) const noexcept {
+        return hthash(k.dir);
+    }
+};
+
+
 
 namespace
 {
