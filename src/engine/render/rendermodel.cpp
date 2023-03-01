@@ -556,11 +556,11 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         name = mmi.name;
     }
-    model **mm = &models[name];
+    auto mm = models.find(name);
     model *m;
-    if(mm)
+    if(mm != models.end())
     {
-        m = *mm;
+        m = mm->second;
     }
     else
     {
@@ -608,12 +608,18 @@ model *loadmodel(const char *name, int i, bool msg)
 
 void clear_models()
 {
-    for(auto &[k, m] : models) { delete m; }
+    for(auto &[k, m] : models)
+    {
+        delete m;
+    }
 }
 
 void cleanupmodels()
 {
-    for(auto &[k, m] : models) { m->cleanup(); }
+    for(auto &[k, m] : models) 
+    {
+        m->cleanup();
+    }
 }
 
 static void clearmodel(const char *name)
