@@ -48,7 +48,7 @@ VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by 
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-namespace 
+namespace
 {
     struct vboinfo
     {
