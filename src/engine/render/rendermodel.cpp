@@ -597,7 +597,12 @@ model *loadmodel(const char *name, int i, bool msg)
             failedmodels.add(newstring(name));
             return nullptr;
         }
-        models.insert_or_assign(m->name, m);
+
+        auto mm = models.find(m->name);
+        if (mm == models.end())
+        {
+            models[m->name] = m;
+        }
     }
     if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
     {
