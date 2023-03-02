@@ -1655,11 +1655,10 @@ namespace
 
     void decalrenderer::changeslottmus(DecalSlot &dslot)
     {
-        Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
+        const Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
         bindslottex(Tex_Diffuse, diffuse);
-        for(uint i = 0; i < dslot.sts.size(); i++)
+        for(const Slot::Tex &t : dslot.sts)
         {
-            Slot::Tex &t = dslot.sts[i];
             switch(t.type)
             {
                 case Tex_Normal:
