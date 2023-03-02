@@ -963,7 +963,7 @@ namespace
         }
         auto hasfilesiterator = completions.find(command);
         FilesVal *hasfiles = nullptr; 
-        if(hasfilesiterator == completions.end())
+        if(hasfilesiterator != completions.end())
         {
             hasfiles = val;
         }
@@ -1012,7 +1012,7 @@ namespace
             {
                 const char *slice = stringslice(&s[cmdlen], end).str;
                 auto findf = completions.find(slice);
-                f = findf->second;
+                f = (findf == completions.end()) ? nullptr : findf->second;
             }
         }
         const char *nextcomplete = nullptr;
