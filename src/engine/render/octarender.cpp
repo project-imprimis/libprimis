@@ -56,7 +56,6 @@ namespace
         uchar *data;
     };
 
-    //hashtable<GLuint, vboinfo> vbos;
     std::unordered_map<GLuint, vboinfo> vbos;
 
     VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
@@ -77,7 +76,6 @@ namespace
 
     void destroyvbo(GLuint vbo)
     {
-        //vboinfo *exists = vbos.access(vbo);
         auto vbofind = vbos.find(vbo); 
         if(vbofind == vbos.end())
         {
@@ -1393,12 +1391,7 @@ namespace
         }
     };
 
-    inline uint hthash(const edgegroup &g)
-    {
-        return g.slope.x^g.slope.y^g.slope.z^g.origin.x^g.origin.y^g.origin.z;
-    }
-
-    inline bool operator==(const edgegroup &x, const edgegroup &y)
+    bool operator==(const edgegroup &x, const edgegroup &y)
     {
         return x.slope==y.slope && x.origin==y.origin;
     }
@@ -1420,7 +1413,6 @@ namespace
     };
 
     std::vector<cubeedge> cubeedges;
-    //hashtable<edgegroup, int> edgegroups(1<<13);
     std::unordered_map<edgegroup, int, edgegroup_hash> edgegroups;
 
     void gencubeedges(cube &c, const ivec &co, int size)
@@ -2484,7 +2476,6 @@ void cubeworld::findtjoints()
     recalcprogress = 0;
     gencubeedges(worldroot);
     tjoints.clear();
-    //ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
     for (auto& [g,e] : edgegroups) {
         ::findtjoints(e, g);
     }
