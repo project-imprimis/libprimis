@@ -83,8 +83,13 @@ void loadshaders()
 
 Shader *lookupshaderbyname(const char *name)
 {
-    Shader *s = &shaders[name];
-    return s && s->loaded() ? s : nullptr;
+    auto ss = shaders.find(name);
+    if (ss == shaders.end())
+    {
+        return nullptr;
+    }
+    Shader *s = &ss->second;
+    return s->loaded() ? s : nullptr;
 }
 
 Shader *generateshader(const char *name, const char *fmt, ...)
@@ -326,7 +331,11 @@ static void linkglslprogram(Shader &s, bool msg = true)
 
 int getlocalparam(const char *name)
 {
-    localparams.insert_or_assign(name, localparams.size());
+    auto findparam = localparams.find(name);
+    if (findparam == localparams.end())
+    {
+        localparams[name] = localparams.size();
+    }
     return localparams[name];
 }
 
@@ -492,7 +501,10 @@ void GlobalShaderParamState::resetversions()
         }
     };
     nextversion = 0;
-    for(auto &[k, g] : globalparams) { g.version = ++nextversion; }
+    for(auto &[k, g] : globalparams)
+    {
+        g.version = ++nextversion;
+    }
     for(auto &[k, s] : shaders)
     {
         for(uint i = 0; i < s.globalparams.size(); i++)
@@ -1108,7 +1120,8 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
         glUseProgram(0);
         Shader::lastshader = nullptr;
     }
-    Shader *exists = &shaders[name];
+    auto existsfind = shaders.find(name);
+    Shader *exists = (existsfind == shaders.end()) ? nullptr : &shaders[name];
     char *rname = exists ? exists->name : newstring(name);
     Shader &s = shaders[rname];
     s.name = rname;
@@ -1622,11 +1635,12 @@ int Shader::uniformlocversion()
  */
 Shader *useshaderbyname(const char *name)
 {
-    Shader *s = &shaders[name];
-    if(!s)
+    auto shaderfind = shaders.find(name);
+    if(shaderfind == shaders.end())
     {
         return nullptr;
     }
+    Shader *s = &shaderfind->second;
     if(s->deferred())
     {
         s->force();
@@ -1732,17 +1746,17 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
 //==============================================================================
 
 
-void setshader(char *name)
+void setshader(const char *name)
 {
     slotparams.size();
-    Shader *s = &shaders[name];
-    if(!s)
+    auto ss = shaders.find(name);
+    if(ss == shaders.end())
     {
         conoutf(Console_Error, "no such shader: %s", name);
     }
     else
     {
-        slotshader = s;
+        slotshader = &ss->second;
     }
 }
 
@@ -1906,7 +1920,10 @@ void cleanupshaders()
 
     loadedshaders = false;
     nullshader = hudshader = hudnotextureshader = nullptr;
-    for(auto &[k, s] : shaders) s.cleanup();
+    for(auto &[k, s] : shaders) 
+    {
+        s.cleanup();
+    }
     Shader::lastshader = nullptr;
     glUseProgram(0);
 }
