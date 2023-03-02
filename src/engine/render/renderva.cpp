@@ -1625,6 +1625,7 @@ namespace
         gle::bindebo(va.decalbuf);
         cur.vbuf = va.vbuf;
         vertex *vdata = nullptr;
+        //note inane bikeshedding: use of offset from dereferenced null ptr (aka 0)
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
         gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
         gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
