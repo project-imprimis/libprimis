@@ -77,19 +77,10 @@ std::unordered_map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmode
 int animmodel::ShaderParamsKey::firstversion = 0,
     animmodel::ShaderParamsKey::lastversion = 1;
 
-uint hthash(const animmodel::shaderparams &k)
-{
-    return memhash(&k, sizeof(k));
-}
 
-bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
+bool animmodel::shaderparams::operator==(const animmodel::shaderparams& other) const
 {
-    return !std::memcmp(&x, &y, sizeof(animmodel::shaderparams));
-}
-
-bool operator==(const animmodel::shaderparams& lhs, const animmodel::shaderparams& rhs)
-{
-    return htcmp(lhs, rhs);
+    return !std::memcmp(this, &other, sizeof(animmodel::shaderparams));
 }
 
 //animmodel
