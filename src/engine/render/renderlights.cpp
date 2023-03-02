@@ -3025,7 +3025,7 @@ void collectlights()
                 {
                     continue;
                 }
-                auto cached = findcached->second;
+                shadowcacheval cached = findcached->second;
                 float prec = smprec,
                       lod;
                 int w, h;
