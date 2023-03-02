@@ -27,21 +27,11 @@ struct FilesKey
     FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
 
 };
-/*
-static inline bool htcmp(const FilesKey &x, const FilesKey &y)
-{
-    return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
-}
-*/
+
 static inline bool operator==(const FilesKey &x, const FilesKey &y) {
     return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
 }
-/*
-static inline uint hthash(const FilesKey &k)
-{
-    return hthash(k.dir);
-}
-*/
+
 template<>
 struct std::hash<FilesKey> {
     size_t operator()(const FilesKey &k) const noexcept {
@@ -308,7 +298,7 @@ namespace
         }
     }
 
-    std::map<int, KeyM> keyms;
+    static std::map<int, KeyM> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -932,7 +922,7 @@ namespace
         if(!dir[0])
         {
             auto hasfilesiterator = completions.find(command);
-            if(hasfilesiterator == completions.end())
+            if(hasfilesiterator != completions.end())
             {
                 hasfilesiterator->second = nullptr;
             }
@@ -960,7 +950,7 @@ namespace
         FilesKey key(type, dir, ext);
         auto valiterator = completefiles.find(key);
         FilesVal *val = nullptr;
-        if(valiterator != completefiles.end())
+        if(valiterator == completefiles.end())
         {
             val = valiterator->second;
             FilesVal *f = new FilesVal(type, dir, ext);
@@ -1087,7 +1077,10 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = &keyms[code];
+    
+    auto haskeyiterator = keyms.find(code);
+    KeyM *haskey = haskeyiterator == keyms.end() ? nullptr : &haskeyiterator->second;
+
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown, map); // allow pressed keys to release
