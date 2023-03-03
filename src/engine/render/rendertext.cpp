@@ -27,7 +27,7 @@
 
 #include "interface/control.h"
 
-static hashnameset<font> fonts;
+static std::map<std::string, font> fonts;
 static font *fontdef = nullptr;
 static int fontdeftex = 0;
 
@@ -189,7 +189,7 @@ static void fontskip(int *n)
  */
 static void fontalias(const char *dst, const char *src)
 {
-    font *s = fonts.access(src);
+    font *s = &fonts[src];
     if(!s)
     {
         return;
@@ -216,7 +216,7 @@ static void fontalias(const char *dst, const char *src)
 
 bool setfont(const char *name)
 {
-    font *f = fonts.access(name);
+    font *f = &fonts[name];
     if(!f)
     {
         return false;
@@ -474,7 +474,8 @@ void text_boundsf(const char *str, float &width, float &height, int maxwidth)
 
 void reloadfonts()
 {
-    ENUMERATE(fonts, font, f,
+    for(auto &[k, f] : fonts)
+    {
         for(uint i = 0; i < f.texs.size(); i++)
         {
             if(!f.texs[i]->reload())
@@ -482,7 +483,7 @@ void reloadfonts()
                 fatal("failed to reload font texture");
             }
         }
-    );
+    }
 }
 
 void initrendertextcmds()
