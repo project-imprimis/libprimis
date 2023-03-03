@@ -1883,9 +1883,8 @@ void resetlights()
             evicty = ((evictshadowcache/shadowcacheevict)*shadowatlaspacker.h)/shadowcacheevict,
             evictx2 = (((evictshadowcache%shadowcacheevict)+1)*shadowatlaspacker.w)/shadowcacheevict,
             evicty2 = (((evictshadowcache/shadowcacheevict)+1)*shadowatlaspacker.h)/shadowcacheevict;
-        for(uint i = 0; i < shadowmaps.size(); i++)
+        for(const shadowmapinfo &sm : shadowmaps)
         {
-            shadowmapinfo &sm = shadowmaps[i];
             if(sm.light < 0)
             {
                 continue;

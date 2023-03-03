@@ -1625,6 +1625,7 @@ namespace
         gle::bindebo(va.decalbuf);
         cur.vbuf = va.vbuf;
         vertex *vdata = nullptr;
+        //note inane bikeshedding: use of offset from dereferenced null ptr (aka 0)
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
         gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
         gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
@@ -1655,11 +1656,10 @@ namespace
 
     void decalrenderer::changeslottmus(DecalSlot &dslot)
     {
-        Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
+        const Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
         bindslottex(Tex_Diffuse, diffuse);
-        for(uint i = 0; i < dslot.sts.size(); i++)
+        for(const Slot::Tex &t : dslot.sts)
         {
-            Slot::Tex &t = dslot.sts[i];
             switch(t.type)
             {
                 case Tex_Normal:

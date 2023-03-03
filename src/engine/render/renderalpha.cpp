@@ -31,37 +31,38 @@ namespace
 {
     FVAR(refractmargin, 0, 0.1f, 1);     //margin for gl scissoring around refractive materials
     FVAR(refractdepth, 1e-3f, 16, 1e3f); //sets depth for refract shader effect
+}
 
-    //sets up alpha handling as needed then executes main particle rendering routine
-    void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+//sets up alpha handling as needed then executes main particle rendering routine
+//private method of gbuffer
+void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+{
+    if(particlelayers && ghasstencil)
     {
-        if(particlelayers && ghasstencil)
+        bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
+        if(scissor)
         {
-            bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
-            if(scissor)
-            {
-                int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*static_cast<float>(vieww))),
-                    y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*static_cast<float>(viewh))),
-                    x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*static_cast<float>(vieww))),
-                    y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*static_cast<float>(viewh)));
-                glEnable(GL_SCISSOR_TEST);
-                glScissor(x1, y1, x2 - x1, y2 - y1);
-            }
-            glStencilFunc(GL_NOTEQUAL, 0, 0x07);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-            glEnable(GL_STENCIL_TEST);
-            gbuf.renderparticles(ParticleLayer_Over);
-            glDisable(GL_STENCIL_TEST);
-            if(scissor)
-            {
-                glDisable(GL_SCISSOR_TEST);
-            }
-            gbuf.renderparticles(ParticleLayer_NoLayer);
+            int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*static_cast<float>(vieww))),
+                y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*static_cast<float>(viewh))),
+                x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*static_cast<float>(vieww))),
+                y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*static_cast<float>(viewh)));
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(x1, y1, x2 - x1, y2 - y1);
         }
-        else
+        glStencilFunc(GL_NOTEQUAL, 0, 0x07);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        glEnable(GL_STENCIL_TEST);
+        gbuf.renderparticles(ParticleLayer_Over);
+        glDisable(GL_STENCIL_TEST);
+        if(scissor)
         {
-            gbuf.renderparticles();
+            glDisable(GL_SCISSOR_TEST);
         }
+        renderparticles(ParticleLayer_NoLayer);
+    }
+    else
+    {
+        renderparticles();
     }
 }
 
@@ -77,13 +78,13 @@ void GBuffer::rendertransparent()
     {
         if(!editmode)
         {
-            gbuf.renderparticles();
+            renderparticles();
         }
         return;
     }
     if(!editmode && particlelayers && ghasstencil)
     {
-        gbuf.renderparticles(ParticleLayer_Under);
+        renderparticles(ParticleLayer_Under);
     }
     timer *transtimer = begintimer("transparent");
     if(hasalphavas&4 || hasmats&4)
@@ -169,7 +170,7 @@ void GBuffer::rendertransparent()
     GLOBALPARAM(raymatrix, raymatrix);
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 
-    uint tiles[lighttilemaxheight];
+    std::array<uint, lighttilemaxheight> tiles;
     float allsx1 =  1,
           allsy1 =  1,
           allsx2 = -1,
@@ -190,7 +191,7 @@ void GBuffer::rendertransparent()
                 sy1 = mi.matliquidsy1;
                 sx2 = mi.matliquidsx2;
                 sy2 = mi.matliquidsy2;
-                std::memcpy(tiles, mi.matliquidtiles, sizeof(tiles));
+                std::memcpy(tiles.data(), mi.matliquidtiles, sizeof(tiles));
                 break;
             }
             case 1:
@@ -203,7 +204,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphabacksy1;
                 sx2 = alphabacksx2;
                 sy2 = alphabacksy2;
-                std::memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 break;
             }
             case 2:
@@ -216,7 +217,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphafrontsy1;
                 sx2 = alphafrontsx2;
                 sy2 = alphafrontsy2;
-                std::memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 if(hasmats&2)
                 {
                     sx1 = std::min(sx1, mi.matsolidsx1);
@@ -240,7 +241,7 @@ void GBuffer::rendertransparent()
                 sy1 = transmdlsy1;
                 sx2 = transmdlsx2;
                 sy2 = transmdlsy2;
-                std::memcpy(tiles, transmdltiles, sizeof(tiles));
+                std::memcpy(tiles.data(), transmdltiles, tiles.size()*sizeof(uint));
                 break;
             }
             default:
@@ -334,18 +335,18 @@ void GBuffer::rendertransparent()
             {
                 for(int i = 0; i < 2; ++i)
                 {
-                    renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, i+1, true);
+                    renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, i+1, true);
                 }
             }
             else
             {
-                renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 3, true);
+                renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, 3, true);
             }
         }
         else
         {
             glBindFramebuffer(GL_FRAMEBUFFER, hdrfbo);
-            renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 0, true);
+            renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, 0, true);
         }
 
         switch(layer)
