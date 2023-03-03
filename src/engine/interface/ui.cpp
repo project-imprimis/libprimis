@@ -4387,7 +4387,8 @@ namespace UI
             {
                 return;
             }
-            world->hide(window); windows.erase(name);
+            world->hide(window);
+            windows.erase(name);
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
