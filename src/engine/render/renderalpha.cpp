@@ -31,37 +31,38 @@ namespace
 {
     FVAR(refractmargin, 0, 0.1f, 1);     //margin for gl scissoring around refractive materials
     FVAR(refractdepth, 1e-3f, 16, 1e3f); //sets depth for refract shader effect
+}
 
-    //sets up alpha handling as needed then executes main particle rendering routine
-    void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+//sets up alpha handling as needed then executes main particle rendering routine
+//private method of gbuffer
+void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+{
+    if(particlelayers && ghasstencil)
     {
-        if(particlelayers && ghasstencil)
+        bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
+        if(scissor)
         {
-            bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
-            if(scissor)
-            {
-                int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*static_cast<float>(vieww))),
-                    y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*static_cast<float>(viewh))),
-                    x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*static_cast<float>(vieww))),
-                    y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*static_cast<float>(viewh)));
-                glEnable(GL_SCISSOR_TEST);
-                glScissor(x1, y1, x2 - x1, y2 - y1);
-            }
-            glStencilFunc(GL_NOTEQUAL, 0, 0x07);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-            glEnable(GL_STENCIL_TEST);
-            gbuf.renderparticles(ParticleLayer_Over);
-            glDisable(GL_STENCIL_TEST);
-            if(scissor)
-            {
-                glDisable(GL_SCISSOR_TEST);
-            }
-            gbuf.renderparticles(ParticleLayer_NoLayer);
+            int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*static_cast<float>(vieww))),
+                y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*static_cast<float>(viewh))),
+                x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*static_cast<float>(vieww))),
+                y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*static_cast<float>(viewh)));
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(x1, y1, x2 - x1, y2 - y1);
         }
-        else
+        glStencilFunc(GL_NOTEQUAL, 0, 0x07);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        glEnable(GL_STENCIL_TEST);
+        gbuf.renderparticles(ParticleLayer_Over);
+        glDisable(GL_STENCIL_TEST);
+        if(scissor)
         {
-            gbuf.renderparticles();
+            glDisable(GL_SCISSOR_TEST);
         }
+        renderparticles(ParticleLayer_NoLayer);
+    }
+    else
+    {
+        renderparticles();
     }
 }
 
