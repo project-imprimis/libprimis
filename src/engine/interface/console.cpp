@@ -2,7 +2,6 @@
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/stream.h"
-#include "../../shared/hashtable.h"
 
 #include "console.h"
 #include "control.h"
@@ -35,7 +34,7 @@ static inline bool operator==(const FilesKey &x, const FilesKey &y) {
 template<>
 struct std::hash<FilesKey> {
     size_t operator()(const FilesKey &k) const noexcept {
-        return hthash(k.dir);
+        return std::hash<const char*>{}(k.dir);
     }
 };
 

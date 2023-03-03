@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
-#include "../../shared/hashtable.h"
 
 #include "imagedata.h"
 #include "octarender.h"
