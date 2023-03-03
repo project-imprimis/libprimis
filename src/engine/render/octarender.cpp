@@ -449,7 +449,6 @@ namespace
             std::vector<grasstri> grasstris;
             int worldtris, skytris;
             std::vector<ushort> skyindices;
-            //hashtable<sortkey, sortval> indices;
             std::unordered_map<sortkey, sortval, sortkey_hash> indices;
 
             void clear()
@@ -680,7 +679,6 @@ namespace
 
         private:
             std::unordered_map<decalkey, sortval, decalkey_hash> decalindices;
-            //hashtable<decalkey, sortval> decalindices;
             std::vector<sortkey> texs;
             std::vector<decalkey> decaltexs;
             int decaltris;
