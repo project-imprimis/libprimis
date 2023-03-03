@@ -77,13 +77,13 @@ void GBuffer::rendertransparent()
     {
         if(!editmode)
         {
-            gbuf.renderparticles();
+            renderparticles();
         }
         return;
     }
     if(!editmode && particlelayers && ghasstencil)
     {
-        gbuf.renderparticles(ParticleLayer_Under);
+        renderparticles(ParticleLayer_Under);
     }
     timer *transtimer = begintimer("transparent");
     if(hasalphavas&4 || hasmats&4)
