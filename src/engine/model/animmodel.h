@@ -249,7 +249,7 @@ class animmodel : public model
                 {
                     vec *tangent = new vec[2*numverts],
                         *bitangent = tangent+numverts;
-                    memset(static_cast<void *>(tangent), 0, 2*numverts*sizeof(vec));
+                    std::memset(static_cast<void *>(tangent), 0, 2*numverts*sizeof(vec));
 
                     for(int i = 0; i < numtris; ++i)
                     {
