@@ -1748,7 +1748,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
 
 void setshader(const char *name)
 {
-    slotparams.size();
+    slotparams.clear();
     auto ss = shaders.find(name);
     if(ss == shaders.end())
     {
@@ -1764,7 +1764,7 @@ void setshader(const char *name)
 void resetslotshader()
 {
     slotshader = nullptr;
-    slotparams.size();
+    slotparams.clear();
 }
 
 void setslotshader(Slot &s)
