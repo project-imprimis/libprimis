@@ -169,7 +169,7 @@ void GBuffer::rendertransparent()
     GLOBALPARAM(raymatrix, raymatrix);
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 
-    uint tiles[lighttilemaxheight];
+    std::array<uint, lighttilemaxheight> tiles;
     float allsx1 =  1,
           allsy1 =  1,
           allsx2 = -1,
@@ -190,7 +190,7 @@ void GBuffer::rendertransparent()
                 sy1 = mi.matliquidsy1;
                 sx2 = mi.matliquidsx2;
                 sy2 = mi.matliquidsy2;
-                std::memcpy(tiles, mi.matliquidtiles, sizeof(tiles));
+                std::memcpy(tiles.data(), mi.matliquidtiles, sizeof(tiles));
                 break;
             }
             case 1:
@@ -203,7 +203,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphabacksy1;
                 sx2 = alphabacksx2;
                 sy2 = alphabacksy2;
-                std::memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 break;
             }
             case 2:
@@ -216,7 +216,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphafrontsy1;
                 sx2 = alphafrontsx2;
                 sy2 = alphafrontsy2;
-                std::memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 if(hasmats&2)
                 {
                     sx1 = std::min(sx1, mi.matsolidsx1);
@@ -240,7 +240,7 @@ void GBuffer::rendertransparent()
                 sy1 = transmdlsy1;
                 sx2 = transmdlsx2;
                 sy2 = transmdlsy2;
-                std::memcpy(tiles, transmdltiles, sizeof(tiles));
+                std::memcpy(tiles.data(), transmdltiles, tiles.size()*sizeof(uint));
                 break;
             }
             default:
@@ -334,18 +334,18 @@ void GBuffer::rendertransparent()
             {
                 for(int i = 0; i < 2; ++i)
                 {
-                    renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, i+1, true);
+                    renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, i+1, true);
                 }
             }
             else
             {
-                renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 3, true);
+                renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, 3, true);
             }
         }
         else
         {
             glBindFramebuffer(GL_FRAMEBUFFER, hdrfbo);
-            renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 0, true);
+            renderlights(sx1, sy1, sx2, sy2, tiles.data(), layer+1, 0, true);
         }
 
         switch(layer)
