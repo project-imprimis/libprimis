@@ -3,7 +3,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "grass.h"
 #include "octarender.h"
@@ -56,7 +55,7 @@ namespace
         uchar *data;
     };
 
-    hashtable<GLuint, vboinfo> vbos;
+    std::unordered_map<GLuint, vboinfo> vbos;
 
     VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
 
@@ -76,12 +75,12 @@ namespace
 
     void destroyvbo(GLuint vbo)
     {
-        vboinfo *exists = vbos.access(vbo);
-        if(!exists)
+        auto vbofind = vbos.find(vbo); 
+        if(vbofind == vbos.end())
         {
             return;
         }
-        vboinfo &vbi = *exists;
+        vboinfo &vbi = vbofind->second;
         if(vbi.uses <= 0)
         {
             return;
@@ -94,7 +93,7 @@ namespace
             {
                 delete[] vbi.data;
             }
-            vbos.remove(vbo);
+            vbos.erase(vbo);
         }
     }
 
@@ -354,10 +353,13 @@ namespace
         return x == y;
     }
 
-    inline uint hthash(const sortkey &k)
-    {
-        return k.tex;
-    }
+    struct sortkey_hash {
+        size_t operator()(const sortkey &k) const noexcept
+        {
+            return k.tex;
+        }
+    };
+
 
     struct decalkey
     {
@@ -420,10 +422,11 @@ namespace
         return x == y;
     }
 
-    inline uint hthash(const decalkey &k)
-    {
-        return k.tex;
-    }
+    struct decalkey_hash {
+        size_t operator()(const decalkey &k) const noexcept{
+                return k.tex;
+        }
+    };
 
     struct sortval
     {
@@ -445,7 +448,7 @@ namespace
             std::vector<grasstri> grasstris;
             int worldtris, skytris;
             std::vector<ushort> skyindices;
-            hashtable<sortkey, sortval> indices;
+            std::unordered_map<sortkey, sortval, sortkey_hash> indices;
 
             void clear()
             {
@@ -674,20 +677,20 @@ namespace
             }
 
         private:
-            hashtable<decalkey, sortval> decalindices;
+            std::unordered_map<decalkey, sortval, decalkey_hash> decalindices;
             std::vector<sortkey> texs;
             std::vector<decalkey> decaltexs;
             int decaltris;
 
             void optimize()
             {
-                ENUMERATE_KT(indices, sortkey, k, sortval, t,
+                for (auto& [k,t] : indices)
                 {
                     if(t.tris.size())
                     {
                         texs.push_back(k);
                     }
-                });
+                }
                 std::sort(texs.begin(), texs.end(), sortkey::sort);
 
                 matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
@@ -885,13 +888,13 @@ namespace
                         }
                     }
                 }
-                ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
+                for (auto& [k,t] : decalindices)
                 {
                     if(t.tris.size())
                     {
                         decaltexs.push_back(k);
                     }
-                });
+                }
                 std::sort(texs.begin(), texs.end(), sortkey::sort);
             }
     } vc;
@@ -1378,12 +1381,14 @@ namespace
         axis = 0;
     }
 
-    inline uint hthash(const edgegroup &g)
-    {
-        return g.slope.x^g.slope.y^g.slope.z^g.origin.x^g.origin.y^g.origin.z;
-    }
+    struct edgegroup_hash {
+        size_t operator()(const edgegroup &g) const noexcept
+        {
+            return g.slope.x^g.slope.y^g.slope.z^g.origin.x^g.origin.y^g.origin.z;
+        }
+    };
 
-    inline bool htcmp(const edgegroup &x, const edgegroup &y)
+    bool operator==(const edgegroup &x, const edgegroup &y)
     {
         return x.slope==y.slope && x.origin==y.origin;
     }
@@ -1405,7 +1410,7 @@ namespace
     };
 
     std::vector<cubeedge> cubeedges;
-    hashtable<edgegroup, int> edgegroups(1<<13);
+    std::unordered_map<edgegroup, int, edgegroup_hash> edgegroups;
 
     void gencubeedges(cube &c, const ivec &co, int size)
     {
@@ -1483,11 +1488,11 @@ namespace
                     ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                     ce.next = -1;
                     bool insert = true;
-                    int *exists = edgegroups.access(g);
-                    if(exists)
+                    auto findexists = edgegroups.find(g);
+                    if(findexists != edgegroups.end())
                     {
                         int prev = -1,
-                            cur  = *exists;
+                            cur  = findexists->second;
                         while(cur >= 0)
                         {
                             cubeedge &p = cubeedges[cur];
@@ -1532,7 +1537,7 @@ namespace
                             }
                             else
                             {
-                                *exists = cubeedges.size();
+                                findexists->second = cubeedges.size();
                             }
                         }
                     }
@@ -2468,7 +2473,9 @@ void cubeworld::findtjoints()
     recalcprogress = 0;
     gencubeedges(worldroot);
     tjoints.clear();
-    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
+    for (auto& [g,e] : edgegroups) {
+        ::findtjoints(e, g);
+    }
     cubeedges.clear();
     edgegroups.clear();
 }
