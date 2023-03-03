@@ -3191,7 +3191,6 @@ void genshadowmeshes()
 
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
-    //shadowmesh *m = shadowmeshes.access(idx);
     auto mm = shadowmeshes.find(idx);
     shadowmesh *m = (mm == shadowmeshes.end()) ? &mm->second : nullptr;
     if(m == nullptr || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
