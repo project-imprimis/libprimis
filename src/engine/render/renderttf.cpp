@@ -126,6 +126,7 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
     GLuint tex = 0;
     SDL_Color rgbcol = {col.b, col.g, col.r, 0};
     SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, rgbcol, wrap);
+    TTFSurface tts;
     if(text)
     {
         glEnable(GL_BLEND);
@@ -134,8 +135,12 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
         glBindTexture(GL_TEXTURE_RECTANGLE, tex);
         //need to load it in reversed because of how SDL_ttf renders
         glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGBA, text->pitch/4, text->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, text->pixels);
+        tts = {tex, text->w, text->h};
     }
-    TTFSurface tts{tex, text->w, text->h};
+    else //empty string may cause this
+    {
+        tts = {0, 0, 0};
+    }
     SDL_FreeSurface(text);
     return tts;
 }
