@@ -1294,7 +1294,7 @@ int cubeworld::compactvslots(bool cull)
             }
         }
     }
-    compactvslots(worldroot);
+    ::compactvslots(worldroot);
     int total = compactedvslots;
     compacteditvslots();
     for(uint i = 0; i < vslots.size(); i++)
@@ -1345,7 +1345,7 @@ int cubeworld::compactvslots(bool cull)
                 vs.index = compactedvslots++;
             }
         }
-        compactvslots(worldroot);
+        ::compactvslots(worldroot);
         total = compactedvslots;
         compacteditvslots();
     }
