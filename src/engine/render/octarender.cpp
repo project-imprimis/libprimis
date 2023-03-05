@@ -36,7 +36,22 @@ int allocva  = 0,
     glde     = 0,
     gbatches = 0;
 
-std::vector<vtxarray *> valist, varoot;
+std::vector<vtxarray *> valist;
+
+/*
+ * A vector containing the highest-level vertex array objects.
+ * There will always be at least eight VAs in varoot, corresponding to the eight
+ * subdivisions of the worldroot cube.
+ *
+ * If the eight subdivisions of the worldroot cube are larger than `vamaxsize`,
+ * these cubes will not host the root VA; children of these cubes will be assigned
+ * the root VAs by dropping through child nodes until the cube is no larger than
+ * `vamaxsize`. For a worldroot 4x the linear size of `vamaxsize` this will yield 64
+ * entries in varoot; for a worldroot 8x the linear size, this will yield 512 entries
+ * and so on.
+ */
+constexpr int vamaxsize = 0x1000; //4096 = 2^12
+std::vector<vtxarray *> varoot;
 
 ivec worldmin(0, 0, 0),
      worldmax(0, 0, 0);
@@ -1956,7 +1971,8 @@ namespace
         }
         int maxlevel = -1;
         rendercube(c, co, size, csi, maxlevel);
-        if(size == std::min(0x1000, rootworld.mapsize()/2) || !vc.emptyva())
+        //this is what determines the root VA cubes:
+        if(size == std::min(vamaxsize, rootworld.mapsize()/2) || !vc.emptyva())
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
