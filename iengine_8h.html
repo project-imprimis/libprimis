@@ -2914,7 +2914,9 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes octarender.cpp cubescript commands. </p>
-<p><code>recalc</code> </p>
+<p><code>recalc</code></p><ul>
+<li>Recalculates the world geometry to merge cubes &amp; faces where possible. </li>
+</ul>
 
 </div>
 </div>
@@ -2974,11 +2976,24 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes rendergl.cpp cubescript commands. </p>
-<p><code>glext</code></p>
-<p><code>getcamyaw</code></p>
-<p><code>getcampitch</code></p>
-<p><code>getcamroll</code></p>
-<p><code>getcampos</code> </p>
+<p><code>glext</code> ext</p><ul>
+<li>Returns whether the given GL extension was loaded<ul>
+<li><code>ext</code> the name of the extension to query</li>
+</ul>
+</li>
+</ul>
+<p><code>getcamyaw</code></p><ul>
+<li>Returns the current camera's yaw angle in degrees</li>
+</ul>
+<p><code>getcampitch</code></p><ul>
+<li>Returns the current camera's pitch angle in degrees</li>
+</ul>
+<p><code>getcamroll</code></p><ul>
+<li>Returns the current camera's roll angle in degrees</li>
+</ul>
+<p><code>getcampos</code></p><ul>
+<li>Returns the current camera's world position, in the format "$x $y $z" </li>
+</ul>
 
 </div>
 </div>
@@ -3147,11 +3162,13 @@ false if the window was not previously shown or did not exist </dd></dl>
 <p><code>defershader</code></p>
 <p><code>forceshader</code></p>
 <p><code>shader</code> type name ps vs</p><ul>
-<li>Adds a shader to the engine's catalog.</li>
+<li>Adds a shader to the engine's catalog.<ul>
 <li><code>type</code> a bitmask describing the properties of the shader</li>
 <li><code>name</code> the name of the shader for calls from e.g. <code>useshaderbyname</code></li>
 <li><code>ps</code> the pixel shader</li>
 <li><code>vs</code> the vertex shader</li>
+</ul>
+</li>
 </ul>
 <p><code>variantshader</code></p>
 <p><code>setshader</code></p>

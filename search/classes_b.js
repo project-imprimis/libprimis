@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['undoblock_0',['undoblock',['../structundoblock.html',1,'']]],
-  ['undoent_1',['undoent',['../structundoent.html',1,'']]]
+  ['tagval_0',['tagval',['../structtagval.html',1,'']]],
+  ['tex_1',['Tex',['../structSlot_1_1Tex.html',1,'Slot']]]
 ];

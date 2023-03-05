@@ -1,5 +1,9 @@
 var annotated_dup =
 [
+    [ "std", null, [
+      [ "hash< ivec >", "structstd_1_1hash_3_01ivec_01_4.html", null ],
+      [ "hash< vec >", "structstd_1_1hash_3_01vec_01_4.html", null ]
+    ] ],
     [ "animinfo", "structaniminfo.html", null ],
     [ "animinterpinfo", "structaniminterpinfo.html", null ],
     [ "block3", "structblock3.html", null ],

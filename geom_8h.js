@@ -2,11 +2,13 @@ var geom_8h =
 [
     [ "vec2", "structvec2.html", null ],
     [ "vec", "structvec.html", "structvec" ],
+    [ "std::hash< vec >", "structstd_1_1hash_3_01vec_01_4.html", null ],
     [ "bvec", "structbvec.html", null ],
     [ "vec4< T >", "structvec4.html", "structvec4" ],
     [ "matrix3", "classmatrix3.html", "classmatrix3" ],
     [ "matrix4x3", "structmatrix4x3.html", "structmatrix4x3" ],
     [ "ivec", "structivec.html", null ],
+    [ "std::hash< ivec >", "structstd_1_1hash_3_01ivec_01_4.html", null ],
     [ "ivec2", "structivec2.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "matrix4", "structmatrix4.html", "structmatrix4" ],

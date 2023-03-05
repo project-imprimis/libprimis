@@ -13,6 +13,8 @@ var hierarchy =
     ] ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
+    [ "std::hash< ivec >", "structstd_1_1hash_3_01ivec_01_4.html", null ],
+    [ "std::hash< vec >", "structstd_1_1hash_3_01vec_01_4.html", null ],
     [ "ident", "structident.html", null ],
     [ "identstack", "structidentstack.html", null ],
     [ "identval", "structidentval.html", [
