@@ -1430,7 +1430,7 @@ namespace
 
     VAR(oqgeom, 0, 1, 1); //occlusion query geometry
 
-    std::vector<vtxarray *> alphavas;
+    std::vector<const vtxarray *> alphavas;
 
     CVARP(explicitskycolor, 0x800080);
 
@@ -2796,10 +2796,10 @@ void renderrefractmask()
 {
     gle::enablevertex();
 
-    vtxarray *prev = nullptr;
+    const vtxarray *prev = nullptr;
     for(uint i = 0; i < alphavas.size(); i++)
     {
-        vtxarray *va = alphavas[i];
+        const vtxarray *va = alphavas[i];
         if(!va->refracttris)
         {
             continue;
