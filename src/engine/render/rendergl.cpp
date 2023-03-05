@@ -1385,7 +1385,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
          bbmax(0, 0, 0);
     for(uint i = 0; i < valist.size(); i++)
     {
-        vtxarray *va = valist[i];
+        const vtxarray *va = valist[i];
         for(int k = 0; k < 3; ++k)
         {
             if(va->geommin[k]>va->geommax[k])

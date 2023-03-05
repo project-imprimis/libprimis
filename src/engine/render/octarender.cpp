@@ -2154,7 +2154,7 @@ namespace
         std::vector<int> texs;
         for(uint i = 0; i < valist.size(); i++)
         {
-            vtxarray *va = valist[i];
+            const vtxarray *va = valist[i];
             for(int j = 0; j < va->texs; ++j)
             {
                 int tex = va->texelems[j].texture;
