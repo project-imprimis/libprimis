@@ -107,9 +107,9 @@ class stainrenderer
         void clearstains()
         {
             startstain = endstain = 0;
-            for(int i = 0; i < StainBuffer_Number; ++i)
+            for(stainbuffer &i : verts)
             {
-                verts[i].clear();
+                i.clear();
             }
         }
 
@@ -131,9 +131,9 @@ class stainrenderer
             startstain = d - stains;
             if(startstain == endstain)
             {
-                for(int i = 0; i < StainBuffer_Number; ++i)
+                for(stainbuffer &i : verts)
                 {
-                    verts[i].clear();
+                    i.clear();
                 }
             }
             else
@@ -285,9 +285,9 @@ class stainrenderer
 
         void cleanup()
         {
-            for(int i = 0; i < StainBuffer_Number; ++i)
+            for(stainbuffer &i : verts)
             {
-                verts[i].cleanup();
+                i.cleanup();
             }
         }
 
@@ -654,7 +654,7 @@ class stainrenderer
                 }
         };
 
-        stainbuffer verts[StainBuffer_Number];
+        std::array<stainbuffer, StainBuffer_Number> verts;
 
         const char *texname;
 
