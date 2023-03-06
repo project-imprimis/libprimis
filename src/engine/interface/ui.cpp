@@ -13,7 +13,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "console.h"
 #include "control.h"
@@ -979,7 +978,7 @@ namespace UI
         }
     };
 
-    static hashnameset<Window *> windows;
+    static std::map<std::string, Window *> windows;
 
     void ClipArea::scissor()
     {
@@ -4379,14 +4378,16 @@ namespace UI
     //new ui command
     void newui(char *name, char *contents, char *onshow, char *onhide)
     {
-        Window *window = windows.find(name, nullptr);
-        if(window)
+        auto search = windows.find(name);
+        if(search != windows.end())
         {
+            auto [key, window] = *search; // I may have broken this, remove this comment if engine compiles/works. Issue #257
             if (window == UI::window)
             {
                 return;
             }
-            world->hide(window); windows.remove(name);
+            world->hide(window);
+            windows.erase(name);
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
@@ -4420,8 +4421,8 @@ namespace UI
 
     bool showui(const char *name)
     {
-        Window *window = windows.find(name, nullptr);
-        return window && world->show(window);
+        auto search = windows.find(name);
+        return search != windows.end() && world->show(search->second);
     }
 
     bool hideui(const char *name)
@@ -4430,8 +4431,8 @@ namespace UI
         {
             return world->hideall() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && world->hide(window);
+        auto search = windows.find(name);
+        return search != windows.end() && world->hide(search->second);
     }
 
     bool toggleui(const char *name)
@@ -4462,8 +4463,8 @@ namespace UI
         {
             return world->children.size() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
+        auto search = windows.find(name);
+        return search != windows.end() && std::find(world->children.begin(), world->children.end(), search->second) != world->children.end();
     }
 
     void ifstateval(bool state, tagval * t, tagval * f)
@@ -4838,7 +4839,7 @@ namespace UI
     void cleanup()
     {
         world->children.resize(0);
-        ENUMERATE(windows, Window *, w, delete w);
+        for(auto &[k, w] : windows) { delete w; }
         windows.clear();
         if(world)
         {

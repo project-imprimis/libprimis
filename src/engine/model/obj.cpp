@@ -72,7 +72,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     numframes = 1;
     std::vector<vec> attrib[3];
     char buf[512];
-    hashtable<ivec, int> verthash(1<<11);
+    std::unordered_map<ivec, int> verthash;
     std::vector<vert> verts;
     std::vector<tcvert> tcverts;
     std::vector<tri> tris;
@@ -185,11 +185,11 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         }
                         c++;
                     }
-                    int *index = verthash.access(vkey);
-                    if(!index)
+                    auto findindex = verthash.find(vkey);
+                    int index = -1;
+                    if(findindex == verthash.end())
                     {
-                        index = &verthash[vkey];
-                        *index = verts.size();
+                        index = verts.size();
                         verts.emplace_back();
                         vert &v = verts.back();
                         v.pos = vkey.x < 0 ? vec(0, 0, 0) : attrib[0][vkey.x];
@@ -199,23 +199,27 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         tcverts.emplace_back();
                         tcvert &tcv = tcverts.back();
                         tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
+                    } else
+                    {
+                        index = findindex->second;
                     }
+
                     if(v0 < 0)
                     {
-                        v0 = *index;
+                        v0 = index;
                     }
                     else if(v1 < 0)
                     {
-                        v1 = *index;
+                        v1 = index;
                     }
                     else
                     {
                         tris.emplace_back();
                         tri &t = tris.back();
-                        t.vert[0] = static_cast<ushort>(*index);
+                        t.vert[0] = static_cast<ushort>(index);
                         t.vert[1] = static_cast<ushort>(v1);
                         t.vert[2] = static_cast<ushort>(v0);
-                        v1 = *index;
+                        v1 = index;
                     }
                 }
                 break;
