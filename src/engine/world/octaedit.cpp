@@ -1212,13 +1212,14 @@ class prefabmesh
             vec4<uchar> norm;
         };
 
-        static constexpr int prefabmeshsize = 1<<9;
-        int table[prefabmeshsize];
         std::vector<vertex> verts;
         std::vector<int> chain;
         std::vector<ushort> tris;
 
-        prefabmesh() { std::memset(table, -1, sizeof(table)); }
+        prefabmesh()
+        {
+            table.fill(-1);
+        }
 
         int addvert(const vec &pos, const bvec &norm)
         {
@@ -1259,6 +1260,8 @@ class prefabmesh
             p.numtris = tris.size()/3;
         }
     private:
+        static constexpr int prefabmeshsize = 1<<9;
+        std::array<int, prefabmeshsize> table;
         int addvert(const vertex &v)
         {
             uint h = hthash(v.pos)&(prefabmeshsize-1);
