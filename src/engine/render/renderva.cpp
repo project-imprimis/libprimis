@@ -1879,7 +1879,8 @@ namespace
             return;
         }
 
-        GLuint ebuf = 0, vbuf = 0;
+        GLuint ebuf = 0,
+               vbuf = 0;
         glGenBuffers(1, &ebuf);
         glGenBuffers(1, &vbuf);
         ushort *indexes = new ushort[numindexes];
