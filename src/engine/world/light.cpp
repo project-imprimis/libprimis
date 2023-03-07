@@ -61,12 +61,12 @@ void brightencube(cube &c)
 {
     static const surfaceinfo brightsurfaces[6] =
     {
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface
+        surfaceinfo(),
+        surfaceinfo(),
+        surfaceinfo(),
+        surfaceinfo(),
+        surfaceinfo(),
+        surfaceinfo()
     };
 
     if(!c.ext)

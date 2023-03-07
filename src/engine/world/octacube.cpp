@@ -559,11 +559,11 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
     {
         if(ext)
         {
-            ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = surfaceinfo();
         }
         return;
     }
-    surfaceinfo surf = topsurface;
+    surfaceinfo surf = surfaceinfo();
     vertinfo verts[Face_MaxVerts];
     surf.numverts |= p.numverts;
     int dim = DIMENSION(orient),
@@ -619,7 +619,7 @@ void cube::clearmerge(int orient)
         merged &= ~(1<<orient);
         if(ext)
         {
-            ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = surfaceinfo();
         }
     }
 }

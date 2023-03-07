@@ -114,6 +114,10 @@ struct surfaceinfo
 {
     uchar verts, numverts;
 
+    surfaceinfo() : verts(0), numverts(BlendLayer_Top)
+    {
+    }
+
     int totalverts() const
     {
         return numverts&Face_MaxVerts;
@@ -134,8 +138,6 @@ struct surfaceinfo
         clear();
     }
 };
-
-const surfaceinfo topsurface = {0, BlendLayer_Top};
 
 struct vtxarray;
 
