@@ -36,6 +36,12 @@ int allocva  = 0,
     glde     = 0,
     gbatches = 0;
 
+
+/* A vector that carries identically all elements also in the various varoot objects.
+ * The entries in the vector will first be the children of varoot[0] followed by
+ * varoot[0] itself, followed by the same for the other VAs in varoot. The last
+ * element should always be `varoot[7]`.
+ */
 std::vector<vtxarray *> valist;
 
 /*
