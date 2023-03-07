@@ -367,6 +367,10 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
     normalkey key = { pos, smooth };
     const normalgroup *g = normalgroups.access(key);
+    if(smooth < 0)
+    {
+        smooth = 0;
+    }
     bool usegroup = (static_cast<int>(smoothgroups.size()) > smooth) && smoothgroups[smooth] >= 0;
     if(g)
     {
