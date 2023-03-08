@@ -481,7 +481,7 @@ void preloadusedmapmodels(bool msg, bool bih)
             }
             continue;
         }
-        mapmodelinfo &mmi = mapmodels[mmindex];
+        const mapmodelinfo &mmi = mapmodels[mmindex];
         if(!mmi.name[0])
         {
             continue;
@@ -549,7 +549,7 @@ model *loadmodel(const char *name, int i, bool msg)
         {
             return nullptr;
         }
-        mapmodelinfo &mmi = mapmodels[i];
+        const mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m)
         {
             return mmi.m;
@@ -1150,7 +1150,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-    mapmodelinfo &mmi = mapmodels[idx];
+    const mapmodelinfo &mmi = mapmodels[idx];
     model *m = mmi.m ? mmi.m : loadmodel(mmi.name);
     if(!m)
     {
