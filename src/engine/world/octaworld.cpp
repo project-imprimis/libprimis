@@ -245,6 +245,10 @@ cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
     int scale = worldscale-1,
         csize = std::abs(tsize);
     cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
+    if(!c)
+    {
+        return emptycube;
+    }
     if(!(csize>>scale))
     {
         do
