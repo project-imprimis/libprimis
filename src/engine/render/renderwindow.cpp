@@ -593,6 +593,11 @@ void setupscreen()
 //full reset of renderer
 void resetgl()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot reset GL without GL initialized, operation not performed");
+        return;
+    }
     clearchanges(Change_Graphics|Change_Shaders);
 
     renderbackground("resetting OpenGL");
