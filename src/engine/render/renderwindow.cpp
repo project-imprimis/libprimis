@@ -740,9 +740,18 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
             worst = millis;
         }
     }
-    fps = (1000*maxfpshistory)/total;
-    bestdiff = 1000/best-fps;
-    worstdiff = fps-1000/worst;
+    if(total) //guard against div by 0
+    {
+        fps = (1000*maxfpshistory)/total;
+        bestdiff = 1000/best-fps;
+        worstdiff = fps-1000/worst;
+    }
+    else
+    {
+        fps = 0;
+        bestdiff = 0;
+        worstdiff = 0;
+    }
 }
 
 void getfpscmd(const int *raw)
