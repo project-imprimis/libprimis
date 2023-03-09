@@ -129,6 +129,11 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
 
 static void compileglslshader(const Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot compile GLSL shader without GLSL initialized");
+        return;
+    }
     const char *source = def + std::strspn(def, " \t\r\n");
     char *modsource = nullptr;
     const char *parts[16];
@@ -1455,6 +1460,11 @@ static void genuniformdefs(std::vector<char> &vsbuf, std::vector<char> &psbuf, c
 
 void setupshaders()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot setup GLSL shaders without GLSL initialized, operation not performed");
+        return;
+    }
     GLint val;
     glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &val);
     maxvsuniforms = val/4;
@@ -1949,6 +1959,11 @@ void reloadshaders()
 
 void resetshaders()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot reset GLSL shaders without GLSL initialized, operation not performed");
+        return;
+    }
     clearchanges(Change_Shaders);
 
     cleanuplights();
