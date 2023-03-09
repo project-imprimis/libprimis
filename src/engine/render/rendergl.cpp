@@ -243,6 +243,10 @@ void gl_checkextensions()
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
+    if(!renderer || !vendor || !version)
+    {
+        fatal("Could not get rendering context information!");
+    }
     if(std::strstr(renderer, "Mesa") || std::strstr(version, "Mesa"))
     {
         mesa = true;
