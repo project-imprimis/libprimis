@@ -1784,8 +1784,8 @@ void cleanupgl()
 void initrenderglcmds()
 {
     addcommand("glext", reinterpret_cast<identfun>(glext), "s", Id_Command);
-    addcommand("getcamyaw", reinterpret_cast<identfun>(+[](){floatret(camera1->yaw);}), "", Id_Command);
-    addcommand("getcampitch", reinterpret_cast<identfun>(+[](){floatret(camera1->pitch);}), "", Id_Command);
-    addcommand("getcamroll", reinterpret_cast<identfun>(+[](){floatret(camera1->roll);}), "", Id_Command);
+    addcommand("getcamyaw", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->yaw : 0);}), "", Id_Command);
+    addcommand("getcampitch", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->pitch : 0);}), "", Id_Command);
+    addcommand("getcamroll", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->roll : 0);}), "", Id_Command);
     addcommand("getcampos", reinterpret_cast<identfun>(+[](){DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z)); result(pos);}), "", Id_Command);
 }
