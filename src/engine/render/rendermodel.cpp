@@ -73,42 +73,62 @@ model *loadmapmodel(int n)
  */
 static vertcommands<obj> objcommands;
 
-static void checkmdl()
+//if no model is being loaded, prints error to console and returns false
+static bool checkmdl()
 {
     if(!loadingmodel)
     {
         conoutf(Console_Error, "not loading a model");
-        return;
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }
 
 static void mdlcullface(int *cullface)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setcullface(*cullface);
 }
 
 static void mdlcolor(float *r, float *g, float *b)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setcolor(vec(*r, *g, *b));
 }
 
 static void mdlcollide(int *collide)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
 
 static void mdlellipsecollide(int *collide)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
 
 static void mdltricollide(char *collide)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     delete[] loadingmodel->collidemodel;
     loadingmodel->collidemodel = nullptr;
     char *end = nullptr;
@@ -123,32 +143,47 @@ static void mdltricollide(char *collide)
 
 static void mdlspec(float *percent)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float spec = *percent > 0 ? *percent/100.0f : 0.0f;
     loadingmodel->setspec(spec);
 }
 
 static void mdlgloss(int *gloss)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 
 static void mdlalphatest(float *cutoff)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
 }
 
 static void mdldepthoffset(int *offset)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->depthoffset = *offset!=0;
 }
 
 static void mdlglow(float *percent, float *delta, float *pulse)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float glow = *percent > 0 ? *percent/100.0f : 0.0f,
           glowdelta = *delta/100.0f,
           glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
@@ -158,14 +193,20 @@ static void mdlglow(float *percent, float *delta, float *pulse)
 
 static void mdlfullbright(float *fullbright)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setfullbright(*fullbright);
 }
 
 
 static void mdlshader(char *shader)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setshader(lookupshaderbyname(shader));
 }
 
@@ -173,7 +214,10 @@ static void mdlshader(char *shader)
 //assigns a new spin speed in three euler angles for the model object currently being loaded
 static void mdlspin(float *yaw, float *pitch, float *roll)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->spinyaw = *yaw;
     loadingmodel->spinpitch = *pitch;
     loadingmodel->spinroll = *roll;
@@ -182,7 +226,10 @@ static void mdlspin(float *yaw, float *pitch, float *roll)
 //assigns a new scale factor in % for the model object currently being loaded
 static void mdlscale(float *percent)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
     loadingmodel->scale = scale;
 }
@@ -190,14 +237,20 @@ static void mdlscale(float *percent)
 //assigns translation in x,y,z in cube units for the model object currently being loaded
 static void mdltrans(float *x, float *y, float *z)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->translate = vec(*x, *y, *z);
 }
 
 //assigns angle to the offsetyaw field of the model object currently being loaded
 static void mdlyaw(float *angle)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->offsetyaw = *angle;
 }
 
@@ -205,35 +258,50 @@ static void mdlyaw(float *angle)
 //assigns angle to the offsetpitch field of the model object currently being loaded
 static void mdlpitch(float *angle)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->offsetpitch = *angle;
 }
 
 //assigns angle to the offsetroll field of the model object currently being loaded
 static void mdlroll(float *angle)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->offsetroll = *angle;
 }
 
 //assigns shadow to the shadow field of the model object currently being loaded
 static void mdlshadow(int *shadow)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->shadow = *shadow!=0;
 }
 
 //assigns alphashadow to the alphashadow field of the model object currently being loaded
 static void mdlalphashadow(int *alphashadow)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->alphashadow = *alphashadow!=0;
 }
 
 //assigns rad, h, eyeheight to the fields of the model object currently being loaded
 static void mdlbb(float *rad, float *h, float *eyeheight)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collidexyradius = *rad;
     loadingmodel->collideheight = *h;
     loadingmodel->eyeheight = *eyeheight;
@@ -241,7 +309,10 @@ static void mdlbb(float *rad, float *h, float *eyeheight)
 
 static void mdlextendbb(float *x, float *y, float *z)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->bbextend = vec(*x, *y, *z);
 }
 
@@ -251,13 +322,19 @@ static void mdlextendbb(float *x, float *y, float *z)
  */
 static void mdlname()
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     result(loadingmodel->name);
 }
 
 //========================================================= CHECK_RAGDOLL
 #define CHECK_RAGDOLL \
-    checkmdl(); \
+    if(!checkmdl()) \
+    { \
+        return; \
+    } \
     if(!loadingmodel->skeletal()) \
     { \
         conoutf(Console_Error, "not loading a skeletal model"); \
