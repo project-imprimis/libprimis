@@ -1041,6 +1041,10 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 
 void textlist()
 {
+    if(!textfocus)
+    {
+        return;
+    }
     std::vector<char> s;
     for(uint i = 0; i < editors.size(); i++)
     {
@@ -1076,6 +1080,10 @@ void textfocuscmd(char *name, int *mode)
 
 void textsave(char *file)
 {
+    if(!textfocus)
+    {
+        return;
+    }
     if(*file)
     {
         textfocus->setfile(copypath(file));
@@ -1086,6 +1094,10 @@ void textsave(char *file)
 
 void textload(char *file)
 {
+    if(!textfocus)
+    {
+        return;
+    }
     if(*file)
     {
         textfocus->setfile(copypath(file));
