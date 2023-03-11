@@ -1261,6 +1261,11 @@ void compactvslots(cube *c, int n)
 
 int cubeworld::compactvslots(bool cull)
 {
+    if(!worldroot)
+    {
+        conoutf(Console_Error, "no cube to compact");
+        return 0;
+    }
     defslot = nullptr;
     clonedvslots = 0;
     markingvslots = cull;
