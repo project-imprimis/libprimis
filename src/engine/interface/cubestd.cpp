@@ -497,6 +497,11 @@ void result(const char *s)
 void format(tagval *args, int numargs)
 {
     std::vector<char> s;
+    if(!args)
+    {
+        conoutf(Console_Error, "no parameters to format");
+        return;
+    }
     const char *f = args[0].getstr();
     while(*f)
     {
