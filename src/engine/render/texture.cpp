@@ -2678,6 +2678,11 @@ static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, str
 
 static void savepng(const char *filename, const ImageData &image, bool flip)
 {
+    if(!image.h || !image.w)
+    {
+        conoutf(Console_Error, "cannot save 0-size png");
+        return;
+    }
     uchar ctype = 0;
     switch(image.bpp)
     {
