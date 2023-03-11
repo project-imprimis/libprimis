@@ -2520,6 +2520,10 @@ void cubeworld::octarender()                               // creates va s for a
 
 void cubeworld::allchanged(bool load)
 {
+    if(!worldroot)
+    {
+        return;
+    }
     if(mainmenu)
     {
         load = false;
