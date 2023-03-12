@@ -1,9 +1,12 @@
 
 #include "libprimis.h"
 #include "testutils.h"
+#include "testidents.h"
 
 int main(int argc, char **argv)
 {
     testutils();
-    return 1;
+
+    testidents();
+    return EXIT_SUCCESS;
 }

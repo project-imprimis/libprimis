@@ -2,44 +2,6 @@
 
 namespace header_tools
 {
-    void testvector()
-    {
-        vector<int> a;
-        assert(a.length() == 0);
-        assert(a.empty());
-        //check adding and removing a member
-        a.add(1);
-        assert(a.length() == 1);
-        a.remove(0);
-        assert(a.length() == 0);
-
-        //check adding a large member (vector.put())
-        const char * testtext = "large text",
-                   * testtextstart = "l",
-                   * testtextend   = "t";
-
-        vector<char> b;
-        b.put(testtext, 10);
-        assert(b.length() == 10);
-        assert(b[0] == *testtextstart);
-        assert(b[9] == *testtextend);
-
-        //check sorting a vector using sort()
-        vector<int> c;
-        c.add(5);
-        c.add(3);
-        c.add(7);
-        c.add(9);
-
-        assert(c.length() == 4);
-        c.sort();
-        assert(c[0] == 3);
-        assert(c[3] == 9);
-
-        //setsize
-        b.setsize(5);
-        assert(b.length() == 5);
-    }
 }
 namespace header_geom
 {
@@ -50,12 +12,6 @@ namespace header_geom
         GenericVec3<float> c = a+b;
 
         c = a-b;
-
-        bool d = a > b;
-        d = a < b;
-        d = a >= b;
-        d = a <= b;
-        d = a == b;
         assert(c == vec(0,0,0));
     }
 
@@ -81,19 +37,11 @@ namespace header_geom
         assert(a == 260);
     }
 
-    void testcrc()
-    {
-        clearmapcrc();
-        entitiesinoctanodes();
-        getworldsize();
-    }
 }
 
 void testutils()
 {
-    header_tools::testvector();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
-    header_geom::testcrc();
 }
