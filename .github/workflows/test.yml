@@ -28,4 +28,4 @@ jobs:
       run: cd test && make
       
     - name: Run tests
-      run: ./libprimis_testsuite
+      run: cd test && ./libprimis_testsuite
