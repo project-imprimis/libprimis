@@ -22,7 +22,7 @@ jobs:
       run: make -Csrc -j4
 
     - name: Move library to ld path
-      run: sudo cp src/libprimis.so test/libprimis.so
+      run: sudo cp src/libprimis.so /usr/lib/libprimis.so
     
     - name: Build test code
       run: cd test && make
