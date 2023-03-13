@@ -1,7 +1,10 @@
 #include "libprimis.h"
 #include "../src/engine/interface/cs.h"
 
-//Executes every ident by read
+/*
+ * Executes every ident, but does not check validity of any values.
+ * global identmap is used to find idents available to execute
+ */
 
 static void loadcscommands()
 {
@@ -27,6 +30,8 @@ static void loadcscommands()
     initheightmapcmds();
     initmenuscmds();
     initzipcmds();
+
+    alias("testalias", " ");
 
     printf("Adding idents: %lu present\n", idents.size());
 
