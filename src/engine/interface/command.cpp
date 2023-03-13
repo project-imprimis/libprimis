@@ -5545,7 +5545,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
                 if(numargs < id->numargs)
                 {
                     tagval buf[Max_Args];
-                    std::memcpy(buf, args, numargs*sizeof(tagval));
+                    std::memcpy(buf, args, numargs*sizeof(tagval)); //copy numargs number of args from passed args tagval
                     callcommand(id, buf, numargs, lookup);
                 }
                 else
