@@ -1746,6 +1746,10 @@ namespace UI
         static void def() { gle::defcolor(4, GL_UNSIGNED_BYTE); }
     };
 
+#undef LOOP_CHILDREN
+#undef LOOP_CHILDREN_REV
+#undef LOOP_CHILD_RANGE
+
     struct FillColor : Target
     {
         enum
@@ -4896,7 +4900,3 @@ namespace UI
         return world->abovehud();
     }
 }
-
-#undef LOOP_CHILDREN
-#undef LOOP_CHILDREN_REV
-#undef LOOP_CHILD_RANGE
