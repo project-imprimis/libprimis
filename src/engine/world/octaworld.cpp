@@ -189,8 +189,8 @@ void optiface(const uchar *p, cube &c)
 
 void printcube()
 {
-    cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
-    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<void *>(&c), lu.x, lu.y, lu.z, lusize);
+    const cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
+    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<const void *>(&c), lu.x, lu.y, lu.z, lusize);
     conoutf(Console_Debug, " x  %.8x", c.faces[0]);
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
