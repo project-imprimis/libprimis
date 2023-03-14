@@ -1977,7 +1977,15 @@ namespace UI
         void bindtex()
         {
             changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+            if(lasttex != tex)
+            {
+                if(lasttex)
+                {
+                    gle::end();
+                }
+                lasttex = tex;
+                glBindTexture(GL_TEXTURE_2D, tex->id);
+            }
         }
 
         void draw(float sx, float sy)
