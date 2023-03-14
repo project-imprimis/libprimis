@@ -1526,12 +1526,9 @@ ushort getmaterial(cube &c)
 
 /////////// texture editing //////////////////
 
-int curtexindex = -1,
-    lasttex     = 0;
-int texpaneltimer = 0;
+int curtexindex = -1;
 std::vector<ushort> texmru;
 
-selinfo repsel;
 int reptex = -1;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
@@ -1622,6 +1619,7 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
 
 void compactmruvslots()
 {
+    static int lasttex = 0;
     remappedvslots.clear();
     for(int i = static_cast<int>(texmru.size()); --i >=0;) //note reverse iteration
     {
@@ -1761,6 +1759,7 @@ void cube::setmat(ushort mat, ushort matmask, ushort filtermat, ushort filtermas
 
 void rendertexturepanel(int w, int h)
 {
+    static int texpaneltimer = 0;
     if((texpaneltimer -= curtime)>0 && editmode)
     {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
