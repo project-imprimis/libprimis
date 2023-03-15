@@ -3033,43 +3033,85 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes rendermodel CubeScript commands. </p>
-<p><code>mdlcullface</code></p>
-<p><code>mdlcolor</code></p>
-<p><code>mdlcollide</code></p>
-<p><code>mdlellipsecollide</code></p>
-<p><code>mdltricollide</code></p>
-<p><code>mdlspec</code></p>
-<p><code>mdlgloss</code></p>
-<p><code>mdlalphatest</code></p>
-<p><code>mdldepthoffset</code></p>
-<p><code>mdlglow</code></p>
-<p><code>mdlfullbright</code></p>
-<p><code>mdlshader</code></p>
-<p><code>mdlspin</code></p>
-<p><code>mdlscale</code></p>
-<p><code>mdltrans</code></p>
-<p><code>mdlyaw</code></p>
-<p><code>mdlpitch</code></p>
-<p><code>mdlroll</code></p>
-<p><code>mdlshadow</code></p>
-<p><code>mdlalphashadow</code></p>
-<p><code>mdlbb</code></p>
-<p><code>mdlextendbb</code></p>
+<p><code>mdlcullface</code> <em>int</em> cullface</p>
+<p><code>mdlcolor</code> <em>float</em> red <em>float</em> green <em>float</em> blue</p>
+<p><code>mdlcollide</code> <em>bool</em> collide</p>
+<p><code>mdlellipsecollide</code> <em>bool</em> collide</p>
+<p><code>mdltricollide</code> <em>bool</em> collide</p>
+<p><code>mdlspec</code> <em>float</em> scale</p>
+<p><code>mdlgloss</code> <em>float</em> type</p>
+<p><code>mdlalphatest</code> <em>float</em> cutoff</p>
+<p><code>mdldepthoffset</code> <em>int</em> offset</p>
+<p><code>mdlglow</code> <em>float</em> scale <em>float</em> delta <em>float</em> pulse</p>
+<p><code>mdlfullbright</code> <em>float</em> scale</p>
+<p><code>mdlshader</code> <em>string</em> shader</p>
+<p><code>mdlspin</code> <em>float</em> yaw <em>float</em> pitch <em>float</em> roll</p>
+<p><code>mdlscale</code> <em>float</em> scale</p>
+<p><code>mdltrans</code> <em>float</em> x <em>float</em> y <em>float</em> z</p>
+<p><code>mdlyaw</code> <em>float</em> angle</p>
+<p><code>mdlpitch</code> <em>float</em> angle</p>
+<p><code>mdlroll</code> <em>float</em> angle</p>
+<p><code>mdlshadow</code> <em>bool</em> shadow</p>
+<p><code>mdlalphashadow</code> <em>bool</em> shadow</p>
+<p><code>mdlbb</code> <em>float</em> radius <em>float</em> height <em>float</em> eyeheight</p>
+<p><code>mdlextendbb</code> <em>float</em> x <em>float</em> y <em>float</em> z</p>
 <p><code>mdlname</code></p>
-<p><code>rdvert</code></p>
-<p><code>rdeye</code></p>
-<p><code>rdtri</code></p>
-<p><code>rdjoint</code></p>
-<p><code>rdlimitdist</code></p>
-<p><code>rdlimitrot</code></p>
-<p><code>rdanimjoints</code></p>
-<p><code>mapmodelreset</code></p>
-<p><code>mapmodel</code></p>
-<p><code>mapmodelname</code></p>
-<p><code>mapmodelloaded</code></p>
-<p><code>nummapmodels</code></p>
-<p><code>clearmodel</code></p>
-<p><code>findanims</code> </p>
+<p><code>rdvert</code> <em>float</em> x <em>float</em> y <em>float</em> z <em>float</em> radius</p>
+<p><code>rdeye</code> <em>int</em> level</p>
+<p><code>rdtri</code> <em>int</em> vertex1 <em>int</em> vertex2 <em>int</em> vertex3</p>
+<p><code>rdjoint</code> <em>int</em> num <em>int</em> tri <em>bool</em> vertex1 <em>bool</em> vertex2 <em>bool</em> vertex3</p>
+<p><code>rdlimitdist</code> <em>int</em> vertex1 <em>int</em> vertex2 <em>float</em> mindist <em>float</em> maxdist</p>
+<p><code>rdlimitrot</code> <em>int</em> tri1 <em>int</em> tri2 <em>float</em> maxangle <em>float</em> quatx <em>float</em> quaty <em>float</em> quatz <em>float</em> quatw</p>
+<p><code>rdanimjoints</code> <em>bool</em> on</p>
+<p><code>mapmodelreset</code> <em>int</em> index</p>
+<p><code>mapmodel</code> <em>string</em> name</p>
+<p><code>mapmodelname</code> <em>int</em> index <em>int</em> prefix</p>
+<p><code>mapmodelloaded</code> <em>int</em> index</p>
+<p><code>nummapmodels</code> <em>null</em></p>
+<p><code>clearmodel</code> <em>string</em> name</p>
+<p><code>findanims</code> <em>string</em> name</p>
+<p><code>objskin</code> <em>string</em> meshname <em>string</em> tex <em>string</em> masks</p>
+<p><code>objspec</code> <em>string</em> tex <em>float</em> scale</p>
+<p><code>objgloss</code> <em>string</em> tex <em>int</em> type</p>
+<p><code>objglow</code> <em>string</em> tex <em>float</em> percent <em>float</em> delta <em>float</em> pulse</p>
+<p><code>objalphatest</code> <em>string</em> meshname <em>float</em> cutoff</p>
+<p><code>objcullface</code> <em>string</em> meshname <em>int</em> cullface</p>
+<p><code>objcolor</code> <em>string</em> meshname <em>float</em> red <em>float</em> green <em>float</em> blue</p>
+<p><code>objbumpmap</code> <em>string</em> meshname <em>string</em> tex</p>
+<p><code>objdecal</code> <em>string</em> meshname <em>string</em> tex</p>
+<p><code>objfullbright</code> <em>string</em> meshname <em>string</em> brightness</p>
+<p><code>objshader</code> <em>string</em> meshname <em>string</em> shader</p>
+<p><code>objscroll</code> <em>string</em> meshname <em>float</em> xscroll <em>float</em> yscroll</p>
+<p><code>objnoclip</code> <em>string</em> meshname <em>bool</em> clip</p>
+<p><code>objtricollide</code> <em>string</em> meshname</p>
+<p><code>objlink</code> <em>int</em> parent <em>int</em> child <em>string</em> tagname <em>float</em> x <em>float</em> y <em>float</em> z</p>
+<p><code>objload</code> <em>string</em> meshname <em>float</em> smooth</p>
+<p><code>objtag</code> <em>string</em> tagname <em>float</em> tx <em>float</em> ty <em>float</em> tz <em>float</em> rx <em>float</em> ry <em>float</em> rz</p>
+<p><code>objpitch</code> <em>string</em> meshname</p>
+<p><code>md5skin</code> <em>string</em> meshname <em>string</em> tex <em>string</em> masks</p>
+<p><code>md5spec</code> <em>string</em> tex <em>float</em> scale</p>
+<p><code>md5gloss</code> <em>string</em> tex <em>int</em> type</p>
+<p><code>md5glow</code> <em>string</em> tex <em>float</em> percent <em>float</em> delta <em>float</em> pulse</p>
+<p><code>md5alphatest</code> <em>string</em> meshname <em>float</em> cutoff</p>
+<p><code>md5cullface</code> <em>string</em> meshname <em>int</em> cullface</p>
+<p><code>md5color</code> <em>string</em> meshname <em>float</em> red <em>float</em> green <em>float</em> blue</p>
+<p><code>md5bumpmap</code> <em>string</em> meshname <em>string</em> tex</p>
+<p><code>md5decal</code> <em>string</em> meshname <em>string</em> tex</p>
+<p><code>md5fullbright</code> <em>string</em> meshname <em>string</em> brightness</p>
+<p><code>md5shader</code> <em>string</em> meshname <em>string</em> shader</p>
+<p><code>md5scroll</code> <em>string</em> meshname <em>float</em> xscroll <em>float</em> yscroll</p>
+<p><code>md5noclip</code> <em>string</em> meshname <em>bool</em> clip</p>
+<p><code>md5tricollide</code> <em>string</em> meshname <em>string</em> meshname</p>
+<p><code>md5link</code> <em>int</em> parent <em>int</em> child <em>string</em> tagname <em>float</em> x <em>float</em> y <em>float</em> z</p>
+<p><code>md5load</code> <em>string</em> meshname <em>string</em> skel <em>float</em> smooth</p>
+<p><code>md5tag</code> <em>string</em> tagname <em>float</em> tx <em>float</em> ty <em>float</em> tz <em>float</em> rx <em>float</em> ry <em>float</em> rz</p>
+<p><code>md5pitch</code> <em>string</em> meshname <em>float</em> pitchscale <em>float</em> pitchoffset <em>float</em> pitchmin <em>float</em> pitchmax</p>
+<p><code>md5pitchtarget</code> <em>string</em> meshname <em>string</em> animfile <em>int</em> frameoffset <em>float</em> pitchmin <em>float</em> pitchmax</p>
+<p><code>md5pitchcorrect</code> <em>string</em> meshname <em>string</em> targetname <em>float</em> scale <em>float</em> pitchmin <em>float</em> pitchmax</p>
+<p><code>md5hitzone</code> <em>int</em> hitzoneid <em>string</em> maskstring</p>
+<p><code>md5anim</code> <em>string</em> animname <em>string</em> animfile <em>float</em> speed <em>int</em> priority <em>int</em> startoffset <em>int</em> endoffset</p>
+<p><code>md5animpart</code> <em>string</em> maskstring</p>
+<p><code>md5adjust</code> <em>string</em> bonename <em>float</em> yaw <em>float</em> pitch <em>float</em> roll <em>float</em> translatex <em>float</em> translatey <em>float</em> translatez </p>
 
 </div>
 </div>
