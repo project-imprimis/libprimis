@@ -3749,8 +3749,9 @@ void GBuffer::preparegbuffer(bool depthclear)
     }
     gdepthinit = true;
 
-    matrix4 invscreenmatrix, invcammatrix;
+    matrix4 invscreenmatrix, invcammatrix, invcamprojmatrix;
     invcammatrix.invert(cammatrix);
+    invcamprojmatrix.invert(camprojmatrix);
     invscreenmatrix.identity();
     invscreenmatrix.settranslation(-1.0f, -1.0f, -1.0f);
     invscreenmatrix.setscale(2.0f/vieww, 2.0f/viewh, 2.0f);

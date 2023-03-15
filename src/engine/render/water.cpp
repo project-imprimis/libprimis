@@ -367,6 +367,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
     }
     glActiveTexture(GL_TEXTURE0);
 
+    matrix4 invcamprojmatrix = camprojmatrix.inverse();
     vec p[4] =
     {
         invcamprojmatrix.perspectivetransform(vec(-1, -1, -1)),

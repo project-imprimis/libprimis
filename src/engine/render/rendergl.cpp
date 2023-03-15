@@ -533,10 +533,6 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     }
     jitteraa();
     camprojmatrix.muld(projmatrix, cammatrix);
-    if(init)
-    {
-        invcamprojmatrix.invert(camprojmatrix);
-    }
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
     if(flush && Shader::lastshader)
@@ -733,7 +729,7 @@ void mousemove(int dx, int dy)
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
-matrix4 cammatrix, projmatrix, camprojmatrix, invcamprojmatrix;
+matrix4 cammatrix, projmatrix, camprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
 
@@ -749,7 +745,7 @@ vec calcavatarpos(const vec &pos, float dist)
     scrpos.z = (eyepos.z*(farplane + nearplane) - 2*nearplane*farplane) / (farplane - nearplane);
     scrpos.w = -eyepos.z;
 
-    vec worldpos = invcamprojmatrix.perspectivetransform(scrpos);
+    vec worldpos = camprojmatrix.inverse().perspectivetransform(scrpos);
     vec dir = vec(worldpos).sub(camera1->o).rescale(dist);
     return dir.add(camera1->o);
 }
