@@ -26,7 +26,7 @@ extern const matrix4 viewmatrix;
 
 inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
 
-extern matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix;
+extern matrix4 cammatrix, projmatrix, camprojmatrix, invcamprojmatrix;
 extern int wireframe;
 extern int usetexgather;
 

@@ -295,7 +295,7 @@ namespace
     {
         SETSHADER(atmosphere);
 
-        matrix4 sunmatrix = invcammatrix;
+        matrix4 sunmatrix = cammatrix.inverse();
         sunmatrix.settranslation(0, 0, 0);
         sunmatrix.mul(projmatrix.inverse());
         LOCALPARAM(sunmatrix, sunmatrix);
