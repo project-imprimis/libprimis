@@ -407,8 +407,8 @@ namespace
                     return false;
                 }
             }
-            DecalSlot &xs = lookupdecalslot(x.tex, false),
-                      &ys = lookupdecalslot(y.tex, false);
+            const DecalSlot &xs = lookupdecalslot(x.tex, false),
+                            &ys = lookupdecalslot(y.tex, false);
             if(xs.slot->shader < ys.slot->shader)
             {
                 return true;

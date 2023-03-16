@@ -276,7 +276,7 @@ static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
         }
         case EngineEnt_Decal:
         {
-            DecalSlot &s = lookupdecalslot(e.attr1, false);
+            const DecalSlot &s = lookupdecalslot(e.attr1, false);
             vec center, radius;
             decalboundbox(e, s, center, radius);
             center.add(e.o);
