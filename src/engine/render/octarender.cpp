@@ -1107,7 +1107,7 @@ namespace
     //verts: information about grass texs' face, array of vertices, must be >= face+3 long
     //numv: number of grass vertices
     //texture: index for the grass texture to use
-    void addgrasstri(int face, vertex *verts, int numv, ushort texture)
+    void addgrasstri(int face, const vertex *verts, int numv, ushort texture)
     {
         vc.grasstris.emplace_back();
         grasstri &g = vc.grasstris.back();
