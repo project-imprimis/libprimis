@@ -1154,7 +1154,7 @@ namespace
 
     void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
     {
-        Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
+        const Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
         const texrotation &r = texrotations[vslot.rotation];
         float k = defaulttexscale/vslot.scale,
               xs = r.flipx ? -tex->xs : tex->xs,
