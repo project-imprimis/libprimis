@@ -1270,7 +1270,7 @@ const char *getalias(const char *name)
     return i && i->type==Id_Alias && (i->index >= Max_Args || aliasstack->usedargs&(1<<i->index)) ? i->getstr() : "";
 }
 
-int clampvar(ident *id, int val, int minval, int maxval)
+int clampvar(const ident *id, int val, int minval, int maxval)
 {
     if(val < minval)
     {
