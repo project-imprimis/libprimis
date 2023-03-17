@@ -7,7 +7,7 @@ var command_8h =
     [ "ident::identvalptr", "unionident_1_1identvalptr.html", "unionident_1_1identvalptr" ],
     [ "addcommand", "command_8h.html#a843cea4bbdaf36111b913f0fb86a5662", null ],
     [ "checksleep", "command_8h.html#ad97d745d2a01ec6f7b780d792e082e08", null ],
-    [ "clampvar", "command_8h.html#a8e8bc55a9398bb67e53e15a0cde66e08", null ],
+    [ "clampvar", "command_8h.html#a580491578112d0b38b4c7fa1243b188f", null ],
     [ "clear_command", "command_8h.html#ab00d3f04f513b9d9534c8975d8972526", null ],
     [ "escapestring", "command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2", null ],
     [ "execfile", "command_8h.html#a6e5803cc209ddd0bfcbbb57c0480f974", null ],
