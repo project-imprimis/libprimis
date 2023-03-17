@@ -1577,7 +1577,7 @@ int unescapestring(char *dst, const char *src, const char *end)
     return dst - start;
 }
 
-static char *conc(std::vector<char> &buf, tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
+static char *conc(std::vector<char> &buf, const tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
 {
     if(prefix)
     {
@@ -1638,7 +1638,7 @@ static char *conc(std::vector<char> &buf, tagval *v, int n, bool space, const ch
     return buf.data();
 }
 
-static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixlen)
+static char *conc(const tagval *v, int n, bool space, const char *prefix, int prefixlen)
 {
     static int vlen[Max_Args];
     static char numbuf[3*maxstrlen];
@@ -1735,12 +1735,12 @@ overflow:
     return buf;
 }
 
-char *conc(tagval *v, int n, bool space)
+char *conc(const tagval *v, int n, bool space)
 {
     return conc(v, n, space, nullptr, 0);
 }
 
-char *conc(tagval *v, int n, bool space, const char *prefix)
+char *conc(const tagval *v, int n, bool space, const char *prefix)
 {
     return conc(v, n, space, prefix, std::strlen(prefix));
 }
