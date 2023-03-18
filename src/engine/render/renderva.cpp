@@ -1093,8 +1093,8 @@ namespace
     {
         if(texgenslot != &slot || texgenvslot != &vslot)
         {
-            Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t,
-                    *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
+            Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t;
+            const Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
             if(!texgenvslot || slot.sts.empty() ||
                 (curtex->xs != tex->xs || curtex->ys != tex->ys ||
                  texgenvslot->rotation != vslot.rotation || texgenvslot->scale != vslot.scale ||
