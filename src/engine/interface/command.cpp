@@ -794,10 +794,6 @@ static bool checknumber(const char *s)
         }
     }
 }
-static bool checknumber(const stringslice &s)
-{
-    return checknumber(s.str);
-}
 
 template<class T>
 static ident *newident(const T &name, int flags)
@@ -3247,7 +3243,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
             }
             if(!id)
             {
-                if(!checknumber(idname))
+                if(!checknumber(idname.str))
                 {
                     compilestr(code, idname, true);
                     goto noid;
