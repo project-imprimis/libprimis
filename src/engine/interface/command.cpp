@@ -740,7 +740,7 @@ void redoarg(ident &id, const identstack &stack)
     cleancode(id);
 }
 
-void pushcmd(ident *id, tagval *v, uint *code)
+void pushcmd(ident *id, tagval *v, const uint *code)
 {
     if(id->type != Id_Alias || id->index < Max_Args)
     {
