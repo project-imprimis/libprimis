@@ -3908,7 +3908,7 @@ void freecode(uint *code)
     }
 }
 
-void printvar(ident *id, int i)
+void printvar(const ident *id, int i)
 {
     if(i < 0)
     {
@@ -3924,17 +3924,17 @@ void printvar(ident *id, int i)
     }
 }
 
-void printfvar(ident *id, float f)
+void printfvar(const ident *id, float f)
 {
     conoutf("%s = %s", id->name, floatstr(f));
 }
 
-void printsvar(ident *id, const char *s)
+void printsvar(const ident *id, const char *s)
 {
     conoutf(std::strchr(s, '"') ? "%s = [%s]" : "%s = \"%s\"", id->name, s);
 }
 
-void printvar(ident *id)
+void printvar(const ident *id)
 {
     switch(id->type)
     {
