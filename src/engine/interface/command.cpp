@@ -4096,7 +4096,7 @@ static void addreleaseaction(ident *id, tagval *args, int numargs)
  * @param offset the offset for accessing and returning the n-th argument.
  * @return void* the pointer to the string or integer.
  */
-void* arg(ident *id, tagval args[], int n, int offset = 0)
+void* arg(const ident *id, tagval args[], int n, int offset = 0)
 {
     if(id->argmask&(1<<n))
     {
@@ -4120,7 +4120,7 @@ void* arg(ident *id, tagval args[], int n, int offset = 0)
  * @param n the n-th argument to return.
  * @param offset the offset for accessing and returning the n-th argument.
  */
-void callcom(ident *id, tagval args[], int n, int offset=0)
+void callcom(const ident *id, tagval args[], int n, int offset=0)
 {
     /**
      * @brief Return the n-th argument. The lambda expression captures the `id`
