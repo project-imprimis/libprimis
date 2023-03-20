@@ -259,8 +259,8 @@ extern void setsvarchecked(ident *id, const char *val);
 
 extern const char *escapeid(const char *s);
 
-extern void printvar(ident *id);
-extern void printvar(ident *id, int i);
+extern void printvar(const ident *id);
+extern void printvar(const ident *id, int i);
 
 extern void clearoverrides();
 
