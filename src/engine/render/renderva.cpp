@@ -735,7 +735,7 @@ namespace
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), globals(-1), alphascale(0), texgenorient(-1),
-                            texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1), slot(nullptr),
+                            texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1),
                             vslot(nullptr), texgenslot(nullptr), texgenvslot(nullptr),
                             texgenscroll(0, 0), refractscale(0), refractcolor(1, 1, 1)
             {
@@ -751,10 +751,9 @@ namespace
             int tmu;
             GLuint textures[7];
             vec colorscale;
-            Slot *slot;
-            VSlot *vslot;
-            Slot *texgenslot;
-            VSlot *texgenvslot;
+            const VSlot *vslot;
+            const Slot *texgenslot;
+            const VSlot *texgenvslot;
             vec2 texgenscroll;
             float refractscale;
             vec refractcolor;
@@ -1084,8 +1083,6 @@ namespace
             tmu = 0;
             glActiveTexture(GL_TEXTURE0);
         }
-
-        slot = &newslot;
         vslot = &newvslot;
     }
 
@@ -1093,7 +1090,7 @@ namespace
     {
         if(texgenslot != &slot || texgenvslot != &vslot)
         {
-            Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t;
+            const Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t;
             const Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
             if(!texgenvslot || slot.sts.empty() ||
                 (curtex->xs != tex->xs || curtex->ys != tex->ys ||
@@ -1200,7 +1197,6 @@ namespace
 
     void renderstate::renderbatches(int pass)
     {
-        slot = nullptr;
         vslot = nullptr;
         int curbatch = firstbatch;
         if(curbatch >= 0)
