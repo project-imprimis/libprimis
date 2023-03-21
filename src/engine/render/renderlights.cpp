@@ -978,12 +978,12 @@ class lightinfo
         float radius, dist;
         vec dir, spotx, spoty;
         int spot;
-        float sx1, sy1, sx2, sy2, sz1, sz2;
         occludequery *query;
 
         lightinfo() : query(nullptr)
         {
         }
+
         lightinfo(const vec &o, const vec &color, float radius, int flags = 0, const vec &dir = vec(0, 0, 0), int spot = 0)
           : ent(-1), shadowmap(-1), flags(flags),
             o(o), color(color), radius(radius), dist(camera1->o.dist(o)),
@@ -995,6 +995,7 @@ class lightinfo
             }
             calcscissor();
         }
+
         lightinfo(int i, const extentity &e)
           : ent(i), shadowmap(-1), flags(e.attr5),
             o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
@@ -1013,10 +1014,12 @@ class lightinfo
         {
             return flags&LightEnt_NoShadow || radius <= smminradius;
         }
+
         bool nospec() const
         {
             return (flags&LightEnt_NoSpecular) != 0;
         }
+
         bool volumetric() const
         {
             return (flags&LightEnt_Volumetric) != 0;
@@ -1067,7 +1070,28 @@ class lightinfo
                 bbmax = vec(o).add(radius);
             }
         }
+        //returns vec2(s[dim]1, s[dim]2) where dim = 0 for x, 1 for y, 2 for z
+        vec2 gets(uint dim) const
+        {
+            switch(dim)
+            {
+                case 0:
+                {
+                    return vec2(sx1, sx2);
+                }
+                case 1:
+                {
+                    return vec2(sy1, sy2);
+                }
+                case 2:
+                {
+                    return vec2(sz1, sz2);
+                }
+            }
+        }
     private:
+        float sx1, sy1, sx2, sy2, sz1, sz2;
+
         void calcspot()
         {
             quat orient(dir, vec(0, 0, dir.z < 0 ? -1 : 1));
@@ -1299,7 +1323,9 @@ class lightrect
         lightrect() {}
         lightrect(const lightinfo &l)
         {
-            calctilebounds(l.sx1, l.sy1, l.sx2, l.sy2, x1, y1, x2, y2);
+            vec2 lx = l.gets(0),
+                 ly = l.gets(1);
+            calctilebounds(lx.v[0], lx.v[1], ly.v[0], ly.v[1], x1, y1, x2, y2);
         }
 
         bool outside(const lightrect &o) const
@@ -1852,11 +1878,13 @@ static bool sortlights(int x, int y)
     {
         return false;
     }
-    if(xl.sz1 < yl.sz1)
+    vec2 xlz = xl.gets(2),
+         ylz = yl.gets(2);
+    if(xlz.v[0] < ylz.v[0])
     {
         return true;
     }
-    else if(xl.sz1 > yl.sz1)
+    else if(xlz.v[0] > ylz.v[0])
     {
         return false;
     }
@@ -2219,11 +2247,14 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
         for(uint i = 0; i < lightorder.size(); i++)
         {
             const lightinfo &l = lights[lightorder[i]];
-            float sx1 = std::max(bsx1, l.sx1),
-                  sy1 = std::max(bsy1, l.sy1),
-                  sx2 = std::min(bsx2, l.sx2),
-                  sy2 = std::min(bsy2, l.sy2);
-            if(sx1 >= sx2 || sy1 >= sy2 || l.sz1 >= l.sz2 || (avatarpass && l.dist - l.radius > avatarshadowdist))
+            vec2 lx = l.gets(0),
+                 ly = l.gets(1),
+                 lz = l.gets(2);
+            float sx1 = std::max(bsx1, lx.v[0]),
+                  sy1 = std::max(bsy1, ly.v[0]),
+                  sx2 = std::min(bsx2, lx.v[1]),
+                  sy2 = std::min(bsy2, ly.v[1]);
+            if(sx1 >= sx2 || sy1 >= sy2 || lz.v[0] >= lz.v[1] || (avatarpass && l.dist - l.radius > avatarshadowdist))
             {
                 continue;
             }
@@ -2243,7 +2274,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
 
             if(hasDBT && depthtestlights > 1)
             {
-                glDepthBounds_(l.sz1*0.5f + 0.5f, std::min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
+                glDepthBounds_(lz.v[0]*0.5f + 0.5f, std::min(lz.v[1]*0.5f + 0.5f, depthtestlightsclamp));
             }
 
             if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
@@ -2746,10 +2777,12 @@ void GBuffer::rendervolumetric()
             LOCALPARAMF(shadowoffset, sm.x + 0.5f*sm.size, sm.y + 0.5f*sm.size);
         }
 
-        int tx1 = static_cast<int>(std::floor((l.sx1*0.5f+0.5f)*volw)),
-            ty1 = static_cast<int>(std::floor((l.sy1*0.5f+0.5f)*volh)),
-            tx2 = static_cast<int>(std::ceil((l.sx2*0.5f+0.5f)*volw)),
-            ty2 = static_cast<int>(std::ceil((l.sy2*0.5f+0.5f)*volh));
+        vec2 lx = l.gets(0),
+             ly = l.gets(1);
+        int tx1 = static_cast<int>(std::floor((lx.v[0]*0.5f+0.5f)*volw)),
+            ty1 = static_cast<int>(std::floor((ly.v[0]*0.5f+0.5f)*volh)),
+            tx2 = static_cast<int>(std::ceil((lx.v[1]*0.5f+0.5f)*volw)),
+            ty2 = static_cast<int>(std::ceil((ly.v[1]*0.5f+0.5f)*volh));
         glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
         if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
@@ -2897,16 +2930,18 @@ void viewlightscissor()
             {
                 if(lights[j].o == e.o)
                 {
-                    lightinfo &l = lights[j];
+                    const lightinfo &l = lights[j];
                     if(!l.validscissor())
                     {
                         break;
                     }
+                    vec2 lx = l.gets(0),
+                         ly = l.gets(1);
                     gle::colorf(l.color.x/255, l.color.y/255, l.color.z/255);
-                    float x1 = (l.sx1+1)/2*hudw,
-                          x2 = (l.sx2+1)/2*hudw,
-                          y1 = (1-l.sy1)/2*hudh,
-                          y2 = (1-l.sy2)/2*hudh;
+                    float x1 = (lx.v[0]+1)/2*hudw,
+                          x2 = (lx.v[1]+1)/2*hudw,
+                          y1 = (1-ly.v[0])/2*hudh,
+                          y2 = (1-ly.v[1])/2*hudh;
                     gle::begin(GL_TRIANGLE_STRIP);
                     gle::attribf(x1, y1);
                     gle::attribf(x2, y1);
