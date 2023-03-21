@@ -1442,7 +1442,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     glEnable(GL_DEPTH_TEST);
 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
-    flipqueries();
+    occlusionengine.flipqueries();
 
     ldrscale = 1;
     ldrscaleb = ldrscale/255;
@@ -1751,7 +1751,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
-    flipqueries();
+    occlusionengine.flipqueries();
     aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
     fovy = 2*std::atan2(std::tan(curfov/(2*RAD)), aspect)*RAD;
     vieww = hudw;

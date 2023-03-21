@@ -91,7 +91,6 @@ extern bool renderexplicitsky(bool outline = false);
 extern bvec outlinecolor;
 
 extern int deferquery;
-extern void flipqueries();
 extern void startbb(bool mask = true);
 extern void endbb(bool mask = true);
 extern void drawbb(const ivec &bo, const ivec &br);
