@@ -58,6 +58,8 @@ struct shadowmesh
     int draws[6];
 };
 
+Occluder occlusionengine;
+
 /* internally relevant functionality */
 ///////////////////////////////////////
 
@@ -182,91 +184,7 @@ namespace
 
     ///////// occlusion queries /////////////
 
-    constexpr int maxqueryframes = 2;
-
-    //all members of this struct are used elsewhere (must be public)
-    struct queryframe
-    {
-        public:
-            int cur;
-
-            queryframe() : cur(0), max(0), defer(0) {}
-
-            void flip()
-            {
-                for(int i = 0; i < cur; ++i)
-                {
-                    queries[i].owner = nullptr;
-                }
-                for(; defer > 0 && max < maxquery; defer--)
-                {
-                    queries[max].owner = nullptr;
-                    queries[max].fragments = -1;
-                    glGenQueries(1, &queries[max++].id);
-                }
-                cur = defer = 0;
-            }
-
-            occludequery *newquery(void *owner)
-            {
-                if(cur >= max)
-                {
-                    if(max >= maxquery)
-                    {
-                        return nullptr;
-                    }
-                    if(deferquery)
-                    {
-                        if(max + defer < maxquery)
-                        {
-                            defer++;
-                        }
-                        return nullptr;
-                    }
-                    glGenQueries(1, &queries[max++].id);
-                }
-                occludequery *query = &queries[cur++];
-                query->owner = owner;
-                query->fragments = -1;
-                return query;
-            }
-
-            void reset()
-            {
-                for(int i = 0; i < max; ++i)
-                {
-                    queries[i].owner = nullptr;
-                }
-            }
-
-            void cleanup()
-            {
-                for(int i = 0; i < max; ++i)
-                {
-                    glDeleteQueries(1, &queries[i].id);
-                    queries[i].owner = nullptr;
-                }
-                cur = max = defer = 0;
-            }
-        private:
-            static constexpr int maxquery = 2048;
-
-            int max, defer;
-            occludequery queries[maxquery];
-    };
-
-    queryframe queryframes[maxqueryframes];
-    uint flipquery = 0;
-
-    void clearqueries()
-    {
-        for(int i = 0; i < maxqueryframes; ++i)
-        {
-            queryframes[i].cleanup();
-        }
-    }
-
-    VARF(oqany, 0, 0, 2, clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
+    VARF(oqany, 0, 0, 2, occlusionengine.clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
     VAR(oqwait, 0, 1, 1);
 
     GLenum querytarget()
@@ -348,7 +266,7 @@ namespace
                     {
                         continue;
                     }
-                    bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
+                    bool occluded = doquery && oe->query && oe->query->owner == oe && occlusionengine.checkquery(oe->query);
                     if(occluded)
                     {
                         oe->distance = -1;
@@ -825,7 +743,7 @@ namespace
         {
             drawbb(va.geommin, ivec(va.geommax).sub(va.geommin));
         }
-        endquery();
+        occlusionengine.endquery();
     }
 
     enum RenderPass
@@ -1314,7 +1232,7 @@ namespace
             if(va.query) \
             { \
                 flush; \
-                endquery(); \
+                occlusionengine.endquery(); \
             } \
         } while(0)
 
@@ -2425,62 +2343,6 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
     return false;
 }
 
-void flipqueries()
-{
-    flipquery = (flipquery + 1) % maxqueryframes;
-    queryframes[flipquery].flip();
-}
-
-occludequery *newquery(void *owner)
-{
-    return queryframes[flipquery].newquery(owner);
-}
-
-void occludequery::startquery() const
-{
-    glBeginQuery(querytarget(), this->id);
-}
-
-void endquery()
-{
-    glEndQuery(querytarget());
-}
-
-bool checkquery(occludequery *query, bool nowait)
-{
-    if(query->fragments < 0)
-    {
-        if(nowait || !oqwait)
-        {
-            GLint avail;
-            glGetQueryObjectiv(query->id, GL_QUERY_RESULT_AVAILABLE, &avail);
-            if(!avail)
-            {
-                return false;
-            }
-        }
-
-        GLuint fragments;
-        glGetQueryObjectuiv(query->id, GL_QUERY_RESULT, &fragments);
-        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
-    }
-    return query->fragments < oqfrags;
-}
-
-
-void resetqueries()
-{
-    for(int i = 0; i < maxqueryframes; ++i)
-    {
-        queryframes[i].reset();
-    }
-}
-
-int getnumqueries()
-{
-    return queryframes[flipquery].cur;
-}
-
 void startbb(bool mask)
 {
     setupbb();
@@ -2534,6 +2396,121 @@ void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 
 //oq
 
+void Occluder::clearqueries()
+{
+    for(queryframe &i : queryframes)
+    {
+        i.cleanup();
+    }
+}
+
+void Occluder::flipqueries()
+{
+    flipquery = (flipquery + 1) % maxqueryframes;
+    queryframes[flipquery].flip();
+}
+
+void Occluder::endquery()
+{
+    glEndQuery(querytarget());
+}
+
+bool Occluder::checkquery(occludequery *query, bool nowait)
+{
+    if(query->fragments < 0)
+    {
+        if(nowait || !oqwait)
+        {
+            GLint avail;
+            glGetQueryObjectiv(query->id, GL_QUERY_RESULT_AVAILABLE, &avail);
+            if(!avail)
+            {
+                return false;
+            }
+        }
+
+        GLuint fragments;
+        glGetQueryObjectuiv(query->id, GL_QUERY_RESULT, &fragments);
+        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
+    }
+    return query->fragments < oqfrags;
+}
+
+void Occluder::resetqueries()
+{
+    for(int i = 0; i < maxqueryframes; ++i)
+    {
+        queryframes[i].reset();
+    }
+}
+
+int Occluder::getnumqueries()
+{
+    return queryframes[flipquery].cur;
+}
+
+void Occluder::queryframe::flip()
+{
+    for(int i = 0; i < cur; ++i)
+    {
+        queries[i].owner = nullptr;
+    }
+    for(; defer > 0 && max < maxquery; defer--)
+    {
+        queries[max].owner = nullptr;
+        queries[max].fragments = -1;
+        glGenQueries(1, &queries[max++].id);
+    }
+    cur = defer = 0;
+}
+
+occludequery *Occluder::queryframe::newquery(void *owner)
+{
+    if(cur >= max)
+    {
+        if(max >= maxquery)
+        {
+            return nullptr;
+        }
+        if(deferquery)
+        {
+            if(max + defer < maxquery)
+            {
+                defer++;
+            }
+            return nullptr;
+        }
+        glGenQueries(1, &queries[max++].id);
+    }
+    occludequery *query = &queries[cur++];
+    query->owner = owner;
+    query->fragments = -1;
+    return query;
+}
+
+void Occluder::queryframe::reset()
+{
+    for(int i = 0; i < max; ++i)
+    {
+        queries[i].owner = nullptr;
+    }
+}
+
+void Occluder::queryframe::cleanup()
+{
+    for(int i = 0; i < max; ++i)
+    {
+        glDeleteQueries(1, &queries[i].id);
+        queries[i].owner = nullptr;
+    }
+    cur = max = defer = 0;
+}
+
+void occludequery::startquery() const
+{
+    glBeginQuery(querytarget(), this->id);
+}
+
 void rendermapmodels()
 {
     static int skipoq = 0;
@@ -2556,7 +2533,7 @@ void rendermapmodels()
                 if(!rendered)
                 {
                     rendered = true;
-                    oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : nullptr;
+                    oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? occlusionengine.newquery(oe) : nullptr;
                     if(oe->query)
                     {
                         oe->query->startmodelquery();
@@ -2579,7 +2556,7 @@ void rendermapmodels()
     {
         if(oe->distance<0)
         {
-            oe->query = doquery && !camera1->o.insidebb(oe->bbmin, oe->bbmax, 1) ? newquery(oe) : nullptr;
+            oe->query = doquery && !camera1->o.insidebb(oe->bbmin, oe->bbmax, 1) ? occlusionengine.newquery(oe) : nullptr;
             if(!oe->query)
             {
                 continue;
@@ -2591,7 +2568,7 @@ void rendermapmodels()
             }
             oe->query->startquery();
             drawbb(oe->bbmin, ivec(oe->bbmax).sub(oe->bbmin));
-            endquery();
+            occlusionengine.endquery();
         }
     }
     if(queried)
@@ -2725,7 +2702,7 @@ bool renderexplicitsky(bool outline)
 void cubeworld::cleanupva()
 {
     clearvas(worldroot);
-    clearqueries();
+    occlusionengine.clearqueries();
     cleanupbb();
     cleanupgrass();
 }
@@ -2879,9 +2856,10 @@ void rendergeom()
                         va->occluded = Occlude_Parent;
                         continue;
                     }
-                    va->occluded = va->query && va->query->owner == va &&
-                                       checkquery(va->query) ? std::min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
-                    va->query = newquery(va);
+                    va->occluded = va->query && va->query->owner == va && occlusionengine.checkquery(va->query) ?
+                                   std::min(va->occluded+1, static_cast<int>(Occlude_BB)) :
+                                   Occlude_Nothing;
+                    va->query = occlusionengine.newquery(va);
                     if(!va->query || !va->occluded)
                     {
                         va->occluded = Occlude_Nothing;
@@ -2974,7 +2952,7 @@ void rendergeom()
         {
             if(va->texs && va->occluded >= Occlude_Geom)
             {
-                if((va->parent && va->parent->occluded >= Occlude_BB) || (va->query && checkquery(va->query)))
+                if((va->parent && va->parent->occluded >= Occlude_BB) || (va->query && occlusionengine.checkquery(va->query)))
                 {
                     va->occluded = Occlude_BB;
                     continue;

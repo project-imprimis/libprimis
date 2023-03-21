@@ -2114,7 +2114,7 @@ void initoctaeditcmds()
     EDITSTAT(va, allocva);
     EDITSTAT(gldes, glde);
     EDITSTAT(geombatch, gbatches);
-    EDITSTAT(oq, getnumqueries());
+    EDITSTAT(oq, occlusionengine.getnumqueries());
 
     #undef EDITSTAT
 }

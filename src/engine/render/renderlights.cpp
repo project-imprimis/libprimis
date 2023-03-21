@@ -1044,7 +1044,7 @@ class lightinfo
 
         bool checkquery() const
         {
-            return query && query->owner == this && ::checkquery(query);
+            return query && query->owner == this && occlusionengine.checkquery(query);
         }
 
         void calcbb(vec &bbmin, vec &bbmax) const
@@ -2989,7 +2989,7 @@ void collectlights()
             l.calcbb(bbmin, bbmax);
             if(!camera1->o.insidebb(bbmin, bbmax, 2))
             {
-                l.query = newquery(&l);
+                l.query = occlusionengine.newquery(&l);
                 if(l.query)
                 {
                     if(!queried)
@@ -3001,7 +3001,7 @@ void collectlights()
                     ivec bo(bbmin),
                          br = ivec(bbmax).sub(bo).add(1);
                     drawbb(bo, br);
-                    endquery();
+                    occlusionengine.endquery();
                 }
             }
         }

@@ -33,6 +33,45 @@ class vfc
               vfcDfar[5];  //far plane culling
 };
 
+class Occluder
+{
+    public:
+        void clearqueries();
+        void flipqueries();
+        void endquery();
+        bool checkquery(occludequery *query, bool nowait = false);
+        void resetqueries();
+        int getnumqueries();
+        occludequery *newquery(void *owner)
+        {
+            return queryframes[flipquery].newquery(owner);
+        }
+    private:
+        class queryframe
+        {
+            public:
+                int cur;
+
+                queryframe() : cur(0), max(0), defer(0) {}
+
+                void flip();
+                occludequery *newquery(void *owner);
+                void reset();
+                void cleanup();
+            private:
+                static constexpr int maxquery = 2048;
+
+                int max, defer;
+                occludequery queries[maxquery];
+        };
+        static constexpr int maxqueryframes = 2;
+        std::array<queryframe, maxqueryframes> queryframes;
+        uint flipquery = 0;
+
+};
+
+extern Occluder occlusionengine;
+
 extern vfc view;
 
 extern int oqfrags;
@@ -53,11 +92,6 @@ extern bvec outlinecolor;
 
 extern int deferquery;
 extern void flipqueries();
-extern occludequery *newquery(void *owner);
-extern void endquery();
-extern bool checkquery(occludequery *query, bool nowait = false);
-extern void resetqueries();
-extern int getnumqueries();
 extern void startbb(bool mask = true);
 extern void endbb(bool mask = true);
 extern void drawbb(const ivec &bo, const ivec &br);

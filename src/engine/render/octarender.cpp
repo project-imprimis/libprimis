@@ -2533,7 +2533,7 @@ void cubeworld::allchanged(bool load)
         initlights();
     }
     clearvas(worldroot);
-    resetqueries();
+    occlusionengine.resetqueries();
     resetclipplanes();
     entitiesinoctanodes();
     tjoints.clear();

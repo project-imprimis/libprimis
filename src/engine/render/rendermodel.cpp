@@ -815,7 +815,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
         d->query = nullptr;
         return;
     }
-    d->query = newquery(d);
+    d->query = occlusionengine.newquery(d);
     if(!d->query)
     {
         return;
@@ -823,7 +823,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
     d->query->startquery();
     int br = static_cast<int>(radius*2)+1;
     drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
-    endquery();
+    occlusionengine.endquery();
 }
 
 static int cullmodel(const model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
@@ -840,7 +840,7 @@ static int cullmodel(const model *m, const vec &center, float radius, int flags,
     {
         return Model_CullOccluded;
     }
-    else if(flags&Model_CullQuery && d->query && d->query->owner==d && checkquery(d->query))
+    else if(flags&Model_CullQuery && d->query && d->query->owner==d && occlusionengine.checkquery(d->query))
     {
         return Model_CullQuery;
     }
@@ -1065,12 +1065,12 @@ void rendermodelbatches()
             }
             if(bm.flags&Model_CullQuery)
             {
-                bm.d->query = newquery(bm.d);
+                bm.d->query = occlusionengine.newquery(bm.d);
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
-                    endquery();
+                    occlusionengine.endquery();
                     continue;
                 }
             }
@@ -1138,12 +1138,12 @@ void rendertransparentmodelbatches(int stencil)
             }
             if(bm.flags&Model_CullQuery)
             {
-                bm.d->query = newquery(bm.d);
+                bm.d->query = occlusionengine.newquery(bm.d);
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
-                    endquery();
+                    occlusionengine.endquery();
                     continue;
                 }
             }
@@ -1199,7 +1199,7 @@ void endmodelquery()
         b.batched = j;
         b.m->endrender();
     }
-    endquery();
+    occlusionengine.endquery();
     modelquery = nullptr;
     batches.resize(modelquerybatches);
     batchedmodels.resize(modelquerymodels);
@@ -1372,7 +1372,7 @@ hasboundbox:
         aamask::enable();
         if(flags&Model_CullQuery)
         {
-            d->query = newquery(d);
+            d->query = occlusionengine.newquery(d);
             if(d->query)
             {
                 d->query->startquery();
@@ -1388,7 +1388,7 @@ hasboundbox:
         m->endrender();
         if(flags&Model_CullQuery && d->query)
         {
-            endquery();
+            occlusionengine.endquery();
         }
         aamask::disable();
         return;
