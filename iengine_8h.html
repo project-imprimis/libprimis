@@ -2704,9 +2704,9 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Adds program control commands to the cubescript interpreter. </p>
-<p><code>exec</code></p>
-<p><code>escape</code></p>
-<p><code>unescape</code></p>
+<p><code>exec</code> <em>string</em> file <em>int</em> msg</p>
+<p><code>escape</code> <em>string</em> str</p>
+<p><code>unescape</code> <em>string</em> str</p>
 <p><code>writecfg</code></p>
 <p><code>changedvars</code></p>
 <p><code>doargs</code></p>
@@ -3229,8 +3229,8 @@ false if the window was not previously shown or did not exist </dd></dl>
 <li>Adds a shader to the engine's catalog.<ul>
 <li><code>type</code> a bitmask describing the properties of the shader</li>
 <li><code>name</code> the name of the shader for calls from e.g. <code>useshaderbyname</code></li>
-<li><code>ps</code> the pixel shader</li>
 <li><code>vs</code> the vertex shader</li>
+<li><code>ps</code> the pixel shader</li>
 </ul>
 </li>
 </ul>
@@ -3283,12 +3283,18 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Adds string commands to the cubescript interpreter. </p>
-<p><code>echo</code> echoes the arguments passed directly to the console</p>
-<p><code>error</code></p>
-<p><code>strstr</code></p>
-<p><code>strlen</code> returns the length of the string passed</p>
-<p><code>strcode</code></p>
-<p><code>codestr</code></p>
+<p><code>echo</code> <em>commandstr</em> expression</p><ul>
+<li>echoes the parameter passed directly to the console</li>
+</ul>
+<p><code>error</code> <em>commandstr</em> expression</p><ul>
+<li>echos the parameter passed out as an error to the console</li>
+</ul>
+<p><code>strstr</code> <em>string</em> haystack <em>string</em> needle</p><ul>
+<li>finds the first instance of <em>needle</em> in the <em>haystack</em> string passed, returns int index, wrapper around std::strstr()</li>
+</ul>
+<p><code>strlen</code> <em>string</em></p><ul>
+<li>returns the length of the string passed as an int</li>
+</ul>
 <p><code>struni</code></p>
 <p><code>unistr</code></p>
 <p><code>strlower</code> converts the string to lowercase</p>
