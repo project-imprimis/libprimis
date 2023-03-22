@@ -1087,6 +1087,10 @@ class lightinfo
                 {
                     return vec2(sz1, sz2);
                 }
+                default:
+                {
+                    return vec2(0.f,0.f);
+                }
             }
         }
     private:
