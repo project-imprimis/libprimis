@@ -1216,25 +1216,6 @@ namespace
         nocolorshader->set();
         drawvatris(va, 3*numtris, offset);
     }
-//====================================================== STARTVAQUERY ENDVAQUERY
-    #define STARTVAQUERY(va, flush) \
-        do { \
-            if(va.query) \
-            { \
-                flush; \
-                va.query->startquery(); \
-            } \
-        } while(0)
-
-
-    #define ENDVAQUERY(va, flush) \
-        do { \
-            if(va.query) \
-            { \
-                flush; \
-                occlusionengine.endquery(); \
-            } \
-        } while(0)
 
     VAR(batchgeom, 0, 1, 1);
 
@@ -1247,14 +1228,25 @@ namespace
                 {
                     vverts += va.verts;
                 }
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
+                    if(geombatches.size())
+                    {
+                        cur.renderbatches(pass);
+                    }
+                    va.query->startquery();
                 }
                 mergetexs(cur, va);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
+                    if(va.query)
+                    {
+                        if(geombatches.size())
+                        {
+                            cur.renderbatches(pass);
+                        }
+                        occlusionengine.endquery();
+                    }
                 }
                 else if(!batchgeom && geombatches.size())
                 {
@@ -1263,14 +1255,25 @@ namespace
                 break;
 
             case RenderPass_GBufferBlend:
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
+                    if(geombatches.size())
+                    {
+                        cur.renderbatches(RenderPass_GBuffer);
+                    }
+                    va.query->startquery();
                 }
                 mergetexs(cur, va, &va.texelems[va.texs], 3*va.tris);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
+                    if(va.query)
+                    {
+                        if(geombatches.size())
+                        {
+                            cur.renderbatches(RenderPass_GBuffer);
+                        }
+                        occlusionengine.endquery();
+                    }
                 }
                 else if(!batchgeom && geombatches.size())
                 {
@@ -1292,14 +1295,14 @@ namespace
                 break;
 
             case RenderPass_Z:
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, );
+                    va.query->startquery();
                 }
                 cur.renderzpass(va);
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    ENDVAQUERY(va, );
+                    occlusionengine.endquery();
                 }
                 break;
 
@@ -1321,9 +1324,6 @@ namespace
         }
     }
 
-    #undef STARTVAQUERY
-    #undef ENDVAQUERY
-//==============================================================================
     void setupgeom()
     {
         glActiveTexture(GL_TEXTURE0);
