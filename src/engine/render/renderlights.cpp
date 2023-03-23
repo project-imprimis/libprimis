@@ -1158,8 +1158,6 @@ struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
     }
 };
 
-static constexpr int shadowcacheevict = 2;
-
 GLuint shadowatlastex = 0,
        shadowatlasfbo = 0;
 GLenum shadowatlastarget = GL_NONE;
@@ -1915,6 +1913,7 @@ void calctilesize()
 
 void resetlights()
 {
+    static constexpr int shadowcacheevict = 2;
     static int evictshadowcache = 0;
     shadowcache.reset();
     if(smcache)
