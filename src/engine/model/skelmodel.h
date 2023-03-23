@@ -356,8 +356,8 @@ struct skelmodel : animmodel
         int findpitchcorrect(int bone) const;
         void initpitchdeps();
         void optimize();
-        void expandbonemask(uchar *expansion, int bone, int val);
-        void applybonemask(ushort *mask, uchar *partmask, int partindex);
+        void expandbonemask(uchar *expansion, int bone, int val) const;
+        void applybonemask(const ushort *mask, uchar *partmask, int partindex) const;
         void linkchildren();
         int availgpubones() const;
         float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);

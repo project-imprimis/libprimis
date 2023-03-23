@@ -477,7 +477,7 @@ void skelmodel::skeleton::optimize()
     initpitchdeps();
 }
 
-void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val)
+void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val) const
 {
     expansion[bone] = val;
     bone = bones[bone].children;
@@ -488,7 +488,7 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val)
     }
 }
 
-void skelmodel::skeleton::applybonemask(ushort *mask, uchar *partmask, int partindex)
+void skelmodel::skeleton::applybonemask(const ushort *mask, uchar *partmask, int partindex) const
 {
     if(!mask || *mask==Bonemask_End)
     {
