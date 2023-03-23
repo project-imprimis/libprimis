@@ -308,7 +308,7 @@ struct skelmodel : animmodel
 
     struct skeleton
     {
-        char *name;
+        const char *name;
         int shared;
         std::vector<skelmeshgroup *> users;
         boneinfo *bones;
