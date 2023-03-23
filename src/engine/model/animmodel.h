@@ -48,11 +48,13 @@ class animmodel : public model
             vec color;
 
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
+            bool operator==(const shaderparams &other) const;
         };
+
 
         struct ShaderParamsKey
         {
-            static hashtable<shaderparams, ShaderParamsKey> keys;
+            static std::unordered_map<shaderparams, ShaderParamsKey> keys;
             static int firstversion, lastversion;
 
             int version;
@@ -139,11 +141,12 @@ class animmodel : public model
                         return;
                     }
                     smoothdata *smooth = new smoothdata[numverts];
-                    hashtable<vec, int> share;
+                    std::unordered_map<vec, int> share;
                     for(int i = 0; i < numverts; ++i)
                     {
                         V &v = verts[i];
-                        int &idx = share.access(v.pos, i);
+                        auto findidx = share.find(v.pos);
+                        int idx = (findidx == share.end()) ? i : findidx->second;
                         if(idx != i)
                         {
                             smooth[i].next = idx;
@@ -451,6 +454,7 @@ class animmodel : public model
         static int intersectresult, intersectmode;
         static float intersectdist, intersectscale;
 
+
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a);
         void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color);
 
@@ -572,8 +576,20 @@ class animmodel : public model
         static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
 };
 
-extern uint hthash(const animmodel::shaderparams &k);
-extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
+
+/* template specialization for std::hash<animmodel::shaderparams>
+ * needed to have shaderparams as keys for std::unordered_map
+ * TODO: clean up and refactor so that hthash is actually here
+ */ 
+template<>
+struct std::hash<animmodel::shaderparams>
+{
+    std::size_t operator()(animmodel::shaderparams const& s) const noexcept {
+        return memhash(&s, sizeof(s));;
+    }
+};
+
+
 
 /* modelloader
  *

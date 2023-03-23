@@ -491,13 +491,13 @@ void nummapmodels()
 
 // model registry
 
-hashnameset<model *> models;
+std::map<std::string, model *> models;
 std::vector<const char *> preloadmodels;
 hashset<char *> failedmodels;
 
 void preloadmodel(const char *name)
 {
-    if(!name || !name[0] || models.access(name) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
+    if(!name || !name[0] || models.find(name) == models.end() || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
     {
         return;
     }
@@ -633,11 +633,11 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         name = mmi.name;
     }
-    model **mm = models.access(name);
+    auto mm = models.find(name);
     model *m;
-    if(mm)
+    if(mm != models.end())
     {
-        m = *mm;
+        m = mm->second;
     }
     else
     {
@@ -674,7 +674,12 @@ model *loadmodel(const char *name, int i, bool msg)
             failedmodels.add(newstring(name));
             return nullptr;
         }
-        models.access(m->name, m);
+
+        auto mm = models.find(m->name);
+        if (mm == models.end())
+        {
+            models[m->name] = m;
+        }
     }
     if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
     {
@@ -685,22 +690,29 @@ model *loadmodel(const char *name, int i, bool msg)
 
 void clear_models()
 {
-    ENUMERATE(models, model *, m, delete m);
+    for(auto &[k, m] : models)
+    {
+        delete m;
+    }
 }
 
 void cleanupmodels()
 {
-    ENUMERATE(models, model *, m, m->cleanup());
+    for(auto &[k, m] : models) 
+    {
+        m->cleanup();
+    }
 }
 
 static void clearmodel(const char *name)
 {
-    model *m = models.find(name, nullptr);
-    if(!m)
+    auto search = models.find(name);
+    if(search == models.end())
     {
         conoutf("model %s is not loaded", name);
         return;
     }
+    model *m = search->second;
     for(uint i = 0; i < mapmodels.size(); i++)
     {
         mapmodelinfo &mmi = mapmodels[i];
@@ -713,7 +725,7 @@ static void clearmodel(const char *name)
             mmi.collide = nullptr;
         }
     }
-    models.remove(name);
+    models.erase(name);
     m->cleanup();
     delete m;
     conoutf("cleared model %s", name);

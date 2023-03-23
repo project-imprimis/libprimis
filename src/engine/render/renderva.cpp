@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "csm.h"
 #include "grass.h"
@@ -1761,7 +1760,7 @@ namespace
     } shadowverts;
     std::vector<ushort> shadowtris[6];
     std::vector<GLuint> shadowvbos;
-    hashtable<int, shadowmesh> shadowmeshes;
+    std::unordered_map<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
 
     struct shadowdrawinfo
@@ -3126,7 +3125,7 @@ void clearshadowmeshes()
         glDeleteBuffers(shadowvbos.size(), shadowvbos.data());
         shadowvbos.clear();
     }
-    if(shadowmeshes.numelems)
+    if(shadowmeshes.size())
     {
         std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < ents.size(); i++)
@@ -3166,8 +3165,9 @@ void genshadowmeshes()
 
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
-    shadowmesh *m = shadowmeshes.access(idx);
-    if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
+    auto mm = shadowmeshes.find(idx);
+    shadowmesh *m = (mm == shadowmeshes.end()) ? &mm->second : nullptr;
+    if(m == nullptr || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
     {
         return nullptr;
     }

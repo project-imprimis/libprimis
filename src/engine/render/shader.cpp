@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "octarender.h"
@@ -35,8 +34,8 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-static hashtable<const char *, int> localparams(256);
-static hashnameset<Shader> shaders(256);
+static std::map<std::string, int> localparams;
+static std::unordered_map<std::string, Shader> shaders;
 static Shader *slotshader = nullptr;
 static std::vector<SlotShaderParam> slotparams;
 static bool standardshaders = false,
@@ -83,8 +82,13 @@ void loadshaders()
 
 Shader *lookupshaderbyname(const char *name)
 {
-    Shader *s = shaders.access(name);
-    return s && s->loaded() ? s : nullptr;
+    auto ss = shaders.find(name);
+    if (ss == shaders.end())
+    {
+        return nullptr;
+    }
+    Shader *s = &ss->second;
+    return s->loaded() ? s : nullptr;
 }
 
 Shader *generateshader(const char *name, const char *fmt, ...)
@@ -331,7 +335,12 @@ static void linkglslprogram(Shader &s, bool msg = true)
 
 int getlocalparam(const char *name)
 {
-    return localparams.access(name, static_cast<int>(localparams.numelems));
+    auto findparam = localparams.find(name);
+    if (findparam == localparams.end())
+    {
+        localparams[name] = localparams.size();
+    }
+    return localparams[name];
 }
 
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
@@ -484,7 +493,7 @@ int GlobalShaderParamState::nextversion = 0;
 
 void GlobalShaderParamState::resetversions()
 {
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
         for(uint i = 0; i < s.globalparams.size(); i++)
         {
@@ -494,13 +503,13 @@ void GlobalShaderParamState::resetversions()
                 u.version = -2;
             }
         }
-    });
+    };
     nextversion = 0;
-    for(auto& [k, g] : globalparams)
+    for(auto &[k, g] : globalparams)
     {
         g.version = ++nextversion;
     }
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
         for(uint i = 0; i < s.globalparams.size(); i++)
         {
@@ -510,7 +519,7 @@ void GlobalShaderParamState::resetversions()
                 u.version = u.param->version;
             }
         }
-    });
+    }
 }
 
 static const float *findslotparam(const Slot &s, const char *name, const float *noval = nullptr)
@@ -1115,7 +1124,8 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
         glUseProgram(0);
         Shader::lastshader = nullptr;
     }
-    Shader *exists = shaders.access(name);
+    auto existsfind = shaders.find(name);
+    Shader *exists = (existsfind == shaders.end()) ? nullptr : &shaders[name];
     char *rname = exists ? exists->name : newstring(name);
     Shader &s = shaders[rname];
     s.name = rname;
@@ -1174,7 +1184,7 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
         s.cleanup(true);
         if(variant)
         {
-            shaders.remove(rname);
+            shaders.erase(rname);
         }
         return nullptr;
     }
@@ -1556,7 +1566,7 @@ VAR(defershaders, 0, 1, 1);
 
 void defershader(int *type, const char *name, const char *contents)
 {
-    Shader *exists = shaders.access(name);
+    Shader *exists = &shaders[name];
     if(exists && !exists->invalid())
     {
         return;
@@ -1613,13 +1623,13 @@ int Shader::uniformlocversion()
         return version;
     }
     version = 0;
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
         for(uint j = 0; j < s.uniformlocs.size(); j++)
         {
             s.uniformlocs[j].version = -1;
         }
-    });
+    }
     return version;
 }
 
@@ -1634,11 +1644,12 @@ int Shader::uniformlocversion()
  */
 Shader *useshaderbyname(const char *name)
 {
-    Shader *s = shaders.access(name);
-    if(!s)
+    auto shaderfind = shaders.find(name);
+    if(shaderfind == shaders.end())
     {
         return nullptr;
     }
+    Shader *s = &shaderfind->second;
     if(s->deferred())
     {
         s->force();
@@ -1744,17 +1755,17 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
 //==============================================================================
 
 
-void setshader(char *name)
+void setshader(const char *name)
 {
-    slotparams.size();
-    Shader *s = shaders.access(name);
-    if(!s)
+    slotparams.clear();
+    auto ss = shaders.find(name);
+    if(ss == shaders.end())
     {
         conoutf(Console_Error, "no such shader: %s", name);
     }
     else
     {
-        slotshader = s;
+        slotshader = &ss->second;
     }
 }
 
@@ -1762,7 +1773,7 @@ void setshader(char *name)
 void resetslotshader()
 {
     slotshader = nullptr;
-    slotparams.size();
+    slotparams.clear();
 }
 
 void setslotshader(Slot &s)
@@ -1918,7 +1929,10 @@ void cleanupshaders()
 
     loadedshaders = false;
     nullshader = hudshader = hudnotextureshader = nullptr;
-    ENUMERATE(shaders, Shader, s, s.cleanup());
+    for(auto &[k, s] : shaders) 
+    {
+        s.cleanup();
+    }
     Shader::lastshader = nullptr;
     glUseProgram(0);
 }
@@ -1929,7 +1943,7 @@ void reloadshaders()
     loadshaders();
     identflags |= Idf_Persist;
     linkslotshaders();
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
         if(!s.standard && s.loaded() && !s.variantshader)
         {
@@ -1954,7 +1968,7 @@ void reloadshaders()
         {
             s.force();
         }
-    });
+    }
 }
 
 void resetshaders()
