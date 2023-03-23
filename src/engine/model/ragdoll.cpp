@@ -196,7 +196,7 @@ void ragdolldata::calctris()
 {
     for(uint i = 0; i < skel->tris.size(); i++)
     {
-        ragdollskel::tri &t = skel->tris[i];
+        const ragdollskel::tri &t = skel->tris[i];
         matrix3 &m = tris[i];
         const vec &v1 = verts[t.vert[0]].pos,
                   &v2 = verts[t.vert[1]].pos,
@@ -279,7 +279,7 @@ void ragdolldata::constraindist()
     }
 }
 
-void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis)
+void ragdolldata::applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis)
 {
     vert &v1a = verts[t1.vert[0]],
          &v1b = verts[t1.vert[1]],
