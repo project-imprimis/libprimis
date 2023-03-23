@@ -370,9 +370,9 @@ struct skelmodel : animmodel
         void cleanup(bool full = true);
         bool canpreload() const;
         void preload();
-        skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
+        const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
         int getblendoffset(const UniformLoc &u);
-        void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
+        void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
         bool shouldcleanup() const;
 
         private:
@@ -446,7 +446,7 @@ struct skelmodel : animmodel
         }
 
         template<class T>
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -474,7 +474,7 @@ struct skelmodel : animmodel
             bindbones(vverts);
         }
 
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr);
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr) const ;
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();

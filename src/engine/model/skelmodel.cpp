@@ -850,7 +850,7 @@ void skelmodel::skeleton::preload()
     }
 }
 
-skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
+const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
     if(skelcache.empty())
     {
@@ -940,7 +940,7 @@ void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, 
     u.data = bc.bdata;
 }
 
-void skelmodel::skeleton::setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count)
+void skelmodel::skeleton::setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count)
 {
     if(!Shader::lastshader)
     {
@@ -1131,7 +1131,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         return;
     }
 
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
+    const skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
@@ -1529,7 +1529,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return std::max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc, blendcacheentry *bc) const
 {
     if(!skel->numframes)
     {
@@ -1681,7 +1681,7 @@ void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const
     {
         skel->cleanup();
     }
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
+    const skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     intersect(hitdata, p, sc, o, ray);
     skel->calctags(p, &sc);
 }
