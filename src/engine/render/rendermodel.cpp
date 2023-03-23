@@ -329,41 +329,49 @@ static void mdlname()
     result(loadingmodel->name);
 }
 
-//========================================================= CHECK_RAGDOLL
-#define CHECK_RAGDOLL \
-    if(!checkmdl()) \
-    { \
-        return; \
-    } \
-    if(!loadingmodel->skeletal()) \
-    { \
-        conoutf(Console_Error, "not loading a skeletal model"); \
-        return; \
-    } \
-    skelmodel *m = static_cast<skelmodel *>(loadingmodel); \
-    if(m->parts.empty()) \
-    { \
-        return; \
-    } \
-    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes); \
-    if(!meshes) \
-    { \
-        return; \
-    } \
-    skelmodel::skeleton *skel = meshes->skel; \
-    if(!skel->ragdoll) \
-    { \
-        skel->ragdoll = new ragdollskel; \
-    } \
-    ragdollskel *ragdoll = skel->ragdoll; \
-    if(ragdoll->loaded) \
-    { \
-        return; \
+// if a skeletal model is being loaded, and meets the criteria for a ragdoll,
+// returns the pointer to that ragdollskel (new one made if necessary), returns nullptr otherwise
+static ragdollskel *checkragdoll()
+{
+    if(!checkmdl())
+    {
+        return nullptr;
     }
+    if(!loadingmodel->skeletal())
+    {
+        conoutf(Console_Error, "not loading a skeletal model");
+        return nullptr;
+    }
+    skelmodel *m = static_cast<skelmodel *>(loadingmodel);
+    if(m->parts.empty())
+    {
+        return nullptr;
+    }
+    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+    if(!meshes)
+    {
+        return nullptr;
+    }
+    skelmodel::skeleton *skel = meshes->skel;
+    if(!skel->ragdoll)
+    {
+        skel->ragdoll = new ragdollskel;
+    }
+    ragdollskel *ragdoll = skel->ragdoll;
+    if(ragdoll->loaded)
+    {
+        return nullptr;
+    }
+    return ragdoll;
+}
 
 static void rdvert(float *x, float *y, float *z, float *radius)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::vert v;
     v.pos = vec(*x, *y, *z);
     v.radius = *radius > 0 ? *radius : 1;
@@ -375,13 +383,21 @@ static void rdvert(float *x, float *y, float *z, float *radius)
  */
 static void rdeye(int *v)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdoll->eye = *v;
 }
 
 static void rdtri(int *v1, int *v2, int *v3)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::tri t;
     t.vert[0] = *v1;
     t.vert[1] = *v2;
@@ -391,7 +407,14 @@ static void rdtri(int *v1, int *v2, int *v3)
 
 static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
+    const skelmodel *m = static_cast<skelmodel *>(loadingmodel);
+    const skelmodel::skelmeshgroup *meshes = static_cast<const skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+    const skelmodel::skeleton *skel = meshes->skel;
     if(*n < 0 || *n >= skel->numbones)
     {
         return;
@@ -407,7 +430,11 @@ static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 
 static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::distlimit d;
     d.vert[0] = *v1;
     d.vert[1] = *v2;
@@ -418,7 +445,11 @@ static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 
 static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::rotlimit r;
     r.tri[0] = *t1;
     r.tri[1] = *t2;
@@ -430,12 +461,14 @@ static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, 
 
 static void rdanimjoints(int *on)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdoll->animjoints = *on!=0;
 }
 
-#undef CHECK_RAGDOLL
-//==============================================================================
 // mapmodels
 
 std::vector<mapmodelinfo> mapmodels;
