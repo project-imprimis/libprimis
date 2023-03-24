@@ -189,11 +189,11 @@ static int getint(const identval &v, int type)
     {
         case Value_Float:
         {
-            return int(v.f);
+            return static_cast<int>(v.f);
         }
         case Value_Integer:
         {
-            return int(v.i);
+            return static_cast<int>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -203,7 +203,7 @@ static int getint(const identval &v, int type)
         }
         default:
         {
-            return int(0);
+            return 0;
         }
     }
 }
@@ -224,11 +224,11 @@ float getfloat(const identval &v, int type)
     {
         case Value_Float:
         {
-            return float(v.f);
+            return static_cast<float>(v.f);
         }
         case Value_Integer:
         {
-            return float(v.i);
+            return static_cast<float>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -238,7 +238,7 @@ float getfloat(const identval &v, int type)
         }
         default:
         {
-            return float(0);
+            return 0.f;
         }
     }
 }
@@ -259,11 +259,11 @@ static double getnumber(const identval &v, int type)
     {
         case Value_Float:
         {
-            return double(v.f);
+            return static_cast<double>(v.f);
         }
         case Value_Integer:
         {
-            return double(v.i);
+            return static_cast<double>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -273,7 +273,7 @@ static double getnumber(const identval &v, int type)
         }
         default:
         {
-            return double(0);
+            return 0.d;
         }
     }
 }
