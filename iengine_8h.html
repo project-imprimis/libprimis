@@ -2806,8 +2806,19 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes HUD cubescript commands. </p>
-<p><code>loadcrosshair</code></p>
-<p><code>getcrosshair</code> </p>
+<p><code>loadcrosshair</code> <em>string</em> file <em>int</em> index</p><ul>
+<li>Loads the crosshair file at the specified location into the crosshair manager at the specified index.<ul>
+<li>file the file where the crosshair image is located</li>
+<li>index the index to alias the crosshair to</li>
+</ul>
+</li>
+</ul>
+<p><code>getcrosshair</code> <em>int</em> index</p><ul>
+<li>Returns the path to the crosshair aliased by <em>index</em>.<ul>
+<li><code>index</code> the crosshair index to query </li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
@@ -2847,7 +2858,13 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes normal.cpp cubescript commands. </p>
-<p><code>smoothangle</code> </p>
+<p><code>smoothangle</code> <em>int</em> id <em>int</em> angle</p><ul>
+<li>Returns id, unless id is negative or larger than the maximum number of smoothgroups.<ul>
+<li>id the id to query</li>
+<li>the angle to set the smoothgroup at id's location </li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
@@ -3181,9 +3198,15 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes renderwindow Cubescript commands. </p>
-<p><code>getfps</code></p>
-<p><code>resetgl</code></p>
-<p><code>screenres</code> </p>
+<p><code>getfps</code> <em>bool</em> raw</p><ul>
+<li>Returns an integer number of frames rendered per second. If <em>raw</em> is true, returns a float instead.</li>
+</ul>
+<p><code>resetgl</code> <em>null</em></p><ul>
+<li>Resets the OpenGL environment, including textures, shaders, and fonts.</li>
+</ul>
+<p><code>screenres</code> <em>int</em> width <em>int</em> height</p><ul>
+<li>Sets the screen resolution to <em>width</em> by <em>height</em> </li>
+</ul>
 
 </div>
 </div>
@@ -3360,23 +3383,129 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes texture Cubescript commands. </p>
-<p><code>texturereset</code></p>
-<p><code>materialreset</code></p>
-<p><code>decalreset</code></p>
-<p><code>compactvslots</code></p>
-<p><code>texture</code></p>
-<p><code>texgrass</code></p>
-<p><code>texscroll</code></p>
-<p><code>texoffset</code></p>
-<p><code>texrotate</code></p>
-<p><code>texangle</code></p>
-<p><code>texalpha</code></p>
-<p><code>texcolor</code></p>
-<p><code>texrefract</code></p>
-<p><code>texsmooth</code></p>
-<p><code>decaldepth</code></p>
-<p><code>reloadtex</code></p>
-<p><code>screenshot</code> </p>
+<p><code>texturereset</code> <em>int</em> max</p><ul>
+<li>Resets the v-slot list.<ul>
+<li><code>max</code> the maximum number of slots to retain.</li>
+</ul>
+</li>
+</ul>
+<p><code>materialreset</code> <em>null</em></p><ul>
+<li>Resets the octree materials.</li>
+</ul>
+<p><code>decalreset</code> <em>int</em> max</p><ul>
+<li>Resets the decals list.<ul>
+<li><code>max</code> the maximum number of decals to retain.</li>
+</ul>
+</li>
+</ul>
+<p><code>compactvslots</code> <em>int</em> max</p><ul>
+<li>Removes unnecessary v-slots.<ul>
+<li><code>max</code> the maximum number of slots to retain.</li>
+</ul>
+</li>
+</ul>
+<h4><a class="anchor" id="autotoc_md0"></a>
+The below tex* commands all require there to be a currently selected vslot. They will silently fail otherwise.</h4>
+<p><code>texture</code> <em>string</em> type <em>string</em> name <em>int</em> rot <em>int</em> xoffset <em>int</em> yoffset <em>float</em> scale</p><ul>
+<li>Loads a single texture file<ul>
+<li><code>type</code> the type of texture file being loaded:<ul>
+<li><code>0</code> diffuse</li>
+<li><code>1</code> unknown tex</li>
+<li><code>c</code> diffuse</li>
+<li><code>u</code> unknown tex</li>
+<li><code>n</code> normal map</li>
+<li><code>g</code> glow map</li>
+<li><code>s</code> specular map</li>
+<li><code>z</code> depth map</li>
+<li><code>a</code> alpha map</li>
+</ul>
+</li>
+<li><code>name</code> the path to the texture files</li>
+<li><code>rot</code> the rotation value of the texture (see texrotate)</li>
+<li><code>xoffset</code> the x-offset of the texture (see texoffset)</li>
+<li><code>yoffset</code> the y-offset of the texture (see texoffset)</li>
+<li><code>scale</code> the scale factor for the texture on the world</li>
+</ul>
+</li>
+</ul>
+<p><code>texgrass</code> <em>string</em> name</p><ul>
+<li>Applies grass with the specified texture.</li>
+</ul>
+<p><code>texscroll</code> <em>float</em> x <em>float</em> y</p><ul>
+<li>Causes the texture to scroll by the amount specified in each axis</li>
+</ul>
+<p><code>texoffset</code> <em>int</em> x <em>int</em> y</p><ul>
+<li>Translates the texture by the specified number of pixels.</li>
+</ul>
+<p><code>texrotate</code> <em>int</em> xform</p><ul>
+<li>Transforms the texture by rotation, flipping, or transposition.<ul>
+<li><code>xform</code> the transform code:<ul>
+<li><code>0</code> no transform</li>
+<li><code>1</code> 90 degrees</li>
+<li><code>2</code> 180 degrees</li>
+<li><code>3</code> 270 degrees CW</li>
+<li><code>4</code> flip, X axis</li>
+<li><code>5</code> flip, Y axis</li>
+<li><code>6</code> transpose</li>
+<li><code>7</code> flipped transpose</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><code>texangle</code> <em>float</em> angle</p><ul>
+<li>Sets the texture's rotation angle.<ul>
+<li><code>angle</code> the angle in degrees to rotate the texture</li>
+</ul>
+</li>
+</ul>
+<p><code>texalpha</code> <em>float</em> front <em>float</em> back</p><ul>
+<li>Sets the front-side and back-side alpha intensity of the texture.</li>
+<li>Both parameters will be clamped from 0 to 1.<ul>
+<li><code>front</code> the opacity of a texture viewed from the front</li>
+<li><code>back</code> the opacity of a texture viewed from the back</li>
+</ul>
+</li>
+</ul>
+<p><code>texcolor</code> <em>float</em> red <em>float</em> green <em>float</em> blue</p><ul>
+<li>Sets the alpha properties of the material.</li>
+<li>All three parameters will be clamped from 0 to 2.<ul>
+<li><code>red</code> the intensity of the red channel</li>
+<li><code>green</code> the intensity of the green channel</li>
+<li><code>blue</code> the intensity of the blue channel</li>
+</ul>
+</li>
+</ul>
+<p><code>texrefract</code> <em>float</em> k <em>float</em> red <em>float</em> green <em>float</em> blue</p><ul>
+<li>Sets the refractive properties of the texture (alpha mat only)</li>
+<li>All four parameters will be clamped from 0 to 1.<ul>
+<li><code>k</code> the refractive index</li>
+<li><code>red</code> the intensity of the red channel</li>
+<li><code>green</code> the intensity of the green channel</li>
+<li><code>blue</code> the intensity of the blue channel</li>
+</ul>
+</li>
+</ul>
+<p><code>texsmooth</code> <em>int</em> id <em>bool</em> angle</p><ul>
+<li>Sets the lerp smooth angle for the texture.<ul>
+<li><code>id</code> the id of the smoothgroup</li>
+<li><code>angle</code> the angle to lerp at</li>
+</ul>
+</li>
+</ul>
+<p><code>decaldepth</code> <em>float</em> depth <em>float</em> fade</p><ul>
+<li>Attempts to set the decal depth of the current decal. Silently fails to do anything if this is not possible.<ul>
+<li><code>depth</code> the depth to set the decal</li>
+<li><code>fade</code> the fade intensity of the decal</li>
+</ul>
+</li>
+</ul>
+<p><code>reloadtex</code> <em>string</em> name</p><ul>
+<li>Attempts to reload the texture with the given name. Prints an error message if this is not successful.</li>
+</ul>
+<p><code>screenshot</code> <em>string</em> filename</p><ul>
+<li>Prints a PNG screenshot to the file name indicated. If no file is specified, an automatically generated one is created. </li>
+</ul>
 
 </div>
 </div>

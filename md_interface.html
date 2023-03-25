@@ -116,9 +116,9 @@ $(document).ready(function(){initNavTree('md_interface.html',''); initResizable(
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><b>Note that this is a draft and subject to expansion and modification.</b></p>
-<h1><a class="anchor" id="autotoc_md210"></a>
+<h1><a class="anchor" id="autotoc_md211"></a>
 1. Usage</h1>
-<h2><a class="anchor" id="autotoc_md211"></a>
+<h2><a class="anchor" id="autotoc_md212"></a>
 1.1 What is an interface</h2>
 <p>An interface describes the behavior and capabilities of the game and its engine. They allow for a structured self-documenting object-oriented codebase with more predictable behaviors and outputs.</p>
 <p>In C++, interfaces are declared in a header file (.h) and defined in a source code file (.cpp).</p>
@@ -165,7 +165,7 @@ $(document).ready(function(){initNavTree('md_interface.html',''); initResizable(
 <div class="line">        <span class="keywordflow">return</span> e;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md212"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md213"></a>
 1.2 Augmenting an interface</h2>
 <p>To augment an interface, you need to understand the following:</p>
 <ul>
@@ -176,17 +176,17 @@ $(document).ready(function(){initNavTree('md_interface.html',''); initResizable(
 <p>To give an example, let's say you want to <code>Set</code> a <code>Player</code>'s <code>Weapon</code>.</p>
 <p>As the target of our method is a <code>Player</code> object, we will be placing it inside a <code>Player</code> interface with the prefix <code>Set</code> and the suffix <code>Weapon</code>.</p>
 <p>This logic helps keep the codebase self-documenting and the interfaces predictable. You will then be calling <code>PlayerObject::set_weapon("pistol");</code> to access the method.</p>
-<h1><a class="anchor" id="autotoc_md213"></a>
+<h1><a class="anchor" id="autotoc_md214"></a>
 2. Standard Interfaces</h1>
 <p>Standard interfaces are hard-coded in C++ and define the engine's capabilities.</p>
-<h2><a class="anchor" id="autotoc_md214"></a>
+<h2><a class="anchor" id="autotoc_md215"></a>
 2.1 Game</h2>
 <p>The <code>Game</code> interface keeps track of gameplay elements, such as players, weapons, projectiles as well as their states, properties and methods.</p>
-<h3><a class="anchor" id="autotoc_md215"></a>
-2.1.1 Player</h3>
 <h3><a class="anchor" id="autotoc_md216"></a>
-2.1.2 Weapon</h3>
+2.1.1 Player</h3>
 <h3><a class="anchor" id="autotoc_md217"></a>
+2.1.2 Weapon</h3>
+<h3><a class="anchor" id="autotoc_md218"></a>
 2.1.3 Projectile</h3>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
