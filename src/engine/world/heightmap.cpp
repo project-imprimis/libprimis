@@ -56,7 +56,10 @@ class hmap
 
         void clearhbrush()
         {
-            std::memset(brush, 0, sizeof brush);
+            for(auto &i : brush)
+            {
+                i.fill(0);
+            }
             brushmaxx = brushmaxy = 0;
             brushminx = brushminy = maxbrush;
             paintbrush = false;
@@ -153,7 +156,7 @@ class hmap
                              maxbrushc = 63,
                              maxbrush2 = 32;
 
-        int brush[maxbrush][maxbrush]; //2d array of heights for heightmap brushs
+        std::array<std::array<int, maxbrush>, maxbrush> brush;//2d array of heights for heightmap brushs
         int brushx = variable("hbrushx", 0, maxbrush2, maxbrush, &brushx, nullptr, 0); //max width for a brush
         int brushy = variable("hbrushy", 0, maxbrush2, maxbrush, &brushy, nullptr, 0); //max length for a brush
         bool paintbrush = 0;
