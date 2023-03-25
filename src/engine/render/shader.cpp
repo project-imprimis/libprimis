@@ -1058,7 +1058,7 @@ void GlobalShaderParamUse::flush()
     version = param->version;
 }
 
-static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
+static void genattriblocs(Shader &s, const char *vs, const Shader *reusevs)
 {
     static int len = std::strlen("//:attrib");
     string name;
@@ -1081,7 +1081,7 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
+static void genuniformlocs(Shader &s, const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
