@@ -273,7 +273,7 @@ static double getnumber(const identval &v, int type)
         }
         default:
         {
-            return 0.d;
+            return 0.0;
         }
     }
 }
