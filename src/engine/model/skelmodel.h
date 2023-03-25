@@ -415,7 +415,7 @@ struct skelmodel : animmodel
 
         skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr), hitdata(nullptr)
         {
-            memset(numblends, 0, sizeof(numblends));
+            std::memset(numblends, 0, sizeof(numblends));
         }
 
         virtual ~skelmeshgroup();
