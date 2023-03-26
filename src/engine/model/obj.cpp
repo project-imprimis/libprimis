@@ -110,7 +110,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
             }
             case 'g':
             {
-                while(isalpha(*c))
+                while(std::isalpha(*c))
                 {
                     c++;
                 }
@@ -149,7 +149,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 }
                 int v0 = -1,
                     v1 = -1;
-                while(isalpha(*c))
+                while(std::isalpha(*c))
                 {
                     c++;
                 }
@@ -234,7 +234,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
 {
     out.emplace_back(vec(0, 0, 0));
     vec &v = out.back();
-    while(isalpha(*s))
+    while(std::isalpha(*s))
     {
         s++;
     }
