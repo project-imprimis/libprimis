@@ -1091,7 +1091,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
                     *end = matbuf+matsurfs;
     while(cur < end)
     {
-         materialsurface *start = cur++;
+         const materialsurface *start = cur++;
          int dim = DIMENSION(start->orient);
          while(cur < end &&
                cur->material == start->material &&
