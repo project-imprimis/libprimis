@@ -572,7 +572,7 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
         r = R[dim];
     for(int k = 0; k < p.numverts; ++k)
     {
-        pvert &src = p.verts[coord ? k : p.numverts-1-k];
+        const pvert &src = p.verts[coord ? k : p.numverts-1-k];
         vertinfo &dst = verts[k];
         ivec v;
         v[c] = src.x;
