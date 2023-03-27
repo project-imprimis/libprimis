@@ -219,7 +219,7 @@ class hmap
             return c;
         }
 
-        uint getface(cube *c, int d)
+        uint getface(const cube *c, int d) const
         {
             return  0x0f0f0f0f & ((dc ? c->faces[d] : 0x88888888 - c->faces[d]) >> fs);
         }
