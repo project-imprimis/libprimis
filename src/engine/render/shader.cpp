@@ -1853,9 +1853,8 @@ bool shouldreuseparams(const Slot &s, const VSlot &p)
         return false;
     }
     const Shader &sh = *s.shader;
-    for(uint i = 0; i < sh.defaultparams.size(); i++)
+    for(const SlotShaderParamState &param : sh.defaultparams)
     {
-        const SlotShaderParamState &param = sh.defaultparams[i];
         if(param.flags & SlotShaderParam::REUSE)
         {
             const float *val = findslotparam(p, param.name);
@@ -1939,9 +1938,8 @@ void reloadshaders()
             {
                 s.cleanup(true);
             }
-            for(uint i = 0; i < s.variants.size(); i++)
+            for(Shader *&v : s.variants)
             {
-                Shader *v = s.variants[i];
                 if((v->reusevs && v->reusevs->invalid()) ||
                    (v->reuseps && v->reuseps->invalid()) ||
                    !v->compile())
