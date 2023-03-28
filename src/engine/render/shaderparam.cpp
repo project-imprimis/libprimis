@@ -29,17 +29,17 @@ GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullp
 GlobalShaderParamState *GlobalShaderParam::getglobalparam(const char *name) const
 {
     auto itr = globalparams.find(name);
-    if(itr == globalparams.end())
+    if(itr != globalparams.end())
+    {
+        return &((*itr).second);
+    }
+    else
     {
         GlobalShaderParamState * param = &globalparams[name];
         param->name = name;
         std::memset(param->buf, -1, sizeof(param->buf));
         param->version = -1;
         return param;
-    }
-    else
-    {
-        return &((*itr).second);
     }
 }
 
