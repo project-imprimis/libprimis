@@ -92,7 +92,7 @@ LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)
 
 const LocalShaderParamState *LocalShaderParam::resolve() const
 {
-    Shader *s = Shader::lastshader;
+    const Shader *s = Shader::lastshader;
     if(!s)
     {
         return nullptr;
