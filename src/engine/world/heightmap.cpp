@@ -46,7 +46,7 @@ class hmap
             }
         }
 
-        bool isheightmap(int o, bool empty, const cube &c)
+        bool isheightmap(int o, bool empty, const cube &c) const
         {
             return havesel ||
                 (empty && c.isempty()) ||

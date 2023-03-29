@@ -179,9 +179,8 @@ int finddynlights()
     }
     physent e;
     e.type = physent::PhysEnt_Camera;
-    for(uint j = 0; j < dynlights.size(); j++)
+    for(dynlight &d : dynlights)
     {
-        dynlight &d = dynlights[j];
         if(d.curradius <= 0)
         {
             continue;
