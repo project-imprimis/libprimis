@@ -2438,9 +2438,9 @@ bool Occluder::checkquery(occludequery *query, bool nowait)
 
 void Occluder::resetqueries()
 {
-    for(int i = 0; i < maxqueryframes; ++i)
+    for(queryframe &i : queryframes)
     {
-        queryframes[i].reset();
+        i.reset();
     }
 }
 
