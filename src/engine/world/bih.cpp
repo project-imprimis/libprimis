@@ -759,9 +759,40 @@ static bool testaxis(const vec& v0, const vec& v1, const vec& v2, const vec& e, 
     return true;
 }
 
-//===================================================================== TESTFACE
 static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
+    auto testface = [] (const vec &a,  const vec &b,  const vec &c,
+                        const vec &ab, const vec &bc, const vec &ca,
+                        uint axis, const vec &radius)
+    {
+        if(a.v[axis] < b.v[axis])
+        {
+            if(b.v[axis] < c.v[axis])
+            {
+                if(c.v[axis] < -radius.v[axis] || a.v[axis] > radius.v[axis])
+                {
+                    return false;
+                }
+            }
+            else if(b.v[axis] < -radius.v[axis] || std::min(a.v[axis], c.v[axis]) > radius.v[axis])
+            {
+                return false;
+            }
+        }
+        else if(a.v[axis] < c.v[axis])
+        {
+            if(c.v[axis] < -radius.v[axis] || b.v[axis] > radius.v[axis])
+            {
+                return false;
+            }
+        }
+        else if(a.v[axis] < -radius.v[axis] || std::min(b.v[axis], c.v[axis]) > radius.v[axis])
+        {
+            return false;
+        }
+        return true;
+    };
+
     vec ab = vec(b).sub(a),
         bc = vec(c).sub(b),
         ca = vec(a).sub(c);
@@ -778,41 +809,21 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
     if(!testaxis(c, a, b, ca, 0, 2, radius)) {return false;};
     if(!testaxis(c, a, b, ca, 1, 0, radius)) {return false;};
 
-    #define TESTFACE(w) { \
-        if(a.w < b.w) \
-        { \
-            if(b.w < c.w) \
-            { \
-                if(c.w < -radius.w || a.w > radius.w) \
-                { \
-                    return false; \
-                } \
-            } \
-            else if(b.w < -radius.w || std::min(a.w, c.w) > radius.w) \
-            { \
-                return false; \
-            } \
-        } \
-        else if(a.w < c.w) \
-        { \
-            if(c.w < -radius.w || b.w > radius.w) \
-            { \
-                return false; \
-            } \
-        } \
-        else if(a.w < -radius.w || std::min(b.w, c.w) > radius.w) \
-        { \
-            return false; \
-        } \
+    if(!testface(a, b, c, ab, bc, ca, 0, radius)) //x
+    {
+        return false;
     }
-
-    TESTFACE(x);
-    TESTFACE(y);
-    TESTFACE(z);
+    else if(!testface(a, b, c, ab, bc, ca, 1, radius)) //y
+    {
+        return false;
+    }
+    else if(!testface(a, b, c, ab, bc, ca, 2, radius)) //z
+    {
+        return false;
+    }
     return true;
 }
-#undef TESTFACE
-//==============================================================================
+
 //used in the tricollide templates below
 //returns true if physent is a player and passed vec is close enough to matter (determined by radius,pdist)
 bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec radius)
