@@ -764,11 +764,9 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
         return true;
     };
 
-static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
-{
-    auto testface = [] (const vec &a,  const vec &b,  const vec &c,
-                        const vec &ab, const vec &bc, const vec &ca,
-                        uint axis, const vec &radius)
+    static auto testface = [] (const vec &a,  const vec &b,  const vec &c,
+                               const vec &ab, const vec &bc, const vec &ca,
+                               uint axis, const vec &radius)
     {
         if(a.v[axis] < b.v[axis])
         {
