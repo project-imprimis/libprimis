@@ -740,24 +740,29 @@ static float trisegmentdistance(const vec &a, const vec &b, const vec &c, const 
     return 0; // segment intersects triangle
 }
 
-static bool testaxis(const vec& v0, const vec& v1, const vec& v2, const vec& e, const int& s, const int& t, const vec& radius)
+static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
-    float p = v0[s]*v1[t] - v0[t]*v1[s],
-          q = v2[s]*e[t] - v2[t]*e[s],
-          r = radius[s]*std::fabs(e[t]) + radius[t]*std::fabs(e[s]);
-    if(p < q)
+
+    static auto testaxis = [] (const vec &v0, const vec &v1, const vec &v2,
+                               const vec &e, const int &s, const int &t,
+                               const vec &radius)
     {
-        if(q < -r || p > r)
+        float p = v0[s]*v1[t] - v0[t]*v1[s],
+              q = v2[s]*e[t] - v2[t]*e[s],
+              r = radius[s]*std::fabs(e[t]) + radius[t]*std::fabs(e[s]);
+        if(p < q)
+        {
+            if(q < -r || p > r)
+            {
+                return false;
+            }
+        }
+        else if(p < -r || q > r)
         {
             return false;
         }
-    }
-    else if(p < -r || q > r)
-    {
-        return false;
-    }
-    return true;
-}
+        return true;
+    };
 
 static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
