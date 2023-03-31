@@ -2301,7 +2301,7 @@ int vfc::isvisiblebb(const ivec &bo, const ivec &br) const
     return v;
 }
 
-bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
+bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
 {
     int diff = (bo.x^br.x) | (bo.y^br.y) | (bo.z^br.z);
     if(diff&~((1<<worldscale)-1))
