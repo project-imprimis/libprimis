@@ -230,12 +230,11 @@ void skelmodel::skeleton::remapbones()
         info.ragdollindex = -1;
     }
     numgpubones = 0;
-    for(uint i = 0; i < users.size(); i++)
+    //for each blendcombo in each skelmeshgroup
+    for(skelmeshgroup *&group : users)
     {
-        skelmeshgroup *group = users[i];
-        for(uint j = 0; j < group->blendcombos.size(); j++) //loop j
+        for(blendcombo &c : group->blendcombos)
         {
-            blendcombo &c = group->blendcombos[j];
             for(int k = 0; k < 4; ++k) //loop k
             {
                 if(!c.weights[k])
