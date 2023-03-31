@@ -136,7 +136,7 @@ class skelzonebounds
 
 bool htcmp(const skelzonekey &x, const skelhitdata::skelzoneinfo &y)
 {
-    return !std::memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
+    return !std::memcmp(x.bones.data(), y.key.bones.data(), sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
 }
 
 uint hthash(const skelzonekey &k)
@@ -146,7 +146,7 @@ uint hthash(const skelzonekey &k)
         uint i[3];
         uchar b[12];
     } conv;
-    std::memcpy(conv.b, k.bones, sizeof(conv.b));
+    std::memcpy(conv.b, k.bones.data(), sizeof(conv.b));
     return conv.i[0]^conv.i[1]^conv.i[2];
 }
 
@@ -645,7 +645,7 @@ bool skelhitzone::shellintersect(const vec &o, const vec &ray)
 
 skelzonekey::skelzonekey() : blend(-1)
 {
-    std::memset(bones, 0xFF, sizeof(bones));
+    bones.fill(0xFF);
 }
 
 skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
@@ -656,7 +656,7 @@ skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
 
 skelzonekey::skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
 {
-    std::memset(bones, 0xFF, sizeof(bones));
+    bones.fill(0xFF);
     addbones(m, t);
 }
 

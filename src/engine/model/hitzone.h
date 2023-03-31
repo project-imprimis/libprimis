@@ -19,7 +19,7 @@ class skelzonekey
         void subtract(const skelzonekey &o);
 
         int blend;
-        uchar bones[12];
+        std::array<uchar, 12> bones;
 
     private:
         bool hasbone(int n);
