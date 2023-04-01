@@ -2313,7 +2313,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
     {
         return ::bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
     }
-    cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+    const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
     {
         vtxarray *va = c->ext->va;
