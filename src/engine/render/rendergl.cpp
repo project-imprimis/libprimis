@@ -1146,7 +1146,7 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
     int csize;
     do
     {
-        cube &c = rootworld.lookupcube(o, 0, co, csize);
+        const cube &c = rootworld.lookupcube(o, 0, co, csize);
         int mat = c.material&MatFlag_Volume;
         if(mat != fogmat)
         {
