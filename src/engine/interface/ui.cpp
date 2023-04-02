@@ -4128,7 +4128,7 @@ namespace UI
             anim = Anim_All;
             if(animspec[0])
             {
-                if(isdigit(animspec[0]))
+                if(std::isdigit(animspec[0]))
                 {
                     anim = parseint(animspec);
                     if(anim >= 0)
