@@ -424,8 +424,6 @@ void clearlightcache(int id)
     }
 }
 
-static uint lightprogress = 0;
-
 static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
 {
     surfaceinfo surfaces[6];
@@ -609,8 +607,6 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
 
 static void calcsurfaces(cube *c, const ivec &co, int size)
 {
-    lightprogress++;
-
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
@@ -647,7 +643,6 @@ void cubeworld::calclight()
 {
     remip();
     clearsurfaces(worldroot);
-    lightprogress = 0;
     calcnormals(filltjoints > 0);
     calcsurfaces(worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
     clearnormals();
