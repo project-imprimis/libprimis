@@ -695,8 +695,6 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
     addmerges(orient, n, offset, polys);
 }
 
-static int genmergeprogress = 0;
-
 bool htcmp(const cube::cfkey &x, const cube::cfkey &y)
 {
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
@@ -770,6 +768,5 @@ void cube::genmerges(cube * root, const ivec &o, int size)
 
 void cube::calcmerges(cube * root)
 {
-    genmergeprogress = 0;
     genmerges(root);
 }
