@@ -1207,9 +1207,8 @@ void writecompletions(std::fstream& f)
         }
     });
     std::sort(cmds.begin(), cmds.end());
-    for(uint i = 0; i < cmds.size(); i++)
+    for(char *&k : cmds)
     {
-        char *k = cmds[i];
         FilesVal *v = completions[k];
         if(v->type==Files_List)
         {
