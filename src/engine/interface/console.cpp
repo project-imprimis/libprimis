@@ -1178,18 +1178,17 @@ void writebinds(std::fstream& f)
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
-        for(uint i = 0; i < binds.size(); i++)
+        for(KeyM *&km : binds)
         {
-            KeyM &km = *binds[i];
-            if(*km.actions[j])
+            if(*(km->actions[j]))
             {
-                if(validateblock(km.actions[j]))
+                if(validateblock(km->actions[j]))
                 {
-                    f << cmds[j] << " " << escapestring(km.name) << " [" << km.actions[j] << "]\n";
+                    f << cmds[j] << " " << escapestring(km->name) << " [" << km->actions[j] << "]\n";
                 }
                 else
                 {
-                    f << cmds[j] << " " << escapestring(km.name) << " " << escapestring(km.actions[j]) << std::endl;
+                    f << cmds[j] << " " << escapestring(km->name) << " " << escapestring(km->actions[j]) << std::endl;
                 }
             }
         }
