@@ -626,9 +626,8 @@ void cube::clearmerge(int orient)
 
 void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &polys)
 {
-    for(uint i = 0; i < polys.size(); i++)
+    for(poly &p : polys)
     {
-        poly &p = polys[i];
         if(p.merged)
         {
             (*p.c).addmerge(orient, n, offset, p);
