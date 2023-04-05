@@ -967,7 +967,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     return true;
 }
 
-uint cubeworld::getmapcrc()
+uint cubeworld::getmapcrc() const
 {
     return mapcrc;
 }
