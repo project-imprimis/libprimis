@@ -93,7 +93,7 @@ class model
         virtual void cleanup() {}
 
         virtual void startrender() {}
-        virtual void endrender() {}
+        virtual void endrender() const {}
 
         void boundbox(vec &center, vec &radius)
         {
