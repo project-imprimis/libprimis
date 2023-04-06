@@ -6,7 +6,7 @@ var classcubeworld =
     [ "compactvslots", "classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98", null ],
     [ "emptymap", "classcubeworld.html#a12e042d30ab218c7764519e10008adef", null ],
     [ "enlargemap", "classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce", null ],
-    [ "getmapcrc", "classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1", null ],
+    [ "getmapcrc", "classcubeworld.html#a36e686753af4005ac9b099b01dd3b94f", null ],
     [ "lookupmaterial", "classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4", null ],
     [ "mapscale", "classcubeworld.html#aa4b5cdff5ce4ddef6e2664cb4e7827ef", null ],
     [ "mapsize", "classcubeworld.html#a0817719a7dfd2d50bdf02198804098b7", null ],

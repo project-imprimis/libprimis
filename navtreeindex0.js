@@ -55,7 +55,7 @@ var NAVTREEINDEX0 =
 "classcubeworld.html#a12e042d30ab218c7764519e10008adef":[10,0,6,4],
 "classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070":[10,0,6,2],
 "classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2":[10,0,6,11],
-"classcubeworld.html#a38b877faf6e8e755315b350cd098b1c1":[10,0,6,6],
+"classcubeworld.html#a36e686753af4005ac9b099b01dd3b94f":[10,0,6,6],
 "classcubeworld.html#a445b1bb007a38a2449bac939748c0d92":[10,0,6,1],
 "classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce":[10,0,6,5],
 "classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4":[10,0,6,7],
