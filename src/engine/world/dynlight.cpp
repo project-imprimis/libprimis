@@ -229,7 +229,7 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
     {
         return false;
     }
-    dynlight &d = *closedynlights[n];
+    const dynlight &d = *closedynlights[n];
     o = d.o;
     radius = d.curradius;
     color = d.curcolor;
