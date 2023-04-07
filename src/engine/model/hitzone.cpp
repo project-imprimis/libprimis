@@ -454,7 +454,7 @@ void skelbih::build(const skelmodel::skelmeshgroup *m, ushort *indices, int numi
         for(int i = 0; i < numindices; ++i)
         {
             const skelhittri &tri = tris[indices[i]];
-            skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
+            const skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
