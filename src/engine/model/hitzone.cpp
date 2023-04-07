@@ -949,7 +949,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
                     }
                 }
             }
-            skelzonekey key(m, t);
+            const skelzonekey key(m, t);
             skelzoneinfo &zi = infomap.access(key, key);
             if(key.blend >= numblends && zi.index < 0)
             {
@@ -969,7 +969,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
         {
             continue;
         }
-        skelzonekey key(i);
+        const skelzonekey key(i);
         skelzoneinfo &zi = infomap.access(key, key);
         zi.index = info.size();
         info.push_back(&zi);
@@ -1026,7 +1026,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
         skelzonekey deps = zi.key;
         for(uint j = 0; j < zi.children.size(); j++)
         {
-            skelzoneinfo &zj = *zi.children[j];
+            const skelzoneinfo &zj = *zi.children[j];
             if(zj.key.blend < 0 || zj.key.blend >= numblends)
             {
                 deps.subtract(zj.key);
@@ -1038,7 +1038,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
             {
                 break;
             }
-            skelzonekey dep(deps.bones[j]);
+            const skelzonekey dep(deps.bones[j]);
             skelzoneinfo &zj = infomap.access(dep, dep);
             zj.parents++;
             zi.children.push_back(&zj);
@@ -1099,7 +1099,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = 0; i < numzones; ++i)
     {
         skelhitzone &z = zones[i];
-        skelzoneinfo &zi = *info[info.size()-1 - i];
+        const skelzoneinfo &zi = *info[info.size()-1 - i];
         std::memcpy(curtris, zi.tris.data(), zi.tris.size()*sizeof(skelhittri));
         if(zi.key.blend >= numblends)
         {
