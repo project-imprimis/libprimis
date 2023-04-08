@@ -57,7 +57,7 @@ class skelbih
             bool isleaf(int which) const;
         };
 
-        void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray);
+        void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray);
 
     private:
         node *nodes;
@@ -66,9 +66,9 @@ class skelbih
 
         vec bbmin, bbmax;
 
-        bool triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const;
+        bool triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const;
         void build(const skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax);
-        void intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax) const;
+        void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax) const;
 
         struct skelbihstack
         {
@@ -152,7 +152,7 @@ uint hthash(const skelzonekey &k)
 
 //gets used just twice, in skelbih::triintersect, skelhitzone::triintersect
 static bool skeltriintersect(vec a, vec b, vec c, vec o,
-                                    animmodel::skin* s,
+                                    const animmodel::skin* s,
                                     const skelhittri t,
                                     const skelmodel::vert va,
                                     const skelmodel::vert vb,
@@ -234,7 +234,7 @@ float skelbih::calcradius() const
     return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
 }
 
-bool skelbih::triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const
+bool skelbih::triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const
 {
     const skelhittri &t = tris[tidx];
     skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[t.Mesh]);
@@ -244,7 +244,7 @@ bool skelbih::triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s
     return skeltriintersect(va.pos, vb.pos, vc.pos, o, s, t, va, vb, vc, tm, ray);
 }
 
-void skelbih::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float smin, float smax) const
+void skelbih::intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float smin, float smax) const
 {
     skelbihstack stack[128];
     int stacksize = 0;
@@ -337,7 +337,7 @@ void skelbih::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, c
     }
 }
 
-void skelbih::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray)
+void skelbih::intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray)
 {
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
     float tmin, tmax,
