@@ -591,7 +591,7 @@ void skelhitzone::propagate(const skelmodel::skelmeshgroup *m, const dualquat *b
         radius = children[numchildren-1]->radius;
         for(int i = 0; i < numchildren-1; ++i)
         {
-            skelhitzone *child = children[i];
+            const skelhitzone *child = children[i];
             vec n = child->animcenter;
             n.sub(animcenter);
             float dist = n.magnitude();
