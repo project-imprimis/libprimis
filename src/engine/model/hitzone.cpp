@@ -40,7 +40,7 @@ class skelbih
     public:
         vec calccenter() const;
         float calcradius() const;
-        skelbih(const skelmodel::skelmeshgroup *m, int numtris, skelhittri *tris);
+        skelbih(const skelmodel::skelmeshgroup *m, int numtris, const skelhittri *tris);
 
         ~skelbih()
         {
@@ -62,7 +62,7 @@ class skelbih
     private:
         node *nodes;
         int numnodes;
-        skelhittri *tris;
+        const skelhittri *tris;
 
         vec bbmin, bbmax;
 
@@ -499,12 +499,12 @@ void skelbih::build(const skelmodel::skelmeshgroup *m, ushort *indices, int numi
     }
 }
 
-skelbih::skelbih(const skelmodel::skelmeshgroup *m, int numtris, skelhittri *tris)
+skelbih::skelbih(const skelmodel::skelmeshgroup *m, int numtris, const skelhittri *tris)
   : nodes(nullptr), numnodes(0), tris(tris), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f)
 {
     for(int i = 0; i < numtris; ++i)
     {
-        skelhittri &tri = tris[i];
+        const skelhittri &tri = tris[i];
         const skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
         const vec &ta = tm->verts[tri.vert[0]].pos,
                   &tb = tm->verts[tri.vert[1]].pos,
