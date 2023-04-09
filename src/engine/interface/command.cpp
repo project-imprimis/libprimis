@@ -773,7 +773,7 @@ static void popalias(ident &id)
 
 static bool checknumber(const char *s)
 {
-    if(!std::isdigit(s[0]))
+    if(isdigit(s[0]))
     {
         return true;
     }
@@ -782,11 +782,11 @@ static bool checknumber(const char *s)
         case '+':
         case '-':
         {
-            return std::isdigit(s[1]) || (s[1] == '.' && isdigit(s[2]));
+            return isdigit(s[1]) || (s[1] == '.' && isdigit(s[2]));
         }
         case '.':
         {
-            return std::isdigit(s[1]) != 0;
+            return isdigit(s[1]) != 0;
         }
         default:
         {
@@ -2101,7 +2101,7 @@ bool getbool(const tagval &v)
                     }
                     case '.':
                     {
-                        return !std::isdigit(s[2]) || parsefloat(s) != 0;
+                        return !isdigit(s[2]) || parsefloat(s) != 0;
                     }
                     default:
                     {
@@ -2132,7 +2132,7 @@ bool getbool(const tagval &v)
             }
             case '.':
             {
-                return !std::isdigit(s[1]) || parsefloat(s) != 0;
+                return !isdigit(s[1]) || parsefloat(s) != 0;
             }
             case '\0':
             {

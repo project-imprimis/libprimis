@@ -214,7 +214,7 @@ void addpostfxcmd(const char *name, const int *bind, const int *scale, const cha
     bool freeinputs = true;
     for(; *inputs; inputs++)
     {
-        if(std::isdigit(*inputs))
+        if(isdigit(*inputs))
         {
             inputmask |= 1<<(*inputs-'0');
             if(freeinputs)
