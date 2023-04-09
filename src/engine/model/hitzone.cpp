@@ -660,7 +660,7 @@ skelzonekey::skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t) 
     addbones(m, t);
 }
 
-bool skelzonekey::includes(const skelzonekey &o)
+bool skelzonekey::includes(const skelzonekey &o) const
 {
     int j = 0;
     for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
@@ -703,7 +703,7 @@ void skelzonekey::subtract(const skelzonekey &o)
     std::memset(&bones[len], 0xFF, sizeof(bones) - len);
 }
 
-bool skelzonekey::hasbone(int n)
+bool skelzonekey::hasbone(int n) const
 {
     for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
     {
@@ -719,7 +719,7 @@ bool skelzonekey::hasbone(int n)
     return false;
 }
 
-int skelzonekey::numbones()
+int skelzonekey::numbones() const
 {
     for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
     {

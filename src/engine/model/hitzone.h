@@ -15,16 +15,16 @@ class skelzonekey
         skelzonekey(int bone);
         skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t);
 
-        bool includes(const skelzonekey &o);
+        bool includes(const skelzonekey &o) const;
         void subtract(const skelzonekey &o);
 
         int blend;
         std::array<uchar, 12> bones;
 
     private:
-        bool hasbone(int n);
+        bool hasbone(int n) const;
 
-        int numbones();
+        int numbones() const;
         void addbone(int n);
         void addbones(const skelmodel::skelmesh *m, const skelmodel::tri &t);
 };
