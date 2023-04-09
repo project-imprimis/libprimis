@@ -101,7 +101,7 @@ class skelhitzone
         ~skelhitzone();
 
         void intersect(const skelmodel::skelmeshgroup *m,
-                       skelmodel::skin *s,
+                       const skelmodel::skin *s,
                        const dualquat *bdata1,
                        const dualquat *bdata2,
                        int numblends,
@@ -115,7 +115,7 @@ class skelhitzone
 
     private:
         vec animcenter;
-        static bool triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const skelhittri &t, const vec &o, const vec &ray);
+        static bool triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const skelhittri &t, const vec &o, const vec &ray);
         bool shellintersect(const vec &o, const vec &ray);
 
 };
@@ -549,7 +549,7 @@ skelhitzone::~skelhitzone()
     }
 }
 
-void skelhitzone::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const vec &o, const vec &ray)
+void skelhitzone::intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const vec &o, const vec &ray)
 {
     if(!numchildren)
     {
@@ -610,7 +610,7 @@ void skelhitzone::propagate(const skelmodel::skelmeshgroup *m, const dualquat *b
     }
 }
 
-bool skelhitzone::triintersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const skelhittri &t, const vec &o, const vec &ray)
+bool skelhitzone::triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const skelhittri &t, const vec &o, const vec &ray)
 {
     skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[t.Mesh]);
     const skelmodel::vert &va = tm->verts[t.vert[0]],
