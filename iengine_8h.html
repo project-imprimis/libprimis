@@ -132,11 +132,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a8f4eefe05d6feb452f8192a1bef539eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a8f4eefe05d6feb452f8192a1bef539eb">cleanragdoll</a> (<a class="el" href="structdynent.html">dynent</a> *d)</td></tr>
 <tr class="memdesc:a8f4eefe05d6feb452f8192a1bef539eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the ragdoll associated with the passed dynent.  <br /></td></tr>
 <tr class="separator:a8f4eefe05d6feb452f8192a1bef539eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0ba7030a040f6c85b67f3b4c6abc598"><td class="memItemLeft" align="right" valign="top"><a id="ab0ba7030a040f6c85b67f3b4c6abc598" name="ab0ba7030a040f6c85b67f3b4c6abc598"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>gle::begin</b> (GLenum mode)</td></tr>
+<tr class="memitem:ab0ba7030a040f6c85b67f3b4c6abc598"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ab0ba7030a040f6c85b67f3b4c6abc598">gle::begin</a> (GLenum mode)</td></tr>
+<tr class="memdesc:ab0ba7030a040f6c85b67f3b4c6abc598"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the type of primitive to draw.  <br /></td></tr>
 <tr class="separator:ab0ba7030a040f6c85b67f3b4c6abc598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a8422360ffa899e51c7c89a996e3e39"><td class="memItemLeft" align="right" valign="top"><a id="a7a8422360ffa899e51c7c89a996e3e39" name="a7a8422360ffa899e51c7c89a996e3e39"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>gle::begin</b> (GLenum mode, int numverts)</td></tr>
+<tr class="memitem:a7a8422360ffa899e51c7c89a996e3e39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a7a8422360ffa899e51c7c89a996e3e39">gle::begin</a> (GLenum mode, int numverts)</td></tr>
+<tr class="memdesc:a7a8422360ffa899e51c7c89a996e3e39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up an immediate-like rendering context.  <br /></td></tr>
 <tr class="separator:a7a8422360ffa899e51c7c89a996e3e39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03ba03dc9f5a261c1970446fc0c9c963"><td class="memItemLeft" align="right" valign="top"><a id="a03ba03dc9f5a261c1970446fc0c9c963" name="a03ba03dc9f5a261c1970446fc0c9c963"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>gle::attrib</b> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
@@ -1049,6 +1049,70 @@ std::vector&lt; <a class="el" href="structextentity.html">extentity</a> * &gt;&#
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td>the extentity to attempt to link </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab0ba7030a040f6c85b67f3b4c6abc598" name="ab0ba7030a040f6c85b67f3b4c6abc598"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0ba7030a040f6c85b67f3b4c6abc598">&#9670;&#160;</a></span>begin() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gle::begin </td>
+          <td>(</td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the type of primitive to draw. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>one of the GL primitive types (e.g. GL_TRIANGLES, GL_TRIANGLE_STRIP, ..) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7a8422360ffa899e51c7c89a996e3e39" name="a7a8422360ffa899e51c7c89a996e3e39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a8422360ffa899e51c7c89a996e3e39">&#9670;&#160;</a></span>begin() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void gle::begin </td>
+          <td>(</td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numverts</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets up an immediate-like rendering context. </p>
+<p>Does not use glBegin() or other legacy constructs.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>one of the GL primitive types (e.g. GL_TRIANGLES, GL_TRIANGLE_STRIP, ..) </td></tr>
+    <tr><td class="paramname">numverts</td><td>the number of vertices to draw </td></tr>
   </table>
   </dd>
 </dl>
