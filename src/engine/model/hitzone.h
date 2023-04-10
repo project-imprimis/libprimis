@@ -43,6 +43,91 @@ class skelhitdata
         skelmodel::blendcacheentry &getcache();
 
     private:
+        class skelbih
+        {
+            public:
+                vec calccenter() const;
+                float calcradius() const;
+                skelbih(const skelmodel::skelmeshgroup *m, int numtris, const skelhittri *tris);
+
+                ~skelbih()
+                {
+                    delete[] nodes;
+                }
+
+                struct node
+                {
+                    short split[2];
+                    ushort child[2];
+
+                    int axis() const;
+                    int childindex(int which) const;
+                    bool isleaf(int which) const;
+                };
+
+                void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray);
+
+            private:
+                node *nodes;
+                int numnodes;
+                const skelhittri *tris;
+
+                vec bbmin, bbmax;
+
+                bool triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, int tidx, const vec &o, const vec &ray) const;
+                void build(const skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax);
+                void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax) const;
+
+                struct skelbihstack
+                {
+                    skelbih::node *node;
+                    float tmin, tmax;
+                };
+
+        };
+
+        class skelhitzone
+        {
+            public:
+                int numparents, numchildren;
+                skelhitzone **parents, **children;
+                vec center;
+                float radius;
+                int visited;
+                union
+                {
+                    int blend;
+                    int numtris;
+                };
+                union
+                {
+                    skelhittri *tris;
+                    skelbih *bih;
+                };
+
+                skelhitzone();
+                ~skelhitzone();
+
+                void intersect(const skelmodel::skelmeshgroup *m,
+                               const skelmodel::skin *s,
+                               const dualquat *bdata1,
+                               const dualquat *bdata2,
+                               int numblends,
+                               const vec &o,
+                               const vec &ray);
+
+                void propagate(const skelmodel::skelmeshgroup *m,
+                               const dualquat *bdata1,
+                               const dualquat *bdata2,
+                               int numblends);
+
+            private:
+                vec animcenter;
+                static bool triintersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const skelhittri &t, const vec &o, const vec &ray);
+                bool shellintersect(const vec &o, const vec &ray);
+
+        };
+
         int numblends;
         skelmodel::blendcacheentry blendcache;
         int numzones, rootzones, visited;
