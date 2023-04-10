@@ -533,7 +533,7 @@ class animmodel : public model
         void setcullface(int cullface);
         void setcolor(const vec &color);
 
-        void calcbb(vec &center, vec &radius);
+        void calcbb(vec &center, vec &radius) const;
         void calctransform(matrix4x3 &m) const;
 
         virtual void loaded()
@@ -554,7 +554,7 @@ class animmodel : public model
         static void disablevbo();
         void endrender() const;
     protected:
-        virtual int linktype(animmodel *m, part *p) const
+        virtual int linktype(const animmodel *, const part *) const
         {
             return Link_Tag;
         }

@@ -1815,7 +1815,7 @@ void animmodel::setcolor(const vec &color)
     }
 }
 
-void animmodel::calcbb(vec &center, vec &radius)
+void animmodel::calcbb(vec &center, vec &radius) const
 {
     if(parts.empty())
     {

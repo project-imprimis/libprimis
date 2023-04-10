@@ -540,7 +540,7 @@ struct skelmodel : animmodel
     {
     }
 
-    int linktype(animmodel *m, part *p) const
+    int linktype(const animmodel *m, const part *p) const
     {
         return type()==m->type() &&
             (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
