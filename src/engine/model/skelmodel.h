@@ -528,7 +528,7 @@ struct skelmodel : animmodel
             }
 
             void initanimparts();
-            bool addanimpart(ushort *bonemask);
+            bool addanimpart(const ushort *bonemask);
             void loaded();
         private:
             uchar *sharepartmask(animpartmask *o);

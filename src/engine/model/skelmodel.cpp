@@ -1760,7 +1760,7 @@ void skelmodel::skelpart::initanimparts()
     buildingpartmask = newpartmask();
 }
 
-bool skelmodel::skelpart::addanimpart(ushort *bonemask)
+bool skelmodel::skelpart::addanimpart(const ushort *bonemask)
 {
     if(!buildingpartmask || numanimparts>=maxanimparts)
     {
