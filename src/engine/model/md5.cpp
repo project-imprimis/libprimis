@@ -461,7 +461,7 @@ void md5::md5mesh::cleanup()
     weightinfo = nullptr;
 }
 
-void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
+void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 {
     for(int i = 0; i < numverts; ++i)
     {
@@ -469,8 +469,8 @@ void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
         vec pos(0, 0, 0);
         for(int k = 0; k < v.count; ++k)
         {
-            md5weight &w = weightinfo[v.start+k];
-            md5joint &j = joints[w.joint];
+            const md5weight &w = weightinfo[v.start+k];
+            const md5joint &j = joints[w.joint];
             vec wpos = j.orient.rotate(w.pos);
             wpos.add(j.pos);
             wpos.mul(w.bias);
@@ -484,7 +484,7 @@ void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
         int sorted = 0;
         for(int j = 0; j < v.count; ++j)
         {
-            md5weight &w = weightinfo[v.start+j];
+            const md5weight &w = weightinfo[v.start+j];
             sorted = c.addweight(sorted, w.bias, w.joint);
         }
         c.finalize(sorted);

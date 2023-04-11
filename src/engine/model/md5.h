@@ -55,7 +55,7 @@ class md5 : public skelloader<md5>
                 md5mesh();
                 ~md5mesh();
                 void cleanup();
-                void buildverts(std::vector<md5joint> &joints);
+                void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
                 void load(stream *f, char *buf, size_t bufsize);
 
