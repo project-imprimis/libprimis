@@ -339,7 +339,7 @@ class stainrenderer
         float stainradius, stainu, stainv;
         vec4<uchar> staincolor;
 
-        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, cubeworld world)
+        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, const cubeworld &world)
         {
             if(dir.iszero())
             {
