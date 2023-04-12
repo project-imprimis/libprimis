@@ -18,6 +18,7 @@
 #include "hdr.h"
 #include "hud.h"
 #include "octarender.h"
+#include "postfx.h"
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "renderlights.h"

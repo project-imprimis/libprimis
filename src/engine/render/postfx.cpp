@@ -74,27 +74,6 @@ class postfx
             }
         } //add a postfx shader to the global vector, with name & 4d pos vector
 
-    private:
-        static constexpr int numpostfxbinds = 10;
-
-        int allocatepostfxtex(int scale)
-        {
-            for(uint i = 0; i < postfxtexs.size(); i++)
-            {
-                postfxtex &t = postfxtexs[i];
-                if(t.scale==scale && t.used < 0)
-                {
-                    return i;
-                }
-            }
-            postfxtex t;
-            t.scale = scale;
-            glGenTextures(1, &t.id);
-            createtexture(t.id, std::max(postfxw>>scale, 1), std::max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
-            postfxtexs.push_back(t);
-            return postfxtexs.size()-1;
-        }
-
         GLuint setuppostfx(int w, int h, GLuint outfbo)
         {
             if(postfxpasses.empty())
@@ -202,6 +181,27 @@ class postfx
             endtimer(postfxtimer);
         }
 
+    private:
+        static constexpr int numpostfxbinds = 10;
+
+        int allocatepostfxtex(int scale)
+        {
+            for(uint i = 0; i < postfxtexs.size(); i++)
+            {
+                postfxtex &t = postfxtexs[i];
+                if(t.scale==scale && t.used < 0)
+                {
+                    return i;
+                }
+            }
+            postfxtex t;
+            t.scale = scale;
+            glGenTextures(1, &t.id);
+            createtexture(t.id, std::max(postfxw>>scale, 1), std::max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
+            postfxtexs.push_back(t);
+            return postfxtexs.size()-1;
+        }
+
         //adds to the global postfxpasses vector a postfx by the given name
         bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4<float> &params)
         {
@@ -250,6 +250,16 @@ class postfx
 };
 
 postfx pfx;
+
+GLuint setuppostfx(int w, int h, GLuint outfbo)
+{
+    pfx.setuppostfx(w, h, outfbo);
+}
+
+void renderpostfx(GLuint outfbo)
+{
+    pfx.renderpostfx(outfbo);
+}
 
 void cleanuppostfx(bool fullclean)
 {

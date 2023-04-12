@@ -8,8 +8,6 @@ extern bool floatformat(GLenum format);
 extern void loadshaders();
 extern void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_2D, int pw = 0, int ph = 0, int pitch = 0, bool resize = true, GLenum format = GL_FALSE, bool swizzle = false);
 extern void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clamp, int filter, GLenum component = GL_RGB, GLenum target = GL_TEXTURE_3D, bool swizzle = false);
-extern GLuint setuppostfx(int w, int h, GLuint outfbo = 0);
-extern void renderpostfx(GLuint outfbo = 0);
 extern bool reloadtexture(const char *name);
 extern void clearslots();
 extern void compacteditvslots();
