@@ -1479,7 +1479,7 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
     }
 }
 
-static void propagatevslot(VSlot *root, int changed)
+static void propagatevslot(const VSlot *root, int changed)
 {
     for(VSlot *vs = root->next; vs; vs = vs->next)
     {
