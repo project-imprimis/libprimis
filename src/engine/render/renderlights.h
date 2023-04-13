@@ -100,7 +100,7 @@ class GBuffer
         void rendercsmshadowmaps() const;
         void rendershadowmaps(int offset = 0) const;
         int findalphavas();
-        void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2);
+        void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
 
         struct MaterialInfo

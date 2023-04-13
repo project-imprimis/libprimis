@@ -35,7 +35,7 @@ namespace
 
 //sets up alpha handling as needed then executes main particle rendering routine
 //private method of gbuffer
-void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const
 {
     if(particlelayers && ghasstencil)
     {
