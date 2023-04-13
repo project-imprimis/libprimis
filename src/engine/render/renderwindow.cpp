@@ -706,10 +706,7 @@ std::array<int, maxfpshistory> fpshistory;
 
 void resetfpshistory()
 {
-    for(int& i : fpshistory)
-    {
-        i = 1;
-    }
+    fpshistory.fill(1);
     fpspos = 0;
 }
 
