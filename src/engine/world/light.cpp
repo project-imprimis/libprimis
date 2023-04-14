@@ -426,10 +426,10 @@ void clearlightcache(int id)
 
 static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
 {
-    surfaceinfo surfaces[6];
+    std::array<surfaceinfo, 6> surfaces;
     vertinfo litverts[6*2*Face_MaxVerts];
     int numlitverts = 0;
-    std::memset(surfaces, 0, sizeof(surfaces));
+    surfaces.fill(surfaceinfo());
     for(int i = 0; i < 6; ++i) //for each face of the cube
     {
         int usefaces = usefacemask&0xF;
@@ -583,7 +583,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     }
     if(preview)
     {
-        setsurfaces(c, surfaces, litverts, numlitverts);
+        setsurfaces(c, surfaces.data(), litverts, numlitverts);
     }
     else
     {
@@ -593,7 +593,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             if(surf.used())
             {
                 cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-                std::memcpy(ext->surfaces, surfaces, sizeof(ext->surfaces));
+                std::memcpy(ext->surfaces, surfaces.data(), sizeof(ext->surfaces));
                 std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
                 if(c.ext != ext)
                 {
