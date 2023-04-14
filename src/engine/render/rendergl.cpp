@@ -96,9 +96,6 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC   glGetCompressedTexImage_   = nullptr;
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 #endif
 
-// GL_EXT_draw_buffers2
-PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
-
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 
@@ -340,7 +337,6 @@ void gl_checkextensions()
         }
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
-    glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
 
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");

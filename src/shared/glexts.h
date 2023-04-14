@@ -98,9 +98,6 @@ extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
 
-// GL_EXT_draw_buffers2
-extern PFNGLCOLORMASKIPROC glColorMaski_;
-
 // GL_ARB_color_buffer_float
 extern PFNGLCLAMPCOLORPROC glClampColor_;
 
