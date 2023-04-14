@@ -912,7 +912,7 @@ namespace
     {
         for(int k = 0; k < 4; ++k)
         {
-            std::vector<materialsurface> &surfs = glasssurfs[k];
+            const std::vector<materialsurface> &surfs = glasssurfs[k];
             if(surfs.empty())
             {
                 continue;
@@ -935,9 +935,8 @@ namespace
             GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
             GLOBALPARAMF(glassspec, spec/100.0f);
 
-            for(uint i = 0; i < surfs.size(); i++)
+            for(const materialsurface &m: surfs)
             {
-                materialsurface &m = surfs[i];
                 drawglass(m, 0.1f, glassxscale, glassyscale, matnormals(m.orient));
             }
             xtraverts += gle::end();
