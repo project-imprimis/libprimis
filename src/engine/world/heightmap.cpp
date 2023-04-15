@@ -414,7 +414,7 @@ class hmap
 
             #undef PULL_HEIGHTMAP
 
-            cube **c  = cmap[x][y];
+            cube * const * const c  = cmap[x][y];
             int e[2][2],
                 notempty = 0;
 
