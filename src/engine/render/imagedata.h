@@ -19,10 +19,10 @@ class ImageData
 
         int calclevelsize(int level) const;
 
-        void addglow(ImageData &g, const vec &glowcolor);
-        void mergespec(ImageData &s);
-        void mergedepth(ImageData &z);
-        void mergealpha(ImageData &s);
+        void addglow(const ImageData &g, const vec &glowcolor);
+        void mergespec(const ImageData &s);
+        void mergedepth(const ImageData &z);
+        void mergealpha(const ImageData &s);
         void collapsespec();
         void forcergbimage();
         void swizzleimage();

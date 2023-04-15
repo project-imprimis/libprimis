@@ -605,7 +605,7 @@ void ImageData::texblend(ImageData &s, ImageData &m)
     }
 }
 
-void ImageData::addglow(ImageData &g, const vec &glowcolor)
+void ImageData::addglow(const ImageData &g, const vec &glowcolor)
 {
     if(g.bpp < 3)
     {
@@ -627,7 +627,7 @@ void ImageData::addglow(ImageData &g, const vec &glowcolor)
     }
 }
 
-void ImageData::mergespec(ImageData &s)
+void ImageData::mergespec(const ImageData &s)
 {
     if(s.bpp < 3)
     {
@@ -643,14 +643,14 @@ void ImageData::mergespec(ImageData &s)
     }
 }
 
-void ImageData::mergedepth(ImageData &z)
+void ImageData::mergedepth(const ImageData &z)
 {
     READ_WRITE_RGBA_TEX((*this), z,
         dst[3] = src[0];
     );
 }
 
-void ImageData::mergealpha(ImageData &s)
+void ImageData::mergealpha(const ImageData &s)
 {
     if(s.bpp < 3)
     {
