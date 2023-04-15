@@ -521,8 +521,10 @@ void ImageData::texagrad(float x2, float y2, float x1, float y1)
     }
 }
 
-void ImageData::texblend(ImageData &s, ImageData &m)
+void ImageData::texblend(const ImageData &s0, const ImageData &m0)
 {
+    ImageData s(s0),
+              m(m0);
     if(s.w != w || s.h != h)
     {
         s.scaleimage(w, h);

@@ -56,7 +56,7 @@ class ImageData
         void texmix(int c1, int c2, int c3, int c4);
         void texgrey();
         void texagrad(float x2, float y2, float x1, float y1);
-        void texblend(ImageData &s, ImageData &m);
+        void texblend(const ImageData &s0, const ImageData &m0);
         void texnormal(int emphasis);
 };
 
