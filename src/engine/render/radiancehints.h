@@ -59,7 +59,8 @@ class radiancehints
             {
                 bounds = -1e16f;
             }
-        } splits[rhmaxsplits];
+        };
+        std::array<splitinfo, rhmaxsplits> splits;
 
         void updatesplitdist();
 };
