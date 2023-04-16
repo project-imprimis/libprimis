@@ -72,7 +72,7 @@ class postfx
             {
                 addpostfx(name, 0, 0, 1, 1, vec4<float>(*x, *y, *z, *w));
             }
-        } //add a postfx shader to the global vector, with name & 4d pos vector
+        } //add a postfx shader to the class field, with name & 4d pos vector
 
         GLuint setuppostfx(int w, int h, GLuint outfbo)
         {
@@ -92,7 +92,7 @@ class postfx
             }
             for(uint i = 0; i < postfxtexs.size(); i++)
             {
-                postfxtexs[i].used = -1;
+                postfxtexs.at(i).used = -1;
             }
             if(!postfxfb)
             {
@@ -253,7 +253,7 @@ postfx pfx;
 
 GLuint setuppostfx(int w, int h, GLuint outfbo)
 {
-    pfx.setuppostfx(w, h, outfbo);
+    return pfx.setuppostfx(w, h, outfbo);
 }
 
 void renderpostfx(GLuint outfbo)
