@@ -267,15 +267,9 @@ float text_widthf(const char *str)
     return width;
 }
 
-//returns the size of a tab character, which is hardcoded to 4 spaces
-static int fonttab()
-{
-    return 4*fontwidth();
-}
-
 static int texttab(float x)
 {
-    return (static_cast<int>((x)/fonttab())+1.0f)*fonttab();
+    return (static_cast<int>((x)/(4*fontwidth()))+1.0f)*(4*fontwidth());
 }
 
 float textscale = 1;
