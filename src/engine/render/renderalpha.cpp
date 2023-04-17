@@ -70,7 +70,7 @@ void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float all
 
 void GBuffer::rendertransparent()
 {
-    MaterialInfo mi = findmaterials(); //generate mat* vars
+    const MaterialInfo &mi = findmaterials(); //generate mat* vars
     int hasalphavas = findalphavas(),
         hasmats = mi.hasmats;
     bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
