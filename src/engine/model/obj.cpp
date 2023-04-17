@@ -252,7 +252,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(string meshname,
+void obj::objmeshgroup::flushmesh(const string meshname,
                                   vertmesh *curmesh,
                                   const std::vector<vert> &verts,
                                   const std::vector<tcvert> &tcverts,

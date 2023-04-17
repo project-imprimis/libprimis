@@ -19,7 +19,7 @@ struct obj : vertloader<obj>
 
         private:
             void parsevert(char *s, std::vector<vec> &out);
-            void flushmesh(string meshname,
+            void flushmesh(const string meshname,
                            vertmesh *curmesh,
                            const std::vector<vert> &verts,
                            const std::vector<tcvert> &tcverts,
