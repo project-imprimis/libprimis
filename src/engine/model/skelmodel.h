@@ -360,7 +360,7 @@ struct skelmodel : animmodel
         void applybonemask(const ushort *mask, uchar *partmask, int partindex) const;
         void linkchildren();
         int availgpubones() const;
-        float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
+        float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
         void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
         void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
         void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
