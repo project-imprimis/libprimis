@@ -782,7 +782,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
     }
 }
 
-void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
+void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const
 {
     matrix4x3 t;
     t.mul(bones[tags[i].bone].base, tags[i].matrix);
