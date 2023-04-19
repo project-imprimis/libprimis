@@ -2654,7 +2654,7 @@ void reloadtextures()
     loadprogress = 0;
 }
 
-static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len = 0)
+static void writepngchunk(stream *f, const char *type, const uchar *data = nullptr, uint len = 0)
 {
     f->putbig<uint>(len);
     f->write(type, 4);
