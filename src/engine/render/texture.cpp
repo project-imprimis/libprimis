@@ -2564,21 +2564,21 @@ void Texture::cleanup()
 
 void cleanuptextures()
 {
-    for(uint i = 0; i < slots.size(); i++)
+    for(Slot * const &i : slots)
     {
-        slots[i]->cleanup();
+        i->cleanup();
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot * const &i : vslots)
     {
-        vslots[i]->cleanup();
+        i->cleanup();
     }
     for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].cleanup();
     }
-    for(uint i = 0; i < decalslots.size(); i++)
+    for(DecalSlot * const &i : decalslots)
     {
-        decalslots[i]->cleanup();
+        i->cleanup();
     }
     ENUMERATE(textures, Texture, tex, tex.cleanup());
 }
