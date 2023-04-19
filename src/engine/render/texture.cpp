@@ -2385,18 +2385,18 @@ DecalSlot &lookupdecalslot(int index, bool load)
 
 void linkslotshaders()
 {
-    for(uint i = 0; i < slots.size(); i++)
+    for(Slot * const &i : slots)
     {
-        if(slots[i]->loaded)
+        if(i->loaded)
         {
-            linkslotshader(*slots[i]);
+            linkslotshader(*i);
         }
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot * const &i : vslots)
     {
-        if(vslots[i]->linked)
+        if(i->linked)
         {
-            linkvslotshader(*vslots[i]);
+            linkvslotshader(*i);
         }
     }
     for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
@@ -2407,12 +2407,12 @@ void linkslotshaders()
             linkvslotshader(materialslots[i]);
         }
     }
-    for(uint i = 0; i < decalslots.size(); i++)
+    for(DecalSlot * const &i : decalslots)
     {
-        if(decalslots[i]->loaded)
+        if(i->loaded)
         {
-            linkslotshader(*decalslots[i]);
-            linkvslotshader(*decalslots[i]);
+            linkslotshader(*i);
+            linkvslotshader(*i);
         }
     }
 }
