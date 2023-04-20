@@ -1430,7 +1430,7 @@ namespace
 
     void gencubeedges(cube &c, const ivec &co, int size)
     {
-        ivec pos[Face_MaxVerts];
+        std::array<ivec, Face_MaxVerts> pos;
         int vis;
         for(int i = 0; i < 6; ++i)
         {
