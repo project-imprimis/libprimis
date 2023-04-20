@@ -2671,7 +2671,7 @@ static void writepngchunk(stream *f, const char *type, const uchar *data = nullp
 
 VARP(compresspng, 0, 9, 9);
 
-static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, stream* f, uint& crc)
+static void flushzip(z_stream &z, uchar *buf, const uint &buflen, uint &len, stream *f, uint &crc)
 {
     int flush = buflen- z.avail_out;
     crc = crc32(crc, buf, flush);
