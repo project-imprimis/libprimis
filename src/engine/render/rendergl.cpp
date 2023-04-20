@@ -337,8 +337,6 @@ void gl_checkextensions()
         }
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
-
-    glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
     glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");

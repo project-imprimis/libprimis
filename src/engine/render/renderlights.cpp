@@ -846,7 +846,7 @@ void GBuffer::resolvemsaadepth(int w, int h) const
         {
             glClear(GL_STENCIL_BUFFER_BIT);
         }
-        glBlitFramebuffer_(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     }
     if(!msaadepthblit || gdepthformat)
     {
@@ -899,7 +899,7 @@ void GBuffer::resolvemsaacolor(int w, int h)
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, mshdrfbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, hdrfbo);
-    glBlitFramebuffer_(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, hdrfbo);
 

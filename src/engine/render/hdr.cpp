@@ -287,7 +287,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         {
             glBindFramebuffer(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, hdrfbo);
-            glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            glBlitFramebuffer(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
         else if(hasFBMSBS && (vieww > bloomw || viewh > bloomh))
         {
@@ -295,7 +295,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                 ch = std::max(viewh/2, bloomh);
             glBindFramebuffer(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, hdrfbo);
-            glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
+            glBlitFramebuffer(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
             pw = cw;
             ph = ch;
         }
@@ -612,7 +612,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         {
             glBindFramebuffer(GL_READ_FRAMEBUFFER, msrefractfbo);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, aa || !outfbo ? refractfbo : outfbo);
-            glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            glBlitFramebuffer(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
             if(!outfbo)
             {
