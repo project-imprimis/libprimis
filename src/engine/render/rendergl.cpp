@@ -60,9 +60,6 @@ VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
 
-// GL_EXT_timer_query
-PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_ = nullptr;
-
 // GL_EXT_framebuffer_blit
 PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_         = nullptr;
 
@@ -354,7 +351,6 @@ void gl_checkextensions()
         }
     }
     //OpenGL 3.3
-    glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
         GLint val = 0;

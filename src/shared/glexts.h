@@ -19,10 +19,6 @@ typedef llong GLint64EXT;
 typedef ullong GLuint64EXT;
 typedef void (APIENTRYP PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pname, GLuint64EXT *params);
 #endif
-extern PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_;
-
-// GL_EXT_framebuffer_blit
-extern PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_;
 
 // GL_EXT_framebuffer_multisample
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;

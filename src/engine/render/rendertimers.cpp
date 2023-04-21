@@ -139,7 +139,7 @@ void synctimers()
                 glGetQueryObjectiv(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
             }
             GLuint64EXT result = 0;
-            glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
+            glGetQueryObjectui64v(t.query[timercycle], GL_QUERY_RESULT, &result);
             t.result = std::max(static_cast<float>(result) * 1e-6f, 0.0f);
             t.waiting &= ~(1<<timercycle);
         }
