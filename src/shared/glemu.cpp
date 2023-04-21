@@ -279,7 +279,7 @@ namespace gle
         {
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
         }
-        void *buf = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, len, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
+        void *buf = glMapBufferRange(GL_ARRAY_BUFFER, vbooffset, len, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
         if(buf)
         {
             attribbuf.reset(static_cast<uchar *>(buf), len);

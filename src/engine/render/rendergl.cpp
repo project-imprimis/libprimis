@@ -99,9 +99,6 @@ PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 // GL_ARB_color_buffer_float
 PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
 
-// GL_ARB_map_buffer_range
-PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
-
 // GL_ARB_vertex_array_object
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
 PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
@@ -336,7 +333,6 @@ void gl_checkextensions()
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
-    glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
     useubo = 1;
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");

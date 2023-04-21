@@ -88,7 +88,6 @@ extern PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_;
 #define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
 typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 #endif
-extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
