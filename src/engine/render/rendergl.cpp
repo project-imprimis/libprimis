@@ -166,7 +166,6 @@ void glerror(const char *file, int line, GLenum error)
 
 VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(mesa_swap_bug, 0, 0, 1);
-VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
@@ -333,7 +332,6 @@ void gl_checkextensions()
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
-    useubo = 1;
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
     glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
