@@ -252,9 +252,9 @@ static void bindglsluniform(const Shader &s, UniformLoc &u)
     }
 }
 
-static void uniformtex(const char * name, int tmu, const Shader &s)
+void Shader::uniformtex(const char * name, int tmu)
 {
-    int loc = glGetUniformLocation(s.program, name);
+    int loc = glGetUniformLocation(program, name);
     if(loc != -1)
     {
         glUniform1i(loc, tmu);
@@ -300,12 +300,12 @@ void Shader::linkglslprogram(bool msg)
         }
         if(type & Shader_World)
         {
-            uniformtex("diffusemap", Tex_Diffuse, *this);
-            uniformtex("normalmap", Tex_Normal, *this);
-            uniformtex("glowmap", Tex_Glow, *this);
-            uniformtex("blendmap", 7, *this);
-            uniformtex("refractmask", 7, *this);
-            uniformtex("refractlight", 8, *this);
+            uniformtex("diffusemap", Tex_Diffuse);
+            uniformtex("normalmap", Tex_Normal);
+            uniformtex("glowmap", Tex_Glow);
+            uniformtex("blendmap", 7);
+            uniformtex("refractmask", 7);
+            uniformtex("refractlight", 8);
         }
         for(uint i = 0; i < defaultparams.size(); i++)
         {

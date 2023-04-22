@@ -141,6 +141,8 @@ class Shader
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
         void linkglslprogram(bool msg = true);
+        void uniformtex(const char * name, int tmu);
+
 };
 
 class GlobalShaderParam
