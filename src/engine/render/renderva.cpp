@@ -2707,11 +2707,12 @@ void cubeworld::cleanupva()
     cleanupgrass();
 }
 
-int GBuffer::findalphavas()
+GBuffer::AlphaInfo GBuffer::findalphavas()
 {
     alphavas.clear();
-    alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
-    alphafrontsx2 = alphafrontsy2 = alphabacksx2 = alphabacksy2 = alpharefractsx2 = alpharefractsy2 = -1;
+    AlphaInfo a;
+    a.alphafrontsx1 = a.alphafrontsy1 = a.alphabacksx1 = a.alphabacksy1 = a.alpharefractsx1 = a.alpharefractsy1 = 1;
+    a.alphafrontsx2 = a.alphafrontsy2 = a.alphabacksx2 = a.alphabacksy2 = a.alpharefractsx2 = a.alpharefractsy2 = -1;
     int alphabackvas = 0,
         alpharefractvas = 0;
     std::memset(alphatiles, 0, sizeof(alphatiles));
@@ -2737,17 +2738,17 @@ int GBuffer::findalphavas()
             }
             alphavas.push_back(va);
             masktiles(alphatiles, sx1, sy1, sx2, sy2);
-            alphafrontsx1 = std::min(alphafrontsx1, sx1);
-            alphafrontsy1 = std::min(alphafrontsy1, sy1);
-            alphafrontsx2 = std::max(alphafrontsx2, sx2);
-            alphafrontsy2 = std::max(alphafrontsy2, sy2);
+            a.alphafrontsx1 = std::min(a.alphafrontsx1, sx1);
+            a.alphafrontsy1 = std::min(a.alphafrontsy1, sy1);
+            a.alphafrontsx2 = std::max(a.alphafrontsx2, sx2);
+            a.alphafrontsy2 = std::max(a.alphafrontsy2, sy2);
             if(va->alphabacktris)
             {
                 alphabackvas++;
-                alphabacksx1 = std::min(alphabacksx1, sx1);
-                alphabacksy1 = std::min(alphabacksy1, sy1);
-                alphabacksx2 = std::max(alphabacksx2, sx2);
-                alphabacksy2 = std::max(alphabacksy2, sy2);
+                a.alphabacksx1 = std::min(a.alphabacksx1, sx1);
+                a.alphabacksy1 = std::min(a.alphabacksy1, sy1);
+                a.alphabacksx2 = std::max(a.alphabacksx2, sx2);
+                a.alphabacksy2 = std::max(a.alphabacksy2, sy2);
             }
             if(va->refracttris)
             {
@@ -2756,14 +2757,15 @@ int GBuffer::findalphavas()
                     continue;
                 }
                 alpharefractvas++;
-                alpharefractsx1 = std::min(alpharefractsx1, sx1);
-                alpharefractsy1 = std::min(alpharefractsy1, sy1);
-                alpharefractsx2 = std::max(alpharefractsx2, sx2);
-                alpharefractsy2 = std::max(alpharefractsy2, sy2);
+                a.alpharefractsx1 = std::min(a.alpharefractsx1, sx1);
+                a.alpharefractsy1 = std::min(a.alpharefractsy1, sy1);
+                a.alpharefractsx2 = std::max(a.alpharefractsx2, sx2);
+                a.alpharefractsy2 = std::max(a.alpharefractsy2, sy2);
             }
         }
     }
-    return (alpharefractvas ? 4 : 0) | (alphavas.size() ? 2 : 0) | (alphabackvas ? 1 : 0);
+    a.hasalphavas = (alpharefractvas ? 4 : 0) | (alphavas.size() ? 2 : 0) | (alphabackvas ? 1 : 0);
+    return a;
 }
 
 void renderrefractmask()

@@ -47,18 +47,6 @@ class GBuffer
             inoq = false;
             transparentlayer = 0;
 
-            alphafrontsx1   = -1;
-            alphafrontsx2   =  1;
-            alphafrontsy1   = -1;
-            alphafrontsy2   = -1;
-            alphabacksx1    = -1;
-            alphabacksx2    =  1;
-            alphabacksy1    = -1;
-            alphabacksy2    = -1;
-            alpharefractsx1 = -1;
-            alpharefractsx2 =  1;
-            alpharefractsy1 = -1;
-            alpharefractsy2 =  1;
         }
         static void dummyfxn();
         //main g-buffers
@@ -99,7 +87,6 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps() const;
         void rendershadowmaps(int offset = 0) const;
-        int findalphavas();
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
 
@@ -122,14 +109,20 @@ class GBuffer
             int hasmats;
         };
 
-        MaterialInfo findmaterials() const; //materials.cpp
+        struct AlphaInfo
+        {
+            float alphafrontsx1, alphafrontsx2,
+                  alphafrontsy1, alphafrontsy2,
+                  alphabacksx1, alphabacksx2,
+                  alphabacksy1, alphabacksy2,
+                  alpharefractsx1, alpharefractsx2,
+                  alpharefractsy1, alpharefractsy2;
+            int hasalphavas;
+        };
 
-        float alphafrontsx1, alphafrontsx2,
-              alphafrontsy1, alphafrontsy2,
-              alphabacksx1, alphabacksx2,
-              alphabacksy1, alphabacksy2,
-              alpharefractsx1, alpharefractsx2,
-              alpharefractsy1, alpharefractsy2;
+        MaterialInfo findmaterials() const; //materials.cpp
+        AlphaInfo findalphavas();
+
         uint alphatiles[lighttilemaxheight];
 
         bool transparentlayer;
