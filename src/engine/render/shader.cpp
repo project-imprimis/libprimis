@@ -261,71 +261,71 @@ static void uniformtex(const char * name, int tmu, const Shader &s)
     }
 }
 
-static void linkglslprogram(Shader &s, bool msg = true)
+void Shader::linkglslprogram(bool msg)
 {
-    s.program = s.vsobj && s.psobj ? glCreateProgram() : 0;
+    program = vsobj && psobj ? glCreateProgram() : 0;
     GLint success = 0;
-    if(s.program)
+    if(program)
     {
-        glAttachShader(s.program, s.vsobj);
-        glAttachShader(s.program, s.psobj);
+        glAttachShader(program, vsobj);
+        glAttachShader(program, psobj);
         uint attribs = 0;
-        for(uint i = 0; i < s.attriblocs.size(); i++)
+        for(uint i = 0; i < attriblocs.size(); i++)
         {
-            Shader::AttribLoc &a = s.attriblocs[i];
-            glBindAttribLocation(s.program, a.loc, a.name);
+            Shader::AttribLoc &a = attriblocs[i];
+            glBindAttribLocation(program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
         for(int i = 0; i < gle::Attribute_NumAttributes; ++i)
         {
             if(!(attribs&(1<<i)))
             {
-                glBindAttribLocation(s.program, i, gle::attribnames[i]);
+                glBindAttribLocation(program, i, gle::attribnames[i]);
             }
         }
-        glLinkProgram(s.program);
-        glGetProgramiv(s.program, GL_LINK_STATUS, &success);
+        glLinkProgram(program);
+        glGetProgramiv(program, GL_LINK_STATUS, &success);
     }
     if(success)
     {
-        glUseProgram(s.program);
+        glUseProgram(program);
         for(int i = 0; i < 16; ++i)
         {
             static const char * const texnames[16] = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
-            GLint loc = glGetUniformLocation(s.program, texnames[i]);
+            GLint loc = glGetUniformLocation(program, texnames[i]);
             if(loc != -1)
             {
                 glUniform1i(loc, i);
             }
         }
-        if(s.type & Shader_World)
+        if(type & Shader_World)
         {
-            uniformtex("diffusemap", Tex_Diffuse, s);
-            uniformtex("normalmap", Tex_Normal, s);
-            uniformtex("glowmap", Tex_Glow, s);
-            uniformtex("blendmap", 7, s);
-            uniformtex("refractmask", 7, s);
-            uniformtex("refractlight", 8, s);
+            uniformtex("diffusemap", Tex_Diffuse, *this);
+            uniformtex("normalmap", Tex_Normal, *this);
+            uniformtex("glowmap", Tex_Glow, *this);
+            uniformtex("blendmap", 7, *this);
+            uniformtex("refractmask", 7, *this);
+            uniformtex("refractlight", 8, *this);
         }
-        for(uint i = 0; i < s.defaultparams.size(); i++)
+        for(uint i = 0; i < defaultparams.size(); i++)
         {
-            SlotShaderParamState &param = s.defaultparams[i];
-            param.loc = glGetUniformLocation(s.program, param.name);
+            SlotShaderParamState &param = defaultparams[i];
+            param.loc = glGetUniformLocation(program, param.name);
         }
-        for(uint i = 0; i < s.uniformlocs.size(); i++)
+        for(uint i = 0; i < uniformlocs.size(); i++)
         {
-            bindglsluniform(s, s.uniformlocs[i]);
+            bindglsluniform(*this, uniformlocs[i]);
         }
         glUseProgram(0);
     }
-    else if(s.program)
+    else if(program)
     {
         if(msg)
         {
-            showglslinfo(GL_FALSE, s.program, s.name);
+            showglslinfo(GL_FALSE, program, name);
         }
-        glDeleteProgram(s.program);
-        s.program = 0;
+        glDeleteProgram(program);
+        program = 0;
     }
 }
 
@@ -904,7 +904,7 @@ bool Shader::compile()
     {
         compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
-    linkglslprogram(*this, !variantshader);
+    linkglslprogram(!variantshader);
     return program!=0;
 }
 

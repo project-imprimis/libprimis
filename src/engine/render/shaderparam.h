@@ -140,7 +140,7 @@ class Shader
         void set_();
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
-
+        void linkglslprogram(bool msg = true);
 };
 
 class GlobalShaderParam
