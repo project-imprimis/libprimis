@@ -82,8 +82,6 @@ class Shader
         static Shader *lastshader;
 
         char *name,
-            *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
-            *psstr, //a pointer to a `p`ixel `s`hader `str`ing
             *defer; //a pointer to a deferred shader
         int type;
         GLuint program;
@@ -97,13 +95,6 @@ class Shader
         Shader *reusevs, *reuseps;
         std::vector<UniformLoc> uniformlocs;
 
-        struct AttribLoc
-        {
-            const char *name;
-            int loc;
-            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
-        };
-        std::vector<AttribLoc> attriblocs;
         const void *owner;
 
         Shader();
@@ -128,11 +119,18 @@ class Shader
         void cleanup(bool full = false);
 
         static int uniformlocversion();
-        void genattriblocs(const char *vs, const Shader *reusevs);
-        void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
         Shader *setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row);
 
     private:
+        char *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
+             *psstr; //a pointer to a `p`ixel `s`hader `str`ing
+        struct AttribLoc
+        {
+            const char *name;
+            int loc;
+            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
+        };
+        std::vector<AttribLoc> attriblocs;
         GLuint vsobj, psobj;
         ushort *variantrows;
         bool used;
@@ -146,6 +144,8 @@ class Shader
         void setglsluniformformat(const char *name, GLenum format, int size);
         void linkglslprogram(bool msg = true);
         void uniformtex(const char * name, int tmu);
+        void genattriblocs(const char *vs, const Shader *reusevs);
+        void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
 };
 
 class GlobalShaderParam
