@@ -130,6 +130,7 @@ class Shader
         static int uniformlocversion();
         void genattriblocs(const char *vs, const Shader *reusevs);
         void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
+        Shader *setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row);
 
     private:
         GLuint vsobj, psobj;

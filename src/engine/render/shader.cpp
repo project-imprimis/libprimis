@@ -1118,60 +1118,66 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
     Shader *exists = shaders.access(name);
     char *rname = exists ? exists->name : newstring(name);
     Shader &s = shaders[rname];
-    s.name = rname;
-    s.vsstr = newstring(vs);
-    s.psstr = newstring(ps);
+    Shader *retval = s.setupshader(rname, ps, vs, variant, row);
+    return retval; //can be nullptr or s
+}
 
-    delete[] s.defer;
-    s.defer = nullptr;
+Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row)
+{
+    name = rname;
+    vsstr = newstring(vs);
+    psstr = newstring(ps);
 
-    s.type = type & ~(Shader_Invalid | Shader_Deferred);
-    s.variantshader = variant;
-    s.standard = standardshaders;
+    delete[] defer;
+    defer = nullptr;
+
+    type = type & ~(Shader_Invalid | Shader_Deferred);
+    variantshader = variant;
+    standard = standardshaders;
     if(forceshaders)
     {
-        s.forced = true;
+        forced = true;
     }
-    s.reusevs = s.reuseps = nullptr;
+    reusevs = reuseps = nullptr;
     if(variant)
     {
         int row = 0,
             col = 0;
         if(!vs[0] || std::sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
-            delete[] s.vsstr;
-            s.vsstr = nullptr;
-            s.reusevs = !vs[0] ? variant : variant->getvariant(col, row);
+            delete[] vsstr;
+            vsstr = nullptr;
+            reusevs = !vs[0] ? variant : variant->getvariant(col, row);
         }
         row = col = 0;
         if(!ps[0] || std::sscanf(ps, "%d , %d", &row, &col) >= 1)
         {
-            delete[] s.psstr;
-            s.psstr = nullptr;
-            s.reuseps = !ps[0] ? variant : variant->getvariant(col, row);
+            delete[] psstr;
+            psstr = nullptr;
+            reuseps = !ps[0] ? variant : variant->getvariant(col, row);
         }
     }
     if(variant)
     {
         for(uint i = 0; i < variant->defaultparams.size(); i++)
         {
-            s.defaultparams.emplace_back(variant->defaultparams[i]);
+            defaultparams.emplace_back(variant->defaultparams[i]);
         }
     }
     else
     {
         for(uint i = 0; i < slotparams.size(); i++)
         {
-            s.defaultparams.emplace_back(slotparams[i]);
+            defaultparams.emplace_back(slotparams[i]);
         }
     }
-    s.attriblocs.clear();
-    s.uniformlocs.clear();
-    s.genattriblocs(vs, s.reusevs);
-    s.genuniformlocs(vs, ps, s.reusevs, s.reuseps);
-    if(!s.compile())
+    attriblocs.clear();
+    uniformlocs.clear();
+    genattriblocs(vs, reusevs);
+    genuniformlocs(vs, ps, reusevs, reuseps);
+    if(!compile())
     {
-        s.cleanup(true);
+        cleanup(true);
         if(variant)
         {
             shaders.remove(rname);
@@ -1180,9 +1186,9 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
     }
     if(variant)
     {
-        variant->addvariant(row, &s);
+        variant->addvariant(row, this);
     }
-    return &s;
+    return this;
 }
 
 static const char *findglslmain(const char *s)
