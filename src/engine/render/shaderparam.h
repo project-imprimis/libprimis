@@ -86,7 +86,7 @@ class Shader
             *psstr, //a pointer to a `p`ixel `s`hader `str`ing
             *defer; //a pointer to a deferred shader
         int type;
-        GLuint program, vsobj, psobj;
+        GLuint program;
         std::vector<SlotShaderParamState> defaultparams;
         std::vector<GlobalShaderParamUse> globalparams;
         std::vector<LocalShaderParamState> localparams;
@@ -130,6 +130,7 @@ class Shader
         static int uniformlocversion();
 
     private:
+        GLuint vsobj, psobj;
         ushort *variantrows;
         bool used;
         void allocparams();
