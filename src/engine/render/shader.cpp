@@ -1081,14 +1081,14 @@ void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-static void genuniformlocs(Shader &s, const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps)
+void Shader::genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
     int binding, stride;
     if(reusevs)
     {
-        s.uniformlocs = reusevs->uniformlocs;
+        uniformlocs = reusevs->uniformlocs;
     }
     else
     {
@@ -1097,11 +1097,11 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, const Shad
             int numargs = std::sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
+                uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
             }
             else if(numargs >= 1)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
+                uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
             }
             vs += len;
         }
@@ -1168,7 +1168,7 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
     s.attriblocs.clear();
     s.uniformlocs.clear();
     s.genattriblocs(vs, s.reusevs);
-    genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
+    s.genuniformlocs(vs, ps, s.reusevs, s.reuseps);
     if(!s.compile())
     {
         s.cleanup(true);
