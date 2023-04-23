@@ -128,6 +128,7 @@ class Shader
         void cleanup(bool full = false);
 
         static int uniformlocversion();
+        void genattriblocs(const char *vs, const Shader *reusevs);
 
     private:
         GLuint vsobj, psobj;
@@ -143,7 +144,6 @@ class Shader
         void setglsluniformformat(const char *name, GLenum format, int size);
         void linkglslprogram(bool msg = true);
         void uniformtex(const char * name, int tmu);
-
 };
 
 class GlobalShaderParam

@@ -1058,14 +1058,14 @@ void GlobalShaderParamUse::flush()
     version = param->version;
 }
 
-static void genattriblocs(Shader &s, const char *vs, const Shader *reusevs)
+void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 {
     static int len = std::strlen("//:attrib");
     string name;
     int loc;
     if(reusevs)
     {
-        s.attriblocs = reusevs->attriblocs;
+        attriblocs = reusevs->attriblocs;
     }
     else
     {
@@ -1073,7 +1073,7 @@ static void genattriblocs(Shader &s, const char *vs, const Shader *reusevs)
         {
             if(std::sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
-                s.attriblocs.emplace_back(Shader::AttribLoc(getshaderparamname(name), loc));
+                attriblocs.emplace_back(Shader::AttribLoc(getshaderparamname(name), loc));
             }
             vs += len;
         }
@@ -1167,7 +1167,7 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
     }
     s.attriblocs.clear();
     s.uniformlocs.clear();
-    genattriblocs(s, vs, s.reusevs);
+    s.genattriblocs(vs, s.reusevs);
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
     if(!s.compile())
     {
