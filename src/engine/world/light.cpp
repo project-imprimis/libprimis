@@ -440,8 +440,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             {
                 continue;
             }
-            surfaceinfo &surf = surfaces[i];
-            surf = c.ext->surfaces[i];
+            surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
             if(numverts)
             {
