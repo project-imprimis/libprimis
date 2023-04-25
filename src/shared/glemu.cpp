@@ -349,14 +349,15 @@ namespace gle
             multidraw();
             if(start)
             {
-                for(uint i = 0; i < multidrawstart.size(); i++)
+                //offset the buffer indices by start point
+                for(GLint &i : multidrawstart)
                 {
-                    multidrawstart[i] += start;
+                    i += start;
                 }
             }
             glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
-            multidrawstart.resize(0);
-            multidrawcount.resize(0);
+            multidrawstart.clear();
+            multidrawcount.clear();
         }
         else
         {
