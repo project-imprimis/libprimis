@@ -679,12 +679,11 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
     std::vector<const plink *> nextqueue;
     while(queue.size())
     {
-        for(uint i = 0; i < queue.size(); i++)
+        for(const plink *&l : queue)
         {
-            const plink &l = *queue[i];
-            if(l.polys[0] >= 0 && l.polys[1] >= 0)
+            if(l->polys[0] >= 0 && l->polys[1] >= 0)
             {
-                polys[l.polys[0]].mergepolys(links, nextqueue, l.polys[0], polys[l.polys[1]], l);
+                polys[l->polys[0]].mergepolys(links, nextqueue, l->polys[0], polys[l->polys[1]], *l);
             }
         }
         queue.clear();
