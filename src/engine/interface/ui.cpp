@@ -1330,8 +1330,8 @@ namespace UI
 
         void layout()
         {
-            widths.resize(0);
-            heights.resize(0);
+            widths.clear();
+            heights.clear();
 
             int column = 0,
                 row = 0;
@@ -1533,7 +1533,7 @@ namespace UI
 
         void layout()
         {
-            widths.resize(0);
+            widths.clear();
 
             w = subh = 0;
             LOOP_CHILDREN(o,
@@ -4849,7 +4849,7 @@ namespace UI
 
     void cleanup()
     {
-        world->children.resize(0);
+        world->children.clear();
         ENUMERATE(windows, Window *, w, delete w);
         windows.clear();
         if(world)
