@@ -1557,9 +1557,9 @@ namespace UI
             });
 
             subw = 0;
-            for(int i = 0; i < static_cast<int>(widths.size()); i++)
+            for(const float &i : widths)
             {
-                subw += widths[i];
+                subw += i;
             }
             w = std::max(w, subw + spacew*std::max(static_cast<int>(widths.size()) - 1, 0));
             h = subh + spaceh*std::max(static_cast<int>(children.size()) - 1, 0);
