@@ -1434,7 +1434,7 @@ namespace UI
             return columns;
         }
 
-        void buildchildren(uint *columndata, uint *contents)
+        void buildchildren(const uint *columndata, const uint *contents)
         {
             Object *oldparent = buildparent;
             int oldchild = buildchild;
