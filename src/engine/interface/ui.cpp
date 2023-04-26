@@ -1362,13 +1362,13 @@ namespace UI
             });
 
             subw = subh = 0;
-            for(int i = 0; i < static_cast<int>(widths.size()); i++)
+            for(const float &i : widths)
             {
-                subw += widths[i];
+                subw += i;
             }
-            for(int i = 0; i < static_cast<int>(heights.size()); i++)
+            for(const float &i : heights)
             {
-                subh += heights[i];
+                subh += i;
             }
             w = subw + spacew*std::max(static_cast<int>(widths.size()) - 1, 0);
             h = subh + spaceh*std::max(static_cast<int>(heights.size()) - 1, 0);
