@@ -117,6 +117,9 @@ struct surfaceinfo
     surfaceinfo() : verts(0), numverts(BlendLayer_Top)
     {
     }
+    surfaceinfo(uchar verts, uchar num) : verts(verts), numverts(num)
+    {
+    }
 
     int totalverts() const
     {
@@ -145,7 +148,7 @@ struct cubeext
 {
     vtxarray *va;            /**< Vertex array for children, or nullptr. */
     octaentities *ents;      /**< Map entities inside cube. */
-    surfaceinfo surfaces[6]; // render info for each surface
+    std::array<surfaceinfo, 6> surfaces; // render info for each surface
     int tjoints;             // linked list of t-joints
     uchar maxverts;          // allocated space for verts
 

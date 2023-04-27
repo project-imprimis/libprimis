@@ -86,12 +86,12 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
     {
         if(c.ext)
         {
-            std::memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
+            std::copy(ext->surfaces.begin(), ext->surfaces.end(), c.ext->surfaces.begin());
             std::memcpy(ext->verts(), c.ext->verts(), c.ext->maxverts*sizeof(vertinfo));
         }
         else
         {
-            std::memset(ext->surfaces, 0, sizeof(ext->surfaces));
+            ext->surfaces.fill({0,0});
         }
     }
     setcubeext(c, ext);
@@ -496,7 +496,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     }
     if(c.ext)
     {
-        std::memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
+        c.ext->surfaces.fill({0,0});
     }
     if(c.isempty() || c.issolid())
     {

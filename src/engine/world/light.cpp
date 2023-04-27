@@ -73,7 +73,7 @@ void brightencube(cube &c)
     {
         newcubeext(c, 0, false);
     }
-    std::memcpy(c.ext->surfaces, brightsurfaces, sizeof(brightsurfaces));
+    std::memcpy(c.ext->surfaces.data(), brightsurfaces, sizeof(brightsurfaces));
 }
 
 void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int numverts)
@@ -82,7 +82,7 @@ void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int n
     {
         newcubeext(c, numverts, false);
     }
-    std::memcpy(c.ext->surfaces, surfs, sizeof(c.ext->surfaces));
+    std::memcpy(c.ext->surfaces.data(), surfs, sizeof(c.ext->surfaces));
     std::memcpy(c.ext->verts(), verts, numverts*sizeof(vertinfo));
 }
 
@@ -131,7 +131,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             if(numbefore + numsrcverts + numafter > c.ext->maxverts)
             {
                 ext = growcubeext(c.ext, numbefore + numsrcverts + numafter);
-                std::memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
+                std::copy(ext->surfaces.begin(), ext->surfaces.end(), c.ext->surfaces.begin());
             }
             int offset = 0;
             if(numbefore == beforeoffset)
@@ -592,7 +592,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             if(surf.used())
             {
                 cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-                std::memcpy(ext->surfaces, surfaces.data(), sizeof(ext->surfaces));
+                std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
                 std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
                 if(c.ext != ext)
                 {
