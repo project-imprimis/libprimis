@@ -467,7 +467,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             convex = 0;
         if(numverts)
         {
-            vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
+            const vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
             for(int j = 0; j < numverts; ++j)
             {
                 curlitverts[j].set(verts[j].getxyz());
