@@ -3602,9 +3602,9 @@ void batchshadowmapmodels(bool skipmesh)
     const std::vector<extentity *> &ents = entities::getents();
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(uint k = 0; k < oe->mapmodels.size(); k++)
+        for(const int &k : oe->mapmodels)
         {
-            extentity &e = *ents[oe->mapmodels[k]];
+            extentity &e = *ents[k];
             if(e.flags&nflags)
             {
                 continue;
@@ -3614,9 +3614,9 @@ void batchshadowmapmodels(bool skipmesh)
     }
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(uint j = 0; j < oe->mapmodels.size(); j++)
+        for(const int &j : oe->mapmodels)
         {
-            extentity &e = *ents[oe->mapmodels[j]];
+            extentity &e = *ents[j];
             if(!(e.flags&EntFlag_Render))
             {
                 continue;
