@@ -2443,7 +2443,7 @@ void Occluder::resetqueries()
     }
 }
 
-int Occluder::getnumqueries()
+int Occluder::getnumqueries() const
 {
     return queryframes[flipquery].cur;
 }
