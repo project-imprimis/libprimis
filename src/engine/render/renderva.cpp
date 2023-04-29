@@ -1725,8 +1725,8 @@ namespace
 
     struct shadowverts
     {
-        static const int tablesize = 1<<13;
-        int table[tablesize];
+        static constexpr int tablesize = 1<<13;
+        std::array<int, tablesize> table;
         std::vector<vec> verts;
         std::vector<int> chain;
 
@@ -1734,7 +1734,7 @@ namespace
 
         void clear()
         {
-            std::memset(table, -1, sizeof(table));
+            table.fill(-1);
             chain.clear();
             verts.clear();
         }
