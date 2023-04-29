@@ -91,8 +91,7 @@ namespace
     }
 
     constexpr int vasortsize = 64;
-
-    vtxarray *vasort[vasortsize];
+    std::array<vtxarray *, vasortsize> vasort;
 
     void addvisibleva(vtxarray *va)
     {
@@ -177,7 +176,7 @@ namespace
 
     void findvisiblevas()
     {
-        std::memset(vasort, 0, sizeof(vasort));
+        vasort.fill(nullptr);
         findvisiblevas<false, false>(varoot);
         sortvisiblevas();
     }
@@ -3629,7 +3628,7 @@ void batchshadowmapmodels(bool skipmesh)
 
 void findshadowvas()
 {
-    std::memset(vasort, 0, sizeof(vasort));
+    vasort.fill(nullptr);
     switch(shadowmapping)
     {
         case ShadowMap_Reflect:
