@@ -217,7 +217,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             dualquat *frame = &animbones[tmp*skel->numbones];
             for(uint i = 0; i < basejoints.size(); i++)
             {
-                md5hierarchy &h = hierarchy[i];
+                const md5hierarchy &h = hierarchy[i];
                 md5joint j = basejoints[i];
                 if(h.start < animdatalen && h.flags)
                 {
@@ -254,7 +254,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 {
                     adjustments[i].adjust(dq);
                 }
-                boneinfo &b = skel->bones[i];
+                const boneinfo &b = skel->bones[i];
                 dq.mul(b.invbase);
                 dualquat &dst = frame[i];
                 if(h.parent < 0)
