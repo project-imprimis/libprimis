@@ -1785,11 +1785,11 @@ void rendertexturepanel(int w, int h)
                         *glowtex = nullptr;
                 if(slot.texmask&(1 << Tex_Glow))
                 {
-                    for(uint j = 0; j < slot.sts.size(); j++)
+                    for(const Slot::Tex &t : slot.sts)
                     {
-                        if(slot.sts[j].type == Tex_Glow)
+                        if(t.type == Tex_Glow)
                         {
-                            glowtex = slot.sts[j].t;
+                            glowtex = t.t;
                             break;
                         }
                     }
