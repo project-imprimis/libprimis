@@ -914,7 +914,7 @@ class stainrenderer
             }
             else if(cu.ext && (numverts = cu.ext->surfaces[orient].numverts&Face_MaxVerts))
             {
-                vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
+                const vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
                 ivec vo = ivec(o).mask(~0xFFF).shl(3);
                 for(int j = 0; j < numverts; ++j)
                 {
