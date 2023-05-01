@@ -69,7 +69,7 @@ class animmodel : public model
 
         struct skin : shaderparams
         {
-            part *owner;
+            const part *owner;
             Texture *tex, *decal, *masks, *normalmap;
             Shader *shader, *rsmshader;
             int cullface;
