@@ -138,7 +138,6 @@ VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
 namespace
 {
     int wx1, wy1, wx2, wy2, wsize;
-    float whoffset;
 
     float wxscale = 1.0f,
           wyscale = 1.0f;
@@ -149,7 +148,7 @@ namespace
         gle::deftexcoord0();
     }
 
-    void vertwt(float v1, float v2, float v3, float whscale)
+    void vertwt(float v1, float v2, float v3, float whscale, float whoffset)
     {
         float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
         float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
@@ -181,17 +180,17 @@ namespace
         float whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
         if(mat == Mat_Water)
         {
-            whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+            float whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
             defvertwt();
             gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
             for(int x = wx1; x<wx2; x += subdiv)
             {
-                vertwt(x,        wy1, z, whscale);
-                vertwt(x+subdiv, wy1, z, whscale);
+                vertwt(x,        wy1, z, whscale, whoffset);
+                vertwt(x+subdiv, wy1, z, whscale, whoffset);
                 for(int y = wy1; y<wy2; y += subdiv)
                 {
-                    vertwt(x,        y+subdiv, z, whscale);
-                    vertwt(x+subdiv, y+subdiv, z, whscale);
+                    vertwt(x,        y+subdiv, z, whscale, whoffset);
+                    vertwt(x+subdiv, y+subdiv, z, whscale, whoffset);
                 }
                 gle::multidraw();
             }
