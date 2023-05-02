@@ -2586,7 +2586,8 @@ namespace UI
                 float oldscale = textscale;
                 textscale = drawscale();
                 ttr.fontsize(36);
-                pushhudscale(conscale/490);
+                const float conscalefactor = 0.000666;
+                pushhudscale(conscalefactor);
                 ttr.renderttf(getstr(), {color.r, color.g, color.b, color.a}, sx*1500, sy*1500, scale*33);
                 pophudmatrix();
                 //draw_text(getstr(), sx/textscale, sy/textscale, 0, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
