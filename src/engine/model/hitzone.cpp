@@ -636,7 +636,7 @@ bool skelzonekey::hasbone(int n) const
 
 int skelzonekey::numbones() const
 {
-    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    for(uint i = 0; i < sizeof(bones); ++i)
     {
         if(bones[i] == 0xFF)
         {
@@ -648,7 +648,7 @@ int skelzonekey::numbones() const
 
 void skelzonekey::addbone(int n)
 {
-    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    for(uint i = 0; i < sizeof(bones); ++i)
     {
         if(n <= bones[i])
         {
