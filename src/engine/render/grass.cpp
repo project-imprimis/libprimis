@@ -312,11 +312,11 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    Shader *grassshader = nullptr;
+    bool hasgrassshader = false;
 
     void cleargrassshaders()
     {
-        grassshader = nullptr;
+        hasgrassshader = false;
     }
 
     Shader *loadgrassshader()
@@ -393,12 +393,12 @@ void generategrass()
 
 void loadgrassshaders()
 {
-    grassshader = loadgrassshader();
+    hasgrassshader = (loadgrassshader() != nullptr);
 }
 
 void rendergrass()
 {
-    if(!grass || !grassdist || grassgroups.empty() || !grassshader)
+    if(!grass || !grassdist || grassgroups.empty() || !hasgrassshader)
     {
         return;
     }
