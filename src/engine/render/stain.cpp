@@ -1065,9 +1065,9 @@ void initstains()
     stains.emplace_back("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright);
     stains.emplace_back("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250);
     stains.emplace_back("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100);
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer &i : stains)
     {
-        stains[i].init(maxstaintris);
+        i.init(maxstaintris);
     }
     for(uint i = 0; i < stains.size(); ++i)
     {
