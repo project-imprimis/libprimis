@@ -418,7 +418,7 @@ void rendergrass()
     GLOBALPARAMF(grasstest, grasstest); //toggles use of grass (depth) test shader
 
     int texid = -1;
-    for(grassgroup &g : grassgroups)
+    for(const grassgroup &g : grassgroups)
     {
         if(texid != g.tex)
         {
