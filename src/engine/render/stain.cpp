@@ -1081,9 +1081,9 @@ void initstains()
  */
 void clearstains()
 {
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer &i : stains)
     {
-        stains[i].clearstains();
+        i.clearstains();
     }
 }
 
