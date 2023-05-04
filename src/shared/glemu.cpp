@@ -421,7 +421,7 @@ namespace gle
         vbooffset = maxvbosize;
         if(defaultvao)
         {
-            glDeleteVertexArrays_(1, &defaultvao);
+            glDeleteVertexArrays(1, &defaultvao);
             defaultvao = 0;
         }
     }

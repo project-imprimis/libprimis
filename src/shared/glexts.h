@@ -111,11 +111,8 @@ typedef void (APIENTRYP PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GL
 #ifndef GL_ARB_vertex_array_object
 #define GL_ARB_vertex_array_object 1
 #define GL_VERTEX_ARRAY_BINDING           0x85B5
-typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
-typedef void (APIENTRYP PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint *arrays);
 typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
 #endif
-extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_;
 extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_;
 
 #ifndef GL_ARB_texture_swizzle
