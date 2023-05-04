@@ -99,9 +99,6 @@ PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 // GL_ARB_color_buffer_float
 PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
 
-// GL_ARB_vertex_array_object
-PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
-
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
 
@@ -317,7 +314,6 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 4 draw buffers.");
     }
     //OpenGL 3.0
-    glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
 
     if(hasext("GL_EXT_gpu_shader4"))
     {

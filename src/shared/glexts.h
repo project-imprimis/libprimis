@@ -107,14 +107,6 @@ typedef void (APIENTRYP PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GL
 #define GL_HALF_FLOAT                     0x140B
 #endif
 
-
-#ifndef GL_ARB_vertex_array_object
-#define GL_ARB_vertex_array_object 1
-#define GL_VERTEX_ARRAY_BINDING           0x85B5
-typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
-#endif
-extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_;
-
 #ifndef GL_ARB_texture_swizzle
 #define GL_ARB_texture_swizzle 1
 #define GL_TEXTURE_SWIZZLE_R              0x8E42
