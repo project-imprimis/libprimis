@@ -933,38 +933,38 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
+    auto addxyzscissor = [] (const vec4<float>& p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
+    {
+        if(p.z >= -p.w)
+        {
+            float x = p.x / p.w,
+                  y = p.y / p.w,
+                  z = p.z / p.w;
+            sx1 = std::min(sx1, x);
+            sy1 = std::min(sy1, y);
+            sz1 = std::min(sz1, z);
+            sx2 = std::max(sx2, x);
+            sy2 = std::max(sy2, y);
+            sz2 = std::max(sz2, z);
+        }
+    };
     float spotscale = radius * tan360(spot);
     vec up     = vec(spotx).mul(spotscale),
         right  = vec(spoty).mul(spotscale),
         center = vec(dir).mul(radius).add(origin);
-//================================================================ ADDXYZSCISSOR
-#define ADDXYZSCISSOR(p) do { \
-        if(p.z >= -p.w) \
-        { \
-            float x = p.x / p.w, \
-                  y = p.y / p.w, \
-                  z = p.z / p.w; \
-            sx1 = std::min(sx1, x); \
-            sy1 = std::min(sy1, y); \
-            sz1 = std::min(sz1, z); \
-            sx2 = std::max(sx2, x); \
-            sy2 = std::max(sy2, y); \
-            sz2 = std::max(sz2, z); \
-        } \
-    } while(0)
     vec4<float> v[5];
     sx1 = sy1 = sz1 = 1;
     sx2 = sy2 = sz2 = -1;
     camprojmatrix.transform(vec(center).sub(right).sub(up), v[0]);
-    ADDXYZSCISSOR(v[0]);
+    addxyzscissor(v[0], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).add(right).sub(up), v[1]);
-    ADDXYZSCISSOR(v[1]);
+    addxyzscissor(v[1], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).sub(right).add(up), v[2]);
-    ADDXYZSCISSOR(v[2]);
+    addxyzscissor(v[2], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).add(right).add(up), v[3]);
-    ADDXYZSCISSOR(v[3]);
+    addxyzscissor(v[3], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(origin, v[4]);
-    ADDXYZSCISSOR(v[4]);
+    addxyzscissor(v[4], sx1, sy1, sx2, sy2, sz1, sz2);
     if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2)
     {
         return false;
@@ -983,9 +983,6 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             {
                 continue;
             }
-
-    #undef ADDXYZSCISSOR
-//==============================================================================
 
 //============================================================= INTERPXYZSCISSOR
     #define INTERPXYZSCISSOR(p, o) do { \
