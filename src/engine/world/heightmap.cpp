@@ -28,7 +28,6 @@ class hmap
 
         void hmapselect()
         {
-            printf("ivec cur: %d %d %d\n", cur.x, cur.y, cur.z);
             const cube &c = rootworld.lookupcube(cur);
             if(!c.texture)
             {
