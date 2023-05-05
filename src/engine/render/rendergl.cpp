@@ -933,7 +933,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
-    auto addxyzscissor = [] (const vec4<float>& p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
+    static auto addxyzscissor = [] (const vec4<float> &p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
     {
         if(p.z >= -p.w)
         {
@@ -965,6 +965,20 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     addxyzscissor(v[3], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(origin, v[4]);
     addxyzscissor(v[4], sx1, sy1, sx2, sy2, sz1, sz2);
+
+    static auto interpxyzscissor = [] (const vec4<float> &p, const vec4<float> &o, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1)
+    {
+        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w),
+              w = p.w + t*(o.w - p.w),
+              x = (p.x + t*(o.x - p.x))/w,
+              y = (p.y + t*(o.y - p.y))/w;
+        sx1 = std::min(sx1, x);
+        sy1 = std::min(sy1, y);
+        sz1 = std::min(sz1, -1.0f);
+        sx2 = std::max(sx2, x);
+        sy2 = std::max(sy2, y);
+    };
+
     if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2)
     {
         return false;
@@ -984,24 +998,11 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
                 continue;
             }
 
-//============================================================= INTERPXYZSCISSOR
-    #define INTERPXYZSCISSOR(p, o) do { \
-        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
-              w = p.w + t*(o.w - p.w), \
-              x = (p.x + t*(o.x - p.x))/w, \
-              y = (p.y + t*(o.y - p.y))/w; \
-        sx1 = std::min(sx1, x); \
-        sy1 = std::min(sy1, y); \
-        sz1 = std::min(sz1, -1.0f); \
-        sx2 = std::max(sx2, x); \
-        sy2 = std::max(sy2, y); \
-        } while(0)
-
-            INTERPXYZSCISSOR(p, o);
+            interpxyzscissor(p, o, sx1, sy1, sx2, sy2, sz1);
         }
         if(v[4].z > -v[4].w)
         {
-            INTERPXYZSCISSOR(p, v[4]);
+            interpxyzscissor(p, v[4], sx1, sy1, sx2, sy2, sz1);
         }
     }
     if(v[4].z < -v[4].w)
@@ -1013,12 +1014,9 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             {
                 continue;
             }
-            INTERPXYZSCISSOR(v[4], o);
+            interpxyzscissor(v[4], o, sx1, sy1, sx2, sy2, sz1);
         }
     }
-
-    #undef INTERPXYZSCISSOR
-//==============================================================================
 
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
