@@ -1051,7 +1051,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
     float dist = -1e10f;
     for(int i = 0; i < nummeshes; ++i)
     {
-        mesh &m = meshes[i];
+        const mesh &m = meshes[i];
         if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
         {
             continue;
