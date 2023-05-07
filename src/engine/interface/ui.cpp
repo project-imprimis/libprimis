@@ -271,15 +271,6 @@ namespace UI
             ushort state, childstate;
             Object *parent;
 
-            //LOOP_CHILDREN: loops through all of the children, assigns them to
-            // a temp var, and executes the passed body
-            #define LOOP_CHILDREN(o, body) do { \
-                for(int i = 0; i < static_cast<int>(children.size()); i++) \
-                { \
-                    Object *o = children.at(i); \
-                    body; \
-                } \
-            } while(0)
             //note reverse iteration
             #define LOOP_CHILDREN_REV(o, body) do { \
                 for(int i = static_cast<int>(children.size()); --i >=0;) \
@@ -333,13 +324,13 @@ namespace UI
             virtual void layout()
             {
                 w = h = 0;
-                LOOP_CHILDREN(o,
+                for(Object *o : children)
                 {
                     o->x = o->y = 0;
                     o->layout();
                     w = std::max(w, o->x + o->w);
                     h = std::max(h, o->y + o->h);
-                });
+                }
             }
 
             void buildchildren(uint *contents)
@@ -370,7 +361,10 @@ namespace UI
                 state &= ~flags;
                 if(childstate & flags)
                 {
-                    LOOP_CHILDREN(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
+                    for(Object *o : children)
+                    {
+                        if((o->state | o->childstate) & flags) o->clearstate(flags);
+                    }
                     childstate &= ~flags;
                 }
             }
@@ -399,7 +393,10 @@ namespace UI
             void resetchildstate()
             {
                 resetstate();
-                LOOP_CHILDREN(o, o->resetchildstate());
+                for(Object *o : children)
+                {
+                     o->resetchildstate();
+                }
             }
 
             bool hasstate(int flags) const
@@ -414,13 +411,13 @@ namespace UI
 
             virtual void draw(float sx, float sy)
             {
-                LOOP_CHILDREN(o,
+                for(Object *o : children)
                 {
                     if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     {
                         o->draw(sx + o->x, sy + o->y);
                     }
-                });
+                }
             }
 
             /* DOSTATES: executes the DOSTATE macro for the applicable special keys
@@ -626,7 +623,10 @@ namespace UI
 
             void adjustchildrento(float px, float py, float pw, float ph)
             {
-                LOOP_CHILDREN(o, o->adjustlayout(px, py, pw, ph));
+                for(Object *o : children)
+                {
+                    o->adjustlayout(px, py, pw, ph);
+                }
             }
 
             virtual void adjustchildren()
@@ -720,18 +720,16 @@ namespace UI
 
             Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr) const
             {
-                //note that this is a macro
-                LOOP_CHILDREN(o,
+                for(Object *o : children)
                 {
                     if(o != exclude && o->isnamed(name))
                     {
                         return o;
                     }
-                });
+                }
                 if(recurse)
                 {
-                    //note that this is a macro
-                    LOOP_CHILDREN(o,
+                    for(Object *o : children)
                     {
                         if(o != exclude)
                         {
@@ -741,7 +739,7 @@ namespace UI
                                 return found;
                             }
                         }
-                    });
+                    }
                 }
                 return nullptr;
             }
@@ -1071,7 +1069,10 @@ namespace UI
         {
             children.erase(children.begin() + index);
             childstate = 0;
-            LOOP_CHILDREN(o, childstate |= o->state | o->childstate);
+            for(Object *o : children)
+            {
+                childstate |= o->state | o->childstate;
+            }
             w->hide();
         }
 
@@ -1201,14 +1202,14 @@ namespace UI
         void layout()
         {
             subw = h = 0;
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x = subw;
                 o->y = 0;
                 o->layout();
                 subw += o->w;
                 h = std::max(h, o->y + o->h);
-            });
+            }
             w = subw + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
@@ -1264,14 +1265,14 @@ namespace UI
         void layout()
         {
             w = subh = 0;
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x = 0;
                 o->y = subh;
                 o->layout();
                 subh += o->h;
                 w = std::max(w, o->x + o->w);
-            });
+            }
             h = subh + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
@@ -1286,14 +1287,14 @@ namespace UI
                   sy     = 0,
                   rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->y = offset;
                 offset += o->h + rspace;
                 float sh = o->h + rstep;
                 o->adjustlayout(0, sy, w, sh);
                 sy += sh;
-            });
+            }
         }
     };
 
@@ -1335,7 +1336,7 @@ namespace UI
 
             int column = 0,
                 row = 0;
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->layout();
                 if(column >= static_cast<int>(widths.size()))
@@ -1359,7 +1360,7 @@ namespace UI
                 {
                     row++;
                 }
-            });
+            }
 
             subw = subh = 0;
             for(const float &i : widths)
@@ -1390,7 +1391,7 @@ namespace UI
                   cstep = (w - subw) / widths.size(),
                   rspace = (h - subh) / std::max(static_cast<int>(heights.size()) - 1, 1),
                   rstep = (h - subh) / heights.size();
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x = offsetx;
                 o->y = offsety;
@@ -1405,7 +1406,7 @@ namespace UI
                     sy += heights[row] + rstep;
                     row++;
                 }
-            });
+            }
         }
     };
 
@@ -1536,7 +1537,7 @@ namespace UI
             widths.clear();
 
             w = subh = 0;
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->layout();
                 int cols = o->childcolumns();
@@ -1554,7 +1555,7 @@ namespace UI
                 }
                 w = std::max(w, o->w);
                 subh += o->h;
-            });
+            }
 
             subw = 0;
             for(const float &i : widths)
@@ -1577,7 +1578,7 @@ namespace UI
                   cstep = (w - subw) / widths.size(),
                   rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x = 0;
                 o->y = offsety;
@@ -1599,7 +1600,7 @@ namespace UI
                     c->adjustlayout(sx, 0, sw, o->h);
                     sx += sw;
                 }
-            });
+            }
         }
     };
 
@@ -1628,14 +1629,14 @@ namespace UI
         {
             w = spacew;
             h = spaceh;
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x = spacew;
                 o->y = spaceh;
                 o->layout();
                 w = std::max(w, o->x + o->w);
                 h = std::max(h, o->y + o->h);
-            });
+            }
             w += spacew;
             h += spaceh;
         }
@@ -1664,11 +1665,11 @@ namespace UI
         {
             Object::layout();
 
-            LOOP_CHILDREN(o,
+            for(Object *o : children)
             {
                 o->x += offsetx;
                 o->y += offsety;
-            });
+            }
 
             w += offsetx;
             h += offsety;
@@ -1746,7 +1747,6 @@ namespace UI
         static void def() { gle::defcolor(4, GL_UNSIGNED_BYTE); }
     };
 
-#undef LOOP_CHILDREN
 #undef LOOP_CHILDREN_REV
 #undef LOOP_CHILD_RANGE
 
