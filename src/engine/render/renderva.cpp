@@ -2808,9 +2808,9 @@ void renderalphageom(int side)
 
     if(side == 2)
     {
-        for(uint i = 0; i < alphavas.size(); i++)
+        for(const vtxarray *i : alphavas)
         {
-            renderva(cur, *alphavas[i], RenderPass_GBuffer);
+            renderva(cur, *i, RenderPass_GBuffer);
         }
         if(geombatches.size())
         {
@@ -2820,11 +2820,11 @@ void renderalphageom(int side)
     else
     {
         glCullFace(GL_FRONT);
-        for(uint i = 0; i < alphavas.size(); i++)
+        for(const vtxarray *i : alphavas)
         {
-            if(alphavas[i]->alphabacktris)
+            if(i->alphabacktris)
             {
-                renderva(cur, *alphavas[i], RenderPass_GBuffer);
+                renderva(cur, *i, RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
