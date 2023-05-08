@@ -257,16 +257,6 @@ inline cubeext &ext(cube &c)
     return *(c.ext ? c.ext : newcubeext(c));
 }
 
-#define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
-    GENCUBEVERT(0, x1, y1, z0) \
-    GENCUBEVERT(1, x0, y1, z0) \
-    GENCUBEVERT(2, x0, y1, z1) \
-    GENCUBEVERT(3, x1, y1, z1) \
-    GENCUBEVERT(4, x1, y0, z1) \
-    GENCUBEVERT(5, x0, y0, z1) \
-    GENCUBEVERT(6, x0, y0, z0) \
-    GENCUBEVERT(7, x1, y0, z0)
-
 #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 #define GENFACEVERTSX(x0,x1, y0,y1, z0,z1, c0,c1, r0,r1, d0,d1) \
     GENFACEORIENT(0, GENFACEVERTX(0,0, x0,y1,z1, d0,r1,c1), GENFACEVERTX(0,1, x0,y1,z0, d0,r1,c0), GENFACEVERTX(0,2, x0,y0,z0, d0,r0,c0), GENFACEVERTX(0,3, x0,y0,z1, d0,r0,c1)) \

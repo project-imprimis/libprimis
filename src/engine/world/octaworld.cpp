@@ -777,6 +777,17 @@ void cubeworld::remip()
     worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
 }
 
+//================================================================= GENCUBEVERTS
+#define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
+    GENCUBEVERT(0, x1, y1, z0) \
+    GENCUBEVERT(1, x0, y1, z0) \
+    GENCUBEVERT(2, x0, y1, z1) \
+    GENCUBEVERT(3, x1, y1, z1) \
+    GENCUBEVERT(4, x1, y0, z1) \
+    GENCUBEVERT(5, x0, y0, z1) \
+    GENCUBEVERT(6, x0, y0, z0) \
+    GENCUBEVERT(7, x1, y0, z0)
+
 const ivec cubecoords[8] = // verts of bounding cube
 {
 //================================================================== GENCUBEVERT
@@ -822,6 +833,9 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
     #undef GENFACEVERT
     }
 }
+//==============================================================================
+
+#undef GENCUBEVERTS
 //==============================================================================
 
 bool flataxisface(const cube &c, int orient)
