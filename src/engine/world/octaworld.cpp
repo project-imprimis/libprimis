@@ -800,8 +800,7 @@ const ivec cubecoords[8] =
     GENCUBEVERT(6, x0, y0, z0) \
     GENCUBEVERT(7, x1, y0, z0)
 
-template<class T>
-static void gencubevert(const cube &c, int i, T &v)
+static void gencubevert(const cube &c, int i, vec &v)
 {
     switch(i)
     {
@@ -809,9 +808,9 @@ static void gencubevert(const cube &c, int i, T &v)
 //================================================================== GENCUBEVERT
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
-            v = T(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
-                  EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
-                  EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
+            v = vec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                    EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                    EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
             break;
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
 #undef GENCUBEVERT
