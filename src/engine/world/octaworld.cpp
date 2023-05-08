@@ -777,6 +777,18 @@ void cubeworld::remip()
     worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
 }
 
+const ivec cubecoords[8] =
+{
+    ivec(8, 8, 0),
+    ivec(0, 8, 0),
+    ivec(0, 8, 8),
+    ivec(8, 8, 8),
+    ivec(8, 0, 8),
+    ivec(0, 0, 8),
+    ivec(0, 0, 0),
+    ivec(8, 0, 0)
+};
+
 //================================================================= GENCUBEVERTS
 #define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
     GENCUBEVERT(0, x1, y1, z0) \
@@ -787,15 +799,6 @@ void cubeworld::remip()
     GENCUBEVERT(5, x0, y0, z1) \
     GENCUBEVERT(6, x0, y0, z0) \
     GENCUBEVERT(7, x1, y0, z0)
-
-const ivec cubecoords[8] = // verts of bounding cube
-{
-//================================================================== GENCUBEVERT
-#define GENCUBEVERT(n, x, y, z) ivec(x, y, z),
-    GENCUBEVERTS(0, 8, 0, 8, 0, 8)
-#undef GENCUBEVERT
-//==============================================================================
-};
 
 template<class T>
 static void gencubevert(const cube &c, int i, T &v)
