@@ -553,7 +553,7 @@ namespace gle
 
     void enableboneweight()
     {
-        glEnableVertexAttribArray(Attribute_BoneWeight)
+        glEnableVertexAttribArray(Attribute_BoneWeight);
     }
 
     void disableboneweight()
