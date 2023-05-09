@@ -96,9 +96,6 @@ PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
 
-// GL_ARB_color_buffer_float
-PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
-
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
 
@@ -323,7 +320,6 @@ void gl_checkextensions()
             conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
     }
-    glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
     //OpenGL 3.2

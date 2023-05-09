@@ -93,9 +93,6 @@ typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr off
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
 
-// GL_ARB_color_buffer_float
-extern PFNGLCLAMPCOLORPROC glClampColor_;
-
 #ifndef GL_EXT_texture_integer
 #define GL_EXT_texture_integer 1
 typedef void (APIENTRYP PFNGLCLEARCOLORIIEXTPROC) (GLint red, GLint green, GLint blue, GLint alpha);
