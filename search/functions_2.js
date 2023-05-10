@@ -18,10 +18,12 @@ var searchData=
   ['clearmapcrc_15',['clearmapcrc',['../classcubeworld.html#a2e0c8606178d333e6c0faeaa9a662070',1,'cubeworld']]],
   ['clearshadowcache_16',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],
   ['collide_17',['collide',['../iengine_8h.html#af02d96b4d3813974594eaca18823bc84',1,'iengine.h']]],
-  ['compactvslots_18',['compactvslots',['../classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98',1,'cubeworld']]],
-  ['conoutf_19',['conoutf',['../iengine_8h.html#a4db7318348a74b95e2013bae083f410f',1,'conoutf(const char *s,...) PRINTFARGS(1:&#160;iengine.h'],['../iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa',1,'conoutf(int type, const char *s,...) PRINTFARGS(2:&#160;iengine.h']]],
-  ['cos360_20',['cos360',['../geom_8h.html#ad6a0aa9eb4a0a474deddc7ef0d327497',1,'geom.h']]],
-  ['cotan360_21',['cotan360',['../geom_8h.html#a71490c4edf25d1d2eeb9ab673b71a3e1',1,'geom.h']]],
-  ['countblock_22',['countblock',['../iengine_8h.html#ac082773606ba5eb142cd71b375f63973',1,'iengine.h']]],
-  ['countselchild_23',['countselchild',['../iengine_8h.html#a15c82f66b08505178557860ed81693be',1,'iengine.h']]]
+  ['colorf_18',['colorf',['../iengine_8h.html#af868395f967304e724f2f7089b5064cc',1,'gle']]],
+  ['colorub_19',['colorub',['../iengine_8h.html#a70824bfd4c02ac2d858d7128182ca05e',1,'gle']]],
+  ['compactvslots_20',['compactvslots',['../classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98',1,'cubeworld']]],
+  ['conoutf_21',['conoutf',['../iengine_8h.html#a4db7318348a74b95e2013bae083f410f',1,'conoutf(const char *s,...) PRINTFARGS(1:&#160;iengine.h'],['../iengine_8h.html#ab50593370ce19afc41e34ad751e1f2aa',1,'conoutf(int type, const char *s,...) PRINTFARGS(2:&#160;iengine.h']]],
+  ['cos360_22',['cos360',['../geom_8h.html#ad6a0aa9eb4a0a474deddc7ef0d327497',1,'geom.h']]],
+  ['cotan360_23',['cotan360',['../geom_8h.html#a71490c4edf25d1d2eeb9ab673b71a3e1',1,'geom.h']]],
+  ['countblock_24',['countblock',['../iengine_8h.html#ac082773606ba5eb142cd71b375f63973',1,'iengine.h']]],
+  ['countselchild_25',['countselchild',['../iengine_8h.html#a15c82f66b08505178557860ed81693be',1,'iengine.h']]]
 ];
