@@ -140,6 +140,11 @@ namespace
                 skip = std::clamp(skip, 0, static_cast<int>(conlines.size()-1));
                 return;
             }
+            if(skip < 0)
+            {
+                skip = 0;
+                break;
+            }
             if(conlines[skip].type&filter)
             {
                 --offsetnum;
