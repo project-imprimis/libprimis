@@ -74,8 +74,6 @@ namespace
             }
         }
     }
-
-    int lastmainmenu = -1;
 }
 
 //externally relevant functionality
@@ -130,20 +128,6 @@ void clearchanges(int type)
     if(needsapply.empty())
     {
         UI::hideui("changes");
-    }
-}
-
-//used in main.cpp
-void menuprocess()
-{
-    if(lastmainmenu != mainmenu)
-    {
-        lastmainmenu = mainmenu;
-        execident("mainmenutoggled");
-    }
-    if(mainmenu && !multiplayer && !UI::hascursor())
-    {
-        UI::showui("main");
     }
 }
 
