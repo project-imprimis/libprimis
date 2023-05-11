@@ -1539,7 +1539,7 @@ namespace
                             ce.next = cur;
                             while(cur >= 0)
                             {
-                                cubeedge &p = cubeedges[cur];
+                                const cubeedge &p = cubeedges[cur];
                                 if(ce.offset+ce.size==p.offset)
                                 {
                                     ce.flags &= ~CubeEdge_End;
@@ -2190,7 +2190,7 @@ void findtjoints(int cur, const edgegroup &g)
             curactive  = active;
         while(curactive >= 0)
         {
-            cubeedge &a = cubeedges[curactive];
+            const cubeedge &a = cubeedges[curactive];
             if(a.offset+a.size <= e.offset)
             {
                 if(prevactive >= 0)
