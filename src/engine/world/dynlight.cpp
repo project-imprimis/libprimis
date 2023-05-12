@@ -26,7 +26,7 @@ namespace
 
     struct dynlight
     {
-        vec o, hud;
+        vec o;
         float radius, initradius, curradius, dist;
         vec color, initcolor, curcolor;
         int fade, peak, expire, flags;
@@ -142,7 +142,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
         }
     }
     dynlight d;
-    d.o = d.hud = o;
+    d.o = o;
     d.radius = radius;
     d.initradius = initradius;
     d.color = color;
