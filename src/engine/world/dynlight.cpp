@@ -242,10 +242,8 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
 void updatedynlights()
 {
     cleardynlights();
-
-    for(uint i = 0; i < dynlights.size(); i++)
+    for(dynlight &d : dynlights)
     {
-        dynlight &d = dynlights[i];
         d.calcradius();
         d.calccolor();
     }
