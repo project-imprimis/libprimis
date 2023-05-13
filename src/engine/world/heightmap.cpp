@@ -223,7 +223,7 @@ class hmap
             return  0x0f0f0f0f & ((dc ? c->faces[d] : 0x88888888 - c->faces[d]) >> fs);
         }
 
-        void pushside(cube &c, int d, int x, int y, int z)
+        void pushside(cube &c, int d, int x, int y, int z) const
         {
             ivec a;
             getcubevector(c, d, x, y, z, a);
