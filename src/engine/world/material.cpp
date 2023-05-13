@@ -1086,8 +1086,8 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materia
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     std::sort(matbuf, matbuf+matsurfs, optmatcmp);
-    materialsurface *cur = matbuf,
-                    *end = matbuf+matsurfs;
+    const materialsurface *cur = matbuf,
+                          *end = matbuf+matsurfs;
     while(cur < end)
     {
          const materialsurface *start = cur++;
