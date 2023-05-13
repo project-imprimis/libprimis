@@ -1015,13 +1015,13 @@ namespace
         {
             int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
             f->update();
-            for(uint i = 0; i < f->files.size(); i++)
+            for(const char * i : f->files)
             {
-                if(std::strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
-                          (!lastcomplete || std::strcmp(f->files[i], lastcomplete) > 0) &&
-                          (!nextcomplete || std::strcmp(f->files[i], nextcomplete) < 0))
+                if(std::strncmp(i, &s[commandsize], completesize+cmdlen-commandsize)==0 &&
+                          (!lastcomplete || std::strcmp(i, lastcomplete) > 0) &&
+                          (!nextcomplete || std::strcmp(i, nextcomplete) < 0))
                 {
-                    nextcomplete = f->files[i];
+                    nextcomplete = i;
                 }
             }
             cmdprefix = s;
