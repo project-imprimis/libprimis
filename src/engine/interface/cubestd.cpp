@@ -242,22 +242,21 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
         }
     }
     writebinds(f);
-    for(uint i = 0; i < ids.size(); i++)
+    for(ident *&id : ids)
     {
-        ident &id = *ids[i];
-        if(id.type==Id_Alias && id.flags&Idf_Persist && !(id.flags&Idf_Overridden))
+        if(id->type==Id_Alias && id->flags&Idf_Persist && !(id->flags&Idf_Overridden))
         {
-            switch(id.valtype)
+            switch(id->valtype)
             {
                 case Value_String:
                 {
-                    if(!id.val.s[0])
+                    if(!id->val.s[0])
                     {
                         break;
                     }
-                    if(!validateblock(id.val.s))
+                    if(!validateblock(id->val.s))
                     {
-                        f << escapeid(id) << " = " << escapestring(id.val.s) << std::endl;
+                        f << escapeid(*id) << " = " << escapestring(id->val.s) << std::endl;
                         break;
                     }
                 }
@@ -265,7 +264,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                 case Value_Float:
                 case Value_Integer:
                 {
-                    f << escapeid(id) << " = [" << id.getstr() << "]" << std::endl;
+                    f << escapeid(*id) << " = [" << id->getstr() << "]" << std::endl;
                     break;
                 }
             }
