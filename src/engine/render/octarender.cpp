@@ -1263,7 +1263,7 @@ namespace
         return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
     }
 
-    void addcubeverts(VSlot &vslot, int orient, vec *pos, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
+    void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
     {
         // [rotation][orient]
         const vec orientation_tangent[8][6] =
