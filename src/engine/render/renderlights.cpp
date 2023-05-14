@@ -2555,7 +2555,7 @@ void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *ti
         }
         if(msaalight==2)
         {
-            glSampleMaski_(0, 2); glEnable(GL_SAMPLE_MASK);
+            glSampleMaski(0, 2); glEnable(GL_SAMPLE_MASK);
         }
     }
     else if(ghasstencil && (stencilmask || avatar))
