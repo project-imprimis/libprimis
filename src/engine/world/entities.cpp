@@ -211,7 +211,7 @@ void dynent::reset()
     }
 }
 
-vec dynent::abovehead()
+vec dynent::abovehead() const
 {
     return vec(o).addz(aboveeye+4);
 }
