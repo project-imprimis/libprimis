@@ -176,14 +176,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setval</b> (const <a 
 <tr class="memitem:a2388d38e1443832808604d4510589813"><td class="memItemLeft" align="right" valign="top"><a id="a2388d38e1443832808604d4510589813" name="a2388d38e1443832808604d4510589813"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>forcenull</b> ()</td></tr>
 <tr class="separator:a2388d38e1443832808604d4510589813"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e99fe01fda196cbe595b36d228c5c57"><td class="memItemLeft" align="right" valign="top"><a id="a3e99fe01fda196cbe595b36d228c5c57" name="a3e99fe01fda196cbe595b36d228c5c57"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>getfloat</b> () const</td></tr>
+<tr class="memitem:a3e99fe01fda196cbe595b36d228c5c57"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html#a3e99fe01fda196cbe595b36d228c5c57">getfloat</a> () const</td></tr>
+<tr class="memdesc:a3e99fe01fda196cbe595b36d228c5c57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the saved value of the ident as a float.  <br /></td></tr>
 <tr class="separator:a3e99fe01fda196cbe595b36d228c5c57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee21ad2fcf13a73bde77f8817cbbad1"><td class="memItemLeft" align="right" valign="top"><a id="a6ee21ad2fcf13a73bde77f8817cbbad1" name="a6ee21ad2fcf13a73bde77f8817cbbad1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getint</b> () const</td></tr>
+<tr class="memitem:a6ee21ad2fcf13a73bde77f8817cbbad1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html#a6ee21ad2fcf13a73bde77f8817cbbad1">getint</a> () const</td></tr>
+<tr class="memdesc:a6ee21ad2fcf13a73bde77f8817cbbad1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the saved value of the ident as an integer.  <br /></td></tr>
 <tr class="separator:a6ee21ad2fcf13a73bde77f8817cbbad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13a73126107fe2e347e03f325de8351e"><td class="memItemLeft" align="right" valign="top"><a id="a13a73126107fe2e347e03f325de8351e" name="a13a73126107fe2e347e03f325de8351e"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>getnumber</b> () const</td></tr>
+<tr class="memitem:a13a73126107fe2e347e03f325de8351e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html#a13a73126107fe2e347e03f325de8351e">getnumber</a> () const</td></tr>
+<tr class="memdesc:a13a73126107fe2e347e03f325de8351e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the saved value of the ident as a double.  <br /></td></tr>
 <tr class="separator:a13a73126107fe2e347e03f325de8351e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cfcdd953809250886fdf2b4f6bb54a2"><td class="memItemLeft" align="right" valign="top"><a id="a4cfcdd953809250886fdf2b4f6bb54a2" name="a4cfcdd953809250886fdf2b4f6bb54a2"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>getstr</b> () const</td></tr>
@@ -282,7 +282,70 @@ union {</td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An object representing all Cubescript objects. </p>
 <p>This object defines all possible state for any object in Cubescript. Different types will have different members due to the union types, but the ident object is common to them regardless. This allows storage of CS objects in a uniform map consisting of one type. </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3e99fe01fda196cbe595b36d228c5c57" name="a3e99fe01fda196cbe595b36d228c5c57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e99fe01fda196cbe595b36d228c5c57">&#9670;&#160;</a></span>getfloat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ident::getfloat </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the saved value of the ident as a float. </p>
+<p>Returns a float even if the ident is of another type, e.g. integer</p>
+<dl class="section return"><dt>Returns</dt><dd>the float value of the ident </dd></dl>
+
+</div>
+</div>
+<a id="a6ee21ad2fcf13a73bde77f8817cbbad1" name="a6ee21ad2fcf13a73bde77f8817cbbad1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ee21ad2fcf13a73bde77f8817cbbad1">&#9670;&#160;</a></span>getint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ident::getint </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the saved value of the ident as an integer. </p>
+<p>Returns an int even if the ident is of another type, e.g. float </p>
+
+</div>
+</div>
+<a id="a13a73126107fe2e347e03f325de8351e" name="a13a73126107fe2e347e03f325de8351e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13a73126107fe2e347e03f325de8351e">&#9670;&#160;</a></span>getnumber()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ident::getnumber </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the saved value of the ident as a double. </p>
+<p>Returns a double even if the ident is of another type, e.g. integer</p>
+<dl class="section return"><dt>Returns</dt><dd>the double value of the ident </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a id="ab4f7f6450c494347ba695e547085a913" name="ab4f7f6450c494347ba695e547085a913"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab4f7f6450c494347ba695e547085a913">&#9670;&#160;</a></span>fun</h2>
 
