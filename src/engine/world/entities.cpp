@@ -1,6 +1,6 @@
 /**
  * @brief Definition of methods in ents.h shared header.
- * 
+ *
  * This file implements the behavior in the ents.h interface header.
  */
 #include "../libprimis-headers/cube.h"
@@ -17,7 +17,7 @@
 
 //extentity
 
-extentity::extentity() : 
+extentity::extentity() :
             flags(0),
             attached(nullptr)
 {
