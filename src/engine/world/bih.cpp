@@ -399,8 +399,8 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
     }
 }
 
-BIH::BIH(std::vector<mesh> &buildmeshes)
-  :  entradius(0), meshes(nullptr), nummeshes(0), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
+BIH::BIH(const std::vector<mesh> &buildmeshes)
+  :  entradius(0), meshes(nullptr), nummeshes(buildmeshes.size()), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
     if(buildmeshes.empty())
     {
@@ -414,8 +414,6 @@ BIH::BIH(std::vector<mesh> &buildmeshes)
     {
         return;
     }
-
-    nummeshes = buildmeshes.size();
     meshes = new mesh[nummeshes];
     std::memcpy(meshes, buildmeshes.data(), sizeof(mesh)*buildmeshes.size());
     tribbs = new tribb[numtris];

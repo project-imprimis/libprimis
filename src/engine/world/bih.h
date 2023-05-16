@@ -57,7 +57,7 @@ class BIH
             vec2 gettc(int i) const;
         };
 
-        BIH(std::vector<mesh> &buildmeshes);
+        BIH(const std::vector<mesh> &buildmeshes);
 
         ~BIH();
 
@@ -72,7 +72,7 @@ class BIH
 
     private:
         mesh *meshes;
-        int nummeshes;
+        const int nummeshes;
         node *nodes;
         int numnodes;
         tribb *tribbs;
