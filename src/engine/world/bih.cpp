@@ -406,9 +406,9 @@ BIH::BIH(std::vector<mesh> &buildmeshes)
     {
         return;
     }
-    for(uint i = 0; i < buildmeshes.size(); i++)
+    for(const mesh &i : buildmeshes)
     {
-        numtris += buildmeshes[i].numtris;
+        numtris += i.numtris;
     }
     if(!numtris)
     {
