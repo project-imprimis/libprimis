@@ -24,7 +24,6 @@ typedef void (APIENTRYP PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pnam
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;
 
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_;
-extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
 
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled
 #define GL_EXT_framebuffer_multisample_blit_scaled 1

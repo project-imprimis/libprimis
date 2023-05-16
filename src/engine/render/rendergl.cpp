@@ -68,7 +68,6 @@ PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_ = null
 
 // GL_ARB_texture_multisample
 PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_ = nullptr;
-PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_ = nullptr;
 
 // OpenGL 1.3
 #ifdef WIN32
@@ -323,7 +322,6 @@ void gl_checkextensions()
 
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
-    glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
