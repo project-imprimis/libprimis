@@ -558,6 +558,7 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
     return collide(&v, dir, 0, false);
 }
 
+//used in iengine
 void moveragdoll(dynent *d)
 {
     static FVAR(ragdolleyesmooth, 0, 0.5f, 1);

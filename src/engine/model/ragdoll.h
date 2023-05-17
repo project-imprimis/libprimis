@@ -119,6 +119,5 @@ class ragdolldata
 };
 
 extern void cleanragdoll(dynent *d);
-extern void moveragdoll(dynent *d);
 
 #endif
