@@ -60,7 +60,7 @@ struct Texture
 
 };
 
-enum
+enum TextureLayers
 {
     Tex_Diffuse = 0,
     Tex_Normal,
