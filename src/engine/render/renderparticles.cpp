@@ -85,8 +85,6 @@ class particleemitter
         {
             center = vec(bbmin).add(bbmax).mul(0.5f);
             radius = bbmin.dist(bbmax)/2;
-            cullmin = ivec::floor(bbmin);
-            cullmax = ivec::ceil(bbmax);
             if(debugparticleseed)
             {
                 conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
@@ -110,7 +108,6 @@ class particleemitter
         }
     private:
         vec bbmin, bbmax;
-        ivec cullmin, cullmax;
 };
 
 static std::vector<particleemitter> emitters;
