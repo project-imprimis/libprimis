@@ -230,7 +230,6 @@ class LocalShaderParam
 //creates a globalshaderparam, either by calling set(), setf() or setv()
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
-#define GLOBALPARAMV(name, vals, num) do { static GlobalShaderParam param( #name ); param.setv(vals, num); } while(0)
 
 //creates a new static variable inside the function called <name>setshader
 //then sets to it any(if present) args passed to set to the shader
