@@ -2144,11 +2144,6 @@ static void setlightglobals(bool transparent = false)
     GLOBALPARAM(lightmatrix, lightmatrix);
 }
 
-static LocalShaderParam lightpos("lightpos"),
-                        lightcolor("lightcolor"),
-                        spotparams("spotparams"),
-                        shadowparams("shadowparams"),
-                        shadowoffset("shadowoffset");
 static vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
 static vec2 shadowoffsetv[8];
 
@@ -2188,6 +2183,11 @@ static void setlightparams(int i, const lightinfo &l)
 
 static void setlightshader(Shader *s, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
 {
+    static const LocalShaderParam lightpos("lightpos"),
+                                  lightcolor("lightcolor"),
+                                  spotparams("spotparams"),
+                                  shadowparams("shadowparams"),
+                                  shadowoffset("shadowoffset");
     s->setvariant(n-1, (shadowmap ? 1 : 0) + (baselight ? 0 : 2) + (spotlight ? 4 : 0) + (transparent ? 8 : 0) + (avatar ? 24 : 0));
     lightpos.setv(lightposv, n);
     lightcolor.setv(lightcolorv, n);
