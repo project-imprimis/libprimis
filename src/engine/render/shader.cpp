@@ -671,9 +671,9 @@ void Shader::flushparams()
         allocparams();
         used = true;
     }
-    for(uint i = 0; i < globalparams.size(); i++)
+    for(GlobalShaderParamUse &i : globalparams)
     {
-        globalparams[i].flush();
+        i.flush();
     }
 }
 
