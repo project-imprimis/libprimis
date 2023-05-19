@@ -749,11 +749,11 @@ class stainrenderer
             }
         }
 
-        void findescaped(cube *c, const ivec &o, int size, int escaped)
+        void findescaped(const cube *c, const ivec &o, int size, int escaped)
         {
             for(int i = 0; i < 8; ++i)
             {
-                cube &cu = c[i];
+                const cube &cu = c[i];
                 if(escaped&(1<<i))
                 {
                     ivec co(i, o, size);
@@ -779,12 +779,12 @@ class stainrenderer
             }
         }
 
-        void gentris(cube *c, const ivec &o, int size, int escaped = 0)
+        void gentris(const cube *c, const ivec &o, int size, int escaped = 0)
         {
             int overlap = octaboxoverlap(o, size, bbmin, bbmax);
             for(int i = 0; i < 8; ++i)
             {
-                cube &cu = c[i];
+                const cube &cu = c[i];
                 if(overlap&(1<<i))
                 {
                     ivec co(i, o, size);
@@ -883,7 +883,7 @@ class stainrenderer
             }
         }
 
-        void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = nullptr, int vismask = 0)
+        void gentris(const cube &cu, int orient, const ivec &o, int size, materialsurface *mat = nullptr, int vismask = 0)
         {
             vec pos[Face_MaxVerts+4];
             int numverts = 0,
