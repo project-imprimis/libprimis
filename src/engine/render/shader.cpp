@@ -48,8 +48,6 @@ VAR(maxvsuniforms, 1, 0, 0);
 VAR(maxfsuniforms, 1, 0, 0);
 VAR(mintexoffset, 1, 0, 0);
 VAR(maxtexoffset, 1, 0, 0);
-VAR(mintexrectoffset, 1, 0, 0);
-VAR(maxtexrectoffset, 1, 0, 0);
 VAR(debugshader, 0, 1, 2);
 
 void loadshaders()
@@ -1481,10 +1479,6 @@ void setupshaders()
     mintexoffset = val;
     glGetIntegerv(GL_MAX_PROGRAM_TEXEL_OFFSET, &val);
     maxtexoffset = val;
-
-    mintexrectoffset = mintexoffset;
-    maxtexrectoffset = maxtexoffset;
-
 
     standardshaders = true;
     nullshader = newshader(0, "<init>null",
