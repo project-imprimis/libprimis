@@ -883,7 +883,7 @@ class stainrenderer
             }
         }
 
-        void gentris(const cube &cu, int orient, const ivec &o, int size, materialsurface *mat = nullptr, int vismask = 0)
+        void gentris(const cube &cu, int orient, const ivec &o, int size, const materialsurface *mat = nullptr, int vismask = 0)
         {
             vec pos[Face_MaxVerts+4];
             int numverts = 0,
