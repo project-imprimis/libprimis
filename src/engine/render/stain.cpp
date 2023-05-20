@@ -853,7 +853,7 @@ class stainrenderer
             }
         }
 
-        void genmmtris(octaentities &oe)
+        void genmmtris(const octaentities &oe)
         {
             const std::vector<extentity *> &ents = entities::getents();
             for(uint i = 0; i < oe.mapmodels.size(); i++)
