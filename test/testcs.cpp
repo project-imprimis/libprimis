@@ -4,6 +4,14 @@
 #include "libprimis.h"
 #include "../src/engine/interface/cs.h"
 
+void testparseword()
+{
+    const char *p = "test; test2";
+    const char *conout = parseword(p);
+    std::printf("parseword output: %s\n", conout);
+    assert(std::strcmp(conout, "; test2") == 0);
+}
+
 void testconc()
 {
     tagval tagvalargs[3];
@@ -37,4 +45,10 @@ void testconc()
     const char * conout4 = conc(tagvalargmix, 3, false, "test");
     std::printf("conc output: %s\n", conout4);
     assert(std::strcmp(conout4, "test11.1teststring") == 0);
+}
+
+void testcs()
+{
+    testparseword();
+    testconc();
 }

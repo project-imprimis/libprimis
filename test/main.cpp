@@ -9,6 +9,6 @@ int main(int argc, char **argv)
     testutils();
 
     testidents();
-    testconc();
+    testcs();
     return EXIT_SUCCESS;
 }
