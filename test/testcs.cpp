@@ -4,6 +4,48 @@
 #include "libprimis.h"
 #include "../src/engine/interface/cs.h"
 
+void testparsefloat()
+{
+    const char *s = "3.2 test";
+    float conout = parsefloat(s);
+    std::printf("parsefloat output: %f\n", conout);
+    assert(conout == 3.2f);
+
+    const char *s2 = "test 3.2";
+    float conout2 = parsefloat(s2);
+    std::printf("parsefloat output: %f\n", conout2);
+    assert(conout2 == 0.f);
+}
+
+void testparsenumber()
+{
+    const char *s = "3.2 test";
+    double conout = parsenumber(s);
+    std::printf("parsenumber output: %f\n", conout);
+    assert(conout == 3.2d);
+
+    const char *s2 = "test 3.2";
+    double conout2 = parsenumber(s2);
+    std::printf("parsenumber output: %f\n", conout2);
+    assert(conout2 == 0.d);
+}
+
+void testfloatformat()
+{
+    char str[260] = "";
+    floatformat(str, 3.3, 260);
+    std::printf("floatformat output: %s\n", str);
+    assert(std::strcmp(str, "3.3") == 0);
+}
+
+void testintformat()
+{
+    char str[260] = "";
+    floatformat(str, 3, 260);
+    std::printf("intformat output: %s\n", str);
+    assert(std::strcmp(str, "3.0") == 0);
+}
+
 void testparseword()
 {
     const char *p = "test; test2";
@@ -21,7 +63,7 @@ void testconc()
     tagvalargs[1].i = 2;
     tagvalargs[2].type = Value_Integer;
     tagvalargs[2].i = 3;
-    
+
     const char * conout = conc(tagvalargs, 3, true, "test");
     std::printf("conc output: %s\n", conout);
     assert(std::strcmp(conout, "test 1 2 3") == 0);
@@ -29,7 +71,7 @@ void testconc()
     const char * conout2 = conc(tagvalargs, 3, false, "test");
     std::printf("conc output: %s\n", conout2);
     assert(std::strcmp(conout2, "test123") == 0);
-    
+
     tagval tagvalargmix[4];
     char tagvalstring[11] = "teststring";
     tagvalargmix[0].type = Value_Integer;
@@ -49,6 +91,10 @@ void testconc()
 
 void testcs()
 {
+    testparsefloat();
+    testparsenumber();
+    testfloatformat();
+    testintformat();
     testparseword();
     testconc();
 }
