@@ -52,6 +52,18 @@ void testparseword()
     const char *conout = parseword(p);
     std::printf("parseword output: %s\n", conout);
     assert(std::strcmp(conout, "; test2") == 0);
+
+    //test buffer underrun of bracket buffer
+    const char *p2 = "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
+    const char *conout2 = parseword(p2);
+    std::printf("parseword output: %s\n", conout2);
+    assert(std::strcmp(conout2, "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]") == 0);
+
+    //test buffer overrun of bracket buffer
+    const char *p3 = "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[";
+    const char *conout3 = parseword(p3);
+    std::printf("parseword output: %s\n", conout3);
+    assert(std::strcmp(conout3, "[[[[[[[[") == 0);
 }
 
 void testconc()
