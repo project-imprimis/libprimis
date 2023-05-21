@@ -421,71 +421,72 @@ namespace
         useshaderbyname("glass");
     }
 
-    int sortdim[3];
-    ivec sortorigin;
-
-//allows for sorting of materialsurface objects
-//intended to meet the standards of c++ stl `Compare`
-    bool editmatcmp(const materialsurface &x, const materialsurface &y)
-    {
-        int xdim = DIMENSION(x.orient),
-            ydim = DIMENSION(y.orient);
-        for(int i = 0; i < 3; ++i)
-        {
-            int dim = sortdim[i], xmin, xmax, ymin, ymax;
-            xmin = xmax = x.o[dim];
-            if(dim==C[xdim])
-            {
-                xmax += x.csize;
-            }
-            else if(dim==R[xdim])
-            {
-                xmax += x.rsize;
-            }
-            ymin = ymax = y.o[dim];
-            if(dim==C[ydim])
-            {
-                ymax += y.csize;
-            }
-            else if(dim==R[ydim])
-            {
-                ymax += y.rsize;
-            }
-            if(xmax > ymin && ymax > xmin)
-            {
-                continue;
-            }
-            int c = sortorigin[dim];
-            if(c > xmin && c < xmax)
-            {
-                return true;
-            }
-            if(c > ymin && c < ymax)
-            {
-                return false;
-            }
-            xmin = std::abs(xmin - c);
-            xmax = std::abs(xmax - c);
-            ymin = std::abs(ymin - c);
-            ymax = std::abs(ymax - c);
-            if(std::max(xmin, xmax) < std::min(ymin, ymax))
-            {
-                return true;
-            }
-            else if(std::max(ymin, ymax) <= std::min(xmin, xmax))
-            {
-                return false;
-            }
-        }
-        if(x.material != y.material)
-        {
-            return x.material < y.material;
-        }
-        return false;
-    }
-
     void sorteditmaterials()
     {
+
+        int sortdim[3];
+        ivec sortorigin;
+
+        //allows for sorting of materialsurface objects
+        //intended to meet the standards of c++ stl `Compare`
+        auto editmatcmp = [&sortdim, &sortorigin] (const materialsurface &x, const materialsurface &y)
+        {
+            int xdim = DIMENSION(x.orient),
+                ydim = DIMENSION(y.orient);
+            for(int i = 0; i < 3; ++i)
+            {
+                int dim = sortdim[i], xmin, xmax, ymin, ymax;
+                xmin = xmax = x.o[dim];
+                if(dim==C[xdim])
+                {
+                    xmax += x.csize;
+                }
+                else if(dim==R[xdim])
+                {
+                    xmax += x.rsize;
+                }
+                ymin = ymax = y.o[dim];
+                if(dim==C[ydim])
+                {
+                    ymax += y.csize;
+                }
+                else if(dim==R[ydim])
+                {
+                    ymax += y.rsize;
+                }
+                if(xmax > ymin && ymax > xmin)
+                {
+                    continue;
+                }
+                int c = sortorigin[dim];
+                if(c > xmin && c < xmax)
+                {
+                    return true;
+                }
+                if(c > ymin && c < ymax)
+                {
+                    return false;
+                }
+                xmin = std::abs(xmin - c);
+                xmax = std::abs(xmax - c);
+                ymin = std::abs(ymin - c);
+                ymax = std::abs(ymax - c);
+                if(std::max(xmin, xmax) < std::min(ymin, ymax))
+                {
+                    return true;
+                }
+                else if(std::max(ymin, ymax) <= std::min(xmin, xmax))
+                {
+                    return false;
+                }
+            }
+            if(x.material != y.material)
+            {
+                return x.material < y.material;
+            }
+            return false;
+        };
+
         sortorigin = ivec(camera1->o);
         vec dir = vec(camdir).abs();
         for(int i = 0; i < 3; ++i)
