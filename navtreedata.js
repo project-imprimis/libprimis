@@ -265,7 +265,7 @@ var NAVTREE =
             [ "Eager Execution `()`", "md_engine.html#autotoc_md186", null ],
             [ "Assignment `=`", "md_engine.html#autotoc_md187", null ],
             [ "Lookup Alias `$`", "md_engine.html#autotoc_md188", null ],
-            [ "Literal Substitution `@`", "md_engine.html#autotoc_md189", null ],
+            [ "Literal Substitution `\\`", "md_engine.html#autotoc_md189", null ],
             [ "Comments `//`", "md_engine.html#autotoc_md190", null ]
           ] ],
           [ "7.4.2 Commands", "md_engine.html#autotoc_md191", [
@@ -305,23 +305,23 @@ var NAVTREE =
         ] ]
       ] ]
     ] ],
-    [ "The Tesseract Renderer", "md_tesseract_renderer.html", [
-      [ "The Tesseract Rendering Pipeline", "md_tesseract_renderer.html#autotoc_md220", [
-        [ "Platform", "md_tesseract_renderer.html#autotoc_md221", null ],
-        [ "Motivation", "md_tesseract_renderer.html#autotoc_md222", null ],
-        [ "Shadows", "md_tesseract_renderer.html#autotoc_md223", null ],
-        [ "Deferred shading and the g-buffer", "md_tesseract_renderer.html#autotoc_md224", null ],
-        [ "Mesh rendering", "md_tesseract_renderer.html#autotoc_md225", null ],
-        [ "Decal rendering", "md_tesseract_renderer.html#autotoc_md226", null ],
-        [ "Material shading/Light accumulation", "md_tesseract_renderer.html#autotoc_md227", null ],
-        [ "Screen-space ambient obscurance", "md_tesseract_renderer.html#autotoc_md228", null ],
-        [ "Global illumination", "md_tesseract_renderer.html#autotoc_md229", null ],
-        [ "Transparency, reflection, and refraction", "md_tesseract_renderer.html#autotoc_md230", null ],
-        [ "Particle rendering", "md_tesseract_renderer.html#autotoc_md231", null ],
-        [ "Tonemapping and bloom", "md_tesseract_renderer.html#autotoc_md232", null ],
-        [ "Generic post-processing", "md_tesseract_renderer.html#autotoc_md233", null ],
-        [ "Anti-aliasing", "md_tesseract_renderer.html#autotoc_md234", null ],
-        [ "Further information", "md_tesseract_renderer.html#autotoc_md235", null ]
+    [ "The Tesseract Renderer", "md_tesseract-renderer.html", [
+      [ "The Tesseract Rendering Pipeline", "md_tesseract-renderer.html#autotoc_md220", [
+        [ "Platform", "md_tesseract-renderer.html#autotoc_md221", null ],
+        [ "Motivation", "md_tesseract-renderer.html#autotoc_md222", null ],
+        [ "Shadows", "md_tesseract-renderer.html#autotoc_md223", null ],
+        [ "Deferred shading and the g-buffer", "md_tesseract-renderer.html#autotoc_md224", null ],
+        [ "Mesh rendering", "md_tesseract-renderer.html#autotoc_md225", null ],
+        [ "Decal rendering", "md_tesseract-renderer.html#autotoc_md226", null ],
+        [ "Material shading/Light accumulation", "md_tesseract-renderer.html#autotoc_md227", null ],
+        [ "Screen-space ambient obscurance", "md_tesseract-renderer.html#autotoc_md228", null ],
+        [ "Global illumination", "md_tesseract-renderer.html#autotoc_md229", null ],
+        [ "Transparency, reflection, and refraction", "md_tesseract-renderer.html#autotoc_md230", null ],
+        [ "Particle rendering", "md_tesseract-renderer.html#autotoc_md231", null ],
+        [ "Tonemapping and bloom", "md_tesseract-renderer.html#autotoc_md232", null ],
+        [ "Generic post-processing", "md_tesseract-renderer.html#autotoc_md233", null ],
+        [ "Anti-aliasing", "md_tesseract-renderer.html#autotoc_md234", null ],
+        [ "Further information", "md_tesseract-renderer.html#autotoc_md235", null ]
       ] ]
     ] ],
     [ "The Game Timeline", "md_timeline.html", [

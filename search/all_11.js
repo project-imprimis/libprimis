@@ -8,7 +8,7 @@ var searchData=
   ['the_20game_20timeline_5',['The Game Timeline',['../md_timeline.html',1,'']]],
   ['the_20libprimis_20engine_6',['The Libprimis Engine',['../md_engine.html',1,'']]],
   ['the_20libprimis_20interface_20specification_7',['The Libprimis Interface Specification',['../md_interface.html',1,'']]],
-  ['the_20tesseract_20renderer_8',['The Tesseract Renderer',['../md_tesseract_renderer.html',1,'']]],
+  ['the_20tesseract_20renderer_8',['The Tesseract Renderer',['../md_tesseract-renderer.html',1,'']]],
   ['timestamp_9',['timestamp',['../structundoblock.html#ac7993663dac147f8134a9f24ec91a876',1,'undoblock']]],
   ['toggleui_10',['toggleui',['../iengine_8h.html#a5b561ee57a1c1701d7c1583d92ce7688',1,'UI']]],
   ['tools_2eh_11',['tools.h',['../tools_8h.html',1,'']]],
@@ -19,5 +19,5 @@ var searchData=
   ['transposedtransform_16',['transposedtransform',['../classmatrix3.html#a913fd35c7f822140a5e00169c9c2e831',1,'matrix3::transposedtransform(const vec2 &amp;o) const'],['../classmatrix3.html#ad80c0868a7fd8239d25853969d888074',1,'matrix3::transposedtransform(const vec &amp;o) const']]],
   ['transposemul_17',['transposemul',['../classmatrix3.html#ace55aa434ded31ecefa54f0ffc3172b5',1,'matrix3::transposemul(const matrix3 &amp;n)'],['../classmatrix3.html#a9981ee9f9df8c61bed812bef9559f0fa',1,'matrix3::transposemul(const matrix3 &amp;m, const matrix3 &amp;n)']]],
   ['triggerqueue_18',['triggerqueue',['../command_8h.html#ae653e8a430e6baa97073fbaa061abfb2',1,'command.h']]],
-  ['type_19',['type',['../structident.html#a89f53b6ecbddf478efd372ffe0ae6eda',1,'ident::type()'],['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type()'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type()']]]
+  ['type_19',['type',['../structident.html#a89f53b6ecbddf478efd372ffe0ae6eda',1,'ident::type'],['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type']]]
 ];

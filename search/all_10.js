@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['s_0',['s',['../unionident_1_1identvalptr.html#a1d837c2727f78c63a333eafcad27fc03',1,'ident::identvalptr::s()'],['../structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00',1,'selinfo::s()']]],
+  ['s_0',['s',['../unionident_1_1identvalptr.html#a1d837c2727f78c63a333eafcad27fc03',1,'ident::identvalptr::s'],['../structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00',1,'selinfo::s']]],
   ['safenormalize_1',['safenormalize',['../structvec4.html#a0c1301d801c10085090c1a3600251ee8',1,'vec4']]],
   ['scalartriple_2',['scalartriple',['../structvec.html#a7569fdf206ec0be0beb74d8f4a21961c',1,'vec']]],
   ['scale_3',['scale',['../structmatrix4x3.html#aa1f23e996a6b47d01e0fc01ff111c239',1,'matrix4x3::scale(float n)'],['../structmatrix4x3.html#af8f269327591b40e00169eef76d2a1cf',1,'matrix4x3::scale(const vec &amp;v)'],['../structmatrix4x3.html#a8f790e023b6776b933759593c3bf6040',1,'matrix4x3::scale(float x, float y, float z)'],['../classmatrix3.html#a37c6fb6ef012187e7a164fb4a9c998fe',1,'matrix3::scale()']]],
@@ -29,7 +29,7 @@ var searchData=
   ['sin360_26',['sin360',['../geom_8h.html#a2fe0002028c63e34e8f1a892cf373bba',1,'geom.h']]],
   ['sincos360_27',['sincos360',['../geom_8h.html#af936a273d30112cac1ddd9945c68a057',1,'geom.h']]],
   ['sincosmod360_28',['sincosmod360',['../geom_8h.html#a563d68893e655ed29c91f5e9a4e41a75',1,'geom.h']]],
-  ['size_29',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
+  ['size_29',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size']]],
   ['slot_30',['Slot',['../structSlot.html',1,'']]],
   ['slot_2eh_31',['slot.h',['../slot_8h.html',1,'']]],
   ['slotshaderparam_32',['SlotShaderParam',['../structSlotShaderParam.html',1,'']]],
