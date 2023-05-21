@@ -55,7 +55,7 @@ struct shadowmesh
     vec spotloc;
     int spotangle;
     int type;
-    int draws[6];
+    std::array<int, 6> draws;
 };
 
 Occluder occlusionengine;
@@ -2063,7 +2063,7 @@ namespace
         {
             return;
         }
-        std::memset(m.draws, -1, sizeof(m.draws));
+        m.draws.fill(-1);
 
         shadowmapping = m.type;
         shadoworigin = m.origin;
