@@ -140,8 +140,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1b23d6714590d026a044bc52c89fd535"><td class="memItemLeft" align="right" valign="top"><a id="a1b23d6714590d026a044bc52c89fd535" name="a1b23d6714590d026a044bc52c89fd535"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>modifyoctaent</b> (int flags, int id, <a class="el" href="structextentity.html">extentity</a> &amp;e)</td></tr>
 <tr class="separator:a1b23d6714590d026a044bc52c89fd535"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a308713724b534880c00163b87142c4c3"><td class="memItemLeft" align="right" valign="top"><a id="a308713724b534880c00163b87142c4c3" name="a308713724b534880c00163b87142c4c3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>shrinkmap</b> ()</td></tr>
+<tr class="memitem:a308713724b534880c00163b87142c4c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#a308713724b534880c00163b87142c4c3">shrinkmap</a> ()</td></tr>
+<tr class="memdesc:a308713724b534880c00163b87142c4c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to reduce the mapsize by 1 (halves all linear dimensions)  <br /></td></tr>
 <tr class="separator:a308713724b534880c00163b87142c4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memItemLeft" align="right" valign="top"><a id="af5dd0231a357fb27274aa8c5ff2b5ad9" name="af5dd0231a357fb27274aa8c5ff2b5ad9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_world</b> (const char *mname, const char *gameident, const char *gameinfo=nullptr, const char *cname=nullptr)</td></tr>
@@ -545,6 +545,26 @@ Public Attributes</h2></td></tr>
 
 <p>Reduces the number of cubes on the level losslessly. </p>
 <p>Loops through all cube objects, dissolving child nodes where it is possible to convert them to their parent nodes. The largest gridpower that can be optimizied can be controlled by the maxmerge variable. </p>
+
+</div>
+</div>
+<a id="a308713724b534880c00163b87142c4c3" name="a308713724b534880c00163b87142c4c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a308713724b534880c00163b87142c4c3">&#9670;&#160;</a></span>shrinkmap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cubeworld::shrinkmap </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>attempts to reduce the mapsize by 1 (halves all linear dimensions) </p>
+<p>Fails if the 7 octants not at the origin are not empty. On success, the resulting map will have its maximum gridsize reduced by 1. </p>
 
 </div>
 </div>
