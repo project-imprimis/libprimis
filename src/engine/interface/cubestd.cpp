@@ -1455,17 +1455,17 @@ void checksleep(int millis)
 void clearsleep(bool clearoverrides)
 {
     int len = 0;
-    for(uint i = 0; i < sleepcmds.size(); i++)
+    for(sleepcmd &i : sleepcmds)
     {
-        if(sleepcmds[i].command)
+        if(i.command)
         {
-            if(clearoverrides && !(sleepcmds[i].flags&Idf_Overridden))
+            if(clearoverrides && !(i.flags&Idf_Overridden))
             {
-                sleepcmds[len++] = sleepcmds[i];
+                sleepcmds[len++] = i;
             }
             else
             {
-                delete[] sleepcmds[i].command;
+                delete[] i.command;
             }
         }
     }
