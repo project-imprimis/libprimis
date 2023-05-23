@@ -89,6 +89,8 @@ class GBuffer
         void rendershadowmaps(int offset = 0) const;
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
+        void rendermaterialmask();
+        void renderliquidmaterials();
 
         struct MaterialInfo
         {

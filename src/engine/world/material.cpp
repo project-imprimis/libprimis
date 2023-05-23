@@ -1336,7 +1336,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
     return mi;
 }
 
-void rendermaterialmask()
+void GBuffer::rendermaterialmask()
 {
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
@@ -1364,7 +1364,7 @@ void rendermaterialmask()
     glEnable(GL_CULL_FACE);
 }
 
-void renderliquidmaterials()
+void GBuffer::renderliquidmaterials()
 {
     glDisable(GL_CULL_FACE);
 
