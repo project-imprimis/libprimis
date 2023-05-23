@@ -312,6 +312,8 @@ namespace
         return x.o[c] < y.o[c];
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergematr(materialsurface *m, int sz, materialsurface &n)
     {
         int dim = DIMENSION(n.orient),
@@ -348,6 +350,8 @@ namespace
         return 0;
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergemat(materialsurface *m, int sz, materialsurface &n)
     {
         for(bool merged = false; sz; merged = true)
@@ -373,6 +377,8 @@ namespace
         return sz;
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergemats(materialsurface *m, int sz)
     {
         std::sort(m, m+sz, mergematcmp);
