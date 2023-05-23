@@ -1,7 +1,15 @@
 #ifndef MATERIAL_H_
 #define MATERIAL_H_
 
-struct materialsurface;
+struct materialsurface
+{
+    ivec o;
+    ushort csize, rsize;
+    ushort material, skip;
+    uchar orient, visible;
+    uchar ends;
+};
+
 struct vtxarray;
 
 extern std::vector<materialsurface> watersurfs[4], waterfallsurfs[4];

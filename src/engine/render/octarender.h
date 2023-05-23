@@ -18,14 +18,7 @@ struct vertex
     vec4<uchar> tangent;
 };
 
-struct materialsurface
-{
-    ivec o;
-    ushort csize, rsize;
-    ushort material, skip;
-    uchar orient, visible;
-    uchar ends;
-};
+struct materialsurface;
 
 struct elementset
 {
