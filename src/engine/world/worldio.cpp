@@ -70,17 +70,6 @@ void setmapname(const char * newname)
     clientmap = std::string(newname);
 }
 
-static void fixent(entity &e, int version)
-{
-    if(version <= 0)
-    {
-        if(e.type >= EngineEnt_Decal)
-        {
-            e.type++;
-        }
-    }
-}
-
 bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr) const
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
@@ -1129,7 +1118,6 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         extentity &e = *entities::newentity();
         ents.push_back(&e);
         f->read(&e, sizeof(entity));
-        fixent(e, hdr.version);
         //delete entities from other games
         if(!samegame)
         {
