@@ -96,6 +96,27 @@ namespace
             }
             curcolor.mul(intensity);
         }
+
+        /* dynlightinfo: gets information about this dynlight
+         *
+         * Parameters:
+         *  n: the nth closest dynamic light
+         *  o: a reference to set as the location of the specified dynlight
+         *  radius: a reference to set as the radius of the specified dynlight
+         *  color: a reference to set as the color of the specifeid dynlight
+         *  spot: a reference to the spotlight information of the dynlight
+         *  dir: a reference to set as the direction the dynlight is pointing
+         *  flags: a reference to the flag bitmap for the dynlight
+         */
+        void dynlightinfo(vec &origin, float &radius, vec &color, vec &direction, int &spotlight, int &flagmask) const
+        {
+            origin = o;
+            radius = curradius;
+            color = curcolor;
+            spotlight = spot;
+            direction = dir;
+            flagmask = flags & 0xFF;
+        }
     };
 
     std::vector<dynlight> dynlights;
@@ -210,6 +231,7 @@ int finddynlights()
  *  o: a reference to set as the location of the specified dynlight
  *  radius: a reference to set as the radius of the specified dynlight
  *  color: a reference to set as the color of the specifeid dynlight
+ *  spot: a reference to the spotlight information of the dynlight
  *  dir: a reference to set as the direction the dynlight is pointing
  *  flags: a reference to the flag bitmap for the dynlight
  * Returns:
@@ -223,12 +245,7 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
         return false;
     }
     const dynlight &d = *closedynlights[n];
-    o = d.o;
-    radius = d.curradius;
-    color = d.curcolor;
-    spot = d.spot;
-    dir = d.dir;
-    flags = d.flags & 0xFF;
+    d.dynlightinfo(o, radius, color, dir, spot, flags);
     return true;
 }
 
