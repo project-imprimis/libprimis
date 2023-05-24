@@ -34,6 +34,11 @@ namespace
         vec dir;
         int spot;
 
+        dynlight(vec o, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int expire, int flags, physent *owner, vec dir, int spot) :
+            o(o), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), expire(expire), flags(flags), owner(owner), dir(dir), spot(spot)
+        {
+        }
+
         void calcradius()
         {
             if(fade + peak > 0)
@@ -141,19 +146,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
             break;
         }
     }
-    dynlight d;
-    d.o = o;
-    d.radius = radius;
-    d.initradius = initradius;
-    d.color = color;
-    d.initcolor = initcolor;
-    d.fade = fade;
-    d.peak = peak;
-    d.expire = expire;
-    d.flags = flags;
-    d.owner = owner;
-    d.dir = dir;
-    d.spot = spot;
+    dynlight d(o, radius, initradius, color, initcolor, fade, peak, expire, flags, owner, dir, spot);
     dynlights.insert(dynlights.begin() + insert, d);
 }
 
