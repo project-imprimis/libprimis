@@ -125,7 +125,7 @@ namespace
     };
 
     std::vector<dynlight> dynlights;
-    std::vector<dynlight *> closedynlights;
+    std::vector<const dynlight *> closedynlights;
 
     //cleans up dynlights, deletes dynlights contents once none have expire field
     void cleardynlights()
