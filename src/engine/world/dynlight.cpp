@@ -24,18 +24,17 @@ namespace
     VARNP(dynlights, usedynlights, 0, 1, 1); //toggle using dynamic lights
     VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
 
-    struct dynlight
+    class dynlight
     {
-        vec o;
-        float radius, initradius, curradius, dist;
-        vec color, initcolor, curcolor;
-        int fade, peak, expire, flags;
-        physent *owner;
-        vec dir;
-        int spot;
+        public:
 
-        dynlight(vec o, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int expire, int flags, physent *owner, vec dir, int spot) :
-            o(o), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), expire(expire), flags(flags), owner(owner), dir(dir), spot(spot)
+        vec o;
+        float curradius, dist;
+        int expire;
+        physent *owner;
+
+        dynlight(vec o, int expire, physent *owner, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int flags, vec dir, int spot) :
+            o(o), expire(expire), owner(owner), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), flags(flags), dir(dir), spot(spot)
         {
         }
 
@@ -117,6 +116,12 @@ namespace
             direction = dir;
             flagmask = flags & 0xFF;
         }
+        private:
+            float radius, initradius;
+            vec color, initcolor, curcolor;
+            int fade, peak, flags;
+            vec dir;
+            int spot;
     };
 
     std::vector<dynlight> dynlights;
@@ -167,7 +172,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
             break;
         }
     }
-    dynlight d(o, radius, initradius, color, initcolor, fade, peak, expire, flags, owner, dir, spot);
+    dynlight d(o, expire, owner, radius, initradius, color, initcolor, fade, peak, flags, dir, spot);
     dynlights.insert(dynlights.begin() + insert, d);
 }
 
