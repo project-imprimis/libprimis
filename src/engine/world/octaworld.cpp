@@ -1679,7 +1679,8 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
     else if(c.visible&0x80)
     {
-        ushort nmat = Mat_Alpha, matmask = Mat_Alpha;
+        ushort nmat = Mat_Alpha,
+               matmask = Mat_Alpha;
         if(noclip)
         {
             nmat = Mat_NoClip;
