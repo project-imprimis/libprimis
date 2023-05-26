@@ -1157,16 +1157,16 @@ Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader 
     }
     if(variant)
     {
-        for(uint i = 0; i < variant->defaultparams.size(); i++)
+        for(SlotShaderParamState &i: variant->defaultparams)
         {
-            defaultparams.emplace_back(variant->defaultparams[i]);
+            defaultparams.emplace_back(i);
         }
     }
     else
     {
-        for(uint i = 0; i < slotparams.size(); i++)
+        for(SlotShaderParam &i: slotparams)
         {
-            defaultparams.emplace_back(slotparams[i]);
+            defaultparams.emplace_back(i);
         }
     }
     attriblocs.clear();
