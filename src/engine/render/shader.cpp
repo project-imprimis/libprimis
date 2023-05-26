@@ -1615,9 +1615,9 @@ int Shader::uniformlocversion()
     version = 0;
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint j = 0; j < s.uniformlocs.size(); j++)
+        for(UniformLoc &j : s.uniformlocs)
         {
-            s.uniformlocs[j].version = -1;
+            j.version = -1;
         }
     });
     return version;
