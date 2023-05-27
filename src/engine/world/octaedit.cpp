@@ -1136,12 +1136,12 @@ void makeundo()                        // stores state of selected cubes before 
     makeundo(sel);
 }
 
-void pasteblock(block3 &b, selinfo &sel, bool local)
+void pasteblock(const block3 &b, selinfo &sel, bool local)
 {
     sel.s = b.s;
     int o = sel.orient;
     sel.orient = b.orient;
-    cube *s = b.c();
+    const cube *s = b.getcube();
     LOOP_SEL_XYZ(if(!(s->isempty()) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
