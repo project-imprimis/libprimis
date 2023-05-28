@@ -335,7 +335,7 @@ namespace
         result(names.data());
     }
 
-    KeyM *findbind(char *key)
+    KeyM *findbind(const char *key)
     {
         ENUMERATE(keyms, KeyM, km,
         {
@@ -347,13 +347,13 @@ namespace
         return nullptr;
     }
 
-    void getbind(char *key, int type)
+    void getbind(const char *key, int type)
     {
         KeyM *km = findbind(key);
         result(km ? km->actions[type] : "");
     }
 
-    void bindkey(char *key, char *action, int state, const char *cmd)
+    void bindkey(const char *key, const char *action, int state, const char *cmd)
     {
         if(identflags&Idf_Overridden)
         {
