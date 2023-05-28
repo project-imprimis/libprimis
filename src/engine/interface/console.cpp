@@ -239,7 +239,7 @@ namespace
 
     // keymap is defined externally in keymap.cfg
 
-    struct KeyM
+    struct KeyMap
     {
         enum
         {
@@ -254,14 +254,14 @@ namespace
         char *actions[Action_NumActions];
         bool pressed;
 
-        KeyM() : code(-1), name(nullptr), pressed(false)
+        KeyMap() : code(-1), name(nullptr), pressed(false)
         {
             for(int i = 0; i < Action_NumActions; ++i)
             {
                 actions[i] = newstring("");
             }
         }
-        ~KeyM()
+        ~KeyMap()
         {
             delete[] name;
             name = nullptr;
@@ -283,10 +283,10 @@ namespace
     };
 
 
-    KeyM *keypressed = nullptr;
+    KeyMap *keypressed = nullptr;
     char *keyaction = nullptr;
 
-    void KeyM::clear(int type)
+    void KeyMap::clear(int type)
     {
         char *&binding = actions[type];
         if(binding[0])
@@ -299,7 +299,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(256);
+    hashtable<int, KeyMap> keyms(256);
 
     void keymap(int *code, char *key)
     {
@@ -308,7 +308,7 @@ namespace
             conoutf(Console_Error, "cannot override keymap %d", *code);
             return;
         }
-        KeyM &km = keyms[*code];
+        KeyMap &km = keyms[*code];
         km.code = *code;
         delete[] km.name;
         km.name = newstring(key);
@@ -317,7 +317,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyM, km,
+        ENUMERATE(keyms, KeyMap, km,
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -335,9 +335,9 @@ namespace
         result(names.data());
     }
 
-    KeyM *findbind(const char *key)
+    KeyMap *findbind(const char *key)
     {
-        ENUMERATE(keyms, KeyM, km,
+        ENUMERATE(keyms, KeyMap, km,
         {
             if(!strcasecmp(km.name, key))
             {
@@ -349,7 +349,7 @@ namespace
 
     void getbind(const char *key, int type)
     {
-        KeyM *km = findbind(key);
+        KeyMap *km = findbind(key);
         result(km ? km->actions[type] : "");
     }
 
@@ -360,7 +360,7 @@ namespace
             conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key);
             return;
         }
-        KeyM *km = findbind(key);
+        KeyMap *km = findbind(key);
         if(!km)
         {
             conoutf(Console_Error, "unknown key \"%s\"", key);
@@ -561,7 +561,7 @@ namespace
 
     struct releaseaction
     {
-        KeyM *key;
+        KeyMap *key;
         union
         {
             char *action;
@@ -592,7 +592,7 @@ namespace
         addreleaseaction(newstring(s));
     }
 
-    static void execbind(KeyM &k, bool isdown, int map)
+    static void execbind(KeyMap &k, bool isdown, int map)
     {
         for(uint i = 0; i < releaseactions.size(); i++)
         {
@@ -617,19 +617,19 @@ namespace
         }
         if(isdown)
         {
-            int state = KeyM::Action_Default;
+            int state = KeyMap::Action_Default;
             if(!mainmenu)
             {
                 if(map == 1)
                 {
-                    state = KeyM::Action_Editing;
+                    state = KeyMap::Action_Editing;
                 }
                 else if(map == 2)
                 {
-                    state = KeyM::Action_Spectator;
+                    state = KeyMap::Action_Spectator;
                 }
             }
-            char *&action = k.actions[state][0] ? k.actions[state] : k.actions[KeyM::Action_Default];
+            char *&action = k.actions[state][0] ? k.actions[state] : k.actions[KeyMap::Action_Default];
             keyaction = action;
             keypressed = &k;
             execute(keyaction);
@@ -1072,7 +1072,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = keyms.access(code);
+    KeyMap *haskey = keyms.access(code);
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown, map); // allow pressed keys to release
@@ -1156,7 +1156,7 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyM *km = keyms.access(code);
+    KeyMap *km = keyms.access(code);
     return km ? km->name : nullptr;
 }
 
@@ -1178,12 +1178,12 @@ tagval *addreleaseaction(ident *id, int numargs)
 void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
-    std::vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    std::vector<KeyMap *> binds;
+    ENUMERATE(keyms, KeyMap, km, binds.push_back(&km));
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
-        for(KeyM *&km : binds)
+        for(KeyMap *&km : binds)
         {
             if(*(km->actions[j]))
             {
@@ -1256,79 +1256,79 @@ void initconsolecmds()
 
     static auto bind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Default, "bind");
+        bindkey(key, action, KeyMap::Action_Default, "bind");
     };
     addcommand("bind", reinterpret_cast<identfun>(+bind), "ss", Id_Command);
 
     static auto specbind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Spectator, "specbind");
+        bindkey(key, action, KeyMap::Action_Spectator, "specbind");
     };
     addcommand("specbind", reinterpret_cast<identfun>(+specbind), "ss", Id_Command);
 
     static auto editbind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Editing, "editbind");
+        bindkey(key, action, KeyMap::Action_Editing, "editbind");
     };
     addcommand("editbind", reinterpret_cast<identfun>(+editbind), "ss", Id_Command);
 
     static auto getbindcmd = [] (char *key)
     {
-        getbind(key, KeyM::Action_Default);
+        getbind(key, KeyMap::Action_Default);
     };
     addcommand("getbind", reinterpret_cast<identfun>(+getbindcmd), "s", Id_Command);
 
     static auto getspecbind = [] (char *key)
     {
-        getbind(key, KeyM::Action_Spectator);
+        getbind(key, KeyMap::Action_Spectator);
     };
     addcommand("getspecbind", reinterpret_cast<identfun>(+getspecbind), "s", Id_Command);
 
     static auto geteditbind = [] (char *key)
     {
-        getbind(key, KeyM::Action_Editing);
+        getbind(key, KeyMap::Action_Editing);
     };
     addcommand("geteditbind", reinterpret_cast<identfun>(+geteditbind), "s", Id_Command);
 
     static auto searchbindscmd = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Default);
+        searchbinds(action, KeyMap::Action_Default);
     };
     addcommand("searchbinds", reinterpret_cast<identfun>(+searchbindscmd), "s", Id_Command);
 
     static auto searchspecbinds = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Spectator);
+        searchbinds(action, KeyMap::Action_Spectator);
     };
     addcommand("searchspecbinds", reinterpret_cast<identfun>(+searchspecbinds), "s", Id_Command);
 
     static auto searcheditbinds = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Editing);
+        searchbinds(action, KeyMap::Action_Editing);
     };
     addcommand("searcheditbinds", reinterpret_cast<identfun>(+searcheditbinds), "s", Id_Command);
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Default));
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Spectator));
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Editing));
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear());
+        ENUMERATE(keyms, KeyMap, km, km.clear());
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
