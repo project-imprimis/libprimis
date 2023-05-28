@@ -2028,13 +2028,13 @@ void setblurshader(int pass, int size, int radius, const float *weights, const f
         s = lookupshaderbyname(name);
     }
     s->set();
-    LOCALPARAMV(weights, weights, 8);
-    float scaledoffsets[8];
-    for(int k = 0; k < 8; ++k)
+    LOCALPARAMV(weights, weights, maxblurradius+1);
+    float scaledoffsets[maxblurradius+1];
+    for(int k = 0; k < maxblurradius+1; ++k)
     {
         scaledoffsets[k] = offsets[k]/size;
     }
-    LOCALPARAMV(offsets, scaledoffsets, 8);
+    LOCALPARAMV(offsets, scaledoffsets, maxblurradius+1);
 }
 
 void initshadercmds()
