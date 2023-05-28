@@ -1976,6 +1976,11 @@ void resetshaders()
 
 FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
+/*
+ * radius: sets number of weights & offsets for blurring to be made
+ * weights: array of length at least radius + 1
+ * offsets: array of length at least radius + 1
+ */
 void setupblurkernel(int radius, float *weights, float *offsets)
 {
     if(radius<1 || radius>maxblurradius)
