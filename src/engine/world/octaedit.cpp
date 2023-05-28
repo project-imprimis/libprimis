@@ -269,6 +269,7 @@ void cancelsel()
     entcancel();
 }
 
+//used in iengine
 bool haveselent()
 {
     return entgroup.size() > 0;
