@@ -107,6 +107,7 @@ var iengine_8h =
     [ "moveragdoll", "iengine_8h.html#a5224620d2d59336ecac1bd337c2d21d8", null ],
     [ "multiplayerwarn", "iengine_8h.html#a3936b7d01fe2a882592c97234f8dcf28", null ],
     [ "newundocube", "iengine_8h.html#a394c528144448c892935863b3b50fdea", null ],
+    [ "pasteblock", "iengine_8h.html#ae833c151a43577b2eb620ec1c9be3581", null ],
     [ "pastecube", "iengine_8h.html#a63feefc628e2bcde49ef21bbec3cc27f", null ],
     [ "pasteundoblock", "iengine_8h.html#a471d2e27929281437e5f40dec6d7b953", null ],
     [ "pointinsel", "iengine_8h.html#ad0e8b74def0ed6a4b978838e037bd8be", null ],

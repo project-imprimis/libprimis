@@ -595,9 +595,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>forcenextundo</b> ()<
 <tr class="memitem:adaf574f15e0c0f6edbc2de03793584e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3">freeundo</a> (<a class="el" href="structundoblock.html">undoblock</a> *u)</td></tr>
 <tr class="memdesc:adaf574f15e0c0f6edbc2de03793584e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes an undoblock object.  <br /></td></tr>
 <tr class="separator:adaf574f15e0c0f6edbc2de03793584e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc1b6d7031a7edc16a1ea70c36c14e60"><td class="memItemLeft" align="right" valign="top"><a id="adc1b6d7031a7edc16a1ea70c36c14e60" name="adc1b6d7031a7edc16a1ea70c36c14e60"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>pasteblock</b> (<a class="el" href="structblock3.html">block3</a> &amp;b, <a class="el" href="structselinfo.html">selinfo</a> &amp;sel, bool local)</td></tr>
-<tr class="separator:adc1b6d7031a7edc16a1ea70c36c14e60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae833c151a43577b2eb620ec1c9be3581"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ae833c151a43577b2eb620ec1c9be3581">pasteblock</a> (const <a class="el" href="structblock3.html">block3</a> &amp;b, <a class="el" href="structselinfo.html">selinfo</a> &amp;sel, bool local)</td></tr>
+<tr class="memdesc:ae833c151a43577b2eb620ec1c9be3581"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pastes the <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> passed to the volume in the selinfo object.  <br /></td></tr>
+<tr class="separator:ae833c151a43577b2eb620ec1c9be3581"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a68f2850c7fcc52749a94e217f2c985"><td class="memItemLeft" align="right" valign="top"><a id="a2a68f2850c7fcc52749a94e217f2c985" name="a2a68f2850c7fcc52749a94e217f2c985"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>pasteundo</b> (<a class="el" href="structundoblock.html">undoblock</a> *u)</td></tr>
 <tr class="separator:a2a68f2850c7fcc52749a94e217f2c985"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -4436,6 +4436,50 @@ false if no heightmap is active </dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to a new heap-allocated undoblock object </dd></dl>
+
+</div>
+</div>
+<a id="ae833c151a43577b2eb620ec1c9be3581" name="ae833c151a43577b2eb620ec1c9be3581"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae833c151a43577b2eb620ec1c9be3581">&#9670;&#160;</a></span>pasteblock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pasteblock </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structblock3.html">block3</a> &amp;&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structselinfo.html">selinfo</a> &amp;&#160;</td>
+          <td class="paramname"><em>sel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>local</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pastes the <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> passed to the volume in the selinfo object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">b</td><td>the <a class="el" href="structblock3.html" title="A representation of a rectangular volume of cubes, with less metadata.">block3</a> to paste </td></tr>
+    <tr><td class="paramname">sel</td><td>the selection to paste into </td></tr>
+    <tr><td class="paramname">local</td><td>whether the command was local </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
