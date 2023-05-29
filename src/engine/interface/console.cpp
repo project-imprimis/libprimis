@@ -239,6 +239,10 @@ namespace
 
     // keymap is defined externally in keymap.cfg
 
+    /*
+     * defines a mapping for a single key
+     * multiple keymap objects are aggregated in keyms to create the entire bindings list
+     */
     struct KeyMap
     {
         enum
@@ -249,10 +253,10 @@ namespace
             Action_NumActions
         };
 
-        int code;
-        char *name;
-        char *actions[Action_NumActions];
-        bool pressed;
+        int code;                           //unique bind code assigned to the key
+        char *name;                         //name to use to access this key
+        char *actions[Action_NumActions];   //array of strings to execute depending on what mode is being used
+        bool pressed;                       //whether this key is currently depressed
 
         KeyMap() : code(-1), name(nullptr), pressed(false)
         {
