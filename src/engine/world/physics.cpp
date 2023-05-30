@@ -1082,7 +1082,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     return false;
 }
 
-bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
+bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs) const
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = worldscale-1;
