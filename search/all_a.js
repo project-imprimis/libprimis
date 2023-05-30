@@ -11,5 +11,6 @@ var searchData=
   ['loadthumbnail_8',['loadthumbnail',['../structSlot.html#a1c03515604972228df2b940a04ff1309',1,'Slot']]],
   ['logfile_9',['logfile',['../iengine_8h.html#ab25a3625a8efbaa3d81ef27bbb51c9c5',1,'iengine.h']]],
   ['logoutf_10',['logoutf',['../iengine_8h.html#a9ab71763e51e4ec1e66eec6015d6e76f',1,'iengine.h']]],
-  ['lookupmaterial_11',['lookupmaterial',['../classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4',1,'cubeworld']]]
+  ['lookupcube_11',['lookupcube',['../classcubeworld.html#adb7c7102dfaf4df29d7dd8b1d107a6cb',1,'cubeworld']]],
+  ['lookupmaterial_12',['lookupmaterial',['../classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4',1,'cubeworld']]]
 ];

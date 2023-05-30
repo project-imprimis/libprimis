@@ -7,9 +7,11 @@ var classcubeworld =
     [ "emptymap", "classcubeworld.html#a12e042d30ab218c7764519e10008adef", null ],
     [ "enlargemap", "classcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce", null ],
     [ "getmapcrc", "classcubeworld.html#a36e686753af4005ac9b099b01dd3b94f", null ],
+    [ "lookupcube", "classcubeworld.html#adb7c7102dfaf4df29d7dd8b1d107a6cb", null ],
     [ "lookupmaterial", "classcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4", null ],
     [ "mapscale", "classcubeworld.html#aa4b5cdff5ce4ddef6e2664cb4e7827ef", null ],
     [ "mapsize", "classcubeworld.html#a0817719a7dfd2d50bdf02198804098b7", null ],
+    [ "octacollide", "classcubeworld.html#ae50eb34198b564ae2164f1f996c9dd6f", null ],
     [ "raycube", "classcubeworld.html#ae5ff48e06bbb4581e3856ead73fb3a18", null ],
     [ "remip", "classcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2", null ],
     [ "shrinkmap", "classcubeworld.html#a308713724b534880c00163b87142c4c3", null ]

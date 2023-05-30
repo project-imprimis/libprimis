@@ -161,11 +161,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>genprefabmesh</b> (pr
 <tr class="memitem:ae5ff48e06bbb4581e3856ead73fb3a18"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#ae5ff48e06bbb4581e3856ead73fb3a18">raycube</a> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float radius=0, int mode=3, int size=0, const <a class="el" href="structextentity.html">extentity</a> *t=0) const</td></tr>
 <tr class="memdesc:ae5ff48e06bbb4581e3856ead73fb3a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance before a ray hits a cube.  <br /></td></tr>
 <tr class="separator:ae5ff48e06bbb4581e3856ead73fb3a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af957f413bfef5b7915997224273a61ef"><td class="memItemLeft" align="right" valign="top"><a id="af957f413bfef5b7915997224273a61ef" name="af957f413bfef5b7915997224273a61ef"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>octacollide</b> (const <a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir, float cutoff, const <a class="el" href="structivec.html">ivec</a> &amp;bo, const <a class="el" href="structivec.html">ivec</a> &amp;bs)</td></tr>
-<tr class="separator:af957f413bfef5b7915997224273a61ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb7c7102dfaf4df29d7dd8b1d107a6cb"><td class="memItemLeft" align="right" valign="top"><a id="adb7c7102dfaf4df29d7dd8b1d107a6cb" name="adb7c7102dfaf4df29d7dd8b1d107a6cb"></a>
-<a class="el" href="classcube.html">cube</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>lookupcube</b> (const <a class="el" href="structivec.html">ivec</a> &amp;to, int tsize=0, <a class="el" href="structivec.html">ivec</a> &amp;ro=lu, int &amp;rsize=lusize)</td></tr>
+<tr class="memitem:ae50eb34198b564ae2164f1f996c9dd6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#ae50eb34198b564ae2164f1f996c9dd6f">octacollide</a> (const <a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir, float cutoff, const <a class="el" href="structivec.html">ivec</a> &amp;bo, const <a class="el" href="structivec.html">ivec</a> &amp;bs) const</td></tr>
+<tr class="memdesc:ae50eb34198b564ae2164f1f996c9dd6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the entity passed has collided with this octaworld.  <br /></td></tr>
+<tr class="separator:ae50eb34198b564ae2164f1f996c9dd6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb7c7102dfaf4df29d7dd8b1d107a6cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcube.html">cube</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#adb7c7102dfaf4df29d7dd8b1d107a6cb">lookupcube</a> (const <a class="el" href="structivec.html">ivec</a> &amp;to, int tsize=0, <a class="el" href="structivec.html">ivec</a> &amp;ro=lu, int &amp;rsize=lusize)</td></tr>
+<tr class="memdesc:adb7c7102dfaf4df29d7dd8b1d107a6cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a reference to the cube at the specified world coordinates.  <br /></td></tr>
 <tr class="separator:adb7c7102dfaf4df29d7dd8b1d107a6cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18d775ef05d770afaeb771013b67ef3a"><td class="memItemLeft" align="right" valign="top"><a id="a18d775ef05d770afaeb771013b67ef3a" name="a18d775ef05d770afaeb771013b67ef3a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>bboccluded</b> (const <a class="el" href="structivec.html">ivec</a> &amp;bo, const <a class="el" href="structivec.html">ivec</a> &amp;br) const</td></tr>
@@ -401,6 +401,57 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="adb7c7102dfaf4df29d7dd8b1d107a6cb" name="adb7c7102dfaf4df29d7dd8b1d107a6cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7c7102dfaf4df29d7dd8b1d107a6cb">&#9670;&#160;</a></span>lookupcube()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcube.html">cube</a> &amp; cubeworld::lookupcube </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structivec.html">ivec</a> &amp;&#160;</td>
+          <td class="paramname"><em>to</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tsize</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structivec.html">ivec</a> &amp;&#160;</td>
+          <td class="paramname"><em>ro</em> = <code>lu</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>rsize</em> = <code>lusize</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a reference to the cube at the specified world coordinates. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">to</td><td>the location to look in </td></tr>
+    <tr><td class="paramname">tsize</td><td>the size of cube to find (by gridpower) </td></tr>
+    <tr><td class="paramname">ro</td><td>the found location to be assigned by reference </td></tr>
+    <tr><td class="paramname">rsize</td><td>the found size (gridpower) of the cube to be assigned by reference </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6818f64cfc8a9cff6b26e46bf948e2d4" name="a6818f64cfc8a9cff6b26e46bf948e2d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6818f64cfc8a9cff6b26e46bf948e2d4">&#9670;&#160;</a></span>lookupmaterial()</h2>
 
@@ -460,6 +511,64 @@ Public Attributes</h2></td></tr>
 
 <p>Returns the linear dimensions of the world. </p>
 <p>Returns the size of the worldroot cube, in terms of the number of size 0 cubes on each linear axis. This value is generally between 2^10 and 2^15. </p>
+
+</div>
+</div>
+<a id="ae50eb34198b564ae2164f1f996c9dd6f" name="ae50eb34198b564ae2164f1f996c9dd6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae50eb34198b564ae2164f1f996c9dd6f">&#9670;&#160;</a></span>octacollide()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cubeworld::octacollide </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structphysent.html">physent</a> *&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>cutoff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structivec.html">ivec</a> &amp;&#160;</td>
+          <td class="paramname"><em>bo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structivec.html">ivec</a> &amp;&#160;</td>
+          <td class="paramname"><em>bs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns whether the entity passed has collided with this octaworld. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>the physent to check </td></tr>
+    <tr><td class="paramname">dir</td><td>the direction at which to check for a collision </td></tr>
+    <tr><td class="paramname">cutoff</td><td>the model cutoff factor </td></tr>
+    <tr><td class="paramname">bo</td><td>the vector for the minimum position of the model </td></tr>
+    <tr><td class="paramname">bs</td><td>the vector for the maximum position of the model </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
