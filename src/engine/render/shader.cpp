@@ -121,7 +121,53 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     }
     if(length > 1)
     {
-        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "Vertex shader" : (type == GL_FRAGMENT_SHADER ? "Fragment shader" : "PROG"), name);
+        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "VS" : (type == GL_FRAGMENT_SHADER ? "FS" : "PROG"), name);
+        FILE *l = getlogfile();
+        if(l)
+        {
+            GLchar *log = new GLchar[length];
+            if(type)
+            {
+                glGetShaderInfoLog(obj, length, &length, log);
+            }
+            else
+            {
+                glGetProgramInfoLog(obj, length, &length, log);
+            }
+            std::fprintf(l, "%s\n", log);
+            bool partlines = log[0] != '0';
+            int line = 0;
+            for(int i = 0; i < numparts; ++i)
+            {
+                const char *part = parts[i];
+                int startline = line;
+                while(*part)
+                {
+                    const char *next = std::strchr(part, '\n');
+                    if(++line > 1000)
+                    {
+                        goto done;
+                    }
+                    if(partlines)
+                    {
+                        std::fprintf(l, "%d(%d): ", i, line - startline);
+                    }
+                    else
+                    {
+                        std::fprintf(l, "%d: ", line);
+                    }
+                    std::fwrite(part, 1, next ? next - part + 1 : std::strlen(part), l);
+                    if(!next)
+                    {
+                        std::fputc('\n', l);
+                        break;
+                    }
+                    part = next + 1;
+                }
+            }
+        done:
+            delete[] log;
+        }
     }
 }
 
