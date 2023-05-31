@@ -198,10 +198,11 @@ static const char *escapeid(ident &id)
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
     std::fstream f;
-    std::printf("writing to %s\n", copypath(name && name[0] ? name : savedconfig));
-    f.open(copypath(name && name[0] ? name : savedconfig));
-    if(!f)
+    conoutf("writing to %s", copypath(name && name[0] ? name : savedconfig));
+    f.open(copypath(name && name[0] ? name : savedconfig), std::ios::out);
+    if(!f.is_open())
     {
+        conoutf("file not opened, config not written");
         return;
     }
     {
