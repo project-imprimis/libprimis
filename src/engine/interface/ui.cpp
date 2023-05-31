@@ -107,7 +107,7 @@ namespace UI
 
             }
 
-            bool isfullyclipped(float x, float y, float w, float h)
+            bool isfullyclipped(float x, float y, float w, float h) const
             {
                 return x1 == x2 || y1 == y2 || x >= x2 || y >= y2 || x+w <= x1 || y+h <= y1;
             }
