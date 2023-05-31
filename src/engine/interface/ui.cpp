@@ -954,7 +954,7 @@ namespace UI
             soffset = vec2(hudmatrix.d.x, hudmatrix.d.y).mul(0.5f).add(0.5f);
         }
 
-        void calcscissor(float x1, float y1, float x2, float y2, int &sx1, int &sy1, int &sx2, int &sy2, bool clip = true)
+        void calcscissor(float x1, float y1, float x2, float y2, int &sx1, int &sy1, int &sx2, int &sy2, bool clip = true) const
         {
             vec2 s1 = vec2(x1, y2).mul(sscale).add(soffset),
                  s2 = vec2(x2, y1).mul(sscale).add(soffset);
