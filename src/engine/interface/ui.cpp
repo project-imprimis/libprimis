@@ -971,7 +971,7 @@ namespace UI
             }
         }
 
-        float calcabovehud()
+        float calcabovehud() const
         {
             return 1 - (y*sscale.y + soffset.y);
         }
