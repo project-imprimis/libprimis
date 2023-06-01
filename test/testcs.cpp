@@ -101,6 +101,30 @@ void testconc()
     assert(std::strcmp(conout4, "test11.1teststring") == 0);
 }
 
+//command.h functions
+
+void testescapestring()
+{
+    const char * teststr = "escapestring output: \n \f \t";
+    const char * conout = escapestring(teststr);
+    std::printf("%s\n", conout);
+    assert(std::strcmp(conout, "\"escapestring output: ^n ^f ^t\"") == 0);
+}
+
+void testescapeid()
+{
+    const char * teststr = "escapeid output: \n \f \t";
+    const char * conout = escapeid(teststr);
+    std::printf("%s\n", conout);
+    assert(std::strcmp(conout, "\"escapeid output: ^n ^f ^t\"") == 0);
+
+    const char * teststr2 = "";
+    const char * conout2 = escapeid(teststr2);
+    std::printf("%s\n", conout2);
+    assert(std::strcmp(conout2, "") == 0);
+}
+
+//run tests
 void testcs()
 {
     testparsefloat();
@@ -109,4 +133,7 @@ void testcs()
     testintformat();
     testparseword();
     testconc();
+    //command.h
+    testescapestring();
+    testescapeid();
 }
