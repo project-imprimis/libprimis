@@ -9,6 +9,7 @@ var command_8h =
     [ "checksleep", "command_8h.html#ad97d745d2a01ec6f7b780d792e082e08", null ],
     [ "clampvar", "command_8h.html#a580491578112d0b38b4c7fa1243b188f", null ],
     [ "clear_command", "command_8h.html#ab00d3f04f513b9d9534c8975d8972526", null ],
+    [ "escapeid", "command_8h.html#a2d27849ec8b6bbeebbd7570ff1e2610c", null ],
     [ "escapestring", "command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2", null ],
     [ "execfile", "command_8h.html#a6e5803cc209ddd0bfcbbb57c0480f974", null ],
     [ "execident", "command_8h.html#a93c2484e04b478cd5ac6cdef26a8edf1", null ],
@@ -27,6 +28,7 @@ var command_8h =
     [ "stringret", "command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c", null ],
     [ "svariable", "command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb", null ],
     [ "variable", "command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc", null ],
+    [ "writecfg", "command_8h.html#aa1fd1eebd1801363552d1a6f17e6badc", null ],
     [ "identflags", "command_8h.html#abf183f2dd9db02ed8e5199922459cbaa", null ],
     [ "triggerqueue", "command_8h.html#ae653e8a430e6baa97073fbaa061abfb2", null ]
 ];

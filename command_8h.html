@@ -403,11 +403,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>loopiter</b> (<a clas
 <tr class="memitem:ab02af777a68433dfc3f09a0c01faf499"><td class="memItemLeft" align="right" valign="top"><a id="ab02af777a68433dfc3f09a0c01faf499" name="ab02af777a68433dfc3f09a0c01faf499"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>loopend</b> (<a class="el" href="structident.html">ident</a> *id, <a class="el" href="structidentstack.html">identstack</a> &amp;stack)</td></tr>
 <tr class="separator:ab02af777a68433dfc3f09a0c01faf499"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d27849ec8b6bbeebbd7570ff1e2610c"><td class="memItemLeft" align="right" valign="top"><a id="a2d27849ec8b6bbeebbd7570ff1e2610c" name="a2d27849ec8b6bbeebbd7570ff1e2610c"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>escapeid</b> (const char *s)</td></tr>
+<tr class="memitem:a2d27849ec8b6bbeebbd7570ff1e2610c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a2d27849ec8b6bbeebbd7570ff1e2610c">escapeid</a> (const char *s)</td></tr>
+<tr class="memdesc:a2d27849ec8b6bbeebbd7570ff1e2610c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Escapes a string unless it is null.  <br /></td></tr>
 <tr class="separator:a2d27849ec8b6bbeebbd7570ff1e2610c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1fd1eebd1801363552d1a6f17e6badc"><td class="memItemLeft" align="right" valign="top"><a id="aa1fd1eebd1801363552d1a6f17e6badc" name="aa1fd1eebd1801363552d1a6f17e6badc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>writecfg</b> (const char *savedconfig, const char *autoexec=nullptr, const char *defaultconfig=nullptr, const char *name=nullptr)</td></tr>
+<tr class="memitem:aa1fd1eebd1801363552d1a6f17e6badc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#aa1fd1eebd1801363552d1a6f17e6badc">writecfg</a> (const char *savedconfig, const char *autoexec=nullptr, const char *defaultconfig=nullptr, const char *name=nullptr)</td></tr>
+<tr class="memdesc:aa1fd1eebd1801363552d1a6f17e6badc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes out the state of the CubeScript idents to a file.  <br /></td></tr>
 <tr class="separator:aa1fd1eebd1801363552d1a6f17e6badc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad97d745d2a01ec6f7b780d792e082e08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ad97d745d2a01ec6f7b780d792e082e08">checksleep</a> (int millis)</td></tr>
 <tr class="memdesc:ad97d745d2a01ec6f7b780d792e082e08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the cubescript sleep queue.  <br /></td></tr>
@@ -581,6 +581,34 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a2d27849ec8b6bbeebbd7570ff1e2610c" name="a2d27849ec8b6bbeebbd7570ff1e2610c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d27849ec8b6bbeebbd7570ff1e2610c">&#9670;&#160;</a></span>escapeid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * escapeid </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Escapes a string unless it is null. </p>
+<p>If an empty string is passed, <a class="el" href="command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2" title="Replaces C style excape characters with Cubescript ones.">escapestring()</a> is not called. Otherwise, the same behavior as in <a class="el" href="command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2" title="Replaces C style excape characters with Cubescript ones.">escapestring()</a> is executed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>the string to convert</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a string containing the potentially applied escape changes </dd></dl>
+
+</div>
+</div>
 <a id="a20b5ef16ec5ad90369a8fd98a0178fa2" name="a20b5ef16ec5ad90369a8fd98a0178fa2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a20b5ef16ec5ad90369a8fd98a0178fa2">&#9670;&#160;</a></span>escapestring()</h2>
 
@@ -598,6 +626,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Replaces C style excape characters with Cubescript ones. </p>
+<p>The resulting string is also wrapped in quotes ("").</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>the string to convert</td></tr>
@@ -1299,6 +1328,57 @@ false if the file was not found </dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the value cur passed </dd></dl>
+
+</div>
+</div>
+<a id="aa1fd1eebd1801363552d1a6f17e6badc" name="aa1fd1eebd1801363552d1a6f17e6badc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1fd1eebd1801363552d1a6f17e6badc">&#9670;&#160;</a></span>writecfg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void writecfg </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>savedconfig</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>autoexec</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>defaultconfig</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes out the state of the CubeScript idents to a file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">savedconfig</td><td>the path to write to if name is nullptr </td></tr>
+    <tr><td class="paramname">autoexec</td><td>the path for the autoexec file for user modification, for display in top of file comment </td></tr>
+    <tr><td class="paramname">defaultconfig</td><td>the path for the master copy of the configuration file, for display in top of file comment </td></tr>
+    <tr><td class="paramname">name</td><td>the path to write to, if nullptr savedconfig is used instead </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
