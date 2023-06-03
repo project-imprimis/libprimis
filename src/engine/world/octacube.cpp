@@ -630,11 +630,11 @@ void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &p
     {
         if(p.merged)
         {
-            (*p.c).addmerge(orient, n, offset, p);
+            (*(p.c)).addmerge(orient, n, offset, p);
         }
         else
         {
-            (*p.c).clearmerge(orient);
+            (*(p.c)).clearmerge(orient);
         }
     }
 }
