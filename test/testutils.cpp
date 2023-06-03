@@ -17,13 +17,20 @@ namespace header_geom
 
     void testvec3()
     {
+        std::printf("Testing vec object\n");
         vec a(5,5,5);
-        vec b(5,5,5);
         a.mul(2);
+        assert(a == vec(10,10,10));
         a.mul(vec(2,2,3));
+        assert(a == vec(20,20,30));
         a.add(vec(1,1,1));
+        assert(a == vec(21,21,31));
         a.sub(vec(1,1,1));
+        assert(a == vec(20,20,30));
         a.mul(2);
+        assert(a == vec(40,40,60));
+        float adot = a.dot(vec(0.5, 0.5, 0.5));
+        assert(adot == 70);
     }
 
     void testmod360()
