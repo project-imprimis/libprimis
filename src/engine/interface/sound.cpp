@@ -261,14 +261,14 @@ int SoundEngine::getsoundchans()
 
 bool SoundEngine::initaudio()
 {
-    static string fallback = "";
+    static std::string fallback = "";
     static bool initfallback = true;
     if(initfallback)
     {
         initfallback = false;
-        if(char *env = SDL_getenv("SDL_AUDIODRIVER"))
+        if(const char *env = SDL_getenv("SDL_AUDIODRIVER"))
         {
-            copystring(fallback, env);
+            fallback = std::string(env);
         }
     }
     if(!fallback[0] && audiodriver[0])
@@ -292,7 +292,7 @@ bool SoundEngine::initaudio()
             delete[] j;
         }
     }
-    SDL_setenv("SDL_AUDIODRIVER", fallback, 1);
+    SDL_setenv("SDL_AUDIODRIVER", fallback.c_str(), 1);
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
     {
         return true;
