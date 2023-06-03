@@ -205,11 +205,12 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
         conoutf("file not opened, config not written");
         return;
     }
-    {
-        char temp[260];
-        std::sprintf(temp, "// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
-        f << temp;
-    }
+    //write the top of file comment manually
+    f << "// automatically written on exit, DO NOT MODIFY\n// delete this file to have";
+    f << defaultconfig;
+    f << "overwrite these settings\n// modify settings in game, or put settings in";
+    f << autoexec;
+    f << "to override anything\n\n";
     writecrosshairs(f);
     std::vector<ident *> ids;
     for(auto& [k, id] : idents)
