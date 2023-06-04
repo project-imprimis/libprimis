@@ -183,37 +183,6 @@ static void fontskip(int *n)
     }
 }
 
-/* fontalias
- * copies an entry in the fontdef vector to another one
- * copies the entry at *src to *dst
- */
-static void fontalias(const char *dst, const char *src)
-{
-    font *s = fonts.access(src);
-    if(!s)
-    {
-        return;
-    }
-    font *d = &fonts[dst];
-    if(!d->name)
-    {
-        d->name = newstring(dst);
-    }
-    d->texs = s->texs;
-    d->chars = s->chars;
-    d->charoffset = s->charoffset;
-    d->defaultw = s->defaultw;
-    d->defaulth = s->defaulth;
-    d->scale = s->scale;
-    d->bordermin = s->bordermin;
-    d->bordermax = s->bordermax;
-    d->outlinemin = s->outlinemin;
-    d->outlinemax = s->outlinemax;
-
-    fontdef = d;
-    fontdeftex = d->texs.size()-1;
-}
-
 bool setfont(const char *name)
 {
     font *f = fonts.access(name);
@@ -481,7 +450,6 @@ void reloadfonts()
 
 void initrendertextcmds()
 {
-    addcommand("fontalias", reinterpret_cast<identfun>(fontalias), "ss", Id_Command);
     addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
     addcommand("fontborder", reinterpret_cast<identfun>(fontborder), "ff", Id_Command);
     addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);
