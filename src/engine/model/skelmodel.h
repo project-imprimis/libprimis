@@ -514,11 +514,9 @@ struct skelmodel : animmodel
     class skelpart : public part
     {
         public:
-            animpartmask *buildingpartmask;
-
             uchar *partmask;
 
-            skelpart(animmodel *model, int index = 0) : part(model, index), buildingpartmask(nullptr), partmask(nullptr)
+            skelpart(animmodel *model, int index = 0) : part(model, index), partmask(nullptr), buildingpartmask(nullptr)
             {
             }
 
@@ -531,6 +529,8 @@ struct skelmodel : animmodel
             bool addanimpart(const ushort *bonemask);
             void loaded();
         private:
+            animpartmask *buildingpartmask;
+
             uchar *sharepartmask(animpartmask *o);
             animpartmask *newpartmask();
             void endanimparts();
