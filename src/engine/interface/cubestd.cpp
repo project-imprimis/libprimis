@@ -207,9 +207,15 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     }
     //write the top of file comment manually
     f << "// automatically written on exit, DO NOT MODIFY\n// delete this file to have";
-    f << defaultconfig;
+    if(defaultconfig)
+    {
+        f << defaultconfig;
+    }
     f << "overwrite these settings\n// modify settings in game, or put settings in";
-    f << autoexec;
+    if(autoexec)
+    {
+        f << autoexec;
+    }
     f << "to override anything\n\n";
     writecrosshairs(f);
     std::vector<ident *> ids;
