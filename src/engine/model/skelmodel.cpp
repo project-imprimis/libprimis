@@ -1506,7 +1506,7 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
     else
     {
         skel = new skeleton;
-        skel->name = newstring(name);
+        skel->name = std::string(name);
         skeletons[std::string(name)] = skel;
     }
     skel->users.push_back(this);

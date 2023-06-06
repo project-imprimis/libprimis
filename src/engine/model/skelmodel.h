@@ -308,7 +308,7 @@ struct skelmodel : animmodel
 
     struct skeleton
     {
-        const char *name;
+        std::string name;
         int shared;
         std::vector<skelmeshgroup *> users;
         boneinfo *bones;
@@ -326,13 +326,12 @@ struct skelmodel : animmodel
         std::vector<skelcacheentry> skelcache;
         hashtable<GLuint, int> blendoffsets;
 
-        skeleton() : name(nullptr), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
+        skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
         {
         }
 
         ~skeleton()
         {
-            delete[] name;
             delete[] bones;
             delete[] framebones;
             if(ragdoll)
