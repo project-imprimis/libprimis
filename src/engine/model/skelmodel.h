@@ -619,7 +619,6 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef struct MDL::skin skin;
     typedef struct MDL::boneinfo boneinfo;
     typedef struct MDL::skelanimspec animspec;
-    typedef struct MDL::pitchdep pitchdep;
     typedef struct MDL::pitchtarget pitchtarget;
     typedef struct MDL::pitchcorrect pitchcorrect;
 
