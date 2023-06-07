@@ -300,72 +300,73 @@ struct skelmodel : animmodel
         pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0) {}
     };
 
-    struct skeleton
+    class skeleton
     {
-        std::string name;
-        int shared;
-        std::vector<skelmeshgroup *> users;
-        boneinfo *bones;
-        int numbones, numinterpbones, numgpubones, numframes;
-        dualquat *framebones;
-        std::vector<skelanimspec> skelanims;
-        std::vector<tag> tags;
-        std::vector<antipode> antipodes;
-        ragdollskel *ragdoll;
-        std::vector<pitchtarget> pitchtargets;
-        std::vector<pitchcorrect> pitchcorrects;
+        public:
+            std::string name;
+            int shared;
+            std::vector<skelmeshgroup *> users;
+            boneinfo *bones;
+            int numbones, numinterpbones, numgpubones, numframes;
+            dualquat *framebones;
+            std::vector<skelanimspec> skelanims;
+            std::vector<tag> tags;
+            std::vector<antipode> antipodes;
+            ragdollskel *ragdoll;
+            std::vector<pitchtarget> pitchtargets;
+            std::vector<pitchcorrect> pitchcorrects;
 
-        bool usegpuskel;
-        std::vector<skelcacheentry> skelcache;
-        hashtable<GLuint, int> blendoffsets;
+            bool usegpuskel;
+            std::vector<skelcacheentry> skelcache;
+            hashtable<GLuint, int> blendoffsets;
 
-        skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
-        {
-        }
-
-        ~skeleton()
-        {
-            delete[] bones;
-            delete[] framebones;
-            if(ragdoll)
+            skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
             {
-                delete ragdoll;
-                ragdoll = nullptr;
             }
-            for(uint i = 0; i < skelcache.size(); i++)
-            {
-                delete[] skelcache[i].bdata;
-            }
-        }
 
-        const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
-        skelanimspec &addskelanim(const char *name);
-        int findbone(const char *name) const;
-        int findtag(const char *name) const;
-        bool addtag(const char *name, int bone, const matrix4x3 &matrix);
-        void addpitchdep(int bone, int frame);
-        int findpitchdep(int bone) const;
-        int findpitchcorrect(int bone) const;
-        void initpitchdeps();
-        void optimize();
-        void expandbonemask(uchar *expansion, int bone, int val) const;
-        void applybonemask(const ushort *mask, uchar *partmask, int partindex) const;
-        void linkchildren();
-        int availgpubones() const;
-        float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
-        void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
-        void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
-        void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
-        void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
-        void calctags(part *p, const skelcacheentry *sc = nullptr);
-        void cleanup(bool full = true);
-        bool canpreload() const;
-        void preload();
-        const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
-        int getblendoffset(const UniformLoc &u);
-        void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
-        bool shouldcleanup() const;
+            ~skeleton()
+            {
+                delete[] bones;
+                delete[] framebones;
+                if(ragdoll)
+                {
+                    delete ragdoll;
+                    ragdoll = nullptr;
+                }
+                for(uint i = 0; i < skelcache.size(); i++)
+                {
+                    delete[] skelcache[i].bdata;
+                }
+            }
+
+            const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
+            skelanimspec &addskelanim(const char *name);
+            int findbone(const char *name) const;
+            int findtag(const char *name) const;
+            bool addtag(const char *name, int bone, const matrix4x3 &matrix);
+            void addpitchdep(int bone, int frame);
+            int findpitchdep(int bone) const;
+            int findpitchcorrect(int bone) const;
+            void initpitchdeps();
+            void optimize();
+            void expandbonemask(uchar *expansion, int bone, int val) const;
+            void applybonemask(const ushort *mask, uchar *partmask, int partindex) const;
+            void linkchildren();
+            int availgpubones() const;
+            float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
+            void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
+            void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
+            void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
+            void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
+            void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
+            void calctags(part *p, const skelcacheentry *sc = nullptr);
+            void cleanup(bool full = true);
+            bool canpreload() const;
+            void preload();
+            const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
+            int getblendoffset(const UniformLoc &u);
+            void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
+            bool shouldcleanup() const;
 
         private:
             struct pitchdep
