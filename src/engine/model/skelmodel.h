@@ -278,13 +278,6 @@ struct skelmodel : animmodel
         }
     };
 
-    struct antipode
-    {
-        int parent, child;
-
-        antipode(int parent, int child) : parent(parent), child(child) {}
-    };
-
     struct pitchtarget
     {
         int bone, frame, corrects, deps;
@@ -311,7 +304,6 @@ struct skelmodel : animmodel
             dualquat *framebones;
             std::vector<skelanimspec> skelanims;
             std::vector<tag> tags;
-            std::vector<antipode> antipodes;
             ragdollskel *ragdoll;
             std::vector<pitchtarget> pitchtargets;
             std::vector<pitchcorrect> pitchcorrects;
@@ -375,6 +367,14 @@ struct skelmodel : animmodel
                 dualquat pose;
             };
             std::vector<pitchdep> pitchdeps;
+
+            struct antipode
+            {
+                int parent, child;
+
+                antipode(int parent, int child) : parent(parent), child(child) {}
+            };
+            std::vector<antipode> antipodes;
 
             void calcantipodes();
             void remapbones();
