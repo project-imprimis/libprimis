@@ -250,14 +250,6 @@ struct skelmodel : animmodel
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
-    struct tag
-    {
-        std::string name;
-        int bone;
-        matrix4x3 matrix;
-
-    };
-
     struct skelanimspec
     {
         std::string name;
@@ -303,7 +295,6 @@ struct skelmodel : animmodel
             int numbones, numinterpbones, numgpubones, numframes;
             dualquat *framebones;
             std::vector<skelanimspec> skelanims;
-            std::vector<tag> tags;
             ragdollskel *ragdoll;
             std::vector<pitchtarget> pitchtargets;
             std::vector<pitchcorrect> pitchcorrects;
@@ -375,6 +366,14 @@ struct skelmodel : animmodel
                 antipode(int parent, int child) : parent(parent), child(child) {}
             };
             std::vector<antipode> antipodes;
+
+            struct tag
+            {
+                std::string name;
+                int bone;
+                matrix4x3 matrix;
+            };
+            std::vector<tag> tags;
 
             void calcantipodes();
             void remapbones();
