@@ -119,9 +119,9 @@ namespace
         }
     }
 
-    //sets up vbos (vertex buffer objects) for the pointer-to-array-of-vtxarray **vas
+    //sets up vbos (vertex buffer objects) for each entry in the vas vector
     //by setting up each vertex array's vbuf and vdata
-    void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
+    void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &vas)
     {
         gle::disable();
 
@@ -129,17 +129,16 @@ namespace
         glGenBuffers(1, &vbo);
         GLenum target = type==VBO_VBuf ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
         glBindBuffer(target, vbo);
-        glBufferData(target, len, buf, GL_STATIC_DRAW);
+        glBufferData(target, buf.size(), buf.data(), GL_STATIC_DRAW);
         glBindBuffer(target, 0);
 
         vboinfo &vbi = vbos[vbo];
-        vbi.uses = numva;
-        vbi.data = new uchar[len];
-        std::memcpy(vbi.data, buf, len);
+        vbi.uses = vas.size();
+        vbi.data = new uchar[buf.size()];
+        std::memcpy(vbi.data, buf.data(), buf.size());
 
-        for(int i = 0; i < numva; ++i)
+        for(vtxarray *va: vas)
         {
-            vtxarray *va = vas[i];
             switch(type)
             {
                 case VBO_VBuf:
@@ -192,7 +191,7 @@ namespace
             return;
         }
         std::vector<vtxarray *> &vas = vbovas[type];
-        genvbo(type, data.data(), data.size(), vas.data(), vas.size());
+        genvbo(type, data, vas);
         data.clear();
         vas.clear();
         vbosize[type] = 0;
