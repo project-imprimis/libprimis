@@ -240,8 +240,6 @@ namespace
         public:
             std::vector<vertex> verts;
 
-            verthash() { clearverts(); }
-
             int addvert(const vertex &v)
             {
                 uint h = hthash(v.pos)&(hashsize-1);
@@ -268,6 +266,12 @@ namespace
                 chain.clear();
                 verts.clear();
             }
+
+            verthash()
+            {
+                clearverts();
+            }
+
         private:
             static const int hashsize = 1<<13;
             std::array<int, hashsize> table;
