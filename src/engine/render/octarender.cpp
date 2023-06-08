@@ -264,13 +264,13 @@ namespace
         protected:
             void clearverts()
             {
-                std::memset(table, -1, sizeof(table));
+                table.fill(-1);
                 chain.clear();
                 verts.clear();
             }
         private:
             static const int hashsize = 1<<13;
-            int table[hashsize];
+            std::array<int, hashsize> table;
 
             std::vector<int> chain;
 
