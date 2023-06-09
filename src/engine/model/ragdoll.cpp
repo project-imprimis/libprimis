@@ -243,13 +243,12 @@ void ragdolldata::init(const dynent *d)
 
 void ragdolldata::constraindist()
 {
-    float invscale = 1.0f/scale;
     for(const ragdollskel::distlimit &d : skel->distlimits)
     {
         vert &v1 = verts[d.vert[0]],
              &v2 = verts[d.vert[1]];
         vec dir = vec(v2.pos).sub(v1.pos);
-        float dist = dir.magnitude()*invscale,
+        float dist = dir.magnitude()/scale,
               cdist;
         if(dist < d.mindist)
         {
@@ -269,7 +268,7 @@ void ragdolldata::constraindist()
         }
         else
         {
-            dir = vec(0, 0, cdist*0.5f/invscale);
+            dir = vec(0, 0, cdist*0.5f*scale);
         }
         vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
         v1.newpos.add(vec(center).sub(dir));
