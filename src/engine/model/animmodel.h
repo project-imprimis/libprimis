@@ -39,7 +39,6 @@ class animmodel : public model
             bool operator!=(const AnimState &a) const;
         };
 
-        struct linkedpart;
         class Mesh;
 
         struct shaderparams
@@ -384,23 +383,23 @@ class animmodel : public model
 
         static hashnameset<meshgroup *> meshgroups;
 
-        struct linkedpart
-        {
-            part *p;
-            int tag, anim, basetime;
-            vec translate;
-            vec *pos;
-            matrix4 matrix;
-
-            linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
-        };
-
         class part
         {
             public:
                 animmodel *model;
                 int index;
                 meshgroup *meshes;
+
+                struct linkedpart
+                {
+                    part *p;
+                    int tag, anim, basetime;
+                    vec translate;
+                    vec *pos;
+                    matrix4 matrix;
+
+                    linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
+                };
                 std::vector<linkedpart> links;
                 std::vector<skin> skins;
                 int numanimparts;
