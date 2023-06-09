@@ -839,11 +839,12 @@ void renderwater()
         } while(0)
 
         Shader *aboveshader = nullptr;
+        //this if tree will select which shader is the water aboveshader depending on settings
         if(drawtex == Draw_TexMinimap)
         {
             SETWATERSHADER(above, waterminimap);
         }
-        else if(caustics && causticscale && causticmillis)
+        else if(caustics && causticscale && causticmillis) //caustics
         {
             if(waterreflect)
             {
@@ -854,7 +855,7 @@ void renderwater()
                 SETWATERSHADER(above, watercaustics);
             }
         }
-        else
+        else //no caustics
         {
             if(waterreflect)
             {
@@ -865,7 +866,7 @@ void renderwater()
                 SETWATERSHADER(above, water);
             }
         }
-
+        //now select the water belowshader
         Shader *belowshader = nullptr;
         if(drawtex != Draw_TexMinimap)
         {
