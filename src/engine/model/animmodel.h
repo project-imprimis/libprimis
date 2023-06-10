@@ -455,7 +455,6 @@ class animmodel : public model
 
         std::vector<part *> parts;
 
-        animmodel(const char *name);
         ~animmodel();
 
         void cleanup();
@@ -553,6 +552,8 @@ class animmodel : public model
         static void disablevbo();
         void endrender() const;
     protected:
+        animmodel(const char *name);
+
         virtual int linktype(const animmodel *, const part *) const
         {
             return Link_Tag;
