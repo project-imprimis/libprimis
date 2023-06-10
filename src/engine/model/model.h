@@ -30,31 +30,6 @@ class model
         char *collidemodel;
         int collide, batch;
 
-        model(const char *name) : name(name ? newstring(name) : nullptr),
-                                  spinyaw(0),
-                                  spinpitch(0),
-                                  spinroll(0),
-                                  offsetyaw(0),
-                                  offsetpitch(0),
-                                  offsetroll(0),
-                                  shadow(true),
-                                  alphashadow(true),
-                                  depthoffset(false),
-                                  scale(1.0f),
-                                  translate(0, 0, 0),
-                                  bih(0),
-                                  bbextend(0, 0, 0),
-                                  eyeheight(0.9f),
-                                  collidexyradius(0),
-                                  collideheight(0),
-                                  collidemodel(nullptr),
-                                  collide(Collide_OrientedBoundingBox),
-                                  batch(-1), bbcenter(0, 0, 0),
-                                  bbradius(-1, -1, -1),
-                                  collidecenter(0, 0, 0),
-                                  collideradius(-1, -1, -1),
-                                  rejectradius(-1) {}
-
         virtual ~model()
         {
             delete[] name;
@@ -65,6 +40,7 @@ class model
                 bih = nullptr;
             }
         }
+
         virtual void calcbb(vec &center, vec &radius) const = 0;
         virtual void calctransform(matrix4x3 &m) const = 0;
         virtual int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) = 0;
@@ -133,6 +109,31 @@ class model
             boundbox(center, radius);
             return center.z+radius.z;
         }
+    protected:
+        model(const char *name) : name(name ? newstring(name) : nullptr),
+                                  spinyaw(0),
+                                  spinpitch(0),
+                                  spinroll(0),
+                                  offsetyaw(0),
+                                  offsetpitch(0),
+                                  offsetroll(0),
+                                  shadow(true),
+                                  alphashadow(true),
+                                  depthoffset(false),
+                                  scale(1.0f),
+                                  translate(0, 0, 0),
+                                  bih(0),
+                                  bbextend(0, 0, 0),
+                                  eyeheight(0.9f),
+                                  collidexyradius(0),
+                                  collideheight(0),
+                                  collidemodel(nullptr),
+                                  collide(Collide_OrientedBoundingBox),
+                                  batch(-1), bbcenter(0, 0, 0),
+                                  bbradius(-1, -1, -1),
+                                  collidecenter(0, 0, 0),
+                                  collideradius(-1, -1, -1),
+                                  rejectradius(-1) {}
     private:
         vec bbcenter, bbradius, collidecenter, collideradius;
         float rejectradius;
