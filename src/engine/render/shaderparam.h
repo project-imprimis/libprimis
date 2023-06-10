@@ -79,11 +79,11 @@ struct SlotShaderParamState : LocalShaderParamState
 class Shader
 {
     public:
-        static Shader *lastshader;
+        static Shader *lastshader; //the current shader being used by glUseProgram()
 
         char *name,
             *defer; //a pointer to a deferred shader
-        int type;
+        int type; //type of shader, e.g. world, refractive, deferred, see enum
         GLuint program;
         std::vector<SlotShaderParamState> defaultparams;
         std::vector<GlobalShaderParamUse> globalparams;
@@ -92,7 +92,7 @@ class Shader
         Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
-        Shader *reusevs, *reuseps;
+        Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         std::vector<UniformLoc> uniformlocs;
 
         const void *owner;
