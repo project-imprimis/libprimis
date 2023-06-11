@@ -129,7 +129,7 @@ void cube::discardchildren(bool fixtex, int depth)
 bool cube::isvalidcube() const
 {
     clipplanes p;
-    genclipbounds(*this, ivec(0, 0, 0), 256, p);
+    p.genclipbounds(*this, ivec(0, 0, 0), 256);
     genclipplanes(*this, ivec(0, 0, 0), 256, p);
     // test that cube is convex
     for(int i = 0; i < 8; ++i)

@@ -1613,22 +1613,22 @@ static void calcvert(const cube &c, const ivec &co, int size, vec &v, int i, boo
 }
 
 //sets clipplanes values for a cube c and location co
-void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p)
+void clipplanes::genclipbounds(const cube &c, const ivec &co, int size)
 {
     // generate tight bounding box
-    calcvert(c, co, size, p.v[0], 0);
-    vec mx = p.v[0],
-        mn = p.v[0];
+    calcvert(c, co, size, v[0], 0);
+    vec mx = v[0],
+        mn = v[0];
     for(int i = 1; i < 8; i++)
     {
-        calcvert(c, co, size, p.v[i], i);
-        mx.max(p.v[i]);
-        mn.min(p.v[i]);
+        calcvert(c, co, size, v[i], i);
+        mx.max(v[i]);
+        mn.min(v[i]);
     }
-    p.r = mx.sub(mn).mul(0.5f);
-    p.o = mn.add(p.r);
-    p.size = 0;
-    p.visible = 0x80;
+    r = mx.sub(mn).mul(0.5f);
+    o = mn.add(r);
+    size = 0;
+    visible = 0x80;
 }
 
 void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide, bool noclip)
