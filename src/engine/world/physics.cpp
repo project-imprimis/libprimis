@@ -46,20 +46,20 @@ static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, const p
     return rootworld.getclipbounds(c, o, size, offset);
 }
 
-static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p)
+int clipplanes::forceclipplanes(const cube &c, const ivec &o, int size)
 {
-    if(p.visible&0x80)
+    if(visible&0x80)
     {
         bool collide = true,
              noclip = false;
-        if(p.version&1)
+        if(version&1)
         {
             collide = false;
             noclip  = true;
         }
-        p.genclipplanes(c, o, size, collide, noclip);
+        genclipplanes(c, o, size, collide, noclip);
     }
-    return p.visible;
+    return visible;
 }
 
 void cubeworld::resetclipplanes()
@@ -823,7 +823,7 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
     }
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = forceclipplanes(c, co, size, p);
+    int visible = p.forceclipplanes(c, co, size);
 
     if(!( checkside(*d, Orient_Left, dir, visible, cutoff,   p.o.x - p.r.x - (d->o.x + d->radius),   -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
        && checkside(*d, Orient_Right, dir, visible, cutoff,  d->o.x - d->radius - (p.o.x + p.r.x),    dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
@@ -942,7 +942,7 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
     }
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = forceclipplanes(c, co, size, p);
+    int visible = p.forceclipplanes(c, co, size);
     if(!( checkside(*d, Orient_Left, dir, visible, cutoff, p.o.x - p.r.x - entvol.right(),  -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
        && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
        && checkside(*d, Orient_Back, dir, visible, cutoff, p.o.y - p.r.y - entvol.front(),  -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)

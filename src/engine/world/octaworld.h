@@ -111,6 +111,8 @@ struct clipplanes
 
     void genclipbounds(const cube &c, const ivec &co, int size);
     void genclipplanes(const cube &c, const ivec &co, int size, bool collide = true, bool noclip = false);
+    int forceclipplanes(const cube &c, const ivec &o, int size);
+
 };
 
 struct surfaceinfo
