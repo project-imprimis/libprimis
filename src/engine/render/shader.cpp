@@ -1600,7 +1600,7 @@ void setupshaders()
 
 VAR(defershaders, 0, 1, 1);
 
-void defershader(int *type, const char *name, const char *contents)
+void defershader(const int *type, const char *name, const char *contents)
 {
     Shader *exists = shaders.access(name);
     if(exists && !exists->invalid())
