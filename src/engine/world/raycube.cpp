@@ -28,7 +28,7 @@ namespace
         clipplanes &p = rootworld.getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
         if(p.visible&0x80)
         {
-            genclipplanes(c, o, size, p, false, false);
+            p.genclipplanes(c, o, size, false, false);
         }
         return p;
     }

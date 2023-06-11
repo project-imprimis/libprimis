@@ -57,7 +57,7 @@ static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p
             collide = false;
             noclip  = true;
         }
-        genclipplanes(c, o, size, p, collide, noclip);
+        p.genclipplanes(c, o, size, collide, noclip);
     }
     return p.visible;
 }

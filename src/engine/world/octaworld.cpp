@@ -1631,7 +1631,7 @@ void clipplanes::genclipbounds(const cube &c, const ivec &co, int size)
     visible = 0x80;
 }
 
-void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide, bool noclip)
+void clipplanes::genclipplanes(const cube &c, const ivec &co, int size, bool collide, bool noclip)
 {
     static const uchar fv[6][4] = // indexes for cubecoords, per each vert of a face orientation
     {
@@ -1643,7 +1643,7 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
         { 5, 4, 3, 2 },
     };
 
-    p.visible &= ~0x80;
+    visible &= ~0x80;
     if(collide || (c.visible&0xC0) == 0x40)
     {
         for(int i = 0; i < 6; ++i)
@@ -1653,25 +1653,25 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
                 int vis;
                 if(flataxisface(c, i))
                 {
-                    p.visible |= 1<<i;
+                    visible |= 1<<i;
                 }
                 else if((vis = visibletris(c, i, co, size, Mat_Clip, Mat_NoClip, MatFlag_Clip)))
                 {
                     int convex = faceconvexity(c, i),
                         order = vis&4 || convex < 0 ? 1 : 0;
-                    const vec &v0 = p.v[fv[i][order]],
-                              &v1 = p.v[fv[i][order+1]],
-                              &v2 = p.v[fv[i][order+2]],
-                              &v3 = p.v[fv[i][(order+3)&3]];
+                    const vec &v0 = v[fv[i][order]],
+                              &v1 = v[fv[i][order+1]],
+                              &v2 = v[fv[i][order+2]],
+                              &v3 = v[fv[i][(order+3)&3]];
                     if(vis&1)
                     {
-                        p.side[p.size] = i;
-                        p.p[p.size++].toplane(v0, v1, v2);
+                        side[size] = i;
+                        p[size++].toplane(v0, v1, v2);
                     }
                     if(vis&2 && (!(vis&1) || convex))
                     {
-                        p.side[p.size] = i;
-                        p.p[p.size++].toplane(v0, v2, v3);
+                        side[size] = i;
+                        p[size++].toplane(v0, v2, v3);
                     }
                 }
             }
@@ -1693,25 +1693,25 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
             {
                 if(flataxisface(c, i))
                 {
-                    p.visible |= 1<<i;
+                    visible |= 1<<i;
                 }
                 else
                 {
                     int convex = faceconvexity(c, i),
                         order = vis&4 || convex < 0 ? 1 : 0;
-                    const vec &v0 = p.v[fv[i][order]],
-                              &v1 = p.v[fv[i][order+1]],
-                              &v2 = p.v[fv[i][order+2]],
-                              &v3 = p.v[fv[i][(order+3)&3]];
+                    const vec &v0 = v[fv[i][order]],
+                              &v1 = v[fv[i][order+1]],
+                              &v2 = v[fv[i][order+2]],
+                              &v3 = v[fv[i][(order+3)&3]];
                     if(vis&1)
                     {
-                        p.side[p.size] = i;
-                        p.p[p.size++].toplane(v0, v1, v2);
+                        side[size] = i;
+                        p[size++].toplane(v0, v1, v2);
                     }
                     if(vis&2 && (!(vis&1) || convex))
                     {
-                        p.side[p.size] = i;
-                        p.p[p.size++].toplane(v0, v2, v3);
+                        side[size] = i;
+                        p[size++].toplane(v0, v2, v3);
                     }
                 }
             }
