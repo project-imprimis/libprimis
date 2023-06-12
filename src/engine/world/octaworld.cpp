@@ -1265,7 +1265,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     ivec no;
     int nsize;
     const cube &o = ::rootworld.neighborcube(orient, co, size, no, nsize);
-    int opp = OPPOSITE(orient);
+    int opp = oppositeorient(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1353,7 +1353,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     {
         return 0;
     }
-    int opp = OPPOSITE(orient);
+    int opp = oppositeorient(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1517,7 +1517,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
     ivec2 cf[4], of[4];
-    int opp = OPPOSITE(orient),
+    int opp = oppositeorient(orient),
         numo = 0,
         numc;
     if(nsize > size || (nsize == size && !o.children))

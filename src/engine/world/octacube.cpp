@@ -44,7 +44,7 @@ bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, fac
     mincf.u2 = orig.u1;
     mincf.v1 = orig.v2;
     mincf.v2 = orig.v1;
-    mincubeface(nc, OPPOSITE(orient), no, nsize, orig, mincf, cu.material&Mat_Alpha ? Mat_Air : Mat_Alpha, Mat_Alpha);
+    mincubeface(nc, oppositeorient(orient), no, nsize, orig, mincf, cu.material&Mat_Alpha ? Mat_Air : Mat_Alpha, Mat_Alpha);
     bool smaller = false;
     if(mincf.u1 > orig.u1)
     {

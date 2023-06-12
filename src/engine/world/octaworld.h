@@ -1,7 +1,10 @@
 #ifndef OCTAWORLD_H_
 #define OCTAWORLD_H_
 
-#define OPPOSITE(orient)   ((orient)^1)
+inline int oppositeorient(int orient)
+{
+    return orient^1;
+}
 
 enum BlendMapLayers
 {
