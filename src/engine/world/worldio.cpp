@@ -171,8 +171,8 @@ void backup(const char *name, const char *backupname)
 {
     string backupfile;
     copystring(backupfile, findfile(backupname, "wb"));
-    remove(backupfile);
-    rename(findfile(name, "wb"), backupfile);
+    std::remove(backupfile);
+    std::rename(findfile(name, "wb"), backupfile);
 }
 
 enum OctaSave
