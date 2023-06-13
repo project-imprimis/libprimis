@@ -855,36 +855,38 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
 
 bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1, float &sx2, float &sy2)
 {
-#define ADDXYSCISSOR(p) do { \
-        if(p.z >= -p.w) \
-        { \
-            float x = p.x / p.w, \
-                  y = p.y / p.w; \
-            sx1 = std::min(sx1, x); \
-            sy1 = std::min(sy1, y); \
-            sx2 = std::max(sx2, x); \
-            sy2 = std::max(sy2, y); \
-        } \
-    } while(0)
+    auto addxyscissor = [&] (const vec4<float> &p)
+    {
+        if(p.z >= -p.w)
+        {
+            float x = p.x / p.w,
+                  y = p.y / p.w;
+            sx1 = std::min(sx1, x);
+            sy1 = std::min(sy1, y);
+            sx2 = std::max(sx2, x);
+            sy2 = std::max(sy2, y);
+        }
+    };
+
     vec4<float> v[8];
     sx1 = sy1 = 1;
     sx2 = sy2 = -1;
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmin.z), v[0]);
-    ADDXYSCISSOR(v[0]);
+    addxyscissor(v[0]);
     camprojmatrix.transform(vec(bbmax.x, bbmin.y, bbmin.z), v[1]);
-    ADDXYSCISSOR(v[1]);
+    addxyscissor(v[1]);
     camprojmatrix.transform(vec(bbmin.x, bbmax.y, bbmin.z), v[2]);
-    ADDXYSCISSOR(v[2]);
+    addxyscissor(v[2]);
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmin.z), v[3]);
-    ADDXYSCISSOR(v[3]);
+    addxyscissor(v[3]);
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmax.z), v[4]);
-    ADDXYSCISSOR(v[4]);
+    addxyscissor(v[4]);
     camprojmatrix.transform(vec(bbmax.x, bbmin.y, bbmax.z), v[5]);
-    ADDXYSCISSOR(v[5]);
+    addxyscissor(v[5]);
     camprojmatrix.transform(vec(bbmin.x, bbmax.y, bbmax.z), v[6]);
-    ADDXYSCISSOR(v[6]);
+    addxyscissor(v[6]);
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmax.z), v[7]);
-    ADDXYSCISSOR(v[7]);
+    addxyscissor(v[7]);
     if(sx1 > sx2 || sy1 > sy2)
     {
         return false;
