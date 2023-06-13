@@ -149,15 +149,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a5e090b638bf2e7234a042790138c7057"><td class="memItemLeft" align="right" valign="top"><a id="a5e090b638bf2e7234a042790138c7057" name="a5e090b638bf2e7234a042790138c7057"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>EDGE_GET</b>(edge,  coord)&#160;&#160;&#160;((coord) ? (edge)&gt;&gt;4 : (edge)&amp;0xF)</td></tr>
-<tr class="separator:a5e090b638bf2e7234a042790138c7057"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb08744eb5db7102c3a387874ac0c8ae"><td class="memItemLeft" align="right" valign="top"><a id="aeb08744eb5db7102c3a387874ac0c8ae" name="aeb08744eb5db7102c3a387874ac0c8ae"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>EDGE_SET</b>(edge,  coord,  val)&#160;&#160;&#160;((edge) = ((coord) ? ((edge)&amp;0xF)|((val)&lt;&lt;4) : ((edge)&amp;0xF0)|(val)))</td></tr>
-<tr class="separator:aeb08744eb5db7102c3a387874ac0c8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af201f85c110c2a5f59e9e8ec83f55ad0"><td class="memItemLeft" align="right" valign="top"><a id="af201f85c110c2a5f59e9e8ec83f55ad0" name="af201f85c110c2a5f59e9e8ec83f55ad0"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>CUBE_EDGE</b>(c,  d,  x,  y)&#160;&#160;&#160;((c).edges[(((d)&lt;&lt;2)+((y)&lt;&lt;1)+(x))])</td></tr>
-<tr class="separator:af201f85c110c2a5f59e9e8ec83f55ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4678f79070c420475ad41e6e46acdf0"><td class="memItemLeft" align="right" valign="top"><a id="ab4678f79070c420475ad41e6e46acdf0" name="ab4678f79070c420475ad41e6e46acdf0"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_XY</b>(b)&#160;&#160;&#160;for(int y = 0; y &lt; (b).s[<a class="el" href="geom_8h.html#aed5ba577f9756174f4bac8f51b02a91d">C</a>[DIMENSION((b).orient)]]; ++y) for(int x = 0; x &lt; (b).s[<a class="el" href="geom_8h.html#ae991d89d766b25a0e9b0f07509128749">R</a>[DIMENSION((b).orient)]]; ++x)</td></tr>
 <tr class="separator:ab4678f79070c420475ad41e6e46acdf0"><td class="memSeparator" colspan="2">&#160;</td></tr>

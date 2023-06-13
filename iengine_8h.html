@@ -631,6 +631,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>uncompresseditinfo</b
 <tr class="memitem:a4d577a3829b4d91de604f81aa4709d6e"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e">getmaterial</a> (<a class="el" href="classcube.html">cube</a> &amp;c)</td></tr>
 <tr class="memdesc:a4d577a3829b4d91de604f81aa4709d6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the material bitmask for the given cube.  <br /></td></tr>
 <tr class="separator:a4d577a3829b4d91de604f81aa4709d6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2826d63d0a4d9eec73fae86c3d29a26a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a2826d63d0a4d9eec73fae86c3d29a26a">linkedpush</a> (<a class="el" href="classcube.html">cube</a> &amp;c, int d, int x, int y, int dc, int dir)</td></tr>
+<tr class="memdesc:a2826d63d0a4d9eec73fae86c3d29a26a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes cubes linked with the passed cube.  <br /></td></tr>
+<tr class="separator:a2826d63d0a4d9eec73fae86c3d29a26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae18d06933ae2dd87e478835b5c7e700b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ae18d06933ae2dd87e478835b5c7e700b">raycubepos</a> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, <a class="el" href="structvec.html">vec</a> &amp;hit, float radius=0, int mode=Ray_ClipMat, int size=0)</td></tr>
 <tr class="memdesc:ae18d06933ae2dd87e478835b5c7e700b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance before a ray hits a cube.  <br /></td></tr>
 <tr class="separator:ae18d06933ae2dd87e478835b5c7e700b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -4117,6 +4120,71 @@ false if no heightmap is active </dd></dl>
   <table class="params">
     <tr><td class="paramname">millis</td><td>the time (in ms) since program started </td></tr>
     <tr><td class="paramname">curmillis</td><td>the last registered frame time </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2826d63d0a4d9eec73fae86c3d29a26a" name="a2826d63d0a4d9eec73fae86c3d29a26a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2826d63d0a4d9eec73fae86c3d29a26a">&#9670;&#160;</a></span>linkedpush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void linkedpush </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcube.html">cube</a> &amp;&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dir</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pushes cubes linked with the passed cube. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>the cube to push </td></tr>
+    <tr><td class="paramname">d</td><td>dimension of the selection's orient </td></tr>
+    <tr><td class="paramname">x</td><td>selection bounds x </td></tr>
+    <tr><td class="paramname">y</td><td>selection bounds y </td></tr>
+    <tr><td class="paramname">dc</td><td>dimension coordinate of the selection's orient </td></tr>
+    <tr><td class="paramname">dir</td><td>direction to push </td></tr>
   </table>
   </dd>
 </dl>
