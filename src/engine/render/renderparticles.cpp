@@ -856,48 +856,52 @@ struct varenderer : partrenderer
         if(regen)
         {
             p->flags &= ~0x80;
+
+            auto swaptexcoords = [&] (float u1, float u2, float v1, float v2)
+            {
+                if(p->flags&0x01)
+                {
+                    std::swap(u1, u2);
+                }
+                if(p->flags&0x02)
+                {
+                    std::swap(v1, v2);
+                }
+            };
+
             //sets the partvert vs array's tc fields to four permutations of input parameters
-            //===================================================== SETTEXCOORDS
-            #define SETTEXCOORDS(u1c, u2c, v1c, v2c, body) \
-            { \
-                float u1 = u1c, \
-                      u2 = u2c, \
-                      v1 = v1c, \
-                      v2 = v2c; \
-                body; \
-                vs[0].tc = vec2(u1, v1); \
-                vs[1].tc = vec2(u2, v1); \
-                vs[2].tc = vec2(u2, v2); \
-                vs[3].tc = vec2(u1, v2); \
-            }
+            auto settexcoords = [&] (float u1c, float u2c, float v1c, float v2c, bool swap)
+            {
+                float u1 = u1c,
+                      u2 = u2c,
+                      v1 = v1c,
+                      v2 = v2c;
+                if(swap)
+                {
+                    swaptexcoords(u1, u2, v1, v2);
+                }
+                vs[0].tc = vec2(u1, v1);
+                vs[1].tc = vec2(u2, v1);
+                vs[2].tc = vec2(u2, v2);
+                vs[3].tc = vec2(u1, v2);
+            };
+
             if(parttype()&PT_RND4)
             {
                 float tx = 0.5f*((p->flags>>5)&1),
                       ty = 0.5f*((p->flags>>6)&1);
-                SETTEXCOORDS(tx, tx + 0.5f, ty, ty + 0.5f,
-                {
-                    if(p->flags&0x01)
-                    {
-                        std::swap(u1, u2);
-                    }
-                    if(p->flags&0x02)
-                    {
-                        std::swap(v1, v2);
-                    }
-                });
+                settexcoords(tx, tx + 0.5f, ty, ty + 0.5f, true);
             }
             else if(parttype()&PT_ICON)
             {
                 float tx = 0.25f*(p->flags&3),
                       ty = 0.25f*((p->flags>>2)&3);
-                SETTEXCOORDS(tx, tx + 0.25f, ty, ty + 0.25f, {});
+                settexcoords(tx, tx + 0.25f, ty, ty + 0.25f, false);
             }
             else
             {
-                SETTEXCOORDS(0, 1, 0, 1, {});
+                settexcoords(0, 1, 0, 1, false);
             }
-            #undef SETTEXCOORDS
-            //==================================================================
 
             if(parttype()&PT_MOD)
             {
