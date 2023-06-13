@@ -1874,6 +1874,41 @@ void rendertexturepanel(int w, int h)
     }
 }
 
+static int bounded(int n)
+{
+    return n<0 ? 0 : (n>8 ? 8 : n);
+}
+
+static void pushedge(uchar &edge, int dir, int dc)
+{
+    int ne = bounded(EDGE_GET(edge, dc)+dir);
+    EDGE_SET(edge, dc, ne);
+    int oe = EDGE_GET(edge, 1-dc);
+    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne))
+    {
+        EDGE_SET(edge, 1-dc, ne);
+    }
+}
+
+//used in iengine
+void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
+{
+    ivec v, p;
+    getcubevector(c, d, x, y, dc, v);
+
+    for(int i = 0; i < 2; ++i)
+    {
+        for(int j = 0; j < 2; ++j)
+        {
+            getcubevector(c, d, i, j, dc, p);
+            if(v==p)
+            {
+                pushedge(CUBE_EDGE(c, d, i, j), dir, dc);
+            }
+        }
+    }
+}
+
 void initoctaeditcmds()
 {
     //some of these commands use code only needed for the command itself, so
