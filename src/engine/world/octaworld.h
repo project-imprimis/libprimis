@@ -4,7 +4,15 @@
 #define EDGE_GET(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
 #define EDGE_SET(edge, coord, val) ((edge) = ((coord) ? ((edge)&0xF)|((val)<<4) : ((edge)&0xF0)|(val)))
 
-#define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
+inline const uchar &getcubeedge(const cube &c, int d, int x, int y)
+{
+    return c.edges[(d<<2) + (y<<1) + x];
+}
+
+inline uchar &getcubeedge(cube &c, int d, int x, int y)
+{
+    return const_cast<uchar &>(getcubeedge(c, d, x, y));
+}
 
 inline int oppositeorient(int orient)
 {

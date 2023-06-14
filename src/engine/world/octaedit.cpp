@@ -1903,7 +1903,7 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
             getcubevector(c, d, i, j, dc, p);
             if(v==p)
             {
-                pushedge(CUBE_EDGE(c, d, i, j), dir, dc);
+                pushedge(getcubeedge(c, d, i, j), dir, dc);
             }
         }
     }

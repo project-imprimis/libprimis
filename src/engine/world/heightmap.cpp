@@ -446,7 +446,7 @@ class hmap
                                     pushside(*c[k], d, i, j, 0);
                                     pushside(*c[k], d, i, j, 1);
                                 }
-                                EDGE_SET(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
+                                EDGE_SET(getcubeedge(*c[k], d, i, j), dc, dc ? f : 8-f);
                             }
                         }
                     }
