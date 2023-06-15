@@ -1780,7 +1780,7 @@ namespace
         }
     };
 
-    void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[6])
+    void flushshadowmeshdraws(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws)
     {
         int numindexes = 0;
         for(int i = 0; i < sides; ++i)
@@ -1928,7 +1928,7 @@ namespace
         return mask;
     }
 
-    void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
+    void addshadowmeshtri(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws, const vec &v0, const vec &v1, const vec &v2)
     {
         vec l0 = vec(v0).sub(shadoworigin);
         float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0));
@@ -1983,7 +1983,7 @@ namespace
         }
     }
 
-    void genshadowmeshtris(shadowmesh &m, int sides, shadowdrawinfo draws[6], ushort *edata, int numtris, vertex *vdata)
+    void genshadowmeshtris(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws, ushort *edata, int numtris, vertex *vdata)
     {
         for(int j = 0; j < 3*numtris; j += 3)
         {
@@ -1991,7 +1991,7 @@ namespace
         }
     }
 
-    void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draws[6])
+    void genshadowmeshmapmodels(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws)
     {
         const std::vector<extentity *> &ents = entities::getents();
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
@@ -2075,7 +2075,7 @@ namespace
         findshadowmms();
 
         int sides = m.type == ShadowMap_Spot ? 1 : 6;
-        shadowdrawinfo draws[6];
+        std::array<shadowdrawinfo, 6> draws;
         for(vtxarray *va = shadowva; va; va = va->rnext)
         {
             if(va->shadowmask)
