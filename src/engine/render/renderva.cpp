@@ -2009,9 +2009,9 @@ namespace
         std::vector<triangle> tris;
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
-            for(uint j = 0; j < oe->mapmodels.size(); j++)
+            for(const int &j : oe->mapmodels)
             {
-                extentity &e = *ents[oe->mapmodels[j]];
+                extentity &e = *ents[j];
                 if(!(e.flags&EntFlag_Render))
                 {
                     continue;
