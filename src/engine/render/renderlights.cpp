@@ -2145,16 +2145,22 @@ static void setlightglobals(bool transparent = false)
 }
 
 //values only for interaction between setlightparams() and setlightshader()
-static vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
-static vec2 shadowoffsetv[8];
-
-static void setlightparams(int i, const lightinfo &l)
+struct lightparaminfo
 {
-    lightposv[i]   = vec4<float>(l.o, 1).div(l.radius);
-    lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
+    vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
+    vec2 shadowoffsetv[8];
+};
+
+//sets the ith element of lightposv, lightcolorv, spotparamsv, shadowparamsv, shadowoffsetv
+//UB if i > 7
+//
+static void setlightparams(int i, const lightinfo &l, lightparaminfo &li)
+{
+    li.lightposv[i]   = vec4<float>(l.o, 1).div(l.radius);
+    li.lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
     if(l.spot > 0)
     {
-        spotparamsv[i] = vec4<float>(vec(l.dir).neg(), 1/(1 - cos360(l.spot)));
+        li.spotparamsv[i] = vec4<float>(vec(l.dir).neg(), 1/(1 - cos360(l.spot)));
     }
     if(l.shadowmap >= 0)
     {
@@ -2164,7 +2170,7 @@ static void setlightparams(int i, const lightinfo &l)
         int border = smfilter > 2 ? smborder2 : smborder;
         if(l.spot > 0)
         {
-            shadowparamsv[i] = vec4<float>(
+            li.shadowparamsv[i] = vec4<float>(
                 -0.5f * sm.size * cotan360(l.spot),
                 (-smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias),
                 1 / (1 + std::fabs(l.dir.z)),
@@ -2172,17 +2178,17 @@ static void setlightparams(int i, const lightinfo &l)
         }
         else
         {
-            shadowparamsv[i] = vec4<float>(
+            li.shadowparamsv[i] = vec4<float>(
                 -0.5f * (sm.size - border),
                 -smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias,
                 sm.size,
                 0.5f + 0.5f * (smfarclip + smnearclip) / (smfarclip - smnearclip));
         }
-        shadowoffsetv[i] = vec2(sm.x + 0.5f*sm.size, sm.y + 0.5f*sm.size);
+        li.shadowoffsetv[i] = vec2(sm.x + 0.5f*sm.size, sm.y + 0.5f*sm.size);
     }
 }
 
-static void setlightshader(Shader *s, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
+static void setlightshader(Shader *s, const lightparaminfo &li, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
 {
     static const LocalShaderParam lightpos("lightpos"),
                                   lightcolor("lightcolor"),
@@ -2190,16 +2196,16 @@ static void setlightshader(Shader *s, int n, bool baselight, bool shadowmap, boo
                                   shadowparams("shadowparams"),
                                   shadowoffset("shadowoffset");
     s->setvariant(n-1, (shadowmap ? 1 : 0) + (baselight ? 0 : 2) + (spotlight ? 4 : 0) + (transparent ? 8 : 0) + (avatar ? 24 : 0));
-    lightpos.setv(lightposv, n);
-    lightcolor.setv(lightcolorv, n);
+    lightpos.setv(li.lightposv, n);
+    lightcolor.setv(li.lightcolorv, n);
     if(spotlight)
     {
-        spotparams.setv(spotparamsv, n);
+        spotparams.setv(li.spotparamsv, n);
     }
     if(shadowmap)
     {
-        shadowparams.setv(shadowparamsv, n);
-        shadowoffset.setv(shadowoffsetv, n);
+        shadowparams.setv(li.shadowparamsv, n);
+        shadowoffset.setv(li.shadowoffsetv, n);
     }
 }
 
@@ -2241,6 +2247,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
+    static lightparaminfo li;
     for(int avatarpass = 0; avatarpass < (stencilref >= 0 ? 2 : 1); ++avatarpass)
     {
         if(avatarpass)
@@ -2267,8 +2274,8 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             lightmatrix.scale(l.radius);
             GLOBALPARAM(lightmatrix, lightmatrix);
 
-            setlightparams(0, l);
-            setlightshader(s, 1, false, l.shadowmap >= 0, l.spot > 0, transparent, avatarpass > 0);
+            setlightparams(0, l, li);
+            setlightshader(s, li, 1, false, l.shadowmap >= 0, l.spot > 0, transparent, avatarpass > 0);
 
             int tx1 = static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)),
                 ty1 = static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)),
@@ -2325,6 +2332,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
     bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
+    static lightparaminfo li;
     for(uint i = 0; i < lightbatches.size(); i++)
     {
         lightbatch &batch = *lightbatches[i];
@@ -2343,7 +2351,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
         for(int j = 0; j < n; ++j)
         {
             const lightinfo &l = lights[batch.lights[j]];
-            setlightparams(j, l);
+            setlightparams(j, l, li); //set 0...batch.numlights
             l.addscissor(sx1, sy1, sx2, sy2, sz1, sz2);
         }
 
@@ -2373,7 +2381,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
         {
             bool shadowmap = !(batch.flags & BatchFlag_NoShadow),
                  spotlight = (batch.flags & BatchFlag_Spotlight) != 0;
-            setlightshader(&s, n, baselight, shadowmap, spotlight, transparent);
+            setlightshader(&s, li, n, baselight, shadowmap, spotlight, transparent);
         }
         else
         {
@@ -2434,7 +2442,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
                 {
                     break;
                 }
-                setlightparams(n++, l);
+                setlightparams(n++, l, li);
                 l.addscissor(sx1, sy1, sx2, sy2, sz1, sz2);
             }
             if(baselight)
@@ -2464,7 +2472,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
 
             if(n)
             {
-                setlightshader(&s, n, baselight, shadowmap, spotlight, false, true);
+                setlightshader(&s, li, n, baselight, shadowmap, spotlight, false, true);
             }
             else
             {
