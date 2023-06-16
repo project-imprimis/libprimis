@@ -130,7 +130,7 @@ namespace
         private:
             int x, y, size;
             uint filled;
-            QuadNode *child[4];
+            std::array<QuadNode *, 4> child;
 
             void clear()
             {
