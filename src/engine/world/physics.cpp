@@ -57,7 +57,7 @@ int clipplanes::forceclipplanes(const cube &c, const ivec &o, int size)
             collide = false;
             noclip  = true;
         }
-        genclipplanes(c, o, size, collide, noclip);
+        genclipplanes(c, o, size, *this, collide, noclip);
     }
     return visible;
 }
