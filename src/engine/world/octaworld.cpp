@@ -151,7 +151,7 @@ void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p)
     ivec v(d, x, y, z);
     for(int i = 0; i < 3; ++i)
     {
-        p[i] = EDGE_GET(getcubeedge(c, i, v[R[i]], v[C[i]]), v[D[i]]);
+        p[i] = EDGE_GET(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]]);
     }
 }
 
@@ -160,22 +160,22 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     ivec v(d, x, y, z);
     for(int i = 0; i < 3; ++i)
     {
-        EDGE_SET(getcubeedge(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
+        EDGE_SET(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
     }
 }
 
 static void getcubevector(const cube &c, int i, ivec &p)
 {
-    p.x = EDGE_GET(getcubeedge(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
-    p.y = EDGE_GET(getcubeedge(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
-    p.z = EDGE_GET(getcubeedge(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
+    p.x = EDGE_GET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
+    p.y = EDGE_GET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
+    p.z = EDGE_GET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
 }
 
 static void setcubevector(cube &c, int i, const ivec &p)
 {
-    EDGE_SET(getcubeedge(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
-    EDGE_SET(getcubeedge(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
-    EDGE_SET(getcubeedge(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
+    EDGE_SET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
+    EDGE_SET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
+    EDGE_SET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
 }
 
 void optiface(const uchar *p, cube &c)
@@ -564,10 +564,10 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
             int rd = (i>>R[d])&1,
                 cd = (i>>C[d])&1,
                 dd = (i>>D[d])&1;
-            EDGE_SET(getcubeedge(ch[i], d, 0, 0), z, std::clamp(e[rd][cd] - dd*8, 0, 8));
-            EDGE_SET(getcubeedge(ch[i], d, 1, 0), z, std::clamp(e[1+rd][cd] - dd*8, 0, 8));
-            EDGE_SET(getcubeedge(ch[i], d, 0, 1), z, std::clamp(e[rd][1+cd] - dd*8, 0, 8));
-            EDGE_SET(getcubeedge(ch[i], d, 1, 1), z, std::clamp(e[1+rd][1+cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 0, 0), z, std::clamp(e[rd][cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 1, 0), z, std::clamp(e[1+rd][cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 0, 1), z, std::clamp(e[rd][1+cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 1, 1), z, std::clamp(e[1+rd][1+cd] - dd*8, 0, 8));
         }
     }
 
@@ -808,9 +808,9 @@ static void gencubevert(const cube &c, int i, vec &v)
 //================================================================== GENCUBEVERT
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
-            v = vec(EDGE_GET(getcubeedge(c, 0, y, z), x), \
-                    EDGE_GET(getcubeedge(c, 1, z, x), y), \
-                    EDGE_GET(getcubeedge(c, 2, x, y), z)); \
+            v = vec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                    EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                    EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
             break;
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
 #undef GENCUBEVERT
@@ -827,9 +827,9 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
 #define GENFACEORIENT(o, v0, v1, v2, v3) \
         case o: v0 v1 v2 v3 break;
 #define GENFACEVERT(o, n, x,y,z, xv,yv,zv) \
-            v[n] = ivec(EDGE_GET(getcubeedge(c, 0, y, z), x), \
-                        EDGE_GET(getcubeedge(c, 1, z, x), y), \
-                        EDGE_GET(getcubeedge(c, 2, x, y), z));
+            v[n] = ivec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                        EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                        EDGE_GET(CUBE_EDGE(c, 2, x, y), z));
         GENFACEVERTS(0, 1, 0, 1, 0, 1, , , , , , )
     #undef GENFACEORIENT
     #undef GENFACEVERT
