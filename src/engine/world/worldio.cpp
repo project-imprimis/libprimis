@@ -442,7 +442,8 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
                 int layerverts = surf.numverts&Face_MaxVerts, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
                 genfaceverts(c, i, v);
-                bool hasxyz = (vertmask&0x04)!=0, hasuv = mapversion <= 0 && (vertmask&0x40)!=0, hasnorm = (vertmask&0x80)!=0;
+                bool hasxyz = (vertmask&0x04)!=0,
+                     hasnorm = (vertmask&0x80)!=0;
                 if(hasxyz)
                 {
                     ivec e1, e2, e3;
@@ -494,21 +495,6 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                         verts[3].setxyz(xyz);
                         hasxyz = false;
                     }
-                    if(hasuv && vertmask&0x02)
-                    {
-                        for(int k = 0; k < 4; ++k)
-                        {
-                            f->get<ushort>();
-                        }
-                        if(surf.numverts & layerdup)
-                        {
-                            for(int k = 0; k < 4; ++k)
-                            {
-                                f->get<ushort>();
-                            }
-                        }
-                        hasuv = false;
-                    }
                 }
                 if(hasnorm && vertmask&0x08)
                 {
@@ -519,7 +505,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                     }
                     hasnorm = false;
                 }
-                if(hasxyz || hasuv || hasnorm)
+                if(hasxyz || hasnorm)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
@@ -531,18 +517,13 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                             xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                             v.setxyz(xyz);
                         }
-                        if(hasuv)
-                        {
-                            f->get<ushort>();
-                            f->get<ushort>();
-                        }
                         if(hasnorm)
                         {
                             v.norm = f->get<ushort>();
                         }
                     }
                 }
-                if(hasuv && (surf.numverts & layerdup))
+                if(surf.numverts & layerdup)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
