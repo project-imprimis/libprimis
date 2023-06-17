@@ -375,12 +375,6 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
     static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
 
-    struct polysurfacecompat
-    {
-        uchar lmid[2];
-        uchar verts, numverts;
-    };
-
     int octsav = f->getchar();
     switch(octsav&0x7)
     {
@@ -435,17 +429,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             if(surfmask&(1<<i))
             {
                 surfaceinfo &surf = c.ext->surfaces[i];
-                if(mapversion <= 0)
-                {
-                    polysurfacecompat psurf;
-                    f->read(&psurf, sizeof(polysurfacecompat));
-                    surf.verts = psurf.verts;
-                    surf.numverts = psurf.numverts;
-                }
-                else
-                {
-                    f->read(&surf, sizeof(surf));
-                }
+                f->read(&surf, sizeof(surf));
                 int vertmask = surf.verts, numverts = surf.totalverts();
                 if(!numverts)
                 {
