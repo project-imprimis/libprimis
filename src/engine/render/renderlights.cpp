@@ -71,32 +71,31 @@ Shader *loadbilateralshader(int pass)
     {
         return nullshader;
     }
-    string opts;
-    int optslen = 0;
+    std::string opts;
     bool linear = aoreducedepth && (aoreduce || aoreducedepth > 1),
          upscale = aoreduce && aobilateralupscale,
          reduce = aoreduce && (upscale || (!linear && !aopackdepth));
     if(reduce)
     {
-        opts[optslen++] = 'r';
-        opts[optslen++] = '0' + aoreduce;
+        opts.push_back('r');
+        opts.push_back('0' + aoreduce);
     }
     if(upscale)
     {
-        opts[optslen++] = 'u';
+        opts.push_back('u');
     }
     else if(linear)
     {
-        opts[optslen++] = 'l';
+        opts.push_back('l');
+
     }
     if(aopackdepth)
     {
-        opts[optslen++] = 'p';
+        opts.push_back('p');
     }
-    opts[optslen] = '\0';
 
-    DEF_FORMAT_STRING(name, "bilateral%c%s%d", 'x' + pass, opts, aobilateral);
-    return generateshader(name, "bilateralshader \"%s\" %d %d", opts, aobilateral, reduce ? aoreduce : 0);
+    DEF_FORMAT_STRING(name, "bilateral%c%s%d", 'x' + pass, opts.c_str(), aobilateral);
+    return generateshader(name, "bilateralshader \"%s\" %d %d", opts.c_str(), aobilateral, reduce ? aoreduce : 0);
 }
 /* loadbilateralshaders: sets bilateralshader array using bilateralshader()
  * args:
