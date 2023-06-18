@@ -273,52 +273,48 @@ Shader *animmodel::skin::loadshader()
         {
             return rsmshader;
         }
-        string opts;
-        int optslen = 0;
+        std::string opts;
         if(alphatested())
         {
-            opts[optslen++] = 'a';
+            opts.push_back('a');
         }
         if(!cullface)
         {
-            opts[optslen++] = 'c';
+            opts.push_back('c');
         }
-        opts[optslen++] = '\0';
 
-        DEF_FORMAT_STRING(name, "rsmmodel%s", opts);
-        rsmshader = generateshader(name, "rsmmodelshader \"%s\"", opts);
+        DEF_FORMAT_STRING(name, "rsmmodel%s", opts.c_str());
+        rsmshader = generateshader(name, "rsmmodelshader \"%s\"", opts.c_str());
         return rsmshader;
     }
     if(shader)
     {
         return shader;
     }
-    string opts;
-    int optslen = 0;
+    std::string opts;
     if(alphatested())
     {
-        opts[optslen++] = 'a';
+        opts.push_back('a');
     }
     if(decaled())
     {
-        opts[optslen++] = decal->type&Texture::ALPHA ? 'D' : 'd';
+        opts.push_back(decal->type&Texture::ALPHA ? 'D' : 'd');
     }
     if(bumpmapped())
     {
-        opts[optslen++] = 'n';
+        opts.push_back('n');
     }
     else if(masked())
     {
-        opts[optslen++] = 'm';
+        opts.push_back('m');
     }
     if(!cullface)
     {
-        opts[optslen++] = 'c';
+        opts.push_back('c');
     }
-    opts[optslen++] = '\0';
 
-    DEF_FORMAT_STRING(name, "model%s", opts);
-    shader = generateshader(name, "modelshader \"%s\"", opts);
+    DEF_FORMAT_STRING(name, "model%s", opts.c_str());
+    shader = generateshader(name, "modelshader \"%s\"", opts.c_str());
     return shader;
 }
 
