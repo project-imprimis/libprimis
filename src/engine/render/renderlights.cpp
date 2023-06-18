@@ -1611,29 +1611,25 @@ FVARR(volscale, 0, 1, 16);
 
 Shader *loadvolumetricshader()
 {
-    string common, shadow;
-    int commonlen = 0,
-        shadowlen = 0;
+    std::string common, shadow;
 
     if(usegatherforsm())
     {
-        common[commonlen++] = smfilter > 2 ? 'G' : 'g';
+        common.push_back(smfilter > 2 ? 'G' : 'g');
     }
     else if(smfilter)
     {
-        common[commonlen++] = smfilter > 2 ? 'E' : (smfilter > 1 ? 'F' : 'f');
+        common.push_back(smfilter > 2 ? 'E' : (smfilter > 1 ? 'F' : 'f'));
     }
     if(spotlights || forcespotlights)
     {
-        common[commonlen++] = 's';
+        common.push_back('s');
     }
-    common[commonlen] = '\0';
 
-    shadow[shadowlen++] = 'p';
-    shadow[shadowlen] = '\0';
+    shadow.push_back('p');
 
-    DEF_FORMAT_STRING(name, "volumetric%s%s%d", common, shadow, volsteps);
-    return generateshader(name, "volumetricshader \"%s\" \"%s\" %d", common, shadow, volsteps);
+    DEF_FORMAT_STRING(name, "volumetric%s%s%d", common.c_str(), shadow.c_str(), volsteps);
+    return generateshader(name, "volumetricshader \"%s\" \"%s\" %d", common.c_str(), shadow.c_str(), volsteps);
 }
 
 static void loadvolumetricshaders()
