@@ -25,7 +25,7 @@ std::vector<dynent *> dynents;
 
 static constexpr int maxclipoffset = 4;
 static constexpr int maxclipplanes = 1024;
-static clipplanes clipcache[maxclipplanes];
+static std::array<clipplanes, maxclipplanes> clipcache;
 static int clipcacheversion = -maxclipoffset;
 
 clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int offset)
@@ -67,9 +67,9 @@ void cubeworld::resetclipplanes()
     clipcacheversion += maxclipoffset;
     if(!clipcacheversion)
     {
-        for(int i = 0; i < maxclipplanes; ++i)
+        for(clipplanes &i : clipcache)
         {
-            clipcache[i].clear();
+            i.clear();
         }
         clipcacheversion = maxclipoffset;
     }
