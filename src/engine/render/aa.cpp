@@ -397,55 +397,53 @@ namespace //internal functions incl. AA implementations
         }
         loadhdrshaders(smaatype);
 
-        string opts;
-        int optslen = 0;
+        std::string opts;
         if((smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
         {
-            opts[optslen++] = 'd';
+            opts.push_back('d');
         }
         if(split)
         {
-            opts[optslen++] = 's';
+            opts.push_back('s');
         }
         if(tqaa || smaagreenluma || intel_texalpha_bug)
         {
-            opts[optslen++] = 'g';
+            opts.push_back('g');
         }
         if(tqaa)
         {
-            opts[optslen++] = 't';
+            opts.push_back('t');
         }
-        opts[optslen] = '\0';
-        DEF_FORMAT_STRING(lumaedgename, "SMAALumaEdgeDetection%d%s", smaaquality, opts);
-        DEF_FORMAT_STRING(coloredgename, "SMAAColorEdgeDetection%d%s", smaaquality, opts);
-        DEF_FORMAT_STRING(blendweightname, "SMAABlendingWeightCalculation%d%s", smaaquality, opts);
-        DEF_FORMAT_STRING(neighborhoodname, "SMAANeighborhoodBlending%d%s", smaaquality, opts);
-        smaalumaedgeshader = lookupshaderbyname(lumaedgename);
-        smaacoloredgeshader = lookupshaderbyname(coloredgename);
-        smaablendweightshader = lookupshaderbyname(blendweightname);
-        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname);
+        std::string lumaedgename = std::string("SMAALumaEdgeDetection").append(std::to_string(smaaquality)).append(opts);
+        std::string coloredgename = std::string("SMAAColorEdgeDetection").append(std::to_string(smaaquality)).append(opts);
+        std::string blendweightname = std::string("SMAABlendingWeightCalculation").append(std::to_string(smaaquality)).append(opts);
+        std::string neighborhoodname = std::string("SMAANeighborhoodBlending").append(std::to_string(smaaquality)).append(opts);
+        smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
+        smaacoloredgeshader = lookupshaderbyname(coloredgename.c_str());
+        smaablendweightshader = lookupshaderbyname(blendweightname.c_str());
+        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname.c_str());
 
         if(smaalumaedgeshader && smaacoloredgeshader && smaablendweightshader && smaaneighborhoodshader)
         {
             return;
         }
-        generateshader(nullptr, "smaashaders %d \"%s\"", smaaquality, opts);
-        smaalumaedgeshader = lookupshaderbyname(lumaedgename);
+        generateshader(nullptr, "smaashaders %d \"%s\"", smaaquality, opts.c_str());
+        smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
         if(!smaalumaedgeshader)
         {
             smaalumaedgeshader = nullshader;
         }
-        smaacoloredgeshader = lookupshaderbyname(coloredgename);
+        smaacoloredgeshader = lookupshaderbyname(coloredgename.c_str());
         if(!smaacoloredgeshader)
         {
             smaacoloredgeshader = nullshader;
         }
-        smaablendweightshader = lookupshaderbyname(blendweightname);
+        smaablendweightshader = lookupshaderbyname(blendweightname.c_str());
         if(!smaablendweightshader)
         {
             smaablendweightshader = nullshader;
         }
-        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname);
+        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname.c_str());
         if(!smaaneighborhoodshader)
         {
             smaaneighborhoodshader = nullshader;
