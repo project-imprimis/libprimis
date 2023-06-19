@@ -374,18 +374,18 @@ namespace //internal functions incl. AA implementations
 
     subpixelaa::subpixelaa()
     {
-            smaat2x = variable("smaat2x", 1, 0, 0, &smaat2x, nullptr, 0); //SMAA Temporal 2x (temporal antialiasing)
-            smaas2x = variable("smaas2x", 1, 0, 0, &smaas2x, nullptr, 0); //SMAA Split 2x (multisample antialiasing)
-            smaa4x = variable("smaa4x", 1, 0, 0, &smaa4x, nullptr, 0); //SMAA 4x (both temporal and multisample)
+        smaat2x = variable("smaat2x", 1, 0, 0, &smaat2x, nullptr, 0); //SMAA Temporal 2x (temporal antialiasing)
+        smaas2x = variable("smaas2x", 1, 0, 0, &smaas2x, nullptr, 0); //SMAA Split 2x (multisample antialiasing)
+        smaa4x = variable("smaa4x", 1, 0, 0, &smaa4x, nullptr, 0); //SMAA 4x (both temporal and multisample)
 
-            smaa = variable("smaa", 0, 0, 1, &smaa, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);; //toggles smaa
-            smaaspatial = variable("smaaspatial", 0, 1, 1, &smaaspatial, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);
-            smaaquality = variable("smaaquality", 0, 2, 3, &smaaquality, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
-            smaacoloredge = variable("smaacoloredge", 0, 0, 1, &smaacoloredge, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist); //toggle between color & luma edge shaders
-            smaagreenluma = variable("smaagreenluma", 0, 0, 1, &smaagreenluma, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
-            smaadepthmask = variable("smaadepthmask", 0, 1, 1, &smaadepthmask, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
-            smaastencil = variable("smaastencil", 0, 1, 1, &smaastencil, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
-            debugsmaa = variable("debugsmaa", 0, 0, 5, &debugsmaa, nullptr, 0); //see viewsmaa() below, displays one of the five smaa texs
+        smaa = variable("smaa", 0, 0, 1, &smaa, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);; //toggles smaa
+        smaaspatial = variable("smaaspatial", 0, 1, 1, &smaaspatial, [] (ident *) { gbuf.cleanupgbuffer(); }, Idf_Persist);
+        smaaquality = variable("smaaquality", 0, 2, 3, &smaaquality, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
+        smaacoloredge = variable("smaacoloredge", 0, 0, 1, &smaacoloredge, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist); //toggle between color & luma edge shaders
+        smaagreenluma = variable("smaagreenluma", 0, 0, 1, &smaagreenluma, [] (ident *) { smaarenderer.cleanupsmaa(); }, Idf_Persist);
+        smaadepthmask = variable("smaadepthmask", 0, 1, 1, &smaadepthmask, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
+        smaastencil = variable("smaastencil", 0, 1, 1, &smaastencil, [] (ident *) { smaarenderer.cleanupsmaa(); }, 0);
+        debugsmaa = variable("debugsmaa", 0, 0, 5, &debugsmaa, nullptr, 0); //see viewsmaa() below, displays one of the five smaa texs
     }
 
     void subpixelaa::loadsmaashaders(bool split)
