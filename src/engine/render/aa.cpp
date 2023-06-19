@@ -209,15 +209,13 @@ namespace //internal functions incl. AA implementations
     {
         fxaatype = tqaatype >= 0 ? tqaatype : (!fxaagreenluma && !intel_texalpha_bug ? AA_Luma : AA_Unused);
         loadhdrshaders(fxaatype);
-        string opts;
-        int optslen = 0;
+        std::string opts;
         if(tqaa || fxaagreenluma || intel_texalpha_bug)
         {
-            opts[optslen++] = 'g';
+            opts.push_back('g');
         }
-        opts[optslen] = '\0';
-        DEF_FORMAT_STRING(fxaaname, "fxaa%d%s", fxaaquality, opts);
-        fxaashader = generateshader(fxaaname, "fxaashaders %d \"%s\"", fxaaquality, opts);
+        DEF_FORMAT_STRING(fxaaname, "fxaa%d%s", fxaaquality, opts.c_str());
+        fxaashader = generateshader(fxaaname, "fxaashaders %d \"%s\"", fxaaquality, opts.c_str());
     }
 
     void fxaa::clearfxaashaders()
