@@ -795,8 +795,7 @@ static bool checknumber(const char *s)
     }
 }
 
-template<class T>
-static ident *newident(const T &name, int flags)
+ident *newident(const char *name, int flags)
 {
     ident *id = nullptr;
     const auto itr = idents.find(name);
@@ -842,11 +841,6 @@ static ident *forceident(tagval &v)
     freearg(v);
     v.setident(dummyident);
     return dummyident;
-}
-
-ident *newident(const char *name, int flags)
-{
-    return newident<const char *>(name, flags);
 }
 
 ident *writeident(const char *name, int flags)
