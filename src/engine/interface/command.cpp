@@ -771,6 +771,8 @@ static void popalias(ident &id)
     }
 }
 
+//returns whether the string passed starts with a valid number
+//does not check that all characters are valid, only the first number possibly succeeding a +/-/.
 static bool checknumber(const char *s)
 {
     if(isdigit(s[0]))
