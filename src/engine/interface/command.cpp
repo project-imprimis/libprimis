@@ -573,8 +573,8 @@ bool initidents()
     initedidents = true;
     for(int i = 0; i < Max_Args; i++)
     {
-        DEF_FORMAT_STRING(argname, "arg%d", i+1);
-        newident(argname, Idf_Arg);
+        std::string argname = std::string("arg").append(std::to_string(i+1));
+        newident(argname.c_str(), Idf_Arg);
     }
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
