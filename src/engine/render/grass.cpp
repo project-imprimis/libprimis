@@ -321,13 +321,8 @@ namespace //internal functionality not seen by other files
 
     Shader *loadgrassshader()
     {
-        string opts;
-        int optslen = 0;
-
-        opts[optslen] = '\0';
-
-        DEF_FORMAT_STRING(name, "grass%s", opts);
-        return generateshader(name, "grassshader \"%s\"", opts);
+        std::string name = "grass";
+        return generateshader(name.c_str(), "grassshader ");
 
     }
 }
