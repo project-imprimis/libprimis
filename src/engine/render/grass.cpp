@@ -347,9 +347,8 @@ void generategrass()
         }
     }
 
-    for(int i = 0; i < numgrasswedges; ++i)
+    for(grasswedge &w : grasswedges)
     {
-        grasswedge &w = grasswedges[i];
         w.bound1.offset = -camera1->o.dot(w.bound1);
         w.bound2.offset = -camera1->o.dot(w.bound2);
     }
