@@ -37,17 +37,6 @@
 
 #include "model/model.h"
 
-//stainflag enum is local to this file
-enum
-{
-    StainFlag_Rnd4       = 1<<0,
-    StainFlag_Rotate     = 1<<1,
-    StainFlag_InvMod     = 1<<2,
-    StainFlag_Overbright = 1<<3,
-    StainFlag_Glow       = 1<<4,
-    StainFlag_Saturate   = 1<<5
-};
-
 void initstains();
 
 VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initstains to potentially cull extra stain tris
@@ -57,6 +46,16 @@ VAR(debugstain, 0, 0, 1);                           //toggles printout of stain 
 class stainrenderer
 {
     public:
+        enum
+        {
+            StainFlag_Rnd4       = 1<<0,
+            StainFlag_Rotate     = 1<<1,
+            StainFlag_InvMod     = 1<<2,
+            StainFlag_Overbright = 1<<3,
+            StainFlag_Glow       = 1<<4,
+            StainFlag_Saturate   = 1<<5
+        };
+
         int flags, fadeintime, fadeouttime, timetolive;
         int maxstains, startstain, endstain;
 
@@ -1062,11 +1061,11 @@ void initstains()
     {
         return;
     }
-    stains.emplace_back("<grey>media/particle/blood.png", StainFlag_Rnd4|StainFlag_Rotate|StainFlag_InvMod);
-    stains.emplace_back("<grey>media/particle/pulse_scorch.png", StainFlag_Rotate, 500);
-    stains.emplace_back("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright);
-    stains.emplace_back("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250);
-    stains.emplace_back("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100);
+    stains.emplace_back("<grey>media/particle/blood.png", stainrenderer::StainFlag_Rnd4|stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_InvMod);
+    stains.emplace_back("<grey>media/particle/pulse_scorch.png", stainrenderer::StainFlag_Rotate, 500);
+    stains.emplace_back("<grey>media/particle/rail_hole.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Overbright);
+    stains.emplace_back("<grey>media/particle/pulse_glow.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 250, 1500, 250);
+    stains.emplace_back("<grey>media/particle/rail_glow.png",  stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 100, 1100, 100);
     for(stainrenderer &i : stains)
     {
         i.init(maxstaintris);
