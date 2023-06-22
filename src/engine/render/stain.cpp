@@ -58,15 +58,13 @@ class stainrenderer
 {
     public:
         int flags, fadeintime, fadeouttime, timetolive;
-        Texture *tex;
         int maxstains, startstain, endstain;
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
-              tex(nullptr),
               maxstains(0), startstain(0), endstain(0),
-              stainu(0), stainv(0), stains(nullptr), texname(texname)
+              stainu(0), stainv(0), tex(nullptr), stains(nullptr), texname(texname)
         {
         }
 
@@ -466,6 +464,9 @@ class stainrenderer
         }
 
     private:
+
+        Texture *tex;
+
         struct stainvert
         {
             vec pos;
