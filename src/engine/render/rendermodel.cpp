@@ -569,12 +569,11 @@ void preloadusedmapmodels(bool msg, bool bih)
 {
     std::vector<extentity *> &ents = entities::getents();
     std::vector<int> used;
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity *&e : ents)
     {
-        extentity &e = *ents[i];
-        if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && std::find(used.begin(), used.end(), e.attr1) != used.end() )
+        if(e->type==EngineEnt_Mapmodel && e->attr1 >= 0 && std::find(used.begin(), used.end(), e->attr1) != used.end() )
         {
-            used.push_back(e.attr1);
+            used.push_back(e->attr1);
         }
     }
 
