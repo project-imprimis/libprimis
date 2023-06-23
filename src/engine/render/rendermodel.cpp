@@ -525,16 +525,17 @@ void nummapmodels()
 // model registry
 
 hashnameset<model *> models;
-std::vector<const char *> preloadmodels;
+std::vector<std::string> preloadmodels;
 hashset<char *> failedmodels;
 
-void preloadmodel(const char *name)
+//used in iengine
+void preloadmodel(std::string name)
 {
-    if(!name || !name[0] || models.access(name) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
+    if(name.empty() || models.access(name.c_str()) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
     {
         return;
     }
-    preloadmodels.push_back(newstring(name));
+    preloadmodels.push_back(name);
 }
 
 void flushpreloadedmodels(bool msg)
@@ -542,12 +543,12 @@ void flushpreloadedmodels(bool msg)
     for(uint i = 0; i < preloadmodels.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/preloadmodels.size();
-        model *m = loadmodel(preloadmodels[i], -1, msg);
+        model *m = loadmodel(preloadmodels[i].c_str(), -1, msg);
         if(!m)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i]);
+                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i].c_str());
             }
         }
         else
@@ -555,10 +556,6 @@ void flushpreloadedmodels(bool msg)
             m->preloadmeshes();
             m->preloadshaders();
         }
-    }
-    for(const char * i : preloadmodels)
-    {
-        delete[] i;
     }
     preloadmodels.clear();
 
