@@ -480,11 +480,11 @@ void mapmodel(char *name)
     mapmodelinfo mmi;
     if(name[0])
     {
-        formatstring(mmi.name, "%s%s", mmprefix, name);
+        mmi.name = std::string().append(mmprefix).append(name);
     }
     else
     {
-        mmi.name[0] = '\0';
+        mmi.name.clear();
     }
     mmi.m = mmi.collide = nullptr;
     mapmodels.push_back(mmi);
@@ -501,14 +501,14 @@ void mapmodelreset(int *n)
 
 const char *mapmodelname(int i)
 {
-    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name : nullptr;
+    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name.c_str() : nullptr;
 }
 
 void mapmodelnamecmd(int *index, int *prefix)
 {
     if(static_cast<int>(mapmodels.size()) > *index)
     {
-        result(mapmodels[*index].name[0] ? mapmodels[*index].name + (*prefix ? 0 : mmprefixlen) : "");
+        result(mapmodels[*index].name.empty() ? mapmodels[*index].name.c_str() + (*prefix ? 0 : mmprefixlen) : "");
     }
 }
 
@@ -588,7 +588,7 @@ void preloadusedmapmodels(bool msg, bool bih)
             continue;
         }
         const mapmodelinfo &mmi = mapmodels[mmindex];
-        if(!mmi.name[0])
+        if(mmi.name.empty())
         {
             continue;
         }
@@ -597,7 +597,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load map model: %s", mmi.name);
+                conoutf(Console_Warn, "could not load map model: %s", mmi.name.c_str());
             }
         }
         else
@@ -660,7 +660,7 @@ model *loadmodel(const char *name, int i, bool msg)
         {
             return mmi.m;
         }
-        name = mmi.name;
+        name = mmi.name.c_str();
     }
     model **mm = models.access(name);
     model *m;
@@ -1257,7 +1257,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
         return;
     }
     const mapmodelinfo &mmi = mapmodels[idx];
-    model *m = mmi.m ? mmi.m : loadmodel(mmi.name);
+    model *m = mmi.m ? mmi.m : loadmodel(mmi.name.c_str());
     if(!m)
     {
         return;

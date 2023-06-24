@@ -3,7 +3,7 @@
 
 struct mapmodelinfo
 {
-    string name;
+    std::string name;
     model *m,
           *collide;
 };
