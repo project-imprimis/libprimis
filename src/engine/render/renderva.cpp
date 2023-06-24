@@ -1758,7 +1758,7 @@ namespace
             return table[h] = verts.size()-1;
         }
     } shadowverts;
-    std::vector<ushort> shadowtris[6];
+    std::array<std::vector<ushort>, 6> shadowtris;
     std::vector<GLuint> shadowvbos;
     hashtable<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
