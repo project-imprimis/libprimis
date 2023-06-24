@@ -526,7 +526,7 @@ void nummapmodels()
 
 hashnameset<model *> models;
 std::vector<std::string> preloadmodels;
-hashset<char *> failedmodels;
+hashset<const char *> failedmodels;
 
 //used in iengine
 void preloadmodel(std::string name)
