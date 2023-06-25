@@ -35,7 +35,7 @@ clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int
     {
         p.owner = &c;
         p.version = clipcacheversion+offset;
-        p.genclipbounds(c, o, size);
+        genclipbounds(c, o, size, p);
     }
     return p;
 }

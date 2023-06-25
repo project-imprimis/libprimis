@@ -116,8 +116,6 @@ struct clipplanes
         owner = nullptr;
         version = 0;
     }
-
-    void genclipbounds(const cube &c, const ivec &co, int size);
 };
 
 struct surfaceinfo
@@ -222,6 +220,7 @@ extern int faceconvexity(const vertinfo *verts, int numverts, int size);
 extern int faceconvexity(const cube &c, int orient);
 extern uint faceedges(const cube &c, int orient);
 extern bool flataxisface(const cube &c, int orient);
+extern void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p);
 extern void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide = true, bool noclip = false);
 extern bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat = Mat_Air, ushort nmat = Mat_Air, ushort matmask = MatFlag_Volume);
 extern int classifyface(const cube &c, int orient, const ivec &co, int size);
