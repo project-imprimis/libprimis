@@ -1853,7 +1853,7 @@ namespace
     }
 
     //recursively finds and adds decals to vacollect object vc
-    void finddecals(vtxarray *va)
+    void finddecals(const vtxarray *va)
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
