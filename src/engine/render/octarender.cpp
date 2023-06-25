@@ -462,7 +462,8 @@ namespace
             int size;
             ivec origin;
             std::vector<materialsurface> matsurfs;
-            std::vector<octaentities *> mapmodels, decals, extdecals;
+            std::vector<octaentities *> mapmodels, decals;
+            std::vector<const octaentities *> extdecals;
             vec skymin, skymax;
             vec alphamin, alphamax;
             vec refractmin, refractmax;
@@ -879,7 +880,7 @@ namespace
                     return;
                 }
                 std::vector<extentity *> &ents = entities::getents();
-                for(octaentities* oe : extdecals)
+                for(const octaentities* oe : extdecals)
                 {
                     for(uint j = 0; j < oe->decals.size(); j++)
                     {
@@ -898,7 +899,7 @@ namespace
                         gendecal(e, s, k);
                     }
                 }
-                for(octaentities* oe : extdecals)
+                for(const octaentities* oe : extdecals)
                 {
                     for(uint j = 0; j < oe->decals.size(); j++)
                     {
