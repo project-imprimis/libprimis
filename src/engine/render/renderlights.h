@@ -4,17 +4,6 @@
 const int lighttilemaxwidth  = 16;
 const int lighttilemaxheight = 16;
 
-struct transparentmodelinfo
-{
-    float mdlsx1, mdlsy1, mdlsx2, mdlsy2;
-    std::array<uint, lighttilemaxheight> mdltiles;
-
-    transparentmodelinfo() : mdlsx1(-1), mdlsy1(-1), mdlsx2(1), mdlsy2(1), mdltiles()
-    {
-    }
-};
-extern transparentmodelinfo tmodelinfo;
-
 /* gbuffer: a singleton object used to store the graphics buffers
  * (as OpenGL uints) and the functions which act upon the g-buffers.
  */
@@ -90,6 +79,7 @@ class GBuffer
         void workinoq();
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
         bool istransparentlayer() const;
+        void rendermodelbatches();
 
     private:
         void bindmsdepth() const;
@@ -135,6 +125,17 @@ class GBuffer
 
         MaterialInfo findmaterials() const; //materials.cpp
         AlphaInfo findalphavas();
+
+        struct transparentmodelinfo
+        {
+            float mdlsx1, mdlsy1, mdlsx2, mdlsy2;
+            std::array<uint, lighttilemaxheight> mdltiles;
+
+            transparentmodelinfo() : mdlsx1(-1), mdlsy1(-1), mdlsx2(1), mdlsy2(1), mdltiles()
+            {
+            }
+        };
+        transparentmodelinfo tmodelinfo;
 
         uint alphatiles[lighttilemaxheight];
 

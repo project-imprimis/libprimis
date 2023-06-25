@@ -1519,7 +1519,7 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
 
 void ModelPreview::end()
 {
-    rendermodelbatches();
+    gbuf.rendermodelbatches();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);

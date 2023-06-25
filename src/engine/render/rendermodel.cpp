@@ -1042,10 +1042,7 @@ void rendermapmodelbatches()
     aamask::disable();
 }
 
-//transparent model boundaries
-transparentmodelinfo tmodelinfo;
-
-void rendermodelbatches()
+void GBuffer::rendermodelbatches()
 {
     tmodelinfo.mdlsx1 = tmodelinfo.mdlsy1 = 1;
     tmodelinfo.mdlsx2 = tmodelinfo.mdlsy2 = -1;
