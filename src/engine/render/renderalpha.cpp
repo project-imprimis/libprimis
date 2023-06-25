@@ -74,7 +74,7 @@ void GBuffer::rendertransparent()
     const AlphaInfo &ai = findalphavas(); //generate mat* vars
     int hasalphavas = ai.hasalphavas;
     int hasmats = mi.hasmats;
-    bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
+    bool hasmodels = tmodelinfo.mdlsx1 < tmodelinfo.mdlsx2 && tmodelinfo.mdlsy1 < tmodelinfo.mdlsy2;
     if(!hasalphavas && !hasmats && !hasmodels) //don't transparent render if there is no alpha
     {
         if(!editmode)
@@ -238,11 +238,11 @@ void GBuffer::rendertransparent()
                 {
                     continue;
                 }
-                sx1 = transmdlsx1;
-                sy1 = transmdlsy1;
-                sx2 = transmdlsx2;
-                sy2 = transmdlsy2;
-                std::memcpy(tiles.data(), transmdltiles, tiles.size()*sizeof(uint));
+                sx1 = tmodelinfo.mdlsx1;
+                sy1 = tmodelinfo.mdlsy1;
+                sx2 = tmodelinfo.mdlsx2;
+                sy2 = tmodelinfo.mdlsy2;
+                std::memcpy(tiles.data(), tmodelinfo.mdltiles.data(), tiles.size()*sizeof(uint));
                 break;
             }
             default:

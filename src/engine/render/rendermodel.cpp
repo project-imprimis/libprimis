@@ -1042,17 +1042,14 @@ void rendermapmodelbatches()
     aamask::disable();
 }
 
-float transmdlsx1 = -1,
-      transmdlsy1 = -1,
-      transmdlsx2 = 1,
-      transmdlsy2 = 1;
-uint transmdltiles[lighttilemaxheight];
+//transparent model boundaries
+transparentmodelinfo tmodelinfo;
 
 void rendermodelbatches()
 {
-    transmdlsx1 = transmdlsy1 = 1;
-    transmdlsx2 = transmdlsy2 = -1;
-    std::memset(transmdltiles, 0, sizeof(transmdltiles));
+    tmodelinfo.mdlsx1 = tmodelinfo.mdlsy1 = 1;
+    tmodelinfo.mdlsx2 = tmodelinfo.mdlsy2 = -1;
+    tmodelinfo.mdltiles.fill(0);
 
     aamask::enable();
     for(uint i = 0; i < batches.size(); i++)
@@ -1078,11 +1075,11 @@ void rendermodelbatches()
                 ivec bbmin(vec(bm.center).sub(bm.radius)), bbmax(vec(bm.center).add(bm.radius+1));
                 if(calcbbscissor(bbmin, bbmax, sx1, sy1, sx2, sy2))
                 {
-                    transmdlsx1 = std::min(transmdlsx1, sx1);
-                    transmdlsy1 = std::min(transmdlsy1, sy1);
-                    transmdlsx2 = std::max(transmdlsx2, sx2);
-                    transmdlsy2 = std::max(transmdlsy2, sy2);
-                    masktiles(transmdltiles, sx1, sy1, sx2, sy2);
+                    tmodelinfo.mdlsx1 = std::min(tmodelinfo.mdlsx1, sx1);
+                    tmodelinfo.mdlsy1 = std::min(tmodelinfo.mdlsy1, sy1);
+                    tmodelinfo.mdlsx2 = std::max(tmodelinfo.mdlsx2, sx2);
+                    tmodelinfo.mdlsy2 = std::max(tmodelinfo.mdlsy2, sy2);
+                    masktiles(tmodelinfo.mdltiles.data(), sx1, sy1, sx2, sy2);
                 }
                 continue;
             }
