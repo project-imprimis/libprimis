@@ -2535,7 +2535,7 @@ void rendermapmodels()
                     oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? occlusionengine.newquery(oe) : nullptr;
                     if(oe->query)
                     {
-                        oe->query->startmodelquery();
+                        occlusionengine.setupmodelquery(oe->query);
                     }
                 }
                 rendermapmodel(e);
@@ -2543,7 +2543,7 @@ void rendermapmodels()
             }
             if(rendered && oe->query)
             {
-                endmodelquery();
+                occlusionengine.endmodelquery();
             }
         }
     }

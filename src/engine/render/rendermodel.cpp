@@ -1180,20 +1180,15 @@ void rendertransparentmodelbatches(int stencil)
     aamask::disable();
 }
 
-static occludequery *modelquery = nullptr;
-static int modelquerybatches = -1,
-           modelquerymodels = -1,
-           modelqueryattached = -1;
-
-void occludequery::startmodelquery()
+void Occluder::setupmodelquery(occludequery *q)
 {
-    modelquery = this;
+    modelquery = q;
     modelquerybatches = batches.size();
     modelquerymodels = batchedmodels.size();
     modelqueryattached = modelattached.size();
 }
 
-void endmodelquery()
+void Occluder::endmodelquery()
 {
     if(static_cast<int>(batchedmodels.size()) == modelquerymodels)
     {

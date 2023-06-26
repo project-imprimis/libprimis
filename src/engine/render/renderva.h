@@ -9,7 +9,6 @@ struct occludequery
     GLuint id;
     int fragments;
 
-    void startmodelquery();
     void startquery() const;
 };
 
@@ -36,9 +35,11 @@ class vfc
 class Occluder
 {
     public:
+        void setupmodelquery(occludequery *q);
         void clearqueries();
         void flipqueries();
         void endquery();
+        void endmodelquery(); // starts the model query (!)
         bool checkquery(occludequery *query, bool nowait = false);
         void resetqueries();
         int getnumqueries() const;
@@ -67,6 +68,11 @@ class Occluder
         static constexpr int maxqueryframes = 2;
         std::array<queryframe, maxqueryframes> queryframes;
         uint flipquery = 0;
+
+        occludequery *modelquery = nullptr;
+        int modelquerybatches = -1,
+           modelquerymodels = -1,
+           modelqueryattached = -1;
 
 };
 
