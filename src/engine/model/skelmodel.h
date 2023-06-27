@@ -347,7 +347,6 @@ struct skelmodel : animmodel
             bool canpreload() const;
             void preload();
             const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
-            int getblendoffset(const UniformLoc &u);
             void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
             bool shouldcleanup() const;
 
@@ -384,6 +383,7 @@ struct skelmodel : animmodel
             };
 
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
+            int getblendoffset(const UniformLoc &u);
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
     };
