@@ -1968,6 +1968,16 @@ void cleanupshaders()
     glUseProgram(0);
 }
 
+void Shader::reusecleanup()
+{
+    if((reusevs && reusevs->invalid()) ||
+       (reuseps && reuseps->invalid()) ||
+       !compile())
+    {
+        cleanup(true);
+    }
+}
+
 void reloadshaders()
 {
     identflags &= ~Idf_Persist;
@@ -1986,12 +1996,7 @@ void reloadshaders()
             }
             for(Shader *&v : s.variants)
             {
-                if((v->reusevs && v->reusevs->invalid()) ||
-                   (v->reuseps && v->reuseps->invalid()) ||
-                   !v->compile())
-                {
-                    v->cleanup(true);
-                }
+                v->reusecleanup();
             }
         }
         if(s.forced && s.deferred())

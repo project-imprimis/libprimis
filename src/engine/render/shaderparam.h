@@ -92,7 +92,6 @@ class Shader
         Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
-        const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         std::vector<UniformLoc> uniformlocs;
 
         const void *owner;
@@ -117,6 +116,7 @@ class Shader
         void set(Slot &slot, const VSlot &vslot);
         bool compile();
         void cleanup(bool full = false);
+        void reusecleanup();
 
         static int uniformlocversion();
         Shader *setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row);
@@ -132,6 +132,7 @@ class Shader
         };
         std::vector<AttribLoc> attriblocs;
         GLuint vsobj, psobj;
+        const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         ushort *variantrows;
         bool used;
         void allocparams();
