@@ -92,7 +92,7 @@ class Shader
         Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
-        Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
+        const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         std::vector<UniformLoc> uniformlocs;
 
         const void *owner;
