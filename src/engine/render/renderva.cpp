@@ -2187,8 +2187,8 @@ void vfc::visiblecubes(bool cull)
             vfcP[i].x = vfcP[i].y = vfcP[i].z = vfcP[i].offset = 0;
         };
         vfcDfog = farplane;
-        std::memset(vfcDnear, 0, sizeof(vfcDnear));
-        std::memset(vfcDfar, 0, sizeof(vfcDfar));
+        vfcDnear.fill(0);
+        vfcDfar.fill(0);
         visibleva = nullptr;
         for(uint i = 0; i < valist.size(); i++)
         {

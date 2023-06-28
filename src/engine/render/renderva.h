@@ -28,8 +28,8 @@ class vfc
 
         plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
         float vfcDfog;  // far plane culling distance (fog limit).
-        float vfcDnear[5], //near plane culling
-              vfcDfar[5];  //far plane culling
+        std::array<float, 5> vfcDnear,
+                             vfcDfar;
 };
 
 class Occluder
