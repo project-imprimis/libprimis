@@ -76,7 +76,7 @@ struct skelmodel : animmodel
 
     struct animcacheentry
     {
-        AnimState as[maxanimparts];
+        std::array<AnimState, maxanimparts> as;
         float pitch;
         int millis;
         uchar *partmask;
