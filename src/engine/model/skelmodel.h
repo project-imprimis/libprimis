@@ -395,7 +395,7 @@ struct skelmodel : animmodel
         skeleton *skel;
 
         std::vector<blendcombo> blendcombos;
-        int numblends[4];
+        std::array<int, 4> numblends;
 
         static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
         static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
@@ -413,7 +413,7 @@ struct skelmodel : animmodel
 
         skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr), hitdata(nullptr)
         {
-            std::memset(numblends, 0, sizeof(numblends));
+            numblends.fill(0);
         }
 
         virtual ~skelmeshgroup();
