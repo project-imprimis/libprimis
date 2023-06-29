@@ -26,7 +26,7 @@ class vfc
         void calcvfcD();
         void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
 
-        plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
+        std::array<plane, 5> vfcP;  // perpindictular vectors to view frustrum bounding planes
         float vfcDfog;  // far plane culling distance (fog limit).
         std::array<float, 5> vfcDnear,
                              vfcDfar;
