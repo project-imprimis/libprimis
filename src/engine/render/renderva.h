@@ -23,12 +23,13 @@ class vfc
         int isvisiblebb(const ivec &bo, const ivec &br) const;
         int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
     private:
+        static constexpr uint numvfc = 5;
         void calcvfcD();
         void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
 
-        std::array<plane, 5> vfcP;  // perpindictular vectors to view frustrum bounding planes
+        std::array<plane, numvfc> vfcP;  // perpindictular vectors to view frustrum bounding planes
         float vfcDfog;  // far plane culling distance (fog limit).
-        std::array<float, 5> vfcDnear,
+        std::array<float, numvfc> vfcDnear,
                              vfcDfar;
 };
 
