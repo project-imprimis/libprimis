@@ -937,7 +937,7 @@ namespace
 
     //index array must be >= numverts long
     //verts array must be >= Face_MaxVerts + 1 and >= numverts long
-    void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
+    void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
     {
         int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris,
              edge  = orient*(Face_MaxVerts+1);
