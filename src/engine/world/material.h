@@ -12,7 +12,7 @@ struct materialsurface
 
 struct vtxarray;
 
-extern std::vector<materialsurface> watersurfs[4], waterfallsurfs[4];
+extern std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs;
 
 extern int showmat;
 
