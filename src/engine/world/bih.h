@@ -34,28 +34,32 @@ class BIH
             Mesh_CullFace = 1<<5
         };
 
-        struct mesh
+        class mesh
         {
-            static constexpr int maxtriangles = 1<<14;
-            matrix4x3 xform, invxform;
-            matrix3 xformnorm, invxformnorm;
-            float scale, invscale;
-            node *nodes;
-            int numnodes;
-            const tri *tris;
-            const tribb *tribbs;
-            int numtris;
-            const uchar *pos, *tc;
-            int posstride, tcstride;
-            Texture *tex;
-            int flags;
-            vec bbmin, bbmax;
+            public:
+                static constexpr int maxtriangles = 1<<14;
+                matrix4x3 xform, invxform;
+                matrix3 xformnorm, invxformnorm;
+                float scale, invscale;
+                node *nodes;
+                int numnodes;
+                const tri *tris;
+                const tribb *tribbs;
+                int numtris;
+                Texture *tex;
+                int flags;
+                vec bbmin, bbmax;
 
-            mesh();
+                mesh();
 
-            vec getpos(int i) const;
-            vec2 gettc(int i) const;
-            void setmesh(const tri *tris, int numtris, const uchar *pos, int posstride, const uchar *tc, int tcstride);
+                vec getpos(int i) const;
+                vec2 gettc(int i) const;
+                void setmesh(const tri *tris, int numtris,
+                             const uchar *pos, int posstride,
+                             const uchar *tc, int tcstride);
+            private:
+                const uchar *pos, *tc;
+                int posstride, tcstride;
         };
 
         BIH(const std::vector<mesh> &buildmeshes);
