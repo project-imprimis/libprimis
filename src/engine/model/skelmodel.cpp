@@ -1401,12 +1401,9 @@ void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
 
 void skelmodel::skelmesh::genBIH(BIH::mesh &m)
 {
-    m.tris = reinterpret_cast<const BIH::tri *>(tris);
-    m.numtris = numtris;
-    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
-    m.posstride = sizeof(vert);
-    m.tc = reinterpret_cast<const uchar *>(&verts->tc);
-    m.tcstride = sizeof(vert);
+    m.setmesh(reinterpret_cast<const BIH::tri *>(tris), numtris,
+              reinterpret_cast<const uchar *>(&verts->pos), sizeof(vert),
+              reinterpret_cast<const uchar *>(&verts->tc), sizeof(vert));
 }
 
 void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)

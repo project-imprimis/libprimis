@@ -54,6 +54,18 @@ vec2 BIH::mesh::gettc(int i) const
     return *reinterpret_cast<const vec2 *>(tc + i*tcstride);
 }
 
+void BIH::mesh::setmesh(const tri *tris, int numtris,
+                        const uchar *pos, int posstride,
+                        const uchar *tc, int tcstride)
+{
+    this->tris = tris;
+    this->numtris = numtris;
+    this->pos = pos;
+    this->posstride = posstride;
+    this->tc = tc;
+    this->tcstride = tcstride;
+}
+
 /* diagram of a,b,c,n vectors
  * a is the vector between the origin and the point 0 indicated
  * n is the triangle normal

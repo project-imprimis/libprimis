@@ -117,12 +117,9 @@ void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
 
 void vertmodel::vertmesh::genBIH(BIH::mesh &m) const
 {
-    m.tris = reinterpret_cast<const BIH::tri *>(tris);
-    m.numtris = numtris;
-    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
-    m.posstride = sizeof(vert);
-    m.tc = reinterpret_cast<const uchar *>(&tcverts->tc);
-    m.tcstride = sizeof(tcvert);
+    m.setmesh(reinterpret_cast<const BIH::tri *>(tris), numtris,
+              reinterpret_cast<const uchar *>(&verts->pos), sizeof(vert),
+              reinterpret_cast<const uchar *>(&tcverts->tc), sizeof(tcvert));
 }
 
 void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)

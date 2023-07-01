@@ -55,6 +55,7 @@ class BIH
 
             vec getpos(int i) const;
             vec2 gettc(int i) const;
+            void setmesh(const tri *tris, int numtris, const uchar *pos, int posstride, const uchar *tc, int tcstride);
         };
 
         BIH(const std::vector<mesh> &buildmeshes);
