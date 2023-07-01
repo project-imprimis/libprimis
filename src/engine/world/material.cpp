@@ -33,7 +33,7 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-std::vector<materialsurface> watersurfs[4], waterfallsurfs[4], glasssurfs[4];
+std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs, glasssurfs;
 
 //internally relevant functionality
 

@@ -695,7 +695,7 @@ static void setdefaultparams(const std::vector<SlotShaderParamState>& defaultpar
 
 //shader
 
-Shader::Shader() : name(nullptr), defer(nullptr), type(Shader_Default), program(0), variantshader(nullptr), standard(false), forced(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr), vsstr(nullptr), psstr(nullptr), vsobj(0), psobj(0), variantrows(nullptr), used(false)
+Shader::Shader() : name(nullptr), defer(nullptr), type(Shader_Default), program(0), variantshader(nullptr), standard(false), forced(false), owner(nullptr), vsstr(nullptr), psstr(nullptr), vsobj(0), psobj(0), reusevs(nullptr), reuseps(nullptr), variantrows(nullptr), used(false)
 {
 }
 
