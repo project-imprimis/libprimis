@@ -142,11 +142,11 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     return true; //true if collided
 }
 
-bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, node *curnode, float tmin, float tmax)
+bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax)
 {
     struct traversestate
     {
-        BIH::node *node;
+        const BIH::node *node;
         float tmin, tmax;
     };
     traversestate stack[128];
