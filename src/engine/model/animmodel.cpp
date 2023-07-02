@@ -1539,7 +1539,10 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     }
     matrix4x3 m;
     initmatrix(m);
-    parts[0]->genBIH(bih, m);
+    for(skin &s : parts[0]->skins)
+    {
+        s.tex->loadalphamask();
+    }
     for(uint i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
@@ -1548,6 +1551,10 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
             case Link_Coop:
             case Link_Reuse:
             {
+                for(skin &s : parts[i]->skins)
+                {
+                    s.tex->loadalphamask();
+                }
                 p->genBIH(bih, m);
                 break;
             }

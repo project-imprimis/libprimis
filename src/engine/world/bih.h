@@ -46,7 +46,7 @@ class BIH
                 const tri *tris;
                 const tribb *tribbs;
                 int numtris;
-                Texture *tex;
+                const Texture *tex;
                 int flags;
                 vec bbmin, bbmax;
 
