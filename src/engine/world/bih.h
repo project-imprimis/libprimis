@@ -15,7 +15,7 @@ class BIH
 
         struct tri
         {
-            ushort vert[3];
+            std::array<ushort, 3> vert;
         };
 
         struct tribb
