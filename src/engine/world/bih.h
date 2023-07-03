@@ -5,8 +5,8 @@ class BIH
     public:
         struct node
         {
-            short split[2];
-            ushort child[2];
+            std::array<short, 2> split;
+            std::array<ushort, 2> child;
 
             int axis() const;
             int childindex(int which) const;
