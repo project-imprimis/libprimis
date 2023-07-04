@@ -527,7 +527,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     float scale = e.attr5 ? 100.0f/e.attr5 : 1.0f;
     vec mo = static_cast<vec>(o).sub(e.o).mul(scale), mray(ray);
     float v = mo.dot(mray),
-          inside = m->bih->entradius - mo.squaredlen();
+          inside = m->bih->getentradius() - mo.squaredlen();
     if((inside < 0 && v > 0) || inside + v*v < 0)
     {
         return false;
@@ -1276,3 +1276,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
     }
 }
 
+float BIH::getentradius()
+{
+    return entradius;
+}

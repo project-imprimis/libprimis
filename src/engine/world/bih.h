@@ -66,16 +66,15 @@ class BIH
 
         ~BIH();
 
-        float entradius;
-
         bool traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode);
         bool triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode);
         bool boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         bool ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         void genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale = 1);
-        void preload();
-
+        float getentradius();
     private:
+        float entradius;
+
         std::vector<mesh> meshes;
         node *nodes;
         int numnodes;
