@@ -411,7 +411,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 }
 
 BIH::BIH(const std::vector<mesh> &buildmeshes)
-  :  entradius(0), nodes(nullptr), numnodes(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
+  : nodes(nullptr), numnodes(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
     tribb *tribbs = nullptr;
     int numtris = 0;
@@ -478,7 +478,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
 
     center = vec(bbmin).add(bbmax).mul(0.5f);
     radius = vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-    entradius = std::max(bbmin.squaredlen(), bbmax.squaredlen());
 
     nodes = new node[numtris];
     node *curnode = nodes;
@@ -1278,5 +1277,5 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
 
 float BIH::getentradius()
 {
-    return entradius;
+    return std::max(bbmin.squaredlen(), bbmax.squaredlen());
 }

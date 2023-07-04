@@ -73,8 +73,6 @@ class BIH
         void genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         float getentradius();
     private:
-        float entradius;
-
         std::vector<mesh> meshes;
         node *nodes;
         int numnodes;
