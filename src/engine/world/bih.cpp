@@ -1275,7 +1275,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
     }
 }
 
-float BIH::getentradius()
+float BIH::getentradius() const
 {
     return std::max(bbmin.squaredlen(), bbmax.squaredlen());
 }

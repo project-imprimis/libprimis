@@ -71,7 +71,7 @@ class BIH
         bool boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         bool ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1);
         void genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale = 1);
-        float getentradius();
+        float getentradius() const;
     private:
         std::vector<mesh> meshes;
         node *nodes;
