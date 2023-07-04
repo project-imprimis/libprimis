@@ -427,7 +427,7 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     {
         return;
     }
-    std::copy(buildmeshes.begin(), buildmeshes.end(), meshes.begin());
+    meshes.assign(buildmeshes.begin(), buildmeshes.end());
     tribbs = new tribb[numtris];
     tribb *dsttri = tribbs;
     for(mesh &m : meshes)
