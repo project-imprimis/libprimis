@@ -411,8 +411,10 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 }
 
 BIH::BIH(const std::vector<mesh> &buildmeshes)
-  :  entradius(0), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
+  :  entradius(0), nodes(nullptr), numnodes(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
+    tribb *tribbs = nullptr;
+    int numtris = 0;
     if(buildmeshes.empty())
     {
         return;
@@ -498,7 +500,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
 BIH::~BIH()
 {
     delete[] nodes;
-    delete[] tribbs;
 }
 
 bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist, int mode, float &dist)

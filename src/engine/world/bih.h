@@ -79,8 +79,6 @@ class BIH
         std::vector<mesh> meshes;
         node *nodes;
         int numnodes;
-        tribb *tribbs;
-        int numtris;
         vec bbmin, bbmax, center;
         float radius;
 
