@@ -257,9 +257,8 @@ bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int
 {
     //if components are zero, set component to large value: 1e16, else invert
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
-    for(int i = 0; i < nummeshes; ++i)
+    for(mesh &m : meshes)
     {
-        mesh &m = meshes[i];
         if(!(m.flags&Mesh_Render) || (!(mode&Ray_Shadow) && m.flags&Mesh_NoClip))
         {
             continue;
@@ -412,7 +411,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 }
 
 BIH::BIH(const std::vector<mesh> &buildmeshes)
-  :  entradius(0), meshes(nullptr), nummeshes(buildmeshes.size()), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
+  :  entradius(0), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
     if(buildmeshes.empty())
     {
@@ -426,13 +425,11 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     {
         return;
     }
-    meshes = new mesh[nummeshes];
-    std::memcpy(meshes, buildmeshes.data(), sizeof(mesh)*buildmeshes.size());
+    std::copy(buildmeshes.begin(), buildmeshes.end(), meshes.begin());
     tribbs = new tribb[numtris];
     tribb *dsttri = tribbs;
-    for(int i = 0; i < nummeshes; ++i)
+    for(mesh &m : meshes)
     {
-        mesh &m = meshes[i];
         m.scale = m.xform.a.magnitude();
         m.invscale = 1/m.scale;
         m.xformnorm = matrix3(m.xform);
@@ -484,9 +481,8 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     nodes = new node[numtris];
     node *curnode = nodes;
     ushort *indices = new ushort[numtris];
-    for(int i = 0; i < nummeshes; ++i)
+    for(mesh &m : meshes)
     {
-        mesh &m = meshes[i];
         m.nodes = curnode;
         for(int j = 0; j < m.numtris; ++j)
         {
@@ -501,7 +497,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
 
 BIH::~BIH()
 {
-    delete[] meshes;
     delete[] nodes;
     delete[] tribbs;
 }
@@ -1058,9 +1053,8 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
          iradius = imax.sub(imin).add(1).div(2);
 
     float dist = -1e10f;
-    for(int i = 0; i < nummeshes; ++i)
+    for(const mesh &m : meshes)
     {
-        const mesh &m = meshes[i];
         if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
         {
             continue;
@@ -1118,9 +1112,8 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
         dcenter = drot.transform(center).neg();
     dorient.mul(drot, orient);
     float dist = -1e10f;
-    for(int i = 0; i < nummeshes; ++i)
+    for(const mesh &m : meshes)
     {
-        const mesh &m = meshes[i];
         if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
         {
             continue;
@@ -1270,9 +1263,8 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
          imax = ivec::ceil(vec(bo).add(radius)),
          icenter = ivec(imin).add(imax).div(2),
          iradius = ivec(imax).sub(imin).add(1).div(2);
-    for(int i = 0; i < nummeshes; ++i)
+    for(mesh &m : meshes)
     {
-        mesh &m = meshes[i];
         if(!(m.flags&Mesh_Render) || m.flags&Mesh_Alpha)
         {
             continue;

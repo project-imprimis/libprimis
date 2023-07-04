@@ -76,8 +76,7 @@ class BIH
         void preload();
 
     private:
-        mesh *meshes;
-        const int nummeshes;
+        std::vector<mesh> meshes;
         node *nodes;
         int numnodes;
         tribb *tribbs;
