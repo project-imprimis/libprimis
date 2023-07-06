@@ -18,13 +18,6 @@ class BIH
             std::array<ushort, 3> vert;
         };
 
-        struct tribb
-        {
-            svec center, radius;
-
-            bool outside(const ivec &bo, const ivec &br) const;
-        };
-
         enum
         {
             Mesh_Render   = 1<<1,
@@ -44,6 +37,13 @@ class BIH
                 node *nodes;
                 int numnodes;
                 const tri *tris;
+
+                struct tribb
+                {
+                    svec center, radius;
+
+                    bool outside(const ivec &bo, const ivec &br) const;
+                };
                 const tribb *tribbs;
                 int numtris;
                 const Texture *tex;

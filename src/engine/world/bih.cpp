@@ -36,7 +36,7 @@ bool BIH::node::isleaf(int which) const
     return (child[1]&(1<<(14+which)))!=0;
 }
 
-bool BIH::tribb::outside(const ivec &bo, const ivec &br) const
+bool BIH::mesh::tribb::outside(const ivec &bo, const ivec &br) const
 {
     return std::abs(bo.x - center.x) > br.x + radius.x ||
            std::abs(bo.y - center.y) > br.y + radius.y ||
@@ -329,7 +329,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
         int split = (vmax[axis] + vmin[axis])/2;
         for(left = 0, right = numindices, splitleft = SHRT_MIN, splitright = SHRT_MAX; left < right;)
         {
-            const tribb &tri = m.tribbs[indices[left]];
+            const mesh::tribb &tri = m.tribbs[indices[left]];
             ivec trimin = ivec(tri.center).sub(ivec(tri.radius)),
                  trimax = ivec(tri.center).add(ivec(tri.radius));
             int amin = trimin[axis],
@@ -366,7 +366,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
         splitright = SHRT_MAX;
         for(int i = 0; i < numindices; ++i)
         {
-            const tribb &tri = m.tribbs[indices[i]];
+            const mesh::tribb &tri = m.tribbs[indices[i]];
             ivec trimin = static_cast<ivec>(tri.center).sub(static_cast<ivec>(tri.radius)),
                  trimax = static_cast<ivec>(tri.center).add(static_cast<ivec>(tri.radius));
             if(i < left)
@@ -413,7 +413,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 BIH::BIH(const std::vector<mesh> &buildmeshes)
   : nodes(nullptr), numnodes(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
-    tribb *tribbs = nullptr;
+    mesh::tribb *tribbs = nullptr;
     int numtris = 0;
     if(buildmeshes.empty())
     {
@@ -428,8 +428,8 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
         return;
     }
     meshes.assign(buildmeshes.begin(), buildmeshes.end());
-    tribbs = new tribb[numtris];
-    tribb *dsttri = tribbs;
+    tribbs = new mesh::tribb[numtris];
+    mesh::tribb *dsttri = tribbs;
     for(mesh &m : meshes)
     {
         m.scale = m.xform.a.magnitude();
