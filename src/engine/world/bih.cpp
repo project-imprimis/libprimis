@@ -83,7 +83,7 @@ void BIH::mesh::setmesh(const tri *tris, int numtris,
 
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
-    const tri &t = m.tris[tidx];
+    const mesh::tri &t = m.tris[tidx];
     vec a = m.getpos(t.vert[0]), //position of vert 0
         b = m.getpos(t.vert[1]).sub(a), //displacement vector from vert 0->1
         c = m.getpos(t.vert[2]).sub(a), //displacement vector from vert 0->2
@@ -440,7 +440,7 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
         m.invxformnorm = matrix3(m.invxform);
         m.invxformnorm.normalize();
         m.tribbs = dsttri;
-        const tri *srctri = m.tris;
+        const mesh::tri *srctri = m.tris;
         vec mmin(1e16f, 1e16f, 1e16f), mmax(-1e16f, -1e16f, -1e16f);
         for(int j = 0; j < m.numtris; ++j)
         {
@@ -854,7 +854,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
     {
         return;
     }
-    const tri &t = m.tris[tidx];
+    const mesh::tri &t = m.tris[tidx];
     vec a = m.getpos(t.vert[0]),
         b = m.getpos(t.vert[1]),
         c = m.getpos(t.vert[2]),
@@ -895,7 +895,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
     {
         return;
     }
-    const tri &t = m.tris[tidx];
+    const mesh::tri &t = m.tris[tidx];
     vec a = orient.transform(m.getpos(t.vert[0])),
         b = orient.transform(m.getpos(t.vert[1])),
         c = orient.transform(m.getpos(t.vert[2]));
@@ -1136,7 +1136,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, f
     {
         return;
     }
-    const tri &t = m.tris[tidx];
+    const mesh::tri &t = m.tris[tidx];
     vec v[3] =
     {
         orient.transform(m.getpos(t.vert[0])),

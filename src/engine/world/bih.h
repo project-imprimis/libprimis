@@ -13,11 +13,6 @@ class BIH
             bool isleaf(int which) const;
         };
 
-        struct tri
-        {
-            std::array<ushort, 3> vert;
-        };
-
         enum
         {
             Mesh_Render   = 1<<1,
@@ -36,6 +31,11 @@ class BIH
                 float scale, invscale;
                 node *nodes;
                 int numnodes;
+
+                struct tri
+                {
+                    std::array<ushort, 3> vert;
+                };
                 const tri *tris;
 
                 struct tribb

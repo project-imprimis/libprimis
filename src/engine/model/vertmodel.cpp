@@ -117,7 +117,7 @@ void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
 
 void vertmodel::vertmesh::genBIH(BIH::mesh &m) const
 {
-    m.setmesh(reinterpret_cast<const BIH::tri *>(tris), numtris,
+    m.setmesh(reinterpret_cast<const BIH::mesh::tri *>(tris), numtris,
               reinterpret_cast<const uchar *>(&verts->pos), sizeof(vert),
               reinterpret_cast<const uchar *>(&tcverts->tc), sizeof(tcvert));
 }
