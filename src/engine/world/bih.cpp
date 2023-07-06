@@ -1148,8 +1148,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, f
 
 void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br)
 {
-    node *stack[128];
-    int stacksize = 0;
+    std::stack<node *> stack;
     ivec bmin = static_cast<ivec>(bo).sub(br),
          bmax = static_cast<ivec>(bo).add(br);
     for(;;)
@@ -1196,9 +1195,9 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
             {
                 if(!curnode->isleaf(faridx))
                 {
-                    if(stacksize < static_cast<int>(sizeof(stack)/sizeof(stack[0])))
+                    if(stack.size() < 128)
                     {
-                        stack[stacksize++] = curnode + curnode->childindex(faridx);
+                        stack.push(curnode + curnode->childindex(faridx));
                     }
                     else
                     {
@@ -1215,11 +1214,12 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
             curnode += curnode->childindex(nearidx);
             continue;
         }
-        if(stacksize <= 0)
+        if(stack.size() <= 0)
         {
             return;
         }
-        curnode = stack[--stacksize];
+        curnode = stack.top();
+        stack.pop();
     }
 }
 
