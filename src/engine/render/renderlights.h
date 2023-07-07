@@ -57,7 +57,6 @@ class GBuffer
         void resolvemsaadepth(int w, int h) const;
         void setupgbuffer();
         void bindgdepth() const;
-        void bindlighttexs(int msaapass, bool transparent) const; //only used in renderlights
         void renderparticles(int layer = 0) const;                //renderparticles.cpp
         void rendervolumetric();
         void renderwaterfog(int mat, float surface);        //water.cpp
@@ -94,6 +93,7 @@ class GBuffer
         int getlightdebuginfo(uint type) const;
     private:
         void bindmsdepth() const;
+        void bindlighttexs(int msaapass, bool transparent) const; //only used in renderlights
         void cleanupscale();
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
