@@ -80,7 +80,18 @@ class GBuffer
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
         bool istransparentlayer() const;
         void rendermodelbatches();
+        void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 = 1, const uint *tilemask = nullptr, int stencilmask = 0, int msaapass = 0, bool transparent = false);
 
+        /**
+         * @brief Returns debug information about lighting.
+         * 0: light passes used
+         * 1: lights visible
+         * 2: lights occluded
+         * 3: light batches used
+         * 4: light batch rects used
+         * 5: light batch stacks used
+         */
+        int getlightdebuginfo(uint type) const;
     private:
         void bindmsdepth() const;
         void cleanupscale();
@@ -88,10 +99,15 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps() const;
         void rendershadowmaps(int offset = 0) const;
+        void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask);
+        void renderlightsnobatch(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2);
+        void renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask);
+
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
         void rendermaterialmask();
         void renderliquidmaterials();
+        void packlights();
 
         struct MaterialInfo
         {
@@ -177,6 +193,13 @@ class GBuffer
         GLenum stencilformat;
         matrix4 eyematrix,
                 linearworldmatrix;
+
+    int lightpassesused,
+        lightsvisible,
+        lightsoccluded,
+        lightbatchesused,
+        lightbatchrectsused,
+        lightbatchstacksused;
 };
 
 extern GBuffer gbuf;
@@ -299,7 +322,6 @@ extern void cleanupvolumetric();
 
 extern void findshadowvas();
 extern void findshadowmms();
-extern void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 = 1, const uint *tilemask = nullptr, int stencilmask = 0, int msaapass = 0, bool transparent = false);
 
 extern int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc, int &spotangle, float &bias);
 extern int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax);

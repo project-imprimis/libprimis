@@ -1177,12 +1177,6 @@ VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cl
 VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
 VAR(smnoshadow, 0, 0, 1);
 VAR(smdynshadow, 0, 1, 1); //`s`hadow `m`ap `dyn`amic `shadow`
-VAR(lightpassesused, 1, 0, 0); //read only: number of passes to render lights
-VAR(lightsvisible, 1, 0, 0);   //read only: lights being drawn
-VAR(lightsoccluded, 1, 0, 0);  //read only: lights not being drawn
-int lightbatchesused = variable("lightbatches", 1, 0, 0, &lightbatchesused, nullptr, 0);
-int lightbatchrectsused = variable("lightbatchrects", 1, 0, 0, &lightbatchrectsused, nullptr, 0);
-int lightbatchstacksused = variable("lightbatchstacks", 1, 0, 0, &lightbatchstacksused, nullptr, 0);
 
 static void setsmnoncomparemode() // use texture gather
 {
@@ -2177,7 +2171,7 @@ static void setavatarstencil(int stencilref, bool on)
     glStencilFunc(GL_EQUAL, (on ? 0x40 : 0) | stencilref, !(stencilref&0x08) && msaalight==2 ? 0x47 : 0x4F);
 }
 
-static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
+void GBuffer::rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
     if(hasDBT && depthtestlights > 1)
     {
@@ -2203,7 +2197,7 @@ static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx
     }
 }
 
-static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2)
+void GBuffer::renderlightsnobatch(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2)
 {
     lightsphere::enable();
 
@@ -2287,7 +2281,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
     lightsphere::disable();
 }
 
-static void renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
+void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
     bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
@@ -2450,7 +2444,7 @@ static void renderlightbatches(Shader &s, int stencilref, bool transparent, floa
     }
 }
 
-void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask, int stencilmask, int msaapass, bool transparent)
+void GBuffer::renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask, int stencilmask, int msaapass, bool transparent)
 {
     Shader *s = drawtex == Draw_TexMinimap ? deferredminimapshader : (msaapass <= 0 ? deferredlightshader : (msaapass > 1 ? deferredmsaasampleshader : deferredmsaapixelshader));
     if(!s || s == nullshader)
@@ -3116,7 +3110,7 @@ struct batchstack : lightrect
     batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : lightrect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
-static void batchlights(const batchstack &initstack, std::vector<batchrect> &batchrects)
+static void batchlights(const batchstack &initstack, std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
 {
     batchstack stack[32];
     size_t numstack = 1;
@@ -3127,7 +3121,7 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
         batchstack s = stack[--numstack];
         if(numstack + 5 > sizeof(stack)/sizeof(stack[0]))
         {
-            batchlights(s, batchrects);
+            batchlights(s, batchrects, lightbatchstacksused, lightbatchrectsused);
             continue;
         }
         ++lightbatchstacksused;
@@ -3240,7 +3234,7 @@ static bool sortlightbatches(const lightbatch *x, const lightbatch *y)
     return x->numlights > y->numlights;
 }
 
-static void batchlights(std::vector<batchrect> &batchrects)
+static void batchlights(std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused, int &lightbatchesused)
 {
     lightbatches.clear();
     lightbatchstacksused = 0;
@@ -3249,14 +3243,14 @@ static void batchlights(std::vector<batchrect> &batchrects)
     if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
         lightbatcher.recycle();
-        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects);
+        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects, lightbatchstacksused, lightbatchrectsused);
         std::sort(lightbatches.begin(), lightbatches.end(), sortlightbatches);
     }
 
     lightbatchesused = lightbatches.size();
 }
 
-void packlights()
+void GBuffer::packlights()
 {
     lightsvisible = lightsoccluded = 0;
     lightpassesused = 0;
@@ -3316,7 +3310,7 @@ void packlights()
 
     lightsvisible = lightorder.size() - lightsoccluded;
 
-    batchlights(batchrects);
+    batchlights(batchrects, lightbatchstacksused, lightbatchrectsused, lightbatchesused);
 }
 
 void GBuffer::rendercsmshadowmaps() const
@@ -3997,17 +3991,17 @@ void shadegbuffer()
         {
             for(int i = 0; i < 2; ++i)
             {
-                renderlights(-1, -1, 1, 1, nullptr, 0, i+1);
+                gbuf.renderlights(-1, -1, 1, 1, nullptr, 0, i+1);
             }
         }
         else
         {
-            renderlights(-1, -1, 1, 1, nullptr, 0, drawtex ? -1 : 3);
+            gbuf.renderlights(-1, -1, 1, 1, nullptr, 0, drawtex ? -1 : 3);
         }
     }
     else
     {
-        renderlights();
+        gbuf.renderlights();
     }
     glerror();
 
@@ -4107,7 +4101,43 @@ void cleanuplights()
     cleanupaa();
 }
 
+int GBuffer::getlightdebuginfo(uint type) const
+{
+    switch(type)
+    {
+        case 0:
+        {
+            return lightpassesused;
+        }
+        case 1:
+        {
+            return lightsvisible;
+        }
+        case 2:
+        {
+            return lightsoccluded;
+        }
+        case 3:
+        {
+            return lightbatchesused;
+        }
+        case 4:
+        {
+            return lightbatchrectsused;
+        }
+        case 5:
+        {
+            return lightbatchstacksused;
+        }
+        default:
+        {
+            return -1;
+        }
+    }
+}
+
 void initrenderlightscmds()
 {
     addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}), "", Id_Command);
+    addcommand("lightdebuginfo", reinterpret_cast<identfun>(+[] (int * index) {intret(gbuf.getlightdebuginfo(static_cast<uint>(*index)));} ), "i", Id_Command);
 }
