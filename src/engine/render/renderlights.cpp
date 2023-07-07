@@ -3116,9 +3116,7 @@ struct batchstack : lightrect
     batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : lightrect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
-static std::vector<batchrect> batchrects;
-
-static void batchlights(const batchstack &initstack)
+static void batchlights(const batchstack &initstack, std::vector<batchrect> &batchrects)
 {
     batchstack stack[32];
     size_t numstack = 1;
@@ -3129,7 +3127,7 @@ static void batchlights(const batchstack &initstack)
         batchstack s = stack[--numstack];
         if(numstack + 5 > sizeof(stack)/sizeof(stack[0]))
         {
-            batchlights(s);
+            batchlights(s, batchrects);
             continue;
         }
         ++lightbatchstacksused;
@@ -3242,7 +3240,7 @@ static bool sortlightbatches(const lightbatch *x, const lightbatch *y)
     return x->numlights > y->numlights;
 }
 
-static void batchlights()
+static void batchlights(std::vector<batchrect> &batchrects)
 {
     lightbatches.clear();
     lightbatchstacksused = 0;
@@ -3251,7 +3249,7 @@ static void batchlights()
     if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
         lightbatcher.recycle();
-        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()));
+        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects);
         std::sort(lightbatches.begin(), lightbatches.end(), sortlightbatches);
     }
 
@@ -3262,7 +3260,7 @@ void packlights()
 {
     lightsvisible = lightsoccluded = 0;
     lightpassesused = 0;
-    batchrects.clear();
+    std::vector<batchrect> batchrects;
 
     for(uint i = 0; i < lightorder.size(); i++)
     {
@@ -3318,7 +3316,7 @@ void packlights()
 
     lightsvisible = lightorder.size() - lightsoccluded;
 
-    batchlights();
+    batchlights(batchrects);
 }
 
 void GBuffer::rendercsmshadowmaps() const
