@@ -775,6 +775,27 @@ void disablepolygonoffset(GLenum type)
 
 bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
+    //dim must be 0..2
+    //dir should be +/- 1
+    auto checkplane = [] (int dim, const float &dc, int dir, float focaldist, float &low, float &high, const float &cz, const float &drt, const vec &e)
+    {
+        float nzc = (cz*cz + 1) / (cz + dir*drt) - cz,
+              pz = dc/(nzc*e[dim] - e.z);
+        if(pz > 0)
+        {
+            float c = (focaldist)*nzc,
+                  pc = pz*nzc;
+            if(pc < e[dim])
+            {
+                low = c;
+            }
+            else if(pc > e[dim])
+            {
+                high = c;
+            }
+        } \
+    };
+
     vec e;
     cammatrix.transform(center, e);
     if(e.z > 2*size)
@@ -812,37 +833,19 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
           focaldist = 1.0f/std::tan(fovy*0.5f/RAD);
     sx1 = sy1 = -1;
     sx2 = sy2 = 1;
-    #define CHECKPLANE(c, dir, focaldist, low, high) \
-    do { \
-        float nzc = (cz*cz + 1) / (cz dir drt) - cz, \
-              pz = (d##c)/(nzc*e.c - e.z); \
-        if(pz > 0) \
-        { \
-            float c = (focaldist)*nzc, \
-                  pc = pz*nzc; \
-            if(pc < e.c) \
-            { \
-                low = c; \
-            } \
-            else if(pc > e.c) \
-            { \
-                high = c; \
-            } \
-        } \
-    } while(0)
     if(dx > 0)
     {
         float cz  = e.x/e.z,
               drt = sqrtf(dx)/size;
-        CHECKPLANE(x, -, focaldist/aspect, sx1, sx2);
-        CHECKPLANE(x, +, focaldist/aspect, sx1, sx2);
+        checkplane(0, dx, -1, focaldist/aspect, sx1, sx2, cz, drt, e);
+        checkplane(0, dx,  1, focaldist/aspect, sx1, sx2, cz, drt, e);
     }
     if(dy > 0)
     {
         float cz  = e.y/e.z,
               drt = sqrtf(dy)/size;
-        CHECKPLANE(y, -, focaldist, sy1, sy2);
-        CHECKPLANE(y, +, focaldist, sy1, sy2);
+        checkplane(1, dy, -1, focaldist, sy1, sy2, cz, drt, e);
+        checkplane(1, dy,  1, focaldist, sy1, sy2, cz, drt, e);
     }
     float z1 = std::min(e.z + size, -1e-3f - nearplane),
           z2 = std::min(e.z - size, -1e-3f - nearplane);
@@ -850,8 +853,6 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     sz2 = (z2*projmatrix.c.z + projmatrix.d.z) / (z2*projmatrix.c.w + projmatrix.d.w);
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
 }
-
-#undef CHECKPLANE
 
 bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1, float &sx2, float &sy2)
 {
