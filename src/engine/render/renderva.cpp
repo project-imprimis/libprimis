@@ -63,8 +63,6 @@ Occluder occlusionengine;
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-static void findshadowvas(std::vector<vtxarray *> &vas);
-
 namespace
 {
     void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
@@ -91,9 +89,8 @@ namespace
     }
 
     constexpr int vasortsize = 64;
-    std::array<vtxarray *, vasortsize> vasort;
 
-    void addvisibleva(vtxarray *va)
+    void addvisibleva(vtxarray *va, std::array<vtxarray *, vasortsize> &vasort)
     {
         float dist = vadist(*va, camera1->o);
         va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
@@ -112,7 +109,7 @@ namespace
         *prev = va;
     }
 
-    void sortvisiblevas()
+    void sortvisiblevas(const std::array<vtxarray *, vasortsize> &vasort)
     {
         visibleva = nullptr;
         vtxarray **last = &visibleva;
@@ -132,7 +129,7 @@ namespace
     }
 
     template<bool fullvis, bool resetocclude>
-    void findvisiblevas(std::vector<vtxarray *> &vas)
+    void findvisiblevas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(uint i = 0; i < vas.size(); i++)
         {
@@ -147,27 +144,27 @@ namespace
                     v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
                     v.query = nullptr;
                 }
-                addvisibleva(&v);
+                addvisibleva(&v, vasort);
                 if(v.children.size())
                 {
                     if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
                     {
                         if(resetchildren)
                         {
-                            findvisiblevas<true, true>(v.children);
+                            findvisiblevas<true, true>(v.children, vasort);
                         }
                         else
                         {
-                            findvisiblevas<true, false>(v.children);
+                            findvisiblevas<true, false>(v.children, vasort);
                         }
                     }
                     else if(resetchildren)
                     {
-                        findvisiblevas<false, true>(v.children);
+                        findvisiblevas<false, true>(v.children, vasort);
                     }
                     else
                     {
-                        findvisiblevas<false, false>(v.children);
+                        findvisiblevas<false, false>(v.children, vasort);
                     }
                 }
             }
@@ -176,9 +173,10 @@ namespace
 
     void findvisiblevas()
     {
+        std::array<vtxarray *, vasortsize> vasort;
         vasort.fill(nullptr);
-        findvisiblevas<false, false>(varoot);
-        sortvisiblevas();
+        findvisiblevas<false, false>(varoot, vasort);
+        sortvisiblevas(vasort);
     }
 
     ///////// occlusion queries /////////////
@@ -423,7 +421,7 @@ namespace
 
     vtxarray *shadowva = nullptr;
 
-    void addshadowva(vtxarray * const va, float dist)
+    void addshadowva(vtxarray * const va, float dist, std::array<vtxarray *, vasortsize> &vasort)
     {
         va->rdistance = static_cast<int>(dist);
 
@@ -440,7 +438,7 @@ namespace
         *prev = va;
     }
 
-    void sortshadowvas()
+    void sortshadowvas(std::array<vtxarray *, vasortsize> &vasort)
     {
         shadowva = nullptr;
         vtxarray **last = &shadowva;
@@ -459,7 +457,7 @@ namespace
         }
     }
 
-    void findcsmshadowvas(std::vector<vtxarray *> &vas)
+    void findcsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(uint i = 0; i < vas.size(); i++)
         {
@@ -479,16 +477,16 @@ namespace
             if(v.shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
+                addshadowva(&v, dist, vasort);
                 if(v.children.size())
                 {
-                    findcsmshadowvas(v.children);
+                    findcsmshadowvas(v.children, vasort);
                 }
             }
         }
     }
 
-    void findrsmshadowvas(std::vector<vtxarray *> &vas)
+    void findrsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(vtxarray *v :vas)
         {
@@ -507,16 +505,16 @@ namespace
             if(v->shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(v, dist);
+                addshadowva(v, dist, vasort);
                 if(v->children.size())
                 {
-                    findrsmshadowvas(v->children);
+                    findrsmshadowvas(v->children, vasort);
                 }
             }
         }
     }
 
-    void findspotshadowvas(std::vector<vtxarray *> &vas)
+    void findspotshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(vtxarray *v : vas)
         {
@@ -526,10 +524,10 @@ namespace
                 v->shadowmask = !smbbcull || (v->children.size() || v->mapmodels.size() ?
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v->bbmin, v->bbmax) :
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v->geommin, v->geommax)) ? 1 : 0;
-                addshadowva(v, dist);
+                addshadowva(v, dist, vasort);
                 if(v->children.size())
                 {
-                    findspotshadowvas(v->children);
+                    findspotshadowvas(v->children, vasort);
                 }
             }
         }
@@ -3397,7 +3395,7 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
     return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
 }
 
-static void findshadowvas(std::vector<vtxarray *> &vas)
+static void findshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
 {
     for(uint i = 0; i < vas.size(); i++)
     {
@@ -3408,10 +3406,10 @@ static void findshadowvas(std::vector<vtxarray *> &vas)
             v.shadowmask = !smbbcull ? 0x3F : (v.children.size() || v.mapmodels.size() ?
                                 calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
                                 calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
-            addshadowva(&v, dist);
+            addshadowva(&v, dist, vasort);
             if(v.children.size())
             {
-                findshadowvas(v.children);
+                findshadowvas(v.children, vasort);
             }
         }
     }
@@ -3628,29 +3626,30 @@ void batchshadowmapmodels(bool skipmesh)
 
 void findshadowvas()
 {
+    std::array<vtxarray *, vasortsize> vasort;
     vasort.fill(nullptr);
     switch(shadowmapping)
     {
         case ShadowMap_Reflect:
         {
-            findrsmshadowvas(varoot);
+            findrsmshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_CubeMap:
         {
-            findshadowvas(varoot);
+            findshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_Cascade:
         {
-            findcsmshadowvas(varoot);
+            findcsmshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_Spot:
         {
-            findspotshadowvas(varoot);
+            findspotshadowvas(varoot, vasort);
             break;
         }
     }
-    sortshadowvas();
+    sortshadowvas(vasort);
 }
