@@ -3319,7 +3319,17 @@ false if the window was not previously shown or did not exist </dd></dl>
 </div><div class="memdoc">
 
 <p>Initializes renderlights CubeScript commands. </p>
-<p><code>usepacknorm</code> </p>
+<p><code>usepacknorm</code></p>
+<p><code>debuglightinfo</code> <em>int</em> type</p><ul>
+<li>Returns the selected type of light debug information (int)</li>
+<li>0: lightpassesused</li>
+<li>1: lightsvisible</li>
+<li>2: lightsoccluded</li>
+<li>3: lightbatchesused</li>
+<li>4: lightbatchrectsused</li>
+<li>5: lightbatchstacksused</li>
+<li>If a value not specified is entered, returns -1. </li>
+</ul>
 
 </div>
 </div>
