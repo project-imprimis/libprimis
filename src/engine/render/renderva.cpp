@@ -113,11 +113,11 @@ namespace
     {
         visibleva = nullptr;
         vtxarray **last = &visibleva;
-        for(int i = 0; i < vasortsize; ++i)
+        for(vtxarray *i : vasort)
         {
-            if(vasort[i])
+            if(i)
             {
-                vtxarray *va = vasort[i];
+                vtxarray *va = i;
                 *last = va;
                 while(va->next)
                 {
@@ -426,7 +426,8 @@ namespace
         va->rdistance = static_cast<int>(dist);
 
         int hash = std::clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash], *cur = vasort[hash];
+        vtxarray **prev = &vasort[hash],
+                   *cur = vasort[hash];
 
         while(cur && va->rdistance > cur->rdistance)
         {
@@ -442,11 +443,11 @@ namespace
     {
         shadowva = nullptr;
         vtxarray **last = &shadowva;
-        for(int i = 0; i < vasortsize; ++i)
+        for(vtxarray *i : vasort)
         {
-            if(vasort[i])
+            if(i)
             {
-                vtxarray *va = vasort[i];
+                vtxarray *va = i;
                 *last = va;
                 while(va->rnext)
                 {
