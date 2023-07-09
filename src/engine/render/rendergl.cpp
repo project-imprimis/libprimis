@@ -793,7 +793,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
             {
                 high = c;
             }
-        } \
+        }
     };
 
     vec e;
