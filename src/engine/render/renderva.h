@@ -85,7 +85,8 @@ extern int oqfrags;
 
 extern vec shadoworigin, shadowdir;
 extern float shadowradius, shadowbias;
-extern int shadowside, shadowspot;
+extern size_t shadowside;
+extern int shadowspot;
 
 extern vtxarray *visibleva;
 

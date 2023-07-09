@@ -38,8 +38,8 @@ CVARP(outlinecolor, 0); //color of edit mode outlines
 
 float shadowradius = 0,
       shadowbias = 0;
-int shadowside = 0,
-    shadowspot = 0;
+size_t shadowside = 0;
+int shadowspot = 0;
 vec shadoworigin(0, 0, 0),
     shadowdir(0, 0, 0);
 
