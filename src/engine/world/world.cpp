@@ -27,7 +27,6 @@
 #include "render/texture.h"
 
 SVARR(maptitle, "Untitled Map by Unknown");
-VARNR(emptymap, _emptymap, 1, 0, 0);
 
 std::vector<int> outsideents;
 std::vector<int> entgroup;
