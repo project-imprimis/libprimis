@@ -20,8 +20,6 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-VARR(mapversion, 1, currentmapversion, 0);
-
 static std::string clientmap = "";
 
 static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
@@ -1143,4 +1141,5 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
 void initworldiocmds()
 {
     addcommand("mapcfgname", reinterpret_cast<identfun>(mapcfgname), "", Id_Command);
+    addcommand("mapversion", reinterpret_cast<identfun>(+[] () {intret(currentmapversion);}), "", Id_Command);
 }
