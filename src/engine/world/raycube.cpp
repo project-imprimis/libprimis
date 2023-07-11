@@ -33,44 +33,46 @@ namespace
         return p;
     }
 
-    //==================================================INTERSECTPLANES INTERSECTBOX
-    #define INTERSECTPLANES(setentry, exit) \
-        float enterdist = -1e16f, \
-              exitdist  = 1e16f; \
-        for(int i = 0; i < p.size; ++i) \
-        { \
-            float pdist = p.p[i].dist(v), \
-                  facing = ray.dot(p.p[i]); \
-            if(facing < 0) \
-            { \
-                pdist /= -facing; \
-                if(pdist > enterdist) \
-                { \
-                    if(pdist > exitdist) \
-                    { \
-                        exit; \
-                    } \
-                    enterdist = pdist; \
-                    setentry; \
-                } \
-            } \
-            else if(facing > 0) \
-            { \
-                pdist /= -facing; \
-                if(pdist < exitdist) \
-                { \
-                    if(pdist < enterdist) \
-                    { \
-                        exit; \
-                    } \
-                    exitdist = pdist; \
-                } \
-            } \
-            else if(pdist > 0) \
-            { \
-                exit; \
-            } \
+    //============================================================= INTERSECTBOX
+
+    static bool intersectplanes(const clipplanes& p, const vec &v, const vec& ray, float &enterdist, float &exitdist, int &entry)
+    {
+        for(int i = 0; i < p.size; ++i)
+        {
+            float pdist = p.p[i].dist(v),
+                  facing = ray.dot(p.p[i]);
+            if(facing < 0)
+            {
+                pdist /= -facing;
+                if(pdist > enterdist)
+                {
+                    if(pdist > exitdist)
+                    {
+                        return false;
+                    }
+                    enterdist = pdist;
+                    entry = i;
+                }
+            }
+            else if(facing > 0)
+            {
+                pdist /= -facing;
+                if(pdist < exitdist)
+                {
+                    if(pdist < enterdist)
+                    {
+                        return false;
+                    }
+                    exitdist = pdist;
+                }
+            }
+            else if(pdist > 0)
+            {
+                return false;
+            }
         }
+        return true;
+    }
 
     #define INTERSECTBOX(setentry, exit) \
         for(int i = 0; i < 3; ++i) \
@@ -110,7 +112,9 @@ namespace
     {
         int entry   = -1,
             bbentry = -1;
-        INTERSECTPLANES(entry = i, return false);
+        float enterdist = -1e16f,
+              exitdist  = 1e16f;
+        intersectplanes(p, v, ray, enterdist, exitdist, entry);
         INTERSECTBOX(bbentry = i, return false);
         if(exitdist < 0)
         {
@@ -481,7 +485,15 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
                 return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist;
             }
             const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
-            INTERSECTPLANES(side = p.side[i], goto nextcube);
+            float enterdist = -1e16f,
+                  exitdist  = 1e16f;
+            int i = 0;
+            bool intersected = intersectplanes(p, v, ray, enterdist, exitdist, i);
+            side = p.side[i];
+            if(!intersected)
+            {
+                goto nextcube;
+            }
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
             if(exitdist >= 0)
             {
@@ -504,7 +516,6 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
 #undef INITRAYCUBE
 #undef DOWNOCTREE
 #undef INTERSECTBOX
-#undef INTERSECTPLANES
 //==============================================================================
 float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent)
 {
