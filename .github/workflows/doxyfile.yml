@@ -64,4 +64,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: libprimis-doc
-          path: ./src/doc/man/man3/
+          path: ./doc/man/man3/
