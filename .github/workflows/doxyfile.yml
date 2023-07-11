@@ -60,8 +60,8 @@ jobs:
           # Push documentation files in docs folder to gh-pages repo.
           publish_dir: ./docs
 
-        - name: Upload man pages
-          uses: actions/upload-artifact@v2
-          with:
-            name: libprimis-doc
-            path: ./src/doc/man/man3/
+      - name: Upload man pages
+        uses: actions/upload-artifact@v2
+        with:
+          name: libprimis-doc
+          path: ./src/doc/man/man3/
