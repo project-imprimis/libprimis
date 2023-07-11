@@ -74,39 +74,41 @@ namespace
         return true;
     }
 
-    #define INTERSECTBOX(setentry, exit) \
-        for(int i = 0; i < 3; ++i) \
-        { \
-            if(ray[i]) \
-            { \
-                float prad = std::fabs(p.r[i] * invray[i]), \
-                      pdist = (p.o[i] - v[i]) * invray[i], \
-                      pmin = pdist - prad, \
-                      pmax = pdist + prad; \
-                if(pmin > enterdist) \
-                { \
-                    if(pmin > exitdist) \
-                    { \
-                        exit; \
-                    } \
-                    enterdist = pmin; \
-                    setentry; \
-                } \
-                if(pmax < exitdist) \
-                { \
-                    if(pmax < enterdist) \
-                    { \
-                        exit; \
-                    } \
-                    exitdist = pmax; \
-                } \
-            } \
-            else if(v[i] < p.o[i]-p.r[i] || v[i] > p.o[i]+p.r[i]) \
-            { \
-                exit; \
-            } \
+    static bool intersectbox(const clipplanes& p, const vec &v, const vec& ray, const vec& invray, float &enterdist, float &exitdist, int &entry)
+    {
+        for(int i = 0; i < 3; ++i)
+        {
+            if(ray[i])
+            {
+                float prad = std::fabs(p.r[i] * invray[i]),
+                      pdist = (p.o[i] - v[i]) * invray[i],
+                      pmin = pdist - prad,
+                      pmax = pdist + prad;
+                if(pmin > enterdist)
+                {
+                    if(pmin > exitdist)
+                    {
+                        return false;
+                    }
+                    enterdist = pmin;
+                    entry = i;
+                }
+                if(pmax < exitdist)
+                {
+                    if(pmax < enterdist)
+                    {
+                        return false;
+                    }
+                    exitdist = pmax;
+                }
+            }
+            else if(v[i] < p.o[i]-p.r[i] || v[i] > p.o[i]+p.r[i])
+            {
+                return false;
+            }
         }
-
+        return true;
+    }
 
     bool raycubeintersect(const clipplanes &p, const cube &c, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
     {
@@ -114,8 +116,14 @@ namespace
             bbentry = -1;
         float enterdist = -1e16f,
               exitdist  = 1e16f;
-        intersectplanes(p, v, ray, enterdist, exitdist, entry);
-        INTERSECTBOX(bbentry = i, return false);
+        if(!intersectplanes(p, v, ray, enterdist, exitdist, entry))
+        {
+            return false;
+        }
+        if(!intersectbox(p, v, ray, invray, enterdist, exitdist, bbentry))
+        {
+            return false;
+        }
         if(exitdist < 0)
         {
             return false;
@@ -494,7 +502,12 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
             {
                 goto nextcube;
             }
-            INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
+            intersected = intersectbox(p, v, ray, invray, enterdist, exitdist, i);
+            side = (i<<1) + 1 - lsizemask[i];
+            if(!intersected)
+            {
+                goto nextcube;
+            }
             if(exitdist >= 0)
             {
                 return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+std::max(enterdist+0.1f, 0.0f);
@@ -515,7 +528,6 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
 }
 #undef INITRAYCUBE
 #undef DOWNOCTREE
-#undef INTERSECTBOX
 //==============================================================================
 float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent)
 {
