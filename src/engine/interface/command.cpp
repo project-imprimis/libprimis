@@ -1328,7 +1328,7 @@ static void setvarchecked(ident *id, tagval *args, int numargs)
     setvarchecked(id, val);
 }
 
-static float clampfvar(const ident *id, float val, float minval, float maxval)
+static float clampfvar(std::string name, float val, float minval, float maxval)
 {
     if(val < minval)
     {
@@ -1342,7 +1342,7 @@ static float clampfvar(const ident *id, float val, float minval, float maxval)
     {
         return val;
     }
-    debugcode("valid range for %s is %s..%s", id->name, floatstr(minval), floatstr(maxval));
+    debugcode("valid range for %s is %s..%s", name.c_str(), floatstr(minval), floatstr(maxval));
     return val;
 }
 
@@ -1357,7 +1357,7 @@ void setfvarchecked(ident *id, float val)
         storeval(id, id->overrideval.f, id->storage.f);
         if(val < id->minvalf || val > id->maxvalf)
         {
-            val = clampfvar(id, val, id->minvalf, id->maxvalf);
+            val = clampfvar(id->name, val, id->minvalf, id->maxvalf);
         }
         *id->storage.f = val;
         id->changed();
