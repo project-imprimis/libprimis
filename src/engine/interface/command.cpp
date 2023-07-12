@@ -1262,7 +1262,7 @@ const char *getalias(const char *name)
     return i && i->type==Id_Alias && (i->index >= Max_Args || aliasstack->usedargs&(1<<i->index)) ? i->getstr() : "";
 }
 
-int clampvar(const ident *id, int val, int minval, int maxval)
+int clampvar(bool hex, std::string name, int val, int minval, int maxval)
 {
     if(val < minval)
     {
@@ -1276,10 +1276,10 @@ int clampvar(const ident *id, int val, int minval, int maxval)
     {
         return val;
     }
-    debugcode(id->flags&Idf_Hex ?
+    debugcode(hex ?
             (minval <= 255 ? "valid range for %s is %d..0x%X" : "valid range for %s is 0x%X..0x%X") :
             "valid range for %s is %d..%d",
-        id->name, minval, maxval);
+        name.c_str(), minval, maxval);
     return val;
 }
 
@@ -1303,7 +1303,7 @@ void setvarchecked(ident *id, int val)
         storeval(id, id->overrideval.i, id->storage.i);
         if(val < id->minval || val > id->maxval)
         {
-            val = clampvar(id, val, id->minval, id->maxval);
+            val = clampvar(id->flags&Idf_Hex, std::string(id->name), val, id->minval, id->maxval);
         }
         *id->storage.i = val;
         id->changed();                                             // call trigger function if available
