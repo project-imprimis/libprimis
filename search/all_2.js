@@ -9,7 +9,7 @@ var searchData=
   ['checkinput_6',['checkinput',['../iengine_8h.html#a9e0c96fc4497edec75309ddbea087ebd',1,'iengine.h']]],
   ['checksleep_7',['checksleep',['../command_8h.html#ad97d745d2a01ec6f7b780d792e082e08',1,'command.h']]],
   ['children_8',['children',['../classcube.html#aafb02cf1aa0596ea8677b84654da9e79',1,'cube']]],
-  ['clampvar_9',['clampvar',['../command_8h.html#a580491578112d0b38b4c7fa1243b188f',1,'command.h']]],
+  ['clampvar_9',['clampvar',['../command_8h.html#a92cfd66c07410bc99e2fc420f3faf762',1,'command.h']]],
   ['cleanragdoll_10',['cleanragdoll',['../iengine_8h.html#a8f4eefe05d6feb452f8192a1bef539eb',1,'iengine.h']]],
   ['cleanup_11',['cleanup',['../iengine_8h.html#a45e6a820c52945de0b31c1083648b8ca',1,'UI']]],
   ['cleanupva_12',['cleanupva',['../classcubeworld.html#a445b1bb007a38a2449bac939748c0d92',1,'cubeworld']]],

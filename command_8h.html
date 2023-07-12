@@ -394,9 +394,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>executebool</b> (cons
 <tr class="memitem:aa1d3f4343c8c8fc95fbd47d322108b2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#aa1d3f4343c8c8fc95fbd47d322108b2a">printvar</a> (const <a class="el" href="structident.html">ident</a> *id, int i)</td></tr>
 <tr class="memdesc:aa1d3f4343c8c8fc95fbd47d322108b2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints out the formatted variable.  <br /></td></tr>
 <tr class="separator:aa1d3f4343c8c8fc95fbd47d322108b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a580491578112d0b38b4c7fa1243b188f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a580491578112d0b38b4c7fa1243b188f">clampvar</a> (const <a class="el" href="structident.html">ident</a> *id, int i, int minval, int maxval)</td></tr>
-<tr class="memdesc:a580491578112d0b38b4c7fa1243b188f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifies the value passed to fall within the boundaries passed.  <br /></td></tr>
-<tr class="separator:a580491578112d0b38b4c7fa1243b188f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92cfd66c07410bc99e2fc420f3faf762"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a92cfd66c07410bc99e2fc420f3faf762">clampvar</a> (bool hex, std::string name, int i, int minval, int maxval)</td></tr>
+<tr class="memdesc:a92cfd66c07410bc99e2fc420f3faf762"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifies the value passed to fall within the boundaries passed.  <br /></td></tr>
+<tr class="separator:a92cfd66c07410bc99e2fc420f3faf762"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8416271321166c4bb2e1dfd5848e1ee6"><td class="memItemLeft" align="right" valign="top"><a id="a8416271321166c4bb2e1dfd5848e1ee6" name="a8416271321166c4bb2e1dfd5848e1ee6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>loopiter</b> (<a class="el" href="structident.html">ident</a> *id, <a class="el" href="structidentstack.html">identstack</a> &amp;stack, int i)</td></tr>
 <tr class="separator:a8416271321166c4bb2e1dfd5848e1ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -509,8 +509,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a580491578112d0b38b4c7fa1243b188f" name="a580491578112d0b38b4c7fa1243b188f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a580491578112d0b38b4c7fa1243b188f">&#9670;&#160;</a></span>clampvar()</h2>
+<a id="a92cfd66c07410bc99e2fc420f3faf762" name="a92cfd66c07410bc99e2fc420f3faf762"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92cfd66c07410bc99e2fc420f3faf762">&#9670;&#160;</a></span>clampvar()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -518,8 +518,14 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">int clampvar </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structident.html">ident</a> *&#160;</td>
-          <td class="paramname"><em>id</em>, </td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>hex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -548,16 +554,18 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Modifies the value passed to fall within the boundaries passed. </p>
-<p>Clamps the value i to within minval and maxval. If id is a hex variable, issues a warning about clamping. i is a regular free variable and does not necessarily have anything to do with the ident passed.</p>
+<p>Clamps the value i to within minval and maxval. If hex is passed, warns in hex mode, otherwise decimal. If the values are not within bounds, issued aformentioned warning, refering to the passed name in the console message.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td>the ident object to check the hex-ness of </td></tr>
+    <tr><td class="paramname">hex</td><td>toggles whether to display hex warning instead of decimal </td></tr>
+    <tr><td class="paramname">name</td><td>the name </td></tr>
     <tr><td class="paramname">i</td><td>the value to clamp </td></tr>
     <tr><td class="paramname">minval</td><td>the lowest value to clamp to </td></tr>
-    <tr><td class="paramname">maxval</td><td>the largest value to clamp to </td></tr>
+    <tr><td class="paramname">maxval</td><td>the largest value to clamp to</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>the clamped value </dd></dl>
 
 </div>
 </div>
