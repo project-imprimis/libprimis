@@ -143,11 +143,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>modifyoctaent</b> (in
 <tr class="memitem:a308713724b534880c00163b87142c4c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#a308713724b534880c00163b87142c4c3">shrinkmap</a> ()</td></tr>
 <tr class="memdesc:a308713724b534880c00163b87142c4c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">attempts to reduce the mapsize by 1 (halves all linear dimensions)  <br /></td></tr>
 <tr class="separator:a308713724b534880c00163b87142c4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memItemLeft" align="right" valign="top"><a id="af5dd0231a357fb27274aa8c5ff2b5ad9" name="af5dd0231a357fb27274aa8c5ff2b5ad9"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_world</b> (const char *mname, const char *gameident, const char *gameinfo=nullptr, const char *cname=nullptr)</td></tr>
+<tr class="memitem:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#af5dd0231a357fb27274aa8c5ff2b5ad9">load_world</a> (const char *mname, const char *gameident, const char *gameinfo=nullptr, const char *cname=nullptr)</td></tr>
+<tr class="memdesc:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a map file into the octaworld object.  <br /></td></tr>
 <tr class="separator:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2793ba734b2561823d72b5e5fd8c360"><td class="memItemLeft" align="right" valign="top"><a id="ac2793ba734b2561823d72b5e5fd8c360" name="ac2793ba734b2561823d72b5e5fd8c360"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>save_world</b> (const char *mname, const char *gameident)</td></tr>
+<tr class="memitem:ac2793ba734b2561823d72b5e5fd8c360"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#ac2793ba734b2561823d72b5e5fd8c360">save_world</a> (const char *mname, const char *gameident)</td></tr>
+<tr class="memdesc:ac2793ba734b2561823d72b5e5fd8c360"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the current map to an ogz file.  <br /></td></tr>
 <tr class="separator:ac2793ba734b2561823d72b5e5fd8c360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab674bb2b758999fdd377ef5bc7561f98"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a> (bool cull=false)</td></tr>
 <tr class="memdesc:ab674bb2b758999fdd377ef5bc7561f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes unnecessary virtual texture slots.  <br /></td></tr>
@@ -401,6 +401,61 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="af5dd0231a357fb27274aa8c5ff2b5ad9" name="af5dd0231a357fb27274aa8c5ff2b5ad9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5dd0231a357fb27274aa8c5ff2b5ad9">&#9670;&#160;</a></span>load_world()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cubeworld::load_world </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>mname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>gameident</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>gameinfo</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>cname</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads a map file into the octaworld object. </p>
+<p>Loads a map that has been saved in .ogz format. Will load the configuration file of the same name, unless cname is specified.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mname</td><td>the name of the map to load (the ogz) </td></tr>
+    <tr><td class="paramname">gameident</td><td>the name of the game calling (this is saved in the map) </td></tr>
+    <tr><td class="paramname">gameinfo</td><td>the string to render while the map is loading </td></tr>
+    <tr><td class="paramname">the</td><td>name of the map's configuration file (if different than the octree)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the map was loaded </dd>
+<dd>
+false if the map failed to load or was not found </dd></dl>
+
+</div>
+</div>
 <a id="adb7c7102dfaf4df29d7dd8b1d107a6cb" name="adb7c7102dfaf4df29d7dd8b1d107a6cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb7c7102dfaf4df29d7dd8b1d107a6cb">&#9670;&#160;</a></span>lookupcube()</h2>
 
@@ -490,7 +545,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the gridpower scale of the world. </p>
-<p>Returns the size of the worldroot cube, in terms of the number of half-linear-size cubes it has as descendents in the octree. This value is generally between 10 and 15. </p>
+<p>Returns the size of the worldroot cube, in terms of the number of half-linear-size cubes it has as descendents in the octree. This value is generally between 10 and 15.</p>
+<dl class="section return"><dt>Returns</dt><dd>the scale of the world </dd></dl>
 
 </div>
 </div>
@@ -510,7 +566,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the linear dimensions of the world. </p>
-<p>Returns the size of the worldroot cube, in terms of the number of size 0 cubes on each linear axis. This value is generally between 2^10 and 2^15. </p>
+<p>Returns the size of the worldroot cube, in terms of the number of size 0 cubes on each linear axis. This value is generally between 2^10 and 2^15.</p>
+<dl class="section return"><dt>Returns</dt><dd>the size of the world </dd></dl>
 
 </div>
 </div>
@@ -654,6 +711,46 @@ Public Attributes</h2></td></tr>
 
 <p>Reduces the number of cubes on the level losslessly. </p>
 <p>Loops through all cube objects, dissolving child nodes where it is possible to convert them to their parent nodes. The largest gridpower that can be optimizied can be controlled by the maxmerge variable. </p>
+
+</div>
+</div>
+<a id="ac2793ba734b2561823d72b5e5fd8c360" name="ac2793ba734b2561823d72b5e5fd8c360"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2793ba734b2561823d72b5e5fd8c360">&#9670;&#160;</a></span>save_world()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cubeworld::save_world </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>mname</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>gameident</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves the current map to an ogz file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mname</td><td>the name of the map file once saved </td></tr>
+    <tr><td class="paramname">gameident</td><td>the name of the game saving the file</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the map was saved </dd>
+<dd>
+false if the map failed to save </dd></dl>
 
 </div>
 </div>

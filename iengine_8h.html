@@ -3367,7 +3367,38 @@ false if the window was not previously shown or did not exist </dd></dl>
 <li>3: lightbatchesused</li>
 <li>4: lightbatchrectsused</li>
 <li>5: lightbatchstacksused</li>
-<li>If a value not specified is entered, returns -1. </li>
+<li>If a value not specified is entered, returns -1.</li>
+</ul>
+<p><code>getcsmproperty</code> <em>int</em> type</p><ul>
+<li>Returns the selected cascaded shadow map property (float)</li>
+<li>List of types for the type parameter: 0. csmmaxsize<ol type="1">
+<li>csmnearplane</li>
+<li>csmfarplane</li>
+<li>csmcull</li>
+<li>csmsplitweight</li>
+<li>csmpradiustweak</li>
+<li>csmdepthrange</li>
+<li>csmdepthmargin</li>
+<li>csmbias</li>
+<li>csmbias2</li>
+</ol>
+</li>
+</ul>
+<p><code>setcsmproperty</code> <em>int</em> type <em>float</em> value</p><ul>
+<li>Sets the selected cascaded shadow map property.</li>
+<li>If a value out of bounds is specified, value will be modified to remain in range.</li>
+<li>List of types for the type parameter: 0. csmmaxsize<ol type="1">
+<li>csmnearplane</li>
+<li>csmfarplane</li>
+<li>csmcull</li>
+<li>csmsplitweight</li>
+<li>csmpradiustweak</li>
+<li>csmdepthrange</li>
+<li>csmdepthmargin</li>
+<li>csmbias</li>
+<li>csmbias2 </li>
+</ol>
+</li>
 </ul>
 
 </div>
