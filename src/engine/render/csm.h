@@ -23,12 +23,28 @@ class cascadedshadowmap
         void bindparams();              // bind any shader params necessary for lighting
         int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax);
         int calcspherecsmsplits(const vec &center, float radius) const;
+        bool setcsmproperty(int index, float value);
+        float getcsmproperty(int index) const;
+
+        cascadedshadowmap();
 
     private:
         void updatesplitdist();         // compute split frustum distances
         void getmodelmatrix();          // compute the shared model matrix
         void getprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
+
+        int csmmaxsize,
+            csmnearplane,
+            csmfarplane;
+        bool csmcull;
+        float csmsplitweight,
+              csmpradiustweak,
+              csmdepthrange,
+              csmdepthmargin,
+              csmbias,
+              csmbias2;
+
 };
 
 extern cascadedshadowmap csm;

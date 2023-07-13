@@ -17,25 +17,11 @@
 #include "shaderparam.h"
 #include "texture.h"
 
+#include "interface/cs.h"
+
 #include "world/light.h"
 
 //`c`ascaded `s`hadow `m`ap vars
-
-//vars & functions not used in other files
-namespace
-{
-    VARF(csmmaxsize, 256, 768, 2048, clearshadowcache());
-    FVAR(csmsplitweight, 0.20f, 0.75f, 0.95f);
-    VAR(csmnearplane, 1, 1, 16);                        //short end cutoff of shadow rendering on view frustum
-    VAR(csmfarplane, 64, 1024, 16384);                  //far end cutoff of shadow rendering on view frustum
-    FVAR(csmpradiustweak, 1e-3f, 1, 1e3f);              //csm projection radius tweak factor to multiply calcfrustumboundsphere by
-    FVAR(csmdepthrange, 0, 1024, 1e6f);
-    FVAR(csmdepthmargin, 0, 0.1f, 1e3f);
-    FVAR(csmbias, -1e6f, 1e-4f, 1e6f);                  //csm bias factor if smfilter <= 2
-    FVAR(csmbias2, -1e16f, 2e-4f, 1e6f);                //csm bias factor if smfilter >  2
-    VAR(csmcull, 0, 1, 1);
-}
-
 //vars used in other files
 VARF(csmsplits, 1, 3, csmmaxsplits, { cleardeferredlightshaders(); clearshadowcache(); });
 VARF(csmshadowmap, 0, 1, 1, { cleardeferredlightshaders(); clearshadowcache(); });
@@ -46,7 +32,142 @@ FVAR(csmpolyfactor2, -1e3f, 3, 1e3f);
 FVAR(csmpolyoffset2, -1e4f, 0, 1e4f);
 cascadedshadowmap csm;
 
+/*
+        int csmmaxsize,
+            csmnearplane,
+            csmfarplane;
+        bool csmcull;
+        float csmsplitweight,
+              csmpradiustweak,
+              csmdepthrange,
+              csmdepthmargin,
+              csmbias,
+              csmbias2;
+
+*/
 //====================== cascaded shadow map object ============================//
+
+cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1), csmfarplane(1024),
+    csmcull(true), csmsplitweight(0.75f), csmpradiustweak(1.f), csmdepthrange(1024.f),
+    csmdepthmargin(0.1f), csmbias(1e-4f), csmbias2(2e-4f)
+{
+}
+
+//attempts to set one of the csm properties, subject to bounds coded in this function
+//prints a warning if the bounds were enforced
+bool cascadedshadowmap::setcsmproperty(int index, float value)
+{
+    switch(index)
+    {
+        case 0:
+        {
+            csmmaxsize = clampvar(false, "csmmaxsize", value, 256, 2048);
+            clearshadowcache();
+            return true;
+        }
+        case 1:
+        {
+            csmnearplane = clampvar(false, "csmnearplane", value, 1, 16);
+            return true;
+        }
+        case 2:
+        {
+            csmfarplane = clampvar(false, "csmfarplane", value, 64, 16384);
+            return true;
+        }
+        case 3:
+        {
+            csmcull = value;
+            return true;
+        }
+        case 4:
+        {
+            csmsplitweight = clampfvar("csmsplitweight", value, 0.20f, 0.95f);
+            return true;
+        }
+        case 5:
+        {
+            csmpradiustweak = clampfvar("csmpradiustweak", value, 1e-3f, 1e3f);
+            return true;
+        }
+        case 6:
+        {
+            csmdepthrange = clampfvar("csmdepthrange", value, 0.f, 1e6f);
+            return true;
+        }
+        case 7:
+        {
+            csmdepthmargin = clampfvar("csmdepthmargin", value, 0.f, 1e3f);
+            return true;
+        }
+        case 8:
+        {
+            csmbias = clampfvar("csmbias", value, -1e6f, 1e6f);
+            return true;
+        }
+        case 9:
+        {
+            csmbias2 = clampfvar("csmbias2", value, -1e16f, 1e6f);
+            return true;
+        }
+        default:
+        {
+            return false;
+        }
+    }
+}
+
+//returns the csm parameter specified by the index passed, 0 if invalid index
+float cascadedshadowmap::getcsmproperty(int index) const
+{
+    switch(index)
+    {
+        case 0:
+        {
+            return csmmaxsize;
+        }
+        case 1:
+        {
+            return csmnearplane;
+        }
+        case 2:
+        {
+            return csmfarplane;
+        }
+        case 3:
+        {
+            return csmcull;
+        }
+        case 4:
+        {
+            return csmsplitweight;
+        }
+        case 5:
+        {
+            return csmpradiustweak;
+        }
+        case 6:
+        {
+            return csmdepthrange;
+        }
+        case 7:
+        {
+            return csmdepthmargin;
+        }
+        case 8:
+        {
+            return csmbias;
+        }
+        case 9:
+        {
+            return csmbias2;
+        }
+        default:
+        {
+            return 0.f;
+        }
+    }
+}
 
 int cascadedshadowmap::calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
 {
