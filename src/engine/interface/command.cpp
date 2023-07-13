@@ -1328,7 +1328,7 @@ static void setvarchecked(ident *id, tagval *args, int numargs)
     setvarchecked(id, val);
 }
 
-static float clampfvar(std::string name, float val, float minval, float maxval)
+float clampfvar(std::string name, float val, float minval, float maxval)
 {
     if(val < minval)
     {

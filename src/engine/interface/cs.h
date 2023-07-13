@@ -273,5 +273,6 @@ extern void alias(const char *name, const char *action);
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);
 extern const char *numberstr(double v);
+extern float clampfvar(std::string name, float val, float minval, float maxval);
 
 #endif
