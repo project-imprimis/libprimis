@@ -4140,4 +4140,6 @@ void initrenderlightscmds()
 {
     addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}), "", Id_Command);
     addcommand("lightdebuginfo", reinterpret_cast<identfun>(+[] (int * index) {intret(gbuf.getlightdebuginfo(static_cast<uint>(*index)));} ), "i", Id_Command);
+    addcommand("getcsmproperty", reinterpret_cast<identfun>(+[] (int * index) {floatret(csm.getcsmproperty(*index));} ), "i", Id_Command);
+    addcommand("setcsmproperty", reinterpret_cast<identfun>(+[] (int * index, float * value) {intret(csm.setcsmproperty(*index, *value));} ), "if", Id_Command);
 }
