@@ -1129,25 +1129,49 @@ struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
     }
 };
 
-GLuint shadowatlastex = 0,
-       shadowatlasfbo = 0;
-GLenum shadowatlastarget = GL_NONE;
-shadowcache shadowcache;
-bool shadowcachefull = false;
-
-void cleanupshadowatlas()
+class ShadowAtlas
 {
-    if(shadowatlastex)
+    public:
+        GLuint fbo = 0;
+        shadowcache cache;
+        bool full = false;
+
+        void cleanup();
+        void view();
+        void setup();
+        void setcomparemode(); //will call one of setsm(non)comparemode()
+        void bind();
+
+    private:
+        GLuint tex = 0;
+        GLenum target = GL_NONE;
+
+        void setsmnoncomparemode();
+        void setsmcomparemode();
+        bool usesmcomparemode();
+
+};
+
+void ShadowAtlas::cleanup()
+{
+    if(tex)
     {
-        glDeleteTextures(1, &shadowatlastex); shadowatlastex = 0;
+        glDeleteTextures(1, &tex); tex = 0;
     }
-    if(shadowatlasfbo)
+    if(fbo)
     {
-        glDeleteFramebuffers(1, &shadowatlasfbo);
-        shadowatlasfbo = 0;
+        glDeleteFramebuffers(1, &fbo);
+        fbo = 0;
     }
     clearshadowcache();
 }
+
+void ShadowAtlas::bind()
+{
+    glBindTexture(target, tex);
+}
+
+ShadowAtlas shadowatlas;
 
 //`s`hadow `m`ap vars
 FVAR(smpolyfactor, -1e3f, 1, 1e3f);
@@ -1160,8 +1184,8 @@ FVAR(smprec, 1e-3f, 1, 1e3f);
 FVAR(smcubeprec, 1e-3f, 1, 1e3f);
 FVAR(smspotprec, 1e-3f, 1, 1e3f);
 
-VARFP(smsize, 10, 12, 14, cleanupshadowatlas()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
-VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas()); //bit depth of sm depth map: 16bpp, 24bpp, or 32bpp respectively
+VARFP(smsize, 10, 12, 14, shadowatlas.cleanup()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
+VARFP(smdepthprec, 0, 0, 2, shadowatlas.cleanup()); //bit depth of sm depth map: 16bpp, 24bpp, or 32bpp respectively
 VAR(smsidecull, 0, 1, 1); //`s`hadow `m`ap `side` `cull`: toggles culling lights outside the view frustum (outside the fov)
 VAR(smviscull, 0, 1, 1);  //`s`hadow `m`ap `vis`ibility `cull`ing: toggles visibility culling based of distance
 VAR(smborder, 0, 3, 16);  //`s`hadow `m`ap border
@@ -1171,25 +1195,37 @@ VAR(smmaxsize, 1, 384, 1024); //max size for individual sm, not whole buffer
 //VAR(smmaxsize, 1, 4096, 4096);
 VAR(smused, 1, 0, 0); //read only: shadow map area used
 VAR(smquery, 0, 1, 1); // `s`hadow `m`ap `query1: whether to occlusion query lights
-VARF(smcullside, 0, 1, 1, cleanupshadowatlas());
-VARF(smcache, 0, 1, 2, cleanupshadowatlas());
-VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
-VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
+VARF(smcullside, 0, 1, 1, shadowatlas.cleanup());
+VARF(smcache, 0, 1, 2, shadowatlas.cleanup());
+VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); shadowatlas.cleanup(); cleanupvolumetric(); });
+VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); shadowatlas.cleanup(); cleanupvolumetric(); });
 VAR(smnoshadow, 0, 0, 1);
 VAR(smdynshadow, 0, 1, 1); //`s`hadow `m`ap `dyn`amic `shadow`
 
-static void setsmnoncomparemode() // use texture gather
+void ShadowAtlas::setsmnoncomparemode() // use texture gather
 {
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
-static void setsmcomparemode() // use embedded shadow cmp
+void ShadowAtlas::setsmcomparemode() // use embedded shadow cmp
 {
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+}
+
+void ShadowAtlas::setcomparemode()
+{
+    if(usesmcomparemode())
+    {
+        setsmcomparemode();
+    }
+    else
+    {
+        setsmnoncomparemode();
+    }
 }
 
 static bool usegatherforsm()
@@ -1197,12 +1233,12 @@ static bool usegatherforsm()
     return smfilter > 1 && smgather && usetexgather;
 }
 
-static bool usesmcomparemode()
+bool ShadowAtlas::usesmcomparemode()
 {
     return !usegatherforsm() || (usetexgather > 1);
 }
 
-void viewshadowatlas()
+void ShadowAtlas::view()
 {
     int w = std::min(hudw, hudh)/2,
         h = (w*hudh)/hudw,
@@ -1210,7 +1246,7 @@ void viewshadowatlas()
         y = hudh-h;
     float tw = 1,
           th = 1;
-    if(shadowatlastarget == GL_TEXTURE_RECTANGLE)
+    if(target == GL_TEXTURE_RECTANGLE)
     {
         tw = shadowatlaspacker.w;
         th = shadowatlaspacker.h;
@@ -1221,7 +1257,7 @@ void viewshadowatlas()
         hudshader->set();
     }
     gle::colorf(1, 1, 1);
-    glBindTexture(shadowatlastarget, shadowatlastex);
+    glBindTexture(target, tex);
     if(usesmcomparemode())
     {
         setsmnoncomparemode();
@@ -1234,29 +1270,29 @@ void viewshadowatlas()
 }
 VAR(debugshadowatlas, 0, 0, 1);
 
-void setupshadowatlas()
+void ShadowAtlas::setup()
 {
     int size = std::min((1<<smsize), hwtexsize);
     shadowatlaspacker.resize(size, size);
 
-    if(!shadowatlastex)
+    if(!tex)
     {
-        glGenTextures(1, &shadowatlastex);
+        glGenTextures(1, &tex);
     }
 
-    shadowatlastarget = usegatherforsm() ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE;
-    createtexture(shadowatlastex, shadowatlaspacker.w, shadowatlaspacker.h, nullptr, 3, 1, smdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (smdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), shadowatlastarget);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    target = usegatherforsm() ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE;
+    createtexture(tex, shadowatlaspacker.w, shadowatlaspacker.h, nullptr, 3, 1, smdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (smdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), target);
+    glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
-    if(!shadowatlasfbo)
+    if(!fbo)
     {
-        glGenFramebuffers(1, &shadowatlasfbo);
+        glGenFramebuffers(1, &fbo);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowatlasfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowatlastarget, shadowatlastex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, target, tex, 0);
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
         fatal("failed allocating shadow atlas!");
@@ -1872,7 +1908,7 @@ void resetlights()
 {
     static constexpr int shadowcacheevict = 2;
     static int evictshadowcache = 0;
-    shadowcache.reset();
+    shadowatlas.cache.reset();
     if(smcache)
     {
         int evictx = ((evictshadowcache%shadowcacheevict)*shadowatlaspacker.w)/shadowcacheevict,
@@ -1886,7 +1922,7 @@ void resetlights()
                 continue;
             }
             lightinfo &l = lights[sm.light];
-            if(sm.cached && shadowcachefull)
+            if(sm.cached && shadowatlas.full)
             {
                 int w = l.spot ? sm.size : sm.size*3,
                     h = l.spot ? sm.size : sm.size*2;
@@ -1895,12 +1931,12 @@ void resetlights()
                     continue;
                 }
             }
-            shadowcache[l] = sm;
+            shadowatlas.cache[l] = sm;
         }
-        if(shadowcachefull)
+        if(shadowatlas.full)
         {
             evictshadowcache = (evictshadowcache + 1)%(shadowcacheevict*shadowcacheevict);
-            shadowcachefull = false;
+            shadowatlas.full = false;
         }
     }
 
@@ -2026,15 +2062,8 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent) const
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(shadowatlastarget, shadowatlastex);
-    if(usesmcomparemode())
-    {
-        setsmcomparemode();
-    }
-    else
-    {
-        setsmnoncomparemode();
-    }
+    shadowatlas.bind();
+    shadowatlas.setcomparemode();
     if(ao)
     {
         glActiveTexture(GL_TEXTURE5);
@@ -2652,15 +2681,8 @@ void GBuffer::rendervolumetric()
         glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     }
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(shadowatlastarget, shadowatlastex);
-    if(usesmcomparemode())
-    {
-        setsmcomparemode();
-    }
-    else
-    {
-        setsmnoncomparemode();
-    }
+    shadowatlas.bind();
+    shadowatlas.setcomparemode();
     glActiveTexture(GL_TEXTURE0);
 
     GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
@@ -3011,7 +3033,7 @@ void collectlights()
 
     smused = 0;
 
-    if(smcache && !smnoshadow && shadowcache.numelems)
+    if(smcache && !smnoshadow && shadowatlas.cache.numelems)
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
@@ -3023,7 +3045,7 @@ void collectlights()
                 {
                     continue;
                 }
-                shadowcacheval *cached = shadowcache.access(l);
+                shadowcacheval *cached = shadowatlas.cache.access(l);
                 if(!cached)
                 {
                     continue;
@@ -3302,7 +3324,7 @@ void GBuffer::packlights()
             }
             else if(smcache)
             {
-                shadowcachefull = true;
+                shadowatlas.full = true;
             }
         }
         batchrects.push_back(batchrect(l, i));
@@ -3325,7 +3347,7 @@ void GBuffer::rendercsmshadowmaps() const
     }
     if(inoq)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, shadowatlasfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowatlas.fbo);
         glDepthMask(GL_TRUE);
     }
     csm.setup();
@@ -3454,7 +3476,7 @@ void GBuffer::rendershadowmaps(int offset) const
 
     if(inoq)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, shadowatlasfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowatlas.fbo);
         glDepthMask(GL_TRUE);
     }
 
@@ -3642,7 +3664,7 @@ void GBuffer::rendershadowatlas()
     timer *smcputimer = begintimer("shadow map", false),
           *smtimer = begintimer("shadow map");
 
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowatlasfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowatlas.fbo);
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
     if(debugshadowatlas)
@@ -4031,9 +4053,9 @@ void setuplights()
     {
         setupvolumetric(gw, gh);
     }
-    if(!shadowatlasfbo)
+    if(!shadowatlas.fbo)
     {
-        setupshadowatlas();
+        shadowatlas.setup();
     }
     if(useradiancehints() && !rhfbo)
     {
@@ -4056,7 +4078,7 @@ bool debuglights()
     viewao(); //this fxn checks for the appropriate debug var
     if(debugshadowatlas)
     {
-        viewshadowatlas();
+        shadowatlas.view();
     }
     else if(debugdepth)
     {
@@ -4095,7 +4117,7 @@ void cleanuplights()
     cleanupbloom();
     cleanupao();
     cleanupvolumetric();
-    cleanupshadowatlas();
+    shadowatlas.cleanup();
     cleanupradiancehints();
     lightsphere::cleanup();
     cleanupaa();
