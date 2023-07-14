@@ -1750,11 +1750,11 @@ Shader *loaddeferredlightshader(const char *type = nullptr)
 
     int usecsm = 0,
         userh = 0;
-    if(!sunlight.iszero() && csmshadowmap)
+    if(!sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap))
     {
-        usecsm = csmsplits;
+        usecsm = csm.getcsmproperty(cascadedshadowmap::Splits);
         sun[sunlen++] = 'c';
-        sun[sunlen++] = '0' + csmsplits;
+        sun[sunlen++] = '0' + usecsm;
         if(!minimap)
         {
             if(avatar && ao && aosun)
@@ -2076,7 +2076,7 @@ static void setlightglobals(bool transparent = false)
     {
         GLOBALPARAMF(lightscale, ambient.x*lightscale*ambientscale, ambient.y*lightscale*ambientscale, ambient.z*lightscale*ambientscale, 255*lightscale);
     }
-    if(!sunlight.iszero() && csmshadowmap)
+    if(!sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap))
     {
         csm.bindparams();
         rh.bindparams();
@@ -2283,7 +2283,7 @@ void GBuffer::renderlightsnobatch(Shader *s, int stencilref, bool transparent, f
 
 void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
-    bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
+    bool sunpass = !sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap) && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
     static lightparaminfo li;
@@ -2544,7 +2544,7 @@ void GBuffer::renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const
         glEnable(GL_DEPTH_BOUNDS_TEST_EXT);
     }
 
-    bool sunpass = !lighttilebatch || drawtex == Draw_TexMinimap || (!sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
+    bool sunpass = !lighttilebatch || drawtex == Draw_TexMinimap || (!sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap) && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
     if(sunpass)
     {
         if(depthtestlights && depth)
@@ -3319,7 +3319,7 @@ void GBuffer::rendercsmshadowmaps() const
     {
         return;
     }
-    if(sunlight.iszero() || !csmshadowmap)
+    if(sunlight.iszero() || !csm.getcsmproperty(cascadedshadowmap::ShadowMap))
     {
         return;
     }
@@ -3335,12 +3335,12 @@ void GBuffer::rendercsmshadowmaps() const
     shadowbias = csm.lightview.project_bb(worldmin, worldmax);
     shadowradius = std::fabs(csm.lightview.project_bb(worldmax, worldmin));
 
-    float polyfactor = csmpolyfactor,
-          polyoffset = csmpolyoffset;
+    float polyfactor = csm.getcsmproperty(cascadedshadowmap::PolyFactor),
+          polyoffset = csm.getcsmproperty(cascadedshadowmap::PolyOffset);
     if(smfilter > 2)
     {
-        polyfactor = csmpolyfactor2;
-        polyoffset = csmpolyoffset2;
+        csm.setcsmproperty(cascadedshadowmap::PolyFactor, csm.getcsmproperty(cascadedshadowmap::PolyFactor2));
+        csm.setcsmproperty(cascadedshadowmap::PolyOffset, csm.getcsmproperty(cascadedshadowmap::PolyOffset2));
     }
     if(polyfactor || polyoffset)
     {
@@ -3355,7 +3355,7 @@ void GBuffer::rendercsmshadowmaps() const
     shadowmaskbatchedmodels(smdynshadow!=0);
     batchshadowmapmodels();
 
-    for(int i = 0; i < csmsplits; ++i)
+    for(int i = 0; i < csm.getcsmproperty(cascadedshadowmap::Splits); ++i)
     {
         if(csm.splits[i].idx >= 0)
         {

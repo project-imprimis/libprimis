@@ -21,35 +21,15 @@
 
 #include "world/light.h"
 
-//`c`ascaded `s`hadow `m`ap vars
-//vars used in other files
-VARF(csmsplits, 1, 3, csmmaxsplits, { cleardeferredlightshaders(); clearshadowcache(); });
-VARF(csmshadowmap, 0, 1, 1, { cleardeferredlightshaders(); clearshadowcache(); });
-FVAR(csmpolyfactor, -1e3f, 2, 1e3f);
-FVAR(csmpolyoffset, -1e4f, 0, 1e4f);
-
-FVAR(csmpolyfactor2, -1e3f, 3, 1e3f);
-FVAR(csmpolyoffset2, -1e4f, 0, 1e4f);
 cascadedshadowmap csm;
 
-/*
-        int csmmaxsize,
-            csmnearplane,
-            csmfarplane;
-        bool csmcull;
-        float csmsplitweight,
-              csmpradiustweak,
-              csmdepthrange,
-              csmdepthmargin,
-              csmbias,
-              csmbias2;
-
-*/
 //====================== cascaded shadow map object ============================//
 
-cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1), csmfarplane(1024),
-    csmcull(true), csmsplitweight(0.75f), csmpradiustweak(1.f), csmdepthrange(1024.f),
-    csmdepthmargin(0.1f), csmbias(1e-4f), csmbias2(2e-4f)
+cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
+    csmfarplane(1024), csmsplits(3), csmcull(true), csmshadowmap(true),
+    csmsplitweight(0.75f), csmpradiustweak(1.f), csmdepthrange(1024.f),
+    csmdepthmargin(0.1f), csmbias(1e-4f), csmbias2(2e-4f),
+    csmpolyfactor(2), csmpolyfactor2(3), csmpolyoffset(0), csmpolyoffset2(0)
 {
 }
 
@@ -57,57 +37,88 @@ cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1), csmfa
 //prints a warning if the bounds were enforced
 bool cascadedshadowmap::setcsmproperty(int index, float value)
 {
+    
     switch(index)
     {
-        case 0:
+        case MaxSize:
         {
             csmmaxsize = clampvar(false, "csmmaxsize", value, 256, 2048);
             clearshadowcache();
             return true;
         }
-        case 1:
+        case NearPlane:
         {
             csmnearplane = clampvar(false, "csmnearplane", value, 1, 16);
             return true;
         }
-        case 2:
+        case FarPlane:
         {
             csmfarplane = clampvar(false, "csmfarplane", value, 64, 16384);
             return true;
         }
-        case 3:
+        case Cull:
         {
             csmcull = value;
             return true;
         }
-        case 4:
+        case SplitWeight:
         {
             csmsplitweight = clampfvar("csmsplitweight", value, 0.20f, 0.95f);
             return true;
         }
-        case 5:
+        case PRadiusTweak:
         {
             csmpradiustweak = clampfvar("csmpradiustweak", value, 1e-3f, 1e3f);
             return true;
         }
-        case 6:
+        case DepthRange:
         {
             csmdepthrange = clampfvar("csmdepthrange", value, 0.f, 1e6f);
             return true;
         }
-        case 7:
+        case DepthMargin:
         {
             csmdepthmargin = clampfvar("csmdepthmargin", value, 0.f, 1e3f);
             return true;
         }
-        case 8:
+        case Bias:
         {
             csmbias = clampfvar("csmbias", value, -1e6f, 1e6f);
             return true;
         }
-        case 9:
+        case Bias2:
         {
             csmbias2 = clampfvar("csmbias2", value, -1e16f, 1e6f);
+            return true;
+        }
+        case Splits:
+        {
+            csmsplits = clampvar(false, "csmsplits", value, 1, csmmaxsplits);
+            return true;
+        }
+        case ShadowMap:
+        {
+            csmshadowmap = value;
+            return true;
+        }
+        case PolyFactor:
+        {
+            csmpolyfactor = clampfvar("csmpolyfactor", value, -1e3f, 1e3f);
+            return true;
+        }
+        case PolyFactor2:
+        {
+            csmpolyfactor = clampfvar("csmpolyfactor", value, -1e3f, 1e3f);
+            return true;
+        }
+        case PolyOffset:
+        {
+            csmpolyfactor = clampfvar("csmpolyfactor", value, -1e4f, 1e4f);
+            return true;
+        }
+        case PolyOffset2:
+        {
+            csmpolyfactor = clampfvar("csmpolyfactor", value, -1e4f, 1e4f);
             return true;
         }
         default:
@@ -122,45 +133,69 @@ float cascadedshadowmap::getcsmproperty(int index) const
 {
     switch(index)
     {
-        case 0:
+        case MaxSize:
         {
             return csmmaxsize;
         }
-        case 1:
+        case NearPlane:
         {
             return csmnearplane;
         }
-        case 2:
+        case FarPlane:
         {
             return csmfarplane;
         }
-        case 3:
+        case Cull:
         {
             return csmcull;
         }
-        case 4:
+        case SplitWeight:
         {
             return csmsplitweight;
         }
-        case 5:
+        case PRadiusTweak:
         {
             return csmpradiustweak;
         }
-        case 6:
+        case DepthRange:
         {
             return csmdepthrange;
         }
-        case 7:
+        case DepthMargin:
         {
             return csmdepthmargin;
         }
-        case 8:
+        case Bias:
         {
             return csmbias;
         }
-        case 9:
+        case Bias2:
         {
             return csmbias2;
+        }
+        case Splits:
+        {
+            return csmsplits;
+        }
+        case ShadowMap:
+        {
+            return csmshadowmap;
+        }
+        case PolyFactor:
+        {
+            return csmpolyfactor;
+        }
+        case PolyFactor2:
+        {
+            return csmpolyfactor2;
+        }
+        case PolyOffset:
+        {
+            return csmpolyoffset;
+        }
+        case PolyOffset2:
+        {
+            return csmpolyoffset2;
         }
         default:
         {
