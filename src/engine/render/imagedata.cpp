@@ -710,6 +710,32 @@ void ImageData::texnormal(int emphasis)
 
 bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wrap, const char *tdir, int ttype)
 {
+    auto parsetexcommands = [] (const char *&cmds, const char *&cmd, size_t &len, std::array<const char *, 4> &arg)
+    {
+        const char *end = nullptr;
+        cmd = &cmds[1];
+        end = std::strchr(cmd, '>');
+        if(!end)
+        {
+            return true;
+        }
+        cmds = std::strchr(cmd, '<');
+        len = std::strcspn(cmd, ":,><");
+        for(int i = 0; i < 4; ++i)
+        {
+            arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':');
+            if(!arg[i] || arg[i] >= end)
+            {
+                arg[i] = "";
+            }
+            else
+            {
+                arg[i]++;
+            }
+        }
+        return false;
+    };
+
     const char *cmds = nullptr,
                *file = tname;
     if(tname[0]=='<')
@@ -734,32 +760,15 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     for(const char *pcmds = cmds; pcmds;)
     {
-        //===================================================== PARSETEXCOMMANDS
-        #define PARSETEXCOMMANDS(cmds) \
-            const char *cmd = nullptr, \
-                       *end = nullptr, \
-                       *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
-            cmd = &cmds[1]; \
-            end = std::strchr(cmd, '>'); \
-            if(!end) \
-            { \
-                break; \
-            } \
-            cmds = std::strchr(cmd, '<'); \
-            size_t len = std::strcspn(cmd, ":,><"); \
-            for(int i = 0; i < 4; ++i) \
-            { \
-                arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
-                if(!arg[i] || arg[i] >= end) \
-                { \
-                    arg[i] = ""; \
-                } \
-                else \
-                { \
-                    arg[i]++; \
-                } \
-            }
-        PARSETEXCOMMANDS(pcmds);
+        const char *cmd = nullptr;
+        size_t len = 0;
+        std::array<const char *, 4> arg = { nullptr, nullptr, nullptr, nullptr };
+
+        if(parsetexcommands(pcmds, cmd, len, arg))
+        {
+            break;
+        }
+
         if(matchstring(cmd, len, "stub"))
         {
             return canloadsurface(file);
@@ -796,7 +805,15 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
 
     while(cmds)
     {
-        PARSETEXCOMMANDS(cmds);
+        const char *cmd = nullptr;
+        size_t len = 0;
+        std::array<const char *, 4> arg = { nullptr, nullptr, nullptr, nullptr };
+
+        if(parsetexcommands(cmds, cmd, len, arg))
+        {
+            break;
+        }
+
         if(compressed)
         {
             goto compressed; //see `compressed` nested between else & if (yes it's ugly)
@@ -917,9 +934,6 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     return true;
 }
-
-#undef PARSETEXCOMMANDS
-//==============================================================================
 
 bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress, int *wrap)
 {
