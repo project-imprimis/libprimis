@@ -164,7 +164,7 @@ namespace //internal functionality not seen by other files
             {
                 const vec *prev = leftv;
                 float prevdist = leftdist;
-                if(--leftv < g.v)
+                if(--leftv < &g.v[0])
                 {
                     leftv += g.numv;
                 }
@@ -173,7 +173,7 @@ namespace //internal functionality not seen by other files
                 {
                     prev = leftv;
                     prevdist = leftdist;
-                    if(--leftv < g.v)
+                    if(--leftv < &g.v[0])
                     {
                         leftv += g.numv;
                     }
@@ -191,7 +191,7 @@ namespace //internal functionality not seen by other files
                 float prevdist = rightdist;
                 if(++rightv >= &g.v[g.numv])
                 {
-                    rightv = g.v;
+                    rightv = &g.v[0];
                 }
                 rightdist = rightv->dot(w.dir);
                 if(dist <= rightdist)
@@ -200,7 +200,7 @@ namespace //internal functionality not seen by other files
                     prevdist = rightdist;
                     if(++rightv >= &g.v[g.numv])
                     {
-                        rightv = g.v;
+                        rightv = &g.v[0];
                     }
                     rightdist = rightv->dot(w.dir);
                 }

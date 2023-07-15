@@ -36,7 +36,7 @@ struct elementset
 
 struct grasstri
 {
-    vec v[4];
+    std::array<vec, 4> v;
     int numv;
     plane surface;
     vec center;
