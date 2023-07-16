@@ -238,6 +238,34 @@ class PackNode
         bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
         void reserve(ushort tx, ushort ty, ushort tw, ushort th);
 
+        int availablespace() const
+        {
+            return available;
+        }
+
+        //debugging printouts, not used in program logic
+
+        //i: recursion depth
+        void printchildren(int i = 0) const
+        {
+            print(i);
+
+            if(child1)
+            {
+                child1->printchildren(i+1);
+            }
+            if(child2)
+            {
+                child2->printchildren(i+1);
+            }
+        }
+
+        //i: depth to print out
+        void print(int i) const
+        {
+            std::printf("%d: %d %d\n", i, w, h);
+        }
+
     private:
         PackNode *child1, *child2;
         ushort x, y;
