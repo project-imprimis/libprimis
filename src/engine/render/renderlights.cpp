@@ -3337,10 +3337,6 @@ void GBuffer::packlights()
 
 void GBuffer::rendercsmshadowmaps() const
 {
-    if(csminoq && !debugshadowatlas && !inoq && shouldworkinoq())
-    {
-        return;
-    }
     if(sunlight.iszero() || !csm.getcsmproperty(cascadedshadowmap::ShadowMap))
     {
         return;
@@ -3675,7 +3671,10 @@ void GBuffer::rendershadowatlas()
     }
 
     // sun light
-    rendercsmshadowmaps();
+    if(!csminoq || debugshadowatlas || inoq || !shouldworkinoq())
+    {
+        rendercsmshadowmaps();
+    }
 
     int smoffset = shadowmaps.size();
 
