@@ -156,7 +156,7 @@ class GBuffer
         uint alphatiles[lighttilemaxheight];
 
         bool transparentlayer;
-        bool inoq;
+        bool inoq = false;
         bool gdepthinit;
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
