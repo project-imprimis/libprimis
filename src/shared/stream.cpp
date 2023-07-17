@@ -5,6 +5,8 @@
  * also included is utilities for gz archive support
  *
  */
+#include <sstream>
+
 #include "../libprimis-headers/cube.h"
 #include "stream.h"
 
@@ -271,6 +273,73 @@ char *path(char *s)
         }
     }
     return s;
+}
+
+std::string path(std::string s)
+{
+    std::string truncated_path, processed_path;
+
+    size_t path_begin = 0,
+           path_end = s.length();
+
+    // Find the in-line command segment and skip it
+    if(s.find('<') != std::string::npos)
+    {
+        size_t command_end = s.rfind('>');
+        if(command_end != std::string::npos)
+        {
+            path_begin = command_end + 1;
+        }
+    }
+
+    // Find the conjugated path and cut it
+    if(s.find('&') != std::string::npos)
+    {
+        path_end = s.find('&');
+    }
+
+    truncated_path = s.substr(path_begin, path_end - path_begin);
+
+    // Handle "."" and ".."" in the path
+    std::istringstream path_stream(truncated_path);
+    std::stack<std::string> path_stack;
+    std::string token;
+
+    // Construct a stack of path tokens
+    while(std::getline(path_stream, token, '/'))
+    {
+        if(token == "..")
+        {
+            if(!path_stack.empty())
+            {
+                path_stack.pop();
+            }
+            else
+            {
+                path_stack.push(token);
+            }
+        }
+        else if(!token.empty() && token != ".")
+        {
+            path_stack.push(token);
+        }
+    }
+
+    // Re-construct the processed path from the stack
+    while(!path_stack.empty())
+    {
+        if(path_stack.size() > 1)
+        {
+            processed_path = "/" + path_stack.top() + processed_path;
+        }
+        else
+        {
+            processed_path = path_stack.top() + processed_path;
+        }
+        path_stack.pop();
+    }
+
+    return processed_path;
 }
 
 char *copypath(const char *s)
