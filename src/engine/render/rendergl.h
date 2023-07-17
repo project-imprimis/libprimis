@@ -20,7 +20,6 @@ enum
 extern float forceaspect;
 extern float nearplane;
 extern int farplane;
-extern float ldrscale, ldrscaleb;
 extern int drawtex;
 extern const matrix4 viewmatrix;
 
