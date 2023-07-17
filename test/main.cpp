@@ -3,6 +3,7 @@
 #include "testutils.h"
 #include "testidents.h"
 #include "testcs.h"
+#include "testshadowatlas.h"
 
 int main(int argc, char **argv)
 {
@@ -10,5 +11,6 @@ int main(int argc, char **argv)
 
     testidents();
     testcs();
+    testpacknode();
     return EXIT_SUCCESS;
 }
