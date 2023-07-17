@@ -1394,8 +1394,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     cmcamera.roll = 0;
     camera1 = &cmcamera;
 
-    float oldldrscale = ldrscale,
-          oldldrscaleb = ldrscaleb;
+    float oldldrscale = ldrscale;
     int oldfarplane = farplane,
         oldvieww    = vieww,
         oldviewh    = viewh;
@@ -1414,7 +1413,6 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     occlusionengine.flipqueries();
 
     ldrscale = 1;
-    ldrscaleb = ldrscale/255;
 
     view.visiblecubes(false);
     gbuf.rendergbuffer();
@@ -1438,7 +1436,6 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     vieww = oldvieww;
     viewh = oldviewh;
     ldrscale = oldldrscale;
-    ldrscaleb = oldldrscaleb;
 
     camera1 = oldcamera;
     drawtex = 0;
@@ -1496,7 +1493,6 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
     oldfovy = fovy;
     oldfov = curfov;
     oldldrscale = ldrscale;
-    oldldrscaleb = ldrscaleb;
     oldfarplane = farplane;
     oldvieww = vieww;
     oldviewh = viewh;
@@ -1509,7 +1505,6 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
     vieww = std::min(gw, w);
     viewh = std::min(gh, h);
     ldrscale = 1;
-    ldrscaleb = ldrscale/255;
 
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
@@ -1534,7 +1529,6 @@ void ModelPreview::end()
     vieww = oldvieww;
     viewh = oldviewh;
     ldrscale = oldldrscale;
-    ldrscaleb = oldldrscaleb;
 
     camera1 = oldcamera;
     drawtex = 0;
@@ -1595,7 +1589,6 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     glEnable(GL_DEPTH_TEST);
 
     ldrscale = 0.5f;
-    ldrscaleb = ldrscale/255;
     //do occlusion culling
     view.visiblecubes();
     //set to wireframe if applicable

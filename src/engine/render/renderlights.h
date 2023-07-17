@@ -321,7 +321,8 @@ extern int debugfullscreen;
 extern int msaaedgedetect;
 extern int hdrclear;
 extern int msaatonemap;
-extern float ldrscale, ldrscaleb;
+extern float ldrscale;
+extern float ldrscaleb(); //derived from ldrscale
 
 extern int vieww, viewh;
 

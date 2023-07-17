@@ -905,8 +905,12 @@ void GBuffer::resolvemsaacolor(int w, int h)
     endtimer(resolvetimer);
 }
 
-float ldrscale = 1.0f,
-      ldrscaleb = 1.0f/255;
+float ldrscale = 1.0f;
+
+float ldrscaleb()
+{
+    return ldrscale/255;
+}
 
 VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
@@ -2096,7 +2100,7 @@ static void setlightglobals(bool transparent = false)
             GLOBALPARAMF(aoparams, aomin, 1.0f-aomin, aosunmin, 1.0f-aosunmin);
         }
     }
-    float lightscale = 2.0f*ldrscaleb;
+    float lightscale = 2.0f*ldrscaleb();
     if(!drawtex && editmode && fullbright)
     {
         GLOBALPARAMF(lightscale, fullbrightlevel*lightscale, fullbrightlevel*lightscale, fullbrightlevel*lightscale, 255*lightscale);
@@ -2143,7 +2147,7 @@ struct lightparaminfo
 static void setlightparams(int i, const lightinfo &l, lightparaminfo &li)
 {
     li.lightposv[i]   = vec4<float>(l.o, 1).div(l.radius);
-    li.lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
+    li.lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb()), l.nospec() ? 0 : 1);
     if(l.spot > 0)
     {
         li.spotparamsv[i] = vec4<float>(vec(l.dir).neg(), 1/(1 - cos360(l.spot)));
@@ -2736,7 +2740,7 @@ void GBuffer::rendervolumetric()
         }
 
         LOCALPARAM(lightpos, vec4<float>(l.o, 1).div(l.radius));
-        vec color = vec(l.color).mul(ldrscaleb).mul(volcolor.tocolor().mul(volscale));
+        vec color = vec(l.color).mul(ldrscaleb()).mul(volcolor.tocolor().mul(volscale));
         LOCALPARAM(lightcolor, color);
 
         if(l.shadowmap >= 0)
@@ -3765,7 +3769,9 @@ void GBuffer::preparegbuffer(bool depthclear)
     }
     gdepthinit = true;
 
-    matrix4 invscreenmatrix, invcammatrix, invcamprojmatrix;
+    matrix4 invscreenmatrix,
+            invcammatrix,
+            invcamprojmatrix;
     invcammatrix.invert(cammatrix);
     invcamprojmatrix.invert(camprojmatrix);
     invscreenmatrix.identity();

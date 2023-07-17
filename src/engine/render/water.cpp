@@ -382,7 +382,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
     {
         const bvec &deepcolor = getwaterdeepcolor(mat);
         int deep = getwaterdeep(mat);
-        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb, deepcolor.y*ldrscaleb, deepcolor.z*ldrscaleb);
+        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb(), deepcolor.y*ldrscaleb(), deepcolor.z*ldrscaleb());
         vec deepfade = getwaterdeepfade(mat).tocolor().mul(deep);
         GLOBALPARAMF(waterdeepfade,
             deepfade.x ? calcfogdensity(deepfade.x) : -1e4f,

@@ -568,7 +568,7 @@ namespace
                         continue;
                     }
                 }
-                gle::colorf(color.x*ldrscaleb, color.y*ldrscaleb, color.z*ldrscaleb);
+                gle::colorf(color.x*ldrscaleb(), color.y*ldrscaleb(), color.z*ldrscaleb());
                 lastmat = m.material;
             }
             drawmaterial(m, -0.1f);
