@@ -2,6 +2,70 @@
 
 namespace header_tools
 {
+    void testpath()
+    {
+        static std::string_view test_cases[][2] =
+        {
+            {
+                "data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "data/../data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "../data/../data/textures/image.png",
+                "../data/textures/image.png"
+            },
+            {
+                "data/.././data/textures/other_image.png",
+                "data/textures/other_image.png"
+            },
+            {
+                "data/textures/image.png&data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "data/../data/textures/image.png&data/../data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png&data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png&data/../data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "./data/sounds/music.ogg",
+                "data/sounds/music.ogg"
+            },
+            {
+                "../data/other/file.dat",
+                "../data/other/file.dat"
+            }
+        };
+
+        for(auto &test_case : test_cases)
+        {
+            std::string before = std::string(test_case[0]);
+            std::string after  = path(before);
+
+            std::printf("Testing path %s -> %s\n", before.c_str(), after.c_str());
+
+            assert(after == test_case[1]);
+        }
+    }
 }
 namespace header_geom
 {
@@ -48,6 +112,7 @@ namespace header_geom
 
 void testutils()
 {
+    header_tools::testpath();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
