@@ -15,10 +15,19 @@ void testpacknode()
         satest.insert(tx, ty, 32, 64);
         allocated.push_back({tx, ty});
     }
-    std::printf("tree 1:\n");
+    std::printf("Testing packnode insertion\n");
     satest.printchildren();
     //check that all generated shadowatlas allocations are at unique coordinates
     std::sort(allocated.begin(), allocated.end());
     assert(std::adjacent_find(allocated.begin(), allocated.end()) == allocated.end());
+
+    std::printf("Testing packnode clear\n");
+    satest.reset();
+    assert(satest.availablespace() == 128);
+
+    std::printf("Testing packnode resize functionality\n");
+    satest.resize(256, 256);
+    assert(satest.w == 256 && satest.h == 256);
+    assert(satest.availablespace() == 256);
 }
 
