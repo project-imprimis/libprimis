@@ -591,10 +591,11 @@ namespace
         }
         float x = m.o.x,
               y = m.o.y,
-              z = m.o.z, csize = m.csize,
+              z = m.o.z,
+              csize = m.csize,
               rsize = m.rsize;
         gle::begin(GL_TRIANGLE_FAN);
-        if (normal != vec(0, 0, 0))
+        if(normal != vec(0, 0, 0))
         {
             vec n = normal;
             switch (m.orient)
