@@ -1252,8 +1252,9 @@ void ShadowAtlas::view()
           th = 1;
     if(target == GL_TEXTURE_RECTANGLE)
     {
-        tw = shadowatlaspacker.w;
-        th = shadowatlaspacker.h;
+        vec2 sasize = shadowatlaspacker.dimensions();
+        tw = sasize.x;
+        th = sasize.y;
         SETSHADER(hudrect);
     }
     else
@@ -1283,9 +1284,9 @@ void ShadowAtlas::setup()
     {
         glGenTextures(1, &tex);
     }
-
+    vec2 sasize = shadowatlaspacker.dimensions();
     target = usegatherforsm() ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE;
-    createtexture(tex, shadowatlaspacker.w, shadowatlaspacker.h, nullptr, 3, 1, smdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (smdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), target);
+    createtexture(tex, sasize.x, sasize.y, nullptr, 3, 1, smdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (smdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), target);
     glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 
@@ -1915,10 +1916,11 @@ void resetlights()
     shadowatlas.cache.reset();
     if(smcache)
     {
-        int evictx = ((evictshadowcache%shadowcacheevict)*shadowatlaspacker.w)/shadowcacheevict,
-            evicty = ((evictshadowcache/shadowcacheevict)*shadowatlaspacker.h)/shadowcacheevict,
-            evictx2 = (((evictshadowcache%shadowcacheevict)+1)*shadowatlaspacker.w)/shadowcacheevict,
-            evicty2 = (((evictshadowcache/shadowcacheevict)+1)*shadowatlaspacker.h)/shadowcacheevict;
+        vec2 sasize = shadowatlaspacker.dimensions();
+        int evictx = ((evictshadowcache%shadowcacheevict)*sasize.x)/shadowcacheevict,
+            evicty = ((evictshadowcache/shadowcacheevict)*sasize.y)/shadowcacheevict,
+            evictx2 = (((evictshadowcache%shadowcacheevict)+1)*sasize.x)/shadowcacheevict,
+            evicty2 = (((evictshadowcache/shadowcacheevict)+1)*sasize.y)/shadowcacheevict;
         for(const shadowmapinfo &sm : shadowmaps)
         {
             if(sm.light < 0)
@@ -2086,7 +2088,8 @@ void GBuffer::bindlighttexs(int msaapass, bool transparent) const
 
 static void setlightglobals(bool transparent = false)
 {
-    GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
+    vec2 sasize = shadowatlaspacker.dimensions();
+    GLOBALPARAMF(shadowatlasscale, 1.0f/sasize.x, 1.0f/sasize.y);
     if(ao)
     {
         if(transparent || drawtex || (editmode && fullbright))
@@ -2156,7 +2159,7 @@ static void setlightparams(int i, const lightinfo &l, lightparaminfo &li)
     {
         const shadowmapinfo &sm = shadowmaps[l.shadowmap];
         float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3,
-              bias = (smfilter > 2 || shadowatlaspacker.w > shadowatlassize ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
+              bias = (smfilter > 2 || shadowatlaspacker.dimensions().x > shadowatlassize ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
         int border = smfilter > 2 ? smborder2 : smborder;
         if(l.spot > 0)
         {
@@ -2688,8 +2691,8 @@ void GBuffer::rendervolumetric()
     shadowatlas.bind();
     shadowatlas.setcomparemode();
     glActiveTexture(GL_TEXTURE0);
-
-    GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
+    vec2 sasize = shadowatlaspacker.dimensions();
+    GLOBALPARAMF(shadowatlasscale, 1.0f/sasize.x, 1.0f/sasize.y);
     GLOBALPARAMF(volscale, static_cast<float>(vieww)/volw, static_cast<float>(viewh)/volh, static_cast<float>(volw)/vieww, static_cast<float>(volh)/viewh);
     GLOBALPARAMF(volminstep, volminstep);
     GLOBALPARAMF(volprefilter, volprefilter);
@@ -3071,7 +3074,8 @@ void collectlights()
                     lod = smcubeprec;
                 }
                 lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-                int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+                const float sasizex = shadowatlaspacker.dimensions().x;
+                int size = std::clamp(static_cast<int>(std::ceil((lod * sasizex) / shadowatlassize)), 1, static_cast<int>(sasizex) / w);
                 w *= size;
                 h *= size;
                 if(mismatched)
@@ -3316,7 +3320,8 @@ void GBuffer::packlights()
                 lod = smcubeprec;
             }
             lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-            int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+            const float sasizex = shadowatlaspacker.dimensions().x;
+            int size = std::clamp(static_cast<int>(std::ceil((lod * sasizex) / shadowatlassize)), 1, static_cast<int>(sasizex) / w);
             w *= size;
             h *= size;
             ushort x = USHRT_MAX,
@@ -3446,7 +3451,8 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
 
     lod *= smminsize;
-    int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+    const float sasizex = shadowatlaspacker.dimensions().x;
+    int size = std::clamp(static_cast<int>(std::ceil((lod * sasizex) / shadowatlassize)), 1, static_cast<int>(sasizex) / w);
     bias = border / static_cast<float>(size - border);
 
     return type;

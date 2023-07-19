@@ -207,8 +207,6 @@ extern GBuffer gbuf;
 class PackNode
 {
     public:
-        ushort w, h;
-
         PackNode(ushort x, ushort y, ushort w, ushort h) :  w(w), h(h), child1(0), child2(0), x(x), y(y), available(std::min(w, h)) {}
 
         void reset()
@@ -272,6 +270,7 @@ class PackNode
         }
 
     private:
+        ushort w, h;
         PackNode *child1, *child2;
         ushort x, y;
         int available;
