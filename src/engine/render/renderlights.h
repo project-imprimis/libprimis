@@ -243,6 +243,11 @@ class PackNode
             return available;
         }
 
+        vec2 dimensions() const
+        {
+            return {static_cast<float>(w), static_cast<float>(h)};
+        }
+
         //debugging printouts, not used in program logic
 
         //i: recursion depth
