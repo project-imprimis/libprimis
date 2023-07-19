@@ -27,7 +27,8 @@ void testpacknode()
 
     std::printf("Testing packnode resize functionality\n");
     satest.resize(256, 256);
-    assert(satest.w == 256 && satest.h == 256);
+    vec2 size = satest.dimensions();
+    assert(size.x == 256 && size.y == 256);
     assert(satest.availablespace() == 256);
 }
 
