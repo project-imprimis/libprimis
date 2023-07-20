@@ -66,6 +66,18 @@ namespace header_tools
             assert(after == test_case[1]);
         }
     }
+
+    void testconcatstring()
+    {
+        char s[260];
+        const char *s1 = "test string";
+        std::strcpy(s, s1);
+        const char *s2 = "append";
+
+        char *out1 = concatstring(s, s2, 260);
+        std::printf("test string length: %lu\n" , std::strlen(s));
+        assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
+    }
 }
 namespace header_geom
 {
@@ -113,6 +125,7 @@ namespace header_geom
 void testutils()
 {
     header_tools::testpath();
+    header_tools::testconcatstring();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
