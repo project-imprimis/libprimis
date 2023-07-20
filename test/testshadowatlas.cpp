@@ -5,7 +5,14 @@
 
 void testpacknode()
 {
+    std::printf("Testing packnode construction\n");
     PackNode satest(0, 0, 128, 128);
+    {
+        vec2 size = satest.dimensions();
+        assert(size.x == 128 && size.y == 128);
+    }
+    assert(satest.availablespace() == 128);
+
     //allocated texture locations
     ushort tx = 0;
     ushort ty = 0;
@@ -27,8 +34,9 @@ void testpacknode()
 
     std::printf("Testing packnode resize functionality\n");
     satest.resize(256, 256);
-    vec2 size = satest.dimensions();
-    assert(size.x == 256 && size.y == 256);
+    {
+        vec2 size = satest.dimensions();
+        assert(size.x == 256 && size.y == 256);
+    }
     assert(satest.availablespace() == 256);
 }
-
