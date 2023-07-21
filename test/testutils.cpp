@@ -67,6 +67,15 @@ namespace header_tools
         }
     }
 
+    void testcopystring()
+    {
+        std::printf("Testing string copy\n");
+        char s[260];
+        const char *s1 = "test string";
+        copystring(s, s1, 260);
+        assert(std::strcmp(s1, s) == 0);
+    }
+
     void testconcatstring()
     {
         char s[260];
@@ -125,6 +134,7 @@ namespace header_geom
 void testutils()
 {
     header_tools::testpath();
+    header_tools::testcopystring();
     header_tools::testconcatstring();
     header_geom::testgenericvec3();
     header_geom::testvec3();
