@@ -78,6 +78,7 @@ namespace header_tools
 
     void testconcatstring()
     {
+        std::printf("Testing concat string\n");
         char s[260];
         const char *s1 = "test string";
         std::strcpy(s, s1);
