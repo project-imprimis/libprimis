@@ -9,6 +9,7 @@
 bin_unix/*
 src/tess_client
 src/tess_server
+test/libprimis_testsuite
 .idea/
 *.gcov
 *.gcda
