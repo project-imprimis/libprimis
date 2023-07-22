@@ -69,11 +69,20 @@ namespace header_tools
 
     void testcopystring()
     {
+        //test copy with enough chars
         std::printf("Testing string copy\n");
         char s[260];
         const char *s1 = "test string";
         copystring(s, s1, 260);
         assert(std::strcmp(s1, s) == 0);
+
+        //test copy with not enough chars
+        std::printf("Testing string copy, short string\n");
+        const int len = 7;
+        char s2[len];
+        const char *s3 = "test string";
+        copystring(s2, s3, len);
+        assert(std::strcmp(s2, std::string(s3).substr(0, len-1).c_str()) == 0);
     }
 
     void testconcatstring()
