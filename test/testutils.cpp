@@ -93,7 +93,7 @@ namespace header_tools
         std::strcpy(s, s1);
         const char *s2 = "append";
 
-        char *out1 = concatstring(s, s2, 260);
+        concatstring(s, s2, 260);
         std::printf("test string length: %lu\n" , std::strlen(s));
         assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
