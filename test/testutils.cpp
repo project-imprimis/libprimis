@@ -56,7 +56,7 @@ namespace header_tools
             }
         };
 
-        for(auto &test_case : test_cases)
+        for(const auto &test_case : test_cases)
         {
             std::string before = std::string(test_case[0]);
             std::string after  = path(before);
