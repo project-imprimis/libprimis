@@ -1,4 +1,4 @@
-CXXFLAGS= -O0 -fomit-frame-pointer -ffast-math -std=c++17 --coverage -Wall -fsigned-char -fno-exceptions
+CXXFLAGS= -O0 -ffast-math -std=c++17 --coverage -Wall -fsigned-char -fno-exceptions
 
 INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags`
 
