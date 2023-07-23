@@ -563,8 +563,8 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
         }
         return;
     }
+    std::array<vertinfo, Face_MaxVerts> verts;
     surfaceinfo surf = surfaceinfo();
-    vertinfo verts[Face_MaxVerts];
     surf.numverts |= p.numverts;
     int dim = DIMENSION(orient),
         coord = DIM_COORD(orient),
@@ -609,7 +609,7 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
         nomatch:;
         }
     }
-    setsurface(*this, orient, surf, verts, p.numverts);
+    setsurface(*this, orient, surf, verts.data(), p.numverts);
 }
 
 void cube::clearmerge(int orient)
