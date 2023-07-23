@@ -647,7 +647,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
         return;
     }
     std::unordered_set<plink> links(polys.size() <= 32 ? 128 : 1024);
-    std::vector<const plink *> queue;
+    std::deque<const plink *> queue;
     for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
