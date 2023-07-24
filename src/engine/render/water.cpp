@@ -685,12 +685,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x , y + offset, zmin );
+                    vec v(x , y + offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x + csize, y + offset, zmin );
+                    vec v(x + csize, y + offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
@@ -701,7 +701,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
             {
                 gle::begin(GL_TRIANGLE_FAN);
                 {
-                    vec v(x , y - offset, zmin );
+                    vec v(x , y - offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
@@ -716,7 +716,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x + csize, y - offset, zmin );
+                    vec v(x + csize, y - offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
