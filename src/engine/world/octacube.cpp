@@ -427,7 +427,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     return true;
 }
 
-bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::vector<const plink *> &queue, int owner, poly &q, const pedge &e)
+bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const plink *> &queue, int owner, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
@@ -624,7 +624,7 @@ void cube::clearmerge(int orient)
     }
 }
 
-void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::addmerges(int orient, const ivec &n, int offset, std::deque<poly> &polys)
 {
     for(poly &p : polys)
     {
@@ -639,7 +639,7 @@ void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &p
     }
 }
 
-void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::mergepolys(int orient, const ivec &n, int offset, std::deque<poly> &polys)
 {
     if(polys.size() <= 1)
     {
@@ -676,7 +676,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
             prev = j;
         }
     }
-    std::vector<const plink *> nextqueue;
+    std::deque<const plink *> nextqueue;
     while(queue.size())
     {
         for(const plink *&l : queue)
