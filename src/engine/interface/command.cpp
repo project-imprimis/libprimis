@@ -4604,7 +4604,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Local:
             {
                 freearg(result);
-                int numlocals = op>>8, offset = numargs-numlocals;
+                int numlocals = op>>8,
+                                offset = numargs-numlocals;
                 identstack locals[Max_Args];
                 for(int i = 0; i < numlocals; ++i)
                 {
@@ -4634,12 +4635,13 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Do|Ret_String:
             case Code_Do|Ret_Integer:
             case Code_Do|Ret_Float:
+            {
                 freearg(result);
                 runcode(args[--numargs].code, result);
                 freearg(args[numargs]);
                 forcearg(result, op&Code_RetMask);
                 continue;
-
+            }
             case Code_Jump:
             {
                 uint len = op>>8;
