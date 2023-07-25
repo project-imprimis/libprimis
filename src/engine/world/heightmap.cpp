@@ -64,20 +64,21 @@ class hmap
             paintbrush = false;
         }
 
-        void hbrushvert(int *x, int *y, const int * const v)
+        void hbrushvert(const int *x, const int *y, const int * const v)
         {
-            *x += maxbrush2 - brushx + 1; // +1 for automatic padding
-            *y += maxbrush2 - brushy + 1;
-            if(*x<0 || *y<0 || *x>=maxbrush || *y>=maxbrush)
+            int x1, y1;
+            x1 = *x + maxbrush2 - brushx + 1; // +1 for automatic padding
+            y1 = *y + maxbrush2 - brushy + 1;
+            if(x1<0 || y1<0 || x1>=maxbrush || y1>=maxbrush)
             {
                 return;
             }
-            brush[*x][*y] = std::clamp(*v, 0, 8);
-            paintbrush = paintbrush || (brush[*x][*y] > 0);
-            brushmaxx = std::min(maxbrush-1, std::max(brushmaxx, *x+1));
-            brushmaxy = std::min(maxbrush-1, std::max(brushmaxy, *y+1));
-            brushminx = std::max(0,          std::min(brushminx, *x-1));
-            brushminy = std::max(0,          std::min(brushminy, *y-1));
+            brush[x1][y1] = std::clamp(*v, 0, 8);
+            paintbrush = paintbrush || (brush[x1][y1] > 0);
+            brushmaxx = std::min(maxbrush-1, std::max(brushmaxx, x1+1));
+            brushmaxy = std::min(maxbrush-1, std::max(brushmaxy, y1+1));
+            brushminx = std::max(0,          std::min(brushminx, x1-1));
+            brushminy = std::max(0,          std::min(brushminy, y1-1));
         }
 
         void run(int dir, int mode)
@@ -557,7 +558,7 @@ void clearhbrush()
     heightmapper.clearhbrush();
 }
 
-void hbrushvert(int *x, int *y, const int *v)
+void hbrushvert(const int *x, const int *y, const int *v)
 {
     heightmapper.hbrushvert(x, y, v);
 }
