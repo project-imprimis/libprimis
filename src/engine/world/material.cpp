@@ -278,24 +278,6 @@ namespace
         return MatSurf_NotVisible;
     }
 
-    void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m)
-    {
-        int dim = DIMENSION(m.orient);
-        ivec mmin(m.o), mmax(m.o);
-        if(DIM_COORD(m.orient))
-        {
-            mmin[dim] -= 2;
-        }
-        else
-        {
-            mmax[dim] += 2;
-        }
-        mmax[R[dim]] += m.rsize;
-        mmax[C[dim]] += m.csize;
-        matmin.min(mmin);
-        matmax.max(mmax);
-    }
-
     bool mergematcmp(const materialsurface &x, const materialsurface &y)
     {
         int dim = DIMENSION(x.orient),
@@ -951,6 +933,26 @@ namespace
         }
     }
 
+    //sets the given material bounding vectors using the provided materialsurface
+    //used by calcmatbb to set vertex array glass/water min/max fields
+    void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m)
+    {
+        int dim = DIMENSION(m.orient);
+        ivec mmin(m.o),
+             mmax(m.o);
+        if(DIM_COORD(m.orient))
+        {
+            mmin[dim] -= 2;
+        }
+        else
+        {
+            mmax[dim] += 2;
+        }
+        mmax[R[dim]] += m.rsize;
+        mmax[C[dim]] += m.csize;
+        matmin.min(mmin);
+        matmax.max(mmax);
+    }
 }
 
 // externally relevant functionality
@@ -1067,6 +1069,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     }
 }
 
+//sets the vertex array's material bounding box depending upon the material surfaces given
 void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs)
 {
     va->watermax = va->glassmax = co;
