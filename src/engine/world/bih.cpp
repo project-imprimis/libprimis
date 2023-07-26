@@ -433,7 +433,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     for(mesh &m : meshes)
     {
         m.scale = m.xform.a.magnitude();
-        m.invscale = 1/m.scale;
         m.xformnorm = matrix3(m.xform);
         m.xformnorm.normalize();
         m.invxform.invert(m.xform);
@@ -858,8 +857,8 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
     vec a = m.getpos(t.vert[0]),
         b = m.getpos(t.vert[1]),
         c = m.getpos(t.vert[2]),
-        zdir = vec(orient.rowz()).mul(m.invscale*m.invscale*(radius.z - radius.x));
-    if(trisegmentdistance(a, b, c, vec(center).sub(zdir), vec(center).add(zdir)) > m.invscale*m.invscale*radius.x*radius.x)
+        zdir = vec(orient.rowz()).mul((radius.z - radius.x)/(m.scale*m.scale));
+    if(trisegmentdistance(a, b, c, vec(center).sub(zdir), vec(center).add(zdir)) > (radius.x*radius.x)/(m.scale*m.scale))
     {
         return;
     }
@@ -871,7 +870,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
         return;
     }
     collideinside = true;
-    n = orient.transformnormal(n).mul(m.invscale);
+    n = orient.transformnormal(n).div(m.scale);
     if(!dir.iszero())
     {
         if(n.dot(dir) >= -cutoff*dir.magnitude())
