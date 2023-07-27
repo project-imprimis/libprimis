@@ -67,8 +67,8 @@ class hmap
         void hbrushvert(const int *x, const int *y, const int * const v)
         {
             int x1, y1;
-            x1 = *x + maxbrush2 - brushx + 1; // +1 for automatic padding
-            y1 = *y + maxbrush2 - brushy + 1;
+            x1 = *x + maxbrush/2 - brushx + 1; // +1 for automatic padding
+            y1 = *y + maxbrush/2 - brushy + 1;
             if(x1<0 || y1<0 || x1>=maxbrush || y1>=maxbrush)
             {
                 return;
@@ -93,8 +93,8 @@ class hmap
             int cx = (sel.corner&1 ? 0 : -1),
                 cy = (sel.corner&2 ? 0 : -1);
             hws= (rootworld.mapsize()>>gridpower);
-            gx = (cur[R[d]] >> gridpower) + cx - maxbrush2;
-            gy = (cur[C[d]] >> gridpower) + cy - maxbrush2;
+            gx = (cur[R[d]] >> gridpower) + cx - maxbrush/2;
+            gy = (cur[C[d]] >> gridpower) + cy - maxbrush/2;
             gz = (cur[D[d]] >> gridpower);
             fs = dc ? 4 : 0;
             fg = dc ? gridsize : -gridsize;
@@ -133,8 +133,8 @@ class hmap
             std::memset(flags, 0, sizeof flags);
 
             selecting = true;
-            select(std::clamp(maxbrush2-cx, bmx, bnx),
-                   std::clamp(maxbrush2-cy, bmy, bny),
+            select(std::clamp(maxbrush/2-cx, bmx, bnx),
+                   std::clamp(maxbrush/2-cy, bmy, bny),
                    dc ? gz : hws - gz);
             selecting = false;
             if(paintme)
@@ -153,12 +153,11 @@ class hmap
         std::vector<int> textures;
         //max brush consts: number of cubes on end that can be heightmap brushed at once
         static constexpr int maxbrush  = 64,
-                             maxbrushc = 63,
-                             maxbrush2 = 32;
+                             maxbrushc = 63;
 
         std::array<std::array<int, maxbrush>, maxbrush> brush;//2d array of heights for heightmap brushs
-        int brushx = variable("hbrushx", 0, maxbrush2, maxbrush, &brushx, nullptr, 0); //max width for a brush
-        int brushy = variable("hbrushy", 0, maxbrush2, maxbrush, &brushy, nullptr, 0); //max length for a brush
+        int brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &brushx, nullptr, 0); //max width for a brush
+        int brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &brushy, nullptr, 0); //max length for a brush
         bool paintbrush = 0;
         int brushmaxx = 0,
             brushminx = maxbrush,
