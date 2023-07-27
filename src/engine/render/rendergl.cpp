@@ -1050,7 +1050,7 @@ void screenquad()
     setupscreenquad();
     gle::bindvbo(screenquadvbo);
     gle::enablevertex();
-    gle::vertexpointer(sizeof(vec2), (const vec2 *)0, GL_FLOAT, 2);
+    gle::vertexpointer(sizeof(vec2), nullptr, GL_FLOAT, 2);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     gle::disablevertex();
     gle::clearvbo();
