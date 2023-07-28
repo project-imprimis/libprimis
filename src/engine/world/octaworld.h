@@ -91,7 +91,7 @@ class cube;
 struct clipplanes
 {
     vec o, r, v[8];
-    plane p[12];
+    std::array<plane, 12> p;
     uchar side[12];
     uchar size, //should always be between 0..11 (a valid index to p/side arrays above)
           visible;
