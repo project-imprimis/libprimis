@@ -92,7 +92,7 @@ struct clipplanes
 {
     vec o, r, v[8];
     std::array<plane, 12> p;
-    uchar side[12];
+    std::array<uchar, 12> side;
     uchar size, //should always be between 0..11 (a valid index to p/side arrays above)
           visible;
     const cube *owner;
