@@ -907,8 +907,8 @@ namespace
             MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
             Texture *tex = gslot.sts.size() ? gslot.sts[0].t : notexture;
-            float glassxscale = defaulttexscale/(tex->xs*gslot.scale);
-            float glassyscale = defaulttexscale/(tex->ys*gslot.scale);
+            float glassxscale = defaulttexscale/(tex->xs*gslot.scale),
+                  glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, tex->id);
@@ -1161,7 +1161,8 @@ void setupmaterials(int start, int len)
             if(IS_LIQUID(matvol) && m.orient!=Orient_Bottom && m.orient!=Orient_Top)
             {
                 m.ends = 0;
-                int dim = DIMENSION(m.orient), coord = DIM_COORD(m.orient);
+                int dim = DIMENSION(m.orient),
+                    coord = DIM_COORD(m.orient);
                 ivec o(m.o);
                 o.z -= 1;
                 o[dim] += coord ? 1 : -1;
