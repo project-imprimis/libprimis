@@ -412,7 +412,7 @@ namespace
     void sorteditmaterials()
     {
 
-        int sortdim[3];
+        std::array<int, 3> sortdim;
         ivec sortorigin;
 
         //allows for sorting of materialsurface objects
@@ -421,24 +421,24 @@ namespace
         {
             int xdim = DIMENSION(x.orient),
                 ydim = DIMENSION(y.orient);
-            for(int i = 0; i < 3; ++i)
+            for(const int &i : sortdim)
             {
-                int dim = sortdim[i], xmin, xmax, ymin, ymax;
-                xmin = xmax = x.o[dim];
-                if(dim==C[xdim])
+                int xmin, xmax, ymin, ymax;
+                xmin = xmax = x.o[i];
+                if(i==C[xdim])
                 {
                     xmax += x.csize;
                 }
-                else if(dim==R[xdim])
+                else if(i==R[i])
                 {
                     xmax += x.rsize;
                 }
-                ymin = ymax = y.o[dim];
-                if(dim==C[ydim])
+                ymin = ymax = y.o[i];
+                if(i==C[ydim])
                 {
                     ymax += y.csize;
                 }
-                else if(dim==R[ydim])
+                else if(i==R[ydim])
                 {
                     ymax += y.rsize;
                 }
@@ -446,7 +446,7 @@ namespace
                 {
                     continue;
                 }
-                int c = sortorigin[dim];
+                int c = sortorigin[i];
                 if(c > xmin && c < xmax)
                 {
                     return true;
