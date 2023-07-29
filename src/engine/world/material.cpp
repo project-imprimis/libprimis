@@ -412,7 +412,7 @@ namespace
     void sorteditmaterials()
     {
 
-        std::array<int, 3> sortdim;
+        std::array<int, 3> sortdim {0, 1, 2};
         ivec sortorigin;
 
         //allows for sorting of materialsurface objects
@@ -477,10 +477,6 @@ namespace
 
         sortorigin = ivec(camera1->o);
         vec dir = vec(camdir).abs();
-        for(int i = 0; i < 3; ++i)
-        {
-            sortdim[i] = i;
-        }
         if(dir[sortdim[2]] > dir[sortdim[1]])
         {
             std::swap(sortdim[2], sortdim[1]);
