@@ -1343,7 +1343,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
     return mi;
 }
 
-void GBuffer::rendermaterialmask()
+void GBuffer::rendermaterialmask() const
 {
     glDisable(GL_CULL_FACE);
     for(int k = 0; k < 4; ++k)
