@@ -106,7 +106,7 @@ class GBuffer
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
         void rendermaterialmask() const;
-        void renderliquidmaterials();
+        void renderliquidmaterials() const;
         void packlights();
 
         struct MaterialInfo

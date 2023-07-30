@@ -1371,7 +1371,7 @@ void GBuffer::rendermaterialmask() const
     glEnable(GL_CULL_FACE);
 }
 
-void GBuffer::renderliquidmaterials()
+void GBuffer::renderliquidmaterials() const
 {
     glDisable(GL_CULL_FACE);
 
