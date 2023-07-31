@@ -43,23 +43,23 @@ GlobalShaderParamState *GlobalShaderParam::getglobalparam(const char *name) cons
     }
 }
 
-GlobalShaderParamState *GlobalShaderParam::resolve()
+GlobalShaderParamState &GlobalShaderParam::resolve()
 {
     if(!param)
     {
         param = getglobalparam(name);
     }
     param->changed();
-    return param;
+    return *param;
 }
 
 void GlobalShaderParam::setf(float x, float y, float z, float w)
 {
-    GlobalShaderParamState *g = resolve();
-    g->fval[0] = x;
-    g->fval[1] = y;
-    g->fval[2] = z;
-    g->fval[3] = w;
+    GlobalShaderParamState &g = resolve();
+    g.fval[0] = x;
+    g.fval[1] = y;
+    g.fval[2] = z;
+    g.fval[3] = w;
 }
 
 void GlobalShaderParam::set(const vec &v, float w)
@@ -74,12 +74,12 @@ void GlobalShaderParam::set(const vec2 &v, float z, float w)
 
 void GlobalShaderParam::set(const matrix3 &m)
 {
-    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+    std::memcpy(resolve().fval, m.a.v, sizeof(m));
 }
 
 void GlobalShaderParam::set(const matrix4 &m)
 {
-    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+    std::memcpy(resolve().fval, m.a.v, sizeof(m));
 }
 
 std::map<std::string, GlobalShaderParamState> globalparams;

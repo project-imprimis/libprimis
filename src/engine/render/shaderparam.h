@@ -154,7 +154,7 @@ class GlobalShaderParam
     public:
         GlobalShaderParam(const char *name);
 
-        GlobalShaderParamState *resolve();
+        GlobalShaderParamState &resolve();
         void setf(float x = 0, float y = 0, float z = 0, float w = 0);
         void set(const vec &v, float w = 0);
         void set(const vec2 &v, float z = 0, float w = 0);
@@ -164,7 +164,7 @@ class GlobalShaderParam
         template<class T>
         T *reserve()
         {
-            return reinterpret_cast<T *>(resolve()->buf);
+            return reinterpret_cast<T *>(resolve().buf);
         }
     private:
         const char *name;
