@@ -229,7 +229,12 @@ class LocalShaderParam
     } while(0)
 
 //creates a globalshaderparam, either by calling set(), setf() or setv()
+//this will create a temp object containing #name, and then attempt to set()
+//it to a value in the global shader param map
+//overrides exist for set() for various different types
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
+
+//same as globalparam, but takes up to 4 float args
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
 
 //creates a new static variable inside the function called <name>setshader
