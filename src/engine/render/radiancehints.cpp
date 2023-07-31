@@ -37,8 +37,8 @@
 #include "world/light.h"
 #include "world/world.h"
 
-GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
-       rhfbo = 0;
+std::array<GLuint, 8> rhtex = { 0, 0, 0, 0, 0, 0, 0, 0 };
+GLuint rhfbo = 0;
 
 //radiance hints (global illumination) vars
 VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`r`adiance `h`ints `splits`: number of radiance hints subdivisions
@@ -283,12 +283,12 @@ void cleanupradiancehints()
 {
     clearradiancehintscache();
 
-    for(int i = 0; i < 8; ++i)
+    for(GLuint &i : rhtex)
     {
-        if(rhtex[i])
+        if(i)
         {
-            glDeleteTextures(1, &rhtex[i]);
-            rhtex[i] = 0;
+            glDeleteTextures(1, &i);
+            i = 0;
         }
     }
     for(int i = 0; i < 4; ++i)

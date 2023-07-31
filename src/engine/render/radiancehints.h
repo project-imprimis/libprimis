@@ -9,7 +9,7 @@ extern int rhrect, rhgrid, rhsplits, rhborder, rhprec, rhtaps, rhcache, rhforce,
 extern int gi, gidist;
 extern float giscale, giaoscale;
 extern int debugrsm, debugrh;
-extern GLuint rhtex[8];
+extern std::array<GLuint, 8> rhtex;
 extern Shader *rsmworldshader;
 
 //defines the size, position & projection info for a reflective shadow map
