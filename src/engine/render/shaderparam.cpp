@@ -26,7 +26,7 @@
 
 GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullptr) {}
 
-GlobalShaderParamState &GlobalShaderParam::getglobalparam(const char *name) const
+GlobalShaderParamState &GlobalShaderParam::getglobalparam(const std::string &name) const
 {
     auto itr = globalparams.find(name);
     if(itr != globalparams.end())
@@ -36,7 +36,6 @@ GlobalShaderParamState &GlobalShaderParam::getglobalparam(const char *name) cons
     else
     {
         GlobalShaderParamState &param = globalparams[name];
-        param.name = name;
         std::memset(param.buf, -1, sizeof(param.buf));
         param.version = -1;
         return param;

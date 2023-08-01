@@ -11,7 +11,6 @@ struct UniformLoc
 
 struct GlobalShaderParamState
 {
-    const char *name;
     union
     {
         float fval[32];
@@ -167,9 +166,9 @@ class GlobalShaderParam
             return reinterpret_cast<T *>(resolve().buf);
         }
     private:
-        const char *name;
+        const std::string name;
         GlobalShaderParamState *param;
-        GlobalShaderParamState &getglobalparam(const char *name) const;
+        GlobalShaderParamState &getglobalparam(const std::string &name) const;
 
 };
 
