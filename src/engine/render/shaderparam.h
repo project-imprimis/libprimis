@@ -169,7 +169,7 @@ class GlobalShaderParam
     private:
         const char *name;
         GlobalShaderParamState *param;
-        GlobalShaderParamState *getglobalparam(const char *name) const;
+        GlobalShaderParamState &getglobalparam(const char *name) const;
 
 };
 
