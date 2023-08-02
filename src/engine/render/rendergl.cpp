@@ -478,21 +478,21 @@ vec worldpos;
 vec camdir()
 {
     vec out;
-    cammatrix.transposedtransform(vec(viewmatrix.b), out);
+    cammatrix.transposedtransformnormal(vec(viewmatrix.b), out);
     return out;
 }
 
 vec camright()
 {
     vec out;
-    cammatrix.transposedtransform(vec(viewmatrix.a).neg(), out);
+    cammatrix.transposedtransformnormal(vec(viewmatrix.a).neg(), out);
     return out;
 }
 
 vec camup()
 {
     vec out;
-    cammatrix.transposedtransform(vec(viewmatrix.c), out);
+    cammatrix.transposedtransformnormal(vec(viewmatrix.c), out);
     return out;
 }
 
