@@ -367,7 +367,7 @@ void cascadedshadowmap::getprojmatrix()
         const shadowmapinfo &sm = shadowmaps[split.idx];
 
         vec c;
-        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir, c);
+        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
 
         // compute the projected bounding box of the sphere
         vec tc;

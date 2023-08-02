@@ -472,7 +472,29 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1);
 
-vec worldpos, camdir, camright, camup;
+vec worldpos;
+
+//these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix
+vec camdir()
+{
+    vec out;
+    cammatrix.transposedtransform(vec(viewmatrix.b), out);
+    return out;
+}
+
+vec camright()
+{
+    vec out;
+    cammatrix.transposedtransform(vec(viewmatrix.a).neg(), out);
+    return out;
+}
+
+vec camup()
+{
+    vec out;
+    cammatrix.transposedtransform(vec(viewmatrix.c), out);
+    return out;
+}
 
 static void setcammatrix()
 {
@@ -483,15 +505,11 @@ static void setcammatrix()
     cammatrix.rotate_around_z(camera1->yaw/-RAD);
     cammatrix.translate(vec(camera1->o).neg());
 
-    cammatrix.transposedtransformnormal(vec(viewmatrix.b), camdir);
-    cammatrix.transposedtransformnormal(vec(viewmatrix.a).neg(), camright);
-    cammatrix.transposedtransformnormal(vec(viewmatrix.c), camup);
-
     if(!drawtex)
     {
-        if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
+        if(raycubepos(camera1->o, camdir(), worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
         {
-            worldpos = vec(camdir).mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
+            worldpos = camdir().mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
         }
     }
 }

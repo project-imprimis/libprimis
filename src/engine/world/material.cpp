@@ -476,7 +476,7 @@ namespace
         };
 
         sortorigin = ivec(camera1->o);
-        vec dir = vec(camdir).abs();
+        vec dir = camdir().abs();
         if(dir[sortdim[2]] > dir[sortdim[1]])
         {
             std::swap(sortdim[2], sortdim[1]);
