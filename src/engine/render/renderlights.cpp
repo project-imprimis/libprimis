@@ -674,7 +674,7 @@ void GBuffer::setupgbuffer()
 
     if(msaasamples)
     {
-        gbuf.setupmsbuffer(gw, gh);
+        setupmsbuffer(gw, gh);
     }
     hdrfloat = floatformat(hdrformat);
     hdrclear = 3;
@@ -736,7 +736,7 @@ void GBuffer::setupgbuffer()
         createtexture(gnormaltex, gw, gh, nullptr, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
         createtexture(gglowtex, gw, gh, nullptr, 3, 0, hdrformat, GL_TEXTURE_RECTANGLE);
 
-        gbuf.bindgdepth();
+        bindgdepth();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, gcolortex, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, gnormaltex, 0);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_RECTANGLE, gglowtex, 0);
@@ -772,7 +772,7 @@ void GBuffer::setupgbuffer()
     createtexture(hdrtex, gw, gh, nullptr, 3, 1, hdrformat, GL_TEXTURE_RECTANGLE);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, hdrtex, 0);
-    gbuf.bindgdepth();
+    bindgdepth();
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -793,7 +793,7 @@ void GBuffer::setupgbuffer()
         createtexture(refracttex, gw, gh, nullptr, 3, 0, GL_RGB, GL_TEXTURE_RECTANGLE);
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, refracttex, 0);
-        gbuf.bindgdepth();
+        bindgdepth();
 
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
@@ -2499,7 +2499,7 @@ void GBuffer::renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const
         glDepthMask(GL_FALSE);
     }
 
-    gbuf.bindlighttexs(msaapass, transparent);
+    bindlighttexs(msaapass, transparent);
     setlightglobals(transparent);
 
     gle::defvertex(3);
