@@ -102,6 +102,7 @@ class GBuffer
         void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask);
         void renderlightsnobatch(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2);
         void renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask);
+        void rendergeom();
 
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 

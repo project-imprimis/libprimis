@@ -90,7 +90,6 @@ extern int shadowspot;
 
 extern vtxarray *visibleva;
 
-extern void rendergeom();
 extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();

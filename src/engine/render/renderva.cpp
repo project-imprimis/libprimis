@@ -2836,7 +2836,7 @@ void renderalphageom(int side)
     cur.cleanupgeom();
 }
 
-void rendergeom()
+void GBuffer::rendergeom()
 {
     bool doOQ = oqfrags && oqgeom && !drawtex,
          multipassing = false;
@@ -2917,7 +2917,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        gbuf.workinoq();
+        workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
@@ -3014,7 +3014,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        gbuf.workinoq();
+        workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
