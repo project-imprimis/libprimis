@@ -395,7 +395,7 @@ extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
 extern void shadegbuffer();
-extern void setuplights();
+extern void setuplights(GBuffer &buf);
 extern bool debuglights();
 extern void cleanuplights();
 

@@ -74,7 +74,7 @@ class postfx
             }
         } //add a postfx shader to the class field, with name & 4d pos vector
 
-        GLuint setuppostfx(int w, int h, GLuint outfbo)
+        GLuint setuppostfx(GBuffer &buf, int w, int h, GLuint outfbo)
         {
             if(postfxpasses.empty())
             {
@@ -101,7 +101,7 @@ class postfx
             glBindFramebuffer(GL_FRAMEBUFFER, postfxfb);
             int tex = allocatepostfxtex(0);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
-            gbuf.bindgdepth();
+            buf.bindgdepth();
 
             postfxbinds[0] = tex;
             postfxtexs[tex].used = 0;
@@ -251,9 +251,9 @@ class postfx
 
 postfx pfx;
 
-GLuint setuppostfx(int w, int h, GLuint outfbo)
+GLuint setuppostfx(GBuffer &buf, int w, int h, GLuint outfbo)
 {
-    return pfx.setuppostfx(w, h, outfbo);
+    return pfx.setuppostfx(buf, w, h, outfbo);
 }
 
 void renderpostfx(GLuint outfbo)

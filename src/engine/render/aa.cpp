@@ -54,7 +54,7 @@ namespace //internal functions incl. AA implementations
         useshaderbyname("tqaaresolve");
     }
 
-    void setuptqaa(int w, int h)
+    void setuptqaa(GBuffer &buf, int w, int h)
     {
         for(int i = 0; i < 2; ++i)
         {
@@ -69,7 +69,7 @@ namespace //internal functions incl. AA implementations
             glBindFramebuffer(GL_FRAMEBUFFER, tqaafbo[i]);
             createtexture(tqaatex[i], w, h, nullptr, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
-            gbuf.bindgdepth();
+            buf.bindgdepth();
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 fatal("failed allocating TQAA buffer!");
@@ -181,7 +181,7 @@ namespace //internal functions incl. AA implementations
 
             void cleanupfxaa();
             void dofxaa(GLuint outfbo = 0);
-            void setupfxaa(int w, int h);
+            void setupfxaa(GBuffer &buf, int w, int h);
 
             fxaa();
         private:
@@ -224,7 +224,7 @@ namespace //internal functions incl. AA implementations
         fxaashader = nullptr;
     }
 
-    void fxaa::setupfxaa(int w, int h)
+    void fxaa::setupfxaa(GBuffer &buf, int w, int h)
     {
         if(!fxaatex)
         {
@@ -237,7 +237,7 @@ namespace //internal functions incl. AA implementations
         glBindFramebuffer(GL_FRAMEBUFFER, fxaafbo);
         createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
-        gbuf.bindgdepth();
+        buf.bindgdepth();
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating FXAA buffer!");
@@ -286,7 +286,7 @@ namespace //internal functions incl. AA implementations
             int smaatype = -1;
 
             void cleanupsmaa();
-            void setupsmaa(int w, int h);
+            void setupsmaa(GBuffer &buf, int w, int h);
 
             //executes the smaa process on the given output framebuffer object (outfbo)
             //split toggles splitting process into two passes
@@ -834,7 +834,7 @@ namespace //internal functions incl. AA implementations
         smaaareadatainited = true;
     }
 
-    void subpixelaa::setupsmaa(int w, int h)
+    void subpixelaa::setupsmaa(GBuffer &buf, int w, int h)
     {
         if(!smaaareatex)
         {
@@ -899,7 +899,7 @@ namespace //internal functions incl. AA implementations
             }
             if(!i || (smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
             {
-                gbuf.bindgdepth();
+                buf.bindgdepth();
             }
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -1151,24 +1151,24 @@ void GBuffer::setaavelocityparams(GLenum tmu)
 }
 
 //general aa fxns
-void setupaa(int w, int h)
+void setupaa(GBuffer &buf, int w, int h)
 {
     if(tqaa && !tqaafbo[0])
     {
-        setuptqaa(w, h);
+        setuptqaa(buf, w, h);
     }
     if(smaarenderer.smaa)
     {
         if(!smaarenderer.smaafbo[0])
         {
-            smaarenderer.setupsmaa(w, h);
+            smaarenderer.setupsmaa(buf, w, h);
         }
     }
     else if(fxaarenderer.usefxaa)
     {
         if(!fxaarenderer.fxaafbo)
         {
-            fxaarenderer.setupfxaa(w, h);
+            fxaarenderer.setupfxaa(buf, w, h);
         }
     }
 }
@@ -1265,7 +1265,7 @@ bool multisampledaa()
  *
  * method pointer resolve is used to setup the fbo for the specified aa
  */
-void doaa(GLuint outfbo, GBuffer gbuffer)
+void doaa(GLuint outfbo, GBuffer &gbuffer)
 {
     if(smaarenderer.smaa)
     {

@@ -1704,7 +1704,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
     //antialiasing
-    doaa(setuppostfx(vieww, viewh, scalefbo), gbuf);
+    doaa(setuppostfx(gbuf, vieww, viewh, scalefbo), gbuf);
     //postfx
     renderpostfx(scalefbo);
     if(scalefbo)
@@ -1728,7 +1728,7 @@ void gl_setupframe(bool force)
     {
         return;
     }
-    setuplights();
+    setuplights(gbuf);
 }
 
 void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void (*editfxn)(), void (*hud2d)())

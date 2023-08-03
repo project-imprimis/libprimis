@@ -4048,10 +4048,10 @@ void shadegbuffer()
     endtimer(shcputimer);
 }
 
-void setuplights()
+void setuplights(GBuffer &buf)
 {
     glerror();
-    gbuf.setupgbuffer();
+    buf.setupgbuffer();
     if(bloomw < 0 || bloomh < 0)
     {
         setupbloom(gw, gh);
@@ -4080,7 +4080,7 @@ void setuplights()
     {
         deferredminimapshader = loaddeferredlightshader(msaalight ? "mM" : "m");
     }
-    setupaa(gw, gh);
+    setupaa(buf, gw, gh);
     glerror();
 }
 
