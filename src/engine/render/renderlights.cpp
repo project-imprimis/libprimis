@@ -198,7 +198,7 @@ void GBuffer::setupscale(int sw, int sh, int w, int h)
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scaletex[i], 0);
         if(!i)
         {
-            gbuf.bindgdepth();
+            bindgdepth();
         }
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
