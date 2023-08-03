@@ -52,7 +52,7 @@ void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float all
         glStencilFunc(GL_NOTEQUAL, 0, 0x07);
         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         glEnable(GL_STENCIL_TEST);
-        gbuf.renderparticles(ParticleLayer_Over);
+        renderparticles(ParticleLayer_Over);
         glDisable(GL_STENCIL_TEST);
         if(scissor)
         {
