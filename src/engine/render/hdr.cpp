@@ -515,7 +515,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
             case AA_SplitMasked:
             {
                 SETSHADER(msaatonemapsplitmasked);
-                gbuf.setaavelocityparams(GL_TEXTURE3);
+                setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
@@ -558,7 +558,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                     goto done; //see bottom of fxn
                 }
                 SETSHADER(hdrtonemapmasked);
-                gbuf.setaavelocityparams(GL_TEXTURE3);
+                setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
@@ -596,7 +596,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                 case AA_Masked:
                 {
                     SETSHADER(msaatonemapmasked);
-                    gbuf.setaavelocityparams(GL_TEXTURE3);
+                    setaavelocityparams(GL_TEXTURE3);
                     break;
                 }
                 default:
@@ -634,7 +634,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                         case AA_Masked:
                         {
                             SETSHADER(hdrnopmasked);
-                            gbuf.setaavelocityparams(GL_TEXTURE3);
+                            setaavelocityparams(GL_TEXTURE3);
                             break;
                         }
                         default:
