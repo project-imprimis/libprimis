@@ -282,7 +282,7 @@ namespace //internal functions incl. AA implementations
     class subpixelaa
     {
         public:
-            GLuint smaafbo[4] = { 0, 0, 0, 0 };
+            std::array<GLuint, 4> smaafbo {0, 0, 0, 0};
             int smaatype = -1;
 
             void cleanupsmaa();
@@ -1058,12 +1058,12 @@ namespace //internal functions incl. AA implementations
             glDeleteTextures(1, &smaasearchtex);
             smaasearchtex = 0;
         }
-        for(int i = 0; i < 4; ++i)
+        for(GLuint i : smaafbo)
         {
-            if(smaafbo[i])
+            if(i)
             {
-                glDeleteFramebuffers(1, &smaafbo[i]);
-                smaafbo[i] = 0;
+                glDeleteFramebuffers(1, &i);
+                i = 0;
             }
         }
         for(int i = 0; i < 5; ++i)
