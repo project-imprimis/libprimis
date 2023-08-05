@@ -189,7 +189,7 @@ void removetrackeddynlights(const physent *owner)
 
 //finds which dynamic lights are near enough and are visible to the player
 //returns the number of lights (and sets `closedynlights` vector contents to the appropriate nearby light ents)
-int finddynlights()
+size_t finddynlights()
 {
     closedynlights.clear();
     if(!usedynlights)
@@ -243,9 +243,9 @@ int finddynlights()
  *  bool: true if light at position n was found, false otherwise
  *
  */
-bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
+bool getdynlight(size_t n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
-    if(!(static_cast<int>(closedynlights.size()) > n))
+    if(!(closedynlights.size() > n))
     {
         return false;
     }

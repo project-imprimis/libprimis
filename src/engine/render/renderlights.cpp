@@ -2976,13 +2976,13 @@ void collectlights()
         }
     }
 
-    int numdynlights = 0;
+    size_t numdynlights = 0;
     if(!drawtex)
     {
         updatedynlights();
         numdynlights = finddynlights();
     }
-    for(int i = 0; i < numdynlights; ++i)
+    for(size_t i = 0; i < numdynlights; ++i)
     {
         vec o, color, dir;
         float radius;
