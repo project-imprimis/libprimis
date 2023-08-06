@@ -672,16 +672,17 @@ void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts
 template<int T>
 void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
+    constexpr float scale = 5000.f;
     if(grav)
     {
         float t = fade;
-        vec end = vec(o).madd(d, t/5000.0f);
-        end.z -= t*t/(2.0f * 5000.0f * grav);
+        vec end = vec(o).madd(d, t/scale);
+        end.z -= t*t/(2.0f * scale * grav);
         pe.extendbb(end, size);
         float tpeak = d.z*grav;
         if(tpeak > 0 && tpeak < fade)
         {
-            pe.extendbb(o.z + 1.5f*d.z*tpeak/5000.0f, size);
+            pe.extendbb(o.z + 1.5f*d.z*tpeak/scale, size);
         }
     }
 }
