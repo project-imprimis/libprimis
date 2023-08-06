@@ -3398,19 +3398,18 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
 
 static void findshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
 {
-    for(uint i = 0; i < vas.size(); i++)
+    for(vtxarray *&v : vas)
     {
-        vtxarray &v = *vas[i];
-        float dist = vadist(v, shadoworigin);
+        float dist = vadist(*v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.size() || v.mapmodels.size() ?
-                                calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
-                                calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
-            addshadowva(&v, dist, vasort);
-            if(v.children.size())
+            v->shadowmask = !smbbcull ? 0x3F : (v->children.size() || v->mapmodels.size() ?
+                                calcbbsidemask(v->bbmin, v->bbmax, shadoworigin, shadowradius, shadowbias) :
+                                calcbbsidemask(v->geommin, v->geommax, shadoworigin, shadowradius, shadowbias));
+            addshadowva(v, dist, vasort);
+            if(v->children.size())
             {
-                findshadowvas(v.children, vasort);
+                findshadowvas(v->children, vasort);
             }
         }
     }
