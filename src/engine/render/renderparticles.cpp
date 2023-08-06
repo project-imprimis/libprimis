@@ -864,7 +864,7 @@ struct varenderer : partrenderer
             };
 
             //sets the partvert vs array's tc fields to four permutations of input parameters
-            auto settexcoords = [&] (float u1c, float u2c, float v1c, float v2c, bool swap)
+            auto settexcoords = [vs, swaptexcoords] (float u1c, float u2c, float v1c, float v2c, bool swap)
             {
                 float u1 = u1c,
                       u2 = u2c,
