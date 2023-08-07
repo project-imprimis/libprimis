@@ -1346,23 +1346,23 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
 void GBuffer::rendermaterialmask() const
 {
     glDisable(GL_CULL_FACE);
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : glasssurfs)
     {
-        for(const materialsurface &i : glasssurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, 0.1f);
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : watersurfs)
     {
-        for(const materialsurface &i : watersurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, wateroffset);
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : waterfallsurfs)
     {
-        for(const materialsurface &i : waterfallsurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, 0.1f);
         }
