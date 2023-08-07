@@ -161,8 +161,8 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
         const BIH::node *node;
         float tmin, tmax;
     };
-    traversestate stack[128];
-    int stacksize = 0;
+    std::array<traversestate, 128> stack;
+    size_t stacksize = 0;
     ivec order(ray.x>0 ? 0 : 1, ray.y>0 ? 0 : 1, ray.z>0 ? 0 : 1);
     vec mo = m.invxform.transform(o), //invxform is inverse transform 4x3 matrix; transform by vec o
         mray = m.invxformnorm.transform(ray);
@@ -215,7 +215,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
             {
                 if(!curnode->isleaf(faridx))
                 {
-                    if(stacksize < static_cast<int>(sizeof(stack)/sizeof(stack[0])))
+                    if(stacksize < stack.size())
                     {
                         traversestate &save = stack[stacksize++];
                         save.node = curnode + curnode->childindex(faridx);
