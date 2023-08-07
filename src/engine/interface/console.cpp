@@ -483,7 +483,7 @@ namespace
             prompt = nullptr;
         }
 
-        void restore()
+        void restore() const
         {
             copystring(commandbuf, buf);
             if(commandpos >= static_cast<int>(std::strlen(commandbuf)))
@@ -508,7 +508,7 @@ namespace
             commandflags = flags;
         }
 
-        bool shouldsave()
+        bool shouldsave() const
         {
             return std::strcmp(commandbuf, buf) ||
                    (commandaction ? !action || std::strcmp(commandaction, action) : action!=nullptr) ||
@@ -530,7 +530,7 @@ namespace
             flags = commandflags;
         }
 
-        void run()
+        void run() const
         {
             if(flags&CmdFlags_Execute && buf[0]=='/')
             {
