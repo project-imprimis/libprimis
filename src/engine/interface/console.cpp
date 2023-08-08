@@ -74,7 +74,7 @@ namespace
     constexpr int constrlen = 512;
 
     void resetcomplete();
-    void complete(char *s, int maxlen, const char *cmdprefix);
+    void complete(char *s, size_t maxlen, const char *cmdprefix);
 
     void conline(int type, const char *sf)        // add a line to the console buffer
     {
@@ -984,9 +984,9 @@ namespace
         addcomplete(command, Files_List, list, nullptr);
     }
 
-    void complete(char *s, int maxlen, const char *cmdprefix)
+    void complete(char *s, size_t maxlen, const char *cmdprefix)
     {
-        int cmdlen = 0;
+        size_t cmdlen = 0;
         if(cmdprefix)
         {
             cmdlen = std::strlen(cmdprefix);
