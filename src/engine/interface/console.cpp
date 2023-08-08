@@ -701,14 +701,14 @@ namespace
                 }
                 case SDLK_DELETE:
                 {
-                    int len = static_cast<int>(std::strlen(commandbuf));
+                    size_t len = std::strlen(commandbuf);
                     if(commandpos<0)
                     {
                         break;
                     }
                     std::memmove(&commandbuf[commandpos], &commandbuf[commandpos+1], len - commandpos);
                     resetcomplete();
-                    if(commandpos>=len-1)
+                    if(commandpos >= static_cast<int>(len-1))
                     {
                         commandpos = -1;
                     }
@@ -716,8 +716,8 @@ namespace
                 }
                 case SDLK_BACKSPACE:
                 {
-                    int len = static_cast<int>(std::strlen(commandbuf)),
-                        i = commandpos>=0 ? commandpos : len;
+                    size_t len = std::strlen(commandbuf);
+                    int i = commandpos>=0 ? commandpos : len;
                     if(i<1)
                     {
                         break;
