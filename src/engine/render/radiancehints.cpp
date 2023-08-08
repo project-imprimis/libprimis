@@ -440,16 +440,16 @@ void radiancehints::bindparams() const
 
 void radiancehints::clearcache()
 {
-    for(int i = 0; i < rhmaxsplits; ++i)
+    for(splitinfo &i : splits)
     {
-        splits[i].clearcache();
+        i.clearcache();
     }
 }
 bool radiancehints::allcached() const
 {
-    for(int i = 0; i < rhsplits; ++i)
+    for(const splitinfo &i : splits)
     {
-        if(splits[i].cached != splits[i].center)
+        if(i.cached != i.center)
         {
             return false;
         }
