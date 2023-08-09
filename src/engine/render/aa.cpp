@@ -312,7 +312,7 @@ namespace //internal functions incl. AA implementations
                 Debug
             };
 
-            bool setsmaaproperty(int index, float value);
+            bool setsmaaproperty(int index, int value);
             int getsmaaproperty(int index) const;
 
         private:
@@ -391,7 +391,7 @@ namespace //internal functions incl. AA implementations
 
     subpixelaa smaarenderer(gbuf);
 
-    bool subpixelaa::setsmaaproperty(int index, float value)
+    bool subpixelaa::setsmaaproperty(int index, int value)
     {
         switch(index)
         {
@@ -1451,6 +1451,6 @@ void cleanupaa()
 
 void initaacmds()
 {
-    addcommand("getcsmproperty", reinterpret_cast<identfun>(+[] (int * index) {intret(smaarenderer.getsmaaproperty(*index));} ), "i", Id_Command);
-    addcommand("setcsmproperty", reinterpret_cast<identfun>(+[] (int * index, float * value) {intret(smaarenderer.setsmaaproperty(*index, *value));} ), "ii", Id_Command);
+    addcommand("getsmaaproperty", reinterpret_cast<identfun>(+[] (int * index) {intret(smaarenderer.getsmaaproperty(*index));} ), "i", Id_Command);
+    addcommand("setsmaaproperty", reinterpret_cast<identfun>(+[] (int * index, int * value) {intret(smaarenderer.setsmaaproperty(*index, *value));} ), "ii", Id_Command);
 }
