@@ -1162,7 +1162,7 @@ namespace //internal functions incl. AA implementations
             {
                 smaacoloredgeshader->set();
             }
-            else
+            else if(smaalumaedgeshader)
             {
                 smaalumaedgeshader->set();
             }
@@ -1183,7 +1183,10 @@ namespace //internal functions incl. AA implementations
             {
                 glClear(GL_COLOR_BUFFER_BIT);
             }
-            smaablendweightshader->set();
+            if(smaablendweightshader)
+            {
+                smaablendweightshader->set();
+            }
             vec4<float> subsamples(0, 0, 0, 0);
             if(tqaa && split)
             {
@@ -1220,7 +1223,10 @@ namespace //internal functions incl. AA implementations
             }
         }
         glBindFramebuffer(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
-        smaaneighborhoodshader->set();
+        if(smaaneighborhoodshader)
+        {
+            smaaneighborhoodshader->set();
+        }
         glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[0]);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[2]);
