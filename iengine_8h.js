@@ -70,6 +70,7 @@ var iengine_8h =
     [ "hideui", "iengine_8h.html#a0aa63a54de2a562677e38df439fa1975", null ],
     [ "holdui", "iengine_8h.html#a5ee70bab788b14cfecd70356f5eebf33", null ],
     [ "ignoremousemotion", "iengine_8h.html#a29a5087ad1fa01a38dd91c79cec01d7a", null ],
+    [ "initaacmds", "iengine_8h.html#a162c60f6b6d8fd22b20cea45b97d6d08", null ],
     [ "initconsolecmds", "iengine_8h.html#a1d335c95207001c4e062514051278169", null ],
     [ "initcontrolcmds", "iengine_8h.html#aa501d4482fd280a413f71443b73f8666", null ],
     [ "initcscmds", "iengine_8h.html#a993de96ab0b3a3a62cfa848a26c768e4", null ],

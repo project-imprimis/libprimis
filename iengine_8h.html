@@ -267,8 +267,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>UI::cleanup</b> ()</t
 <tr class="memitem:acd92a89f1ab2250b271c931797e178f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#acd92a89f1ab2250b271c931797e178f4">UI::inituicmds</a> ()</td></tr>
 <tr class="memdesc:acd92a89f1ab2250b271c931797e178f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the UI commands to the command parser.  <br /></td></tr>
 <tr class="separator:acd92a89f1ab2250b271c931797e178f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a162c60f6b6d8fd22b20cea45b97d6d08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a162c60f6b6d8fd22b20cea45b97d6d08">initaacmds</a> ()</td></tr>
+<tr class="memdesc:a162c60f6b6d8fd22b20cea45b97d6d08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes AA cubescript commands.  <br /></td></tr>
+<tr class="separator:a162c60f6b6d8fd22b20cea45b97d6d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c33340ab1cd3fe05a7aa4d12684471a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a9c33340ab1cd3fe05a7aa4d12684471a">inithudcmds</a> ()</td></tr>
-<tr class="memdesc:a9c33340ab1cd3fe05a7aa4d12684471a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes AA cubescript commands.  <br /></td></tr>
+<tr class="memdesc:a9c33340ab1cd3fe05a7aa4d12684471a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes HUD cubescript commands.  <br /></td></tr>
 <tr class="separator:a9c33340ab1cd3fe05a7aa4d12684471a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afffdc6caece1ec984e8a526bdc687b3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#afffdc6caece1ec984e8a526bdc687b3c">initnormalcmds</a> ()</td></tr>
 <tr class="memdesc:afffdc6caece1ec984e8a526bdc687b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes normal.cpp cubescript commands.  <br /></td></tr>
@@ -3010,6 +3013,62 @@ false if the window was not previously shown or did not exist </dd></dl>
 
 </div>
 </div>
+<a id="a162c60f6b6d8fd22b20cea45b97d6d08" name="a162c60f6b6d8fd22b20cea45b97d6d08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a162c60f6b6d8fd22b20cea45b97d6d08">&#9670;&#160;</a></span>initaacmds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initaacmds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes AA cubescript commands. </p>
+<p><br  />
+ <code>getsmaaproperty</code> <em>int</em> index</p><ul>
+<li>Returns the selected SMAA property (int)</li>
+<li>List of types for the type parameter: <br  />
+ 0. T2X<ol type="1">
+<li>S2X</li>
+<li>X4</li>
+<li>SMAA</li>
+<li>Spatial</li>
+<li>Quality</li>
+<li>ColorEdge</li>
+<li>GreenLuma</li>
+<li>DepthMask</li>
+<li>Stencil</li>
+<li>Debug</li>
+</ol>
+</li>
+</ul>
+<p><br  />
+ <code>setsmaaproperty</code> <em>int</em> index <em>int</em> value</p><ul>
+<li>Sets the selected SMAA property (int)</li>
+<li>If a value out of bounds is specified, value will be modified to remain in range.</li>
+<li>List of types for the index parameter: <br  />
+ 0. T2X<ol type="1">
+<li>S2X</li>
+<li>X4</li>
+<li>SMAA</li>
+<li>Spatial</li>
+<li>Quality</li>
+<li>ColorEdge</li>
+<li>GreenLuma</li>
+<li>DepthMask</li>
+<li>Stencil</li>
+<li>Debug </li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
 <a id="a1d335c95207001c4e062514051278169" name="a1d335c95207001c4e062514051278169"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d335c95207001c4e062514051278169">&#9670;&#160;</a></span>initconsolecmds()</h2>
 
@@ -3171,42 +3230,7 @@ false if the window was not previously shown or did not exist </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Initializes AA cubescript commands. </p>
-<p><code>getsmaaproperty</code> <em>int</em> index</p><ul>
-<li>Returns the selected SMAA property (int)</li>
-<li>List of types for the type parameter: 0. T2X<ol type="1">
-<li>S2X</li>
-<li>X4</li>
-<li>SMAA</li>
-<li>Spatial</li>
-<li>Quality</li>
-<li>ColorEdge</li>
-<li>GreenLuma</li>
-<li>DepthMask</li>
-<li>Stencil</li>
-<li>Debug</li>
-</ol>
-</li>
-</ul>
-<p><code>setsmaaproperty</code> <em>int</em> index <em>int</em> value</p><ul>
-<li>Sets the selected SMAA property (int)</li>
-<li>If a value out of bounds is specified, value will be modified to remain in range.</li>
-<li><p class="startli">List of types for the index parameter:</p>
-<p class="startli">0. T2X</p><ol type="1">
-<li>S2X</li>
-<li>X4</li>
-<li>SMAA</li>
-<li>Spatial</li>
-<li>Quality</li>
-<li>ColorEdge</li>
-<li>GreenLuma</li>
-<li>DepthMask</li>
-<li>Stencil</li>
-<li>Debug</li>
-</ol>
-</li>
-</ul>
-<p>Initializes HUD cubescript commands</p>
+<p>Initializes HUD cubescript commands. </p>
 <p><code>loadcrosshair</code> <em>string</em> file <em>int</em> index</p><ul>
 <li>Loads the crosshair file at the specified location into the crosshair manager at the specified index.<ul>
 <li>file the file where the crosshair image is located</li>
