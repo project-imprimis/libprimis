@@ -39,7 +39,7 @@ class Editor
     public:
         int mode; //editor mode - 1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)
         bool active, rendered;
-        const char *name;
+        std::string name;
         const char *filename;
 
         int maxx, maxy; // maxy=-1 if unlimited lines, 1 if single line editor
@@ -50,8 +50,8 @@ class Editor
 
         std::vector<EditLine> lines; // MUST always contain at least one line!
 
-        Editor(const char *name, int mode, const char *initval) :
-            mode(mode), active(true), rendered(false), name(newstring(name)), filename(nullptr),
+        Editor(std::string name, int mode, const char *initval) :
+            mode(mode), active(true), rendered(false), name(name), filename(nullptr),
             maxx(-1), maxy(-1), linewrap(false), pixelwidth(-1), pixelheight(-1),
             cx(0), cy(0), mx(-1), my(-1), scrolly(0)
         {
@@ -63,10 +63,8 @@ class Editor
         ~Editor()
         {
             //printf("~editor %08x '%s'\n", this, name);
-            delete[] name;
             delete[] filename;
 
-            name = nullptr;
             filename = nullptr;
             clear(nullptr);
         }
@@ -107,6 +105,6 @@ class Editor
 
 extern void readyeditors();
 extern void flusheditors();
-extern Editor *useeditor(const char *name, int mode, bool focus, const char *initval = nullptr);
+extern Editor *useeditor(std::string name, int mode, bool focus, const char *initval = nullptr);
 
 #endif
