@@ -1136,9 +1136,8 @@ void GBuffer::rendermodelbatches()
 void rendertransparentmodelbatches(int stencil)
 {
     aamask::enable(stencil);
-    for(uint i = 0; i < batches.size(); i++)
+    for(modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
             continue;
