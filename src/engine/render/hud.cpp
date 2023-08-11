@@ -147,7 +147,7 @@ namespace
     }
 
     const int maxcrosshairs  = 4;
-    Texture *crosshairs[maxcrosshairs] = { nullptr, nullptr, nullptr, nullptr };
+    std::array<Texture *, maxcrosshairs> crosshairs = { nullptr, nullptr, nullptr, nullptr };
 
     void loadcrosshair(const char *name, int i)
     {
