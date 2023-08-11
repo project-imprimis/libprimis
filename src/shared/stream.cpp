@@ -166,8 +166,8 @@ done:
 string homedir = "";
 struct packagedir
 {
-    char *dir, *filter;
-    size_t dirlen, filterlen;
+    std::string dir;
+    std::string filter;
 };
 static std::vector<packagedir> packagedirs;
 
@@ -477,12 +477,10 @@ const char *addpackagedir(const char *dir)
         filter += len;
     }
     packagedir pf;
-    pf.dir = filter ? newstring(pdir, filter-pdir) : newstring(pdir);
-    pf.dirlen = filter ? filter-pdir : std::strlen(pdir);
-    pf.filter = filter ? newstring(filter) : nullptr;
-    pf.filterlen = filter ? std::strlen(filter) : 0;
+    pf.dir = filter ? std::string(pdir, filter-pdir) : std::string(pdir);
+    pf.filter = filter ? std::string(filter) : "";
     packagedirs.push_back(pf);
-    return pf.dir;
+    return pf.dir.c_str();
 }
 
 const char *findfile(const char *filename, const char *mode)
@@ -519,11 +517,11 @@ const char *findfile(const char *filename, const char *mode)
     }
     for(const packagedir &pf : packagedirs)
     {
-        if(pf.filter && std::strncmp(filename, pf.filter, pf.filterlen))
+        if(pf.filter.size() > 0 && std::strncmp(filename, pf.filter.c_str(), pf.filter.size()))
         {
             continue;
         }
-        formatstring(s, "%s%s", pf.dir, filename);
+        formatstring(s, "%s%s", pf.dir.c_str(), filename);
         if(fileexists(s, mode))
         {
             return s;
@@ -627,11 +625,11 @@ int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
     }
     for(const packagedir &pf : packagedirs)
     {
-        if(pf.filter && std::strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
+        if(pf.filter.size() && std::strncmp(dirname, pf.filter.c_str(), dirlen == pf.filter.size()-1 ? dirlen : pf.filter.size()))
         {
             continue;
         }
-        formatstring(s, "%s%s", pf.dir, dirname);
+        formatstring(s, "%s%s", pf.dir.c_str(), dirname);
         if(listdir(s, false, ext, files))
         {
             dirs++;
