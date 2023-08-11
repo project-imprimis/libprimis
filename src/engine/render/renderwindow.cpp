@@ -246,7 +246,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
         h = hudh;
     if(forceaspect)
     {
-        w = static_cast<int>(std::ceil(h*forceaspect));
+        w = std::ceil(h*forceaspect);
     }
     getbackgroundres(w, h);
     gettextres(w, h);
