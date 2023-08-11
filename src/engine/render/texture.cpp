@@ -1063,18 +1063,17 @@ float Texture::ratio() const
 
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
 {
-    string tname;
-    copystring(tname, name);
-    Texture *t = textures.access(path(tname));
+    std::string tname(name);
+    Texture *t = textures.access(path(tname).c_str());
     if(t)
     {
         return t;
     }
     int compress = 0;
     ImageData s;
-    if(s.texturedata(tname, msg, &compress, &clamp))
+    if(s.texturedata(tname.c_str(), msg, &compress, &clamp))
     {
-        return newtexture(nullptr, tname, s, clamp, mipit, false, false, compress);
+        return newtexture(nullptr, tname.c_str(), s, clamp, mipit, false, false, compress);
     }
     return notexture;
 }
