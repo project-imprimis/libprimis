@@ -66,8 +66,8 @@ static void getbackgroundres(int &w, int &h)
     h = static_cast<int>(std::ceil(h*hk));
 }
 
-static string backgroundcaption   = "",
-              backgroundmapname   = "";
+static std::string backgroundcaption   = "",
+                   backgroundmapname   = "";
 static Texture *backgroundmapshot = nullptr;
 static char *backgroundmapinfo    = nullptr;
 
@@ -219,9 +219,9 @@ void swapbuffers(bool)
 static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
 {
     renderedframe = false;
-    copystring(backgroundcaption, caption ? caption : "");
+    backgroundcaption = std::string(caption ? caption : "");
     backgroundmapshot = mapshot;
-    copystring(backgroundmapname, mapname ? mapname : "");
+    backgroundmapname = std::string(mapname ? mapname : "");
     if(mapinfo != backgroundmapinfo)
     {
         delete[] backgroundmapinfo;
@@ -274,8 +274,8 @@ static void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr,
-               * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
+    const char * caption = backgroundcaption.c_str()[0] ? backgroundcaption.c_str() : nullptr,
+               * mapname = backgroundmapname.c_str()[0] ? backgroundmapname.c_str() : nullptr;
     renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
 }
 
