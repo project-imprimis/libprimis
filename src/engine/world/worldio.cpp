@@ -401,7 +401,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             return;
         }
     }
-    for(int i = 0; i < 6; ++i)
+    for(uint i = 0; i < 6; ++i)
     {
         c.texture[i] = f->get<ushort>();
     }
