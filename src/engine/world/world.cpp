@@ -240,22 +240,21 @@ void freeoctaentities(cube &c)
     {
         while(c.ext->ents && !c.ext->ents->mapmodels.empty())
         {
-            removeentity(c.ext->ents->decals.back());
+            int id = c.ext->ents->mapmodels.back();
             c.ext->ents->mapmodels.pop_back();
+            removeentity(id);
         }
         while(c.ext->ents && !c.ext->ents->decals.empty())
         {
-            removeentity(c.ext->ents->decals.back());
+            int id = c.ext->ents->decals.back();
             c.ext->ents->decals.pop_back();
+            removeentity(id);
         }
         while(c.ext->ents && !c.ext->ents->other.empty())
         {
-            removeentity(c.ext->ents->other.back());
-            //guard against recursive freeoctaentities() deleting this vector
-            if(c.ext->ents)
-            {
-                c.ext->ents->other.pop_back();
-            }
+            int id = c.ext->ents->other.back();
+            c.ext->ents->other.pop_back();
+            removeentity(id);
         }
     }
     if(c.ext->ents)
