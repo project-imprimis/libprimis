@@ -205,7 +205,7 @@ void dynent::reset()
 {
     physent::reset();
     stopmoving();
-    for(int i = 0; i < maxanimparts; ++i)
+    for(size_t i = 0; i < maxanimparts; ++i)
     {
         animinterp[i].reset();
     }
