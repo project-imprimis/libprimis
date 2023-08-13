@@ -1300,9 +1300,9 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     }
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
-    ivec2 cf[4];
-    int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf);
-    return !occludesface(o, opp, no, nsize, vo, size, mat, nmat, matmask, cf, numc);
+    std::array<ivec2, 4> cf;
+    int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf.data());
+    return !occludesface(o, opp, no, nsize, vo, size, mat, nmat, matmask, cf.data(), numc);
 }
 
 int classifyface(const cube &c, int orient, const ivec &co, int size)
