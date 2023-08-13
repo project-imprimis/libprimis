@@ -1443,11 +1443,11 @@ namespace
                 int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
                 if(numverts)
                 {
-                    vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
+                    const vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
                     ivec vo = ivec(co).mask(~0xFFF).shl(3);
                     for(int j = 0; j < numverts; ++j)
                     {
-                        vertinfo &v = verts[j];
+                        const vertinfo &v = verts[j];
                         pos[j] = ivec(v.x, v.y, v.z).add(vo);
                     }
                 }
