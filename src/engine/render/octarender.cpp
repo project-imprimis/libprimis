@@ -1457,9 +1457,9 @@ namespace
                 }
                 else
                 {
-                    ivec v[4];
-                    genfaceverts(c, i, v);
-                    int order = vis&4 || (!flataxisface(c, i) && faceconvexity(v) < 0) ? 1 : 0;
+                    std::array <ivec, 4> v;
+                    genfaceverts(c, i, v.data());
+                    int order = vis&4 || (!flataxisface(c, i) && faceconvexity(v.data()) < 0) ? 1 : 0;
                     ivec vo = ivec(co).shl(3);
                     pos[numverts++] = v[order].mul(size).add(vo);
                     if(vis&1)
