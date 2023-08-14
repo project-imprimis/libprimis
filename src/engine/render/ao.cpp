@@ -364,14 +364,14 @@ void GBuffer::renderao() const
     }
     else if(aoblur)
     {
-        float blurweights[maxblurradius+1],
-              bluroffsets[maxblurradius+1];
-        setupblurkernel(aoblur, blurweights, bluroffsets);
+        std::array<float, maxblurradius+1> blurweights,
+                                           bluroffsets;
+        setupblurkernel(aoblur, blurweights.data(), bluroffsets.data());
         for(int i = 0; i < 2+2*aoiter; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
             glViewport(0, 0, aow, aoh);
-            setblurshader(i%2, 1, aoblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
+            setblurshader(i%2, 1, aoblur, blurweights.data(), bluroffsets.data(), GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
             screenquad(aow, aoh);
         }
