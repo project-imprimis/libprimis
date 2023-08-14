@@ -480,14 +480,14 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
     if(bloomblur)
     {
-        float blurweights[maxblurradius+1],
-              bluroffsets[maxblurradius+1];
-        setupblurkernel(bloomblur, blurweights, bluroffsets);
+        std::array<float, maxblurradius+1> blurweights,
+                                           bluroffsets;
+        setupblurkernel(bloomblur, blurweights.data(), bluroffsets.data());
         for(int i = 0; i < (2 + 2*bloomiter); ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, b1w, b1h);
-            setblurshader(i%2, 1, bloomblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
+            setblurshader(i%2, 1, bloomblur, blurweights.data(), bluroffsets.data(), GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
             screenquad(b0w, b0h);
             std::swap(b0w, b1w);
