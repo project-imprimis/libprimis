@@ -148,7 +148,8 @@ bool cube::isvalidcube() const
 
 bool cube::poly::clippoly(const facebounds &b)
 {
-    pvert verts1[Face_MaxVerts+4], verts2[Face_MaxVerts+4];
+    std::array<pvert, Face_MaxVerts+4> verts1,
+                                       verts2;
     int numverts1 = 0,
         numverts2 = 0,
         px = verts[numverts-1].x,
@@ -254,7 +255,7 @@ bool cube::poly::clippoly(const facebounds &b)
     {
         return false;
     }
-    std::memcpy(verts, verts2, numverts2*sizeof(pvert));
+    std::memcpy(verts, verts2.data(), numverts2*sizeof(pvert));
     numverts = numverts2;
     return true;
 }
