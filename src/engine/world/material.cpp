@@ -1033,7 +1033,7 @@ const char *getmaterialdesc(int mat, const char *prefix)
 
 void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
 {
-    static const ushort matmasks[] =
+    static const std::array<ushort, 4> matmasks =
     {
         MatFlag_Volume|MatFlag_Index,
         MatFlag_Clip,
@@ -1042,9 +1042,8 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     };
     for(int i = 0; i < 6; ++i)
     {
-        for(int j = 0; j < static_cast<int>(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
+        for(const ushort &matmask : matmasks)
         {
-            ushort matmask = matmasks[j];
             int vis = visiblematerial(c, i, co, size, matmask&~MatFlag_Index);
             if(vis != MatSurf_NotVisible)
             {
