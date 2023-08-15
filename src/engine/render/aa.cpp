@@ -6,6 +6,7 @@
  * SMAA (subpixel morphological antialiasing)
  */
 #include "../libprimis-headers/cube.h"
+#include "../libprimis-headers/prop.h"
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
@@ -282,6 +283,27 @@ namespace //internal functions incl. AA implementations
     class subpixelaa
     {
         public:
+            enum SMAAProp
+            {
+                T2X = 0,
+                S2X,
+                X4,
+                SMAA,
+                Spatial,
+                Quality,
+                ColorEdge,
+                GreenLuma,
+                DepthMask,
+                Stencil,
+                Debug,
+
+                Count
+            };
+
+        private:
+            static const prop::PropertyMeta prop_meta[SMAAProp::Count];
+
+        public:
             std::array<GLuint, 4> smaafbo {0, 0, 0, 0};
             int smaatype = -1;
 
@@ -297,23 +319,9 @@ namespace //internal functions incl. AA implementations
 
             subpixelaa(GBuffer &buf);
 
-            enum SMAAProp
-            {
-                T2X = 0,
-                S2X,
-                X4,
-                SMAA,
-                Spatial,
-                Quality,
-                ColorEdge,
-                GreenLuma,
-                DepthMask,
-                Stencil,
-                Debug
-            };
-
-            bool setsmaaproperty(int index, int value);
-            int getsmaaproperty(int index) const;
+            bool setsmaaproperty(std::string name, int value);
+            const prop::Property<>* getsmaaproperty(std::string) const;
+            const prop::Property<>& getsmaaproperty(SMAAProp prop) const;
 
         private:
             GBuffer &buf;
@@ -369,154 +377,136 @@ namespace //internal functions incl. AA implementations
             vec2 areadiag(int pattern, float left, float right, const vec2 &offset);
             void gensmaaareadata();
 
-            int smaa = 0;
-            int smaaspatial = 1;
-            int debugsmaa = 0;
-
             /* smaa vars are set by `setupsmaa()` automatically: if TQAA and/or MSAA are
              * enabled, the following variables will be set to 1
              *
              * generally, do not change these vars from ingame
              */
-            int smaat2x = 0;
-            int smaas2x = 0;
-            int smaa4x = 0;
 
-            int smaaquality = 2;
-            int smaacoloredge = 0;
-            int smaagreenluma = 0;
-            int smaadepthmask = 1;
-            int smaastencil = 1;
+            std::array<prop::Property<>, SMAAProp::Count> props =
+                prop::make_props_array<SMAAProp::Count, prop::Property<>>(prop_meta);
+    };
+
+    const prop::PropertyMeta subpixelaa::prop_meta[SMAAProp::Count] =
+    {
+        prop::PropertyMeta
+        (
+            "t2x",
+            prop::PropertyType::Int,
+            0, 0, 1
+        ),
+        prop::PropertyMeta
+        (
+            "s2x",
+            prop::PropertyType::Int,
+            0, 0, 1
+        ),
+        prop::PropertyMeta
+        (
+            "x4",
+            prop::PropertyType::Int,
+            0, 0, 1
+        ),
+        prop::PropertyMeta
+        (
+            "enabled",
+            prop::PropertyType::Int,
+            0, 0, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->buf.cleanupgbuffer();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "spatial",
+            prop::PropertyType::Int,
+            0, 1, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "quality",
+            prop::PropertyType::Int,
+            0, 2, 3,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "coloredge",
+            prop::PropertyType::Int,
+            0, 0, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "greenluma",
+            prop::PropertyType::Int,
+            0, 0, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "depthmask",
+            prop::PropertyType::Int,
+            0, 1, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "stencil",
+            prop::PropertyType::Int,
+            0, 1, 1,
+            [](std::any smaarenderer)
+            {
+                subpixelaa* smaa = std::any_cast<subpixelaa*>(smaarenderer);
+                smaa->cleanupsmaa();
+            }
+        ),
+        prop::PropertyMeta
+        (
+            "debug",
+            prop::PropertyType::Int,
+            0, 0, 5
+        )
     };
 
     subpixelaa smaarenderer(gbuf);
 
-    bool subpixelaa::setsmaaproperty(int index, int value)
+    bool subpixelaa::setsmaaproperty(std::string name, int value)
     {
-        switch(index)
-        {
-            case T2X:
-            {
-                smaat2x = clampvar(false, "smaat2x", value, 0, 1);
-                return true;
-            }
-            case S2X:
-            {
-                smaas2x = clampvar(false, "smaas2x", value, 0, 1);
-                return true;
-            }
-            case X4:
-            {
-                smaa4x = clampvar(false, "smaa4x", value, 0, 1);
-                return true;
-            }
-            case SMAA:
-            {
-                smaa = clampvar(false, "smaa", value, 0, 1);
-                buf.cleanupgbuffer();
-                return true;
-            }
-            case Spatial:
-            {
-                smaaspatial = clampvar(false, "smaaspatial", value, 0, 1);
-                buf.cleanupgbuffer();
-                return true;
-            }
-            case Quality:
-            {
-                smaaquality = clampvar(false, "smaaquality", value, 0, 3);
-                cleanupsmaa();
-                return true;
-            }
-            case ColorEdge:
-            {
-                smaacoloredge = clampvar(false, "smaacoloredge", value, 0, 1);
-                cleanupsmaa();
-                return true;
-            }
-            case GreenLuma:
-            {
-                smaagreenluma = clampvar(false, "smaagreenluma", value, 0, 1);
-                cleanupsmaa();
-                return true;
-            }
-            case DepthMask:
-            {
-                smaadepthmask = clampvar(false, "smaadepthmask", value, 0, 1);
-                cleanupsmaa();
-                return true;
-            }
-            case Stencil:
-            {
-                smaastencil = clampvar(false, "smaastencil", value, 0, 1);
-                cleanupsmaa();
-                return true;
-            }
-            case Debug:
-            {
-                debugsmaa = clampvar(false, "debugsmaa", value, 0, 5);
-                return true;
-            }
-            default:
-            {
-                return false;
-            }
-        }
+        return set_prop(name, value, props, this);
     }
 
-    int subpixelaa::getsmaaproperty(int index) const
+    const prop::Property<>* subpixelaa::getsmaaproperty(std::string name) const
     {
-        switch(index)
-        {
-            case T2X:
-            {
-                return smaat2x;
-            }
-            case S2X:
-            {
-                return smaas2x;
-            }
-            case X4:
-            {
-                return smaa4x;
-            }
-            case SMAA:
-            {
-                return smaa;
-            }
-            case Spatial:
-            {
-                return smaaspatial;
-            }
-            case Quality:
-            {
-                return smaaquality;
-            }
-            case ColorEdge:
-            {
-                return smaacoloredge;
-            }
-            case GreenLuma:
-            {
-                return smaagreenluma;
-            }
-            case DepthMask:
-            {
-                return smaadepthmask;
-            }
-            case Stencil:
-            {
-                return smaastencil;
-            }
-            case Debug:
-            {
-                return debugsmaa;
-            }
-            default:
-            {
-                return -1;
-            }
-        }
+        return prop::find_prop(name, props);
+    }
+
+    const prop::Property<>& subpixelaa::getsmaaproperty(SMAAProp prop) const
+    {
+        return props[prop];
     }
 
     subpixelaa::subpixelaa(GBuffer &inbuf) : buf(inbuf)
@@ -525,7 +515,7 @@ namespace //internal functions incl. AA implementations
 
     void subpixelaa::loadsmaashaders(bool split)
     {
-        smaatype = tqaatype >= 0 ? tqaatype : (!smaagreenluma && !intel_texalpha_bug && !smaacoloredge ? AA_Luma : AA_Unused);
+        smaatype = tqaatype >= 0 ? tqaatype : (!props[SMAAProp::GreenLuma].get_int() && !intel_texalpha_bug && !props[SMAAProp::ColorEdge].get_int() ? AA_Luma : AA_Unused);
         if(split)
         {
             smaatype += AA_Split;
@@ -533,7 +523,7 @@ namespace //internal functions incl. AA implementations
         loadhdrshaders(smaatype);
 
         std::string opts;
-        if((smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
+        if((props[SMAAProp::DepthMask].get_int() && (!tqaa || msaalight)) || (props[SMAAProp::Stencil].get_int() && ghasstencil > (msaasamples ? 1 : 0)))
         {
             opts.push_back('d');
         }
@@ -541,7 +531,7 @@ namespace //internal functions incl. AA implementations
         {
             opts.push_back('s');
         }
-        if(tqaa || smaagreenluma || intel_texalpha_bug)
+        if(tqaa || props[SMAAProp::GreenLuma].get_int() || intel_texalpha_bug)
         {
             opts.push_back('g');
         }
@@ -549,10 +539,10 @@ namespace //internal functions incl. AA implementations
         {
             opts.push_back('t');
         }
-        std::string lumaedgename = std::string("SMAALumaEdgeDetection").append(std::to_string(smaaquality)).append(opts);
-        std::string coloredgename = std::string("SMAAColorEdgeDetection").append(std::to_string(smaaquality)).append(opts);
-        std::string blendweightname = std::string("SMAABlendingWeightCalculation").append(std::to_string(smaaquality)).append(opts);
-        std::string neighborhoodname = std::string("SMAANeighborhoodBlending").append(std::to_string(smaaquality)).append(opts);
+        std::string lumaedgename = std::string("SMAALumaEdgeDetection").append(props[SMAAProp::Quality].to_string()).append(opts);
+        std::string coloredgename = std::string("SMAAColorEdgeDetection").append(props[SMAAProp::Quality].to_string()).append(opts);
+        std::string blendweightname = std::string("SMAABlendingWeightCalculation").append(props[SMAAProp::Quality].to_string()).append(opts);
+        std::string neighborhoodname = std::string("SMAANeighborhoodBlending").append(props[SMAAProp::Quality].to_string()).append(opts);
         smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
         smaacoloredgeshader = lookupshaderbyname(coloredgename.c_str());
         smaablendweightshader = lookupshaderbyname(blendweightname.c_str());
@@ -562,7 +552,7 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        generateshader(nullptr, "smaashaders %d \"%s\"", smaaquality, opts.c_str());
+        generateshader(nullptr, "smaashaders %d \"%s\"", props[SMAAProp::Quality].get_int(), opts.c_str());
         smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
         if(!smaalumaedgeshader)
         {
@@ -985,9 +975,9 @@ namespace //internal functions incl. AA implementations
         createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_2D, 0, 0, 0, false);
         bool split = multisampledaa();
         smaasubsampleorder = split ? (msaapositions[0].x < 0.5f ? 1 : 0) : -1;
-        smaat2x = tqaa ? 1 : 0;
-        smaas2x = split ? 1 : 0;
-        smaa4x = tqaa && split ? 1 : 0;
+        props[SMAAProp::T2X].set_no_cb(tqaa ? 1 : 0);
+        props[SMAAProp::S2X].set_no_cb(split ? 1 : 0);
+        props[SMAAProp::X4].set_no_cb(tqaa && split ? 1 : 0);
         for(int i = 0; i < (split ? 4 : 3); ++i)
         {
             if(!smaatex[i])
@@ -1004,7 +994,7 @@ namespace //internal functions incl. AA implementations
             {
                 case 0:
                 {
-                    format = tqaa || (!smaagreenluma && !intel_texalpha_bug && !smaacoloredge) ? GL_RGBA8 : GL_RGB;
+                    format = tqaa || (!props[SMAAProp::GreenLuma].get_int() && !intel_texalpha_bug && !props[SMAAProp::ColorEdge].get_int()) ? GL_RGBA8 : GL_RGB;
                     break;
                 }
                 case 1:
@@ -1032,7 +1022,7 @@ namespace //internal functions incl. AA implementations
                 static const GLenum drawbufs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
                 glDrawBuffers(2, drawbufs);
             }
-            if(!i || (smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
+            if(!i || (props[SMAAProp::DepthMask].get_int() && (!tqaa || msaalight)) || (props[SMAAProp::Stencil].get_int() && ghasstencil > (msaasamples ? 1 : 0)))
             {
                 buf.bindgdepth();
             }
@@ -1075,7 +1065,9 @@ namespace //internal functions incl. AA implementations
             }
         }
         smaasubsampleorder = -1;
-        smaat2x = smaas2x = smaa4x = 0;
+        props[SMAAProp::T2X].set_no_cb(0);
+        props[SMAAProp::S2X].set_no_cb(0);
+        props[SMAAProp::X4].set_no_cb(0);
 
         clearsmaashaders();
     }
@@ -1095,7 +1087,7 @@ namespace //internal functions incl. AA implementations
          *  4: show the buffer of edge-detect patterns
          *  5: show the smaa search texture
          */
-        switch(debugsmaa)
+        switch(props[SMAAProp::Debug].get_int())
         {
             case 1:
             {
@@ -1135,8 +1127,8 @@ namespace //internal functions incl. AA implementations
         timer *smaatimer = begintimer("smaa");
 
         int cleardepth = msaalight ? GL_DEPTH_BUFFER_BIT | (ghasstencil > 1 ? GL_STENCIL_BUFFER_BIT : 0) : 0;
-        bool depthmask = smaadepthmask && (!tqaa || msaalight),
-             stencil = smaastencil && ghasstencil > (msaasamples ? 1 : 0);
+        bool depthmask = props[SMAAProp::DepthMask].get_int() && (!tqaa || msaalight),
+             stencil = props[SMAAProp::Stencil].get_int() && ghasstencil > (msaasamples ? 1 : 0);
         for(int pass = 0; pass < (split ? 2 : 1); ++pass) // loop through multiple passes if doing multisample aa
         {
             glBindFramebuffer(GL_FRAMEBUFFER, smaafbo[1]);
@@ -1158,7 +1150,7 @@ namespace //internal functions incl. AA implementations
                 glStencilFunc(GL_ALWAYS, 0x10*(pass+1), ~0);
                 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
             }
-            if(smaacoloredge)
+            if(props[SMAAProp::ColorEdge].get_int())
             {
                 smaacoloredgeshader->set();
             }
@@ -1298,7 +1290,7 @@ void setupaa(GBuffer &buf, int w, int h)
     {
         setuptqaa(buf, w, h);
     }
-    if(smaarenderer.getsmaaproperty(subpixelaa::SMAA))
+    if(smaarenderer.getsmaaproperty(subpixelaa::SMAA).get_int())
     {
         if(!smaarenderer.smaafbo[0])
         {
@@ -1393,7 +1385,8 @@ namespace aamask
 bool multisampledaa()
 {
     return msaasamples == 2 &&
-          (smaarenderer.getsmaaproperty(subpixelaa::SMAA) ? msaalight && smaarenderer.getsmaaproperty(subpixelaa::Spatial) : tqaa);
+          (smaarenderer.getsmaaproperty(subpixelaa::SMAA).get_int() ? msaalight &&
+           smaarenderer.getsmaaproperty(subpixelaa::Spatial).get_int() : tqaa);
 }
 
 //used by rendergl
@@ -1409,7 +1402,7 @@ bool multisampledaa()
  */
 void doaa(GLuint outfbo, GBuffer &gbuffer)
 {
-    if(smaarenderer.getsmaaproperty(subpixelaa::SMAA))
+    if(smaarenderer.getsmaaproperty(subpixelaa::SMAA).get_int())
     {
         bool split = multisampledaa();
         gbuffer.processhdr(smaarenderer.smaafbo[0], smaarenderer.smaatype);
@@ -1433,7 +1426,7 @@ void doaa(GLuint outfbo, GBuffer &gbuffer)
 
 bool debugaa()
 {
-    if(smaarenderer.getsmaaproperty(subpixelaa::Debug))
+    if(smaarenderer.getsmaaproperty(subpixelaa::Debug).get_int())
     {
         smaarenderer.viewsmaa();
     }
@@ -1457,6 +1450,14 @@ void cleanupaa()
 
 void initaacmds()
 {
-    addcommand("getsmaaproperty", reinterpret_cast<identfun>(+[] (int * index) {intret(smaarenderer.getsmaaproperty(*index));} ), "i", Id_Command);
-    addcommand("setsmaaproperty", reinterpret_cast<identfun>(+[] (int * index, int * value) {intret(smaarenderer.setsmaaproperty(*index, *value));} ), "ii", Id_Command);
+    addcommand("getsmaaproperty", reinterpret_cast<identfun>(+[] (char* name)
+    {
+        const prop::Property<>* prop = smaarenderer.getsmaaproperty(std::string(name));
+        if(prop) prop->cmd_result();
+    }), "s", Id_Command);
+
+    addcommand("setsmaaproperty", reinterpret_cast<identfun>(+[] (char* name, int* value)
+    {
+        smaarenderer.setsmaaproperty(std::string(name), *value);
+    }), "si", Id_Command);
 }
