@@ -385,7 +385,8 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
             p.verts[0] = p.verts[p.numverts-1];
             p.numverts--;
         }
-        px = cx; py = cy;
+        px = cx;
+        py = cy;
         cx = static_cast<int>(p.verts[2].x) - static_cast<int>(p.verts[1].x);
         cy = static_cast<int>(p.verts[2].y) - static_cast<int>(p.verts[1].y);
         dir = px*cy - py*cx;
