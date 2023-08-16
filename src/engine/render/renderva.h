@@ -109,5 +109,6 @@ extern void clearshadowmeshes();
 extern void genshadowmeshes();
 extern shadowmesh *findshadowmesh(int idx, const extentity &e);
 extern void rendershadowmesh(const shadowmesh *m);
+extern void dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax);
 
 #endif
