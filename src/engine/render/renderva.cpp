@@ -3464,19 +3464,16 @@ void renderrsmgeom(bool dyntex)
     cur.cleanupgeom();
 }
 
-int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
+void dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
 {
-    int vis = 0;
     for(vtxarray *va = shadowva; va; va = va->rnext)
     {
         if(va->shadowmask&mask && va->dyntexs)
         {
             bbmin.min(vec(va->geommin));
             bbmax.max(vec(va->geommax));
-            vis++;
         }
     }
-    return vis;
 }
 
 void findshadowmms()
