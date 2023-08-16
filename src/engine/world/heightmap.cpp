@@ -89,7 +89,6 @@ class hmap
             dr = dir>0 ? 1 : -1;
          //   biasup = mode == dir<0;
             biasup = dir < 0;
-            bool paintme = paintbrush;
             int cx = (sel.corner&1 ? 0 : -1),
                 cy = (sel.corner&2 ? 0 : -1);
             hws= (rootworld.mapsize()>>gridpower);
@@ -109,6 +108,7 @@ class hmap
                 bnx = nx = std::min(nx, (sel.s[R[d]]+(sel.o[R[d]]>>gridpower))-gx-1);
                 bny = ny = std::min(ny, (sel.s[C[d]]+(sel.o[C[d]]>>gridpower))-gy-1);
             }
+            bool paintme = paintbrush;
             if(havesel && mode<0) // -ve means smooth selection
             {
                 paintme = false;
