@@ -1,5 +1,9 @@
 var annotated_dup =
 [
+    [ "prop", null, [
+      [ "Property", "classprop_1_1Property.html", "classprop_1_1Property" ],
+      [ "PropertyMeta", "classprop_1_1PropertyMeta.html", "classprop_1_1PropertyMeta" ]
+    ] ],
     [ "std", null, [
       [ "hash< ivec >", "structstd_1_1hash_3_01ivec_01_4.html", null ],
       [ "hash< vec >", "structstd_1_1hash_3_01vec_01_4.html", null ]

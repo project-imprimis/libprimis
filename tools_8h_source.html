@@ -602,40 +602,52 @@ $(document).ready(function(){initNavTree('tools_8h_source.html',''); initResizab
 <div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span> </div>
 <div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putint(std::vector&lt;uchar&gt; &amp;p, <span class="keywordtype">int</span> n);</div>
 <div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span> </div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="keyword">inline</span> <span class="keywordtype">void</span> sendstring_(<span class="keyword">const</span> <span class="keywordtype">char</span> *t, T &amp;p)</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="keyword">inline</span> <span class="keywordtype">void</span> vectorput(std::vector&lt;uint8_t&gt;&amp; buf, <span class="keyword">const</span> T&amp; data)</div>
 <div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>{</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    <span class="keywordflow">while</span>(*t)</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    {</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>        putint(p, *t++);</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>    }</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>    putint(p, 0);</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>}</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span> </div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="keyword">inline</span> <span class="keywordtype">void</span> putfloat_(T &amp;p, <span class="keywordtype">float</span> f)</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>{</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>    p.put((uchar *)&amp;f, <span class="keyword">sizeof</span>(<span class="keywordtype">float</span>));</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>}</div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span> </div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">int</span> n);</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span><span class="keyword">extern</span> <span class="keywordtype">int</span> getint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putuint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">int</span> n);</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span><span class="keyword">extern</span> <span class="keywordtype">int</span> getuint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putfloat(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">float</span> f);</div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span><span class="keyword">extern</span> <span class="keywordtype">float</span> getfloat(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sendstring(<span class="keyword">const</span> <span class="keywordtype">char</span> *t, <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
-<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span><span class="keyword">extern</span> <span class="keywordtype">void</span> getstring(<span class="keywordtype">char</span> *t, <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">size_t</span> len);</div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span> </div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="keyword">template</span>&lt;<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="keyword">inline</span> <span class="keywordtype">void</span> getstring(<span class="keywordtype">char</span> (&amp;t)[N], <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p) { getstring(t, p, N); }</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    <span class="keyword">const</span> uint8_t* data_ptr = <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span>uint8_t*<span class="keyword">&gt;</span>(&amp;data);</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>    buf.insert(buf.end(), data_ptr, data_ptr + <span class="keyword">sizeof</span>(T));</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>}</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span> </div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="keyword">inline</span> <span class="keywordtype">void</span> vectorput(std::vector&lt;uint8_t&gt;&amp; buf, <span class="keyword">const</span> uint8_t* data, <span class="keywordtype">size_t</span> size)</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>{</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    buf.insert(buf.end(), data, data + size);</div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>}</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span> </div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="keyword">inline</span> <span class="keywordtype">void</span> sendstring_(<span class="keyword">const</span> <span class="keywordtype">char</span> *t, T &amp;p)</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>{</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    <span class="keywordflow">while</span>(*t)</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>    {</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        putint(p, *t++);</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    }</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>    putint(p, 0);</div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>}</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span> </div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span><span class="keyword">inline</span> <span class="keywordtype">void</span> putfloat_(T &amp;p, <span class="keywordtype">float</span> f)</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>{</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span>    p.put((uchar *)&amp;f, <span class="keyword">sizeof</span>(<span class="keywordtype">float</span>));</div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>}</div>
 <div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span> </div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="keyword">extern</span> <span class="keywordtype">void</span> filtertext(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">bool</span> whitespace, <span class="keywordtype">bool</span> forcespace, <span class="keywordtype">size_t</span> len);</div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span> </div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span><span class="keyword">template</span>&lt;<span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="keyword">inline</span> <span class="keywordtype">void</span> filtertext(<span class="keywordtype">char</span> (&amp;dst)[N], <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">bool</span> whitespace = <span class="keyword">true</span>, <span class="keywordtype">bool</span> forcespace = <span class="keyword">false</span>) { filtertext(dst, src, whitespace, forcespace, N-1); }</div>
-<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span> </div>
-<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span><span class="preprocessor">#endif </span><span class="comment">/* TOOLS_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">int</span> n);</div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="keyword">extern</span> <span class="keywordtype">int</span> getint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putuint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">int</span> n);</div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="keyword">extern</span> <span class="keywordtype">int</span> getuint(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span><span class="keyword">extern</span> <span class="keywordtype">void</span> putfloat(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">float</span> f);</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span><span class="keyword">extern</span> <span class="keywordtype">float</span> getfloat(<a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span><span class="keyword">extern</span> <span class="keywordtype">void</span> sendstring(<span class="keyword">const</span> <span class="keywordtype">char</span> *t, <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p);</div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span><span class="keyword">extern</span> <span class="keywordtype">void</span> getstring(<span class="keywordtype">char</span> *t, <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p, <span class="keywordtype">size_t</span> len);</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span> </div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span><span class="keyword">template</span>&lt;<span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span><span class="keyword">inline</span> <span class="keywordtype">void</span> getstring(<span class="keywordtype">char</span> (&amp;t)[N], <a class="code hl_struct" href="structdatabuf.html">ucharbuf</a> &amp;p) { getstring(t, p, N); }</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span> </div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span><span class="keyword">extern</span> <span class="keywordtype">void</span> filtertext(<span class="keywordtype">char</span> *dst, <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">bool</span> whitespace, <span class="keywordtype">bool</span> forcespace, <span class="keywordtype">size_t</span> len);</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span> </div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span><span class="keyword">template</span>&lt;<span class="keywordtype">size_t</span> N&gt;</div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span><span class="keyword">inline</span> <span class="keywordtype">void</span> filtertext(<span class="keywordtype">char</span> (&amp;dst)[N], <span class="keyword">const</span> <span class="keywordtype">char</span> *src, <span class="keywordtype">bool</span> whitespace = <span class="keyword">true</span>, <span class="keywordtype">bool</span> forcespace = <span class="keyword">false</span>) { filtertext(dst, src, whitespace, forcespace, N-1); }</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span> </div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span><span class="preprocessor">#endif </span><span class="comment">/* TOOLS_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="astructdatabuf_html"><div class="ttname"><a href="structdatabuf.html">databuf</a></div><div class="ttdef"><b>Definition</b> tools.h:228</div></div>
 <div class="ttc" id="astructdatabuf_html_a49524245867f8f8b7a7e8d5a6c2e9afa"><div class="ttname"><a href="structdatabuf.html#a49524245867f8f8b7a7e8d5a6c2e9afa">databuf::length</a></div><div class="ttdeci">int length() const</div><div class="ttdoc">Returns the number of allocated entries in the databuf.</div><div class="ttdef"><b>Definition</b> tools.h:381</div></div>
 <div class="ttc" id="astructdatabuf_html_a4ddb1dbc1bcc6e5c589bb248060b2e24"><div class="ttname"><a href="structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24">databuf::put</a></div><div class="ttdeci">void put(const T &amp;val)</div><div class="ttdoc">Adds an entry to the databuf if space is available.</div><div class="ttdef"><b>Definition</b> tools.h:312</div></div>

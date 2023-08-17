@@ -30,6 +30,8 @@ var hierarchy =
     [ "physent", "structphysent.html", [
       [ "dynent", "structdynent.html", null ]
     ] ],
+    [ "prop::Property< PropertyMetaT >", "classprop_1_1Property.html", null ],
+    [ "prop::PropertyMeta", "classprop_1_1PropertyMeta.html", null ],
     [ "selinfo", "structselinfo.html", null ],
     [ "Slot", "structSlot.html", [
       [ "DecalSlot", "structDecalSlot.html", null ]
