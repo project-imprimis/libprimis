@@ -965,7 +965,7 @@ uint faceedges(const cube &c, int orient)
 }
 
 
-static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = nullptr)
+static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, std::array<ivec2, 4> &fvecs, const ivec *v = nullptr)
 {
     int i = 0;
     if(solid)
@@ -1223,9 +1223,9 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
         {
             return false;
         }
-        ivec2 of[4];
+        std::array<ivec2, 4> of;
         int numo = genfacevecs(c, orient, o, size, false, of);
-        return numo >= 3 && insideface(cf, numc, of, numo);
+        return numo >= 3 && insideface(&cf[0], numc, &of[0], numo);
     }
     size >>= 1;
     int coord = DIM_COORD(orient);
@@ -1293,15 +1293,16 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
         }
         ivec vo = ivec(co).mask(0xFFF);
         no.mask(0xFFF);
-        ivec2 cf[4], of[4];
+        std::array<ivec2, 4> cf,
+                             of;
         int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf),
             numo = genfacevecs(o, opp, no, nsize, false, of);
-        return numo < 3 || !insideface(cf, numc, of, numo);
+        return numo < 3 || !insideface(&cf[0], numc, &of[0], numo);
     }
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
     std::array<ivec2, 4> cf;
-    int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf.data());
+    int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf);
     return !occludesface(o, opp, no, nsize, vo, size, mat, nmat, matmask, cf.data(), numc);
 }
 
@@ -1388,7 +1389,8 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             {
                 ivec vo = ivec(co).mask(0xFFF);
                 no.mask(0xFFF);
-                ivec2 cf[4], of[4];
+                std::array<ivec2, 4> cf,
+                                     of;
                 int numo = genfacevecs(o, opp, no, nsize, false, of);
                 if(numo < 3)
                 {
@@ -1400,7 +1402,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask&2 && solid)
                     {
                         numc = genfacevecs(c, orient, vo, size, true, cf);
-                        if(!insideface(cf, numc, of, numo))
+                        if(!insideface(&cf[0], numc, &of[0], numo))
                         {
                             forcevis |= 2;
                         }
@@ -1409,7 +1411,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask)
                     {
                         numc = genfacevecs(c, orient, vo, size, false, cf);
-                        if(!insideface(cf, numc, of, numo))
+                        if(!insideface(&cf[0], numc, &of[0], numo))
                         {
                             forcevis |= vismask;
                         }
@@ -1422,12 +1424,12 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     {
         ivec vo = ivec(co).mask(0xFFF);
         no.mask(0xFFF);
-        ivec2 cf[4];
+        std::array<ivec2, 4> cf;
         int numc = 0;
         if(vismask&1)
         {
             numc = genfacevecs(c, orient, vo, size, false, cf);
-            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Air, (c.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha, cf, numc))
+            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Air, (c.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha, &cf[0], numc))
             {
                 forcevis |= 1;
             }
@@ -1438,7 +1440,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             {
                 numc = genfacevecs(c, orient, vo, size, solid, cf);
             }
-            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Clip, Mat_NoClip, MatFlag_Clip, cf, numc))
+            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Clip, Mat_NoClip, MatFlag_Clip, &cf[0], numc))
             {
                 forcevis |= 2;
             }
@@ -1516,7 +1518,8 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     }
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
-    ivec2 cf[4], of[4];
+    std::array<ivec2, 4> cf,
+                         of;
     int opp = oppositeorient(orient),
         numo = 0,
         numc;
@@ -1547,7 +1550,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         {
             return vis;
         }
-        if(insideface(cf, numc, of, numo))
+        if(insideface(&cf[0], numc, &of[0], numo))
         {
             return vis&notouch;
         }
@@ -1555,7 +1558,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     else
     {
         numc = genfacevecs(c, orient, vo, size, false, cf, v);
-        if(occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, cf, numc))
+        if(occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, &cf[0], numc))
         {
             return vis&notouch;
         }
@@ -1583,7 +1586,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
             ivec2 tf[3] = { cf[verts[0]], cf[verts[1]], cf[verts[2]] };
             if(numo > 0)
             {
-                if(!insideface(tf, 3, of, numo))
+                if(!insideface(tf, 3, &of[0], numo))
                 {
                     continue;
                 }
