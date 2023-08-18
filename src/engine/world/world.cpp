@@ -429,9 +429,9 @@ static void modifyoctaentity(int flags, int id, const extentity &e, cube *c, con
                         }
                         oe.bbmin = oe.bbmax = oe.o;
                         oe.bbmin.add(oe.size);
-                        for(uint j = 0; j < oe.mapmodels.size(); j++)
+                        for(const int &j : oe.mapmodels)
                         {
-                            extentity &e = *entities::getents()[oe.mapmodels[j]];
+                            extentity &e = *entities::getents()[j];
                             ivec eo, er;
                             if(getentboundingbox(e, eo, er))
                             {
