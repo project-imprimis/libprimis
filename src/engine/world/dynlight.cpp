@@ -31,7 +31,7 @@ namespace
         vec o;
         float curradius, dist;
         int expire;
-        physent *owner;
+        const physent *owner;
 
         dynlight(vec o, int expire, physent *owner, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int flags, vec dir, int spot) :
             o(o), expire(expire), owner(owner), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), flags(flags), dir(dir), spot(spot)
