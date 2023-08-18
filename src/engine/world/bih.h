@@ -27,7 +27,10 @@ class BIH
             public:
                 static constexpr int maxtriangles = 1<<14;
                 matrix4x3 xform, invxform;
-                matrix3 xformnorm, invxformnorm;
+
+                matrix3 xformnorm() const;
+                matrix3 invxformnorm() const;
+
                 float scale;
                 node *nodes;
                 int numnodes;

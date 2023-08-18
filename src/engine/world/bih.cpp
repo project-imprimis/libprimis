@@ -66,6 +66,21 @@ void BIH::mesh::setmesh(const tri *tris, int numtris,
     this->tcstride = tcstride;
 }
 
+
+matrix3 BIH::mesh::xformnorm() const
+{
+    matrix3 xfn(xform);
+    xfn.normalize();
+    return xfn;
+}
+
+matrix3 BIH::mesh::invxformnorm() const
+{
+    matrix3 ixfn(xformnorm());
+    ixfn.invert();
+    return ixfn;
+}
+
 /* diagram of a,b,c,n vectors
  * a is the vector between the origin and the point 0 indicated
  * n is the triangle normal
@@ -148,7 +163,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     }
     if(!(mode&Ray_Shadow))
     {
-        hitsurface = m.xformnorm.transform(n).normalize();
+        hitsurface = m.xformnorm().transform(n).normalize();
     }
     dist = f*invdet;
     return true; //true if collided
@@ -165,7 +180,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
     size_t stacksize = 0;
     ivec order(ray.x>0 ? 0 : 1, ray.y>0 ? 0 : 1, ray.z>0 ? 0 : 1);
     vec mo = m.invxform.transform(o), //invxform is inverse transform 4x3 matrix; transform by vec o
-        mray = m.invxformnorm.transform(ray);
+        mray = m.invxformnorm().transform(ray);
     for(;;)
     {
         int axis = curnode->axis();
@@ -433,11 +448,7 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     for(mesh &m : meshes)
     {
         m.scale = m.xform.a.magnitude();
-        m.xformnorm = matrix3(m.xform);
-        m.xformnorm.normalize();
         m.invxform.invert(m.xform);
-        m.invxformnorm = matrix3(m.invxform);
-        m.invxformnorm.normalize();
         m.tribbs = dsttri;
         const mesh::tri *srctri = m.tris;
         vec mmin(1e16f, 1e16f, 1e16f), mmax(-1e16f, -1e16f, -1e16f);
