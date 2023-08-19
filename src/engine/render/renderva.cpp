@@ -3436,7 +3436,7 @@ void renderrsmgeom(bool dyntex)
                 {
                     gle::bindvbo(va->vbuf);
                     gle::bindebo(va->skybuf);
-                    const vertex *ptr = 0;
+                    const vertex *ptr = nullptr; //note: offset of nullptr is technically UB
                     gle::vertexpointer(sizeof(vertex), ptr->pos.v);
                 }
                 drawvaskytris(*va);
