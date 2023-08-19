@@ -1459,7 +1459,10 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     int vis = 3,
         touching = 0xF;
     std::array<ivec, 4> v;
-    ivec e1, e2, e3, n;
+    ivec e1,
+         e2,
+         e3,
+         n;
     genfaceverts(c, orient, v.data());
     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
     int convex = (e3 = v[0]).sub(v[3]).dot(n);
