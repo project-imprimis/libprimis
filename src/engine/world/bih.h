@@ -31,8 +31,8 @@ class BIH
                 matrix4x3 invxform() const;
                 matrix3 xformnorm() const;
                 matrix3 invxformnorm() const;
+                float scale() const;
 
-                float scale;
                 node *nodes;
                 int numnodes;
 

@@ -88,6 +88,11 @@ matrix3 BIH::mesh::invxformnorm() const
     return ixfn;
 }
 
+float BIH::mesh::scale() const
+{
+    return xform.a.magnitude();
+}
+
 /* diagram of a,b,c,n vectors
  * a is the vector between the origin and the point 0 indicated
  * n is the triangle normal
@@ -130,7 +135,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         {
             return false;
         }
-        f = r.dot(n)*m.scale;
+        f = r.dot(n)*m.scale();
         if(f < 0 || f > maxdist*det || !det)
         {
             return false;
@@ -148,7 +153,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         {
             return false;
         }
-        f = r.dot(n)*m.scale;
+        f = r.dot(n)*m.scale();
         if(f > 0 || f < maxdist*det)
         {
             return false;
@@ -454,7 +459,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     mesh::tribb *dsttri = tribbs;
     for(mesh &m : meshes)
     {
-        m.scale = m.xform.a.magnitude();
         m.tribbs = dsttri;
         const mesh::tri *srctri = m.tris;
         vec mmin(1e16f, 1e16f, 1e16f), mmax(-1e16f, -1e16f, -1e16f);
@@ -874,20 +878,20 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
     vec a = m.getpos(t.vert[0]),
         b = m.getpos(t.vert[1]),
         c = m.getpos(t.vert[2]),
-        zdir = vec(orient.rowz()).mul((radius.z - radius.x)/(m.scale*m.scale));
-    if(trisegmentdistance(a, b, c, vec(center).sub(zdir), vec(center).add(zdir)) > (radius.x*radius.x)/(m.scale*m.scale))
+        zdir = vec(orient.rowz()).mul((radius.z - radius.x)/(m.scale()*m.scale()));
+    if(trisegmentdistance(a, b, c, vec(center).sub(zdir), vec(center).add(zdir)) > (radius.x*radius.x)/(m.scale()*m.scale()))
     {
         return;
     }
     vec n;
     n.cross(a, b, c).normalize();
-    float pdist = (n.dot(vec(center).sub(a)) - std::fabs(n.dot(zdir)))*m.scale - radius.x;
+    float pdist = (n.dot(vec(center).sub(a)) - std::fabs(n.dot(zdir)))*m.scale() - radius.x;
     if(pdist > 0 || pdist <= dist)
     {
         return;
     }
     collideinside = true;
-    n = orient.transformnormal(n).div(m.scale);
+    n = orient.transformnormal(n).div(m.scale());
     if(!dir.iszero())
     {
         if(n.dot(dir) >= -cutoff*dir.magnitude())
