@@ -67,6 +67,13 @@ void BIH::mesh::setmesh(const tri *tris, int numtris,
 }
 
 
+matrix4x3 BIH::mesh::invxform() const
+{
+    matrix4x3 ixf(xform);
+    ixf.invert();
+    return ixf;
+}
+
 matrix3 BIH::mesh::xformnorm() const
 {
     matrix3 xfn(xform);
@@ -179,7 +186,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
     std::array<traversestate, 128> stack;
     size_t stacksize = 0;
     ivec order(ray.x>0 ? 0 : 1, ray.y>0 ? 0 : 1, ray.z>0 ? 0 : 1);
-    vec mo = m.invxform.transform(o), //invxform is inverse transform 4x3 matrix; transform by vec o
+    vec mo = m.invxform().transform(o), //invxform is inverse transform 4x3 matrix; transform by vec o
         mray = m.invxformnorm().transform(ray);
     for(;;)
     {
@@ -448,7 +455,6 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     for(mesh &m : meshes)
     {
         m.scale = m.xform.a.magnitude();
-        m.invxform.invert(m.xform);
         m.tribbs = dsttri;
         const mesh::tri *srctri = m.tris;
         vec mmin(1e16f, 1e16f, 1e16f), mmax(-1e16f, -1e16f, -1e16f);
@@ -1071,7 +1077,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
         }
         matrix4x3 morient;
         morient.mul(orient, m.xform);
-        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform.transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
     }
     return dist > maxcollidedistance;
 }
@@ -1281,7 +1287,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
         }
         matrix4x3 morient;
         morient.mul(orient, o, m.xform);
-        genstaintris(s, m, m.invxform.transform(bo), radius, morient, m.nodes, icenter, iradius);
+        genstaintris(s, m, m.invxform().transform(bo), radius, morient, m.nodes, icenter, iradius);
     }
 }
 

@@ -26,8 +26,9 @@ class BIH
         {
             public:
                 static constexpr int maxtriangles = 1<<14;
-                matrix4x3 xform, invxform;
 
+                matrix4x3 xform;
+                matrix4x3 invxform() const;
                 matrix3 xformnorm() const;
                 matrix3 invxformnorm() const;
 
