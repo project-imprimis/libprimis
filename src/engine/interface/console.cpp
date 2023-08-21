@@ -86,7 +86,7 @@ class CompletionFinder
         friend std::hash<FilesKey>;
 
         std::unordered_map<FilesKey, FilesVal *> completefiles;
-        std::unordered_map<char *, FilesVal *> completions;
+        std::unordered_map<std::string, FilesVal *> completions;
 
         int completesize = 0;
         char *lastcomplete = nullptr;
@@ -231,7 +231,7 @@ void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
 //print to a stream f the listcompletions in the completions filesval
 void CompletionFinder::writecompletions(std::fstream& f)
 {
-    std::vector<char *> cmds;
+    std::vector<std::string> cmds;
     for(auto &[k, v] : completions)
     {
         if(v)
@@ -240,23 +240,23 @@ void CompletionFinder::writecompletions(std::fstream& f)
         }
     }
     std::sort(cmds.begin(), cmds.end());
-    for(char *&k : cmds)
+    for(std::string &k : cmds)
     {
         FilesVal *v = completions[k];
         if(v->type==Files_List)
         {
             if(validateblock(v->dir))
             {
-                f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
+                f << "listcomplete " << escapeid(k.c_str()) << " [" << v->dir << "]\n";
             }
             else
             {
-                f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
+                f << "listcomplete " << escapeid(k.c_str()) << " " << escapestring(v->dir) << std::endl;
             }
         }
         else
         {
-            f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
+            f << "complete " << escapeid(k.c_str()) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
         }
     }
 }
