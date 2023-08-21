@@ -1423,10 +1423,15 @@ namespace
 
     struct cubeedge
     {
-        cube *c;
+        cube * const c;
         int next, offset;
         ushort size;
         uchar index, flags;
+
+        cubeedge(cube *c, int next, int offset, ushort size, uchar index, uchar flags) :
+            c(c), next(next), offset(offset), size(size), index(index), flags(flags)
+        {
+        }
     };
 
     std::vector<cubeedge> cubeedges;
@@ -1500,13 +1505,12 @@ namespace
                     g.origin = ivec(pos[e1]).sub(ivec(d).mul(t1));
                     g.slope = d;
                     g.axis = axis;
-                    cubeedge ce;
-                    ce.c = &c;
-                    ce.offset = t1;
-                    ce.size = t2 - t1;
-                    ce.index = i*(Face_MaxVerts+1)+j;
-                    ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
-                    ce.next = -1;
+                    cubeedge ce(&c,
+                                t1,
+                                t2-t1,
+                                i*(Face_MaxVerts+1)+j,
+                                CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0),
+                                -1);
                     bool insert = true;
                     int *exists = edgegroups.access(g);
                     if(exists)
