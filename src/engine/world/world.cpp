@@ -153,10 +153,9 @@ void attachentity(extentity &e)
 //used in iengine
 void attachentities()
 {
-    std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity *& i : entities::getents())
     {
-        attachentity(*ents[i]);
+        attachentity(*i);
     }
 }
 
