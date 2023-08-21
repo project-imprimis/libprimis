@@ -17,6 +17,317 @@
 
 #include "world/octaedit.h"
 
+int commandmillis = -1;
+
+struct FilesKey
+{
+    int type;
+    const char *dir, *ext;
+
+    FilesKey() {}
+    FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
+
+    bool operator==(const FilesKey &y) const
+    {
+        return type == y.type && !std::strcmp(dir, y.dir) && (ext == y.ext || (ext && y.ext && !std::strcmp(ext, y.ext)));
+    }
+};
+
+template<>
+struct std::hash<FilesKey>
+{
+    size_t operator()(const FilesKey &key) const
+    {
+        size_t h = 5381;
+        for(int i = 0, k; (k = key.dir[i]); i++)
+        {
+            h = ((h<<5)+h)^k;    // bernstein k=33 xor
+        }
+        return h;
+    }
+};
+
+class CompletionFinder
+{
+    public:
+        enum
+        {
+            Files_Directory = 0,
+            Files_List,
+        };
+
+        void resetcomplete();
+        void addfilecomplete(char *command, char *dir, char *ext);
+        void addlistcomplete(char *command, char *list);
+
+        void complete(char *s, size_t maxlen, const char *cmdprefix);
+
+        //print to a stream f the listcompletions in the completions filesval
+        void writecompletions(std::fstream& f);
+
+    private:
+
+        struct FilesVal
+        {
+            public:
+                int type;
+                char *dir, *ext;
+                std::vector<char *> files;
+
+                FilesVal(int type, const char *dir, const char *ext);
+                ~FilesVal();
+
+                void update();
+
+            private:
+                int millis;
+        };
+
+        friend std::hash<FilesKey>;
+
+        std::unordered_map<FilesKey, FilesVal *> completefiles;
+        std::unordered_map<char *, FilesVal *> completions;
+
+        int completesize = 0;
+        char *lastcomplete = nullptr;
+
+        void addcomplete(char *command, int type, char *dir, char *ext);
+
+        char *prependstring(char *d, const char *s, size_t len) const;
+};
+
+CompletionFinder::FilesVal::FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1)
+{
+}
+
+CompletionFinder::FilesVal::~FilesVal()
+{
+    delete[] dir;
+    delete[] ext;
+
+    dir = nullptr;
+    ext = nullptr;
+    for(char* i : files)
+    {
+        delete[] i;
+    }
+}
+
+void CompletionFinder::FilesVal::update()
+{
+    if(type!=Files_Directory || millis >= commandmillis)
+    {
+        return;
+    }
+    //first delete old cached file vector
+    for(char* i : files)
+    {
+        delete[] i;
+    }
+    //generate new one
+    listfiles(dir, ext, files);
+    std::sort(files.begin(), files.end());
+    for(uint i = 0; i < files.size(); i++)
+    {
+        if(i && !std::strcmp(files[i], files[i-1]))
+        {
+            delete[] files.at(i);
+            files.erase(files.begin() + i);
+            i--; //we need to make up for the element we destroyed
+        }
+    }
+    millis = totalmillis;
+}
+
+void CompletionFinder::resetcomplete()
+{
+    completesize = 0;
+}
+
+void CompletionFinder::addfilecomplete(char *command, char *dir, char *ext)
+{
+    addcomplete(command, Files_Directory, dir, ext);
+}
+
+void CompletionFinder::addlistcomplete(char *command, char *list)
+{
+    addcomplete(command, Files_List, list, nullptr);
+}
+
+void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
+{
+    size_t cmdlen = 0;
+    if(cmdprefix)
+    {
+        cmdlen = std::strlen(cmdprefix);
+        if(std::strncmp(s, cmdprefix, cmdlen))
+        {
+            prependstring(s, cmdprefix, maxlen);
+        }
+    }
+    if(!s[cmdlen])
+    {
+        return;
+    }
+    if(!completesize)
+    {
+        completesize = static_cast<int>(std::strlen(&s[cmdlen]));
+        delete[] lastcomplete;
+        lastcomplete = nullptr;
+    }
+    FilesVal *f = nullptr;
+    if(completesize)
+    {
+        char *end = std::strchr(&s[cmdlen], ' ');
+        if(end)
+        {
+            f = completions[stringslice(&s[cmdlen], end), nullptr];
+        }
+    }
+    const char *nextcomplete = nullptr;
+    if(f) // complete using filenames
+    {
+        int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
+        f->update();
+        for(const char * i : f->files)
+        {
+            if(std::strncmp(i, &s[commandsize], completesize+cmdlen-commandsize)==0 &&
+                      (!lastcomplete || std::strcmp(i, lastcomplete) > 0) &&
+                      (!nextcomplete || std::strcmp(i, nextcomplete) < 0))
+            {
+                nextcomplete = i;
+            }
+        }
+        cmdprefix = s;
+        cmdlen = commandsize;
+    }
+    else // complete using command or var (ident) names
+    {
+        for(auto& [k, id] : idents)
+        {
+            if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
+                      (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
+                      (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
+            {
+                nextcomplete = id.name;
+            }
+        }
+    }
+
+    delete[] lastcomplete;
+    lastcomplete = nullptr;
+    if(nextcomplete)
+    {
+        cmdlen = std::min(cmdlen, maxlen-1);
+        if(cmdlen)
+        {
+            std::memmove(s, cmdprefix, cmdlen);
+        }
+        copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
+        lastcomplete = newstring(nextcomplete);
+    }
+}
+
+//print to a stream f the listcompletions in the completions filesval
+void CompletionFinder::writecompletions(std::fstream& f)
+{
+    std::vector<char *> cmds;
+    for(auto &[k, v] : completions)
+    {
+        if(v)
+        {
+            cmds.push_back(k);
+        }
+    }
+    std::sort(cmds.begin(), cmds.end());
+    for(char *&k : cmds)
+    {
+        FilesVal *v = completions[k];
+        if(v->type==Files_List)
+        {
+            if(validateblock(v->dir))
+            {
+                f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
+            }
+            else
+            {
+                f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
+            }
+        }
+        else
+        {
+            f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
+        }
+    }
+}
+
+void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext)
+{
+    if(identflags&Idf_Overridden)
+    {
+        conoutf(Console_Error, "cannot override complete %s", command);
+        return;
+    }
+    if(!dir[0])
+    {
+        auto hasfilesitr = completions.find(command);
+        if(hasfilesitr != completions.end())
+        {
+            (*hasfilesitr).second = nullptr;
+        }
+        return;
+    }
+    if(type==Files_Directory)
+    {
+        int dirlen = static_cast<int>(std::strlen(dir));
+        while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
+        {
+            dir[--dirlen] = '\0';
+        }
+        if(ext)
+        {
+            if(std::strchr(ext, '*'))
+            {
+                ext[0] = '\0';
+            }
+            if(!ext[0])
+            {
+                ext = nullptr;
+            }
+        }
+    }
+    FilesKey key(type, dir, ext);
+    auto itr = completefiles.find(key);
+    if(itr == completefiles.end())
+    {
+        FilesVal *f = new FilesVal(type, dir, ext);
+        if(type==Files_List)
+        {
+            explodelist(dir, f->files);
+        }
+        FilesKey newfile = FilesKey(type, f->dir, f->ext);
+        completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f));
+    }
+    auto hasfilesitr = completions.find(command);
+    if(hasfilesitr != completions.end())
+    {
+        (*hasfilesitr).second = (*itr).second;
+    }
+    else
+    {
+        completions[newstring(command)] = (*itr).second;
+    }
+}
+
+char *CompletionFinder::prependstring(char *d, const char *s, size_t len) const
+{
+    size_t slen = std::min(std::strlen(s), len);
+    std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
+    std::memcpy(d, s, slen);
+    d[len-1] = 0;
+    return d;
+}
+
 //internally relevant functionality
 namespace
 {
@@ -30,7 +341,6 @@ namespace
     };
     std::deque<cline> conlines; //global storage of console lines
 
-    int commandmillis = -1;
     string commandbuf;
     char *commandaction = nullptr,
          *commandprompt = nullptr;
@@ -56,311 +366,7 @@ namespace
 
     // tab-completion of all idents and base maps
 
-    enum
-    {
-        Files_Directory = 0,
-        Files_List,
-    };
-
-    class CompletionFinder
-    {
-        public:
-            void resetcomplete();
-            void addfilecomplete(char *command, char *dir, char *ext);
-            void addlistcomplete(char *command, char *list);
-
-            void complete(char *s, size_t maxlen, const char *cmdprefix);
-
-            //print to a stream f the listcompletions in the completions filesval
-            void writecompletions(std::fstream& f);
-
-        private:
-            struct FilesKey
-            {
-                int type;
-                const char *dir, *ext;
-
-                FilesKey() {}
-                FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
-            };
-
-            struct FilesVal
-            {
-                public:
-                    int type;
-                    char *dir, *ext;
-                    std::vector<char *> files;
-
-                    FilesVal(int type, const char *dir, const char *ext);
-                    ~FilesVal();
-
-                    void update();
-
-                private:
-                    int millis;
-            };
-
-            friend inline bool htcmp(const FilesKey &x, const FilesKey &y);
-            friend inline uint hthash(const FilesKey &k);
-
-            hashtable<FilesKey, FilesVal *> completefiles;
-            hashtable<char *, FilesVal *> completions;
-
-            int completesize = 0;
-            char *lastcomplete = nullptr;
-
-            void addcomplete(char *command, int type, char *dir, char *ext);
-
-            char *prependstring(char *d, const char *s, size_t len) const;
-    };
     CompletionFinder cfinder;
-
-    inline bool htcmp(const CompletionFinder::FilesKey &x, const CompletionFinder::FilesKey &y)
-    {
-        return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
-    }
-
-    inline uint hthash(const CompletionFinder::FilesKey &key)
-    {
-        uint h = 5381;
-        for(int i = 0, k; (k = key.dir[i]); i++)
-        {
-            h = ((h<<5)+h)^k;    // bernstein k=33 xor
-        }
-        return h;
-    }
-
-    CompletionFinder::FilesVal::FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1)
-    {
-    }
-
-    CompletionFinder::FilesVal::~FilesVal()
-    {
-        delete[] dir;
-        delete[] ext;
-
-        dir = nullptr;
-        ext = nullptr;
-        for(char* i : files)
-        {
-            delete[] i;
-        }
-    }
-
-    void CompletionFinder::FilesVal::update()
-    {
-        if(type!=Files_Directory || millis >= commandmillis)
-        {
-            return;
-        }
-        //first delete old cached file vector
-        for(char* i : files)
-        {
-            delete[] i;
-        }
-        //generate new one
-        listfiles(dir, ext, files);
-        std::sort(files.begin(), files.end());
-        for(uint i = 0; i < files.size(); i++)
-        {
-            if(i && !std::strcmp(files[i], files[i-1]))
-            {
-                delete[] files.at(i);
-                files.erase(files.begin() + i);
-                i--; //we need to make up for the element we destroyed
-            }
-        }
-        millis = totalmillis;
-    }
-
-    void CompletionFinder::resetcomplete()
-    {
-        completesize = 0;
-    }
-
-    void CompletionFinder::addfilecomplete(char *command, char *dir, char *ext)
-    {
-        addcomplete(command, Files_Directory, dir, ext);
-    }
-
-    void CompletionFinder::addlistcomplete(char *command, char *list)
-    {
-        addcomplete(command, Files_List, list, nullptr);
-    }
-
-    void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
-    {
-        size_t cmdlen = 0;
-        if(cmdprefix)
-        {
-            cmdlen = std::strlen(cmdprefix);
-            if(std::strncmp(s, cmdprefix, cmdlen))
-            {
-                prependstring(s, cmdprefix, maxlen);
-            }
-        }
-        if(!s[cmdlen])
-        {
-            return;
-        }
-        if(!completesize)
-        {
-            completesize = static_cast<int>(std::strlen(&s[cmdlen]));
-            delete[] lastcomplete;
-            lastcomplete = nullptr;
-        }
-        FilesVal *f = nullptr;
-        if(completesize)
-        {
-            char *end = std::strchr(&s[cmdlen], ' ');
-            if(end)
-            {
-                f = completions.find(stringslice(&s[cmdlen], end), nullptr);
-            }
-        }
-        const char *nextcomplete = nullptr;
-        if(f) // complete using filenames
-        {
-            int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
-            f->update();
-            for(const char * i : f->files)
-            {
-                if(std::strncmp(i, &s[commandsize], completesize+cmdlen-commandsize)==0 &&
-                          (!lastcomplete || std::strcmp(i, lastcomplete) > 0) &&
-                          (!nextcomplete || std::strcmp(i, nextcomplete) < 0))
-                {
-                    nextcomplete = i;
-                }
-            }
-            cmdprefix = s;
-            cmdlen = commandsize;
-        }
-        else // complete using command or var (ident) names
-        {
-            for(auto& [k, id] : idents)
-            {
-                if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
-                          (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
-                          (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
-                {
-                    nextcomplete = id.name;
-                }
-            }
-        }
-
-        delete[] lastcomplete;
-        lastcomplete = nullptr;
-        if(nextcomplete)
-        {
-            cmdlen = std::min(cmdlen, maxlen-1);
-            if(cmdlen)
-            {
-                std::memmove(s, cmdprefix, cmdlen);
-            }
-            copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
-            lastcomplete = newstring(nextcomplete);
-        }
-    }
-
-    //print to a stream f the listcompletions in the completions filesval
-    void CompletionFinder::writecompletions(std::fstream& f)
-    {
-        std::vector<char *> cmds;
-        ENUMERATE_KT(completions, char *, k, FilesVal *, v,
-        {
-            if(v)
-            {
-                cmds.push_back(k);
-            }
-        });
-        std::sort(cmds.begin(), cmds.end());
-        for(char *&k : cmds)
-        {
-            FilesVal *v = completions[k];
-            if(v->type==Files_List)
-            {
-                if(validateblock(v->dir))
-                {
-                    f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
-                }
-                else
-                {
-                    f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
-                }
-            }
-            else
-            {
-                f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
-            }
-        }
-    }
-
-    void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext)
-    {
-        if(identflags&Idf_Overridden)
-        {
-            conoutf(Console_Error, "cannot override complete %s", command);
-            return;
-        }
-        if(!dir[0])
-        {
-            FilesVal **hasfiles = completions.access(command);
-            if(hasfiles)
-            {
-                *hasfiles = nullptr;
-            }
-            return;
-        }
-        if(type==Files_Directory)
-        {
-            int dirlen = static_cast<int>(std::strlen(dir));
-            while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
-            {
-                dir[--dirlen] = '\0';
-            }
-            if(ext)
-            {
-                if(std::strchr(ext, '*'))
-                {
-                    ext[0] = '\0';
-                }
-                if(!ext[0])
-                {
-                    ext = nullptr;
-                }
-            }
-        }
-        FilesKey key(type, dir, ext);
-        FilesVal **val = completefiles.access(key);
-        if(!val)
-        {
-            FilesVal *f = new FilesVal(type, dir, ext);
-            if(type==Files_List)
-            {
-                explodelist(dir, f->files);
-            }
-            val = &completefiles[FilesKey(type, f->dir, f->ext)];
-            *val = f;
-        }
-        FilesVal **hasfiles = completions.access(command);
-        if(hasfiles)
-        {
-            *hasfiles = *val;
-        }
-        else
-        {
-            completions[newstring(command)] = *val;
-        }
-    }
-
-    char *CompletionFinder::prependstring(char *d, const char *s, size_t len) const
-    {
-        size_t slen = std::min(std::strlen(s), len);
-        std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
-        std::memcpy(d, s, slen);
-        d[len-1] = 0;
-        return d;
-    }
 
     void conline(int type, const char *sf)        // add a line to the console buffer
     {
