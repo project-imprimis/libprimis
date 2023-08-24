@@ -307,6 +307,7 @@ void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext
         }
         FilesKey newfile = FilesKey(type, f->dir, f->ext);
         completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f));
+        itr = completefiles.find(key);
     }
     auto hasfilesitr = completions.find(command);
     if(hasfilesitr != completions.end())
@@ -315,7 +316,8 @@ void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext
     }
     else
     {
-        completions[newstring(command)] = (*itr).second;
+        FilesVal *v = (*itr).second;
+        completions[newstring(command)] = v;
     }
 }
 
