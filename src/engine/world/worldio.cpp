@@ -370,6 +370,25 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
 
 std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed);
 
+/**
+ * @param Loads a cube, possibly containing its child cubes.
+ *
+ * Sets the contents of the cube passed depending on the leading flag embedded
+ * in the string.
+ *
+ * If OctaSave_Children, begins recursive loading of cubes into the passed cube's `children` field
+ *
+ * If OctaSave_Empty, clears the cube
+ *
+ * If OctaSave_Solid, fills the cube completely
+ *
+ * If OctaSave_Normal, reads and sets the twelve edges of the cube
+ *
+ * If none of these are passed, failed flag is set and nothing is done.
+ *
+ * Once OctaSave_Empty/Solid/Normal has been initiated, loads texture, material,
+ * normal data, and other meta information for the cube c passed
+ */
 void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
     static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
@@ -535,6 +554,14 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     }
 }
 
+/**
+ * @brief Returns a heap-allocated std::array of cubes read from a file.
+ *
+ * These cubes must be freed using freeocta() when destroyed to prevent a leak.
+ *
+ * All eight cubes are read, unless the stream does not contain a valid leading
+ * digit (see OctaSave enum), whereupon all loading thereafter is not executed.
+ */
 std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed)
 {
     std::array<cube, 8> *c = newcubes();

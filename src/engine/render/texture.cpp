@@ -1225,13 +1225,14 @@ void compactvslot(VSlot &vs)
     }
 }
 
-void compactvslots(std::array<cube ,8> &c, int n)
+//n will be capped at 8
+void compactvslots(std::array<cube, 8> &c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
         renderprogress(std::min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
-    for(int i = 0; i < n; ++i)
+    for(int i = 0; i < std::min(n, 8); ++i)
     {
         if(c[i].children)
         {
