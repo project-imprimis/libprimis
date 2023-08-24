@@ -637,8 +637,7 @@ VAR(mipvis, 0, 0, 1);
 
 static bool remip(cube &c, const ivec &co, int size)
 {
-    std::array<cube, 8> dummy = {}; //need something to refer to (will never be used)
-    std::array<cube, 8> &ch = dummy;
+    std::array<cube, 8> *ch = nullptr;
     if(!c.children)
     {
         if(size<<1 <= 0x1000)
@@ -646,17 +645,17 @@ static bool remip(cube &c, const ivec &co, int size)
             return true;
         }
         subdividecube(c);
-        ch = *c.children;
+        ch = c.children;
     }
     else
     {
-        ch = *c.children;
+        ch = c.children;
     }
     bool perfect = true;
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
-        if(!remip(ch[i], o, size>>1))
+        if(!remip((*ch)[i], o, size>>1))
         {
             perfect = false;
         }
@@ -677,7 +676,7 @@ static bool remip(cube &c, const ivec &co, int size)
     ushort mat = Mat_Air;
     for(int i = 0; i < 8; ++i)
     {
-        mat = ch[i].material;
+        mat = (*ch)[i].material;
         if((mat&MatFlag_Clip) == Mat_NoClip || mat&Mat_Alpha)
         {
             if(i > 0)
@@ -686,19 +685,19 @@ static bool remip(cube &c, const ivec &co, int size)
             }
             while(++i < 8)
             {
-                if(ch[i].material != mat)
+                if((*ch)[i].material != mat)
                 {
                     return false;
                 }
             }
             break;
         }
-        else if(!(ch[i].issolid()))
+        else if(!((*ch)[i].issolid()))
         {
             while(++i < 8)
             {
-                int omat = ch[i].material;
-                if(ch[i].issolid() ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
+                int omat = (*ch)[i].material;
+                if((*ch)[i].issolid() ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
                 {
                     return false;
                 }
@@ -715,28 +714,28 @@ static bool remip(cube &c, const ivec &co, int size)
         freeocta(n.children);
         return false;
     }
-    std::array<cube, 8> *&nh = n.children;
+    std::array<cube, 8> *nh = n.children;
     uchar vis[6] = {0, 0, 0, 0, 0, 0};
     for(int i = 0; i < 8; ++i)
     {
-        if(ch[i].faces[0] != (*nh)[i].faces[0] ||
-           ch[i].faces[1] != (*nh)[i].faces[1] ||
-           ch[i].faces[2] != (*nh)[i].faces[2])
+        if((*ch)[i].faces[0] != (*nh)[i].faces[0] ||
+           (*ch)[i].faces[1] != (*nh)[i].faces[1] ||
+           (*ch)[i].faces[2] != (*nh)[i].faces[2])
         {
             freeocta(nh);
             return false;
         }
 
-        if(ch[i].isempty() && (*nh)[i].isempty())
+        if((*ch)[i].isempty() && (*nh)[i].isempty())
         {
             continue;
         }
 
         ivec o(i, co, size);
         for(int orient = 0; orient < 6; ++orient)
-            if(visibleface(ch[i], orient, o, size, Mat_Air, (mat&Mat_Alpha)^Mat_Alpha, Mat_Alpha))
+            if(visibleface((*ch)[i], orient, o, size, Mat_Air, (mat&Mat_Alpha)^Mat_Alpha, Mat_Alpha))
             {
-                if(ch[i].texture[orient] != n.texture[orient])
+                if((*ch)[i].texture[orient] != n.texture[orient])
                 {
                     freeocta(nh);
                     return false;
