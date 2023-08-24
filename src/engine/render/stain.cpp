@@ -373,7 +373,7 @@ class stainrenderer
             {
                 verts[i].lastvert = verts[i].endvert;
             }
-            gentris(world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
+            gentris(*world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
                 stainbuffer &buf = verts[i];
@@ -753,7 +753,7 @@ class stainrenderer
             }
         }
 
-        void findescaped(const cube *c, const ivec &o, int size, int escaped)
+        void findescaped(const std::array<cube, 8> &c, const ivec &o, int size, int escaped)
         {
             for(int i = 0; i < 8; ++i)
             {
@@ -763,7 +763,7 @@ class stainrenderer
                     ivec co(i, o, size);
                     if(cu.children)
                     {
-                        findescaped(cu.children, co, size>>1, cu.escaped);
+                        findescaped(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {
@@ -783,7 +783,7 @@ class stainrenderer
             }
         }
 
-        void gentris(const cube *c, const ivec &o, int size, int escaped = 0)
+        void gentris(const std::array<cube, 8> &c, const ivec &o, int size, int escaped = 0)
         {
             int overlap = octaboxoverlap(o, size, bbmin, bbmax);
             for(int i = 0; i < 8; ++i)
@@ -805,7 +805,7 @@ class stainrenderer
                     }
                     if(cu.children)
                     {
-                        gentris(cu.children, co, size>>1, cu.escaped);
+                        gentris(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {
@@ -837,7 +837,7 @@ class stainrenderer
                     ivec co(i, o, size);
                     if(cu.children)
                     {
-                        findescaped(cu.children, co, size>>1, cu.escaped);
+                        findescaped(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {

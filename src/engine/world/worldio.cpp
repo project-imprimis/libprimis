@@ -183,7 +183,7 @@ enum OctaSave
 
 static int savemapprogress = 0;
 
-void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * const f)
+void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, stream * const f)
 {
     if((savemapprogress++&0xFFF)==0)
     {
@@ -195,7 +195,7 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
         if(c[i].children) //recursively note existence of children & call this fxn again
         {
             f->putchar(OctaSave_Children);
-            savec(c[i].children, co, size>>1, f);
+            savec(*(c[i].children), co, size>>1, f);
         }
         else //once we're done with all cube children within cube *c given
         {
@@ -265,7 +265,8 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
                     {
                         surfaceinfo surf = c[i].ext->surfaces[j];
                         vertinfo *verts = c[i].ext->verts() + surf.verts;
-                        int layerverts = surf.numverts&Face_MaxVerts, numverts = surf.totalverts(),
+                        int layerverts = surf.numverts&Face_MaxVerts,
+                            numverts = surf.totalverts(),
                             vertmask   = 0,
                             vertorder  = 0,
                             dim = DIMENSION(j),
@@ -367,8 +368,27 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed);
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed);
 
+/**
+ * @param Loads a cube, possibly containing its child cubes.
+ *
+ * Sets the contents of the cube passed depending on the leading flag embedded
+ * in the string.
+ *
+ * If OctaSave_Children, begins recursive loading of cubes into the passed cube's `children` field
+ *
+ * If OctaSave_Empty, clears the cube
+ *
+ * If OctaSave_Solid, fills the cube completely
+ *
+ * If OctaSave_Normal, reads and sets the twelve edges of the cube
+ *
+ * If none of these are passed, failed flag is set and nothing is done.
+ *
+ * Once OctaSave_Empty/Solid/Normal has been initiated, loads texture, material,
+ * normal data, and other meta information for the cube c passed
+ */
 void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
     static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
@@ -534,12 +554,20 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
+/**
+ * @brief Returns a heap-allocated std::array of cubes read from a file.
+ *
+ * These cubes must be freed using freeocta() when destroyed to prevent a leak.
+ *
+ * All eight cubes are read, unless the stream does not contain a valid leading
+ * digit (see OctaSave enum), whereupon all loading thereafter is not executed.
+ */
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed)
 {
-    cube *c = newcubes();
+    std::array<cube, 8> *c = newcubes();
     for(int i = 0; i < 8; ++i)
     {
-        loadc(f, c[i], ivec(i, co, size), size, failed);
+        loadc(f, (*c)[i], ivec(i, co, size), size, failed);
         if(failed)
         {
             break;
@@ -913,7 +941,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
+    savec(*worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;
