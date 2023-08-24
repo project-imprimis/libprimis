@@ -147,7 +147,7 @@ int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
     eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
-        tri &t = tris[i];
+        const tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
             idxs.push_back(voffset+t.vert[j]);

@@ -41,9 +41,9 @@ namespace
     void applychanges()
     {
         int changetypes = 0;
-        for(uint i = 0; i < needsapply.size(); i++)
+        for(const Change &i : needsapply)
         {
-            changetypes |= needsapply[i].type;
+            changetypes |= i.type;
         }
         if(changetypes&Change_Graphics)
         {
@@ -90,9 +90,9 @@ void addchange(const char *desc, int type)
     {
         return;
     }
-    for(uint i = 0; i < needsapply.size(); i++)
+    for(const Change &i : needsapply)
     {
-        if(!std::strcmp(needsapply[i].desc, desc))
+        if(!std::strcmp(i.desc, desc))
         {
             return;
         }
