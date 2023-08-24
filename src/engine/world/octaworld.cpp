@@ -40,8 +40,6 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 
 cubeworld rootworld;
 
-void calcmerges();
-
 cubeext *growcubeext(cubeext *old, int maxverts)
 {
     cubeext *ext = reinterpret_cast<cubeext *>(new uchar[sizeof(cubeext) + maxverts*sizeof(vertinfo)]);
@@ -98,27 +96,30 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
     return ext;
 }
 
-cube *newcubes(uint face, int mat)
+//allocates on the heap 8 new cubes, contiguously, which are returned
+//by a std::array that contains the allocated values' pointers
+std::array<cube , 8> *newcubes(uint face, int mat)
 {
-    cube *c = new cube[8];
+    std::array<cube, 8> *c = new std::array<cube, 8> ;
     for(int i = 0; i < 8; ++i)
     {
-        c->children = nullptr;
-        c->ext = nullptr;
-        c->visible = 0;
-        c->merged = 0;
-        setcubefaces(*c, face);
+        (*c)[i].children = nullptr;
+        (*c)[i].ext = nullptr;
+        (*c)[i].visible = 0;
+        (*c)[i].merged = 0;
+        setcubefaces((*c)[i], face);
         for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
         {
-            c->texture[l] = Default_Geom;
+            (*c)[i].texture[l] = Default_Geom;
         }
-        c->material = mat;
-        c++;
+        (*c)[i].material = mat;
     }
     allocnodes++;
-    return c-8;
+    return c;
 }
 
+//returns the size of the tree starting from the specified cube going down
+//the cube in question is counted as part of the family
 int familysize(const cube &c)
 {
     int size = 1;
@@ -126,13 +127,13 @@ int familysize(const cube &c)
     {
         for(int i = 0; i < 8; ++i)
         {
-            size += familysize(c.children[i]);
+            size += familysize((*c.children)[i]);
         }
     }
     return size;
 }
 
-void freeocta(cube *c)
+void freeocta(std::array<cube, 8> *&c)
 {
     if(!c)
     {
@@ -140,9 +141,10 @@ void freeocta(cube *c)
     }
     for(int i = 0; i < 8; ++i)
     {
-        c[i].discardchildren();
+        (*c)[i].discardchildren();
     }
-    delete[] c;
+    delete c;
+    c = nullptr;
     allocnodes--;
 }
 
@@ -196,37 +198,37 @@ void printcube()
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
 }
 
-void validatec(cube *c, int size)
+void validatec(std::array<cube, 8> *&c, int size)
 {
     for(int i = 0; i < 8; ++i)
     {
-        if(c[i].children)
+        if((*c)[i].children)
         {
             if(size<=1)
             {
-                setcubefaces(c[i], facesolid);
-                c[i].discardchildren(true);
+                setcubefaces((*c)[i], facesolid);
+                (*c)[i].discardchildren(true);
             }
             else
             {
-                validatec(c[i].children, size>>1);
+                validatec((*c)[i].children, size>>1);
             }
         }
         else if(size > 0x1000)
         {
-            subdividecube(c[i], true, false);
-            validatec(c[i].children, size>>1);
+            subdividecube((*c)[i], true, false);
+            validatec((*c)[i].children, size>>1);
         }
         else
         {
             for(int j = 0; j < 3; ++j)
             {
-                uint f  = c[i].faces[j],
+                uint f  = (*c)[i].faces[j],
                      e0 = f&0x0F0F0F0FU,
                      e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
-                    setcubefaces(c[i], faceempty);
+                    setcubefaces((*c)[i], faceempty);
                     break;
                 }
             }
@@ -244,7 +246,7 @@ cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
         tz = std::clamp(to.z, 0, mapsize()-1);
     int scale = worldscale-1,
         csize = std::abs(tsize);
-    cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
+    cube *c = &(*worldroot)[OCTA_STEP(tx, ty, tz, scale)];
     if(!c)
     {
         return emptycube;
@@ -261,13 +263,13 @@ cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
                     {
                         subdividecube(*c);
                         scale--;
-                        c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
+                        c = &(*c->children)[OCTA_STEP(tx, ty, tz, scale)];
                     } while(!(csize>>scale));
                 }
                 break;
             }
             scale--;
-            c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
+            c = &(*c->children)[OCTA_STEP(tx, ty, tz, scale)];
         } while(!(csize>>scale));
     }
     ro = ivec(tx, ty, tz).mask(~0U<<scale);
@@ -283,11 +285,11 @@ int cubeworld::lookupmaterial(const vec &v)
         return Mat_Air;
     }
     int scale = worldscale-1;
-    cube *c = &worldroot[OCTA_STEP(o.x, o.y, o.z, scale)];
+    cube *c = &(*worldroot)[OCTA_STEP(o.x, o.y, o.z, scale)];
     while(c->children)
     {
         scale--;
-        c = &c->children[OCTA_STEP(o.x, o.y, o.z, scale)];
+        c = &(*c->children)[OCTA_STEP(o.x, o.y, o.z, scale)];
     }
     return c->material;
 }
@@ -316,7 +318,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         return emptycube;
     }
     int scale = worldscale;
-    const cube *nc = worldroot;
+    const cube *nc = &(*worldroot)[0];
     if(neighbordepth >= 0)
     {
         scale -= neighbordepth + 1;
@@ -335,7 +337,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         do
         {
             scale--;
-            nc = &nc->children[OCTA_STEP(n.x, n.y, n.z, scale)];
+            nc = &(*nc->children)[OCTA_STEP(n.x, n.y, n.z, scale)];
         } while(!(size>>scale) && nc->children);
     }
     ro = n.mask(~0U<<scale);
@@ -366,7 +368,7 @@ static int octacubeindex(int d, int x, int y, int z)
 
 int getmippedtexture(const cube &p, int orient)
 {
-    cube *c = p.children;
+    std::array<cube, 8> &c = *p.children;
     int d = DIMENSION(orient),
         dc = DIM_COORD(orient),
         texs[4] = { -1, -1, -1, -1 },
@@ -410,7 +412,7 @@ int getmippedtexture(const cube &p, int orient)
 
 void forcemip(cube &c, bool fixtex)
 {
-    cube *ch = c.children;
+    std::array<cube, 8> &ch = *c.children;
     setcubefaces(c, faceempty);
     for(int i = 0; i < 8; ++i)
     {
@@ -505,16 +507,17 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
             {
-                c.children[i].texture[l] = c.texture[l];
+                (*c.children)[i].texture[l] = c.texture[l];
             }
             if(brighten && !(c.isempty()))
             {
-                brightencube(c.children[i]);
+                brightencube((*c.children)[i]);
             }
         }
         return true;
     }
-    cube *ch = c.children = newcubes(facesolid, c.material);
+    c.children = newcubes(facesolid, c.material);
+    std::array<cube, 8> &ch = *c.children;
     bool perfect = true;
     ivec v[8];
     for(int i = 0; i < 8; ++i)
@@ -571,7 +574,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         }
     }
 
-    validatec(ch);
+    validatec(c.children);
     if(fullcheck)
     {
         for(int i = 0; i < 8; ++i)
@@ -624,15 +627,20 @@ VAR(mipvis, 0, 0, 1);
 
 static bool remip(cube &c, const ivec &co, int size)
 {
-    cube *ch = c.children;
-    if(!ch)
+    std::array<cube, 8> dummy = {}; //need something to refer to (will never be used)
+    std::array<cube, 8> &ch = dummy;
+    if(!c.children)
     {
         if(size<<1 <= 0x1000)
         {
             return true;
         }
         subdividecube(c);
-        ch = c.children;
+        ch = *c.children;
+    }
+    else
+    {
+        ch = *c.children;
     }
     bool perfect = true;
     for(int i = 0; i < 8; ++i)
@@ -697,19 +705,19 @@ static bool remip(cube &c, const ivec &co, int size)
         freeocta(n.children);
         return false;
     }
-    cube *nh = n.children;
+    std::array<cube, 8> *&nh = n.children;
     uchar vis[6] = {0, 0, 0, 0, 0, 0};
     for(int i = 0; i < 8; ++i)
     {
-        if(ch[i].faces[0] != nh[i].faces[0] ||
-           ch[i].faces[1] != nh[i].faces[1] ||
-           ch[i].faces[2] != nh[i].faces[2])
+        if(ch[i].faces[0] != (*nh)[i].faces[0] ||
+           ch[i].faces[1] != (*nh)[i].faces[1] ||
+           ch[i].faces[2] != (*nh)[i].faces[2])
         {
             freeocta(nh);
             return false;
         }
 
-        if(ch[i].isempty() && nh[i].isempty())
+        if(ch[i].isempty() && (*nh)[i].isempty())
         {
             continue;
         }
@@ -772,9 +780,9 @@ void cubeworld::remip()
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, ivec(0, 0, 0), mapsize()>>1);
-        ::remip(worldroot[i], o, mapsize()>>2);
+        ::remip((*worldroot)[i], o, mapsize()>>2);
     }
-    worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
+    (*worldroot)[0].calcmerges(&(*worldroot)[0]); //created as result of calcmerges being cube member
 }
 
 const ivec cubecoords[8] =
@@ -1233,7 +1241,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
     {
         if(OCTA_COORD(dim, i) == coord)
         {
-            if(!occludesface(c.children[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv))
+            if(!occludesface((*c.children)[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv))
             {
                 return false;
             }
@@ -1732,7 +1740,7 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
         {
             if(OCTA_COORD(dim, i) == coord)
             {
-                mincubeface(cu.children[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
+                mincubeface((*cu.children)[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
             }
         }
         return;
@@ -1868,7 +1876,7 @@ void invalidatemerges(cube &c)
     {
         for(int i = 0; i < 8; ++i)
         {
-            invalidatemerges(c.children[i]);
+            invalidatemerges((*c.children)[i]);
         }
     }
 }

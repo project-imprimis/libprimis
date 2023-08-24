@@ -1319,14 +1319,14 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, const cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
+void clipminimap(ivec &bbmin, ivec &bbmax, const std::array<cube, 8> &c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children)
         {
-            clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+            clipminimap(bbmin, bbmax, *(c[i].children), o, size>>1);
         }
         else if(!(c[i].issolid()) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
         {
@@ -1390,7 +1390,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     {
         ivec clipmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
              clipmax(0, 0, 0);
-        clipminimap(clipmin, clipmax, world.worldroot);
+        clipminimap(clipmin, clipmax, *world.worldroot);
         for(int k = 0; k < 2; ++k)
         {
             bbmin[k] = std::max(bbmin[k], clipmin[k]);

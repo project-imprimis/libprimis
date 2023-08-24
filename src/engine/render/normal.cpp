@@ -216,7 +216,7 @@ namespace //internal functionality not seen by other files
             size >>= 1;
             for(int i = 0; i < 8; ++i)
             {
-                addnormals(c.children[i], ivec(i, o, size), size);
+                addnormals((*c.children)[i], ivec(i, o, size), size);
             }
             return;
         }
@@ -396,7 +396,7 @@ void cubeworld::calcnormals(bool lerptjoints)
     }
     for(int i = 0; i < 8; ++i)
     {
-        addnormals(worldroot[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
+        addnormals((*worldroot)[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
 }
 
@@ -436,7 +436,7 @@ int smoothangle(int id, int angle)
     return id;
 }
 
-void initnormalcmds() 
+void initnormalcmds()
 {
     addcommand("smoothangle", reinterpret_cast<identfun>(+[] (int *id, int *angle) {intret(smoothangle(*id, *angle));}), "ib", Id_Command);
 }

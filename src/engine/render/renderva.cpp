@@ -323,7 +323,7 @@ namespace
             br.x <= va.bbmax.x && br.y <= va.bbmax.y && br.z <= va.bbmax.z;
     }
 
-    bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
+    bool bboccluded(const ivec &bo, const ivec &br, const std::array<cube, 8> &c, const ivec &o, int size)
     {
         LOOP_OCTA_BOX(o, size, bo, br)
         {
@@ -336,7 +336,7 @@ namespace
                     continue;
                 }
             }
-            if(c[i].children && bboccluded(bo, br, c[i].children, co, size>>1))
+            if(c[i].children && bboccluded(bo, br, *(c[i].children), co, size>>1))
             {
                 continue;
             }
@@ -2309,9 +2309,9 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
     int scale = worldscale-1;
     if(diff&(1<<scale))
     {
-        return ::bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
+        return ::bboccluded(bo, br, *worldroot, ivec(0, 0, 0), 1<<scale);
     }
-    const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+    const cube *c = &(*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
     {
         vtxarray *va = c->ext->va;
@@ -2323,7 +2323,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+        c = &(*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->va)
         {
             vtxarray *va = c->ext->va;
@@ -2336,7 +2336,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
     }
     if(c->children)
     {
-        return ::bboccluded(bo, br, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::bboccluded(bo, br, *(c->children), ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     }
     return false;
 }
@@ -2699,7 +2699,7 @@ bool renderexplicitsky(bool outline)
 
 void cubeworld::cleanupva()
 {
-    clearvas(worldroot);
+    clearvas(*worldroot);
     occlusionengine.clearqueries();
     cleanupbb();
     cleanupgrass();

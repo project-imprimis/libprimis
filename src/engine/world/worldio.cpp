@@ -183,7 +183,7 @@ enum OctaSave
 
 static int savemapprogress = 0;
 
-void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * const f)
+void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, stream * const f)
 {
     if((savemapprogress++&0xFFF)==0)
     {
@@ -195,7 +195,7 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
         if(c[i].children) //recursively note existence of children & call this fxn again
         {
             f->putchar(OctaSave_Children);
-            savec(c[i].children, co, size>>1, f);
+            savec(*(c[i].children), co, size>>1, f);
         }
         else //once we're done with all cube children within cube *c given
         {
@@ -265,7 +265,8 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
                     {
                         surfaceinfo surf = c[i].ext->surfaces[j];
                         vertinfo *verts = c[i].ext->verts() + surf.verts;
-                        int layerverts = surf.numverts&Face_MaxVerts, numverts = surf.totalverts(),
+                        int layerverts = surf.numverts&Face_MaxVerts,
+                            numverts = surf.totalverts(),
                             vertmask   = 0,
                             vertorder  = 0,
                             dim = DIMENSION(j),
@@ -367,7 +368,7 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed);
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed);
 
 void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
@@ -534,12 +535,12 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed)
 {
-    cube *c = newcubes();
+    std::array<cube, 8> *c = newcubes();
     for(int i = 0; i < 8; ++i)
     {
-        loadc(f, c[i], ivec(i, co, size), size, failed);
+        loadc(f, (*c)[i], ivec(i, co, size), size, failed);
         if(failed)
         {
             break;
@@ -913,7 +914,7 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
+    savec(*worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;

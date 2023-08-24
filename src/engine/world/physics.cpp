@@ -30,7 +30,8 @@ static int clipcacheversion = -maxclipoffset;
 
 clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int offset)
 {
-    clipplanes &p = clipcache[static_cast<int>(&c - worldroot) & (maxclipplanes-1)];
+    //index is naive hash of difference between addresses (not necessarily contiguous) modulo cache size
+    clipplanes &p = clipcache[static_cast<int>(&c - &((*worldroot)[0])) & (maxclipplanes-1)];
     if(p.owner != &c || p.version != clipcacheversion+offset)
     {
         p.owner = &c;
@@ -1032,7 +1033,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
     }
 }
 
-static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
+static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const std::array<cube, 8> &c, const ivec &cor, int size) // collide with octants
 {
     LOOP_OCTA_BOX(cor, size, bo, bs)
     {
@@ -1046,7 +1047,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
         ivec o(i, cor, size);
         if(c[i].children)
         {
-            if(octacollide(d, dir, cutoff, bo, bs, c[i].children, o, size>>1))
+            if(octacollide(d, dir, cutoff, bo, bs, *(c[i].children), o, size>>1))
             {
                 return true;
             }
@@ -1088,9 +1089,9 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
         scale = worldscale-1;
     if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(mapsize()))
     {
-       return ::octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), mapsize()>>1);
+       return ::octacollide(d, dir, cutoff, bo, bs, *worldroot, ivec(0, 0, 0), mapsize()>>1);
     }
-    const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+    const cube *c = &((*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
     if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
     {
         return true;
@@ -1098,7 +1099,7 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+        c = &((*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
         if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
         {
             return true;
@@ -1107,7 +1108,7 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
     }
     if(c->children)
     {
-        return ::octacollide(d, dir, cutoff, bo, bs, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::octacollide(d, dir, cutoff, bo, bs, *c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     }
     bool solid = false;
     switch(c->material&MatFlag_Clip)
