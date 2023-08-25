@@ -71,7 +71,8 @@ class CompletionFinder
         {
             public:
                 int type;
-                char *dir, *ext;
+                char *dir;
+                std::string ext;
                 std::vector<char *> files;
 
                 FilesVal(int type, const char *dir, const char *ext);
@@ -103,7 +104,6 @@ CompletionFinder::FilesVal::FilesVal(int type, const char *dir, const char *ext)
 CompletionFinder::FilesVal::~FilesVal()
 {
     delete[] dir;
-    delete[] ext;
 
     dir = nullptr;
     ext = nullptr;
@@ -125,7 +125,7 @@ void CompletionFinder::FilesVal::update()
         delete[] i;
     }
     //generate new one
-    listfiles(dir, ext, files);
+    listfiles(dir, ext.c_str(), files);
     std::sort(files.begin(), files.end());
     for(uint i = 0; i < files.size(); i++)
     {
@@ -256,7 +256,7 @@ void CompletionFinder::writecompletions(std::fstream& f)
         }
         else
         {
-            f << "complete " << escapeid(k.c_str()) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
+            f << "complete " << escapeid(k.c_str()) << " " << escapestring(v->dir) << " " << escapestring(v->ext.size() ? v->ext.c_str() : "*") << std::endl;
         }
     }
 }
@@ -305,7 +305,7 @@ void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext
         {
             explodelist(dir, f->files);
         }
-        FilesKey newfile = FilesKey(type, f->dir, f->ext);
+        FilesKey newfile = FilesKey(type, f->dir, f->ext.c_str());
         completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f));
         itr = completefiles.find(key);
     }
