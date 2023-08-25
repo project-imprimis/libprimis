@@ -284,8 +284,8 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
 
 void changedvars()
 {
-    std::vector<ident *> ids;
-    for(auto& [k, id] : idents)
+    std::vector<const ident *> ids;
+    for(const auto& [k, id] : idents)
     {
         if(id.flags&Idf_Overridden)
         {
@@ -293,9 +293,9 @@ void changedvars()
         }
     }
     std::sort(ids.begin(), ids.end());
-    for(uint i = 0; i < ids.size(); i++)
+    for(const ident *i: ids)
     {
-        printvar(ids[i]);
+        printvar(i);
     }
 }
 
