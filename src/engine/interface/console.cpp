@@ -21,15 +21,15 @@ int commandmillis = -1;
 
 struct FilesKey
 {
-    int type;
-    const char *dir, *ext;
+    const int type;
+    const std::string dir,
+                      ext;
 
-    FilesKey() {}
-    FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
+    FilesKey(int type, const std::string &dir, const std::string &ext) : type(type), dir(dir), ext(ext) {}
 
     bool operator==(const FilesKey &y) const
     {
-        return type == y.type && !std::strcmp(dir, y.dir) && (ext == y.ext || (ext && y.ext && !std::strcmp(ext, y.ext)));
+        return type == y.type && dir == y.dir && ext == y.ext;
     }
 };
 
@@ -301,7 +301,7 @@ void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext
         {
             explodelist(dir, f->files);
         }
-        FilesKey newfile = FilesKey(type, f->dir.c_str(), f->ext.c_str());
+        FilesKey newfile = FilesKey(type, f->dir, f->ext);
         completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f));
         itr = completefiles.find(key);
     }
