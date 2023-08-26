@@ -1835,9 +1835,8 @@ namespace
         }
         vec vo(ivec(o).mask(~0xFFF));
         vec pos[Face_MaxVerts];
-        for(uint i = 0; i < mfl.size(); i++)
+        for(mergedface &mf : mfl)
         {
-            mergedface &mf = mfl[i];
             int numverts = mf.numverts&Face_MaxVerts;
             for(int i = 0; i < numverts; ++i)
             {
