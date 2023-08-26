@@ -50,8 +50,7 @@ FVARP(aobilateraldepth, 0, 4, 1e3f);
 VARFP(aobilateralupscale, 0, 0, 1, cleanupao());
 VARF(aopackdepth, 0, 1, 1, cleanupao());
 VARFP(aotaps, 1, 12, 12, cleanupao());
-VARF(aoderivnormal, 0, 0, 1, cleanupao());
-VAR(debugao, 0, 0, 1);
+VAR(debugao, 0, 0, 4);
 
 static Shader *ambientobscuranceshader = nullptr;
 
@@ -69,10 +68,6 @@ Shader *loadambientobscuranceshader()
     if(linear)
     {
         opts[optslen++] = 'l';
-    }
-    if(aoderivnormal)
-    {
-        opts[optslen++] = 'd';
     }
     if(aobilateral && aopackdepth)
     {
@@ -237,7 +232,7 @@ void viewao()
         h = debugfullscreen ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
-    glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
+    glBindTexture(GL_TEXTURE_RECTANGLE, aotex[debugao - 1]);
     int tw = aotex[2] ? gw : aow,
         th = aotex[2] ? gh : aoh;
     debugquad(0, 0, w, h, 0, 0, tw, th);
@@ -280,29 +275,17 @@ void GBuffer::renderao() const
     glBindFramebuffer(GL_FRAMEBUFFER, aofbo[0]);
     glViewport(0, 0, aow, aoh);
     glActiveTexture(GL_TEXTURE1);
-    if(aoderivnormal)
+
+    if(msaasamples)
     {
-        if(msaasamples)
-        {
-            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
-        }
-        else
-        {
-            glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
-        }
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
     }
     else
     {
-        if(msaasamples)
-        {
-            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
-        }
-        else
-        {
-            glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
-        }
-        LOCALPARAM(normalmatrix, matrix3(cammatrix));
+        glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
     }
+
+    LOCALPARAM(normalmatrix, matrix3(cammatrix));
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, aonoisetex);
     glActiveTexture(GL_TEXTURE0);
