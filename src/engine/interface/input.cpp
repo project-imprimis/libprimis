@@ -239,6 +239,8 @@ void checkinput(int map)
     constexpr uint maxthreshhold = 27000; // maximum value to register inputs to triggers
     constexpr uint strafethreshhold = 16384; //value when to assign movement in strafe pad
     constexpr uint inverseindex = 16;
+
+    constexpr uint mousemovescale = 25000; //how much to divide mouse movement by from joystick input
     //carry over joystick states
     static vec2 lpad;
     static vec2 rpad;
@@ -485,9 +487,9 @@ void checkinput(int map)
     { //scoping brakets
         static int oldmillis;
         int delta = lastmillis-oldmillis;
-        if(std::abs(rpad.x) > 5000 || std::abs(rpad.y) > 5000)
+        if(std::abs(rpad.x) > minthreshhold || std::abs(rpad.y) > minthreshhold)
         {
-            mousemove(delta*rpad.x/25000, delta*rpad.y/25000);
+            mousemove(delta*rpad.x/mousemovescale, delta*rpad.y/mousemovescale);
         }
         oldmillis = lastmillis;
     }
