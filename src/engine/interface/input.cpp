@@ -235,10 +235,10 @@ static void checkmousemotion(int &dx, int &dy)
 // map: which keymap to map the pressed key to
 void checkinput(int map)
 {
-    constexpr int minthreshhold = 5000; // minimum value to register inputs
-    constexpr int maxthreshhold = 27000; // maximum value to register inputs to triggers
-    constexpr int strafethreshhold = 16384; //value when to assign movement in strafe pad
-    constexpr int inverseindex = 16;
+    constexpr uint minthreshhold = 5000; // minimum value to register inputs
+    constexpr uint maxthreshhold = 27000; // maximum value to register inputs to triggers
+    constexpr uint strafethreshhold = 16384; //value when to assign movement in strafe pad
+    constexpr uint inverseindex = 16;
     //carry over joystick states
     static vec2 lpad;
     static vec2 rpad;
@@ -411,8 +411,8 @@ void checkinput(int map)
             }
             case SDL_CONTROLLERAXISMOTION:
             {
-                int axis = event.caxis.axis;
-                int value = event.caxis.value;
+                uint axis = event.caxis.axis;
+                uint value = event.caxis.value;
                 switch(axis)
                 {
                     case 0: //left x axis
