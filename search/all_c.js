@@ -1,10 +1,25 @@
 var searchData=
 [
-  ['newpos_0',['newpos',['../structphysent.html#a3fba674449f2c9f4a07838b7430fc768',1,'physent']]],
-  ['newundocube_1',['newundocube',['../iengine_8h.html#a394c528144448c892935863b3b50fdea',1,'iengine.h']]],
-  ['normalize_2',['normalize',['../structvec4.html#a3d15bf1a0057fd0077252961f31d846a',1,'vec4::normalize()'],['../classmatrix3.html#a670ad4e8a3cda4471b9cc44d0f1442e3',1,'matrix3::normalize()'],['../structmatrix4x3.html#a942640f941f8c9327c293d7e76f364b5',1,'matrix4x3::normalize()']]],
-  ['numargs_3',['numargs',['../structident.html#a5ddc1c739b47cb43e7e075708029964a',1,'ident']]],
-  ['numents_4',['numents',['../structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663',1,'undoblock']]],
-  ['nummapsounds_5',['nummapsounds',['../classSoundEngine.html#a8671736c3621164223461a1ed359b6b7',1,'SoundEngine']]],
-  ['numsounds_6',['numsounds',['../classSoundEngine.html#aa385f6601138b659809149ced2dbae9d',1,'SoundEngine']]]
+  ['b_20vcolor_20r_20g_20b_20_3a_20texture_20tinting_0',['`texcolor &lt;R&gt; &lt;G&gt; &lt;B&gt;`, `vcolor &lt;R&gt; &lt;G&gt; &lt;B&gt;`: texture tinting',['../md_engine.html#autotoc_md69',1,'']]],
+  ['b_20vrefract_20scale_20r_20g_20b_20_3a_20refract_1',['`texrefract &lt;scale&gt; &lt;R&gt; &lt;G&gt; &lt;B&gt;`, `vrefract &lt;scale&gt; &lt;R&gt; &lt;G&gt; &lt;B&gt;`: refract',['../md_engine.html#autotoc_md71',1,'']]],
+  ['back_20valpha_20front_20back_20_3a_20transparency_20modifiers_2',['`texalpha &lt;front&gt; &lt;back&gt;`, `valpha &lt;front&gt; &lt;back&gt;`: transparency modifiers',['../md_engine.html#autotoc_md67',1,'']]],
+  ['backface_20transparency_3',['5.3.2 Backface Transparency',['../md_engine.html#autotoc_md162',1,'']]],
+  ['basic_20model_20commands_4',['6.2.2 Basic Model Commands',['../md_engine.html#autotoc_md180',1,'']]],
+  ['be_20a_20currently_20selected_20vslot_20they_20will_20silently_20fail_20otherwise_5',['The below tex* commands all require there to be a currently selected vslot. They will silently fail otherwise.',['../iengine_8h.html#autotoc_md0',1,'']]],
+  ['begin_6',['begin',['../iengine_8h.html#ab0ba7030a040f6c85b67f3b4c6abc598',1,'gle::begin(GLenum mode)'],['../iengine_8h.html#a7a8422360ffa899e51c7c89a996e3e39',1,'gle::begin(GLenum mode, int numverts)']]],
+  ['below_20tex_20commands_20all_20require_20there_20to_20be_20a_20currently_20selected_20vslot_20they_20will_20silently_20fail_20otherwise_7',['The below tex* commands all require there to be a currently selected vslot. They will silently fail otherwise.',['../iengine_8h.html#autotoc_md0',1,'']]],
+  ['bindminimap_8',['bindminimap',['../iengine_8h.html#a4d143c1e4190c04ba6b10ab26ecaf857',1,'iengine.h']]],
+  ['block3_9',['block3',['../structblock3.html',1,'']]],
+  ['blockcopy_10',['blockcopy',['../iengine_8h.html#af313ec3bed9112963bb471d9754bc63d',1,'iengine.h']]],
+  ['blockcube_11',['blockcube',['../iengine_8h.html#a0f7823631f3789786a0334f712444101',1,'iengine.h']]],
+  ['blocked_12',['blocked',['../structphysent.html#a2923ea64fc81be5ae30e6623b8fbaf9b',1,'physent']]],
+  ['bloom_13',['Tonemapping and bloom',['../md_tesseract-renderer.html#autotoc_md232',1,'']]],
+  ['bouncers_14',['3.3 Bouncers',['../md_engine.html#autotoc_md126',1,'']]],
+  ['boxs_15',['boxs',['../iengine_8h.html#a9f2c2bcf9546a84f8487fb4e14052c7a',1,'boxs(int orient, vec o, const vec &amp;s, bool boxoutline):&#160;iengine.h'],['../iengine_8h.html#a098a2e115da017bc4cc0535722559138',1,'boxs(int orient, vec o, const vec &amp;s, float size, bool boxoutline):&#160;iengine.h']]],
+  ['boxs3d_16',['boxs3D',['../iengine_8h.html#a981cb043f6c56987162fba62e2468de3',1,'iengine.h']]],
+  ['bracing_17',['Indentation and Bracing',['../md_engine.html#autotoc_md18',1,'']]],
+  ['buffer_18',['Deferred shading and the g-buffer',['../md_tesseract-renderer.html#autotoc_md224',1,'']]],
+  ['bumpparallaxworld_19',['Parallax mapping (`bumpparallaxworld`)',['../md_engine.html#autotoc_md149',1,'']]],
+  ['bumpworld_20',['Normal mapping (`bumpworld`)',['../md_engine.html#autotoc_md146',1,'']]],
+  ['bvec_21',['bvec',['../md_engine.html#autotoc_md206',1,'8.1.2 `bvec`'],['../structbvec.html',1,'bvec']]]
 ];
