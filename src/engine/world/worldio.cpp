@@ -428,7 +428,8 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             {
                 surfaceinfo &surf = c.ext->surfaces[i];
                 f->read(&surf, sizeof(surf));
-                int vertmask = surf.verts, numverts = surf.totalverts();
+                int vertmask = surf.verts,
+                    numverts = surf.totalverts();
                 if(!numverts)
                 {
                     surf.verts = 0;
@@ -437,7 +438,9 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 surf.verts = offset;
                 vertinfo *verts = c.ext->verts() + offset;
                 offset += numverts;
-                ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
+                ivec v[4],
+                     n,
+                     vo = ivec(co).mask(0xFFF).shl(3);
                 int layerverts = surf.numverts&Face_MaxVerts, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
                 genfaceverts(c, i, v);
                 bool hasxyz = (vertmask&0x04)!=0,
