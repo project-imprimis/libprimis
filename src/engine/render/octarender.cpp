@@ -1856,13 +1856,13 @@ namespace
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
-            for(uint i = 0; i < va->decals.size(); i++)
+            for(const octaentities * const : va->decals)
             {
-                vc.extdecals.push_back(va->decals[i]);
+                vc.extdecals.push_back(i);
             }
-            for(uint i = 0; i < va->children.size(); i++)
+            for(const vtxarray * const : va->children)
             {
-                finddecals(va->children[i]);
+                finddecals(i);
             }
         }
     }
