@@ -1225,17 +1225,18 @@ void compactvslot(VSlot &vs)
     }
 }
 
-void compactvslots(cube *c, int n)
+//n will be capped at 8
+void compactvslots(std::array<cube, 8> &c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
         renderprogress(std::min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
-    for(int i = 0; i < n; ++i)
+    for(int i = 0; i < std::min(n, 8); ++i)
     {
         if(c[i].children)
         {
-            compactvslots(c[i].children);
+            compactvslots(*(c[i].children));
         }
         else
         {
@@ -1298,7 +1299,7 @@ int cubeworld::compactvslots(bool cull)
             }
         }
     }
-    ::compactvslots(worldroot);
+    ::compactvslots(*worldroot);
     int total = compactedvslots;
     compacteditvslots();
     for(uint i = 0; i < vslots.size(); i++)
@@ -1349,7 +1350,7 @@ int cubeworld::compactvslots(bool cull)
                 vs.index = compactedvslots++;
             }
         }
-        ::compactvslots(worldroot);
+        ::compactvslots(*worldroot);
         total = compactedvslots;
         compacteditvslots();
     }
@@ -1869,14 +1870,14 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
     return clonevslot(src, delta);
 }
 
-static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
+static void fixinsidefaces(std::array<cube, 8> &c, const ivec &o, int size, int tex)
 {
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
         if(c[i].children)
         {
-            fixinsidefaces(c[i].children, co, size>>1, tex);
+            fixinsidefaces(*(c[i].children), co, size>>1, tex);
         }
         else
         {

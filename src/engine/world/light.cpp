@@ -340,7 +340,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     available = std::max(child1->available, child2->available);
 }
 
-static void clearsurfaces(cube *c)
+static void clearsurfaces(std::array<cube, 8> &c)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -373,7 +373,7 @@ static void clearsurfaces(cube *c)
         }
         if(c[i].children)
         {
-            clearsurfaces(c[i].children);
+            clearsurfaces(*(c[i].children));
         }
     }
 }
@@ -604,14 +604,14 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     }
 }
 
-static void calcsurfaces(cube *c, const ivec &co, int size)
+static void calcsurfaces(std::array<cube, 8> &c, const ivec &co, int size)
 {
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children)
         {
-            calcsurfaces(c[i].children, o, size >> 1);
+            calcsurfaces(*(c[i].children), o, size >> 1);
         }
         else if(!(c[i].isempty()))
         {
@@ -641,9 +641,9 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 void cubeworld::calclight()
 {
     remip();
-    clearsurfaces(worldroot);
+    clearsurfaces(*worldroot);
     calcnormals(filltjoints > 0);
-    calcsurfaces(worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
+    calcsurfaces(*worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
     clearnormals();
     allchanged();
 }

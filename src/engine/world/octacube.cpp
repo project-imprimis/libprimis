@@ -106,8 +106,8 @@ void cube::discardchildren(bool fixtex, int depth)
         uint filled = faceempty;
         for(int i = 0; i < 8; ++i)
         {
-            children[i].discardchildren(fixtex, depth+1);
-            filled |= children[i].faces[0];
+            (*children)[i].discardchildren(fixtex, depth+1);
+            filled |= (*children)[i].faces[0];
         }
         if(fixtex)
         {
@@ -721,7 +721,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
         int vis;
         if(this[i].children)
         {
-            this[i].children->genmerges(root, co, size>>1);
+            (this[i]).children->at(0).genmerges(root, co, size>>1);
         }
         else if(!(this[i].isempty()))
         {

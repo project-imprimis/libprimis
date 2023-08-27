@@ -1574,9 +1574,9 @@ namespace
         }
     }
 
-    void gencubeedges(cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
+    void gencubeedges(std::array<cube, 8> &c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
     {
-        neighborstack[++neighbordepth] = c;
+        neighborstack[++neighbordepth] = &c[0];
         for(int i = 0; i < 8; ++i)
         {
             ivec o(i, co, size);
@@ -1586,7 +1586,7 @@ namespace
             }
             if(c[i].children)
             {
-                gencubeedges(c[i].children, o, size>>1);
+                gencubeedges(*(c[i].children), o, size>>1);
             }
             else if(!(c[i].isempty()))
             {
@@ -1811,7 +1811,7 @@ namespace
             for(int i = 0; i < 8; ++i)
             {
                 ivec o(i, co, size/2);
-                int level = findmergedfaces(c.children[i], o, size/2, csi-1, minlevel);
+                int level = findmergedfaces((*c.children)[i], o, size/2, csi-1, minlevel);
                 maxlevel = std::max(maxlevel, level);
             }
             return maxlevel;
@@ -1878,13 +1878,13 @@ namespace
 
         if(c.children)
         {
-            neighborstack[++neighbordepth] = c.children;
+            neighborstack[++neighbordepth] = &(*c.children)[0];
             c.escaped = 0;
             for(int i = 0; i < 8; ++i)
             {
                 ivec o(i, co, size/2);
                 int level = -1;
-                rendercube(c.children[i], o, size/2, csi-1, level);
+                rendercube((*c.children)[i], o, size/2, csi-1, level);
                 if(level >= csi)
                 {
                     c.escaped |= 1<<i;
@@ -2047,12 +2047,12 @@ namespace
     VARF(vacubesize, 32, 128, 0x1000, rootworld.allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
     //updates the va that contains the cube c
-    int updateva(cube *c, const ivec &co, int size, int csi)
+    int updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi)
     {
         int ccount = 0,
             cmergemax  = vamergemax,
             chasmerges = vahasmerges;
-        neighborstack[++neighbordepth] = c;
+        neighborstack[++neighbordepth] = &c[0];
         for(int i = 0; i < 8; ++i)                                  // counting number of semi-solid/solid children cubes
         {
             int count = 0,
@@ -2076,7 +2076,7 @@ namespace
                     {
                         entstack[++entdepth] = c[i].ext->ents;
                     }
-                    count += updateva(c[i].children, o, size/2, csi-1);
+                    count += updateva(*c[i].children, o, size/2, csi-1);
                     if(c[i].ext && c[i].ext->ents)
                     {
                         --entdepth;
@@ -2404,8 +2404,8 @@ void destroyva(vtxarray *va, bool reparent)
     delete va;
 }
 
-//recursively clear vertex arrays for a cube object and its children
-void clearvas(cube *c)
+//recursively clear vertex arrays for an array of eight cube objects and their children
+void clearvas(std::array<cube, 8> &c)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -2420,7 +2420,7 @@ void clearvas(cube *c)
         }
         if(c[i].children)
         {
-            clearvas(c[i].children);
+            clearvas(*c[i].children);
         }
     }
 }
@@ -2491,7 +2491,7 @@ void updatevabbs(bool force)
 void cubeworld::findtjoints()
 {
     recalcprogress = 0;
-    gencubeedges(worldroot);
+    gencubeedges(*worldroot);
     tjoints.clear();
     ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
     cubeedges.clear();
@@ -2507,7 +2507,7 @@ void cubeworld::octarender()                               // creates va s for a
     }
     recalcprogress = 0;
     varoot.clear();
-    updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
+    updateva(*worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
     explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
@@ -2535,7 +2535,7 @@ void cubeworld::allchanged(bool load)
     {
         initlights();
     }
-    clearvas(worldroot);
+    clearvas(*worldroot);
     occlusionengine.resetqueries();
     resetclipplanes();
     entitiesinoctanodes();

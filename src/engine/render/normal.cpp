@@ -216,7 +216,7 @@ namespace //internal functionality not seen by other files
             size >>= 1;
             for(int i = 0; i < 8; ++i)
             {
-                addnormals(c.children[i], ivec(i, o, size), size);
+                addnormals((*c.children)[i], ivec(i, o, size), size);
             }
             return;
         }
@@ -396,7 +396,7 @@ void cubeworld::calcnormals(bool lerptjoints)
     }
     for(int i = 0; i < 8; ++i)
     {
-        addnormals(worldroot[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
+        addnormals((*worldroot)[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
 }
 
