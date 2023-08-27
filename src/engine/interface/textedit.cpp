@@ -235,9 +235,9 @@ void Editor::clear(const char *init)
 {
     cx = cy = 0;
     mark(false);
-    for(uint i = 0; i < lines.size(); i++)
+    for(EditLine &i : lines)
     {
-        lines[i].clear();
+        i.clear();
     }
     lines.clear();
     if(init)
