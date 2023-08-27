@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"structstream.html":[10,0,30],
 "structsvec.html":[10,0,31],
 "structtagval.html":[10,0,32],
 "structundoblock.html":[10,0,33],

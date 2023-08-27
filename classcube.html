@@ -151,8 +151,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aafb02cf1aa0596ea8677b84654da9e79" id="r_aafb02cf1aa0596ea8677b84654da9e79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#aafb02cf1aa0596ea8677b84654da9e79">children</a></td></tr>
-<tr class="separator:aafb02cf1aa0596ea8677b84654da9e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cc3cac064403e6961ffeb29aacf479d" id="r_a1cc3cac064403e6961ffeb29aacf479d"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classcube.html">cube</a>, 8 &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a1cc3cac064403e6961ffeb29aacf479d">children</a></td></tr>
+<tr class="separator:a1cc3cac064403e6961ffeb29aacf479d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6369b99225574ebfc5e4806004492f21" id="r_a6369b99225574ebfc5e4806004492f21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">cubeext</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a6369b99225574ebfc5e4806004492f21">ext</a></td></tr>
 <tr class="separator:a6369b99225574ebfc5e4806004492f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae804da82e6f276043ffa78500f03fafd" id="r_ae804da82e6f276043ffa78500f03fafd"><td class="memItemLeft" ><a id="ae804da82e6f276043ffa78500f03fafd" name="ae804da82e6f276043ffa78500f03fafd"></a>
@@ -179,6 +179,8 @@ union {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:a606b0e2cdd700d73dafdb005110d2963"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bc9372732523f3a0bea375b6afa4e4d" id="r_a7bc9372732523f3a0bea375b6afa4e4d"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom">&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:a7bc9372732523f3a0bea375b6afa4e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b2d14c176db3de48c23536d70c0ff4" id="r_a60b2d14c176db3de48c23536d70c0ff4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a60b2d14c176db3de48c23536d70c0ff4">valid</a></td></tr>
+<tr class="separator:a60b2d14c176db3de48c23536d70c0ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -422,18 +424,18 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aafb02cf1aa0596ea8677b84654da9e79" name="aafb02cf1aa0596ea8677b84654da9e79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafb02cf1aa0596ea8677b84654da9e79">&#9670;&#160;</a></span>children</h2>
+<a id="a1cc3cac064403e6961ffeb29aacf479d" name="a1cc3cac064403e6961ffeb29aacf479d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cc3cac064403e6961ffeb29aacf479d">&#9670;&#160;</a></span>children</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcube.html">cube</a>* cube::children</td>
+          <td class="memname">std::array&lt;<a class="el" href="classcube.html">cube</a>, 8&gt;* cube::children</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>points to 8 cube structures which are its children, or nullptr. -Z first, then -Y, -X </p>
+<p>points to 8 cube structures which are its children, or nullptr. -Z first, then -Y, -X. If children[0] == nullptr, assume there are no children. </p>
 
 </div>
 </div>
@@ -539,6 +541,21 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>one for each face. same order as orient. </p>
+
+</div>
+</div>
+<a id="a60b2d14c176db3de48c23536d70c0ff4" name="a60b2d14c176db3de48c23536d70c0ff4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60b2d14c176db3de48c23536d70c0ff4">&#9670;&#160;</a></span>valid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">bool</a> cube::valid</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>status of the cube: </p>
 
 </div>
 </div>
