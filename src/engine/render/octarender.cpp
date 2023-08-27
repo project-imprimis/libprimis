@@ -1856,11 +1856,11 @@ namespace
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
-            for(const octaentities * const : va->decals)
+            for(const octaentities * const i : va->decals)
             {
                 vc.extdecals.push_back(i);
             }
-            for(const vtxarray * const : va->children)
+            for(const vtxarray * const i : va->children)
             {
                 finddecals(i);
             }
