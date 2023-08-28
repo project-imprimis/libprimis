@@ -21,9 +21,9 @@ class postfx
                 glDeleteFramebuffers(1, &postfxfb);
                 postfxfb = 0;
             }
-            for(uint i = 0; i < postfxtexs.size(); i++)
+            for(const postfxtex &i : postfxtexs)
             {
-                glDeleteTextures(1, &postfxtexs[i].id);
+                glDeleteTextures(1, &i.id);
             }
             postfxtexs.clear();
             postfxw = 0;
