@@ -173,10 +173,10 @@ namespace //internal functionality not seen by other files
     bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         float bestangle = lerpthreshold;
-        tnormal *bestnorm = nullptr;
+        const tnormal *bestnorm = nullptr;
         for(int cur = g.tnormals; cur >= 0;)
         {
-            tnormal &o = tnormals[cur];
+            const tnormal &o = tnormals[cur];
             const vec flats[6] = { vec(-1,  0,  0),
                                    vec( 1,  0,  0),
                                    vec( 0, -1,  0),
