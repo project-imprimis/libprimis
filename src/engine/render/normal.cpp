@@ -177,12 +177,12 @@ namespace //internal functionality not seen by other files
         for(int cur = g.tnormals; cur >= 0;)
         {
             const tnormal &o = tnormals[cur];
-            const vec flats[6] = { vec(-1,  0,  0),
-                                   vec( 1,  0,  0),
-                                   vec( 0, -1,  0),
-                                   vec( 0,  1,  0),
-                                   vec( 0,  0, -1),
-                                   vec( 0,  0,  1) };
+            const std::array<vec, 6> flats = { vec(-1,  0,  0),
+                                               vec( 1,  0,  0),
+                                               vec( 0, -1,  0),
+                                               vec( 0,  1,  0),
+                                               vec( 0,  0, -1),
+                                               vec( 0,  0,  1) };
             vec n1 = o.normals[0] < 0 ? flats[o.normals[0]+6] : normals[o.normals[0]].surface,
                 n2 = o.normals[1] < 0 ? flats[o.normals[1]+6] : normals[o.normals[1]].surface,
                 nt;
