@@ -59,21 +59,11 @@ void setsunlightdir()
 
 void brightencube(cube &c)
 {
-    static const surfaceinfo brightsurfaces[6] =
-    {
-        surfaceinfo(),
-        surfaceinfo(),
-        surfaceinfo(),
-        surfaceinfo(),
-        surfaceinfo(),
-        surfaceinfo()
-    };
-
     if(!c.ext)
     {
         newcubeext(c, 0, false);
     }
-    std::memcpy(c.ext->surfaces.data(), brightsurfaces, sizeof(brightsurfaces));
+    c.ext->surfaces.fill(surfaceinfo());
 }
 
 void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
