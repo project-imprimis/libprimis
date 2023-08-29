@@ -89,7 +89,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             beforeoffset = 0;
         for(int i = 0; i < orient; ++i)
         {
-            surfaceinfo &surf = c.ext->surfaces[i];
+            const surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
             if(!numverts)
             {
