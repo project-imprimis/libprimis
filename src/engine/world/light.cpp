@@ -617,9 +617,9 @@ static void calcsurfaces(std::array<cube, 8> &c, const ivec &co, int size)
         {
             if(c[i].ext)
             {
-                for(int j = 0; j < 6; ++j)
+                for(surfaceinfo &s : c[i].ext->surfaces)
                 {
-                    c[i].ext->surfaces[j].clear();
+                    s.clear();
                 }
             }
             int usefacemask = 0;
