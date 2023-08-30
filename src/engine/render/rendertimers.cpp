@@ -29,7 +29,7 @@ struct timer
     };
     const char *name;               //name the timer reports as
     bool gpu;                       //whether the timer is for gpu time (true) or cpu time
-    GLuint query[Timer_MaxQuery];   //gpu query information
+    std::array<GLuint, Timer_MaxQuery> query; //gpu query information
     int waiting;                    //internal bitmask for queries
     uint starttime;                 //time the timer was started (in terms of ms since game started)
     float result,                   //raw value of the timer, -1 if no info available
@@ -59,10 +59,10 @@ namespace
         timer &t = timers.back();
         t.name = name;
         t.gpu = gpu;
-        std::memset(t.query, 0, sizeof(t.query));
+        t.query.fill(0);
         if(gpu)
         {
-            glGenQueries(timer::Timer_MaxQuery, t.query);
+            glGenQueries(timer::Timer_MaxQuery, t.query.data());
         }
         t.waiting = 0;
         t.starttime = 0;
@@ -162,7 +162,7 @@ void cleanuptimers()
     {
         if(t.gpu)
         {
-            glDeleteQueries(timer::Timer_MaxQuery, t.query);
+            glDeleteQueries(timer::Timer_MaxQuery, t.query.data());
         }
     }
     timers.clear();
