@@ -2771,9 +2771,8 @@ void renderrefractmask()
     gle::enablevertex();
 
     const vtxarray *prev = nullptr;
-    for(uint i = 0; i < alphavas.size(); i++)
+    for(const vtxarray *va : alphavas)
     {
-        const vtxarray *va = alphavas[i];
         if(!va->refracttris)
         {
             continue;
