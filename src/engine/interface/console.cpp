@@ -75,7 +75,7 @@ class CompletionFinder
                             ext;
                 std::vector<char *> files;
 
-                FilesVal(int type, const char *dir, const char *ext);
+                FilesVal(int type, std::string dir, std::string ext);
                 ~FilesVal();
 
                 void update();
@@ -87,7 +87,7 @@ class CompletionFinder
         friend std::hash<FilesKey>;
 
         std::unordered_map<FilesKey, FilesVal *> completefiles;
-        std::unordered_map<std::string, FilesVal *> completions;
+        std::unordered_map<const char *, FilesVal *> completions;
 
         int completesize = 0;
         char *lastcomplete = nullptr;
@@ -97,7 +97,7 @@ class CompletionFinder
         char *prependstring(char *d, const char *s, size_t len) const;
 };
 
-CompletionFinder::FilesVal::FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1)
+CompletionFinder::FilesVal::FilesVal(int type, std::string dir, std::string ext) : type(type), dir(dir), ext(ext[0] ? std::string(ext) : ""), millis(-1)
 {
 }
 
@@ -238,7 +238,12 @@ void CompletionFinder::writecompletions(std::fstream& f)
     std::sort(cmds.begin(), cmds.end());
     for(std::string &k : cmds)
     {
-        FilesVal *v = completions[k];
+        FilesVal *v = completions[k.c_str()];
+        if(!v)
+        {
+            conoutf("could not write completion");
+            return;
+        }
         if(v->type==Files_List)
         {
             if(validateblock(v->dir.c_str()))
@@ -292,20 +297,19 @@ void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext
             }
         }
     }
-    FilesKey key(type, dir, ext);
+    FilesKey key(type, dir ? dir : "", dir ? dir : "");
     auto itr = completefiles.find(key);
     if(itr == completefiles.end())
     {
-        FilesVal *f = new FilesVal(type, dir, ext);
+        FilesVal *f = new FilesVal(type, dir ? dir : "", ext ? ext : "");
         if(type==Files_List)
         {
             explodelist(dir, f->files);
         }
         FilesKey newfile = FilesKey(type, f->dir, f->ext);
-        completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f));
-        itr = completefiles.find(key);
+        itr = completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f)).first;
     }
-    auto hasfilesitr = completions.find(command);
+    auto hasfilesitr = completions.find(std::string(command).c_str());
     if(hasfilesitr != completions.end())
     {
         (*hasfilesitr).second = (*itr).second;
