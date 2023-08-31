@@ -40,7 +40,7 @@ struct timer
 namespace
 {
     std::vector<timer> timers;
-    std::vector<int> timerorder;
+    std::vector<uint> timerorder;
     int timercycle = 0;
 
     timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
