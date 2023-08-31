@@ -184,8 +184,8 @@ static bool hasext(const char *ext)
 
 static bool checkdepthtexstencilrb()
 {
-    int w = 256,
-        h = 256;
+    uint w = 256,
+         h = 256;
     GLuint fbo = 0;
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
