@@ -41,7 +41,7 @@ namespace
 {
     std::vector<timer> timers;
     std::vector<uint> timerorder;
-    int timercycle = 0;
+    uint timercycle = 0;
 
     timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
     {
