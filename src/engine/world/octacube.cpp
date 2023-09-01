@@ -132,10 +132,10 @@ bool cube::isvalidcube() const
     genclipbounds(*this, ivec(0, 0, 0), 256, p);
     genclipplanes(*this, ivec(0, 0, 0), 256, p);
     // test that cube is convex
-    for(int i = 0; i < 8; ++i)
+    for(uint i = 0; i < 8; ++i)
     {
         vec v = p.v[i];
-        for(int j = 0; j < p.size; ++j)
+        for(uint j = 0; j < p.size; ++j)
         {
             if(p.p[j].dist(v)>1e-3f)
             {
