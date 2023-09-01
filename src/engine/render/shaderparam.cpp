@@ -36,7 +36,7 @@ GlobalShaderParamState &GlobalShaderParam::getglobalparam(const std::string &nam
     else
     {
         GlobalShaderParamState &param = globalparams[name];
-        std::memset(param.buf, -1, sizeof(param.buf));
+        param.buf.fill(-1);
         param.version = -1;
         return param;
     }

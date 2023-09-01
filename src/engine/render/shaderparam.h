@@ -16,7 +16,7 @@ struct GlobalShaderParamState
         float fval[32];
         int ival[32];
         uint uval[32];
-        uchar buf[32*sizeof(float)];
+        std::array<uchar, 32*sizeof(float)> buf;
     };
     int version;
 
