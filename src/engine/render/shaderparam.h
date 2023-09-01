@@ -163,7 +163,7 @@ class GlobalShaderParam
         template<class T>
         T *reserve()
         {
-            return reinterpret_cast<T *>(resolve().buf);
+            return reinterpret_cast<T *>(resolve().buf.data());
         }
     private:
         const std::string name;
