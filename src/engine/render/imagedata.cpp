@@ -23,7 +23,7 @@ namespace
     vec parsevec(const char *arg)
     {
         vec v(0, 0, 0);
-        int i = 0;
+        uint i = 0;
         for(; arg[0] && (!i || arg[0]=='/') && i<3; arg += std::strcspn(arg, "/,><"), i++)
         {
             if(i)
