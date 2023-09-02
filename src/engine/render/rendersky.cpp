@@ -236,7 +236,7 @@ namespace
         }
     }
 
-    void drawenvoverlay(Texture *overlay = nullptr, float tx = 0, float ty = 0)
+    void drawenvoverlay(const Texture *overlay = nullptr, float tx = 0, float ty = 0)
     {
         int w = farplane/2;
         float z   = w*cloudheight,
