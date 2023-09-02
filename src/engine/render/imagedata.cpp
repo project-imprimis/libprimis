@@ -157,10 +157,10 @@ void ImageData::replace(ImageData &d)
 
 void ImageData::wraptex(SDL_Surface *s)
 {
-    setdata((uchar *)s->pixels, s->w, s->h, s->format->BytesPerPixel);
+    setdata(static_cast<uchar *>(s->pixels), s->w, s->h, s->format->BytesPerPixel);
     pitch = s->pitch;
     owner = s;
-    freefunc = (void (*)(void *))SDL_FreeSurface;
+    freefunc = reinterpret_cast<void (*)(void *)>(SDL_FreeSurface);
 }
 
 #define WRITE_TEX(t, body) do \
