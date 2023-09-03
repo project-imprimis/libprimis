@@ -1226,7 +1226,7 @@ void compactvslot(VSlot &vs)
 }
 
 //n will be capped at 8
-void compactvslots(std::array<cube, 8> &c, int n)
+void compactvslots(cube * const c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
@@ -1236,7 +1236,7 @@ void compactvslots(std::array<cube, 8> &c, int n)
     {
         if(c[i].children)
         {
-            compactvslots(*(c[i].children));
+            compactvslots(c[i].children->data());
         }
         else
         {
@@ -1299,7 +1299,7 @@ int cubeworld::compactvslots(bool cull)
             }
         }
     }
-    ::compactvslots(*worldroot);
+    ::compactvslots(worldroot->data());
     int total = compactedvslots;
     compacteditvslots();
     for(uint i = 0; i < vslots.size(); i++)
@@ -1350,7 +1350,7 @@ int cubeworld::compactvslots(bool cull)
                 vs.index = compactedvslots++;
             }
         }
-        ::compactvslots(*worldroot);
+        ::compactvslots(worldroot->data());
         total = compactedvslots;
         compacteditvslots();
     }
