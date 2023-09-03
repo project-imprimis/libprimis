@@ -561,9 +561,19 @@ void freeblock(block3 *b, bool alloced = true)
     }
 }
 
-void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
+void selgridmap(const selinfo &sel, uchar *g)
 {
-    LOOP_XYZ(sel, -sel.grid, (*g++ = BITSCAN(lusize), static_cast<void>(c)));
+    for(int z = 0; z < sel.s[D[DIMENSION(sel.orient)]]; ++z)
+    {
+        for(int y = 0; y < sel.s[C[DIMENSION(sel.orient)]]; ++y)
+        {
+            for(int x = 0; x < sel.s[R[DIMENSION(sel.orient)]]; ++x)
+            {
+                blockcube(x,y,z,sel,-sel.grid);
+                *g++ = BITSCAN(lusize);
+            }
+        }
+    }
 }
 
 void freeundo(undoblock *u)
