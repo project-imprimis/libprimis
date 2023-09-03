@@ -35,7 +35,7 @@ var searchData=
   ['fovy_32',['fovy',['../iengine_8h.html#ab8b6bac71429352489e9c023bc346e8a',1,'iengine.h']]],
   ['freeblock_33',['freeblock',['../iengine_8h.html#a09fa58c0d5e628c2783385a8f179e9fa',1,'iengine.h']]],
   ['freeeditinfo_34',['freeeditinfo',['../iengine_8h.html#aeda9962e097f883c2c75e9ddd829f346',1,'iengine.h']]],
-  ['freeocta_35',['freeocta',['../iengine_8h.html#ac0946da0826cc54e129d62038cba2986',1,'iengine.h']]],
+  ['freeocta_35',['freeocta',['../iengine_8h.html#a8e269d239a24375fc6a225835f8ccc44',1,'iengine.h']]],
   ['freeundo_36',['freeundo',['../iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3',1,'iengine.h']]],
   ['from_37',['`from`',['../md_engine.html#autotoc_md115',1,'']]],
   ['front_20back_20valpha_20front_20back_20_3a_20transparency_20modifiers_38',['`texalpha &lt;front&gt; &lt;back&gt;`, `valpha &lt;front&gt; &lt;back&gt;`: transparency modifiers',['../md_engine.html#autotoc_md67',1,'']]],

@@ -11,7 +11,7 @@ var searchData=
   ['forcenextundo_8',['forcenextundo',['../iengine_8h.html#a2c7111a451278c15a623df9b471dc2f3',1,'iengine.h']]],
   ['freeblock_9',['freeblock',['../iengine_8h.html#a09fa58c0d5e628c2783385a8f179e9fa',1,'iengine.h']]],
   ['freeeditinfo_10',['freeeditinfo',['../iengine_8h.html#aeda9962e097f883c2c75e9ddd829f346',1,'iengine.h']]],
-  ['freeocta_11',['freeocta',['../iengine_8h.html#ac0946da0826cc54e129d62038cba2986',1,'iengine.h']]],
+  ['freeocta_11',['freeocta',['../iengine_8h.html#a8e269d239a24375fc6a225835f8ccc44',1,'iengine.h']]],
   ['freeundo_12',['freeundo',['../iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3',1,'iengine.h']]],
   ['fvariable_13',['fvariable',['../command_8h.html#ac66ac8708b0006348290d7f34d799723',1,'command.h']]]
 ];
