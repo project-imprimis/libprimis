@@ -256,9 +256,8 @@ namespace
         {
             if(va->occluded < Occlude_BB && va->curvfc < ViewFrustumCull_Fogged)
             {
-                for(uint i = 0; i < va->mapmodels.size(); i++)
+                for(octaentities *oe : va->mapmodels)
                 {
-                    octaentities *oe = va->mapmodels[i];
                     if(view.isfoggedcube(oe->o, oe->size))
                     {
                         continue;
@@ -274,9 +273,9 @@ namespace
                     else
                     {
                         int visible = 0;
-                        for(uint i = 0; i < oe->mapmodels.size(); i++)
+                        for(const int &i : oe->mapmodels)
                         {
-                            extentity &e = *ents[oe->mapmodels[i]];
+                            extentity &e = *ents[i];
                             if(e.flags&EntFlag_NoVis)
                             {
                                 continue;
