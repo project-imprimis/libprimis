@@ -314,9 +314,8 @@ void Shader::linkglslprogram(bool msg)
         glAttachShader(program, vsobj);
         glAttachShader(program, psobj);
         uint attribs = 0;
-        for(uint i = 0; i < attriblocs.size(); i++)
+        for(const Shader::AttribLoc &a : attriblocs)
         {
-            Shader::AttribLoc &a = attriblocs[i];
             glBindAttribLocation(program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
@@ -333,10 +332,10 @@ void Shader::linkglslprogram(bool msg)
     if(success)
     {
         glUseProgram(program);
+        static std::array<std::string, 16> texnames = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
         for(int i = 0; i < 16; ++i)
         {
-            static const char * const texnames[16] = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
-            GLint loc = glGetUniformLocation(program, texnames[i]);
+            GLint loc = glGetUniformLocation(program, texnames[i].c_str());
             if(loc != -1)
             {
                 glUniform1i(loc, i);
@@ -351,14 +350,13 @@ void Shader::linkglslprogram(bool msg)
             uniformtex("refractmask", 7);
             uniformtex("refractlight", 8);
         }
-        for(uint i = 0; i < defaultparams.size(); i++)
+        for(SlotShaderParamState &param : defaultparams)
         {
-            SlotShaderParamState &param = defaultparams[i];
             param.loc = glGetUniformLocation(program, param.name);
         }
-        for(uint i = 0; i < uniformlocs.size(); i++)
+        for(UniformLoc &loc : uniformlocs)
         {
-            bindglsluniform(*this, uniformlocs[i]);
+            bindglsluniform(*this, loc);
         }
         glUseProgram(0);
     }
