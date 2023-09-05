@@ -528,9 +528,8 @@ void GlobalShaderParamState::resetversions()
 {
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(GlobalShaderParamUse &u : s.globalparams)
         {
-            GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version != u.param->version)
             {
                 u.version = -2;
@@ -544,9 +543,8 @@ void GlobalShaderParamState::resetversions()
     }
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(GlobalShaderParamUse &u : s.globalparams)
         {
-            GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version >= 0)
             {
                 u.version = u.param->version;
@@ -557,17 +555,15 @@ void GlobalShaderParamState::resetversions()
 
 static const float *findslotparam(const Slot &s, const char *name, const float *noval = nullptr)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(const SlotShaderParam &param : s.params)
     {
-        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
         }
     }
-    for(uint i = 0; i < s.shader->defaultparams.size(); i++)
+    for(const SlotShaderParamState &param : s.shader->defaultparams)
     {
-        const SlotShaderParamState &param = s.shader->defaultparams[i];
         if(name == param.name)
         {
             return param.val;
@@ -578,9 +574,8 @@ static const float *findslotparam(const Slot &s, const char *name, const float *
 
 static const float *findslotparam(const VSlot &s, const char *name, const float *noval = nullptr)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(const SlotShaderParam &param : s.params)
     {
-        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
