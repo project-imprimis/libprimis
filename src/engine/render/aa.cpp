@@ -342,8 +342,8 @@ namespace //internal functions incl. AA implementations
             static constexpr int smaasearchtexwidth  = 66,
                                  smaasearchtexheight = 33;
 
-            uchar smaasearchdata[smaasearchtexwidth*smaasearchtexheight];
-            uchar smaaareadata[smaaareatexwidth*smaaareatexheight*2];
+            std::array<uchar, smaasearchtexwidth*smaasearchtexheight> smaasearchdata;
+            std::array<uchar, smaaareatexwidth*smaaareatexheight*2> smaaareadata;
 
             bool smaasearchdatainited = false;
             bool smaaareadatainited = false;
@@ -605,7 +605,7 @@ namespace //internal functions incl. AA implementations
                 }
             }
         }
-        std::memset(smaasearchdata, 0, sizeof(smaasearchdata));
+        smaasearchdata.fill(0);
         for(int y = 0; y < 33; ++y)
         {
             for(int x = 0; x < 33; ++x)
@@ -915,7 +915,7 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        std::memset(smaaareadata, 0, sizeof(smaaareadata));
+        smaaareadata.fill(0);
         for(int offset = 0; offset < static_cast<int>(sizeof(offsetsortho)/sizeof(offsetsortho[0])); ++offset)
         {
             for(int pattern = 0; pattern < 16; ++pattern)
@@ -971,8 +971,8 @@ namespace //internal functions incl. AA implementations
         }
         gensmaasearchdata();
         gensmaaareadata();
-        createtexture(  smaaareatex,   smaaareatexwidth,   smaaareatexheight,   smaaareadata, 3, 1, GL_RG8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
-        createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_2D, 0, 0, 0, false);
+        createtexture(  smaaareatex,   smaaareatexwidth,   smaaareatexheight,   smaaareadata.data(), 3, 1, GL_RG8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
+        createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata.data(), 3, 0,  GL_R8, GL_TEXTURE_2D, 0, 0, 0, false);
         bool split = multisampledaa();
         smaasubsampleorder = split ? (msaapositions[0].x < 0.5f ? 1 : 0) : -1;
         props[SMAAProp::T2X].set_no_cb(tqaa ? 1 : 0);
