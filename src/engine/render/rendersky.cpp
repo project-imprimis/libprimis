@@ -149,7 +149,7 @@ namespace
         }
     });
     FVARR(cloudoffsetx, 0, 0, 1); //offset of cloud texture: 1 is equal to 1 tex-width x
-    FVARR(cloudoffsety, 0, 0, 1); //offset of cloud texture: 1 is ewual to 1 tex width y
+    FVARR(cloudoffsety, 0, 0, 1); //offset of cloud texture: 1 is equal to 1 tex-width y
     FVARR(cloudscrollx, -16, 0, 16);
     FVARR(cloudscrolly, -16, 0, 16);
     FVARR(cloudscale, 0.001, 1, 64);
