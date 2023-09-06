@@ -590,8 +590,8 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        int edges[33];
-        std::memset(edges, -1, sizeof(edges));
+        std::array<int, 33> edges;
+        edges.fill(-1);
         for(int i = 0; i < 2; ++i)
         {
             for(int j = 0; j < 2; ++j)
