@@ -232,8 +232,14 @@ void setupradiancehints()
         }
     }
 
-    static const GLenum drawbufs[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-    glDrawBuffers(4, drawbufs);
+    static const std::array<GLenum, 4> drawbufs =
+    {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2,
+        GL_COLOR_ATTACHMENT3
+    };
+    glDrawBuffers(4, drawbufs.data());
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -268,7 +274,7 @@ void setupradiancehints()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, rsmcolortex, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, rsmnormaltex, 0);
 
-    glDrawBuffers(2, drawbufs);
+    glDrawBuffers(2, drawbufs.data());
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
