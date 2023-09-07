@@ -105,8 +105,8 @@ namespace //internal functionality
     GLuint rsmdepthtex = 0,
            rsmcolortex = 0,
            rsmnormaltex = 0,
-           rsmfbo = 0,
-           rhrb[4] = { 0, 0, 0, 0 };
+           rsmfbo = 0;
+    std::array<GLuint, 4> rhrb = {0, 0, 0, 0};
 
     Shader *radiancehintsshader = nullptr;
 
@@ -212,7 +212,7 @@ void setupradiancehints()
 
     if(rhrect)
     {
-        for(int i = 0; i < 4; ++i)
+        for(uint i = 0; i < rhrb.size(); ++i)
         {
             if(!rhrb[i])
             {
@@ -291,11 +291,12 @@ void cleanupradiancehints()
             i = 0;
         }
     }
-    for(int i = 0; i < 4; ++i)
+    for(GLuint &i : rhrb)
     {
-        if(rhrb[i])
+        if(i)
         {
-            glDeleteRenderbuffers(1, &rhrb[i]); rhrb[i] = 0;
+            glDeleteRenderbuffers(1, &i);
+            i = 0;
         }
     }
     if(rhfbo)
