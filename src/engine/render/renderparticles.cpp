@@ -261,8 +261,9 @@ class partrenderer
                         ts = p->fade;
                     }
                     float t = ts;
-                    o.add(vec(d).mul(t/5000.0f));
-                    o.z -= t*t/(2.0f * 5000.0f * p->gravity);
+                    constexpr float tfactor = 5000.f;
+                    o.add(vec(d).mul(t/tfactor));
+                    o.z -= t*t/(2.0f * tfactor * p->gravity);
                 }
                 if(type&PT_COLLIDE && o.z < p->val && step)
                 {
