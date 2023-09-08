@@ -1646,8 +1646,8 @@ static void loadvolumetricshaders()
 
 static int volw = -1,
            volh = -1;
-static GLuint volfbo[2] = { 0, 0 },
-              voltex[2] = { 0, 0 };
+static std::array<GLuint, 2> volfbo = { 0, 0 },
+                             voltex = { 0, 0 };
 
 static void setupvolumetric(int w, int h)
 {
@@ -1684,20 +1684,20 @@ static void setupvolumetric(int w, int h)
 
 void cleanupvolumetric()
 {
-    for(int i = 0; i < 2; ++i)
+    for(GLuint &i : volfbo)
     {
-        if(volfbo[i])
+        if(i)
         {
-            glDeleteFramebuffers(1, &volfbo[i]);
-            volfbo[i] = 0;
+            glDeleteFramebuffers(1, &i);
+            i = 0;
         }
     }
-    for(int i = 0; i < 2; ++i)
+    for(GLuint &i : voltex)
     {
-        if(voltex[i])
+        if(i)
         {
-            glDeleteTextures(1, &voltex[i]);
-            voltex[i] = 0;
+            glDeleteTextures(1, &i);
+            i = 0;
         }
     }
     volw = volh = -1;
