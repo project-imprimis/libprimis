@@ -1586,17 +1586,13 @@ void disableavatarmask()
 
 VAR(forcespotlights, 1, 0, 0);
 
-static Shader *volumetricshader = nullptr,
-              *volumetricbilateralshader[2] = { nullptr, nullptr };
+static Shader *volumetricshader = nullptr;
+std::array<Shader *, 2> volumetricbilateralshader = { nullptr, nullptr };
 
 void clearvolumetricshaders()
 {
     volumetricshader = nullptr;
-
-    for(int i = 0; i < 2; ++i)
-    {
-        volumetricbilateralshader[i] = nullptr;
-    }
+    volumetricbilateralshader.fill(nullptr);
 }
 
 VARFP(volumetric, 0, 1, 1, cleanupvolumetric());    //toggles displaying volumetric lights
