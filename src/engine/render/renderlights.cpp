@@ -63,7 +63,7 @@ VARFP(gscalenearest, 0, 0, 1, gbuf.cleanupgbuffer()); //g buffer nearest neighbo
 
 matrix4 worldmatrix, screenmatrix;
 
-static Shader *bilateralshader[2] = { nullptr, nullptr };
+static std::array<Shader *, 2> bilateralshader = { nullptr, nullptr };
 
 Shader *loadbilateralshader(int pass)
 {
@@ -123,10 +123,7 @@ void loadbilateralshaders()
  */
 void clearbilateralshaders()
 {
-    for(int k = 0; k < 2; ++k)
-    {
-        bilateralshader[k] = nullptr;
-    }
+    bilateralshader.fill(nullptr);
 }
 
 static void setbilateralparams(int radius, float depth)
