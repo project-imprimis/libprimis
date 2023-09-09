@@ -10,25 +10,25 @@ namespace lightsphere
 {
     namespace
     {
-        int numverts   = 0,
-            numindices = 0;
+        size_t numverts   = 0,
+               numindices = 0;
         GLuint vbuf = 0, //the GLuint pointing to the lightsphere vertex buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
                ebuf = 0; //the GLuint pointing to the lightsphere element buffer obj; bound to a buffer with init(), its texture deleted with cleanup(), bound by enable()
 
-        void init(int slices, int stacks)
+        void init(size_t slices, size_t stacks)
         {
             numverts = (stacks+1)*(slices+1);
             vec * verts = new vec[numverts];
             float ds = 1.0f/slices,
                   dt = 1.0f/stacks,
                   t  = 1.0f;
-            for(int i = 0; i < stacks+1; ++i)
+            for(size_t i = 0; i < stacks+1; ++i)
             {
                 float rho    = M_PI*(1-t),
                       s      = 0.0f,
                       sinrho = i && i < stacks ? std::sin(rho) : 0,
                       cosrho = !i ? 1 : (i < stacks ? std::cos(rho) : -1);
-                for(int j = 0; j < slices+1; ++j)
+                for(size_t j = 0; j < slices+1; ++j)
                 {
                     float theta = j==slices ? 0 : 2*M_PI*s;
                     verts[i*(slices+1) + j] = vec(-std::sin(theta)*sinrho, -std::cos(theta)*sinrho, cosrho);
@@ -40,11 +40,11 @@ namespace lightsphere
             numindices = (stacks-1)*slices*3*2;
             GLushort *indices = new ushort[numindices];
             GLushort *curindex = indices;
-            for(int i = 0; i < stacks; ++i)
+            for(size_t i = 0; i < stacks; ++i)
             {
-                for(int k = 0; k < slices; ++k)
+                for(size_t k = 0; k < slices; ++k)
                 {
-                    int j = i%2 ? slices-k-1 : k;
+                    size_t j = i%2 ? slices-k-1 : k;
                     if(i)
                     {
                         *curindex++ = i*(slices+1)+j;
