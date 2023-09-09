@@ -394,7 +394,7 @@ void cubeworld::calcnormals(bool lerptjoints)
     {
         findtjoints();
     }
-    for(int i = 0; i < 8; ++i)
+    for(size_t i = 0; i < worldroot->size(); ++i)
     {
         addnormals((*worldroot)[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
