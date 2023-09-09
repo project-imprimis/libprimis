@@ -214,7 +214,7 @@ namespace //internal functionality not seen by other files
         if(c.children)
         {
             size >>= 1;
-            for(int i = 0; i < 8; ++i)
+            for(size_t i = 0; i < c.children->size(); ++i)
             {
                 addnormals((*c.children)[i], ivec(i, o, size), size);
             }
