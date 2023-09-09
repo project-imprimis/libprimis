@@ -236,7 +236,7 @@ namespace //internal functionality not seen by other files
                     continue;
                 }
 
-                vec planes[2];
+                std::array<vec, 2> planes;
                 int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0,
                     convex = 0,
                     numplanes = 0;
