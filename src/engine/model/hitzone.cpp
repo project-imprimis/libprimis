@@ -565,8 +565,8 @@ skelzonekey::skelzonekey() : blend(-1)
 
 skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
 {
+    bones.fill(0xFF);
     bones[0] = bone;
-    std::memset(&bones[1], 0xFF, sizeof(bones)-1);
 }
 
 skelzonekey::skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
