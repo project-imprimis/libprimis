@@ -689,7 +689,10 @@ void skelzonekey::addbones(const skelmodel::skelmesh *m, const skelmodel::tri &t
         const skelmodel::blendcombo &c2 = g->blendcombos[b2];
         for(int i = 0; i < 4; ++i)
         {
-            if(c2.weights[i]) addbone(c2.bones[i]);
+            if(c2.weights[i])
+            {
+                addbone(c2.bones[i]);
+            }
         }
     }
     else
