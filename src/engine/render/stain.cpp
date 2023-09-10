@@ -710,11 +710,10 @@ class stainrenderer
 
         void findmaterials(vtxarray *va)
         {
-            materialsurface *matbuf = va->matbuf;
             int matsurfs = va->matsurfs;
             for(int i = 0; i < matsurfs; ++i)
             {
-                materialsurface &m = matbuf[i];
+                materialsurface &m = va->matbuf[i];
                 if(!IS_CLIPPED(m.material&MatFlag_Volume))
                 {
                     i += m.skip;
@@ -731,7 +730,7 @@ class stainrenderer
                     r = R[dim];
                 for(;;)
                 {
-                    materialsurface &m = matbuf[i];
+                    materialsurface &m = va->matbuf[i];
                     if(m.o[dim] >= bbmin[dim] && m.o[dim] <= bbmax[dim] &&
                        m.o[c] + m.csize >= bbmin[c] && m.o[c] <= bbmax[c] &&
                        m.o[r] + m.rsize >= bbmin[r] && m.o[r] <= bbmax[r])
@@ -743,7 +742,7 @@ class stainrenderer
                     {
                         break;
                     }
-                    materialsurface &n = matbuf[i+1];
+                    materialsurface &n = va->matbuf[i+1];
                     if(n.material != m.material || n.orient != m.orient)
                     {
                         break;

@@ -56,7 +56,7 @@ struct vtxarray
     GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
     ushort minvert, maxvert; // DRE info
     elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
-    materialsurface *matbuf; // buffer of material surfaces
+    std::vector<materialsurface> matbuf;
     int verts,
         tris,
         texs,

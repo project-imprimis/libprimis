@@ -1152,7 +1152,7 @@ void setupmaterials(int start, int len)
     }
     for(int i = start; i < len; i++)
     {
-        const vtxarray *va = valist[i];
+        vtxarray *va = valist[i]; //only modifies va->matbuf entries of valist
         materialsurface *skip = nullptr;
         for(int j = 0; j < va -> matsurfs; ++j)
         {

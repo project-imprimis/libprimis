@@ -517,13 +517,12 @@ namespace
                     va->maxvert += va->voffset;
                 }
 
-                va->matbuf = nullptr;
+                va->matbuf.clear();
                 va->matsurfs = matsurfs.size();
                 va->matmask = 0;
                 if(va->matsurfs)
                 {
-                    va->matbuf = new materialsurface[matsurfs.size()];
-                    std::memcpy(va->matbuf, matsurfs.data(), matsurfs.size()*sizeof(materialsurface));
+                    va->matbuf = matsurfs;
                     for(materialsurface &m : matsurfs)
                     {
                         if(m.visible == MatSurf_EditOnly)
@@ -2396,10 +2395,6 @@ void destroyva(vtxarray *va, bool reparent)
     if(va->decalelems)
     {
         delete[] va->decalelems;
-    }
-    if(va->matbuf)
-    {
-        delete[] va->matbuf;
     }
     delete va;
 }
