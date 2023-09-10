@@ -459,6 +459,10 @@ namespace
     class vacollect : public verthash
     {
         public:
+            int updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi);
+
+        private:
+
             int size;
             ivec origin;
             std::vector<materialsurface> matsurfs;
@@ -471,6 +475,22 @@ namespace
             int worldtris, skytris;
             std::vector<ushort> skyindices;
             hashtable<sortkey, sortval> indices;
+            hashtable<decalkey, sortval> decalindices;
+            std::vector<sortkey> texs;
+            std::vector<decalkey> decaltexs;
+            int decaltris;
+
+            void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top);
+            void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj);
+            void addgrasstri(int face, const vertex *verts, int numv, ushort texture);
+            vtxarray *newva(const ivec &o, int size);
+            void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel); // creates vertices and indices ready to be put into a va
+            void finddecals(const vtxarray *va);
+            void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax) const;
+            void setva(cube &c, const ivec &co, int size, int csi);
+            void gencubeverts(const cube &c, const ivec &co, int size);
+            void addmergedverts(int level, const ivec &o);
+
 
             void clear()
             {
@@ -696,12 +716,6 @@ namespace
             {
                 return verts.empty() && matsurfs.empty() && skyindices.empty() && grasstris.empty() && mapmodels.empty() && decals.empty();
             }
-
-        private:
-            hashtable<decalkey, sortval> decalindices;
-            std::vector<sortkey> texs;
-            std::vector<decalkey> decaltexs;
-            int decaltris;
 
             void optimize()
             {
@@ -936,15 +950,15 @@ namespace
 
     //index array must be >= numverts long
     //verts array must be >= Face_MaxVerts + 1 and >= numverts long
-    void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
+    void vacollect::addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
     {
-        int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris,
+        int &total = key.tex == Default_Sky ? skytris : worldtris,
              edge  = orient*(Face_MaxVerts+1);
         for(int i = 0; i < numverts-2; ++i)
         {
             if(index[0]!=index[i+1] && index[i+1]!=index[i+2] && index[i+2]!=index[0])
             {
-                std::vector<ushort> &idxs = key.tex == Default_Sky ? vc.skyindices : vc.indices[key].tris;
+                std::vector<ushort> &idxs = key.tex == Default_Sky ? skyindices : indices[key].tris;
                 int left  = index[0],
                     mid   = index[i+1],
                     right = index[i+2],
@@ -1077,7 +1091,7 @@ namespace
                             {
                                 vt.tangent.w = orientation_bitangent[vslot.rotation][orient].scalartriple(vt.norm.tonormal(), vt.tangent.tonormal()) < 0 ? 0 : 255;
                             }
-                            int i2 = vc.addvert(vt);
+                            int i2 = addvert(vt);
                             if(i2 < 0)
                             {
                                 return;
@@ -1110,10 +1124,10 @@ namespace
     //verts: information about grass texs' face, array of vertices, must be >= face+3 long
     //numv: number of grass vertices
     //texture: index for the grass texture to use
-    void addgrasstri(int face, const vertex *verts, int numv, ushort texture)
+    void vacollect::addgrasstri(int face, const vertex *verts, int numv, ushort texture)
     {
-        vc.grasstris.emplace_back();
-        grasstri &g = vc.grasstris.back();
+        grasstris.emplace_back();
+        grasstri &g = grasstris.back();
         int i1, i2, i3, i4;
         if(numv <= 3 && face%2)
         {
@@ -1136,7 +1150,7 @@ namespace
         g.surface.toplane(g.v[0], g.v[1], g.v[2]);
         if(g.surface.z <= 0)
         {
-            vc.grasstris.pop_back();
+            grasstris.pop_back();
             return;
         }
         g.minz = std::min(std::min(g.v[0].z, g.v[1].z), std::min(g.v[2].z, g.v[3].z));
@@ -1266,7 +1280,7 @@ namespace
         return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
     }
 
-    void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
+    void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj, int grassy, bool alpha, int layer)
     {
         // [rotation][orient]
         const vec orientation_tangent[8][6] =
@@ -1316,7 +1330,7 @@ namespace
                 v.norm = bvec(128, 128, 255);
                 v.tangent = vec4<uchar>(255, 128, 128, 255);
             }
-            index[k] = vc.addvert(v);
+            index[k] = addvert(v);
             if(index[k] < 0)
             {
                 return;
@@ -1327,15 +1341,15 @@ namespace
         {
             for(int k = 0; k < numverts; ++k)
             {
-                vc.alphamin.min(pos[k]);
-                vc.alphamax.max(pos[k]);
+                alphamin.min(pos[k]);
+                alphamax.max(pos[k]);
             }
             if(vslot.refractscale > 0)
             {
                 for(int k = 0; k < numverts; ++k)
                 {
-                    vc.refractmin.min(pos[k]);
-                    vc.refractmax.max(pos[k]);
+                    refractmin.min(pos[k]);
+                    refractmax.max(pos[k]);
                 }
             }
         }
@@ -1347,8 +1361,8 @@ namespace
                 {
                     for(int k = 0; k < numverts; ++k)
                     {
-                        vc.skymin.min(pos[k]);
-                        vc.skymax.max(pos[k]);
+                        skymin.min(pos[k]);
+                        skymax.max(pos[k]);
                     }
                     break;
                 }
@@ -1595,7 +1609,7 @@ namespace
         --neighbordepth;
     }
 
-    void gencubeverts(const cube &c, const ivec &co, int size)
+    void vacollect::gencubeverts(const cube &c, const ivec &co, int size)
     {
         if(!(c.visible&0xC0))
         {
@@ -1683,7 +1697,7 @@ namespace
 
     ////////// Vertex Arrays //////////////
 
-    vtxarray *newva(const ivec &o, int size)
+    vtxarray *vacollect::newva(const ivec &o, int size)
     {
         auto *va = new vtxarray;
         va->parent = nullptr;
@@ -1697,22 +1711,22 @@ namespace
         va->hasmerges = 0;
         va->mergelevel = -1;
 
-        vc.setupdata(va);
+        setupdata(va);
 
         if(va->alphafronttris || va->alphabacktris || va->refracttris)
         {
-            va->alphamin = ivec(vec(vc.alphamin).mul(8)).shr(3);
-            va->alphamax = ivec(vec(vc.alphamax).mul(8)).add(7).shr(3);
+            va->alphamin = ivec(vec(alphamin).mul(8)).shr(3);
+            va->alphamax = ivec(vec(alphamax).mul(8)).add(7).shr(3);
         }
         if(va->refracttris)
         {
-            va->refractmin = ivec(vec(vc.refractmin).mul(8)).shr(3);
-            va->refractmax = ivec(vec(vc.refractmax).mul(8)).add(7).shr(3);
+            va->refractmin = ivec(vec(refractmin).mul(8)).shr(3);
+            va->refractmax = ivec(vec(refractmax).mul(8)).add(7).shr(3);
         }
-        if(va->sky && vc.skymax.x >= 0)
+        if(va->sky && skymax.x >= 0)
         {
-            va->skymin = ivec(vec(vc.skymin).mul(8)).shr(3);
-            va->skymax = ivec(vec(vc.skymax).mul(8)).add(7).shr(3);
+            va->skymin = ivec(vec(skymin).mul(8)).shr(3);
+            va->skymax = ivec(vec(skymax).mul(8)).add(7).shr(3);
         }
 
         wverts += va->verts;
@@ -1825,7 +1839,7 @@ namespace
         }
     }
 
-    void addmergedverts(int level, const ivec &o)
+    void vacollect::addmergedverts(int level, const ivec &o)
     {
         std::vector<mergedface> &mfl = vamerges[level];
         if(mfl.empty())
@@ -1850,14 +1864,14 @@ namespace
         mfl.clear();
     }
 
-    //recursively finds and adds decals to vacollect object vc
-    void finddecals(const vtxarray *va)
+    //recursively finds and adds decals to vacollect object
+    void vacollect::finddecals(const vtxarray *va)
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
             for(const octaentities * const i : va->decals)
             {
-                vc.extdecals.push_back(i);
+                extdecals.push_back(i);
             }
             for(const vtxarray * const i : va->children)
             {
@@ -1866,7 +1880,7 @@ namespace
         }
     }
 
-    void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // creates vertices and indices ready to be put into a va
+    void vacollect::rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel)
     {
         if(c.ext && c.ext->va)
         {
@@ -1900,11 +1914,11 @@ namespace
             {
                 if(c.ext->ents->mapmodels.size())
                 {
-                    vc.mapmodels.push_back(c.ext->ents);
+                    mapmodels.push_back(c.ext->ents);
                 }
                 if(c.ext->ents->decals.size())
                 {
-                    vc.decals.push_back(c.ext->ents);
+                    decals.push_back(c.ext->ents);
                 }
             }
             return;
@@ -1920,17 +1934,17 @@ namespace
         }
         if(c.material != Mat_Air)
         {
-            genmatsurfs(c, co, size, vc.matsurfs);
+            genmatsurfs(c, co, size, matsurfs);
         }
         if(c.ext && c.ext->ents)
         {
             if(c.ext->ents->mapmodels.size())
             {
-                vc.mapmodels.push_back(c.ext->ents);
+                mapmodels.push_back(c.ext->ents);
             }
             if(c.ext->ents->decals.size())
             {
-                vc.decals.push_back(c.ext->ents);
+                decals.push_back(c.ext->ents);
             }
         }
 
@@ -1940,15 +1954,15 @@ namespace
         }
     }
 
-    void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax)
+    void vacollect::calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax) const
     {
         vec vmin(co),
             vmax = vmin;
         vmin.add(size);
 
-        for(uint i = 0; i < vc.verts.size(); i++)
+        for(uint i = 0; i < verts.size(); i++)
         {
-            const vec &v = vc.verts[i].pos;
+            const vec &v = verts[i].pos;
             vmin.min(v);
             vmax.max(v);
         }
@@ -1960,32 +1974,32 @@ namespace
     int entdepth = -1;
     octaentities *entstack[32];
 
-    void setva(cube &c, const ivec &co, int size, int csi)
+    void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
     {
         int vamergeoffset[maxmergelevel+1];
         for(int i = 0; i < maxmergelevel+1; ++i)
         {
             vamergeoffset[i] = vamerges[i].size();
         }
-        vc.origin = co;
-        vc.size = size;
+        origin = co;
+        size = sz;
         for(int i = 0; i < entdepth+1; ++i)
         {
             octaentities *oe = entstack[i];
             if(oe->decals.size())
             {
-                vc.extdecals.push_back(oe);
+                extdecals.push_back(oe);
             }
         }
         int maxlevel = -1;
         rendercube(c, co, size, csi, maxlevel);
         //this is what determines the root VA cubes:
-        if(size == std::min(vamaxsize, rootworld.mapsize()/2) || !vc.emptyva())
+        if(size == std::min(vamaxsize, rootworld.mapsize()/2) || !emptyva())
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
             calcgeombb(co, size, va->geommin, va->geommax);
-            calcmatbb(va, co, size, vc.matsurfs);
+            calcmatbb(va, co, size, matsurfs);
             va->hasmerges = vahasmerges;
             va->mergelevel = vamergemax;
         }
@@ -1996,7 +2010,7 @@ namespace
                 vamerges[i].resize(vamergeoffset[i]);
             }
         }
-        vc.clear();
+        clear();
     }
 
     int setcubevisibility(cube &c, const ivec &co, int size)
@@ -2046,7 +2060,7 @@ namespace
     VARF(vacubesize, 32, 128, 0x1000, rootworld.allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
     //updates the va that contains the cube c
-    int updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi)
+    int vacollect::updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi)
     {
         int ccount = 0,
             cmergemax  = vamergemax,
@@ -2502,7 +2516,7 @@ void cubeworld::octarender()                               // creates va s for a
     }
     recalcprogress = 0;
     varoot.clear();
-    updateva(*worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
+    vc.updateva(*worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
     explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
