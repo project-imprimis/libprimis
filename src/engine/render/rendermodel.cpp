@@ -1227,7 +1227,7 @@ void clearbatchedmapmodels()
 {
     for(uint i = 0; i < batches.size(); i++)
     {
-        modelbatch &b = batches[i];
+        const modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
             batchedmodels.resize(b.batched);
