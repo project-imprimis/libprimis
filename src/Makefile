@@ -86,6 +86,7 @@ CLIENT_OBJS= \
 	engine/render/shaderparam.o \
 	engine/render/stain.o \
 	engine/render/texture.o \
+	engine/render/vacollect.o \
 	engine/render/water.o \
 	engine/world/bih.o \
 	engine/world/dynlight.o \

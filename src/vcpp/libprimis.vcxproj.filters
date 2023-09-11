@@ -60,6 +60,7 @@
     <ClCompile Include="..\engine\render\shaderparam.cpp" />
     <ClCompile Include="..\engine\render\stain.cpp" />
     <ClCompile Include="..\engine\render\texture.cpp" />
+    <ClCompile Include="..\engine\render\vacollect.cpp" />
     <ClCompile Include="..\engine\render\water.cpp" />
     <ClCompile Include="..\engine\world\bih.cpp" />
     <ClCompile Include="..\engine\world\dynlight.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="..\engine\render\stain.h" />
     <ClInclude Include="..\engine\render\shaderparam.h" />
     <ClInclude Include="..\engine\render\texture.h" />
+    <ClInclude Include="..\engine\render\vacollect.h" />
     <ClInclude Include="..\engine\render\water.h" />
     <ClInclude Include="..\engine\world\bih.h" />
     <ClInclude Include="..\engine\world\dynlight.h" />
