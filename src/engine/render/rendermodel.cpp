@@ -1197,9 +1197,8 @@ void Occluder::endmodelquery()
     }
     aamask::enable();
     modelquery->startquery();
-    for(uint i = 0; i < batches.size(); i++)
+    for(modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         int j = b.batched;
         if(j < modelquerymodels)
         {
