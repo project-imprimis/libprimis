@@ -431,7 +431,6 @@ class vacollect : public verthash
     private:
     
         int size;
-        ivec origin;
         std::vector<materialsurface> matsurfs;
         std::vector<octaentities *> mapmodels, decals;
         std::vector<const octaentities *> extdecals;
@@ -1554,7 +1553,6 @@ void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
     {
         vamergeoffset[i] = vamerges[i].size();
     }
-    origin = co;
     size = sz;
     for(int i = 0; i < entdepth+1; ++i)
     {
