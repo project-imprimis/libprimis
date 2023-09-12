@@ -492,11 +492,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a51b3e7e4d2f78ccda5898f31fe52a1b3" id="r_a51b3e7e4d2f78ccda5898f31fe52a1b3"><td class="memItemLeft" align="right" valign="top"><a id="a51b3e7e4d2f78ccda5898f31fe52a1b3" name="a51b3e7e4d2f78ccda5898f31fe52a1b3"></a>
 <a class="el" href="structvec4.html">Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>textureload</b> (<a class="el" href="structvec4.html">const</a> <a class="el" href="structvec4.html">char</a> *name, <a class="el" href="structvec4.html">int</a> clamp=0, <a class="el" href="structvec4.html">bool</a> <a class="el" href="structvec4.html">mipit</a>=<a class="el" href="structvec4.html">true</a>, <a class="el" href="structvec4.html">bool</a> <a class="el" href="structvec4.html">msg</a>=<a class="el" href="structvec4.html">true</a>)</td></tr>
 <tr class="separator:a51b3e7e4d2f78ccda5898f31fe52a1b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a292faa5286b4e845db3e82e9306ea990" id="r_a292faa5286b4e845db3e82e9306ea990"><td class="memItemLeft" align="right" valign="top"><a id="a292faa5286b4e845db3e82e9306ea990" name="a292faa5286b4e845db3e82e9306ea990"></a>
-<a class="el" href="structvec4.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>packvslot</b> (std::vector&lt; uchar &gt; &amp;buf, <a class="el" href="structvec4.html">int</a> index)</td></tr>
+<tr class="memitem:a292faa5286b4e845db3e82e9306ea990" id="r_a292faa5286b4e845db3e82e9306ea990"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a292faa5286b4e845db3e82e9306ea990">packvslot</a> (std::vector&lt; uchar &gt; &amp;buf, <a class="el" href="structvec4.html">int</a> index)</td></tr>
+<tr class="memdesc:a292faa5286b4e845db3e82e9306ea990"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packs into the passed char vector the contents of a <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a>.  <br /></td></tr>
 <tr class="separator:a292faa5286b4e845db3e82e9306ea990"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa70c13b7799789b305932676b8fc3ce3" id="r_aa70c13b7799789b305932676b8fc3ce3"><td class="memItemLeft" align="right" valign="top"><a id="aa70c13b7799789b305932676b8fc3ce3" name="aa70c13b7799789b305932676b8fc3ce3"></a>
-<a class="el" href="structvec4.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>packvslot</b> (std::vector&lt; uchar &gt; &amp;buf, <a class="el" href="structvec4.html">const</a> <a class="el" href="structVSlot.html">VSlot</a> *<a class="el" href="structvec4.html">vs</a>)</td></tr>
+<tr class="memitem:aa70c13b7799789b305932676b8fc3ce3" id="r_aa70c13b7799789b305932676b8fc3ce3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvec4.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aa70c13b7799789b305932676b8fc3ce3">packvslot</a> (std::vector&lt; uchar &gt; &amp;buf, <a class="el" href="structvec4.html">const</a> <a class="el" href="structVSlot.html">VSlot</a> *<a class="el" href="structvec4.html">vs</a>)</td></tr>
+<tr class="memdesc:aa70c13b7799789b305932676b8fc3ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packs into the passed char vector the contents of a <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a>.  <br /></td></tr>
 <tr class="separator:aa70c13b7799789b305932676b8fc3ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af76e7259f19e6e5588e9d75c39e8e4f2" id="r_af76e7259f19e6e5588e9d75c39e8e4f2"><td class="memItemLeft" align="right" valign="top"><a id="af76e7259f19e6e5588e9d75c39e8e4f2" name="af76e7259f19e6e5588e9d75c39e8e4f2"></a>
 <a class="el" href="structvec4.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><b>settexture</b> (<a class="el" href="structvec4.html">const</a> <a class="el" href="structvec4.html">char</a> *name, <a class="el" href="structvec4.html">int</a> clamp=0)</td></tr>
@@ -5531,6 +5531,96 @@ false if no heightmap is active </dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>a pointer to a new heap-allocated undoblock object </dd></dl>
+
+</div>
+</div>
+<a id="aa70c13b7799789b305932676b8fc3ce3" name="aa70c13b7799789b305932676b8fc3ce3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa70c13b7799789b305932676b8fc3ce3">&#9670;&#160;</a></span>packvslot() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">void</a> packvslot </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; uchar &gt; &amp;&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structvec4.html">const</a> <a class="el" href="structVSlot.html">VSlot</a> *&#160;</td>
+          <td class="paramname"><em>vs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Packs into the passed char vector the contents of a <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>the vector to pack information into </td></tr>
+    <tr><td class="paramname">vs</td><td>a pointer to the slot to pack </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a292faa5286b4e845db3e82e9306ea990" name="a292faa5286b4e845db3e82e9306ea990"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a292faa5286b4e845db3e82e9306ea990">&#9670;&#160;</a></span>packvslot() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structvec4.html">void</a> packvslot </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; uchar &gt; &amp;&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structvec4.html">int</a>&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Packs into the passed char vector the contents of a <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>the vector to pack information into </td></tr>
+    <tr><td class="paramname">index</td><td>the index in the vslot list to pack </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
