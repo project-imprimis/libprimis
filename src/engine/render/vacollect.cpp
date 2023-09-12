@@ -474,447 +474,455 @@ class vacollect : public verthash
         void gencubeverts(const cube &c, const ivec &co, int size);
         void addmergedverts(int level, const ivec &o);
 
-        void clear()
-        {
-            clearverts();
-            worldtris = skytris = decaltris = 0;
-            indices.clear();
-            decalindices.clear();
-            skyindices.clear();
-            matsurfs.clear();
-            mapmodels.clear();
-            decals.clear();
-            extdecals.clear();
-            grasstris.clear();
-            texs.clear();
-            decaltexs.clear();
-            alphamin = refractmin = skymin = vec(1e16f, 1e16f, 1e16f);
-            alphamax = refractmax = skymax = vec(-1e16f, -1e16f, -1e16f);
-        }
-
-        void setupdata(vtxarray *va)
-        {
-            optimize();
-            gendecals();
-
-            va->verts = verts.size();
-            va->tris = worldtris/3;
-            va->vbuf = 0;
-            va->vdata = 0;
-            va->minvert = 0;
-            va->maxvert = va->verts-1;
-            va->voffset = 0;
-            if(va->verts)
-            {
-                if(vbosize[VBO_VBuf] + static_cast<int>(verts.size()) > maxvbosize ||
-                   vbosize[VBO_EBuf] + worldtris > USHRT_MAX ||
-                   vbosize[VBO_SkyBuf] + skytris > USHRT_MAX ||
-                   vbosize[VBO_DecalBuf] + decaltris > USHRT_MAX)
-                {
-                    flushvbo();
-                }
-                uchar *vdata = addvbo(va, VBO_VBuf, va->verts, sizeof(vertex));
-                genverts(vdata);
-                va->minvert += va->voffset;
-                va->maxvert += va->voffset;
-            }
-
-            va->matbuf.clear();
-            va->matsurfs = matsurfs.size();
-            va->matmask = 0;
-            if(va->matsurfs)
-            {
-                va->matbuf = matsurfs;
-                for(materialsurface &m : matsurfs)
-                {
-                    if(m.visible == MatSurf_EditOnly)
-                    {
-                        continue;
-                    }
-                    switch(m.material)
-                    {
-                        case Mat_Glass:
-                        case Mat_Water:
-                        {
-                            break;
-                        }
-                        default:
-                        {
-                            continue;
-                        }
-                    }
-                    va->matmask |= 1<<m.material;
-                }
-            }
-
-            va->skybuf = 0;
-            va->skydata = 0;
-            va->skyoffset = 0;
-            va->sky = skyindices.size();
-            if(va->sky)
-            {
-                ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
-                std::memcpy(skydata, skyindices.data(), va->sky*sizeof(ushort));
-                if(va->voffset)
-                {
-                    for(uint i = 0; i < va->sky; ++i)
-                    {
-                        skydata[i] += va->voffset;
-                    }
-                }
-            }
-
-            va->texelems = nullptr;
-            va->texs = texs.size();
-            va->alphabacktris = 0;
-            va->alphaback = 0;
-            va->alphafronttris = 0;
-            va->alphafront = 0;
-            va->refracttris = 0;
-            va->refract = 0;
-            va->ebuf = 0;
-            va->edata = 0;
-            va->eoffset = 0;
-            if(va->texs)
-            {
-                va->texelems = new elementset[va->texs];
-                ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
-                       *curbuf = edata;
-                for(uint i = 0; i < texs.size(); i++)
-                {
-                    const sortkey &k = texs[i];
-                    const sortval &t = indices[k];
-                    elementset &e = va->texelems[i];
-                    e.texture = k.tex;
-                    e.orient = k.orient;
-                    e.layer = k.layer;
-                    ushort *startbuf = curbuf;
-                    e.minvert = USHRT_MAX;
-                    e.maxvert = 0;
-
-                    if(t.tris.size())
-                    {
-                        std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
-                        for(uint j = 0; j < t.tris.size(); j++)
-                        {
-                            curbuf[j] += va->voffset;
-                            e.minvert = std::min(e.minvert, curbuf[j]);
-                            e.maxvert = std::max(e.maxvert, curbuf[j]);
-                        }
-                        curbuf += t.tris.size();
-                    }
-                    e.length = curbuf-startbuf;
-                    if(k.alpha==Alpha_Back)
-                    {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->alphaback++;
-                        va->alphabacktris += e.length/3;
-                    }
-                    else if(k.alpha==Alpha_Front)
-                    {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->alphafront++;
-                        va->alphafronttris += e.length/3;
-                    }
-                    else if(k.alpha==Alpha_Refract)
-                    {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->refract++;
-                        va->refracttris += e.length/3;
-                    }
-                }
-            }
-
-            va->texmask = 0;
-            va->dyntexs = 0;
-            for(int i = 0; i < (va->texs+va->alphaback+va->alphafront+va->refract); ++i)
-            {
-                VSlot &vslot = lookupvslot(va->texelems[i].texture, false);
-                if(vslot.isdynamic())
-                {
-                    va->dyntexs++;
-                }
-                Slot &slot = *vslot.slot;
-                for(DecalSlot::Tex j : slot.sts)
-                {
-                    va->texmask |= 1 << j.type;
-                }
-            }
-
-            va->decalbuf = 0;
-            va->decaldata = 0;
-            va->decaloffset = 0;
-            va->decalelems = nullptr;
-            va->decaltexs = decaltexs.size();
-            va->decaltris = decaltris/3;
-            if(va->decaltexs)
-            {
-                va->decalelems = new elementset[va->decaltexs];
-                ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
-                       *curbuf = edata;
-                for(uint i = 0; i < decaltexs.size(); i++)
-                {
-                    const decalkey &k = decaltexs[i];
-                    const sortval &t = decalindices[k];
-                    elementset &e = va->decalelems[i];
-                    e.texture = k.tex;
-                    e.reuse = k.reuse;
-                    ushort *startbuf = curbuf;
-                    e.minvert = USHRT_MAX;
-                    e.maxvert = 0;
-                    if(t.tris.size())
-                    {
-                        std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
-                        for(uint j = 0; j < t.tris.size(); j++)
-                        {
-                            curbuf[j] += va->voffset;
-                            e.minvert = std::min(e.minvert, curbuf[j]);
-                            e.maxvert = std::max(e.maxvert, curbuf[j]);
-                        }
-                        curbuf += t.tris.size();
-                    }
-                    e.length = curbuf-startbuf;
-                }
-            }
-            if(grasstris.size())
-            {
-                std::swap(va->grasstris, grasstris);
-                loadgrassshaders();
-            }
-            if(mapmodels.size())
-            {
-                va->mapmodels.insert(va->decals.end(), mapmodels.begin(), mapmodels.end());
-            }
-            if(decals.size())
-            {
-                va->decals.insert(va->decals.end(), decals.begin(), decals.end());
-            }
-        }
-
-        bool emptyva()
-        {
-            return verts.empty() && matsurfs.empty() && skyindices.empty() && grasstris.empty() && mapmodels.empty() && decals.empty();
-        }
-
-        void optimize()
-        {
-            ENUMERATE_KT(indices, sortkey, k, sortval, t,
-            {
-                if(t.tris.size())
-                {
-                    texs.push_back(k);
-                }
-            });
-            std::sort(texs.begin(), texs.end(), sortkey::sort);
-
-            matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
-        }
-
-        void genverts(uchar *buf)
-        {
-            vertex *f = reinterpret_cast<vertex *>(buf);
-            for(vertex i : verts)
-            {
-                const vertex &v = i;
-                *f = v;
-                f->norm.flip();
-                f->tangent.flip();
-                f++;
-            }
-        }
-
-        void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key)
-        {
-            matrix3 orient;
-            orient.identity();
-            if(e.attr2)
-            {
-                orient.rotate_around_z(sincosmod360(e.attr2));
-            }
-            if(e.attr3)
-            {
-                orient.rotate_around_x(sincosmod360(e.attr3));
-            }
-            if(e.attr4)
-            {
-                orient.rotate_around_y(sincosmod360(-e.attr4));
-            }
-            vec size(std::max(static_cast<float>(e.attr5), 1.0f));
-            size.y *= s.depth;
-            if(!s.sts.empty())
-            {
-                Texture *t = s.sts[0].t;
-                if(t->xs < t->ys)
-                {
-                    size.x *= t->xs / static_cast<float>(t->ys);
-                }
-                else if(t->xs > t->ys)
-                {
-                    size.z *= t->ys / static_cast<float>(t->xs);
-                }
-            }
-            vec center = orient.transform(vec(0, size.y*0.5f, 0)).add(e.o),
-                radius = orient.abstransform(vec(size).mul(0.5f)),
-                bbmin = vec(center).sub(radius),
-                bbmax = vec(center).add(radius),
-                clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
-            for(uint i = 0; i < texs.size(); i++)
-            {
-                const sortkey &k = texs[i];
-                if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
-                {
-                    continue;
-                }
-                const sortval &t = indices[k];
-                if(t.tris.empty())
-                {
-                    continue;
-                }
-                decalkey tkey(key);
-                if(shouldreuseparams(s, lookupvslot(k.tex, false)))
-                {
-                    tkey.reuse = k.tex;
-                }
-                for(uint j = 0; j < t.tris.size(); j += 3)
-                {
-                    const vertex &t0 = verts[t.tris[j]],
-                                 &t1 = verts[t.tris[j+1]],
-                                 &t2 = verts[t.tris[j+2]];
-                    vec v0 = t0.pos,
-                        v1 = t1.pos,
-                        v2 = t2.pos,
-                        tmin = vec(v0).min(v1).min(v2),
-                        tmax = vec(v0).max(v1).max(v2);
-                    if(tmin.x >= bbmax.x || tmin.y >= bbmax.y || tmin.z >= bbmax.z ||
-                       tmax.x <= bbmin.x || tmax.y <= bbmin.y || tmax.z <= bbmin.z)
-                    {
-                        continue;
-                    }
-                    float f0 = t0.norm.tonormal().dot(orient.b),
-                          f1 = t1.norm.tonormal().dot(orient.b),
-                          f2 = t2.norm.tonormal().dot(orient.b);
-                    if(f0 >= 0 && f1 >= 0 && f2 >= 0)
-                    {
-                        continue;
-                    }
-                    vec p1[9], p2[9];
-                    p1[0] = v0;
-                    p1[1] = v1;
-                    p1[2] = v2;
-                    int nump = polyclip(p1, 3, orient.b, clipoffset.y, clipoffset.y + size.y, p2);
-                    if(nump < 3)
-                    {
-                        continue;
-                    }
-                    nump = polyclip(p2, nump, orient.a, clipoffset.x, clipoffset.x + size.x, p1);
-                    if(nump < 3)
-                    {
-                        continue;
-                    }
-                    nump = polyclip(p1, nump, orient.c, clipoffset.z, clipoffset.z + size.z, p2);
-                    if(nump < 3)
-                    {
-                        continue;
-                    }
-                    vec4<uchar> n0 = t0.norm,
-                          n1 = t1.norm,
-                          n2 = t2.norm,
-                          x0 = t0.tangent,
-                          x1 = t1.tangent,
-                          x2 = t2.tangent;
-                    vec e1 = vec(v1).sub(v0),
-                        e2 = vec(v2).sub(v0);
-                    float d11 = e1.dot(e1),
-                          d12 = e1.dot(e2),
-                          d22 = e2.dot(e2);
-                    int idx[9];
-                    for(int k = 0; k < nump; ++k)
-                    {
-                        vertex v;
-                        v.pos = p2[k];
-                        vec ep = vec(v.pos).sub(v0);
-                        float dp1 = ep.dot(e1),
-                              dp2 = ep.dot(e2),
-                              denom = d11*d22 - d12*d12,
-                              b1 = (d22*dp1 - d12*dp2) / denom,
-                              b2 = (d11*dp2 - d12*dp1) / denom,
-                              b0 = 1 - b1 - b2;
-                        v.norm.lerp(n0, n1, n2, b0, b1, b2);
-                        v.norm.w = static_cast<uchar>(127.5f - 127.5f*(f0*b0 + f1*b1 + f2*b2));
-                        vec tc = orient.transposedtransform(vec(center).sub(v.pos)).div(size).add(0.5f);
-                        v.tc = vec(tc.x, tc.z, s.fade ? tc.y * s.depth / s.fade : 1.0f);
-                        v.tangent.lerp(x0, x1, x2, b0, b1, b2);
-                        idx[k] = addvert(v);
-                    }
-                    std::vector<ushort> &tris = decalindices[tkey].tris;
-                    for(int k = 0; k < nump-2; ++k)
-                    {
-                        if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
-                        {
-                            tris.push_back(idx[0]);
-                            tris.push_back(idx[k+1]);
-                            tris.push_back(idx[k+2]);
-                            decaltris += 3;
-                        }
-                    }
-                }
-            }
-        }
-
-        void gendecals()
-        {
-            if(decals.size())
-            {
-                extdecals.insert(extdecals.end(), decals.begin(), decals.end());
-            }
-            if(extdecals.empty())
-            {
-                return;
-            }
-            std::vector<extentity *> &ents = entities::getents();
-            for(const octaentities* oe : extdecals)
-            {
-                for(uint j = 0; j < oe->decals.size(); j++)
-                {
-                    extentity &e = *ents[oe->decals[j]];
-                    if(e.flags&EntFlag_Render)
-                    {
-                        continue;
-                    }
-                    e.flags |= EntFlag_Render;
-                    DecalSlot &s = lookupdecalslot(e.attr1, true);
-                    if(!s.shader)
-                    {
-                        continue;
-                    }
-                    decalkey k(e.attr1);
-                    gendecal(e, s, k);
-                }
-            }
-            for(const octaentities* oe : extdecals)
-            {
-                for(uint j = 0; j < oe->decals.size(); j++)
-                {
-                    extentity &e = *ents[oe->decals[j]];
-                    if(e.flags&EntFlag_Render)
-                    {
-                        e.flags &= ~EntFlag_Render;
-                    }
-                }
-            }
-            ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
-            {
-                if(t.tris.size())
-                {
-                    decaltexs.push_back(k);
-                }
-            });
-            std::sort(texs.begin(), texs.end(), sortkey::sort);
-        }
+        void clear();
+        void setupdata(vtxarray *va);
+        bool emptyva();
+        void optimize();
+        void genverts(uchar *buf);
+        void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key);
+        void gendecals();
 } vc;
+
+void vacollect::clear()
+{
+    clearverts();
+    worldtris = skytris = decaltris = 0;
+    indices.clear();
+    decalindices.clear();
+    skyindices.clear();
+    matsurfs.clear();
+    mapmodels.clear();
+    decals.clear();
+    extdecals.clear();
+    grasstris.clear();
+    texs.clear();
+    decaltexs.clear();
+    alphamin = refractmin = skymin = vec(1e16f, 1e16f, 1e16f);
+    alphamax = refractmax = skymax = vec(-1e16f, -1e16f, -1e16f);
+}
+
+void vacollect::setupdata(vtxarray *va)
+{
+    optimize();
+    gendecals();
+
+    va->verts = verts.size();
+    va->tris = worldtris/3;
+    va->vbuf = 0;
+    va->vdata = 0;
+    va->minvert = 0;
+    va->maxvert = va->verts-1;
+    va->voffset = 0;
+    if(va->verts)
+    {
+        if(vbosize[VBO_VBuf] + static_cast<int>(verts.size()) > maxvbosize ||
+           vbosize[VBO_EBuf] + worldtris > USHRT_MAX ||
+           vbosize[VBO_SkyBuf] + skytris > USHRT_MAX ||
+           vbosize[VBO_DecalBuf] + decaltris > USHRT_MAX)
+        {
+            flushvbo();
+        }
+        uchar *vdata = addvbo(va, VBO_VBuf, va->verts, sizeof(vertex));
+        genverts(vdata);
+        va->minvert += va->voffset;
+        va->maxvert += va->voffset;
+    }
+
+    va->matbuf.clear();
+    va->matsurfs = matsurfs.size();
+    va->matmask = 0;
+    if(va->matsurfs)
+    {
+        va->matbuf = matsurfs;
+        for(materialsurface &m : matsurfs)
+        {
+            if(m.visible == MatSurf_EditOnly)
+            {
+                continue;
+            }
+            switch(m.material)
+            {
+                case Mat_Glass:
+                case Mat_Water:
+                {
+                    break;
+                }
+                default:
+                {
+                    continue;
+                }
+            }
+            va->matmask |= 1<<m.material;
+        }
+    }
+
+    va->skybuf = 0;
+    va->skydata = 0;
+    va->skyoffset = 0;
+    va->sky = skyindices.size();
+    if(va->sky)
+    {
+        ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
+        std::memcpy(skydata, skyindices.data(), va->sky*sizeof(ushort));
+        if(va->voffset)
+        {
+            for(uint i = 0; i < va->sky; ++i)
+            {
+                skydata[i] += va->voffset;
+            }
+        }
+    }
+
+    va->texelems = nullptr;
+    va->texs = texs.size();
+    va->alphabacktris = 0;
+    va->alphaback = 0;
+    va->alphafronttris = 0;
+    va->alphafront = 0;
+    va->refracttris = 0;
+    va->refract = 0;
+    va->ebuf = 0;
+    va->edata = 0;
+    va->eoffset = 0;
+    if(va->texs)
+    {
+        va->texelems = new elementset[va->texs];
+        ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
+               *curbuf = edata;
+        for(uint i = 0; i < texs.size(); i++)
+        {
+            const sortkey &k = texs[i];
+            const sortval &t = indices[k];
+            elementset &e = va->texelems[i];
+            e.texture = k.tex;
+            e.orient = k.orient;
+            e.layer = k.layer;
+            ushort *startbuf = curbuf;
+            e.minvert = USHRT_MAX;
+            e.maxvert = 0;
+
+            if(t.tris.size())
+            {
+                std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
+                for(uint j = 0; j < t.tris.size(); j++)
+                {
+                    curbuf[j] += va->voffset;
+                    e.minvert = std::min(e.minvert, curbuf[j]);
+                    e.maxvert = std::max(e.maxvert, curbuf[j]);
+                }
+                curbuf += t.tris.size();
+            }
+            e.length = curbuf-startbuf;
+            if(k.alpha==Alpha_Back)
+            {
+                va->texs--;
+                va->tris -= e.length/3;
+                va->alphaback++;
+                va->alphabacktris += e.length/3;
+            }
+            else if(k.alpha==Alpha_Front)
+            {
+                va->texs--;
+                va->tris -= e.length/3;
+                va->alphafront++;
+                va->alphafronttris += e.length/3;
+            }
+            else if(k.alpha==Alpha_Refract)
+            {
+                va->texs--;
+                va->tris -= e.length/3;
+                va->refract++;
+                va->refracttris += e.length/3;
+            }
+        }
+    }
+
+    va->texmask = 0;
+    va->dyntexs = 0;
+    for(int i = 0; i < (va->texs+va->alphaback+va->alphafront+va->refract); ++i)
+    {
+        VSlot &vslot = lookupvslot(va->texelems[i].texture, false);
+        if(vslot.isdynamic())
+        {
+            va->dyntexs++;
+        }
+        Slot &slot = *vslot.slot;
+        for(DecalSlot::Tex j : slot.sts)
+        {
+            va->texmask |= 1 << j.type;
+        }
+    }
+
+    va->decalbuf = 0;
+    va->decaldata = 0;
+    va->decaloffset = 0;
+    va->decalelems = nullptr;
+    va->decaltexs = decaltexs.size();
+    va->decaltris = decaltris/3;
+    if(va->decaltexs)
+    {
+        va->decalelems = new elementset[va->decaltexs];
+        ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
+               *curbuf = edata;
+        for(uint i = 0; i < decaltexs.size(); i++)
+        {
+            const decalkey &k = decaltexs[i];
+            const sortval &t = decalindices[k];
+            elementset &e = va->decalelems[i];
+            e.texture = k.tex;
+            e.reuse = k.reuse;
+            ushort *startbuf = curbuf;
+            e.minvert = USHRT_MAX;
+            e.maxvert = 0;
+            if(t.tris.size())
+            {
+                std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
+                for(uint j = 0; j < t.tris.size(); j++)
+                {
+                    curbuf[j] += va->voffset;
+                    e.minvert = std::min(e.minvert, curbuf[j]);
+                    e.maxvert = std::max(e.maxvert, curbuf[j]);
+                }
+                curbuf += t.tris.size();
+            }
+            e.length = curbuf-startbuf;
+        }
+    }
+    if(grasstris.size())
+    {
+        std::swap(va->grasstris, grasstris);
+        loadgrassshaders();
+    }
+    if(mapmodels.size())
+    {
+        va->mapmodels.insert(va->decals.end(), mapmodels.begin(), mapmodels.end());
+    }
+    if(decals.size())
+    {
+        va->decals.insert(va->decals.end(), decals.begin(), decals.end());
+    }
+}
+
+bool vacollect::emptyva()
+{
+    return verts.empty() && matsurfs.empty() && skyindices.empty() && grasstris.empty() && mapmodels.empty() && decals.empty();
+}
+
+void vacollect::optimize()
+{
+    ENUMERATE_KT(indices, sortkey, k, sortval, t,
+    {
+        if(t.tris.size())
+        {
+            texs.push_back(k);
+        }
+    });
+    std::sort(texs.begin(), texs.end(), sortkey::sort);
+
+    matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
+}
+
+void vacollect::genverts(uchar *buf)
+{
+    vertex *f = reinterpret_cast<vertex *>(buf);
+    for(vertex i : verts)
+    {
+        const vertex &v = i;
+        *f = v;
+        f->norm.flip();
+        f->tangent.flip();
+        f++;
+    }
+}
+
+void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey &key)
+{
+    matrix3 orient;
+    orient.identity();
+    if(e.attr2)
+    {
+        orient.rotate_around_z(sincosmod360(e.attr2));
+    }
+    if(e.attr3)
+    {
+        orient.rotate_around_x(sincosmod360(e.attr3));
+    }
+    if(e.attr4)
+    {
+        orient.rotate_around_y(sincosmod360(-e.attr4));
+    }
+    vec size(std::max(static_cast<float>(e.attr5), 1.0f));
+    size.y *= s.depth;
+    if(!s.sts.empty())
+    {
+        Texture *t = s.sts[0].t;
+        if(t->xs < t->ys)
+        {
+            size.x *= t->xs / static_cast<float>(t->ys);
+        }
+        else if(t->xs > t->ys)
+        {
+            size.z *= t->ys / static_cast<float>(t->xs);
+        }
+    }
+    vec center = orient.transform(vec(0, size.y*0.5f, 0)).add(e.o),
+        radius = orient.abstransform(vec(size).mul(0.5f)),
+        bbmin = vec(center).sub(radius),
+        bbmax = vec(center).add(radius),
+        clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
+    for(uint i = 0; i < texs.size(); i++)
+    {
+        const sortkey &k = texs[i];
+        if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
+        {
+            continue;
+        }
+        const sortval &t = indices[k];
+        if(t.tris.empty())
+        {
+            continue;
+        }
+        decalkey tkey(key);
+        if(shouldreuseparams(s, lookupvslot(k.tex, false)))
+        {
+            tkey.reuse = k.tex;
+        }
+        for(uint j = 0; j < t.tris.size(); j += 3)
+        {
+            const vertex &t0 = verts[t.tris[j]],
+                         &t1 = verts[t.tris[j+1]],
+                         &t2 = verts[t.tris[j+2]];
+            vec v0 = t0.pos,
+                v1 = t1.pos,
+                v2 = t2.pos,
+                tmin = vec(v0).min(v1).min(v2),
+                tmax = vec(v0).max(v1).max(v2);
+            if(tmin.x >= bbmax.x || tmin.y >= bbmax.y || tmin.z >= bbmax.z ||
+               tmax.x <= bbmin.x || tmax.y <= bbmin.y || tmax.z <= bbmin.z)
+            {
+                continue;
+            }
+            float f0 = t0.norm.tonormal().dot(orient.b),
+                  f1 = t1.norm.tonormal().dot(orient.b),
+                  f2 = t2.norm.tonormal().dot(orient.b);
+            if(f0 >= 0 && f1 >= 0 && f2 >= 0)
+            {
+                continue;
+            }
+            vec p1[9], p2[9];
+            p1[0] = v0;
+            p1[1] = v1;
+            p1[2] = v2;
+            int nump = polyclip(p1, 3, orient.b, clipoffset.y, clipoffset.y + size.y, p2);
+            if(nump < 3)
+            {
+                continue;
+            }
+            nump = polyclip(p2, nump, orient.a, clipoffset.x, clipoffset.x + size.x, p1);
+            if(nump < 3)
+            {
+                continue;
+            }
+            nump = polyclip(p1, nump, orient.c, clipoffset.z, clipoffset.z + size.z, p2);
+            if(nump < 3)
+            {
+                continue;
+            }
+            vec4<uchar> n0 = t0.norm,
+                  n1 = t1.norm,
+                  n2 = t2.norm,
+                  x0 = t0.tangent,
+                  x1 = t1.tangent,
+                  x2 = t2.tangent;
+            vec e1 = vec(v1).sub(v0),
+                e2 = vec(v2).sub(v0);
+            float d11 = e1.dot(e1),
+                  d12 = e1.dot(e2),
+                  d22 = e2.dot(e2);
+            int idx[9];
+            for(int k = 0; k < nump; ++k)
+            {
+                vertex v;
+                v.pos = p2[k];
+                vec ep = vec(v.pos).sub(v0);
+                float dp1 = ep.dot(e1),
+                      dp2 = ep.dot(e2),
+                      denom = d11*d22 - d12*d12,
+                      b1 = (d22*dp1 - d12*dp2) / denom,
+                      b2 = (d11*dp2 - d12*dp1) / denom,
+                      b0 = 1 - b1 - b2;
+                v.norm.lerp(n0, n1, n2, b0, b1, b2);
+                v.norm.w = static_cast<uchar>(127.5f - 127.5f*(f0*b0 + f1*b1 + f2*b2));
+                vec tc = orient.transposedtransform(vec(center).sub(v.pos)).div(size).add(0.5f);
+                v.tc = vec(tc.x, tc.z, s.fade ? tc.y * s.depth / s.fade : 1.0f);
+                v.tangent.lerp(x0, x1, x2, b0, b1, b2);
+                idx[k] = addvert(v);
+            }
+            std::vector<ushort> &tris = decalindices[tkey].tris;
+            for(int k = 0; k < nump-2; ++k)
+            {
+                if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
+                {
+                    tris.push_back(idx[0]);
+                    tris.push_back(idx[k+1]);
+                    tris.push_back(idx[k+2]);
+                    decaltris += 3;
+                }
+            }
+        }
+    }
+}
+
+void vacollect::gendecals()
+{
+    if(decals.size())
+    {
+        extdecals.insert(extdecals.end(), decals.begin(), decals.end());
+    }
+    if(extdecals.empty())
+    {
+        return;
+    }
+    std::vector<extentity *> &ents = entities::getents();
+    for(const octaentities* oe : extdecals)
+    {
+        for(uint j = 0; j < oe->decals.size(); j++)
+        {
+            extentity &e = *ents[oe->decals[j]];
+            if(e.flags&EntFlag_Render)
+            {
+                continue;
+            }
+            e.flags |= EntFlag_Render;
+            DecalSlot &s = lookupdecalslot(e.attr1, true);
+            if(!s.shader)
+            {
+                continue;
+            }
+            decalkey k(e.attr1);
+            gendecal(e, s, k);
+        }
+    }
+    for(const octaentities* oe : extdecals)
+    {
+        for(uint j = 0; j < oe->decals.size(); j++)
+        {
+            extentity &e = *ents[oe->decals[j]];
+            if(e.flags&EntFlag_Render)
+            {
+                e.flags &= ~EntFlag_Render;
+            }
+        }
+    }
+    ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
+    {
+        if(t.tris.size())
+        {
+            decaltexs.push_back(k);
+        }
+    });
+    std::sort(texs.begin(), texs.end(), sortkey::sort);
+}
 
 struct mergedface
 {
