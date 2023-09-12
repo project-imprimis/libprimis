@@ -245,21 +245,6 @@ struct sortval
     sortval() {}
 };
 
-const vec orientation_bitangent[8][6] =
-{
-    { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
-    { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
-    { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
-    { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
-    { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
-    { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
-    { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
-    { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
-};
-
-
-constexpr int vamaxsize = 0x1000; //4096 = 2^12
-
 struct vboinfo
 {
     int uses;
@@ -461,6 +446,22 @@ class vacollect : public verthash
         std::vector<sortkey> texs;
         std::vector<decalkey> decaltexs;
         int decaltris;
+        int entdepth = -1;
+        octaentities *entstack[32];
+
+        const vec orientation_bitangent[8][6] =
+        {
+            { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
+            { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
+            { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
+            { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
+            { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
+            { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
+            { vec( 0,  1,  0), vec( 0, -1,  0), vec(-1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0), vec( 1,  0,  0) },
+            { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
+        };
+
+        static constexpr int vamaxsize = 0x1000; //4096 = 2^12
 
         void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top);
         void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj);
@@ -472,7 +473,6 @@ class vacollect : public verthash
         void setva(cube &c, const ivec &co, int size, int csi);
         void gencubeverts(const cube &c, const ivec &co, int size);
         void addmergedverts(int level, const ivec &o);
-
 
         void clear()
         {
@@ -1538,9 +1538,6 @@ void vacollect::calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax) c
     bbmin = ivec(vmin.mul(8)).shr(3);
     bbmax = ivec(vmax.mul(8)).add(7).shr(3);
 }
-
-int entdepth = -1;
-octaentities *entstack[32];
 
 void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
 {
