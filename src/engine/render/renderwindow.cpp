@@ -724,9 +724,8 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     int total = fpshistory.at(maxfpshistory-1),
         best = total,
         worst = total;
-    for(int i = 0; i < maxfpshistory-1; ++i)
+    for(const int &millis : fpshistory)
     {
-        int millis = fpshistory[i];
         total += millis;
         if(millis < best)
         {
