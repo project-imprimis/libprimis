@@ -448,6 +448,19 @@ class vacollect : public verthash
         int entdepth = -1;
         octaentities *entstack[32];
 
+        struct mergedface
+        {
+            uchar orient, numverts;
+            ushort mat, tex;
+            vertinfo *verts;
+            int tjoints;
+        };
+
+        static constexpr int maxmergelevel = 12;
+        int vahasmerges = 0,
+            vamergemax = 0;
+        std::vector<mergedface> vamerges[maxmergelevel+1];
+
         const vec orientation_bitangent[8][6] =
         {
             { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
@@ -480,6 +493,10 @@ class vacollect : public verthash
         void genverts(uchar *buf);
         void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key);
         void gendecals();
+        int findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel);
+        int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1);
+        void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen);
+
 } vc;
 
 void vacollect::clear()
@@ -923,20 +940,7 @@ void vacollect::gendecals()
     std::sort(texs.begin(), texs.end(), sortkey::sort);
 }
 
-struct mergedface
-{
-    uchar orient, numverts;
-    ushort mat, tex;
-    vertinfo *verts;
-    int tjoints;
-};
-
-const int maxmergelevel = 12;
-int vahasmerges = 0,
-    vamergemax = 0;
-std::vector<mergedface> vamerges[maxmergelevel+1];
-
-int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
+int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
 {
     if(!c.ext || c.isempty())
     {
@@ -999,7 +1003,7 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     return maxlevel;
 }
 
-int findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel)
+int vacollect::findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel)
 {
     if(c.ext && c.ext->va && !(c.ext->va->hasmerges&Merge_Origin))
     {
@@ -1584,7 +1588,7 @@ void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
     clear();
 }
 
-void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
+void vacollect::calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
 {
     const Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
     const texrotation &r = texrotations[vslot.rotation];
