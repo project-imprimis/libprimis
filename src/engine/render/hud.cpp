@@ -306,17 +306,17 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
             int roffset = 0;
             if(showfps)
             {
-                static int lastfps = 0,
-                           prevfps[3] = { 0, 0, 0 },
-                           curfps[3]  = { 0, 0, 0 };
+                static int lastfps = 0;
+                static std::array<int, 3> prevfps = { 0, 0, 0 },
+                                          curfps = { 0, 0, 0 };
                 if(totalmillis - lastfps >= statrate)
                 {
-                    std::memcpy(prevfps, curfps, sizeof(prevfps));
+                    prevfps = curfps;
                     lastfps = totalmillis - (totalmillis%statrate);
                 }
-                int nextfps[3];
+                std::array<int, 3> nextfps;
                 getfps(nextfps[0], nextfps[1], nextfps[2]);
-                for(int i = 0; i < 3; ++i)
+                for(size_t i = 0; i < curfps.size(); ++i)
                 {
                     if(prevfps[i]==curfps[i])
                     {
