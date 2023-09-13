@@ -490,9 +490,9 @@ void radiancehints::renderslices()
         glViewport(0, 0, sw, sh);
         if(rhcache)
         {
-            for(int i = 0; i < 4; ++i)
+            for(size_t i = 0; i < rhtex.size()/2; ++i)
             {
-                std::swap(rhtex[i], rhtex[i+4]);
+                std::swap(rhtex[i], rhtex[i+rhtex.size()/2]);
             }
             uint clearmasks[rhmaxsplits][(rhmaxgrid+2+31)/32];
             std::memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
@@ -525,7 +525,7 @@ void radiancehints::renderslices()
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmnormaltex);
     if(rhborder)
     {
-        for(int i = 0; i < 4; ++i)
+        for(size_t i = 0; i < rhtex.size()/2; ++i)
         {
             glActiveTexture(GL_TEXTURE3 + i);
             glBindTexture(GL_TEXTURE_3D, rhtex[i]);
@@ -533,10 +533,10 @@ void radiancehints::renderslices()
     }
     if(rhcache)
     {
-        for(int i = 0; i < 4; ++i)
+        for(size_t i = 0; i < rhtex.size()/2; ++i)
         {
             glActiveTexture(GL_TEXTURE7 + i);
-            glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i : 4+i]);
+            glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i :  rhtex.size()/2+i]);
         }
     }
     glActiveTexture(GL_TEXTURE0);
@@ -593,9 +593,9 @@ void radiancehints::renderslices()
                 continue;
             }
             split.copied = true;
-            for(int k = 0; k < 4; ++k)
+            for(size_t k = 0; k <  rhtex.size()/2; ++k)
             {
-                glCopyImageSubData_(rhtex[4+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
+                glCopyImageSubData_(rhtex[rhtex.size()/2+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
             }
             continue;
         }
