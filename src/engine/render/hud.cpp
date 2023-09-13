@@ -39,7 +39,7 @@ namespace
     VARP(damagecompassmin, 1, 25, 1000);
     VARP(damagecompassmax, 1, 200, 1000);
 
-    float damagedirs[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::array<float, 8> damagedirs = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
     void drawdamagecompass(int w, int h)
     {
@@ -47,9 +47,9 @@ namespace
 
         int dirs = 0;
         float size = damagecompasssize/100.0f*std::min(h, w)/2.0f;
-        for(int i = 0; i < 8; ++i)
+        for(float &dir : damagedirs)
         {
-            if(damagedirs[i]>0)
+            if(dir > 0)
             {
                 if(!dirs)
                 {
@@ -61,12 +61,12 @@ namespace
                 dirs++;
 
                 float logscale = 32,
-                      scale = log(1 + (logscale - 1)*damagedirs[i]) / std::log(logscale),
+                      scale = log(1 + (logscale - 1)*dir) / std::log(logscale),
                       offset = -size/2.0f-std::min(h, w)/4.0f;
                 matrix4x3 m;
                 m.identity();
                 m.settranslation(w/2, h/2, 0);
-                m.rotate_around_z(i*45/RAD);
+                m.rotate_around_z(dir*45/RAD);
                 m.translate(0, offset, 0);
                 m.scale(size*scale);
 
@@ -76,7 +76,7 @@ namespace
 
                 // fade in log space so short blips don't disappear too quickly
                 scale -= static_cast<float>(curtime)/damagecompassfade;
-                damagedirs[i] = scale > 0 ? (std::pow(logscale, scale) - 1) / (logscale - 1) : 0;
+                dir = scale > 0 ? (std::pow(logscale, scale) - 1) / (logscale - 1) : 0;
             }
         }
         if(dirs)
@@ -461,7 +461,7 @@ void damagecompass(int n, const vec &loc)
     {
         yaw = 360 - std::fmod(-yaw, 360);
     }
-    int dir = (static_cast<int>(yaw+22.5f)%360)/45;
+    int dir = (static_cast<int>(yaw+22.5f)%360)/45; //360/45 = 8, so divide into 8 octants with 0 degrees centering octant 0
     damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
     if(damagedirs[dir]>1)
     {
