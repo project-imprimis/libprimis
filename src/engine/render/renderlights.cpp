@@ -1450,7 +1450,7 @@ void clearshadowcache()
     clearshadowmeshes();
 }
 
-void addshadowmap(ushort x, ushort y, int size, int &idx, int light, shadowcacheval *cached)
+void addshadowmap(ushort x, ushort y, int size, int &idx, int light, const shadowcacheval *cached)
 {
     idx = shadowmaps.size();
     shadowmapinfo sm;
@@ -3534,7 +3534,7 @@ void GBuffer::rendershadowmaps(int offset) const
         shadowmaskbatchedmodels(!(l.flags&LightEnt_Static) && smdynshadow);
         batchshadowmapmodels(mesh != nullptr);
 
-        shadowcacheval *cached = nullptr;
+        const shadowcacheval *cached = nullptr;
         int cachemask = 0;
         if(smcache)
         {

@@ -303,7 +303,7 @@ struct shadowmapinfo
 {
     ushort x, y, size, sidemask;
     int light;
-    shadowcacheval *cached;
+    const shadowcacheval *cached;
 };
 
 extern std::vector<shadowmapinfo> shadowmaps;
