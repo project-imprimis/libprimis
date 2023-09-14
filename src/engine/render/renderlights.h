@@ -309,7 +309,7 @@ struct shadowmapinfo
 extern std::vector<shadowmapinfo> shadowmaps;
 extern int smfilter;
 
-extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = nullptr);
+extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, const shadowcacheval *cached = nullptr);
 
 constexpr int shadowatlassize = 4096;
 
