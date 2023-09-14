@@ -154,20 +154,20 @@ VAR(debugfullscreen, 0, 0, 1);
 
 void GBuffer::cleanupscale()
 {
-    for(int i = 0; i < 2; ++i)
+    for(GLuint &i : scalefbo)
     {
-        if(scalefbo[i])
+        if(i)
         {
-            glDeleteFramebuffers(1, &scalefbo[i]);
-            scalefbo[i] = 0;
+            glDeleteFramebuffers(1, &i);
+            i = 0;
         }
     }
-    for(int i = 0; i < 2; ++i)
+    for(GLuint &i : scaletex)
     {
-        if(scaletex[i])
+        if(i)
         {
-            glDeleteTextures(1, &scaletex[i]);
-            scaletex[i] = 0;
+            glDeleteTextures(1, &i);
+            i = 0;
         }
     }
     scalew = scaleh = -1;

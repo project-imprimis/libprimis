@@ -35,11 +35,9 @@ class GBuffer
             msrefracttex = 0;
             refractfbo   = 0;
             refracttex   = 0;
-            scalefbo[0]  = 0;
-            scalefbo[1]  = 0;
-            scaletex[0]  = 0;
-            scaletex[1]  = 0;
             stencilformat= 0;
+            scalefbo.fill(0);
+            scaletex.fill(0);
             gdepthinit   = false;
             hdrfloat     = false;
             msaadepthblit= false;
@@ -189,8 +187,8 @@ class GBuffer
         GLuint refractfbo,
                refracttex;
         //rescaling g-buffers
-        GLuint scalefbo[2],
-               scaletex[2];
+        std::array<GLuint, 2> scalefbo,
+                              scaletex;
         GLenum stencilformat;
         matrix4 eyematrix,
                 linearworldmatrix;
