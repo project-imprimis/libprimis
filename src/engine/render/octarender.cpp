@@ -720,10 +720,9 @@ namespace
             void genverts(uchar *buf)
             {
                 vertex *f = reinterpret_cast<vertex *>(buf);
-                for(vertex i : verts)
+                for(const vertex &i : verts)
                 {
-                    const vertex &v = i;
-                    *f = v;
+                    *f = i;
                     f->norm.flip();
                     f->tangent.flip();
                     f++;
