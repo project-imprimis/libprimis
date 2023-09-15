@@ -52,8 +52,6 @@ bool hasFBMSBS = false,
      hasES3    = false,
      hasCI     = false;
 
-int hasstencil = 0;
-
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 
 //read-only info for gl debugging
