@@ -555,8 +555,8 @@ class stainrenderer
 
                 void fadestain(const staininfo &d, const vec4<uchar> &color)
                 {
-                    stainvert *vert = &verts[d.startvert],
-                              *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
+                    stainvert *vert = &verts[d.startvert];
+                    const stainvert *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
                     while(vert < end)
                     {
                         vert->color = color;
