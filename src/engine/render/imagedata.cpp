@@ -708,7 +708,7 @@ void ImageData::texnormal(int emphasis)
     replace(d);
 }
 
-bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wrap, const char *tdir, int ttype)
+bool ImageData::texturedata(const char *tname, bool msg, int * const compress, int * const wrap, const char *tdir, int ttype)
 {
     auto parsetexcommands = [] (const char *&cmds, const char *&cmd, size_t &len, std::array<const char *, 4> &arg)
     {
