@@ -642,13 +642,13 @@ void GBuffer::bindgdepth() const
 void GBuffer::setupgbuffer()
 {
     //start with screen resolution
-    int sw = renderw,
-        sh = renderh;
+    int sw = renderw(),
+        sh = renderh();
     //scale sw and sh if gscale (g-buffer scale) is not 100%
     if(gscale != 100)
     {
-        sw = std::max((renderw*gscale + 99)/100, 1);
-        sh = std::max((renderh*gscale + 99)/100, 1);
+        sw = std::max((renderw()*gscale + 99)/100, 1);
+        sh = std::max((renderh()*gscale + 99)/100, 1);
     }
 
     if(gw == sw && gh == sh && ((sw >= hudw && sh >= hudh && !scalefbo[0]) || (scalew == hudw && scaleh == hudh)))

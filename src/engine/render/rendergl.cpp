@@ -1711,15 +1711,21 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     }
 }
 
-int renderw = 0,
-    renderh = 0,
-    hudw = 0,
+int renderw()
+{
+    return std::min(scr_w, screenw);
+}
+
+int renderh()
+{
+    return std::min(scr_h, screenh);
+}
+
+int hudw = 0,
     hudh = 0;
 
 void gl_setupframe(bool force)
 {
-    renderw = std::min(scr_w, screenw);
-    renderh = std::min(scr_h, screenh);
     hudw = screenw;
     hudh = screenh;
     if(!force)

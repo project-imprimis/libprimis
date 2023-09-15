@@ -2,7 +2,8 @@
 #define RENDERGL_H_
 
 extern int xtraverts, xtravertsva;
-extern int renderw, renderh;
+extern int renderw();
+extern int renderh();
 extern vec worldpos;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
 extern int glversion, glslversion;
