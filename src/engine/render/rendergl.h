@@ -11,6 +11,9 @@ extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
+extern int hudw();
+extern int hudh();
+
 extern vec camdir();
 extern vec camright();
 extern vec camup();

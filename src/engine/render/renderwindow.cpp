@@ -135,7 +135,7 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, Text
           logo_x = 0.5f*(win_w - logo_w),
           logo_y = 0.5f*(win_h*0.5f - logo_h);
 
-    settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw > 1280 || hudh > 800)
+    settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw() > 1280 || hudh() > 800)
               ? "<premul>media/interface/logo_1024.png" //1024x wide logo
               : "<premul>media/interface/logo.png", //512x wide logo for small screens
         3);
@@ -242,8 +242,8 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     {
         return;
     }
-    int w = hudw,
-        h = hudh;
+    int w = hudw(),
+        h = hudh();
     if(forceaspect)
     {
         w = std::ceil(h*forceaspect);
@@ -357,8 +357,8 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         }
         lastprogress = ticks;
     }
-    int w = hudw,
-        h = hudh;
+    int w = hudw(),
+        h = hudh();
     if(forceaspect)
     {
         w = static_cast<int>(std::ceil(h*forceaspect));
@@ -584,8 +584,6 @@ void setupscreen()
         fatal("failed to create OpenGL context: %s", SDL_GetError());
     }
     SDL_GetWindowSize(screen, &screenw, &screenh);
-    hudw = screenw;
-    hudh = screenh;
 }
 
 //full reset of renderer

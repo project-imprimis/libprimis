@@ -437,7 +437,7 @@ void glext(char *ext)
 void gl_resize()
 {
     gl_setupframe();
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 }
 
 void gl_init()
@@ -1475,7 +1475,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &fbo);
 
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 }
 
 VAR(modelpreviewfov, 10, 20, 100);    //y axis field of view
@@ -1721,13 +1721,18 @@ int renderh()
     return std::min(scr_h, screenh);
 }
 
-int hudw = 0,
-    hudh = 0;
+int hudw()
+{
+    return screenw;
+}
+
+int hudh()
+{
+    return screenh;
+}
 
 void gl_setupframe(bool force)
 {
-    hudw = screenw;
-    hudh = screenh;
     if(!force)
     {
         return;
@@ -1740,10 +1745,10 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     occlusionengine.flipqueries();
-    aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
+    aspect = forceaspect ? forceaspect : hudw()/static_cast<float>(hudh());
     fovy = 2*std::atan2(std::tan(curfov/(2*RAD)), aspect)*RAD;
-    vieww = hudw;
-    viewh = hudh;
+    vieww = hudw();
+    viewh = hudh();
     if(mainmenu)
     {
         gl_drawmainmenu();

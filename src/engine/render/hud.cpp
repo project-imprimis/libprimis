@@ -268,8 +268,8 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
      */
     static int framemillis = 0;
 
-    int w = hudw,
-        h = hudh;
+    int w = hudw(),
+        h = hudh();
     if(forceaspect)
     {
         w = static_cast<int>(ceil(h*forceaspect));

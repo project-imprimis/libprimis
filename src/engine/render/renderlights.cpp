@@ -227,12 +227,12 @@ void GBuffer::doscale(GLuint outfbo) const
     if(gscalecubic)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[1]);
-        glViewport(0, 0, gw, hudh);
+        glViewport(0, 0, gw, hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalecubicy);
         screenquad(1, 1);
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
-        glViewport(0, 0, hudw, hudh);
+        glViewport(0, 0, hudw(), hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[1]);
         SETSHADER(scalecubicx);
         screenquad(1, 1);
@@ -240,7 +240,7 @@ void GBuffer::doscale(GLuint outfbo) const
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
-        glViewport(0, 0, hudw, hudh);
+        glViewport(0, 0, hudw(), hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[0]);
         SETSHADER(scalelinear);
         screenquad(1, 1);
@@ -651,7 +651,7 @@ void GBuffer::setupgbuffer()
         sh = std::max((renderh()*gscale + 99)/100, 1);
     }
 
-    if(gw == sw && gh == sh && ((sw >= hudw && sh >= hudh && !scalefbo[0]) || (scalew == hudw && scaleh == hudh)))
+    if(gw == sw && gh == sh && ((sw >= hudw() && sh >= hudh() && !scalefbo[0]) || (scalew == hudw() && scaleh == hudh())))
     {
         return;
     }
@@ -800,9 +800,9 @@ void GBuffer::setupgbuffer()
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    if(gw < hudw || gh < hudh)
+    if(gw < hudw() || gh < hudh())
     {
-        setupscale(gw, gh, hudw, hudh);
+        setupscale(gw, gh, hudw(), hudh());
     }
 }
 
@@ -913,8 +913,8 @@ VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
 void GBuffer::viewdepth() const
 {
-    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
-        h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
@@ -940,14 +940,14 @@ void viewstencil()
     glEnable(GL_STENCIL_TEST);
     SETSHADER(hudnotexture);
     gle::colorf(1, 1, 1);
-    debugquad(0, 0, hudw, hudh, 0, 0, gw, gh);
+    debugquad(0, 0, hudw(), hudh(), 0, 0, gw, gh);
     glDisable(GL_STENCIL_TEST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 
-    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
-        h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
@@ -958,8 +958,8 @@ VAR(debugrefract, 0, 0, 1);
 
 void GBuffer::viewrefract()
 {
-    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
-        h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
@@ -1241,10 +1241,10 @@ bool ShadowAtlas::usesmcomparemode()
 
 void ShadowAtlas::view()
 {
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
+    int w = std::min(hudw(), hudh())/2,
+        h = (w*hudh())/hudw(),
+        x = hudw()-w,
+        y = hudh()-h;
     float tw = 1,
           th = 1;
     if(target == GL_TEXTURE_RECTANGLE)
@@ -2922,10 +2922,10 @@ void viewlightscissor()
                         break;
                     }
                     gle::colorf(l.color.x/255, l.color.y/255, l.color.z/255);
-                    float x1 = (l.sx1+1)/2*hudw,
-                          x2 = (l.sx2+1)/2*hudw,
-                          y1 = (1-l.sy1)/2*hudh,
-                          y2 = (1-l.sy2)/2*hudh;
+                    float x1 = (l.sx1+1)/2*hudw(),
+                          x2 = (l.sx2+1)/2*hudw(),
+                          y1 = (1-l.sy1)/2*hudh(),
+                          y2 = (1-l.sy2)/2*hudh();
                     gle::begin(GL_TRIANGLE_STRIP);
                     gle::attribf(x1, y1);
                     gle::attribf(x2, y1);
@@ -3923,7 +3923,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     glerror();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 
     if(msaalight)
     {
@@ -3967,12 +3967,12 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
         glEnable(GL_SCISSOR_TEST);
     }
 
-    int sx = std::clamp(x, 0, hudw),
-        sy = std::clamp(y, 0, hudh),
-        sw = std::clamp(x + w, 0, hudw) - sx,
-        sh = std::clamp(y + h, 0, hudh) - sy;
-    float sxk = 2.0f/hudw,
-          syk = 2.0f/hudh,
+    int sx = std::clamp(x, 0, hudw()),
+        sy = std::clamp(y, 0, hudh()),
+        sw = std::clamp(x + w, 0, hudw()) - sx,
+        sh = std::clamp(y + h, 0, hudh()) - sy;
+    float sxk = 2.0f/hudw(),
+          syk = 2.0f/hudh(),
           txk = vieww/static_cast<float>(w),
           tyk = viewh/static_cast<float>(h);
     hudquad(sx*sxk - 1, sy*syk - 1, sw*sxk, sh*syk, (sx-x)*txk, (sy-y)*tyk, sw*txk, sh*tyk);

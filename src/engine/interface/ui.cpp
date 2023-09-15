@@ -921,7 +921,7 @@ namespace UI
 
         void adjustlayout()
         {
-            float aspect = static_cast<float>(hudw)/hudh;
+            float aspect = static_cast<float>(hudw())/hudh();
             ph = std::max(std::max(h, w/aspect), 1.0f);
             pw = aspect*ph;
             Object::adjustlayout(0, 0, pw, ph);
@@ -958,16 +958,16 @@ namespace UI
         {
             vec2 s1 = vec2(x1, y2).mul(sscale).add(soffset),
                  s2 = vec2(x2, y1).mul(sscale).add(soffset);
-            sx1 = static_cast<int>(std::floor(s1.x*hudw + 0.5f));
-            sy1 = static_cast<int>(std::floor(s1.y*hudh + 0.5f));
-            sx2 = static_cast<int>(std::floor(s2.x*hudw + 0.5f));
-            sy2 = static_cast<int>(std::floor(s2.y*hudh + 0.5f));
+            sx1 = static_cast<int>(std::floor(s1.x*hudw() + 0.5f));
+            sy1 = static_cast<int>(std::floor(s1.y*hudh() + 0.5f));
+            sx2 = static_cast<int>(std::floor(s2.x*hudw() + 0.5f));
+            sy2 = static_cast<int>(std::floor(s2.y*hudh() + 0.5f));
             if(clip)
             {
-                sx1 = std::clamp(sx1, 0, hudw);
-                sy1 = std::clamp(sy1, 0, hudh);
-                sx2 = std::clamp(sx2, 0, hudw);
-                sy2 = std::clamp(sy2, 0, hudh);
+                sx1 = std::clamp(sx1, 0, hudw());
+                sy1 = std::clamp(sy1, 0, hudh());
+                sx2 = std::clamp(sx2, 0, hudw());
+                sy2 = std::clamp(sy2, 0, hudh());
             }
         }
 
@@ -4770,8 +4770,8 @@ namespace UI
         {
             return false;
         }
-        cursorx = std::clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
-        cursory = std::clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
+        cursorx = std::clamp(cursorx + dx*uisensitivity/hudw(), 0.0f, 1.0f);
+        cursory = std::clamp(cursory + dy*uisensitivity/hudh(), 0.0f, 1.0f);
         return true;
     }
 
@@ -4864,8 +4864,8 @@ namespace UI
     {
         uitextscale = 1.0f/uitextrows;
 
-        int tw = hudw,
-            th = hudh;
+        int tw = hudw(),
+            th = hudh();
         if(forceaspect)
         {
             tw = static_cast<int>(std::ceil(th*forceaspect));

@@ -175,10 +175,10 @@ namespace //internal functionality
 
 void viewrsm()
 {
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
+    int w = std::min(hudw(), hudh())/2,
+        h = (w*hudh())/hudw(),
+        x = hudw()-w,
+        y = hudh()-h;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, debugrsm == 2 ? rsmnormaltex : rsmcolortex);
@@ -336,10 +336,10 @@ void cleanupradiancehints()
 
 void viewrh()
 {
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
+    int w = std::min(hudw(), hudh())/2,
+        h = (w*hudh())/hudw(),
+        x = hudw()-w,
+        y = hudh()-h;
     gle::colorf(1, 1, 1);
     if(debugrh < 0 && rhrect)
     {
