@@ -37,7 +37,7 @@ cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
 //prints a warning if the bounds were enforced
 bool cascadedshadowmap::setcsmproperty(int index, float value)
 {
-    
+
     switch(index)
     {
         case MaxSize:
@@ -367,7 +367,7 @@ void cascadedshadowmap::getprojmatrix()
         const shadowmapinfo &sm = shadowmaps[split.idx];
 
         vec c;
-        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
+        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camera1->dir(), c);
 
         // compute the projected bounding box of the sphere
         vec tc;

@@ -167,7 +167,7 @@ void GBuffer::rendertransparent()
     }
     matrix4 raymatrix(vec(-0.5f*static_cast<float>(vieww)*projmatrix.a.x, 0, 0.5f*static_cast<float>(vieww) - 0.5f*static_cast<float>(vieww)*projmatrix.c.x),
                       vec(0, -0.5f*static_cast<float>(viewh)*projmatrix.b.y, 0.5f*static_cast<float>(viewh) - 0.5f*static_cast<float>(viewh)*projmatrix.c.y));
-    raymatrix.muld(cammatrix);
+    raymatrix.muld(camera1->cammatrix);
     GLOBALPARAM(raymatrix, raymatrix);
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 

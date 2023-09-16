@@ -472,29 +472,33 @@ VAR(wireframe, 0, 0, 1);
 
 vec worldpos;
 
+Camera::Camera()
+{
+}
+
 //these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix
-vec camdir()
+vec Camera::dir() const
 {
     vec out;
     cammatrix.transposedtransformnormal(vec(viewmatrix.b), out);
     return out;
 }
 
-vec camright()
+vec Camera::right() const
 {
     vec out;
     cammatrix.transposedtransformnormal(vec(viewmatrix.a).neg(), out);
     return out;
 }
 
-vec camup()
+vec Camera::up() const
 {
     vec out;
     cammatrix.transposedtransformnormal(vec(viewmatrix.c), out);
     return out;
 }
 
-static void setcammatrix()
+void Camera::setcammatrix()
 {
     // move from RH to Z-up LH quake style worldspace
     cammatrix = viewmatrix;
@@ -505,9 +509,9 @@ static void setcammatrix()
 
     if(!drawtex)
     {
-        if(raycubepos(camera1->o, camdir(), worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
+        if(raycubepos(camera1->o, camera1->dir(), worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
         {
-            worldpos = camdir().mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
+            worldpos = camera1->dir().mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
         }
     }
 }
@@ -516,10 +520,10 @@ void setcamprojmatrix(bool init = true, bool flush = false)
 {
     if(init)
     {
-        setcammatrix();
+        camera1->setcammatrix();
     }
     jitteraa();
-    camprojmatrix.muld(projmatrix, cammatrix);
+    camprojmatrix.muld(projmatrix, camera1->cammatrix);
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
     if(flush && Shader::lastshader)
@@ -649,7 +653,7 @@ FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
 VARP(invmouse, 0, 0, 1); //toggles inverting the mouse
 FVARP(mouseaccel, 0, 0, 1000);
 
-physent *camera1 = nullptr;
+Camera *camera1 = nullptr;
 //used in iengine.h
 bool detachedcamera = false;
 
@@ -658,7 +662,7 @@ bool isthirdperson()
     return player!=camera1 || detachedcamera;
 }
 
-void fixcamerarange()
+void Camera::fixrange()
 {
     constexpr float maxpitch = 90.0f;
     if(camera1->pitch>maxpitch)
@@ -683,8 +687,8 @@ void modifyorient(float yaw, float pitch)
 {
     camera1->yaw += yaw;
     camera1->pitch += pitch;
-    fixcamerarange();
-    if(camera1!=player && !detachedcamera)
+    camera1->fixrange();
+    if(static_cast<dynent *>(camera1)!=player && !detachedcamera)
     {
         player->yaw = camera1->yaw;
         player->pitch = camera1->pitch;
@@ -716,14 +720,14 @@ void mousemove(int dx, int dy)
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
-matrix4 cammatrix, projmatrix, camprojmatrix;
+matrix4 projmatrix, camprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
 
 vec calcavatarpos(const vec &pos, float dist)
 {
     vec eyepos;
-    cammatrix.transform(pos, eyepos);
+    camera1->cammatrix.transform(pos, eyepos);
     GLdouble ydist = nearplane * std::tan(curavatarfov/(2*RAD)),
              xdist = ydist * aspect;
     vec4<float> scrpos;
@@ -813,7 +817,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     };
 
     vec e;
-    cammatrix.transform(center, e);
+    camera1->cammatrix.transform(center, e);
     if(e.z > 2*size)
     {
         sx1 = sy1 = sz1 =  1;
@@ -1404,8 +1408,8 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     minimapradius.x = minimapradius.y = std::max(minimapradius.x, minimapradius.y);
     minimapscale = vec((0.5f - 1.0f/size)/minimapradius.x, (0.5f - 1.0f/size)/minimapradius.y, 1.0f);
 
-    physent *oldcamera = camera1;
-    physent cmcamera = *player;
+    Camera *oldcamera = camera1;
+    Camera cmcamera = *static_cast<Camera*>(player);
     cmcamera.reset();
     cmcamera.type = physent::PhysEnt_Camera;
     cmcamera.o = loc;

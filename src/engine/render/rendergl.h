@@ -9,14 +9,26 @@ extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
 extern int glversion, glslversion;
 extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
-extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
 extern int hudw();
 extern int hudh();
 
-extern vec camdir();
-extern vec camright();
-extern vec camup();
+class Camera : public dynent
+{
+    public:
+        physent *camera;
+        matrix4 cammatrix;
+
+        Camera();
+        void setcammatrix();
+        vec dir() const;
+        vec right() const;
+        vec up() const;
+        void fixrange();
+    private:
+};
+
+extern Camera *camera1;
 
 enum
 {
@@ -33,7 +45,7 @@ extern const matrix4 viewmatrix;
 
 inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
 
-extern matrix4 cammatrix, projmatrix, camprojmatrix;
+extern matrix4 projmatrix, camprojmatrix;
 extern int wireframe;
 extern int usetexgather;
 
@@ -89,8 +101,8 @@ class ModelPreview
         void start(int x, int y, int w, int h, bool background, bool scissor);
         void end();
     private:
-        physent *oldcamera;
-        physent camera;
+        Camera *oldcamera;
+        Camera camera;
 
         float oldaspect, oldfovy, oldfov, oldldrscale, oldldrscaleb;
         int oldfarplane, oldvieww, oldviewh;

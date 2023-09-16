@@ -530,7 +530,7 @@ class meterrenderer : public listrenderer
             float scale  = FONTH*p.size/80.0f,
                   right  = 8,
                   left   = p.progress/100.0f*right;
-            matrix4x3 m(camright(), camup().neg(), camdir().neg(), o);
+            matrix4x3 m(camera1->right(), camera1->up().neg(), camera1->dir().neg(), o);
             m.scale(scale);
             m.translate(-right/2.0f, 0, 0);
 
@@ -605,8 +605,8 @@ static void modifyblend(const vec &o, int &blend)
 template<int T>
 static void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
-    vec udir = camup().sub(camright()).mul(size),
-        vdir = camup().add(camright()).mul(size);
+    vec udir = camera1->up().sub(camera1->right()).mul(size),
+        vdir = camera1->up().add(camera1->right()).mul(size);
     vs[0].pos = vec(o.x + udir.x, o.y + udir.y, o.z + udir.z);
     vs[1].pos = vec(o.x + vdir.x, o.y + vdir.y, o.z + vdir.z);
     vs[2].pos = vec(o.x - udir.x, o.y - udir.y, o.z - udir.z);
@@ -664,10 +664,10 @@ template<>
 void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     const vec2 *coeffs = rotcoeffs[rot];
-    vs[0].pos = vec(o).madd(camright(), coeffs[0].x*size).madd(camup(), coeffs[0].y*size);
-    vs[1].pos = vec(o).madd(camright(), coeffs[1].x*size).madd(camup(), coeffs[1].y*size);
-    vs[2].pos = vec(o).madd(camright(), coeffs[2].x*size).madd(camup(), coeffs[2].y*size);
-    vs[3].pos = vec(o).madd(camright(), coeffs[3].x*size).madd(camup(), coeffs[3].y*size);
+    vs[0].pos = vec(o).madd(camera1->right(), coeffs[0].x*size).madd(camera1->up(), coeffs[0].y*size);
+    vs[1].pos = vec(o).madd(camera1->right(), coeffs[1].x*size).madd(camera1->up(), coeffs[1].y*size);
+    vs[2].pos = vec(o).madd(camera1->right(), coeffs[2].x*size).madd(camera1->up(), coeffs[2].y*size);
+    vs[3].pos = vec(o).madd(camera1->right(), coeffs[3].x*size).madd(camera1->up(), coeffs[3].y*size);
 }
 
 template<int T>
@@ -1056,8 +1056,8 @@ class fireballrenderer : public listrenderer
             bool inside = dist <= psize*wobble;
             if(inside)
             {
-                s = camright();
-                t = camup();
+                s = camera1->right();
+                t = camera1->up();
             }
             else
             {

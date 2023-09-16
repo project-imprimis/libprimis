@@ -3771,7 +3771,7 @@ void GBuffer::preparegbuffer(bool depthclear)
     matrix4 invscreenmatrix,
             invcammatrix,
             invcamprojmatrix;
-    invcammatrix.invert(cammatrix);
+    invcammatrix.invert(camera1->cammatrix);
     invcamprojmatrix.invert(camprojmatrix);
     invscreenmatrix.identity();
     invscreenmatrix.settranslation(-1.0f, -1.0f, -1.0f);

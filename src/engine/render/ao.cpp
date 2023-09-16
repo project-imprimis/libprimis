@@ -285,7 +285,7 @@ void GBuffer::renderao() const
         glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
     }
 
-    LOCALPARAM(normalmatrix, matrix3(cammatrix));
+    LOCALPARAM(normalmatrix, matrix3(camera1->cammatrix));
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, aonoisetex);
     glActiveTexture(GL_TEXTURE0);
