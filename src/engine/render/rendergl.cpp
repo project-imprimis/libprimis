@@ -665,33 +665,33 @@ bool isthirdperson()
 void Camera::fixrange()
 {
     constexpr float maxpitch = 90.0f;
-    if(camera1->pitch>maxpitch)
+    if(pitch>maxpitch)
     {
-        camera1->pitch = maxpitch;
+        pitch = maxpitch;
     }
-    if(camera1->pitch<-maxpitch)
+    if(pitch<-maxpitch)
     {
-        camera1->pitch = -maxpitch;
+        pitch = -maxpitch;
     }
-    while(camera1->yaw<0.0f)
+    while(yaw<0.0f)
     {
-        camera1->yaw += 360.0f;
+        yaw += 360.0f;
     }
-    while(camera1->yaw>=360.0f)
+    while(yaw>=360.0f)
     {
-        camera1->yaw -= 360.0f;
+        yaw -= 360.0f;
     }
 }
 
-void modifyorient(float yaw, float pitch)
+void Camera::modifyorient(float yawdelta, float pitchdelta)
 {
-    camera1->yaw += yaw;
-    camera1->pitch += pitch;
-    camera1->fixrange();
-    if(static_cast<dynent *>(camera1)!=player && !detachedcamera)
+    yaw += yawdelta;
+    pitch += pitchdelta;
+    fixrange();
+    if(static_cast<dynent *>(this)!=player && !detachedcamera)
     {
-        player->yaw = camera1->yaw;
-        player->pitch = camera1->pitch;
+        player->yaw = yaw;
+        player->pitch = pitch;
     }
 }
 
@@ -717,7 +717,7 @@ void mousemove(int dx, int dy)
         cursens += curaccel * sqrtf(dx*dx + dy*dy)/curtime;
     }
     cursens /= (sensitivityscale/4); //hard factor of 4 for 40 dots/deg like Quake/Source/etc.
-    modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
+    camera1->modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
 matrix4 projmatrix, camprojmatrix;

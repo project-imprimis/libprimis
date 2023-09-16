@@ -24,8 +24,9 @@ class Camera : public dynent
         vec dir() const;
         vec right() const;
         vec up() const;
-        void fixrange();
+        void modifyorient(float yawdelta, float pitchdelta);
     private:
+        void fixrange();
 };
 
 extern Camera *camera1;
