@@ -92,7 +92,7 @@ class ModelPreview
         physent *oldcamera;
         physent camera;
 
-        float oldaspect, oldfovy, oldfov, oldldrscale, oldldrscaleb;
+        float oldaspect, oldfovy, oldfov, oldldrscale;
         int oldfarplane, oldvieww, oldviewh;
         matrix4 oldprojmatrix;
 
