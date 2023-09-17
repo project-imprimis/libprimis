@@ -105,60 +105,33 @@ class sortkey
 
         static bool sort(const sortkey &x, const sortkey &y)
         {
-            if(x.alpha < y.alpha)
+            if(x.alpha != y.alpha)
             {
-                return true;
+                return x.alpha < y.alpha;
             }
-            if(x.alpha > y.alpha)
+            if(x.layer != y.layer)
             {
-                return false;
-            }
-            if(x.layer < y.layer)
-            {
-                return true;
-            }
-            if(x.layer > y.layer)
-            {
-                return false;
+                return x.layer < y.layer;
             }
             if(x.tex == y.tex)
             {
-                if(x.orient < y.orient)
-                {
-                    return true;
-                }
-                if(x.orient > y.orient)
-                {
-                    return false;
-                }
-                return false;
+                return x.orient < y.orient;
             }
             VSlot &xs = lookupvslot(x.tex, false),
                   &ys = lookupvslot(y.tex, false);
-            if(xs.slot->shader < ys.slot->shader)
+            if(xs.slot->shader != ys.slot->shader)
             {
-                return true;
+                return xs.slot->shader < ys.slot->shader;
             }
-            if(xs.slot->shader > ys.slot->shader)
+            if(xs.slot->params.size() != ys.slot->params.size())
             {
-                return false;
-            }
-            if(xs.slot->params.size() < ys.slot->params.size())
-            {
-                return true;
-            }
-            if(xs.slot->params.size() > ys.slot->params.size())
-            {
-                return false;
+                return xs.slot->params.size() < ys.slot->params.size();
             }
             if(x.tex < y.tex)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 };
 
