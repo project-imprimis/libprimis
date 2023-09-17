@@ -90,9 +90,9 @@ class postfx
             {
                 postfxbinds[i] = -1;
             }
-            for(uint i = 0; i < postfxtexs.size(); i++)
+            for(postfxtex &i : postfxtexs)
             {
-                postfxtexs.at(i).used = -1;
+                i.used = -1;
             }
             if(!postfxfb)
             {
