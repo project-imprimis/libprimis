@@ -459,28 +459,27 @@ namespace
 
     void findcsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(uint i = 0; i < vas.size(); i++)
+        for(vtxarray * const &v : vas)
         {
-            vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.size() || v.mapmodels.size())
+            if(v->children.size() || v->mapmodels.size())
             {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
+                bbmin = v->bbmin;
+                bbmax = v->bbmax;
             }
             else
             {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
+                bbmin = v->geommin;
+                bbmax = v->geommax;
             }
-            v.shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
+            v->shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
+            if(v->shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist, vasort);
-                if(v.children.size())
+                addshadowva(v, dist, vasort);
+                if(v->children.size())
                 {
-                    findcsmshadowvas(v.children, vasort);
+                    findcsmshadowvas(v->children, vasort);
                 }
             }
         }
