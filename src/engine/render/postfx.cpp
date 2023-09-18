@@ -74,7 +74,7 @@ class postfx
             }
         } //add a postfx shader to the class field, with name & 4d pos vector
 
-        GLuint setuppostfx(GBuffer &buf, int w, int h, GLuint outfbo)
+        GLuint setuppostfx(const GBuffer &buf, int w, int h, GLuint outfbo)
         {
             if(postfxpasses.empty())
             {
@@ -251,7 +251,7 @@ class postfx
 
 postfx pfx;
 
-GLuint setuppostfx(GBuffer &buf, int w, int h, GLuint outfbo)
+GLuint setuppostfx(const GBuffer &buf, int w, int h, GLuint outfbo)
 {
     return pfx.setuppostfx(buf, w, h, outfbo);
 }
