@@ -946,8 +946,8 @@ void viewstencil()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, hudw(), hudh());
 
-    int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
-        h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
+    int w = debugfullscreen ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = debugfullscreen ? hudh() : (w*hudh())/hudw();
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
@@ -958,8 +958,8 @@ VAR(debugrefract, 0, 0, 1);
 
 void GBuffer::viewrefract()
 {
-    int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
-        h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
+    int w = debugfullscreen ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = debugfullscreen ? hudh() : (w*hudh())/hudw();
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
