@@ -730,7 +730,7 @@ class stainrenderer
                     r = R[dim];
                 for(;;)
                 {
-                    materialsurface &m = va->matbuf[i];
+                    const materialsurface &m = va->matbuf[i];
                     if(m.o[dim] >= bbmin[dim] && m.o[dim] <= bbmax[dim] &&
                        m.o[c] + m.csize >= bbmin[c] && m.o[c] <= bbmax[c] &&
                        m.o[r] + m.rsize >= bbmin[r] && m.o[r] <= bbmax[r])
@@ -742,7 +742,7 @@ class stainrenderer
                     {
                         break;
                     }
-                    materialsurface &n = va->matbuf[i+1];
+                    const materialsurface &n = va->matbuf[i+1];
                     if(n.material != m.material || n.orient != m.orient)
                     {
                         break;
