@@ -999,12 +999,11 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
     {
         skelzoneinfo &zi = *info[i];
         zi.index = i;
-        for(uint j = 0; j < zi.children.size(); j++)
+        for(skelzoneinfo *&zj : zi.children)
         {
-            skelzoneinfo &zj = *zi.children[j];
-            if(!--zj.conflicts)
+            if(!--zj->conflicts)
             {
-                info.push_back(&zj);
+                info.push_back(zj);
             }
         }
     }
