@@ -227,7 +227,7 @@ struct vboinfo
 hashtable<GLuint, vboinfo> vbos;
 
 VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
-    
+
 //vbo (vertex buffer object) enum is local to this file
 enum
 {
@@ -870,31 +870,33 @@ void vacollect::gendecals()
     {
         return;
     }
-    std::vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     for(const octaentities* oe : extdecals)
     {
-        for(uint j = 0; j < oe->decals.size(); j++)
+        //get an index to ents in this VA from oe->decals
+        for(const uint &j : oe->decals)
         {
-            extentity &e = *ents[oe->decals[j]];
+            extentity &e = *ents[j];
             if(e.flags&EntFlag_Render)
             {
                 continue;
             }
             e.flags |= EntFlag_Render;
-            DecalSlot &s = lookupdecalslot(e.attr1, true);
+            const DecalSlot &s = lookupdecalslot(e.attr1, true);
             if(!s.shader)
             {
                 continue;
             }
-            decalkey k(e.attr1);
+            const decalkey k(e.attr1);
             gendecal(e, s, k);
         }
     }
     for(const octaentities* oe : extdecals)
     {
-        for(uint j = 0; j < oe->decals.size(); j++)
+        //get an index to ents in this VA from oe->decals
+        for(const uint &j : oe->decals)
         {
-            extentity &e = *ents[oe->decals[j]];
+            extentity &e = *ents[j];
             if(e.flags&EntFlag_Render)
             {
                 e.flags &= ~EntFlag_Render;
