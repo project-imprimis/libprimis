@@ -402,7 +402,6 @@ class vacollect : public verthash
         int updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi);
 
     private:
-    
         int size;
         std::vector<materialsurface> matsurfs;
         std::vector<octaentities *> mapmodels, decals;
@@ -418,8 +417,7 @@ class vacollect : public verthash
         std::vector<sortkey> texs;
         std::vector<decalkey> decaltexs;
         int decaltris;
-        int entdepth = -1;
-        octaentities *entstack[32];
+        std::vector<octaentities *> entstack;
 
         struct mergedface
         {
@@ -1531,9 +1529,8 @@ void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
         vamergeoffset[i] = vamerges[i].size();
     }
     size = sz;
-    for(int i = 0; i < entdepth+1; ++i)
+    for(octaentities *oe : entstack)
     {
-        octaentities *oe = entstack[i];
         if(oe->decals.size())
         {
             extdecals.push_back(oe);
@@ -1814,12 +1811,12 @@ int vacollect::updateva(std::array<cube, 8> &c, const ivec &co, int size, int cs
             {
                 if(c[i].ext && c[i].ext->ents)
                 {
-                    entstack[++entdepth] = c[i].ext->ents;
+                    entstack.push_back(c[i].ext->ents);
                 }
                 count += updateva(*c[i].children, o, size/2, csi-1);
                 if(c[i].ext && c[i].ext->ents)
                 {
-                    --entdepth;
+                    entstack.pop_back();
                 }
             }
             else
