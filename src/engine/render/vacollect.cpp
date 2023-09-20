@@ -423,7 +423,7 @@ class vacollect : public verthash
         {
             uchar orient, numverts;
             ushort mat, tex;
-            vertinfo *verts;
+            const vertinfo *verts;
             int tjoints;
         };
 
@@ -921,12 +921,12 @@ int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
     }
     int tj = c.ext->tjoints,
         maxlevel = -1;
-    for(int i = 0; i < 6; ++i)
+    for(size_t i = 0; i < c.ext->surfaces.size(); ++i)
     {
         if(c.merged&(1<<i))
         {
             surfaceinfo &surf = c.ext->surfaces[i];
-            int numverts = surf.numverts&Face_MaxVerts;
+            const int numverts = surf.numverts&Face_MaxVerts;
             if(!numverts)
             {
                 if(minlevel < 0)
@@ -942,7 +942,7 @@ int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
             mf.numverts = surf.numverts;
             mf.verts = c.ext->verts() + surf.verts;
             mf.tjoints = -1;
-            int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
+            const int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
             if(level > minlevel)
             {
                 maxlevel = std::max(maxlevel, level);
@@ -1405,7 +1405,7 @@ void vacollect::addmergedverts(int level, const ivec &o)
         int numverts = mf.numverts&Face_MaxVerts;
         for(int i = 0; i < numverts; ++i)
         {
-            vertinfo &v = mf.verts[i];
+            const vertinfo &v = mf.verts[i];
             pos[i] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
         }
         VSlot &vslot = lookupvslot(mf.tex, true);
