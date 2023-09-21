@@ -697,7 +697,7 @@ void Editor::key(int code)
             if(linewrap)
             {
                 int x, y;
-                char *str = currentline().text;
+                const char *str = currentline().text;
                 text_pos(str, cx+1, x, y, pixelwidth);
                 if(y > 0)
                 {
@@ -713,7 +713,7 @@ void Editor::key(int code)
             if(linewrap)
             {
                 int x, y, width, height;
-                char *str = currentline().text;
+                const char *str = currentline().text;
                 text_pos(str, cx, x, y, pixelwidth);
                 text_bounds(str, width, height, pixelwidth);
                 y += FONTH;
