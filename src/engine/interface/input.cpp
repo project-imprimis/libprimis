@@ -159,7 +159,7 @@ bool interceptkey(int sym)
     lastintercept = sym;
     if(sym != SDLK_UNKNOWN)
     {
-        for(uint i = len; i < events.size(); i++)
+        for(size_t i = len; i < events.size(); i++)
         {
             if(events[i].type == SDL_KEYDOWN && events[i].key.keysym.sym == sym)
             {
@@ -202,7 +202,7 @@ static void resetmousemotion()
  */
 static void checkmousemotion(int &dx, int &dy)
 {
-    for(uint i = 0; i < events.size(); i++)
+    for(size_t i = 0; i < events.size(); i++)
     {
         SDL_Event &event = events[i];
         if(event.type != SDL_MOUSEMOTION)
