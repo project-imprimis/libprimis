@@ -322,9 +322,9 @@ struct skelmodel : animmodel
                     delete ragdoll;
                     ragdoll = nullptr;
                 }
-                for(uint i = 0; i < skelcache.size(); i++)
+                for(skelcacheentry &i : skelcache)
                 {
-                    delete[] skelcache[i].bdata;
+                    delete[] i.bdata;
                 }
             }
 

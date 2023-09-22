@@ -286,9 +286,9 @@ void skelmodel::skeleton::remapbones()
         }
     }
     numinterpbones = numgpubones;
-    for(uint i = 0; i < tags.size(); i++)
+    for(const tag &i : tags)
     {
-        boneinfo &info = bones[tags[i].bone];
+        boneinfo &info = bones[i.bone];
         if(info.interpindex < 0)
         {
             info.interpindex = numinterpbones++;
