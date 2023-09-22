@@ -531,9 +531,9 @@ bool skelhitdata::skelhitzone::triintersect(const skelmodel::skelmeshgroup *m, c
     const skelmodel::vert &va = tm->verts[t.vert[0]],
                           &vb = tm->verts[t.vert[1]],
                           &vc = tm->verts[t.vert[2]];
-    vec a = (va.blend < numblends ? bdata2[va.blend] : bdata1[m->blendcombos[va.blend].interpbones[0]]).transform(va.pos),
-        b = (vb.blend < numblends ? bdata2[vb.blend] : bdata1[m->blendcombos[vb.blend].interpbones[0]]).transform(vb.pos),
-        c = (vc.blend < numblends ? bdata2[vc.blend] : bdata1[m->blendcombos[vc.blend].interpbones[0]]).transform(vc.pos);
+    vec a = (va.blend < numblends ? bdata2[va.blend] : bdata1[m->blendcombos[va.blend].bonedata[0].interpbones]).transform(va.pos),
+        b = (vb.blend < numblends ? bdata2[vb.blend] : bdata1[m->blendcombos[vb.blend].bonedata[0].interpbones]).transform(vb.pos),
+        c = (vc.blend < numblends ? bdata2[vc.blend] : bdata1[m->blendcombos[vc.blend].bonedata[0].interpbones]).transform(vc.pos);
     return skeltriintersect(a, b, c, o, s, t, va, vb, vc, tm, ray);
 }
 
@@ -664,34 +664,31 @@ void skelzonekey::addbone(int n)
 
 void skelzonekey::addbones(const skelmodel::skelmesh *m, const skelmodel::tri &t)
 {
-    skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
+    const skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
     int b0 = m->verts[t.vert[0]].blend,
         b1 = m->verts[t.vert[1]].blend,
         b2 = m->verts[t.vert[1]].blend;
-    const skelmodel::blendcombo &c0 = g->blendcombos[b0];
-    for(int i = 0; i < 4; ++i)
+    for(const skelmodel::blendcombo::BoneData &b : g->blendcombos[b0].bonedata)
     {
-        if(c0.weights[i])
+        if(b.weights)
         {
-            addbone(c0.bones[i]);
+            addbone(b.bones);
         }
     }
     if(b0 != b1 || b0 != b2)
     {
-        const skelmodel::blendcombo &c1 = g->blendcombos[b1];
-        for(int i = 0; i < 4; ++i)
+        for(const skelmodel::blendcombo::BoneData &b : g->blendcombos[b1].bonedata)
         {
-            if(c1.weights[i])
+            if(b.bones)
             {
-                addbone(c1.bones[i]);
+                addbone(b.bones);
             }
         }
-        const skelmodel::blendcombo &c2 = g->blendcombos[b2];
-        for(int i = 0; i < 4; ++i)
+        for(const skelmodel::blendcombo::BoneData &b : g->blendcombos[b2].bonedata)
         {
-            if(c2.weights[i])
+            if(b.weights)
             {
-                addbone(c2.bones[i]);
+                addbone(b.bones);
             }
         }
     }
@@ -797,21 +794,21 @@ uchar skelhitdata::chooseid(const skelmodel::skelmeshgroup *g, const skelmodel::
     {
         const skelmodel::vert &v = m->verts[t.vert[k]];
         const skelmodel::blendcombo &c = g->blendcombos[v.blend];
-        for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
+        for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
         {
-            if(c.weights[l])
+            if(c.bonedata[l].weights)
             {
-                uchar id = ids[c.bones[l]];
+                uchar id = ids[c.bonedata[l].bones];
                 for(int i = 0; i < numused; ++i)
                 {
                     if(used[i] == id)
                     {
-                        weights[i] += c.weights[l];
+                        weights[i] += c.bonedata[l].weights;
                         goto nextbone;
                     }
                 }
                 used[numused] = id;
-                weights[numused] = c.weights[l];
+                weights[numused] = c.bonedata[l].weights;
                 numused++;
             nextbone:;
             }
@@ -842,7 +839,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
     numblends = g->blendcombos.size();
     for(uint i = 0; i < g->blendcombos.size(); i++)
     {
-        if(!g->blendcombos[i].weights[1])
+        if(!g->blendcombos[i].bonedata[1].weights)
         {
             numblends = i;
             break;
@@ -859,11 +856,11 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
             {
                 const skelmodel::vert &v = m->verts[t.vert[k]];
                 const skelmodel::blendcombo &c = g->blendcombos[v.blend];
-                for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
+                for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
                 {
-                    if(c.weights[l])
+                    if(c.bonedata[l].weights)
                     {
-                        bounds[c.bones[l]].addvert(v.pos);
+                        bounds[c.bonedata[l].bones].addvert(v.pos);
                     }
                 }
             }

@@ -58,19 +58,25 @@ struct skelmodel : animmodel
     {
         public:
             int uses, interpindex;
-            float weights[4];
-            uchar bones[4], interpbones[4];
+
+            struct BoneData
+            {
+                float weights;
+                uchar bones;
+                uchar interpbones;
+            };
+            std::array<BoneData, 4> bonedata;
 
             blendcombo();
 
             bool operator==(const blendcombo &c) const;
 
-            int size() const;
+            size_t size() const;
             static bool sortcmp(const blendcombo &x, const blendcombo &y);
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 
-            void serialize(skelmodel::vvertgw &v);
+            void serialize(skelmodel::vvertgw &v) const;
     };
 
 
