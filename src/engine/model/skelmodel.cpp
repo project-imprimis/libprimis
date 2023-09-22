@@ -49,14 +49,14 @@ skelmodel::blendcombo::blendcombo() : uses(1)
 
 bool skelmodel::blendcombo::operator==(const blendcombo &c) const
 {
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < bonedata.size(); ++k)
     {
         if(bonedata[k].bones != c.bonedata[k].bones)
         {
             return false;
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < bonedata.size(); ++k)
     {
         if(bonedata[k].weights != c.bonedata[k].weights)
         {
@@ -235,7 +235,7 @@ void skelmodel::skeleton::remapbones()
     {
         for(blendcombo &c : group->blendcombos)
         {
-            for(int k = 0; k < c.bonedata.size(); ++k) //loop k
+            for(size_t k = 0; k < c.bonedata.size(); ++k) //loop k
             {
                 if(!c.bonedata[k].weights)
                 {
