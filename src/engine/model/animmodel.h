@@ -474,9 +474,9 @@ class animmodel : public model
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
         bool setBIH();
-        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
+        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
 
-        bool unlink(const part *p)
+        bool unlink(const part *p) const
         {
             if(parts.empty())
             {
@@ -558,13 +558,13 @@ class animmodel : public model
         {
             return Link_Tag;
         }
-        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode);
+        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const;
 
         static matrix4 matrixstack[64];
         static float sizescale;
 
     private:
-        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
+        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray) const;
 
         static bool enablecullface, enabledepthoffset;
         static vec4<float> colorscale;

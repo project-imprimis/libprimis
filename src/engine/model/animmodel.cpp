@@ -1175,7 +1175,7 @@ void animmodel::part::loaded()
     }
 }
 
-void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray)
+void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray) const
 {
     int numtags = 0;
     if(a)
@@ -1266,7 +1266,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     }
 }
 
-int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode)
+int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const
 {
     vec axis(1, 0, 0), forward(0, 1, 0);
 
@@ -1612,7 +1612,7 @@ bool animmodel::setBIH()
     return true;
 }
 
-bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
+bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos) const
 {
     if(parts.empty())
     {

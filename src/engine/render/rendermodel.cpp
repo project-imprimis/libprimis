@@ -1443,7 +1443,7 @@ hasboundbox:
 
 int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode, dynent *d, modelattach *a, int basetime, int basetime2, float size)
 {
-    model *m = loadmodel(mdl);
+    const model *m = loadmodel(mdl);
     if(!m)
     {
         return -1;
