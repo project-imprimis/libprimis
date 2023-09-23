@@ -787,28 +787,28 @@ void skelhitdata::intersect(const skelmodel::skelmeshgroup *m, skelmodel::skin *
 
 uchar skelhitdata::chooseid(const skelmodel::skelmeshgroup *g, const skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
 {
-    int numused = 0;
-    uchar used[12];
-    float weights[12];
-    for(int k = 0; k < 3; ++k)
+    size_t numused = 0;
+    std::array<uchar, 12> used;
+    std::array<float, 12> weights;
+    for(size_t i = 0; i < 3; ++i)
     {
-        const skelmodel::vert &v = m->verts[t.vert[k]];
+        const skelmodel::vert &v = m->verts[t.vert[i]];
         const skelmodel::blendcombo &c = g->blendcombos[v.blend];
-        for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
+        for(size_t j = 0; j < c.bonedata.size(); ++j)
         {
-            if(c.bonedata[l].weights)
+            if(c.bonedata[j].weights)
             {
-                uchar id = ids[c.bonedata[l].bones];
-                for(int i = 0; i < numused; ++i)
+                uchar id = ids[c.bonedata[j].bones];
+                for(size_t k = 0; k < numused; ++k)
                 {
-                    if(used[i] == id)
+                    if(used[k] == id)
                     {
-                        weights[i] += c.bonedata[l].weights;
+                        weights[k] += c.bonedata[j].weights;
                         goto nextbone;
                     }
                 }
                 used[numused] = id;
-                weights[numused] = c.bonedata[l].weights;
+                weights[numused] = c.bonedata[j].weights;
                 numused++;
             nextbone:;
             }
@@ -816,7 +816,7 @@ uchar skelhitdata::chooseid(const skelmodel::skelmeshgroup *g, const skelmodel::
     }
     uchar bestid = 0xFF;
     float bestweight = 0;
-    for(int i = 0; i < numused; ++i)
+    for(size_t i = 0; i < numused; ++i)
     {
         if(weights[i] > bestweight || (weights[i] == bestweight && used[i] < bestid))
         {
