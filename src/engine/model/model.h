@@ -63,7 +63,15 @@ class model
         virtual void setcolor(const vec &) {}
 
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
-        virtual void preloadBIH() { if(!bih) setBIH(); }
+
+        virtual void preloadBIH()
+        {
+            if(!bih)
+            {
+                setBIH();
+            }
+        }
+
         virtual void preloadshaders() {}
         virtual void preloadmeshes() {}
         virtual void cleanup() {}
