@@ -787,13 +787,13 @@ void animmodel::part::preloadmeshes()
     }
 }
 
-void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d)
+void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d) const
 {
     info.frame = 0;
     info.range = 1;
 }
 
-bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime)
+bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const
 {
     //varseed uses an UGLY reinterpret cast from a pointer address to a size_t int
     //presumably the address should be a fairly random value
