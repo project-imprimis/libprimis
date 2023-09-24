@@ -19,7 +19,7 @@ enum
 class model
 {
     public:
-        char *name;
+        const char *name;
         float spinyaw, spinpitch, spinroll, offsetyaw, offsetpitch, offsetroll;
         bool shadow, alphashadow, depthoffset;
         float scale;
@@ -27,7 +27,7 @@ class model
         BIH *bih;
         vec bbextend;
         float eyeheight, collidexyradius, collideheight;
-        char *collidemodel;
+        const char *collidemodel;
         int collide, batch;
 
         virtual ~model()
