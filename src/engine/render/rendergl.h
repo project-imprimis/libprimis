@@ -16,7 +16,6 @@ extern int hudh();
 class Camera : public dynent
 {
     public:
-        physent *camera;
         matrix4 cammatrix;
 
         Camera();
