@@ -470,8 +470,6 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1);
 
-vec worldpos;
-
 Camera::Camera()
 {
 }
@@ -654,12 +652,20 @@ VARP(invmouse, 0, 0, 1); //toggles inverting the mouse
 FVARP(mouseaccel, 0, 0, 1000);
 
 Camera *camera1 = nullptr;
-//used in iengine.h
-bool detachedcamera = false;
 
 bool isthirdperson()
 {
-    return player!=camera1 || detachedcamera;
+    return player!=camera1 || (camera1 && camera1->detached());
+}
+
+vec Camera::pos() const
+{
+    return worldpos;
+}
+
+bool Camera::detached() const
+{
+    return detachedcamera;
 }
 
 void Camera::fixrange()

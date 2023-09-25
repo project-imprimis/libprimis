@@ -4,7 +4,6 @@
 extern int xtraverts, xtravertsva;
 extern int renderw();
 extern int renderh();
-extern vec worldpos;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
 extern int glversion, glslversion;
 extern int mesa_swap_bug;
@@ -24,8 +23,13 @@ class Camera : public dynent
         vec right() const;
         vec up() const;
         void modifyorient(float yawdelta, float pitchdelta);
+        vec pos() const;
+        bool detached() const;
     private:
         void fixrange();
+        //used in iengine.h
+        bool detachedcamera = false;
+        vec worldpos;
 };
 
 extern Camera *camera1;
