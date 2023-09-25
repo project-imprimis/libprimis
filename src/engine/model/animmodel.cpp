@@ -1507,9 +1507,9 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
 
 void animmodel::cleanup()
 {
-    for(uint i = 0; i < parts.size(); i++)
+    for(part *p : parts)
     {
-        parts[i]->cleanup();
+        p->cleanup();
     }
 }
 
@@ -1539,13 +1539,13 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     }
     matrix4x3 m;
     initmatrix(m);
-    for(skin &s : parts[0]->skins)
+    for(const skin &s : parts[0]->skins)
     {
         s.tex->loadalphamask();
     }
     for(uint i = 1; i < parts.size(); i++)
     {
-        part *p = parts[i];
+        const part *p = parts[i];
         switch(linktype(this, p))
         {
             case Link_Coop:
@@ -1574,7 +1574,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
     parts[0]->genshadowmesh(tris, m);
     for(uint i = 1; i < parts.size(); i++)
     {
-        part *p = parts[i];
+        const part *p = parts[i];
         switch(linktype(this, p))
         {
             case Link_Coop:
@@ -1592,7 +1592,7 @@ void animmodel::preloadBIH()
     model::preloadBIH();
     if(bih)
     {
-        for(part* i : parts)
+        for(const part* i : parts)
         {
             i->preloadBIH();
         }
@@ -1627,7 +1627,7 @@ bool animmodel::animated() const
     {
         return true;
     }
-    for(part* i : parts)
+    for(const part* i : parts)
     {
         if(i->animated())
         {
@@ -1639,7 +1639,7 @@ bool animmodel::animated() const
 
 bool animmodel::alphatested() const
 {
-    for(part* i : parts)
+    for(const part* i : parts)
     {
         if(i->alphatested())
         {
@@ -1668,9 +1668,9 @@ bool animmodel::load()
     {
         return false;
     }
-    for(uint i = 0; i < parts.size(); i++)
+    for(const part *i : parts)
     {
-        if(!parts[i]->meshes)
+        if(!i->meshes)
         {
             return false;
         }
@@ -1748,9 +1748,8 @@ void animmodel::setglow(float glow, float delta, float pulse)
     }
     for(part* i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &s : i->skins)
         {
-            skin &s = j;
             s.glow = glow;
             s.glowdelta = delta;
             s.glowpulse = pulse;
@@ -1829,7 +1828,7 @@ void animmodel::calcbb(vec &center, vec &radius) const
     matrix4x3 m;
     initmatrix(m);
     parts[0]->calcbb(bbmin, bbmax, m);
-    for(part *p : parts)
+    for(const part *p : parts)
     {
         switch(linktype(this, p))
         {
