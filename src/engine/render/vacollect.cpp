@@ -25,60 +25,6 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
-class verthash
-{
-    public:
-        std::vector<vertex> verts;
-
-        int addvert(const vertex &v)
-        {
-            uint h = hthash(v.pos)&(hashsize-1);
-            for(int i = table[h]; i>=0; i = chain[i])
-            {
-                const vertex &c = verts[i];
-                if(c.pos==v.pos && c.tc==v.tc && c.norm==v.norm && c.tangent==v.tangent)
-                {
-                     return i;
-                 }
-            }
-            if(verts.size() >= USHRT_MAX)
-            {
-                return -1;
-            }
-            verts.push_back(v);
-            chain.emplace_back(table[h]);
-            return table[h] = verts.size()-1;
-        }
-    protected:
-        void clearverts()
-        {
-            table.fill(-1);
-            chain.clear();
-            verts.clear();
-        }
-
-        verthash()
-        {
-            clearverts();
-        }
-
-    private:
-        static const int hashsize = 1<<13;
-        std::array<int, hashsize> table;
-
-        std::vector<int> chain;
-
-        int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
-        {
-            vertex vtx;
-            vtx.pos = pos;
-            vtx.tc = tc;
-            vtx.norm = norm;
-            vtx.tangent = tangent;
-            return addvert(vtx);
-        }
-};
-
 enum AlphaState
 {
     Alpha_None = 0,
@@ -395,11 +341,12 @@ vec decodenormal(ushort norm)
     return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
 }
 
-class vacollect : public verthash
+class vacollect
 {
 
     public:
         int updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi);
+        vacollect();
 
     private:
         int size;
@@ -418,6 +365,13 @@ class vacollect : public verthash
         std::vector<decalkey> decaltexs;
         int decaltris;
         std::vector<octaentities *> entstack;
+
+
+        static const int hashsize = 1<<13;
+        std::array<int, hashsize> table;
+
+        std::vector<int> chain;
+        std::vector<vertex> verts;
 
         struct mergedface
         {
@@ -468,7 +422,52 @@ class vacollect : public verthash
         int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1);
         void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen);
 
+        int addvert(const vertex &v);
+        void clearverts();
+        int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128));
+
 } vc;
+
+int vacollect::addvert(const vertex &v)
+{
+    uint h = hthash(v.pos)&(hashsize-1);
+    for(int i = table[h]; i>=0; i = chain[i])
+    {
+        const vertex &c = verts[i];
+        if(c.pos==v.pos && c.tc==v.tc && c.norm==v.norm && c.tangent==v.tangent)
+        {
+             return i;
+         }
+    }
+    if(verts.size() >= USHRT_MAX)
+    {
+        return -1;
+    }
+    verts.push_back(v);
+    chain.emplace_back(table[h]);
+    return table[h] = verts.size()-1;
+}
+void vacollect::clearverts()
+{
+    table.fill(-1);
+    chain.clear();
+    verts.clear();
+}
+
+vacollect::vacollect()
+{
+    clearverts();
+}
+
+int vacollect::addvert(const vec &pos, const vec &tc, const bvec &norm, const vec4<uchar> &tangent)
+{
+    vertex vtx;
+    vtx.pos = pos;
+    vtx.tc = tc;
+    vtx.norm = norm;
+    vtx.tangent = tangent;
+    return addvert(vtx);
+}
 
 void vacollect::clear()
 {
