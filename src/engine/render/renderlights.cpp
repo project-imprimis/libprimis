@@ -3135,14 +3135,15 @@ struct batchstack : lightrect
 
 static void batchlights(const batchstack &initstack, std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
 {
-    batchstack stack[32];
-    size_t numstack = 1;
-    stack[0] = initstack;
+    constexpr size_t stacksize = 32;
+    std::stack<batchstack> stack;
+    stack.push(initstack);
 
-    while(numstack > 0)
+    while(stack.size() > 0)
     {
-        batchstack s = stack[--numstack];
-        if(numstack + 5 > sizeof(stack)/sizeof(stack[0]))
+        const batchstack s = stack.top();
+        stack.pop();
+        if(stack.size() + 5 > stacksize)
         {
             batchlights(s, batchrects, lightbatchstacksused, lightbatchrectsused);
             continue;
@@ -3225,20 +3226,20 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
 
             if(split.y1 > s.y1)
             {
-                stack[numstack++] = batchstack(s.x1, s.y1, s.x2, split.y1, outside, numoverlap, flags);
+                stack.push(batchstack(s.x1, s.y1, s.x2, split.y1, outside, numoverlap, flags));
             }
             if(split.x1 > s.x1)
             {
-                stack[numstack++] = batchstack(s.x1, split.y1, split.x1, split.y2, outside, numoverlap, flags);
+                stack.push(batchstack(s.x1, split.y1, split.x1, split.y2, outside, numoverlap, flags));
             }
-            stack[numstack++] = batchstack(split.x1, split.y1, split.x2, split.y2, outside, numoverlap, flags);
+            stack.push(batchstack(split.x1, split.y1, split.x2, split.y2, outside, numoverlap, flags));
             if(split.x2 < s.x2)
             {
-                stack[numstack++] = batchstack(split.x2, split.y1, s.x2, split.y2, outside, numoverlap, flags);
+                stack.push(batchstack(split.x2, split.y1, s.x2, split.y2, outside, numoverlap, flags));
             }
             if(split.y2 < s.y2)
             {
-                stack[numstack++] = batchstack(s.x1, split.y2, s.x2, s.y2, outside, numoverlap, flags);
+                stack.push(batchstack(s.x1, split.y2, s.x2, s.y2, outside, numoverlap, flags));
             }
         }
     }
