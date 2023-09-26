@@ -846,7 +846,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
         }
     }
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : nullptr;
-    for(int i = 0; i < std::min(static_cast<int>(g->meshes.size()), 0x100); ++i)
+    for(size_t i = 0; i < std::min<size_t>(g->meshes.size(), 0x100); ++i)
     {
         skelmodel::skelmesh *m = reinterpret_cast<skelmodel::skelmesh *>(g->meshes[i]);
         for(int j = 0; j < m->numtris; ++j)
@@ -878,7 +878,7 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
             std::memcpy(zt.vert, t.vert, sizeof(zt.vert));
         }
     }
-    for(int i = 0; i < (g->skel->numbones); ++i)
+    for(int i = 0; i < g->skel->numbones; ++i)
     {
         if(bounds[i].empty() || bounds[i].owner >= 0)
         {
@@ -897,19 +897,19 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
             info.push_back(&zi);
         }
     });
-    for(uint i = leafzones; i < info.size(); i++)
+    for(size_t i = leafzones; i < info.size(); i++)
     {
         skelzoneinfo &zi = *info[i];
         if(zi.key.blend >= 0)
         {
             continue;
         }
-        for(uint j = 0; j < info.size(); j++)
+        for(size_t j = 0; j < info.size(); j++)
         {
             if(i != j && zi.key.includes(info[j]->key))
             {
                 skelzoneinfo &zj = *info[j];
-                for(uint k = 0; k< zi.children.size(); k++)
+                for(size_t k = 0; k< zi.children.size(); k++)
                 {
                     skelzoneinfo &zk = *zi.children[k];
                     if(zk.key.includes(zj.key))
@@ -939,15 +939,14 @@ void skelhitdata::build(const skelmodel::skelmeshgroup *g, const uchar *ids)
             }
         }
         skelzonekey deps = zi.key;
-        for(uint j = 0; j < zi.children.size(); j++)
+        for(const skelzoneinfo *zj : zi.children)
         {
-            const skelzoneinfo &zj = *zi.children[j];
-            if(zj.key.blend < 0 || zj.key.blend >= numblends)
+            if(zj->key.blend < 0 || zj->key.blend >= numblends)
             {
-                deps.subtract(zj.key);
+                deps.subtract(zj->key);
             }
         }
-        for(int j = 0; j < static_cast<int>(sizeof(deps.bones)); ++j)
+        for(size_t j = 0; j < sizeof(deps.bones); ++j)
         {
             if(deps.bones[j]==0xFF)
             {
