@@ -472,6 +472,7 @@ VAR(wireframe, 0, 0, 1);
 
 Camera::Camera()
 {
+    detachedcamera = false;
 }
 
 //these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix

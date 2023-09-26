@@ -26,10 +26,10 @@ class Camera : public dynent
         vec pos() const;
         bool detached() const;
     private:
-        void fixrange();
-        //used in iengine.h
-        bool detachedcamera = false;
+        bool detachedcamera;
         vec worldpos;
+
+        void fixrange();
 };
 
 extern Camera *camera1;
