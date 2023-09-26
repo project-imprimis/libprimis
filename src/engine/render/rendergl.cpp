@@ -475,6 +475,11 @@ Camera::Camera()
     detachedcamera = false;
 }
 
+const matrix4 &Camera::matrix() const
+{
+    return cammatrix;
+}
+
 //these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix
 vec Camera::dir() const
 {
@@ -522,7 +527,7 @@ void setcamprojmatrix(bool init = true, bool flush = false)
         camera1->setcammatrix();
     }
     jitteraa();
-    camprojmatrix.muld(projmatrix, camera1->cammatrix);
+    camprojmatrix.muld(projmatrix, camera1->matrix());
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
     if(flush && Shader::lastshader)
@@ -734,7 +739,7 @@ FVAR(nearplane, 0.01f, 0.54f, 2.0f);
 vec calcavatarpos(const vec &pos, float dist)
 {
     vec eyepos;
-    camera1->cammatrix.transform(pos, eyepos);
+    camera1->matrix().transform(pos, eyepos);
     GLdouble ydist = nearplane * std::tan(curavatarfov/(2*RAD)),
              xdist = ydist * aspect;
     vec4<float> scrpos;
@@ -824,7 +829,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     };
 
     vec e;
-    camera1->cammatrix.transform(center, e);
+    camera1->matrix().transform(center, e);
     if(e.z > 2*size)
     {
         sx1 = sy1 = sz1 =  1;

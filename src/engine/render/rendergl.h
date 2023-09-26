@@ -15,19 +15,21 @@ extern int hudh();
 class Camera : public dynent
 {
     public:
-        matrix4 cammatrix;
-
         Camera();
         void setcammatrix();
+        const matrix4 &matrix() const;
         vec dir() const;
         vec right() const;
         vec up() const;
         void modifyorient(float yawdelta, float pitchdelta);
         vec pos() const;
         bool detached() const;
+
     private:
         bool detachedcamera;
         vec worldpos;
+        matrix4 cammatrix;
+
 
         void fixrange();
 };

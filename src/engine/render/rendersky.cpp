@@ -295,7 +295,7 @@ namespace
     {
         SETSHADER(atmosphere);
 
-        matrix4 sunmatrix = camera1->cammatrix.inverse();
+        matrix4 sunmatrix = camera1->matrix().inverse();
         sunmatrix.settranslation(0, 0, 0);
         sunmatrix.mul(projmatrix.inverse());
         LOCALPARAM(sunmatrix, sunmatrix);
@@ -400,7 +400,7 @@ void drawskybox(bool clear)
         }
         gle::color(skyboxcolor);
 
-        matrix4 skymatrix = camera1->cammatrix,
+        matrix4 skymatrix = camera1->matrix(),
                 skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
         skymatrix.rotate_around_z((skyboxspin*lastmillis/1000.0f+skyboxyaw)/RAD);
@@ -433,7 +433,7 @@ void drawskybox(bool clear)
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        matrix4 skymatrix = camera1->cammatrix,
+        matrix4 skymatrix = camera1->matrix(),
                 skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
         skymatrix.rotate_around_z((cloudspin*lastmillis/1000.0f+cloudyaw)/RAD);
