@@ -311,8 +311,8 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     {
         vertsize = sizeof(vvertg);
         gle::bindvbo(vc.vbuf);
-        int numverts = 0,
-            htlen = 128;
+        size_t numverts = 0,
+               htlen = 128;
         LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
         while(htlen < numverts)
         {
