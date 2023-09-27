@@ -1084,7 +1084,7 @@ void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmode
     {
         bc.owner = owner;
         bc.millis = lastmillis;
-        (animcacheentry &)bc = sc;
+        static_cast<animcacheentry &>(bc) = sc;
         blendbones(sc.bdata, bc.bdata, blendcombos.data(), z->getblendcount());
         z->propagate(this, sc.bdata, bc.bdata);
     }
