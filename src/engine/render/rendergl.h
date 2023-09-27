@@ -22,7 +22,20 @@ class Camera : public dynent
         vec right() const;
         vec up() const;
         void modifyorient(float yawdelta, float pitchdelta);
+
+        /**
+         * @brief Returns the location of the camera in world space.
+         *
+         * @return the cube world space location of the camera
+         */
         vec pos() const;
+
+        /**
+         * @brief Returns whether the camera is detached from the player (3rd person)
+         *
+         * @return true if the camera is detached
+         * @return false if the camera is attached
+         */
         bool detached() const;
 
     private:
