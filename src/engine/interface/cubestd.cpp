@@ -131,7 +131,7 @@ const char *escapeid(const char *s)
 bool validateblock(const char *s)
 {
     constexpr int maxbrak = 100;
-    static char brakstack[maxbrak];
+    static std::array<char, maxbrak> brakstack;
     int brakdepth = 0;
     for(; *s; s++)
     {
