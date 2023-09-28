@@ -346,21 +346,21 @@ const char *numberstr(double v)
     return retbuf[retidx];
 }
 
-void loopiter(ident *id, identstack &stack, const tagval &v)
+void loopiter(ident &id, identstack &stack, const tagval &v)
 {
-    if(id->stack != &stack)
+    if(id.stack != &stack)
     {
-        pusharg(*id, v, stack);
-        id->flags &= ~Idf_Unknown;
+        pusharg(id, v, stack);
+        id.flags &= ~Idf_Unknown;
     }
     else
     {
-        if(id->valtype == Value_String)
+        if(id.valtype == Value_String)
         {
-            delete[] id->val.s;
+            delete[] id.val.s;
         }
-        cleancode(*id);
-        id->setval(v);
+        cleancode(id);
+        id.setval(v);
     }
 }
 
@@ -368,7 +368,7 @@ void loopiter(ident *id, identstack &stack, int i)
 {
     tagval v;
     v.setint(i);
-    loopiter(id, stack, v);
+    loopiter(*id, stack, v);
 }
 
 void loopend(ident *id, identstack &stack)
