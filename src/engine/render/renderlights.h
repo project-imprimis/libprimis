@@ -368,12 +368,14 @@ extern int calcspherersmsplits(const vec &center, float radius);
 inline bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
 {
     const vec2 &sc = sincos360[spot];
-    float cdist = dir.dot(center), cradius = radius + sc.y*cdist;
+    float cdist = dir.dot(center),
+          cradius = radius + sc.y*cdist;
     return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
 }
 inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
 {
-    vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f), center = vec(bbmin).add(radius);
+    vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f),
+        center = vec(bbmin).add(radius);
     return sphereinsidespot(dir, spot, center.sub(origin), radius.magnitude());
 }
 
