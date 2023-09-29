@@ -43,14 +43,14 @@ vertmodel::meshgroup * vertmodel::loadmeshes(const char *name, float smooth)
 
 vertmodel::meshgroup * vertmodel::sharemeshes(const char *name, float smooth)
 {
-    if(!meshgroups.access(name))
+    if(meshgroups.find(name) == meshgroups.end())
     {
         meshgroup *group = loadmeshes(name, smooth);
         if(!group)
         {
             return nullptr;
         }
-        meshgroups.add(group);
+        meshgroups[group->name] = group;
     }
     return meshgroups[name];
 }

@@ -42,7 +42,8 @@ VARF(debugcolmesh, 0, 0, 1,
 
 VAR(animationinterpolationtime, 0, 200, 1000);
 
-hashnameset<animmodel::meshgroup *> animmodel::meshgroups;
+std::unordered_map<std::string, animmodel::meshgroup *> animmodel::meshgroups;
+
 int animmodel::intersectresult = -1,
     animmodel::intersectmode = 0;
 

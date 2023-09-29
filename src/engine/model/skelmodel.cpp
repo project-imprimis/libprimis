@@ -1713,14 +1713,14 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, const char *skeln
 }
 animmodel::meshgroup * skelmodel::sharemeshes(const char *name, const char *skelname, float smooth)
 {
-    if(!meshgroups.access(name))
+    if(meshgroups.find(name) == meshgroups.end())
     {
         meshgroup *group = loadmeshes(name, skelname, smooth);
         if(!group)
         {
             return nullptr;
         }
-        meshgroups.add(group);
+        meshgroups[group->name] = group;
     }
     return meshgroups[name];
 }

@@ -381,7 +381,7 @@ class animmodel : public model
 
         };
 
-        static hashnameset<meshgroup *> meshgroups;
+        static std::unordered_map<std::string, meshgroup *> meshgroups;
 
         class part
         {
