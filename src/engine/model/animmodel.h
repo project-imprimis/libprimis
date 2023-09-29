@@ -138,15 +138,19 @@ class animmodel : public model
                         return;
                     }
                     smoothdata *smooth = new smoothdata[numverts];
-                    hashtable<vec, int> share;
+                    std::unordered_map<vec, int> share;
                     for(int i = 0; i < numverts; ++i)
                     {
-                        V &v = verts[i];
-                        int &idx = share.access(v.pos, i);
-                        if(idx != i)
+                        const V &v = verts[i];
+                        auto itr = share.find(v.pos);
+                        if(itr == share.end())
                         {
-                            smooth[i].next = idx;
-                            idx = i;
+                            share[v.pos] = i;
+                        }
+                        else
+                        {
+                            smooth[i].next = *itr;
+                            *itr = i;
                         }
                     }
                     for(int i = 0; i < numtris; ++i)
