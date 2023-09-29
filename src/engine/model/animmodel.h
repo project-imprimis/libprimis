@@ -149,8 +149,8 @@ class animmodel : public model
                         }
                         else
                         {
-                            smooth[i].next = *itr;
-                            *itr = i;
+                            smooth[i].next = (*itr).second;
+                            (*itr).second = i;
                         }
                     }
                     for(int i = 0; i < numtris; ++i)
