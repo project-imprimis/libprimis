@@ -95,21 +95,21 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
 const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep) const
 {
     int len = sep ? std::strlen(name) : 0;
-    for(uint i = 0; i < skelanims.size(); i++)
+    for(const skelanimspec &i : skelanims)
     {
-        if(!skelanims[i].name.empty())
+        if(!i.name.empty())
         {
             if(sep)
             {
-                const char *end = std::strchr(skelanims[i].name.c_str(), ':');
-                if(end && end - skelanims[i].name.c_str() == len && !std::memcmp(name, skelanims[i].name.c_str(), len))
+                const char *end = std::strchr(i.name.c_str(), ':');
+                if(end && end - i.name.c_str() == len && !std::memcmp(name, i.name.c_str(), len))
                 {
-                    return &skelanims[i];
+                    return &i;
                 }
             }
-            if(!std::strcmp(name, skelanims[i].name.c_str()))
+            if(!std::strcmp(name, i.name.c_str()))
             {
-                return &skelanims[i];
+                return &i;
             }
         }
     }
