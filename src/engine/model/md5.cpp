@@ -437,7 +437,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
 
 bool md5::md5meshgroup::load(const char *meshfile, float smooth)
 {
-    name = newstring(meshfile);
+    name = meshfile;
 
     if(!loadmesh(meshfile, smooth))
     {

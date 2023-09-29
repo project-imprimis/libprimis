@@ -68,7 +68,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     {
         return false;
     }
-    name = newstring(filename);
+    name = filename;
     numframes = 1;
     std::vector<vec> attrib[3];
     char buf[512];

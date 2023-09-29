@@ -323,7 +323,7 @@ class animmodel : public model
         class meshgroup
         {
             public:
-                char *name;
+                std::string name;
                 std::vector<Mesh *> meshes;
 
                 meshgroup();

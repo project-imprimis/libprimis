@@ -492,7 +492,6 @@ animmodel::meshgroup::meshgroup() : name(nullptr), next(nullptr)
 
 animmodel::meshgroup::~meshgroup()
 {
-    delete[] name;
     for(Mesh * i : meshes)
     {
         delete i;
