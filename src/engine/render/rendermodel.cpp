@@ -524,14 +524,14 @@ void nummapmodels()
 
 // model registry
 
-hashnameset<model *> models;
+std::unordered_map<std::string, model *> models;
 std::vector<std::string> preloadmodels;
 hashset<const char *> failedmodels;
 
 //used in iengine
 void preloadmodel(std::string name)
 {
-    if(name.empty() || models.access(name.c_str()) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
+    if(name.empty() || models.find(name) != models.end() || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
     {
         return;
     }
@@ -662,7 +662,7 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         name = mmi.name.c_str();
     }
-    model **mm = models.access(name);
+    model **mm = &((*models.find(name)).second);
     model *m;
     if(mm)
     {
@@ -703,7 +703,10 @@ model *loadmodel(const char *name, int i, bool msg)
             failedmodels.add(newstring(name));
             return nullptr;
         }
-        models.access(m->name, m);
+        if(models.find(m->name) == models.end())
+        {
+            models[m->name] = m;
+        }
     }
     if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
     {
@@ -714,17 +717,28 @@ model *loadmodel(const char *name, int i, bool msg)
 
 void clear_models()
 {
-    ENUMERATE(models, model *, m, delete m);
+    for(auto [k, i] : models)
+    {
+        delete i;
+    }
 }
 
 void cleanupmodels()
 {
-    ENUMERATE(models, model *, m, m->cleanup());
+    for(auto [k, i] : models)
+    {
+        i->cleanup();
+    }
 }
 
 static void clearmodel(const char *name)
 {
-    model *m = models.find(name, nullptr);
+    model *m = nullptr;
+    auto it = models.find(name);
+    if(it != models.end())
+    {
+        m = (*it).second;
+    }
     if(!m)
     {
         conoutf("model %s is not loaded", name);
@@ -742,7 +756,7 @@ static void clearmodel(const char *name)
             mmi.collide = nullptr;
         }
     }
-    models.remove(name);
+    models.erase(name);
     m->cleanup();
     delete m;
     conoutf("cleared model %s", name);
