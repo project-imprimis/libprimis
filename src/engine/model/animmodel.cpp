@@ -1140,7 +1140,7 @@ void animmodel::part::setanim(int animpart, int num, int frame, int range, float
     }
     if(frame<0 || range<=0 || !meshes || !meshes->hasframes(frame, range))
     {
-        conoutf("invalid frame %d, range %d in model %s", frame, range, model->name);
+        conoutf("invalid frame %d, range %d in model %s", frame, range, model->name.c_str());
         return;
     }
     if(!anims[animpart])

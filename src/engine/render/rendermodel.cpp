@@ -326,7 +326,7 @@ static void mdlname()
     {
         return;
     }
-    result(loadingmodel->name);
+    result(loadingmodel->name.c_str());
 }
 
 // if a skeletal model is being loaded, and meets the criteria for a ragdoll,

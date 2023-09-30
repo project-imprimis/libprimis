@@ -58,13 +58,13 @@ md5::skelmeshgroup *md5::newmeshes()
 bool md5::loaddefaultparts()
 {
     skelpart &mdl = addpart();
-    const char *fname = name + std::strlen(name);
+    const char *fname = name.c_str() + std::strlen(name.c_str());
     do
     {
         --fname;
     } while(fname >= name && *fname!='/' && *fname!='\\');
     fname++;
-    DEF_FORMAT_STRING(meshname, "media/model/%s/%s.md5mesh", name, fname);
+    DEF_FORMAT_STRING(meshname, "media/model/%s/%s.md5mesh", name.c_str(), fname);
     mdl.meshes = sharemeshes(path(meshname));
     if(!mdl.meshes)
     {
@@ -72,7 +72,7 @@ bool md5::loaddefaultparts()
     }
     mdl.initanimparts();
     mdl.initskins();
-    DEF_FORMAT_STRING(animname, "media/model/%s/%s.md5anim", name, fname);
+    DEF_FORMAT_STRING(animname, "media/model/%s/%s.md5anim", name.c_str(), fname);
     static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
     return true;
 }

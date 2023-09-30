@@ -288,8 +288,8 @@ void obj::objmeshgroup::flushmesh(const string meshname,
 bool obj::loaddefaultparts()
 {
     part &mdl = addpart();
-    const char *pname = parentdir(name);
-    DEF_FORMAT_STRING(name1, "media/model/%s/tris.obj", name);
+    const char *pname = parentdir(name.c_str());
+    DEF_FORMAT_STRING(name1, "media/model/%s/tris.obj", name.c_str());
     mdl.meshes = sharemeshes(path(name1));
     if(!mdl.meshes)
     {
@@ -301,7 +301,7 @@ bool obj::loaddefaultparts()
         }
     }
     Texture *tex, *masks;
-    loadskin(name, pname, tex, masks);
+    loadskin(name.c_str(), pname, tex, masks);
     mdl.initskins(tex, masks);
     if(tex==notexture)
     {

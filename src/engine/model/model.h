@@ -19,7 +19,7 @@ enum
 class model
 {
     public:
-        const char *name;
+        std::string name;
         float spinyaw, spinpitch, spinroll, offsetyaw, offsetpitch, offsetroll;
         bool shadow, alphashadow, depthoffset;
         float scale;
@@ -32,8 +32,6 @@ class model
 
         virtual ~model()
         {
-            delete[] name;
-            name = nullptr;
             if(bih)
             {
                 delete bih;

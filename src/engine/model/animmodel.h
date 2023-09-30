@@ -620,8 +620,8 @@ struct modelloader : BASE
 
     bool loadconfig()
     {
-        formatstring(dir, "media/model/%s", BASE::name);
-        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name, MDL::formatname());
+        formatstring(dir, "media/model/%s", BASE::name.c_str());
+        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name.c_str(), MDL::formatname());
 
         identflags &= ~Idf_Persist;
         bool success = execfile(cfgname, false);
@@ -809,7 +809,7 @@ struct modelcommands
         }
         if(!MDL::loading->parts[*parent]->link(MDL::loading->parts[*child], tagname, vec(*x, *y, *z)))
         {
-            conoutf("could not link model %s", MDL::loading->name);
+            conoutf("could not link model %s", MDL::loading->name.c_str());
         }
     }
 
