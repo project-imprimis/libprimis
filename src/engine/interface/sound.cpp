@@ -19,7 +19,10 @@ SoundEngine::SoundEngine() : gamesounds("game/", *this), mapsounds("mapsound/", 
 {
 }
 
-SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), chunk(nullptr) {}
+SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), chunk(nullptr)
+{
+}
+
 SoundEngine::SoundSample::~SoundSample()
 {
 }
@@ -32,7 +35,6 @@ void SoundEngine::SoundSample::cleanup()
         chunk = nullptr;
     }
 }
-
 
 bool SoundEngine::SoundConfig::hasslot(const soundslot *p, const std::vector<soundslot> &v) const
 {
