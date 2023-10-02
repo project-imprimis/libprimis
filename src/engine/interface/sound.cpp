@@ -849,9 +849,9 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
         if(config.maxuses)
         {
             int uses = 0;
-            for(uint i = 0; i < channels.size(); i++)
+            for(const SoundChannel &s : channels)
             {
-                if(sounds.playing(channels[i], config) && ++uses >= config.maxuses)
+                if(sounds.playing(s, config) && ++uses >= config.maxuses)
                 {
                     return -1;
                 }
