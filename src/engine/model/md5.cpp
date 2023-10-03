@@ -64,8 +64,9 @@ bool md5::loaddefaultparts()
         --fname;
     } while(fname >= name && *fname!='/' && *fname!='\\');
     fname++;
-    DEF_FORMAT_STRING(meshname, "media/model/%s/%s.md5mesh", name.c_str(), fname);
-    mdl.meshes = sharemeshes(path(meshname));
+    std::string meshname = "media/model/";
+    meshname.append(name).append("/").append(fname).append(".md5mesh");
+    mdl.meshes = sharemeshes(path(meshname).c_str());
     if(!mdl.meshes)
     {
         return false;
