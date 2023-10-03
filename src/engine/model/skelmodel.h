@@ -634,12 +634,13 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, meshfile);
+        std::string filename;
+        filename.append(MDL::dir).append("/").append(meshfile);
         part &mdl = MDL::loading->addpart();
-        mdl.meshes = MDL::loading->sharemeshes(path(filename), skelname[0] ? skelname : nullptr, *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), skelname[0] ? skelname : nullptr, *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
         {
-            conoutf("could not load %s", filename);
+            conoutf("could not load %s", filename.c_str());
         }
         else
         {
