@@ -73,8 +73,9 @@ bool md5::loaddefaultparts()
     }
     mdl.initanimparts();
     mdl.initskins();
-    DEF_FORMAT_STRING(animname, "media/model/%s/%s.md5anim", name.c_str(), fname);
-    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
+    std::string animname = "media/model/";
+    animname.append(name).append("/").append(fname).append(".md5anim");
+    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname).c_str());
     return true;
 }
 
