@@ -977,7 +977,7 @@ namespace UI
         }
     };
 
-    static hashnameset<Window *> windows;
+    static std::unordered_map<std::string, Window *> windows;
 
     void ClipArea::scissor()
     {
@@ -4392,14 +4392,15 @@ namespace UI
     //new ui command
     void newui(char *name, char *contents, char *onshow, char *onhide)
     {
-        Window *window = windows.find(name, nullptr);
-        if(window)
+        auto itr = windows.find(name);
+        if(itr != windows.end())
         {
-            if (window == UI::window)
+            if((*itr).second == UI::window)
             {
                 return;
             }
-            world->hide(window); windows.remove(name);
+            world->hide((*itr).second);
+            windows.erase(itr);
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
@@ -4433,8 +4434,8 @@ namespace UI
 
     bool showui(const char *name)
     {
-        Window *window = windows.find(name, nullptr);
-        return window && world->show(window);
+        auto itr = windows.find(name);
+        return (itr != windows.end()) && world->show((*itr).second);
     }
 
     bool hideui(const char *name)
@@ -4443,8 +4444,8 @@ namespace UI
         {
             return world->hideall() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && world->hide(window);
+        auto itr = windows.find(name);
+        return (itr != windows.end()) && world->hide(window);
     }
 
     bool toggleui(const char *name)
@@ -4475,8 +4476,8 @@ namespace UI
         {
             return world->children.size() > 0;
         }
-        Window *window = windows.find(name, nullptr);
-        return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
+        auto itr = windows.find(name);
+        return (*itr).second && std::find(world->children.begin(), world->children.end(), (*itr).second) != world->children.end();
     }
 
     void ifstateval(bool state, tagval * t, tagval * f)
@@ -4851,7 +4852,10 @@ namespace UI
     void cleanup()
     {
         world->children.clear();
-        ENUMERATE(windows, Window *, w, delete w);
+        for(auto &[k, i] : windows)
+        {
+            delete i;
+        }
         windows.clear();
         if(world)
         {
