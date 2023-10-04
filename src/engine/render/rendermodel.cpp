@@ -662,11 +662,11 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         name = mmi.name.c_str();
     }
-    model **mm = &((*models.find(name)).second);
+    auto itr = models.find(name);
     model *m;
-    if(mm)
+    if(itr != models.end())
     {
-        m = *mm;
+        m = (*models.find(name)).second;
     }
     else
     {
