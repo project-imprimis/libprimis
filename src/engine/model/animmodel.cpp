@@ -486,7 +486,7 @@ void animmodel::Mesh::fixqtangent(quat &q, float bt)
 
 //meshgroup
 
-animmodel::meshgroup::meshgroup() : name(nullptr), next(nullptr)
+animmodel::meshgroup::meshgroup() : next(nullptr)
 {
 }
 
