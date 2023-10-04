@@ -1113,11 +1113,11 @@ void textinit(std::string name, char *file, char *initval)
         return;
     }
     Editor *e = nullptr;
-    for(uint i = 0; i < editors.size(); i++)
+    for(Editor *i : editors)
     {
-        if(editors[i]->name == name)
+        if(i->name == name)
         {
-            e = editors[i];
+            e = i;
             break;
         }
     }
