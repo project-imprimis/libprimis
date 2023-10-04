@@ -433,14 +433,15 @@ void SoundEngine::startmusic(char *name, char *cmd)
     stopmusic();
     if(soundvol && musicvol && *name) //if volume > 0 and music name passed
     {
-        DEF_FORMAT_STRING(file, "media/%s", name);
+        std::string file = "media/";
+        file.append(name);
         path(file);
-        if(loadmusic(file))
+        if(loadmusic(file.c_str()))
         {
             delete[] musicfile;
             delete[] musicdonecmd;
 
-            musicfile = newstring(file);
+            musicfile = newstring(file.c_str());
             if(cmd[0])
             {
                 musicdonecmd = newstring(cmd);
@@ -455,7 +456,7 @@ void SoundEngine::startmusic(char *name, char *cmd)
         }
         else //note that there is no error message for  soundvol/musicvol/name null
         {
-            conoutf(Console_Error, "could not play music: %s", file);
+            conoutf(Console_Error, "could not play music: %s", file.c_str());
             intret(0);
         }
     }
