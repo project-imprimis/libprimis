@@ -4445,7 +4445,7 @@ namespace UI
             return world->hideall() > 0;
         }
         auto itr = windows.find(name);
-        return (itr != windows.end()) && world->hide(window);
+        return (itr != windows.end()) && world->hide((*itr).second);
     }
 
     bool toggleui(const char *name)
