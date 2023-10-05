@@ -4477,7 +4477,11 @@ namespace UI
             return world->children.size() > 0;
         }
         auto itr = windows.find(name);
-        return (*itr).second && std::find(world->children.begin(), world->children.end(), (*itr).second) != world->children.end();
+        if(itr != windows.end() && (*itr).second)
+        {
+            return std::find(world->children.begin(), world->children.end(), (*itr).second) != world->children.end();
+        }
+        return false;
     }
 
     void ifstateval(bool state, tagval * t, tagval * f)
