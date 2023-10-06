@@ -746,7 +746,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
         {
             if(msg)
             {
-                conoutf(Console_Error, "could not load texture %s", tname);
+                conoutf(Console_Error, "could not load <> modified texture %s", tname);
             }
             return false;
         }
