@@ -526,7 +526,6 @@ void nummapmodels()
 
 std::unordered_map<std::string, model *> models;
 std::vector<std::string> preloadmodels;
-hashset<const char *> failedmodels;
 
 //used in iengine
 void preloadmodel(std::string name)
@@ -641,13 +640,13 @@ void preloadusedmapmodels(bool msg, bool bih)
 
 model *loadmodel(const char *name, int i, bool msg)
 {
-
     model *(__cdecl *md5loader)(const char *) = +[] (const char *filename) -> model* { return new md5(filename); };
     model *(__cdecl *objloader)(const char *) = +[] (const char *filename) -> model* { return new obj(filename); };
 
     std::vector<model *(__cdecl *)(const char *)> loaders;
     loaders.push_back(md5loader);
     loaders.push_back(objloader);
+    std::unordered_set<std::string> failedmodels;
 
     if(!name)
     {
@@ -670,7 +669,7 @@ model *loadmodel(const char *name, int i, bool msg)
     }
     else
     {
-        if(!name[0] || loadingmodel || failedmodels.find(name, nullptr))
+        if(!name[0] || loadingmodel || failedmodels.find(name) != failedmodels.end())
         {
             return nullptr;
         }
@@ -700,7 +699,7 @@ model *loadmodel(const char *name, int i, bool msg)
         loadingmodel = nullptr;
         if(!m)
         {
-            failedmodels.add(newstring(name));
+            failedmodels.insert(name);
             return nullptr;
         }
         if(models.find(m->name) == models.end())
