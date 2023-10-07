@@ -3849,7 +3849,6 @@ namespace UI
                         break;
                     }
                 }
-                [[fallthrough]];
                 case SDLK_KP_ENTER:
                 {
                     if(isdown)
@@ -4562,7 +4561,6 @@ namespace UI
                     break;
                 }
             }
-            [[fallthrough]];
             default:
             {
                 BUILD(Object, o, o->setup(), children);
