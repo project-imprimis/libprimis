@@ -200,7 +200,7 @@ void printtimers(int conw, int conh, int framemillis)
     }
     if(usetimers)
     {
-        for(const int &i : timerorder)
+        for(int i : timerorder)
         {
             timer &t = timers[i];
             if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200)
