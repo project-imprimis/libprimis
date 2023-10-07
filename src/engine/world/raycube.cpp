@@ -211,9 +211,9 @@ namespace
         float dist = radius,
               f = 0.0f;
         const std::vector<extentity *> &ents = entities::getents();
-        for(uint i = 0; i < outsideents.size(); i++)
+        for(const int &i : outsideents)
         {
-            extentity &e = *ents[outsideents[i]];
+            extentity &e = *ents[i];
             if(!(e.flags&EntFlag_Octa) || &e == t)
             {
                 continue;
@@ -239,9 +239,9 @@ namespace
         float dist = radius,
               f = 0.0f;
         const std::vector<extentity *> &ents = entities::getents();
-        for(uint i = 0; i < oc->mapmodels.size(); i++)
+        for(const int &i : oc->mapmodels)
         {
-            const extentity &e = *ents[oc->mapmodels[i]];
+            const extentity &e = *ents[i];
             if(!(e.flags&EntFlag_Octa) || &e==t)
             {
                 continue;
