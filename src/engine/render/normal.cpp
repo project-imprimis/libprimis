@@ -19,19 +19,29 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
-
-namespace //internal functionality not seen by other files
+struct normalkey
 {
-    struct normalkey
-    {
-        vec pos;
-        int smooth;
-    };
+    vec pos;
+    int smooth;
 
-    inline uint hthash(const normalkey &k)
+    bool operator==(const normalkey &k) const
+    {
+        return k.pos == pos && smooth == k.smooth;
+    }
+};
+
+template<>
+struct std::hash<normalkey>
+{
+    size_t operator()(const normalkey &k) const
     {
         return hthash(k.pos);
     }
+};
+
+namespace //internal functionality not seen by other files
+{
+
 
     struct normalgroup
     {
@@ -61,7 +71,7 @@ namespace //internal functionality not seen by other files
         normalgroup *groups[2];
     };
 
-    hashset<normalgroup> normalgroups(1<<16);
+    std::unordered_map<normalkey, normalgroup> normalgroups;
     std::vector<normal> normals;
     std::vector<tnormal> tnormals;
     std::vector<int> smoothgroups;
@@ -73,36 +83,48 @@ namespace //internal functionality not seen by other files
     int addnormal(const vec &pos, int smooth, const vec &surface)
     {
         normalkey key = { pos, smooth };
-        normalgroup &g = normalgroups.access(key, key);
+        auto itr = normalgroups.find(key);
+        if(itr == normalgroups.end())
+        {
+            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+        }
         normal n;
-        n.next = g.normals;
+        n.next = (*itr).second.normals;
         n.surface = surface;
         normals.push_back(n);
-        return g.normals = normals.size()-1;
+        return (*itr).second.normals = normals.size()-1;
     }
 
     void addtnormal(const vec &pos, int smooth, float offset, int normal1, int normal2, const vec &pos1, const vec &pos2)
     {
         normalkey key = { pos, smooth };
-        normalgroup &g = normalgroups.access(key, key);
+        auto itr = normalgroups.find(key);
+        if(itr == normalgroups.end())
+        {
+            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+        }
         tnormal n;
-        n.next = g.tnormals;
+        n.next = (*itr).second.tnormals;
         n.offset = offset;
         n.normals[0] = normal1;
         n.normals[1] = normal2;
         normalkey key1 = { pos1, smooth },
                   key2 = { pos2, smooth };
-        n.groups[0] = normalgroups.access(key1);
-        n.groups[1] = normalgroups.access(key2);
+        n.groups[0] = &((*normalgroups.find(key1)).second);
+        n.groups[1] = &((*normalgroups.find(key2)).second);
         tnormals.push_back(n);
-        g.tnormals = tnormals.size()-1;
+        (*itr).second.tnormals = tnormals.size()-1;
     }
 
     int addnormal(const vec &pos, int smooth, int axis)
     {
         normalkey key = { pos, smooth };
-        normalgroup &g = normalgroups.access(key, key);
-        g.flat += 1<<(4*axis);
+        auto itr = normalgroups.find(key);
+        if(itr == normalgroups.end())
+        {
+            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+        }
+        (*itr).second.flat += 1<<(4*axis);
         return axis - 6;
     }
 
@@ -366,19 +388,19 @@ namespace //internal functionality not seen by other files
 void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
     normalkey key = { pos, smooth };
-    const normalgroup *g = normalgroups.access(key);
+    auto itr = normalgroups.find(key);
     if(smooth < 0)
     {
         smooth = 0;
     }
     bool usegroup = (static_cast<int>(smoothgroups.size()) > smooth) && smoothgroups[smooth] >= 0;
-    if(g)
+    if(itr != normalgroups.end())
     {
         int angle = usegroup ? smoothgroups[smooth] : lerpangle;
         float lerpthreshold = cos360(angle) - 1e-5f;
-        if(g->tnormals < 0 || !findtnormal(*g, lerpthreshold, surface, v))
+        if((*itr).second.tnormals < 0 || !findtnormal((*itr).second, lerpthreshold, surface, v))
         {
-            findnormal(*g, lerpthreshold, surface, v);
+            findnormal((*itr).second, lerpthreshold, surface, v);
         }
     }
     else
