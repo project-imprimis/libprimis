@@ -27,7 +27,7 @@
 
 #include "interface/control.h"
 
-static hashnameset<font> fonts;
+static std::unordered_map<std::string, font> fonts;
 static font *fontdef = nullptr;
 static int fontdeftex = 0;
 
@@ -36,11 +36,9 @@ font *curfont = nullptr;
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 {
-    font *f = &fonts[name];
-    if(!f->name)
-    {
-        f->name = newstring(name);
-    }
+    auto insert = fonts.insert( {name, font()} ).first;
+    font *f = &((*insert).second);
+    f->name = newstring(name);
     f->texs.clear();
     f->texs.push_back(textureload(tex));
     f->chars.clear();
@@ -185,12 +183,12 @@ static void fontskip(int *n)
 
 bool setfont(const char *name)
 {
-    font *f = fonts.access(name);
-    if(!f)
+    auto itr = fonts.find(name);
+    if(itr == fonts.end())
     {
         return false;
     }
-    curfont = f;
+    curfont = &(*itr).second;
     return true;
 }
 
@@ -437,7 +435,8 @@ void text_boundsf(const char *str, float &width, float &height, int maxwidth)
 
 void reloadfonts()
 {
-    ENUMERATE(fonts, font, f,
+    for(auto &[k, f] : fonts)
+    {
         for(uint i = 0; i < f.texs.size(); i++)
         {
             if(!f.texs[i]->reload())
@@ -445,7 +444,7 @@ void reloadfonts()
                 fatal("failed to reload font texture");
             }
         }
-    );
+    }
 }
 
 void initrendertextcmds()
