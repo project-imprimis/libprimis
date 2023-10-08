@@ -582,7 +582,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             if(surf.used())
             {
                 cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-                std::copy(ext->surfaces.begin(), ext->surfaces.end(), surfaces.begin());
+                std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
                 std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
                 if(c.ext != ext)
                 {
