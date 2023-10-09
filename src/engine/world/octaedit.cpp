@@ -1102,11 +1102,14 @@ struct prefab : editinfo
     }
 };
 
-static hashnameset<prefab> prefabs;
+static std::unordered_map<std::string, prefab> prefabs;
 
 void cleanupprefabs()
 {
-    ENUMERATE(prefabs, prefab, p, p.cleanup());
+    for(auto &[k, i] : prefabs)
+    {
+        i.cleanup();
+    }
 }
 
 void pasteundoblock(block3 *b, const uchar *g)
@@ -1166,10 +1169,10 @@ void pasteblock(const block3 &b, selinfo &sel, bool local)
 
 prefab *loadprefab(const char *name, bool msg = true)
 {
-    prefab *b = prefabs.access(name);
-    if(b)
+    auto itr = prefabs.find(name);
+    if(itr != prefabs.end())
     {
-        return b;
+        return &(*itr).second;
     }
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
@@ -1214,7 +1217,7 @@ prefab *loadprefab(const char *name, bool msg = true)
     }
     delete f;
 
-    b = &prefabs[name];
+    prefab *b = &(*prefabs.insert_or_assign(name, prefab()).first).second;
     b->name = newstring(name);
     b->copy = copy;
 
@@ -2060,12 +2063,16 @@ void initoctaeditcmds()
 
     static auto delprefab = [] (char *name)
     {
-        prefab *p = prefabs.access(name);
-        if(p)
+        auto itr = prefabs.find(name);
+        if(itr != prefabs.end())
         {
-            p->cleanup();
-            prefabs.remove(name);
+            (*itr).second.cleanup();
+            prefabs.erase(name);
             conoutf("deleted prefab %s", name);
+        }
+        else
+        {
+            conoutf("no such prefab %s", name);
         }
     };
     addcommand("delprefab",     reinterpret_cast<identfun>(+delprefab), "s", Id_Command);
@@ -2089,11 +2096,16 @@ void initoctaeditcmds()
             multiplayerwarn();
             return;
         }
-        prefab *b = prefabs.access(name);
-        if(!b)
+        auto itr = prefabs.find(name);
+        prefab *b = nullptr;
+        if(itr == prefabs.end())
         {
-            b = &prefabs[name];
+            b = &(*prefabs.insert( { std::string(name), prefab() } ).first).second;
             b->name = newstring(name);
+        }
+        else
+        {
+            b = &(*itr).second;
         }
         if(b->copy)
         {
