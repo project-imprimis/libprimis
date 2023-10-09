@@ -772,8 +772,7 @@ void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clam
     glTexImage3D(target, 0, component, w, h, d, 0, format, type, pixels);
 }
 
-
-hashnameset<Texture> textures;
+std::unordered_map<std::string, Texture> textures;
 
 Texture *notexture = nullptr; // used as default, ensured to be loaded
 
@@ -848,7 +847,8 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(!t)
     {
         char *key = newstring(rname);
-        t = &textures[key];
+        auto itr = textures.insert_or_assign(key, Texture()).first;
+        t = &(*itr).second;
         t->name = key;
     }
 
@@ -1064,10 +1064,10 @@ float Texture::ratio() const
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
 {
     std::string tname(name);
-    Texture *t = textures.access(path(tname).c_str());
-    if(t)
+    auto itr = textures.find(path(tname));
+    if(itr != textures.end())
     {
-        return t;
+        return &(*itr).second;
     }
     int compress = 0;
     ImageData s;
@@ -2219,11 +2219,13 @@ void Slot::load(int index, Slot::Tex &t)
         }
     }
     key.push_back('\0');
-    t.t = textures.access(key.data());
-    if(t.t)
+    auto itr = textures.find(key.data());
+    if(itr != textures.end())
     {
+        t.t = &(*itr).second;
         return;
     }
+    t.t = nullptr;
     int compress = 0,
         wrap = 0;
     ImageData ts;
@@ -2479,13 +2481,16 @@ Texture *Slot::loadthumbnail()
         }
     }
     name.push_back('\0');
-    Texture *t = textures.access(path(name.data()));
-    if(t)
+    auto itr = textures.find(path(name.data()));
+    if(itr != textures.end())
     {
-        thumbnail = t;
+        thumbnail = &(*itr).second;
+        return &(*itr).second;
     }
     else
     {
+        auto insert = textures.insert( { std::string(name.data()), Texture() } ).first;
+        Texture *t = &(*insert).second;
         ImageData s, g, l, d;
         s.texturedata(*this, sts[0], false);
         if(glow >= 0)
@@ -2541,8 +2546,8 @@ Texture *Slot::loadthumbnail()
             t->ys = ys;
             thumbnail = t;
         }
+        return t;
     }
-    return t;
 }
 
 // environment mapped reflections
@@ -2558,7 +2563,7 @@ void Texture::cleanup()
     }
     if(type&Texture::TRANSIENT)
     {
-        textures.remove(name);
+        textures.erase(name);
     }
 }
 
@@ -2580,15 +2585,18 @@ void cleanuptextures()
     {
         i->cleanup();
     }
-    ENUMERATE(textures, Texture, tex, tex.cleanup());
+    for(auto &[k, i] : textures)
+    {
+        i.cleanup();
+    }
 }
 
 bool reloadtexture(const char *name)
 {
-    Texture *t = textures.access(copypath(name));
-    if(t)
+    auto itr = textures.find(path(std::string(name)));
+    if(itr != textures.end())
     {
-        return t->reload();
+        return (*itr).second.reload();
     }
     return true;
 }
@@ -2617,12 +2625,13 @@ bool Texture::reload()
 
 void reloadtex(char *name)
 {
-    Texture *t = textures.access(copypath(name));
-    if(!t)
+    auto itr = textures.find(path(std::string(name)));
+    if(itr == textures.end())
     {
         conoutf(Console_Error, "texture %s is not loaded", name);
         return;
     }
+    Texture *t = &(*itr).second;
     if(t->type&Texture::TRANSIENT)
     {
         conoutf(Console_Error, "can't reload transient texture %s", name);
@@ -2646,11 +2655,11 @@ void reloadtex(char *name)
 void reloadtextures()
 {
     int reloaded = 0;
-    ENUMERATE(textures, Texture, tex,
+    for(auto &[k, t] : textures)
     {
-        loadprogress = static_cast<float>(++reloaded)/textures.numelems;
-        tex.reload();
-    });
+        loadprogress = static_cast<float>(++reloaded)/textures.size();
+        t.reload();
+    }
     loadprogress = 0;
 }
 
