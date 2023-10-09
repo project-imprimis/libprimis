@@ -1058,7 +1058,7 @@ void textlist()
     result(s.c_str());
 }
 
-void textfocuscmd(char *name, int *mode)
+void textfocuscmd(const char *name, const int *mode)
 {
     if(identflags&Idf_Overridden)
     {
@@ -1074,7 +1074,7 @@ void textfocuscmd(char *name, int *mode)
     }
 }
 
-void textsave(char *file)
+void textsave(const char *file)
 {
     if(!textfocus)
     {
@@ -1088,7 +1088,7 @@ void textsave(char *file)
 }
 
 
-void textload(char *file)
+void textload(const char *file)
 {
     if(!textfocus)
     {
