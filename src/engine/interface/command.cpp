@@ -1014,8 +1014,6 @@ struct DefVar : identval
     }
 };
 
-hashnameset<DefVar> defvars;
-
 /**
  * @brief Gets the CubeScript variable.
  * @param vartype the identifier, such as float, integer, var, or command.
@@ -5701,6 +5699,8 @@ static void doargs(uint *body)
     }
 }
 
+std::unordered_map<std::string, DefVar> defvars;
+
 void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
@@ -5715,7 +5715,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
@@ -5731,7 +5732,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
@@ -5747,7 +5749,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
@@ -5763,7 +5766,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
@@ -5779,7 +5783,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
         };
@@ -5793,7 +5798,8 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name); return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
