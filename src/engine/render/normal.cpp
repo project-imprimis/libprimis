@@ -41,8 +41,6 @@ struct std::hash<normalkey>
 
 namespace //internal functionality not seen by other files
 {
-
-
     struct normalgroup
     {
         vec pos;
