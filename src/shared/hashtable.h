@@ -324,31 +324,6 @@ struct hashset : hashbase<hashset<T>, T, T, T>
     }
 };
 
-template<class T>
-struct hashnameset : hashbase<hashnameset<T>, T, const char *, T>
-{
-    typedef hashbase<hashnameset<T>, T, const char *, T> basetype;
-
-    hashnameset(int size = basetype::DEFAULTSIZE) : basetype(size) {}
-
-    template<class U>
-    static inline const char *getkey(const U &elem) { return elem.name; }
-
-    template<class U>
-    static inline const char *getkey(U *elem) { return elem->name; }
-
-    static inline T &getdata(T &elem) { return elem; }
-
-    template<class K>
-    static inline void setkey(T &, const K &) {}
-
-    template<class V>
-    T &add(const V &elem)
-    {
-        return basetype::access(getkey(elem), elem);
-    }
-};
-
 template<class K, class T>
 struct hashtableentry
 {
