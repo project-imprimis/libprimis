@@ -1414,32 +1414,9 @@ struct lightbatch : lightbatchkey
     }
 };
 
-static inline void htrecycle(lightbatch &l)
-{
-    l.reset();
-}
-
-static inline uint hthash(const lightbatchkey &l)
-{
-    uint h = 0;
-    for(int i = 0; i < l.numlights; ++i)
-    {
-        h = ((h<<8)+h)^l.lights[i];
-    }
-    return h;
-}
-
-static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
-{
-    return x.flags == y.flags &&
-           x.numlights == y.numlights &&
-           (!x.numlights || !std::memcmp(x.lights, y.lights, x.numlights*sizeof(x.lights[0])));
-}
-
 static std::vector<lightinfo> lights;
 static std::vector<int> lightorder;
-static hashset<lightbatch> lightbatcher(128);
-static std::vector<lightbatch *> lightbatches;
+static std::vector<const lightbatch *> lightbatches;
 std::vector<shadowmapinfo> shadowmaps;
 
 void clearshadowcache()
@@ -2318,7 +2295,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
     static lightparaminfo li;
     for(uint i = 0; i < lightbatches.size(); i++)
     {
-        lightbatch &batch = *lightbatches[i];
+        const lightbatch &batch = *lightbatches[i];
         if(!batch.overlaps(btx1, bty1, btx2, bty2, tilemask))
         {
             continue;
@@ -3183,13 +3160,13 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
         {
             while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BatchFlag_NoSun))))
             {
-                lightbatchkey key;
-                key.flags = flags | g;
+                lightbatch *key = new lightbatch();
+                key->flags = flags | g;
                 flags |= BatchFlag_NoSun;
 
                 int n = std::min(groups[g], lighttilebatch);
                 groups[g] -= n;
-                key.numlights = n;
+                key->numlights = n;
                 for(int i = 0; i < n; ++i)
                 {
                     int best = -1;
@@ -3205,17 +3182,12 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
                             }
                         }
                     }
-                    key.lights[i] = lightorder[bestidx];
+                    key->lights[i] = lightorder[bestidx];
                     std::swap(batchrects[best], batchrects[--batched]);
                 }
 
-                lightbatch &batch = lightbatcher[key];
-                if(batch.rects.empty())
-                {
-                    (lightbatchkey &)batch = key;
-                    lightbatches.push_back(&batch);
-                }
-                batch.rects.push_back(s);
+                key->rects.push_back(s);
+                lightbatches.push_back(key);
                 ++lightbatchrectsused;
             }
         }
@@ -3260,13 +3232,16 @@ static bool sortlightbatches(const lightbatch *x, const lightbatch *y)
 
 static void batchlights(std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused, int &lightbatchesused)
 {
+    for(auto &i : lightbatches)
+    {
+        delete i;
+    }
     lightbatches.clear();
     lightbatchstacksused = 0;
     lightbatchrectsused = 0;
 
     if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
-        lightbatcher.recycle();
         batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects, lightbatchstacksused, lightbatchrectsused);
         std::sort(lightbatches.begin(), lightbatches.end(), sortlightbatches);
     }
