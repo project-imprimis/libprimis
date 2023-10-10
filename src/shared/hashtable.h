@@ -209,35 +209,6 @@ struct hashbase
         return false;
     }
 
-    void recycle()
-    {
-        if(!numelems)
-        {
-            return;
-        }
-        for(int i = 0; i < static_cast<int>(size); ++i)
-        {
-            chain *c = chains[i];
-            if(!c)
-            {
-                continue;
-            }
-            for(;;)
-            {
-                htrecycle(c->elem);
-                if(!c->next)
-                {
-                    break;
-                }
-                c = c->next;
-            }
-            c->next = unused;
-            unused = chains[i];
-            chains[i] = nullptr;
-        }
-        numelems = 0;
-    }
-
     void deletechunks()
     {
         for(chainchunk *nextchunk; chunks; chunks = nextchunk)
@@ -302,41 +273,12 @@ struct hashbase
         }
 };
 
-template<class T>
-inline void htrecycle(const T &) {}
-
-template<class T>
-struct hashset : hashbase<hashset<T>, T, T, T>
-{
-    typedef hashbase<hashset<T>, T, T, T> basetype;
-
-    hashset(int size = basetype::DEFAULTSIZE) : basetype(size) {}
-
-    static inline const T &getkey(const T &elem) { return elem; }
-    static inline T &getdata(T &elem) { return elem; }
-    template<class K>
-    static inline void setkey(T &, const K &) {}
-
-    template<class V>
-    T &add(const V &elem)
-    {
-        return basetype::access(elem, elem);
-    }
-};
-
 template<class K, class T>
 struct hashtableentry
 {
     K key;
     T data;
 };
-
-template<class K, class T>
-inline void htrecycle(hashtableentry<K, T> &entry)
-{
-    htrecycle(entry.key);
-    htrecycle(entry.data);
-}
 
 template<class K, class T>
 struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
