@@ -17,10 +17,10 @@ class skelzonekey
 
         bool includes(const skelzonekey &o) const;
         void subtract(const skelzonekey &o);
+        bool operator==(const skelzonekey &k) const;
 
         int blend;
         std::array<uchar, 12> bones;
-
     private:
         bool hasbone(int n) const;
 
