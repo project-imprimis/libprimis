@@ -97,16 +97,17 @@ namespace
 
     void drawdamagescreen(int w, int h)
     {
+        static Texture *damagetex = nullptr;
+        //preload this texture even if not going to draw, to prevent stutter when first hit
+        if(!damagetex)
+        {
+            damagetex = textureload("media/interface/hud/damage.png", 3);
+        }
         if(lastmillis >= damageblendmillis)
         {
             return;
         }
         hudshader->set();
-        static Texture *damagetex = nullptr;
-        if(!damagetex)
-        {
-            damagetex = textureload("media/interface/hud/damage.png", 3);
-        }
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBindTexture(GL_TEXTURE_2D, damagetex->id);
         float fade = damagescreenalpha/100.0f;
