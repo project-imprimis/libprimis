@@ -321,31 +321,8 @@ static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum targ
     }
     w = std::min(w, sizelimit);
     h = std::min(h, sizelimit);
-    if(target!=GL_TEXTURE_RECTANGLE && (w&(w-1) || h&(h-1)))
-    {
-        tw = th = 1;
-        while(tw < w)
-        {
-            tw *= 2;
-        }
-        while(th < h)
-        {
-            th *= 2;
-        }
-        if(w < tw - tw/4)
-        {
-            tw /= 2;
-        }
-        if(h < th - th/4)
-        {
-            th /= 2;
-        }
-    }
-    else
-    {
-        tw = w;
-        th = h;
-    }
+    tw = w;
+    th = h;
 }
 
 static int texalign(int w, int bpp)
