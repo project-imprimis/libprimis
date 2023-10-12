@@ -38,7 +38,7 @@ static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *sc
 {
     auto insert = fonts.insert( {name, font()} ).first;
     font *f = &((*insert).second);
-    f->name = newstring(name);
+    f->name = std::string(name);
     f->texs.clear();
     f->texs.push_back(textureload(tex));
     f->chars.clear();
