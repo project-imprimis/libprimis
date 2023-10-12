@@ -1262,14 +1262,13 @@ int cubeworld::compactvslots(bool cull)
     }
     else
     {
-        for(uint i = 0; i < slots.size(); i++)
+        for(const Slot *i : slots)
         {
-            slots[i]->variants->index = compactedvslots++;
+            i->variants->index = compactedvslots++;
         }
-        for(uint i = 0; i < vslots.size(); i++)
+        for(const VSlot *i : vslots)
         {
-            VSlot &vs = *vslots[i];
-            if(!vs.changed && vs.index < 0)
+            if(!i->changed && i->index < 0)
             {
                 markingvslots = true;
                 break;
@@ -1279,22 +1278,21 @@ int cubeworld::compactvslots(bool cull)
     ::compactvslots(worldroot->data());
     int total = compactedvslots;
     compacteditvslots();
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot *i : vslots)
     {
-        VSlot *vs = vslots[i];
-        if(vs->changed)
+        if(i->changed)
         {
             continue;
         }
-        while(vs->next)
+        while(i->next)
         {
-            if(vs->next->index < 0)
+            if(i->next->index < 0)
             {
-                vs->next = vs->next->next;
+                i->next = i->next->next;
             }
             else
             {
-                vs = vs->next;
+                i = i->next;
             }
         }
     }
