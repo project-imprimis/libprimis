@@ -273,7 +273,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     }
     else
     {
-        if(faceconvexity(v.data()))
+        if(faceconvexity(v))
         {
             return false;
         }

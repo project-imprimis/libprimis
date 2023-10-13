@@ -887,7 +887,7 @@ bool collideface(const cube &c, int orient)
     return true;
 }
 
-int faceconvexity(const ivec v[4])
+int faceconvexity(const std::array<ivec, 4> &v)
 {
     ivec n;
     n.cross(ivec(v[1]).sub(v[0]), ivec(v[2]).sub(v[0]));
@@ -923,7 +923,7 @@ int faceconvexity(const vertinfo *verts, int numverts, int size)
     return verts[3].getxyz().sub(v0).dot(n);
 }
 
-int faceconvexity(const ivec v[4], int &vis)
+int faceconvexity(const std::array<ivec, 4> &v, int &vis)
 {
     ivec e1, e2, e3, n;
     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
@@ -954,7 +954,7 @@ int faceconvexity(const cube &c, int orient)
     }
     std::array<ivec, 4> v;
     genfaceverts(c, orient, v);
-    return faceconvexity(v.data());
+    return faceconvexity(v);
 }
 
 int faceorder(const cube &c, int orient) // gets above 'fv' so that each face is convex

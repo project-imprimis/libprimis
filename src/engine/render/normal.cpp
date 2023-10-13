@@ -284,7 +284,7 @@ namespace //internal functionality not seen by other files
                     genfaceverts(c, i, v);
                     if(!flataxisface(c, i))
                     {
-                        convex = faceconvexity(v.data());
+                        convex = faceconvexity(v);
                     }
                     int order = vis&4 || convex < 0 ? 1 : 0;
                     vec vo(o);

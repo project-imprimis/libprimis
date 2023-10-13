@@ -1330,7 +1330,7 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
                 int convex = 0;
                 if(!flataxisface(c, i))
                 {
-                    convex = faceconvexity(v.data());
+                    convex = faceconvexity(v);
                 }
                 int order = vis&4 || convex < 0 ? 1 : 0, numverts = 0;
                 vec vo(co), pos[4], norm[4];

@@ -939,7 +939,7 @@ class stainrenderer
                 std::array<ivec, 4> v;
                 genfaceverts(cu, orient, v);
                 int vis = 3,
-                    convex = faceconvexity(v.data(), vis),
+                    convex = faceconvexity(v, vis),
                     order = convex < 0 ? 1 : 0;
                 vec vo(o);
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
