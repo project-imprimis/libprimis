@@ -835,7 +835,7 @@ static void gencubevert(const cube &c, int i, vec &v)
     }
 }
 
-void genfaceverts(const cube &c, int orient, ivec v[4])
+void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v)
 {
     switch(orient)
     {
@@ -952,9 +952,9 @@ int faceconvexity(const cube &c, int orient)
     {
         return 0;
     }
-    ivec v[4];
+    std::array<ivec, 4> v;
     genfaceverts(c, orient, v);
-    return faceconvexity(v);
+    return faceconvexity(v.data());
 }
 
 int faceorder(const cube &c, int orient) // gets above 'fv' so that each face is convex
@@ -1015,11 +1015,11 @@ static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bo
         }
         return 4;
     }
-    ivec buf[4];
+    std::array<ivec, 4> buf;
     if(!v)
     {
         genfaceverts(cu, orient, buf);
-        v = buf;
+        v = buf.data();
     }
     ivec2 prev(INT_MAX, INT_MAX);
     switch(orient)
@@ -1480,7 +1480,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
          e2,
          e3,
          n;
-    genfaceverts(c, orient, v.data());
+    genfaceverts(c, orient, v);
     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
     int convex = (e3 = v[0]).sub(v[3]).dot(n);
     if(!convex)

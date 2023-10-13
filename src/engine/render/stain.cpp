@@ -936,10 +936,10 @@ class stainrenderer
             }
             else if(!vismask || (vismask&0x40 && visibleface(cu, orient, o, size, Mat_Air, (cu.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha)))
             {
-                ivec v[4];
+                std::array<ivec, 4> v;
                 genfaceverts(cu, orient, v);
                 int vis = 3,
-                    convex = faceconvexity(v, vis),
+                    convex = faceconvexity(v.data(), vis),
                     order = convex < 0 ? 1 : 0;
                 vec vo(o);
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);

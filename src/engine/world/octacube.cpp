@@ -264,7 +264,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
 {
     int dim = DIMENSION(orient),
         coord = DIM_COORD(orient);
-    ivec v[4];
+    std::array<ivec, 4> v;
     genfaceverts(*this, orient, v);
     if(flataxisface(*this, orient))
     {
@@ -273,7 +273,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     }
     else
     {
-        if(faceconvexity(v))
+        if(faceconvexity(v.data()))
         {
             return false;
         }

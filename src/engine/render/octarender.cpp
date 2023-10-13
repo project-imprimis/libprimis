@@ -1456,7 +1456,7 @@ namespace
                 else
                 {
                     std::array <ivec, 4> v;
-                    genfaceverts(c, i, v.data());
+                    genfaceverts(c, i, v);
                     int order = vis&4 || (!flataxisface(c, i) && faceconvexity(v.data()) < 0) ? 1 : 0;
                     ivec vo = ivec(co).shl(3);
                     pos[numverts++] = v[order].mul(size).add(vo);
@@ -1633,11 +1633,11 @@ namespace
                 }
                 else
                 {
-                    ivec v[4];
+                    std::array<ivec, 4> v;
                     genfaceverts(c, i, v);
                     if(!flataxisface(c, i))
                     {
-                        convex = faceconvexity(v);
+                        convex = faceconvexity(v.data());
                     }
                     int order = vis&4 || convex < 0 ? 1 : 0;
                     vec vo(co);

@@ -1325,12 +1325,12 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
         {
             if((vis = visibletris(c, i, co, size)))
             {
-                ivec v[4];
+                std::array<ivec, 4> v;
                 genfaceverts(c, i, v);
                 int convex = 0;
                 if(!flataxisface(c, i))
                 {
-                    convex = faceconvexity(v);
+                    convex = faceconvexity(v.data());
                 }
                 int order = vis&4 || convex < 0 ? 1 : 0, numverts = 0;
                 vec vo(co), pos[4], norm[4];

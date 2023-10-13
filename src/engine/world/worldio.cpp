@@ -458,8 +458,8 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 surf.verts = offset;
                 vertinfo *verts = c.ext->verts() + offset;
                 offset += numverts;
-                ivec v[4],
-                     n,
+                std::array<ivec, 4> v;
+                ivec n,
                      vo = ivec(co).mask(0xFFF).shl(3);
                 int layerverts = surf.numverts&Face_MaxVerts, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
                 genfaceverts(c, i, v);

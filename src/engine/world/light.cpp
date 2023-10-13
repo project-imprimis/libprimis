@@ -480,11 +480,11 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
         else
         {
-            ivec v[4];
+            std::array<ivec, 4> v;
             genfaceverts(c, i, v);
             if(!flataxisface(c, i))
             {
-                convex = faceconvexity(v);
+                convex = faceconvexity(v.data());
             }
             int order = usefaces&4 || convex < 0 ? 1 : 0;
             ivec vo = ivec(co).mask(0xFFF).shl(3);
