@@ -35,7 +35,7 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-static hashtable<const char *, int> localparams(256);
+static std::unordered_map<std::string, int> localparams;
 static std::unordered_map<std::string, Shader> shaders;
 static Shader *slotshader = nullptr;
 static std::vector<SlotShaderParam> slotparams;
@@ -375,15 +375,22 @@ void Shader::linkglslprogram(bool msg)
     }
 }
 
-int getlocalparam(const char *name)
+size_t getlocalparam(const std::string &name)
 {
-    return localparams.access(name, static_cast<int>(localparams.numelems));
+    auto itr = localparams.find(name);
+    if(itr != localparams.end())
+    {
+        return (*itr).second;
+    }
+    size_t size = localparams.size();
+    localparams.insert( { name, size } );
+    return size;
 }
 
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
 {
-    int idx = getlocalparam(name);
-    if(idx >= static_cast<int>(s.localparamremap.size()))
+    size_t idx = getlocalparam(name);
+    if(idx >= s.localparamremap.size())
     {
         int n = idx + 1 - s.localparamremap.size();
         for(int i = 0; i < n; ++i)
