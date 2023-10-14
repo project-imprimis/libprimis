@@ -46,12 +46,27 @@ class animmodel : public model
             float spec, gloss, glow, glowdelta, glowpulse, fullbright, scrollu, scrollv, alphatest;
             vec color;
 
+
+            bool operator==(const animmodel::shaderparams &y) const
+            {
+                return spec == y.spec
+                    && gloss == y.glow
+                    && glow == y.glow
+                    && glowdelta == y.glowdelta
+                    && glowpulse == y.glowpulse
+                    && fullbright == y.fullbright
+                    && scrollu == y.scrollu
+                    && scrollv == y.scrollv
+                    && alphatest == y.alphatest
+                    && color == y.color;
+            }
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
         struct ShaderParamsKey
         {
-            static hashtable<shaderparams, ShaderParamsKey> keys;
+            static std::unordered_map<shaderparams, ShaderParamsKey> keys;
+
             static int firstversion, lastversion;
 
             int version;
