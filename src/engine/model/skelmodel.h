@@ -584,22 +584,6 @@ struct skelloader : modelloader<MDL, skelmodel>
     static std::vector<uchar> hitzones;
 
     skelloader(const char *name) : modelloader<MDL, skelmodel>(name) {}
-
-    void flushpart()
-    {
-        if(hitzones.size() && skelmodel::parts.size())
-        {
-            skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.back());
-            skelmodel::skelmeshgroup *m = static_cast<skelmodel::skelmeshgroup *>(p->meshes);
-            if(m)
-            {
-                m->buildhitdata(hitzones.data());
-            }
-        }
-
-        adjustments.clear();
-        hitzones.clear();
-    }
 };
 
 template<class MDL>
