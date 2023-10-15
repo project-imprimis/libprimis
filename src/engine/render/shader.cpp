@@ -2027,13 +2027,12 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Sha
 {
     if(sh.loaded())
     {
-        for(uint i = 0; i < params.size(); i++)
+        for(SlotShaderParam &param : params)
         {
             int loc = -1;
-            SlotShaderParam &param = params[i];
             for(uint j = 0; j < sh.defaultparams.size(); j++)
             {
-                const SlotShaderParamState &dparam = sh.defaultparams[i];
+                const SlotShaderParamState &dparam = sh.defaultparams[j];
                 if(dparam.name==param.name)
                 {
                     if(std::memcmp(param.val, dparam.val, sizeof(param.val)))
