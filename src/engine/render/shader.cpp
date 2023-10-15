@@ -356,7 +356,7 @@ void Shader::linkglslprogram(bool msg)
         }
         for(SlotShaderParamState &param : defaultparams)
         {
-            param.loc = glGetUniformLocation(program, param.name);
+            param.loc = glGetUniformLocation(program, param.name.c_str());
         }
         for(UniformLoc &loc : uniformlocs)
         {
@@ -919,7 +919,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             const SlotShaderParamState &l = defaultparams.at(i);
-            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
+            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name.c_str(), l.val) : l.val);
         }
     }
 }
@@ -1421,7 +1421,7 @@ static void genuniformdefs(std::string &vs, std::string &ps, Shader *variant = n
     {
         for(const auto &param : variant->defaultparams)
         {
-            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", param.name);
+            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", param.name.c_str());
             params += uni;
         }
     }
@@ -2100,7 +2100,7 @@ bool shouldreuseparams(const Slot &s, const VSlot &p)
     {
         if(param.flags & SlotShaderParam::REUSE)
         {
-            const float *val = findslotparam(p, param.name);
+            const float *val = findslotparam(p, param.name.c_str());
             if(val && std::memcmp(param.val, val, sizeof(param.val)))
             {
                 for(uint j = 0; j < s.params.size(); j++)

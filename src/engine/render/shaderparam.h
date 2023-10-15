@@ -54,7 +54,7 @@ struct GlobalShaderParamUse : ShaderParamBinding
 
 struct LocalShaderParamState : ShaderParamBinding
 {
-    const char *name;
+    std::string name;
 };
 
 struct SlotShaderParamState : LocalShaderParamState
