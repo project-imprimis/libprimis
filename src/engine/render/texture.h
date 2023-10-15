@@ -54,7 +54,6 @@ struct Texture
 
     Texture() : alphamask(nullptr) {}
     const uchar * loadalphamask();
-    void cleanup();
     float ratio() const;
     bool reload(); //if the texture does not have a valid GL texture, attempts to reload it
 

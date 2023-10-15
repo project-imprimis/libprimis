@@ -2527,21 +2527,6 @@ Texture *Slot::loadthumbnail()
 
 // environment mapped reflections
 
-void Texture::cleanup()
-{
-    delete[] alphamask;
-    alphamask = nullptr;
-    if(id)
-    {
-        glDeleteTextures(1, &id);
-        id = 0;
-    }
-    if(type&Texture::TRANSIENT)
-    {
-        textures.erase(name);
-    }
-}
-
 void cleanuptextures()
 {
     for(Slot * const &i : slots)
@@ -2560,9 +2545,20 @@ void cleanuptextures()
     {
         i->cleanup();
     }
-    for(auto &[k, i] : textures)
+    for(auto itr = textures.begin(); itr != textures.end(); ++itr)
     {
-        i.cleanup();
+        Texture &t = (*itr).second;
+        delete[] t.alphamask;
+        t.alphamask = nullptr;
+        if(t.id)
+        {
+            glDeleteTextures(1, &t.id);
+            t.id = 0;
+        }
+        if(t.type&Texture::TRANSIENT)
+        {
+            itr = textures.erase(itr);
+        }
     }
 }
 
