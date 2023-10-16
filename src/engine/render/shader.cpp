@@ -2103,9 +2103,9 @@ bool shouldreuseparams(const Slot &s, const VSlot &p)
             const float *val = findslotparam(p, param.name.c_str());
             if(val && std::memcmp(param.val, val, sizeof(param.val)))
             {
-                for(uint j = 0; j < s.params.size(); j++)
+                for(const SlotShaderParam &j : s.params)
                 {
-                    if(s.params[j].name == param.name)
+                    if(j.name == param.name)
                     {
                         goto notreused; //bail out of for loop
                     }
