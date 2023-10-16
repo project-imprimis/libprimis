@@ -2137,16 +2137,15 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     {
         name = getshaderparamname(name);
     }
-    for(uint i = 0; i < slotparams.size(); i++)
+    for(SlotShaderParam &i : slotparams)
     {
-        SlotShaderParam &param = slotparams[i];
-        if(param.name==name)
+        if(i.name==name)
         {
-            param.val[0] = x;
-            param.val[1] = y;
-            param.val[2] = z;
-            param.val[3] = w;
-            param.flags |= flags;
+            i.val[0] = x;
+            i.val[1] = y;
+            i.val[2] = z;
+            i.val[3] = w;
+            i.flags |= flags;
             return;
         }
     }
