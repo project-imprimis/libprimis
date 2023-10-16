@@ -1265,7 +1265,7 @@ namespace
         return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
     }
 
-    void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
+    void addcubeverts(const VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
     {
         // [rotation][orient]
         const vec orientation_tangent[8][6] =
@@ -1653,7 +1653,7 @@ namespace
                     }
                 }
 
-                VSlot &vslot = lookupvslot(c.texture[i], true);
+                const VSlot &vslot = lookupvslot(c.texture[i], true);
                 while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1))
                 {
                     tj = tjoints[tj].next;
@@ -1841,7 +1841,7 @@ namespace
                 vertinfo &v = mf.verts[i];
                 pos[i] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
             }
-            VSlot &vslot = lookupvslot(mf.tex, true);
+            const VSlot &vslot = lookupvslot(mf.tex, true);
             int grassy = vslot.slot->grass && mf.orient!=Orient_Bottom && mf.numverts&BlendLayer_Top ? 2 : 0;
             addcubeverts(vslot, mf.orient, pos, mf.tex, mf.verts, numverts, mf.tjoints, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
             vahasmerges |= Merge_Use;
