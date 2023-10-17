@@ -1833,12 +1833,12 @@ namespace
         }
         vec vo(ivec(o).mask(~0xFFF));
         vec pos[Face_MaxVerts];
-        for(mergedface &mf : mfl)
+        for(const mergedface &mf : mfl)
         {
             int numverts = mf.numverts&Face_MaxVerts;
             for(int i = 0; i < numverts; ++i)
             {
-                vertinfo &v = mf.verts[i];
+                const vertinfo &v = mf.verts[i];
                 pos[i] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
             }
             const VSlot &vslot = lookupvslot(mf.tex, true);
