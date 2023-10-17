@@ -911,13 +911,14 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
 
 int skelmodel::skeleton::getblendoffset(const UniformLoc &u)
 {
-    int &offset = blendoffsets.access(Shader::lastshader->program, -1);
-    if(offset < 0)
+    auto itr = blendoffsets.find(Shader::lastshader->program);
+    if(itr == blendoffsets.end())
     {
+        itr = blendoffsets.insert( { Shader::lastshader->program, -1 } ).first;
         DEF_FORMAT_STRING(offsetname, "%s[%d]", u.name, 2*numgpubones);
-        offset = glGetUniformLocation(Shader::lastshader->program, offsetname);
+        (*itr).second = glGetUniformLocation(Shader::lastshader->program, offsetname);
     }
-    return offset;
+    return (*itr).second;
 }
 
 void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count)

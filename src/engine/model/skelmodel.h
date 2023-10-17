@@ -307,9 +307,9 @@ struct skelmodel : animmodel
 
             bool usegpuskel;
             std::vector<skelcacheentry> skelcache;
-            hashtable<GLuint, int> blendoffsets;
+            std::unordered_map<GLuint, int> blendoffsets;
 
-            skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
+            skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
             {
             }
 
