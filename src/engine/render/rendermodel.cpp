@@ -743,9 +743,8 @@ static void clearmodel(const char *name)
         conoutf("model %s is not loaded", name);
         return;
     }
-    for(uint i = 0; i < mapmodels.size(); i++)
+    for(mapmodelinfo &mmi : mapmodels)
     {
-        mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m == m)
         {
             mmi.m = nullptr;
