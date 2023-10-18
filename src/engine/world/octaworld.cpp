@@ -962,9 +962,9 @@ int faceorder(const cube &c, int orient) // gets above 'fv' so that each face is
     return faceconvexity(c, orient)<0 ? 1 : 0;
 }
 
-static void faceedges(const cube &c, int orient, uchar edges[4])
+static void faceedges(const cube &c, int orient, std::array<uchar, 4> &edges)
 {
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < edges.size(); ++k)
     {
         edges[k] = c.edges[faceedgesidx[orient][k]];
     }
@@ -974,7 +974,7 @@ uint faceedges(const cube &c, int orient)
 {
     union
     {
-        uchar edges[4];
+        std::array<uchar, 4> edges;
         uint face;
     } u;
     faceedges(c, orient, u.edges);
