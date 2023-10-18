@@ -576,9 +576,8 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     }
     else
     {
-        for(int k = 0; k < 6; ++k)
+        for(const surfaceinfo &surf : surfaces)
         {
-            surfaceinfo &surf = surfaces[k];
             if(surf.used())
             {
                 cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
