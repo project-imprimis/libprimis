@@ -1120,21 +1120,11 @@ struct shadowcacheval
     shadowcacheval(const shadowmapinfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
 };
 
-struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
-{
-    shadowcache() : hashtable<shadowcachekey, shadowcacheval>(256) {}
-
-    void reset()
-    {
-        clear();
-    }
-};
-
 class ShadowAtlas
 {
     public:
         GLuint fbo = 0;
-        shadowcache cache;
+        hashtable<shadowcachekey, shadowcacheval> cache;
         bool full = false;
 
         void cleanup();
@@ -1883,7 +1873,7 @@ void resetlights()
 {
     static constexpr int shadowcacheevict = 2;
     static int evictshadowcache = 0;
-    shadowatlas.cache.reset();
+    shadowatlas.cache.clear();
     if(smcache)
     {
         vec2 sasize = shadowatlaspacker.dimensions();
