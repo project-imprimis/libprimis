@@ -307,14 +307,5 @@ struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
             b; \
         } \
     }
-#define ENUMERATE(ht,t,e,b) \
-    for(int i = 0; i < static_cast<int>((ht).size); ++i) \
-    { \
-        for(void *ec = (ht).chains[i]; ec;) \
-        { \
-            t &e = (ht).enumdata(ec); \
-            ec = (ht).enumnext(ec); \
-            b; \
-        } \
-    }
+
 #endif
