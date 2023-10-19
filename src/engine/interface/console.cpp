@@ -597,7 +597,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyMap> keyms(256);
+    std::map<int, KeyMap> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -615,7 +615,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyMap, km,
+        for(auto &[k, km] : keyms)
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -628,20 +628,20 @@ namespace
                     names.push_back(km.name[i]);
                 }
             }
-        });
+        }
         names.push_back('\0');
         result(names.data());
     }
 
     KeyMap *findbind(const char *key)
     {
-        ENUMERATE(keyms, KeyMap, km,
+        for(auto &[k, km] : keyms)
         {
             if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
-        });
+        }
         return nullptr;
     }
 
@@ -1149,18 +1149,18 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyMap *haskey = keyms.access(code);
-    if(haskey && haskey->pressed)
+    auto itr = keyms.find(code);
+    if(itr != keyms.end() && (*itr).second.pressed)
     {
-        execbind(*haskey, isdown, map); // allow pressed keys to release
+        execbind((*itr).second, isdown, map); // allow pressed keys to release
     }
     else if(!UI::keypress(code, isdown)) // UI key intercept
     {
         if(!consolekey(code, isdown))
         {
-            if(haskey)
+            if(itr != keyms.end())
             {
-                execbind(*haskey, isdown, map);
+                execbind((*itr).second, isdown, map);
             }
         }
     }
@@ -1233,8 +1233,8 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyMap *km = keyms.access(code);
-    return km ? km->name : nullptr;
+    auto itr = keyms.find(code);
+    return itr != keyms.end() ? (*itr).second.name : nullptr;
 }
 
 tagval *addreleaseaction(ident *id, int numargs)
@@ -1256,7 +1256,10 @@ void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     std::vector<KeyMap *> binds;
-    ENUMERATE(keyms, KeyMap, km, binds.push_back(&km));
+    for(auto &[k, km] : keyms)
+    {
+        binds.push_back(&km);
+    }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
@@ -1359,25 +1362,37 @@ void initconsolecmds()
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Default));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Default);
+        }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Spectator));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Spectator);
+        }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyMap, km, km.clear(KeyMap::Action_Editing));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Editing);
+        }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyMap, km, km.clear());
+        for(auto &[k, km] : keyms)
+        {
+            km.clear();
+        }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
