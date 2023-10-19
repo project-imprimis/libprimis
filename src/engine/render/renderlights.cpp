@@ -1097,24 +1097,33 @@ struct shadowcachekey
     vec dir;
     int spot;
 
+    bool operator==(const shadowcachekey &y) const
+    {
+        return o == y.o && radius == y.radius && dir == y.dir && spot == y.spot;
+    }
+
     shadowcachekey() {}
     shadowcachekey(const lightinfo &l) : o(l.o), radius(l.radius), dir(l.dir), spot(l.spot) {}
 };
 
-static inline uint hthash(const shadowcachekey &k)
+template <>
+struct std::hash<shadowcachekey>
 {
-    return hthash(k.o);
-}
+    size_t operator()(const shadowcachekey &k) const
+    {
+        return hthash(k.o);
+    }
+};
+
+struct shadowcacheval
+{
+    ushort x, y, size, sidemask;
+
 
 static inline bool htcmp(const shadowcachekey &x, const shadowcachekey &y)
 {
     return x.o == y.o && x.radius == y.radius && x.dir == y.dir && x.spot == y.spot;
 }
-
-
-struct shadowcacheval
-{
-    ushort x, y, size, sidemask;
 
     shadowcacheval() {}
     shadowcacheval(const shadowmapinfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
@@ -1124,7 +1133,7 @@ class ShadowAtlas
 {
     public:
         GLuint fbo = 0;
-        hashtable<shadowcachekey, shadowcacheval> cache;
+        std::unordered_map<shadowcachekey, shadowcacheval> cache;
         bool full = false;
 
         void cleanup();
@@ -1147,7 +1156,8 @@ void ShadowAtlas::cleanup()
 {
     if(tex)
     {
-        glDeleteTextures(1, &tex); tex = 0;
+        glDeleteTextures(1, &tex);
+        tex = 0;
     }
     if(fbo)
     {
@@ -3000,7 +3010,7 @@ void collectlights()
 
     smused = 0;
 
-    if(smcache && !smnoshadow && shadowatlas.cache.numelems)
+    if(smcache && !smnoshadow && shadowatlas.cache.size())
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
@@ -3012,8 +3022,8 @@ void collectlights()
                 {
                     continue;
                 }
-                shadowcacheval *cached = shadowatlas.cache.access(l);
-                if(!cached)
+                auto itr = shadowatlas.cache.find(l);
+                if(itr == shadowatlas.cache.end())
                 {
                     continue;
                 }
@@ -3038,9 +3048,10 @@ void collectlights()
                 int size = std::clamp(static_cast<int>(std::ceil((lod * sasizex) / shadowatlassize)), 1, static_cast<int>(sasizex) / w);
                 w *= size;
                 h *= size;
+                const shadowcacheval &cached = (*itr).second;
                 if(mismatched)
                 {
-                    if(cached->size == size)
+                    if(cached.size == size)
                     {
                         continue;
                     }
@@ -3054,14 +3065,14 @@ void collectlights()
                 }
                 else
                 {
-                    if(cached->size != size)
+                    if(cached.size != size)
                     {
                         continue;
                     }
-                    ushort x = cached->x,
-                           y = cached->y;
+                    ushort x = cached.x,
+                           y = cached.y;
                     shadowatlaspacker.reserve(x, y, w, h);
-                    addshadowmap(x, y, size, l.shadowmap, idx, cached);
+                    addshadowmap(x, y, size, l.shadowmap, idx, &cached);
                 }
                 smused += w*h;
             }
