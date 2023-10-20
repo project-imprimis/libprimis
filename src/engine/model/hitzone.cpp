@@ -619,7 +619,7 @@ void skelzonekey::subtract(const skelzonekey &o)
 
 bool skelzonekey::hasbone(int n) const
 {
-    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    for(size_t i = 0; i < sizeof(bones); ++i)
     {
         if(bones[i] == n)
         {
