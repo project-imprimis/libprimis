@@ -576,8 +576,8 @@ skelzonekey::skelzonekey(const skelmodel::skelmesh *m, const skelmodel::tri &t) 
 
 bool skelzonekey::includes(const skelzonekey &o) const
 {
-    int j = 0;
-    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    size_t j = 0;
+    for(size_t i = 0; i < sizeof(bones); ++i)
     {
         if(bones[i] > o.bones[j])
         {
@@ -588,7 +588,7 @@ bool skelzonekey::includes(const skelzonekey &o) const
             j++;
         }
     }
-    return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
+    return j < sizeof(bones) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
 }
 
 void skelzonekey::subtract(const skelzonekey &o)
