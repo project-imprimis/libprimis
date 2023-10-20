@@ -593,12 +593,12 @@ bool skelzonekey::includes(const skelzonekey &o) const
 
 void skelzonekey::subtract(const skelzonekey &o)
 {
-    int len = 0,
-        j   = 0;
-    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    size_t len = 0,
+           j   = 0;
+    for(size_t i = 0; i < sizeof(bones); ++i)
     {
     retry:
-        if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
+        if(j >= sizeof(o.bones) || bones[i] < o.bones[j])
         {
             bones[len++] = bones[i];
             continue;
@@ -611,7 +611,7 @@ void skelzonekey::subtract(const skelzonekey &o)
         do
         {
             j++;
-        } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
+        } while(j < sizeof(o.bones) && bones[i] > o.bones[j]);
         goto retry;
     }
     std::memset(&bones[len], 0xFF, sizeof(bones) - len);
