@@ -13,6 +13,8 @@
 #include "../../shared/glexts.h"
 #include "../../shared/hashtable.h"
 
+#include <optional>
+
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/shader.h"
@@ -22,7 +24,6 @@
 #include "interface/console.h"
 #include "interface/control.h"
 #include "interface/cs.h"
-
 
 #include "world/entities.h"
 #include "world/octaworld.h"

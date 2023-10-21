@@ -11,6 +11,8 @@
 #include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
+#include <optional>
+
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"
