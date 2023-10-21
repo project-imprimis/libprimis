@@ -634,18 +634,6 @@ bool skelzonekey::hasbone(int n) const
     return false;
 }
 
-int skelzonekey::numbones() const
-{
-    for(uint i = 0; i < sizeof(bones); ++i)
-    {
-        if(bones[i] == 0xFF)
-        {
-            return i;
-        }
-    }
-    return sizeof(bones);
-}
-
 void skelzonekey::addbone(int n)
 {
     for(uint i = 0; i < sizeof(bones); ++i)

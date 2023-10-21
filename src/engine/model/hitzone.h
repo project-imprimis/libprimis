@@ -24,7 +24,6 @@ class skelzonekey
     private:
         bool hasbone(int n) const;
 
-        int numbones() const;
         void addbone(int n);
         void addbones(const skelmodel::skelmesh *m, const skelmodel::tri &t);
 };
