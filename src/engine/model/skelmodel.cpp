@@ -15,6 +15,7 @@
 #include "../../shared/glexts.h"
 #include "../../shared/hashtable.h"
 
+#include <optional>
 
 #include "interface/console.h"
 #include "interface/control.h"
@@ -125,7 +126,7 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     return skelanims.back();
 }
 
-int skelmodel::skeleton::findbone(const char *name) const
+std::optional<int> skelmodel::skeleton::findbone(const char *name) const
 {
     for(int i = 0; i < numbones; ++i)
     {
@@ -134,7 +135,7 @@ int skelmodel::skeleton::findbone(const char *name) const
             return i;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 int skelmodel::skeleton::findtag(const char *name) const

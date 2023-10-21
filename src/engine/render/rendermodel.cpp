@@ -13,6 +13,8 @@
 #include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
+#include <optional>
+
 #include "aa.h"
 #include "csm.h"
 #include "radiancehints.h"
