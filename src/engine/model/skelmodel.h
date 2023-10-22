@@ -297,11 +297,11 @@ struct skelmodel : animmodel
             std::string name;
             int shared;
             std::vector<skelmeshgroup *> users;
-            boneinfo *bones;
+            boneinfo *bones; //array of boneinfo, size equal to numbones
             int numbones, numinterpbones, numgpubones, numframes;
-            dualquat *framebones;
+            dualquat *framebones; //array of quats, size equal to anim frames * bones in model
             std::vector<skelanimspec> skelanims;
-            ragdollskel *ragdoll;
+            ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
             std::vector<pitchtarget> pitchtargets;
             std::vector<pitchcorrect> pitchcorrects;
 
