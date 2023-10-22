@@ -81,15 +81,14 @@ class sortkey
         }
 };
 
-inline bool htcmp(const sortkey &x, const sortkey &y)
+template<>
+struct std::hash<sortkey>
 {
-    return x == y;
-}
-
-inline uint hthash(const sortkey &k)
-{
-    return k.tex;
-}
+    size_t operator()(const sortkey &k) const
+    {
+        return k.tex;
+    }
+};
 
 struct decalkey
 {
@@ -147,15 +146,14 @@ struct decalkey
     }
 };
 
-inline bool htcmp(const decalkey &x, const decalkey &y)
+template<>
+struct std::hash<decalkey>
 {
-    return x == y;
-}
-
-inline uint hthash(const decalkey &k)
-{
-    return k.tex;
-}
+    size_t operator()(const decalkey &k) const
+    {
+        return k.tex;
+    }
+};
 
 struct sortval
 {
@@ -359,8 +357,8 @@ class vacollect
         std::vector<grasstri> grasstris;
         int worldtris, skytris;
         std::vector<ushort> skyindices;
-        hashtable<sortkey, sortval> indices;
-        hashtable<decalkey, sortval> decalindices;
+        std::unordered_map<sortkey, sortval> indices;
+        std::unordered_map<decalkey, sortval> decalindices;
         std::vector<sortkey> texs;
         std::vector<decalkey> decaltexs;
         int decaltris;
@@ -696,13 +694,13 @@ bool vacollect::emptyva()
 
 void vacollect::optimize()
 {
-    ENUMERATE_KT(indices, sortkey, k, sortval, t,
+    for(auto &[k, t] : indices)
     {
         if(t.tris.size())
         {
             texs.push_back(k);
         }
-    });
+    }
     std::sort(texs.begin(), texs.end(), sortkey::sort);
 
     matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
@@ -902,13 +900,13 @@ void vacollect::gendecals()
             }
         }
     }
-    ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
+    for(auto &[k, t] : decalindices)
     {
         if(t.tris.size())
         {
             decaltexs.push_back(k);
         }
-    });
+    }
     std::sort(texs.begin(), texs.end(), sortkey::sort);
 }
 
