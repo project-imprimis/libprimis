@@ -643,9 +643,8 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             partframes[i].pfr2 = &framebones[as[i].prev.fr2*numbones];
         }
     }
-    for(uint i = 0; i < pitchdeps.size(); i++)
+    for(pitchdep &p : pitchdeps)
     {
-        pitchdep &p = pitchdeps[i];
         dualquat d = interpbone(p.bone, partframes, as, partmask);
         d.normalize();
         if(p.parent >= 0)
@@ -697,18 +696,17 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             sc.bdata[b.interpindex].mulorient(quat(axis, angle/RAD), b.base);
         }
     }
-    for(uint i = 0; i < antipodes.size(); i++)
+    for(const antipode &i : antipodes)
     {
-        sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+        sc.bdata[i.child].fixantipodal(sc.bdata[i.parent]);
     }
 }
 
 void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p)
 {
     const dualquat *bdata = sc.bdata;
-    for(uint i = 0; i < ragdoll->joints.size(); i++)
+    for(const ragdollskel::joint &j : ragdoll->joints)
     {
-        const ragdollskel::joint &j = ragdoll->joints[i];
         const boneinfo &b = bones[j.bone];
         const dualquat &q = bdata[b.interpindex];
         for(int k = 0; k < 3; ++k)
