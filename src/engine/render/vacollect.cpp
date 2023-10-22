@@ -170,7 +170,7 @@ struct vboinfo
     uchar *data;
 };
 
-hashtable<GLuint, vboinfo> vbos;
+std::unordered_map<GLuint, vboinfo> vbos;
 
 VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
 
@@ -190,12 +190,12 @@ int vbosize[VBO_NumVBOs];
 
 void destroyvbo(GLuint vbo)
 {
-    vboinfo *exists = vbos.access(vbo);
-    if(!exists)
+    auto exists = vbos.find(vbo);
+    if(exists == vbos.end())
     {
         return;
     }
-    vboinfo &vbi = *exists;
+    vboinfo &vbi = (*exists).second;
     if(vbi.uses <= 0)
     {
         return;
@@ -208,7 +208,7 @@ void destroyvbo(GLuint vbo)
         {
             delete[] vbi.data;
         }
-        vbos.remove(vbo);
+        vbos.erase(vbo);
     }
 }
 
