@@ -91,6 +91,8 @@ add_library(primis SHARED
         src/engine/render/stain.h
         src/engine/render/texture.cpp
         src/engine/render/texture.h
+        src/engine/render/vacollect.cpp
+        src/engine/render/vacollect.h
         src/engine/render/water.cpp
         src/engine/render/water.h
         src/engine/world/bih.cpp
