@@ -391,7 +391,7 @@ struct skelmodel : animmodel
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
             int getblendoffset(const UniformLoc &u);
             bool gpuaccelerate() const;
-            dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
+            dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState &as, const uchar *partmask);
     };
 
     static std::map<std::string, skeleton *> skeletons;
