@@ -69,32 +69,36 @@ VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by 
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-namespace
+//edgegroup: struct used for tjoint joining (to reduce sparklies between geom faces)
+struct edgegroup
 {
-    //edgegroup: struct used for tjoint joining (to reduce sparklies between geom faces)
-    struct edgegroup
-    {
-        ivec slope, origin;
-        int axis;
+    ivec slope, origin;
+    int axis;
 
-        edgegroup();
-    };
+    edgegroup();
 
-    edgegroup::edgegroup()
+    bool operator==(const edgegroup &y) const
     {
-        axis = 0;
+        return slope==y.slope && origin==y.origin;
     }
+};
 
-    inline uint hthash(const edgegroup &g)
+edgegroup::edgegroup()
+{
+    axis = 0;
+}
+
+template<>
+struct std::hash<edgegroup>
+{
+    size_t operator()(const edgegroup &g) const
     {
         return g.slope.x^g.slope.y^g.slope.z^g.origin.x^g.origin.y^g.origin.z;
     }
+};
 
-    inline bool htcmp(const edgegroup &x, const edgegroup &y)
-    {
-        return x.slope==y.slope && x.origin==y.origin;
-    }
-
+namespace
+{
     enum
     {
         CubeEdge_Start = 1<<0,
@@ -112,7 +116,7 @@ namespace
     };
 
     std::vector<cubeedge> cubeedges;
-    hashtable<edgegroup, int> edgegroups(1<<13);
+    std::unordered_map<edgegroup, int> edgegroups;
 
     void gencubeedges(cube &c, const ivec &co, int size)
     {
@@ -190,11 +194,11 @@ namespace
                     ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                     ce.next = -1;
                     bool insert = true;
-                    int *exists = edgegroups.access(g);
-                    if(exists)
+                    auto exists = edgegroups.find(g);
+                    if(exists != edgegroups.end())
                     {
                         int prev = -1,
-                            cur  = *exists;
+                            cur  = (*exists).second;
                         while(cur >= 0)
                         {
                             cubeedge &p = cubeedges[cur];
@@ -239,7 +243,7 @@ namespace
                             }
                             else
                             {
-                                *exists = cubeedges.size();
+                                (*exists).second = cubeedges.size();
                             }
                         }
                     }
@@ -638,7 +642,10 @@ void cubeworld::findtjoints()
 {
     gencubeedges(*worldroot);
     tjoints.clear();
-    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
+    for(auto &[k, t] : edgegroups)
+    {
+        ::findtjoints(t, k);
+    }
     cubeedges.clear();
     edgegroups.clear();
 }
