@@ -395,9 +395,6 @@ class animmodel : public model
                 void bindtc(void *v, int stride);
                 void bindtangents(void *v, int stride);
                 void bindbones(void *wv, void *bv, int stride);
-            private:
-                meshgroup *next;
-
         };
 
         static std::unordered_map<std::string, meshgroup *> meshgroups;

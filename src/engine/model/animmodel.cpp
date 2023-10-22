@@ -489,7 +489,7 @@ void animmodel::Mesh::fixqtangent(quat &q, float bt)
 
 //meshgroup
 
-animmodel::meshgroup::meshgroup() : next(nullptr)
+animmodel::meshgroup::meshgroup()
 {
 }
 
@@ -500,11 +500,6 @@ animmodel::meshgroup::~meshgroup()
         delete i;
     }
     meshes.clear();
-    if(next)
-    {
-        delete next;
-        next = nullptr;
-    }
 }
 
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const
