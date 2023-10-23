@@ -1757,7 +1757,7 @@ namespace
     } shadowverts;
     std::array<std::vector<ushort>, 6> shadowtris;
     std::vector<GLuint> shadowvbos;
-    hashtable<int, shadowmesh> shadowmeshes;
+    std::unordered_map<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
 
     struct shadowdrawinfo
@@ -3123,7 +3123,7 @@ void clearshadowmeshes()
         glDeleteBuffers(shadowvbos.size(), shadowvbos.data());
         shadowvbos.clear();
     }
-    if(shadowmeshes.numelems)
+    if(shadowmeshes.size())
     {
         std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < ents.size(); i++)
@@ -3163,23 +3163,26 @@ void genshadowmeshes()
 
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
-    shadowmesh *m = shadowmeshes.access(idx);
-    if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
+    auto itr = shadowmeshes.find(idx);
+    if(itr == shadowmeshes.end()
+    || (*itr).second.type != shadowmapping
+    || (*itr).second.origin != shadoworigin
+    || (*itr).second.radius < shadowradius)
     {
         return nullptr;
     }
-    switch(m->type)
+    switch((*itr).second.type)
     {
         case ShadowMap_Spot:
         {
-            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < std::clamp(static_cast<int>(e.attached->attr1), 1, 89))
+            if(!e.attached || e.attached->type != EngineEnt_Spotlight || (*itr).second.spotloc != e.attached->o || (*itr).second.spotangle < std::clamp(static_cast<int>(e.attached->attr1), 1, 89))
             {
                 return nullptr;
             }
             break;
         }
     }
-    return m;
+    return &(*itr).second;
 }
 
 void rendershadowmesh(const shadowmesh *m)
