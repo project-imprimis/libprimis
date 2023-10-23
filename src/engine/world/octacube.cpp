@@ -695,7 +695,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::deque<poly> &p
     addmerges(orient, n, offset, polys);
 }
 
-bool htcmp(const cube::cfkey &x, const cube::cfkey &y)
+bool operator==(const cube::cfkey &x, const cube::cfkey &y)
 {
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
 }
@@ -705,15 +705,19 @@ inline uint hthash(const ivec2 &k)
     return k.x^k.y;
 }
 
-uint hthash(const cube::cfkey &k)
+template<>
+struct std::hash<cube::cfkey>
 {
-    return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
-}
+    size_t operator()(const cube::cfkey &k) const
+    {
+        return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
+    }
+};
 
 //recursively goes through children of cube passed and attempts to merge faces together
 void cube::genmerges(cube * root, const ivec &o, int size)
 {
-    static hashtable<cfkey, cfpolys> cpolys;
+    static std::unordered_map<cfkey, cfpolys> cpolys;
     neighborstack[++neighbordepth] = this;
     for(int i = 0; i < 8; ++i)
     {
@@ -754,12 +758,12 @@ void cube::genmerges(cube * root, const ivec &o, int size)
                 }
             }
         }
-        if((size == 1<<maxmerge || this == root) && cpolys.numelems)
+        if((size == 1<<maxmerge || this == root) && cpolys.size())
         {
-            ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
+            for(auto &[k, t] : cpolys)
             {
-                mergepolys(key.orient, key.n, key.offset, val.polys);
-            });
+                mergepolys(k.orient, k.n, k.offset, t.polys);
+            }
             cpolys.clear();
         }
     }
