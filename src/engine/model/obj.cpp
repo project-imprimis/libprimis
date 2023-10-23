@@ -74,7 +74,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     numframes = 1;
     std::vector<vec> attrib[3];
     char buf[512];
-    hashtable<ivec, int> verthash(1<<11);
+    std::unordered_map<ivec, int> verthash;
     std::vector<vert> verts;
     std::vector<tcvert> tcverts;
     std::vector<tri> tris;
@@ -187,8 +187,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         }
                         c++;
                     }
-                    int *index = verthash.access(vkey);
-                    if(!index)
+                    auto itr = verthash.find(vkey);
+                    int *index;
+                    if(itr == verthash.end())
                     {
                         index = &verthash[vkey];
                         *index = verts.size();
@@ -201,6 +202,10 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         tcverts.emplace_back();
                         tcvert &tcv = tcverts.back();
                         tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
+                    }
+                    else
+                    {
+                        index = &(*itr).second;
                     }
                     if(v0 < 0)
                     {
