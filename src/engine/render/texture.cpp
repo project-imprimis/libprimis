@@ -3,7 +3,6 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "SDL_image.h"

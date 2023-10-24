@@ -14,7 +14,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "light.h"
@@ -1285,7 +1284,8 @@ class prefabmesh
         std::array<int, prefabmeshsize> table;
         int addvert(const vertex &v)
         {
-            uint h = hthash(v.pos)&(prefabmeshsize-1);
+            auto vechash = std::hash<vec>();
+            uint h = vechash(v.pos)&(prefabmeshsize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 const vertex &c = verts[i];

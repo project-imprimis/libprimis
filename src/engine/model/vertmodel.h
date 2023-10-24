@@ -77,7 +77,8 @@ struct vertmodel : animmodel
                     tcvert &tc = tcverts[index];
                     T vv;
                     assignvert(vv, index, tc, v);
-                    int htidx = hthash(v.pos)&(htlen-1);
+                    auto hashfn = std::hash<vec>();
+                    int htidx = hashfn(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)
                     {
                         int &vidx = htdata[(htidx+k)&(htlen-1)];

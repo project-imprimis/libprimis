@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "csm.h"
 #include "grass.h"
@@ -1738,7 +1737,8 @@ namespace
 
         int add(const vec &v)
         {
-            uint h = hthash(v)&(tablesize-1);
+            auto vechash = std::hash<vec>();
+            uint h = vechash(v)&(tablesize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 if(verts[i] == v)

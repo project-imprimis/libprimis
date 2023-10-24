@@ -110,13 +110,6 @@ inline char *copystring(char *d, const stringslice &s, size_t len)
 template<size_t N>
 inline char *copystring(char (&d)[N], const stringslice &s) { return copystring(d, s, N); }
 
-inline uint hthash(const stringslice &s) { return memhash(s.str, s.len); }
-
-inline bool htcmp(const stringslice &x, const char *y)
-{
-    return x.len == (int)strlen(y) && !std::memcmp(x.str, y, x.len);
-}
-
 // not all platforms (windows) can parse hexadecimal integers via strtod
 inline float parsefloat(const char *s)
 {

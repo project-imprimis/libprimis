@@ -588,9 +588,6 @@ class animmodel : public model
         static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
 };
 
-extern uint hthash(const animmodel::shaderparams &k);
-extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
-
 /* modelloader
  *
  * modelloader is a template for a wrapper to load a model into a model/animmodel

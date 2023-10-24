@@ -9,7 +9,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "aa.h"
 #include "ao.h"
@@ -1111,7 +1110,8 @@ struct std::hash<shadowcachekey>
 {
     size_t operator()(const shadowcachekey &k) const
     {
-        return hthash(k.o);
+        auto vechash = std::hash<vec>();
+        return vechash(k.o);
     }
 };
 

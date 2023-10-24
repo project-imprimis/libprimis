@@ -15,7 +15,6 @@
  */
 
 #include "../libprimis-headers/cube.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "console.h"

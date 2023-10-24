@@ -12,7 +12,6 @@
  */
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
-#include "../../shared/hashtable.h"
 
 #include "octarender.h"
 
@@ -35,7 +34,8 @@ struct std::hash<normalkey>
 {
     size_t operator()(const normalkey &k) const
     {
-        return hthash(k.pos);
+        auto vechash = std::hash<vec>();
+        return vechash(k.pos);
     }
 };
 
@@ -49,11 +49,6 @@ namespace //internal functionality not seen by other files
         normalgroup() : smooth(0), flat(0), normals(-1), tnormals(-1) {}
         normalgroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
     };
-
-    inline bool htcmp(const normalkey &k, const normalgroup &n)
-    {
-        return k.pos == n.pos && k.smooth == n.smooth;
-    }
 
     struct normal
     {

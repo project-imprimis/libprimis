@@ -147,8 +147,6 @@ class skelhitdata
                 skelzoneinfo() : index(-1), parents(0), conflicts(0) {}
                 skelzoneinfo(const skelzonekey &key) : index(-1), parents(0), conflicts(0), key(key) {}
         };
-    //need to set htcmp to friend because it must be in global scope for hashtable macro to find it
-    friend bool htcmp(const skelzonekey &x, const skelhitdata::skelzoneinfo &y);
 };
 
 #endif

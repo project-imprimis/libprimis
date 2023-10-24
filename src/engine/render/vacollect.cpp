@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "grass.h"
 #include "octarender.h"
@@ -428,7 +427,8 @@ class vacollect
 
 int vacollect::addvert(const vertex &v)
 {
-    uint h = hthash(v.pos)&(hashsize-1);
+    auto vechash = std::hash<vec>();
+    uint h = vechash(v.pos)&(hashsize-1);
     for(int i = table[h]; i>=0; i = chain[i])
     {
         const vertex &c = verts[i];

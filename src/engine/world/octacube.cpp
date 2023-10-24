@@ -6,7 +6,6 @@
  */
 
 #include "../libprimis-headers/cube.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/geomexts.h"
 
 #include "light.h"
@@ -700,17 +699,13 @@ bool operator==(const cube::cfkey &x, const cube::cfkey &y)
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
 }
 
-inline uint hthash(const ivec2 &k)
-{
-    return k.x^k.y;
-}
-
 template<>
 struct std::hash<cube::cfkey>
 {
     size_t operator()(const cube::cfkey &k) const
     {
-        return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
+        auto ivechash = std::hash<ivec>();
+        return ivechash(k.n)^k.offset^k.tex^k.orient^k.material;
     }
 };
 
