@@ -152,7 +152,7 @@ Symbol Names</h4>
 <div class="line">    <a class="code hl_struct" href="structvec4.html">Name_ElementTwo</a>   = 2,</div>
 <div class="line">    <a class="code hl_struct" href="structvec4.html">Name_ElementThree</a> = 3,</div>
 <div class="line">};</div>
-<div class="ttc" id="astructvec4_html"><div class="ttname"><a href="structvec4.html">vec4</a></div><div class="ttdoc">A four dimensional Cartesian-space vector template.</div><div class="ttdef"><b>Definition</b> geom.h:589</div></div>
+<div class="ttc" id="astructvec4_html"><div class="ttname"><a href="structvec4.html">vec4</a></div><div class="ttdoc">A four dimensional Cartesian-space vector template.</div><div class="ttdef"><b>Definition</b> geom.h:558</div></div>
 </div><!-- fragment --><h4><a class="anchor" id="autotoc_md15"></a>
 Enums</h4>
 <p>Enums also are always expanded with a single element per line. For aesthetics, it is best to place all the equals in the same location (as above). Libprimis uses no named enums besides those inhereted from ENet.</p>
@@ -1918,8 +1918,8 @@ Persistent Variables `*VARP`</h4>
 <div class="line"> </div>
 <div class="line"><span class="comment">// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state</span></div>
 <div class="line"><a class="code hl_struct" href="structvec.html">vec</a> c = a.<a class="code hl_function" href="structvec4.html#a78bcc2915fa5cae7271b5aa66aef9ad5">mul</a>(b);</div>
-<div class="ttc" id="astructvec4_html_a78bcc2915fa5cae7271b5aa66aef9ad5"><div class="ttname"><a href="structvec4.html#a78bcc2915fa5cae7271b5aa66aef9ad5">vec4::mul</a></div><div class="ttdeci">vec4 &amp; mul(T f)</div><div class="ttdoc">Calculates the elementwise product.</div><div class="ttdef"><b>Definition</b> geom.h:818</div></div>
-<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition</b> geom.h:161</div></div>
+<div class="ttc" id="astructvec4_html_a78bcc2915fa5cae7271b5aa66aef9ad5"><div class="ttname"><a href="structvec4.html#a78bcc2915fa5cae7271b5aa66aef9ad5">vec4::mul</a></div><div class="ttdeci">vec4 &amp; mul(T f)</div><div class="ttdoc">Calculates the elementwise product.</div><div class="ttdef"><b>Definition</b> geom.h:787</div></div>
+<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition</b> geom.h:143</div></div>
 </div><!-- fragment --><p> To work around this, it is typical to see what appears to be an unnecessary constructor call <code><a class="el" href="structvec.html" title="three dimensional vector object">vec(vec T)</a></code>. This is to create a new tempoary object using the constructor call which can have member functions applied to it without mangling the original vector.</p>
 <p>While this property of <code>vec</code>'s many member functions is most commonly seen in <code>vec</code> objects, the same behavior also applies to other related objects, such as <code><a class="el" href="structvec2.html" title="2 dimensional vector object">vec2</a></code> or <code>ivec</code>.</p>
 <h4><a class="anchor" id="autotoc_md206"></a>
