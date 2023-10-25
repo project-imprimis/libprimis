@@ -25,6 +25,7 @@ class model
         float scale;
         vec translate;
         BIH *bih;
+        std::unique_ptr<BIH> bih;
         vec bbextend;
         float eyeheight, collidexyradius, collideheight;
         const char *collidemodel;
@@ -51,14 +52,14 @@ class model
         virtual bool pitched() const = 0;
         virtual bool alphatested() const = 0;
 
-        virtual void setshader(Shader *) {}
-        virtual void setspec(float) {}
-        virtual void setgloss(int) {}
-        virtual void setglow(float, float, float) {}
-        virtual void setalphatest(float) {}
-        virtual void setfullbright(float) {}
-        virtual void setcullface(int) {}
-        virtual void setcolor(const vec &) {}
+        virtual void setshader(Shader *) = 0;
+        virtual void setspec(float) = 0;
+        virtual void setgloss(int) = 0;
+        virtual void setglow(float, float, float) = 0;
+        virtual void setalphatest(float) = 0;
+        virtual void setfullbright(float) = 0;
+        virtual void setcullface(int) = 0;
+        virtual void setcolor(const vec &) = 0;
 
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
@@ -70,8 +71,8 @@ class model
             }
         }
 
-        virtual void preloadshaders() {}
-        virtual void preloadmeshes() {}
+        virtual void preloadshaders() = 0;
+        virtual void preloadmeshes() = 0;
         virtual void cleanup() {}
 
         virtual void startrender() {}

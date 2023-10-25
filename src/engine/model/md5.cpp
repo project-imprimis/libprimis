@@ -46,6 +46,11 @@ const char *md5::formatname()
     return "md5";
 }
 
+bool flipy()
+{
+    return false;
+}
+
 int md5::type() const
 {
     return MDL_MD5;

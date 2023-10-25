@@ -501,46 +501,35 @@ class animmodel : public model
             return parts[0]->unlink(p);
         }
 
-        bool animated() const;
+        bool animated() const override final;
 
-        bool pitched() const
+        bool pitched() const override final
         {
             return parts[0]->pitchscale != 0;
         }
 
         bool alphatested() const;
 
-        virtual bool flipy() const
-        {
-            return false;
-        }
-
-        virtual bool loadconfig()
-        {
-            return false;
-        }
-
-        virtual bool loaddefaultparts()
-        {
-            return false;
-        }
+        virtual bool flipy() const = 0;
+        virtual bool loadconfig() = 0;
+        virtual bool loaddefaultparts() = 0;
 
         virtual void startload() = 0;
         virtual void endload() = 0;
 
         bool load() override;
 
-        void preloadshaders();
-        void preloadmeshes();
+        void preloadshaders() override final;
+        void preloadmeshes() override final;
 
-        void setshader(Shader *shader);
-        void setspec(float spec);
-        void setgloss(int gloss);
-        void setglow(float glow, float delta, float pulse);
-        void setalphatest(float alphatest);
-        void setfullbright(float fullbright);
-        void setcullface(int cullface);
-        void setcolor(const vec &color);
+        void setshader(Shader *shader) override final;
+        void setspec(float spec) override final;
+        void setgloss(int gloss) override final;
+        void setglow(float glow, float delta, float pulse) override final;
+        void setalphatest(float alphatest) override final;
+        void setfullbright(float fullbright) override final;
+        void setcullface(int cullface) override final;
+        void setcolor(const vec &color) override final;
 
         void calcbb(vec &center, vec &radius) const;
         void calctransform(matrix4x3 &m) const;
