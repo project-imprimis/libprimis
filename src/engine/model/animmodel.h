@@ -533,7 +533,7 @@ class animmodel : public model
         {
         }
 
-        bool load();
+        bool load() override;
 
         void preloadshaders();
         void preloadmeshes();
