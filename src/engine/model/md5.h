@@ -4,7 +4,7 @@ class md5 : public skelloader<md5>
     public:
         md5(const char *name);
         static const char *formatname();
-        int type() const;
+        int type() const override;
         skelmeshgroup *newmeshes();
 
         bool loaddefaultparts();

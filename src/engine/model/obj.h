@@ -10,7 +10,7 @@ struct obj : vertloader<obj>
     static const char *formatname();
     static bool cananimate();
     bool flipy() const;
-    int type() const;
+    int type() const override;
 
     struct objmeshgroup : vertmeshgroup
     {
