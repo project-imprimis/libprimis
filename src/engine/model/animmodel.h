@@ -525,13 +525,8 @@ class animmodel : public model
             return false;
         }
 
-        virtual void startload()
-        {
-        }
-
-        virtual void endload()
-        {
-        }
+        virtual void startload() = 0;
+        virtual void endload() = 0;
 
         bool load() override;
 
