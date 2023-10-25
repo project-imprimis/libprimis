@@ -57,6 +57,11 @@ int obj::type() const
     return MDL_OBJ;
 }
 
+bool obj::skeletal() const
+{
+    return false;
+}
+
 bool obj::objmeshgroup::load(const char *filename, float smooth)
 {
     int len = std::strlen(filename);

@@ -11,6 +11,7 @@ struct obj : vertloader<obj>
     static bool cananimate();
     bool flipy() const;
     int type() const override;
+    bool skeletal() const override;
 
     struct objmeshgroup : vertmeshgroup
     {
