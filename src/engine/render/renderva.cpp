@@ -5,6 +5,8 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+
 #include "csm.h"
 #include "grass.h"
 #include "octarender.h"

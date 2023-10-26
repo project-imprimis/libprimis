@@ -4,6 +4,8 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+
 #include "bih.h"
 #include "entities.h"
 #include "light.h"

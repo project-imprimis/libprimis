@@ -6,10 +6,10 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 
+#include <memory>
+
 #include "entities.h"
-
 #include "bih.h"
-
 #include "interface/control.h"
 
 #include "model/model.h"

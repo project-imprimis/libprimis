@@ -16,6 +16,8 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"

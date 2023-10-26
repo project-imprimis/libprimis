@@ -5,6 +5,7 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
 
 #include "interface/console.h"
 #include "interface/control.h"

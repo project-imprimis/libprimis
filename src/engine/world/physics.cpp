@@ -6,6 +6,8 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 
+#include <memory>
+
 #include "bih.h"
 #include "entities.h"
 #include "mpr.h"

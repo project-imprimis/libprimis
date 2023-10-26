@@ -15,6 +15,7 @@
 #include "../../shared/glexts.h"
 
 #include <optional>
+#include <memory>
 
 #include "interface/console.h"
 #include "interface/control.h"

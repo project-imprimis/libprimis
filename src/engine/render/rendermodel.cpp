@@ -13,6 +13,7 @@
 #include "../../shared/stream.h"
 
 #include <optional>
+#include <memory>
 
 #include "aa.h"
 #include "csm.h"

@@ -12,6 +12,7 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
 #include <optional>
 
 #include "render/rendergl.h"

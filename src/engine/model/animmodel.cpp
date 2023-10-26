@@ -12,6 +12,8 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+
 #include "interface/console.h"
 #include "interface/control.h"
 
@@ -1605,7 +1607,7 @@ bool animmodel::setBIH()
     }
     std::vector<BIH::mesh> meshes;
     genBIH(meshes);
-    bih = new BIH(meshes);
+    bih = std::make_unique<BIH>(meshes);
     return true;
 }
 

@@ -24,7 +24,6 @@ class model
         bool shadow, alphashadow, depthoffset;
         float scale;
         vec translate;
-        BIH *bih;
         std::unique_ptr<BIH> bih;
         vec bbextend;
         float eyeheight, collidexyradius, collideheight;
@@ -33,33 +32,28 @@ class model
 
         virtual ~model()
         {
-            if(bih)
-            {
-                delete bih;
-                bih = nullptr;
-            }
         }
 
         virtual void calcbb(vec &center, vec &radius) const = 0;
         virtual void calctransform(matrix4x3 &m) const = 0;
         virtual int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const = 0;
         virtual void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a = nullptr, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1)) = 0;
-        virtual bool load() = 0;
-        virtual int type() const = 0;
+        virtual bool load() {return 0;};
+        virtual int type() const {return 0;};
         virtual bool setBIH() { return false; }
-        virtual bool skeletal() const = 0;
-        virtual bool animated() const = 0;
-        virtual bool pitched() const = 0;
-        virtual bool alphatested() const = 0;
+        virtual bool skeletal() const { return false;};
+        virtual bool animated() const { return false;};
+        virtual bool pitched() const { return false; };
+        virtual bool alphatested() const { return 0;};
 
-        virtual void setshader(Shader *) = 0;
-        virtual void setspec(float) = 0;
-        virtual void setgloss(int) = 0;
-        virtual void setglow(float, float, float) = 0;
-        virtual void setalphatest(float) = 0;
-        virtual void setfullbright(float) = 0;
-        virtual void setcullface(int) = 0;
-        virtual void setcolor(const vec &) = 0;
+        virtual void setshader(Shader *) {};
+        virtual void setspec(float) {};
+        virtual void setgloss(int) {};
+        virtual void setglow(float, float, float) {};
+        virtual void setalphatest(float) {};
+        virtual void setfullbright(float) {};
+        virtual void setcullface(int) {};
+        virtual void setcolor(const vec &) {};
 
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
@@ -71,8 +65,8 @@ class model
             }
         }
 
-        virtual void preloadshaders() = 0;
-        virtual void preloadmeshes() = 0;
+        virtual void preloadshaders() {};
+        virtual void preloadmeshes() {};
         virtual void cleanup() {}
 
         virtual void startrender() {}
@@ -129,7 +123,6 @@ class model
                                   depthoffset(false),
                                   scale(1.0f),
                                   translate(0, 0, 0),
-                                  bih(0),
                                   bbextend(0, 0, 0),
                                   eyeheight(0.9f),
                                   collidexyradius(0),

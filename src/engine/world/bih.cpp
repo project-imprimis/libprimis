@@ -8,6 +8,8 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+
 #include "entities.h"
 #include "physics.h"
 #include "raycube.h"

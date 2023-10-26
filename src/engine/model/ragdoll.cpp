@@ -10,6 +10,8 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 
+#include <memory>
+
 #include "interface/console.h"
 #include "interface/control.h"
 

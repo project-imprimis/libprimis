@@ -15,6 +15,7 @@
 #include "../../shared/stream.h"
 
 #include <optional>
+#include <memory>
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
