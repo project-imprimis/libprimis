@@ -1,5 +1,5 @@
 
-class md5 : public skelloader<md5>
+class md5 final : public skelloader<md5>
 {
     public:
         md5(const char *name);

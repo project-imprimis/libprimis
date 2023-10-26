@@ -46,7 +46,7 @@ const char *md5::formatname()
     return "md5";
 }
 
-bool flipy()
+bool md5::flipy() const
 {
     return false;
 }

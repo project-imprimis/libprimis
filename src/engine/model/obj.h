@@ -3,7 +3,7 @@
 
 struct obj;
 
-struct obj : vertloader<obj>
+struct obj final : vertloader<obj>
 {
     obj(const char *name) : vertloader(name) {}
 
