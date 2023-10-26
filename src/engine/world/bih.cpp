@@ -110,7 +110,7 @@ float BIH::mesh::scale() const
  *        1—————————2
  */
 
-bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
+bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode) const
 {
     const mesh::tri &t = m.tris[tidx];
     vec a = m.getpos(t.vert[0]), //position of vert 0
@@ -183,7 +183,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     return true; //true if collided
 }
 
-bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax)
+bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax) const
 {
     struct traversestate
     {
@@ -282,11 +282,11 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
     }
 }
 
-bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode)
+bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode) const
 {
     //if components are zero, set component to large value: 1e16, else invert
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
-    for(mesh &m : meshes)
+    for(const mesh &m : meshes)
     {
         if(!(m.flags&Mesh_Render) || (!(mode&Ray_Shadow) && m.flags&Mesh_NoClip))
         {
@@ -338,7 +338,7 @@ bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int
     return false;
 }
 
-void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, const ivec &vmax)
+void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, const ivec &vmax) const
 {
     int axis = 2;
     for(int k = 0; k < 2; ++k)
@@ -855,7 +855,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
 
 //used in the tricollide templates below
 //returns true if physent is a player and passed vec is close enough to matter (determined by radius,pdist)
-bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec radius)
+bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec radius) const
 {
     float a = 2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)),
           b = (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0);
@@ -870,7 +870,7 @@ bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec 
 }
 
 template<>
-void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -911,7 +911,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
 }
 
 template<>
-void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -955,7 +955,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
 }
 
 template<int C>
-void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br)
+void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br) const
 {
     node *stack[128];
     int stacksize = 0;
@@ -1033,7 +1033,7 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
     }
 }
 
-bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
+bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
@@ -1088,7 +1088,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
     return dist > maxcollidedistance;
 }
 
-bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
+bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
@@ -1152,7 +1152,7 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
     return false;
 }
 
-void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br)
+void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -1168,7 +1168,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, f
     genstainmmtri(s, v);
 }
 
-void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br)
+void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br) const
 {
     std::stack<node *> stack;
     ivec bmin = static_cast<ivec>(bo).sub(br),
@@ -1245,7 +1245,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
     }
 }
 
-void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale)
+void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
@@ -1285,7 +1285,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
          imax = ivec::ceil(vec(bo).add(radius)),
          icenter = ivec(imin).add(imax).div(2),
          iradius = ivec(imax).sub(imin).add(1).div(2);
-    for(mesh &m : meshes)
+    for(const mesh &m : meshes)
     {
         if(!(m.flags&Mesh_Render) || m.flags&Mesh_Alpha)
         {
