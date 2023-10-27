@@ -37,7 +37,7 @@ class model
         virtual void calcbb(vec &center, vec &radius) const = 0;
         virtual void calctransform(matrix4x3 &m) const = 0;
         virtual int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const = 0;
-        virtual void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a = nullptr, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1)) = 0;
+        virtual void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a = nullptr, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1)) const = 0;
         virtual bool load() = 0;
         virtual int type() const = 0;
         virtual bool setBIH() { return false; }
