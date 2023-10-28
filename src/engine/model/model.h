@@ -19,7 +19,6 @@ enum
 class model
 {
     public:
-        std::string name;
         float spinyaw, spinpitch, spinroll, offsetyaw, offsetpitch, offsetroll;
         bool shadow, alphashadow, depthoffset;
         float scale;
@@ -110,9 +109,13 @@ class model
             boundbox(center, radius);
             return center.z+radius.z;
         }
+
+        const std::string &modelname()
+        {
+            return name;
+        }
     protected:
-        model(const char *name) : name(name ? newstring(name) : nullptr),
-                                  spinyaw(0),
+        model(const char *name) : spinyaw(0),
                                   spinpitch(0),
                                   spinroll(0),
                                   offsetyaw(0),
@@ -129,11 +132,15 @@ class model
                                   collideheight(0),
                                   collidemodel(nullptr),
                                   collide(Collide_OrientedBoundingBox),
-                                  batch(-1), bbcenter(0, 0, 0),
+                                  batch(-1),
+                                  name(name),
+                                  bbcenter(0, 0, 0),
                                   bbradius(-1, -1, -1),
                                   collidecenter(0, 0, 0),
                                   collideradius(-1, -1, -1),
-                                  rejectradius(-1) {}
+                                  rejectradius(-1)
+                                  {}
+        std::string name;
     private:
         vec bbcenter, bbradius, collidecenter, collideradius;
         float rejectradius;

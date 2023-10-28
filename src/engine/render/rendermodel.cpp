@@ -328,7 +328,7 @@ static void mdlname()
     {
         return;
     }
-    result(loadingmodel->name.c_str());
+    result(loadingmodel->modelname().c_str());
 }
 
 // if a skeletal model is being loaded, and meets the criteria for a ragdoll,
@@ -704,9 +704,9 @@ model *loadmodel(const char *name, int i, bool msg)
             failedmodels.insert(name);
             return nullptr;
         }
-        if(models.find(m->name) == models.end())
+        if(models.find(m->modelname()) == models.end())
         {
-            models[m->name] = m;
+            models[m->modelname()] = m;
         }
     }
     if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)

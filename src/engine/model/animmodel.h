@@ -802,7 +802,7 @@ struct modelcommands
         }
         if(!MDL::loading->parts[*parent]->link(MDL::loading->parts[*child], tagname, vec(*x, *y, *z)))
         {
-            conoutf("could not link model %s", MDL::loading->name.c_str());
+            conoutf("could not link model %s", MDL::loading->modelname().c_str());
         }
     }
 
