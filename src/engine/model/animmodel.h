@@ -545,7 +545,7 @@ class animmodel : public model
         static bool enabletc, enablebones, enabletangents;
         static int matrixpos;
 
-        void startrender();
+        void startrender() const;
         static void disablebones();
         static void disabletangents();
         static void disabletc();

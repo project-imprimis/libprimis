@@ -1852,7 +1852,7 @@ void animmodel::calctransform(matrix4x3 &m) const
     m.scale(scale);
 }
 
-void animmodel::startrender()
+void animmodel::startrender() const
 {
     enabletc = enabletangents = enablebones = enabledepthoffset = false;
     enablecullface = true;

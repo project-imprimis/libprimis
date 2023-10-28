@@ -68,7 +68,7 @@ class model
         virtual void preloadmeshes() = 0;
         virtual void cleanup() {}
 
-        virtual void startrender() {}
+        virtual void startrender() const {}
         virtual void endrender() const {}
 
         void boundbox(vec &center, vec &radius)
