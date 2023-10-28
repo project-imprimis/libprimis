@@ -613,8 +613,8 @@ struct modelloader : BASE
 
     bool loadconfig()
     {
-        formatstring(dir, "media/model/%s", BASE::name.c_str());
-        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name.c_str(), MDL::formatname());
+        formatstring(dir, "media/model/%s", BASE::modelname().c_str());
+        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::modelname().c_str(), MDL::formatname());
 
         identflags &= ~Idf_Persist;
         bool success = execfile(cfgname, false);

@@ -110,10 +110,11 @@ class model
             return center.z+radius.z;
         }
 
-        const std::string &modelname()
+        const std::string &modelname() const
         {
             return name;
         }
+
     protected:
         model(const char *name) : spinyaw(0),
                                   spinpitch(0),
@@ -140,8 +141,8 @@ class model
                                   collideradius(-1, -1, -1),
                                   rejectradius(-1)
                                   {}
-        std::string name;
     private:
+        std::string name;
         vec bbcenter, bbradius, collidecenter, collideradius;
         float rejectradius;
 };
