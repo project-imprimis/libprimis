@@ -220,9 +220,7 @@ static void mdlspin(float *yaw, float *pitch, float *roll)
     {
         return;
     }
-    loadingmodel->spin.x = *yaw;
-    loadingmodel->spin.y = *pitch;
-    loadingmodel->spin.z = *roll;
+    loadingmodel->settransformation(std::nullopt, vec(*yaw, *pitch, *roll), std::nullopt, std::nullopt);
 }
 
 //assigns a new scale factor in % for the model object currently being loaded
