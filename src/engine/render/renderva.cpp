@@ -6,6 +6,7 @@
 #include "../../shared/glexts.h"
 
 #include <memory>
+#include <optional>
 
 #include "csm.h"
 #include "grass.h"

@@ -5,6 +5,7 @@
 #include "../../shared/glexts.h"
 
 #include <memory>
+#include <optional>
 
 #include "bih.h"
 #include "entities.h"

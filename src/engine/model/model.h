@@ -56,6 +56,29 @@ class model
         virtual void setcullface(int) = 0;
         virtual void setcolor(const vec &) = 0;
 
+        virtual void settransformation(const std::optional<vec> pos,
+                                       const std::optional<vec> rotate,
+                                       const std::optional<vec> orient,
+                                       const std::optional<float> size)
+        {
+            if(pos)
+            {
+                translate = pos.value();
+            }
+            if(rotate)
+            {
+                spin = rotate.value();
+            }
+            if(orient)
+            {
+                orientation = orient.value();
+            }
+            if(size)
+            {
+                scale = size.value();
+            }
+        }
+
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
         virtual void preloadBIH()

@@ -11,6 +11,7 @@
 #include "../../shared/geomexts.h"
 
 #include <memory>
+#include <optional>
 
 #include "interface/console.h"
 #include "interface/control.h"

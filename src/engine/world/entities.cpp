@@ -7,6 +7,7 @@
 #include "../../shared/geomexts.h"
 
 #include <memory>
+#include <optional>
 
 #include "entities.h"
 #include "bih.h"

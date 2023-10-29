@@ -17,6 +17,7 @@
 #include "../../shared/glexts.h"
 
 #include <memory>
+#include <optional>
 
 #include "octarender.h"
 #include "rendergl.h"
