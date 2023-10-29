@@ -231,7 +231,7 @@ static void mdlscale(float *percent)
         return;
     }
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
-    loadingmodel->scale = scale;
+    loadingmodel->settransformation(std::nullopt, std::nullopt, std::nullopt, scale);
 }
 
 //assigns translation in x,y,z in cube units for the model object currently being loaded
@@ -241,7 +241,7 @@ static void mdltrans(float *x, float *y, float *z)
     {
         return;
     }
-    loadingmodel->translate = vec(*x, *y, *z);
+    loadingmodel->settransformation(vec(*x, *y, *z), std::nullopt, std::nullopt, std::nullopt);
 }
 
 //assigns angle to the offsetyaw field of the model object currently being loaded
