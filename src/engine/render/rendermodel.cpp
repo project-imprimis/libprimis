@@ -220,9 +220,9 @@ static void mdlspin(float *yaw, float *pitch, float *roll)
     {
         return;
     }
-    loadingmodel->spinyaw = *yaw;
-    loadingmodel->spinpitch = *pitch;
-    loadingmodel->spinroll = *roll;
+    loadingmodel->spin.x = *yaw;
+    loadingmodel->spin.y = *pitch;
+    loadingmodel->spin.z = *roll;
 }
 
 //assigns a new scale factor in % for the model object currently being loaded
@@ -253,7 +253,7 @@ static void mdlyaw(float *angle)
     {
         return;
     }
-    loadingmodel->offsetyaw = *angle;
+    loadingmodel->orientation.x = *angle;
 }
 
 
@@ -264,7 +264,7 @@ static void mdlpitch(float *angle)
     {
         return;
     }
-    loadingmodel->offsetpitch = *angle;
+    loadingmodel->orientation.y = *angle;
 }
 
 //assigns angle to the offsetroll field of the model object currently being loaded
@@ -274,7 +274,7 @@ static void mdlroll(float *angle)
     {
         return;
     }
-    loadingmodel->offsetroll = *angle;
+    loadingmodel->orientation.z = *angle;
 }
 
 //assigns shadow to the shadow field of the model object currently being loaded

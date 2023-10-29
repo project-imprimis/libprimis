@@ -1274,9 +1274,9 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
     if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
     {
         float secs = lastmillis/1000.0f;
-        yaw += spinyaw*secs;
-        pitch += spinpitch*secs;
-        roll += spinroll*secs;
+        yaw += spin.x*secs;
+        pitch += spin.y*secs;
+        roll += spin.z*secs;
 
         matrixstack[0].settranslation(pos);
         matrixstack[0].rotate_around_z(yaw/RAD);
@@ -1291,17 +1291,17 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
         {
             matrixstack[0].rotate_around_y(-roll/RAD);
         }
-        if(offsetyaw)
+        if(orientation.x)
         {
-            matrixstack[0].rotate_around_z(offsetyaw/RAD);
+            matrixstack[0].rotate_around_z(orientation.x/RAD);
         }
-        if(offsetpitch)
+        if(orientation.y)
         {
-            matrixstack[0].rotate_around_x(offsetpitch/RAD);
+            matrixstack[0].rotate_around_x(orientation.y/RAD);
         }
-        if(offsetroll)
+        if(orientation.z)
         {
-            matrixstack[0].rotate_around_y(-offsetroll/RAD);
+            matrixstack[0].rotate_around_y(-orientation.z/RAD);
         }
     }
     else
@@ -1433,9 +1433,9 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
     if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
     {
         float secs = lastmillis/1000.0f;
-        yaw += spinyaw*secs;
-        pitch += spinpitch*secs;
-        roll += spinroll*secs;
+        yaw += spin.x*secs;
+        pitch += spin.y*secs;
+        roll += spin.z*secs;
 
         matrixstack[0].settranslation(o);
         matrixstack[0].rotate_around_z(yaw/RAD);
@@ -1450,17 +1450,17 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         {
             matrixstack[0].rotate_around_y(-roll/RAD);
         }
-        if(offsetyaw)
+        if(orientation.x)
         {
-            matrixstack[0].rotate_around_z(offsetyaw/RAD);
+            matrixstack[0].rotate_around_z(orientation.x/RAD);
         }
-        if(offsetpitch)
+        if(orientation.y)
         {
-            matrixstack[0].rotate_around_x(offsetpitch/RAD);
+            matrixstack[0].rotate_around_x(orientation.y/RAD);
         }
-        if(offsetroll)
+        if(orientation.z)
         {
-            matrixstack[0].rotate_around_y(-offsetroll/RAD);
+            matrixstack[0].rotate_around_y(-orientation.z/RAD);
         }
     }
     else
@@ -1515,17 +1515,17 @@ void animmodel::cleanup()
 void animmodel::initmatrix(matrix4x3 &m) const
 {
     m.identity();
-    if(offsetyaw)
+    if(orientation.x)
     {
-        m.rotate_around_z(offsetyaw/RAD);
+        m.rotate_around_z(orientation.x/RAD);
     }
-    if(offsetpitch)
+    if(orientation.y)
     {
-        m.rotate_around_x(offsetpitch/RAD);
+        m.rotate_around_x(orientation.y/RAD);
     }
-    if(offsetroll)
+    if(orientation.z)
     {
-        m.rotate_around_y(-offsetroll/RAD);
+        m.rotate_around_y(-orientation.z/RAD);
     }
     m.translate(translate, scale);
 }
@@ -1622,7 +1622,7 @@ bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, i
 
 bool animmodel::animated() const
 {
-    if(spinyaw || spinpitch || spinroll)
+    if(spin.x || spin.y || spin.z)
     {
         return true;
     }

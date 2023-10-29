@@ -19,7 +19,9 @@ enum
 class model
 {
     public:
-        float spinyaw, spinpitch, spinroll, offsetyaw, offsetpitch, offsetroll;
+        //for spin, orientation: x = yaw, y = pitch, z = roll
+        vec spin,
+            orientation;
         bool shadow, alphashadow, depthoffset;
         float scale;
         vec translate;
@@ -116,12 +118,8 @@ class model
         }
 
     protected:
-        model(const char *name) : spinyaw(0),
-                                  spinpitch(0),
-                                  spinroll(0),
-                                  offsetyaw(0),
-                                  offsetpitch(0),
-                                  offsetroll(0),
+        model(const char *name) : spin(0, 0, 0),
+                                  orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),
                                   depthoffset(false),
