@@ -426,9 +426,9 @@ class animmodel : public model
 
                 virtual void cleanup();
                 void disablepitch();
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const;
-                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const;
-                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const;
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
+                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const;
                 bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
                 bool unlink(const part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);

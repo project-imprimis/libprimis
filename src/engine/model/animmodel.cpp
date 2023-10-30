@@ -644,45 +644,45 @@ void animmodel::part::disablepitch()
     pitchscale = pitchoffset = pitchmin = pitchmax = 0;
 }
 
-void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
+void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const
 {
     matrix4x3 t = m;
-    t.scale(model->scale);
+    t.scale(modelscale);
     meshes->calcbb(bbmin, bbmax, t);
     for(linkedpart i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
-        n.translate(i.translate, model->scale);
-        i.p->calcbb(bbmin, bbmax, n);
+        n.translate(i.translate, modelscale);
+        i.p->calcbb(bbmin, bbmax, n, modelscale);
     }
 }
 
-void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const
+void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const
 {
     matrix4x3 t = m;
-    t.scale(model->scale);
+    t.scale(modelscale);
     meshes->genBIH(skins, bih, t);
     for(linkedpart i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
-        n.translate(i.translate, model->scale);
-        i.p->genBIH(bih, n);
+        n.translate(i.translate, modelscale);
+        i.p->genBIH(bih, n, modelscale);
     }
 }
 
-void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const
+void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const
 {
     matrix4x3 t = m;
-    t.scale(model->scale);
+    t.scale(modelscale);
     meshes->genshadowmesh(tris, t);
     for(linkedpart i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
-        n.translate(i.translate, model->scale);
-        i.p->genshadowmesh(tris, n);
+        n.translate(i.translate, modelscale);
+        i.p->genshadowmesh(tris, n, modelscale);
     }
 }
 
@@ -1555,7 +1555,7 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
                 {
                     s.tex->loadalphamask();
                 }
-                p->genBIH(bih, m);
+                p->genBIH(bih, m, scale);
                 break;
             }
         }
@@ -1571,7 +1571,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
     matrix4x3 m;
     initmatrix(m);
     m.mul(orient, matrix4x3(m));
-    parts[0]->genshadowmesh(tris, m);
+    parts[0]->genshadowmesh(tris, m, scale);
     for(uint i = 1; i < parts.size(); i++)
     {
         const part *p = parts[i];
@@ -1580,7 +1580,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
             case Link_Coop:
             case Link_Reuse:
             {
-                p->genshadowmesh(tris, m);
+                p->genshadowmesh(tris, m, scale);
                 break;
             }
         }
@@ -1827,7 +1827,7 @@ void animmodel::calcbb(vec &center, vec &radius) const
         bbmax(-1e16f, -1e16f, -1e16f);
     matrix4x3 m;
     initmatrix(m);
-    parts[0]->calcbb(bbmin, bbmax, m);
+    parts[0]->calcbb(bbmin, bbmax, m, scale);
     for(const part *p : parts)
     {
         switch(linktype(this, p))
@@ -1835,7 +1835,7 @@ void animmodel::calcbb(vec &center, vec &radius) const
             case Link_Coop:
             case Link_Reuse:
             {
-                p->calcbb(bbmin, bbmax, m);
+                p->calcbb(bbmin, bbmax, m, scale);
                 break;
             }
         }
