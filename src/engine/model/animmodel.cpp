@@ -340,10 +340,10 @@ void animmodel::skin::preloadBIH() const
     }
 }
 
-void animmodel::skin::preloadshader()
+void animmodel::skin::preloadshader(bool alphashadowmodel)
 {
     loadshader();
-    useshaderbyname(alphatested() && owner->model->alphashadow ? "alphashadowmodel" : "shadowmodel");
+    useshaderbyname(alphatested() && alphashadowmodel ? "alphashadowmodel" : "shadowmodel");
     if(useradiancehints())
     {
         useshaderbyname(alphatested() ? "rsmalphamodel" : "rsmmodel");
@@ -355,7 +355,7 @@ void animmodel::skin::setshader(Mesh &m, const AnimState *as)
     m.setshader(loadshader(), gbuf.istransparentlayer());
 }
 
-void animmodel::skin::bind(Mesh &b, const AnimState *as)
+void animmodel::skin::bind(Mesh &b, const AnimState *as, bool alphashadowmodel)
 {
     if(cullface > 0)
     {
@@ -373,7 +373,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
 
     if(as->cur.anim & Anim_NoSkin)
     {
-        if(alphatested() && owner->model->alphashadow)
+        if(alphatested() && alphashadowmodel)
         {
             if(tex!=lasttex)
             {
@@ -744,7 +744,6 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
     while(skins.size() < static_cast<uint>(limit))
     {
         skin s;
-        s.owner = this;
         s.tex = tex;
         s.masks = masks;
         skins.push_back(s);
@@ -771,11 +770,11 @@ void animmodel::part::preloadBIH() const
     }
 }
 
-void animmodel::part::preloadshaders()
+void animmodel::part::preloadshaders(bool alphashadowmodel)
 {
     for(skin &i : skins)
     {
-        i.preloadshader();
+        i.preloadshader(alphashadowmodel);
     }
 }
 
@@ -1013,13 +1012,13 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     matrixpos = oldpos;
 }
 
-void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d)
 {
     AnimState as[maxanimparts];
-    render(anim, basetime, basetime2, pitch, axis, forward, d, as);
+    render(anim, basetime, basetime2, pitch, alphashadowmodel, axis, forward, d, as);
 }
 
-void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as)
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d, AnimState *as)
 {
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -1097,7 +1096,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
         }
     }
 
-    meshes->render(as, pitch, oaxis, oforward, d, this);
+    meshes->render(as, pitch, alphashadowmodel, oaxis, oforward, d, this);
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -1124,7 +1123,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
                 nbasetime = link.basetime;
                 nbasetime2 = 0;
             }
-            link.p->render(nanim, nbasetime, nbasetime2, pitch, axis, forward, d);
+            link.p->render(nanim, nbasetime, nbasetime2, pitch, alphashadowmodel, axis, forward, d);
             matrixpos--;
         }
     }
@@ -1364,7 +1363,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     }
 
     AnimState as[maxanimparts];
-    parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
+    parts[0]->render(anim, basetime, basetime2, pitch, alphashadow, axis, forward, d, as);
 
     for(uint i = 1; i < parts.size(); i++)
     {
@@ -1373,12 +1372,12 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
         {
             case Link_Coop:
             {
-                p->render(anim, basetime, basetime2, pitch, axis, forward, d);
+                p->render(anim, basetime, basetime2, pitch, alphashadow, axis, forward, d);
                 break;
             }
             case Link_Reuse:
             {
-                p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                p->render(anim | Anim_Reuse, basetime, basetime2, pitch, alphashadow, axis, forward, d, as);
                 break;
             }
         }
@@ -1411,13 +1410,13 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
                 }
                 case Link_Coop:
                 {
-                    p->render(anim, basetime, basetime2, pitch, axis, forward, d);
+                    p->render(anim, basetime, basetime2, pitch, alphashadow, axis, forward, d);
                     p->index = 0;
                     break;
                 }
                 case Link_Reuse:
                 {
-                    p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                    p->render(anim | Anim_Reuse, basetime, basetime2, pitch, alphashadow, axis, forward, d, as);
                     break;
                 }
             }
@@ -1683,7 +1682,7 @@ void animmodel::preloadshaders()
 {
     for(part* i : parts)
     {
-        i->preloadshaders();
+        i->preloadshaders(alphashadow);
     }
 }
 
