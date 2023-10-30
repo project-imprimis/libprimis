@@ -79,6 +79,12 @@ class model
             }
         }
 
+        //returns the location and size of the model
+        virtual vec4<float> locationsize() const
+        {
+            return vec4<float>(translate.x, translate.y, translate.z, scale);
+        }
+
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
         virtual void preloadBIH()
