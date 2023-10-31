@@ -382,7 +382,7 @@ void vertmodel::vertmeshgroup::preload()
     }
 }
 
-void vertmodel::vertmeshgroup::render(const AnimState *as, float, bool alphashadowmodel, const vec &, const vec &, dynent *, part *p)
+void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p)
 {
     if(as->cur.anim & Anim_NoRender)
     {
@@ -446,7 +446,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, bool alphashad
     bindvbo(as, p, *vc);
     LOOP_RENDER_MESHES(vertmesh, m,
     {
-        p->skins[i].bind(m, as, alphashadowmodel);
+        p->skins[i].bind(m, as);
         m.render();
     });
     for(part::linkedpart &l : p->links)

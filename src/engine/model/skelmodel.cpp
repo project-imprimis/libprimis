@@ -1103,7 +1103,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
     gle::clearebo();
 }
 
-void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d, part *p)
+void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
 {
     if(skel->shouldcleanup())
     {
@@ -1122,7 +1122,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, bool alp
             bindvbo(as, p, *vbocache);
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                p->skins[i].bind(m, as, alphashadowmodel);
+                p->skins[i].bind(m, as);
                 m.render(as, p->skins[i], *vbocache);
             });
         }
@@ -1168,7 +1168,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, bool alp
 
         LOOP_RENDER_MESHES(skelmesh, m,
         {
-            p->skins[i].bind(m, as, alphashadowmodel);
+            p->skins[i].bind(m, as);
             if(skel->usegpuskel)
             {
                 skel->setgpubones(sc, bc, vblends);

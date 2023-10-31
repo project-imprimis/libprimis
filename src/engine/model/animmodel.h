@@ -83,12 +83,13 @@ class animmodel : public model
 
         struct skin : shaderparams
         {
+            const part *owner;
             Texture *tex, *decal, *masks, *normalmap;
             Shader *shader, *rsmshader;
             int cullface;
             ShaderParamsKey *key;
 
-            skin() : tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
+            skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
 
             bool masked() const;
             bool bumpmapped() const;
@@ -99,9 +100,9 @@ class animmodel : public model
             Shader *loadshader();
             void cleanup();
             void preloadBIH() const;
-            void preloadshader(bool alphashadowmodel);
+            void preloadshader();
             void setshader(Mesh &m, const AnimState *as);
-            void bind(Mesh &b, const AnimState *as, bool alphashadowmodel);
+            void bind(Mesh &b, const AnimState *as);
         };
 
         class meshgroup;
@@ -385,7 +386,7 @@ class animmodel : public model
 
                 virtual void cleanup() {}
                 virtual void preload() {}
-                virtual void render(const AnimState *as, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d, part *p) {}
+                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
                 virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
@@ -433,14 +434,14 @@ class animmodel : public model
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
                 bool alphatested() const;
                 void preloadBIH() const;
-                void preloadshaders(bool alphashadowmodel);
+                void preloadshaders();
                 void preloadmeshes();
                 virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d) const;
                 bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
-                void render(int anim, int basetime, int basetime2, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d);
-                void render(int anim, int basetime, int basetime2, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d, AnimState *as);
+                void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
+                void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
                 void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
                 bool animated() const;
                 virtual void loaded();

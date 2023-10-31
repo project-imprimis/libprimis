@@ -499,7 +499,7 @@ struct skelmodel : animmodel
         void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
         void preload();
 
-        void render(const AnimState *as, float pitch, bool alphashadowmodel, const vec &axis, const vec &forward, dynent *d, part *p);
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 
         virtual bool load(const char *name, float smooth) = 0;
     };
