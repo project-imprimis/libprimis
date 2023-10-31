@@ -456,13 +456,6 @@ class animmodel : public model
                 std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
         };
 
-        enum
-        {
-            Link_Tag = 0,
-            Link_Coop,
-            Link_Reuse
-        };
-
         static int intersectresult, intersectmode;
         static float intersectdist, intersectscale;
 
@@ -552,6 +545,13 @@ class animmodel : public model
         static void disablevbo();
         void endrender() const;
     protected:
+        enum
+        {
+            Link_Tag = 0,
+            Link_Coop,
+            Link_Reuse
+        };
+
         animmodel(const char *name);
 
         virtual int linktype(const animmodel *, const part *) const
