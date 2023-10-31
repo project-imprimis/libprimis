@@ -331,7 +331,7 @@ struct skelmodel : animmodel
 
             const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
             skelanimspec &addskelanim(const char *name);
-            std::optional<int> findbone(const char *name) const;
+            std::optional<int> findbone(const std::string &name) const;
             int findtag(const char *name) const;
             bool addtag(const char *name, int bone, const matrix4x3 &matrix);
             void addpitchdep(int bone, int frame);

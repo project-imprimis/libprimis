@@ -126,11 +126,11 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     return skelanims.back();
 }
 
-std::optional<int> skelmodel::skeleton::findbone(const char *name) const
+std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
 {
     for(int i = 0; i < numbones; ++i)
     {
-        if(bones[i].name && !std::strcmp(bones[i].name, name))
+        if(bones[i].name && !std::strcmp(bones[i].name, name.c_str()))
         {
             return i;
         }
