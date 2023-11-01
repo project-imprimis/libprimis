@@ -73,17 +73,12 @@ class animmodel : public model
 
                 skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
 
-                bool masked() const;
-                bool bumpmapped() const;
+
                 bool alphatested() const;
-                bool decaled() const;
                 void setkey();
-                void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
-                Shader *loadshader();
                 void cleanup();
                 void preloadBIH() const;
                 void preloadshader();
-                void setshader(Mesh &m, const AnimState *as);
                 void bind(Mesh &b, const AnimState *as);
                 static void invalidateshaderparams();
             private:
@@ -105,6 +100,14 @@ class animmodel : public model
                     }
                 };
                 ShaderParamsKey *key;
+
+                bool masked() const;
+                bool bumpmapped() const;
+                bool decaled() const;
+                void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
+                Shader *loadshader();
+                void setshader(Mesh &m, const AnimState *as);
+
         };
 
         class meshgroup;
