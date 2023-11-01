@@ -85,10 +85,10 @@ struct std::hash<animmodel::shaderparams>
     }
 };
 
-std::unordered_map<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys;
+std::unordered_map<animmodel::shaderparams, animmodel::skin::ShaderParamsKey> animmodel::skin::ShaderParamsKey::keys;
 
-int animmodel::ShaderParamsKey::firstversion = 0,
-    animmodel::ShaderParamsKey::lastversion = 1;
+int animmodel::skin::ShaderParamsKey::firstversion = 0,
+    animmodel::skin::ShaderParamsKey::lastversion = 1;
 
 //animmodel
 
@@ -164,7 +164,7 @@ bool animmodel::AnimState::operator!=(const AnimState &a) const
 
 // ShaderParamsKey
 
-bool animmodel::ShaderParamsKey::checkversion()
+bool animmodel::skin::ShaderParamsKey::checkversion()
 {
     if(version >= firstversion)
     {
@@ -423,6 +423,12 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     setshader(b, as);
     setshaderparams(b, as);
 }
+
+void animmodel::skin::invalidateshaderparams()
+{
+    ShaderParamsKey::invalidate();
+}
+
 
 #undef SETMODELSHADER
 #undef DOMODELSHADER
@@ -1487,7 +1493,7 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         if(colorscale != color)
         {
             colorscale = color;
-            ShaderParamsKey::invalidate();
+            skin::invalidateshaderparams();
         }
     }
 
@@ -1859,7 +1865,7 @@ void animmodel::startrender() const
     enablecullface = true;
     lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
     lasttex = lastdecal = lastmasks = lastnormalmap = nullptr;
-    ShaderParamsKey::invalidate();
+    skin::invalidateshaderparams();
 }
 
 void animmodel::disablebones()

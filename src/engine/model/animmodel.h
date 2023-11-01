@@ -63,46 +63,48 @@ class animmodel : public model
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
-        struct ShaderParamsKey
+        class skin : public shaderparams
         {
-            static std::unordered_map<shaderparams, ShaderParamsKey> keys;
+            public:
+                const part *owner;
+                Texture *tex, *decal, *masks, *normalmap;
+                Shader *shader, *rsmshader;
+                int cullface;
 
-            static int firstversion, lastversion;
+                skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
 
-            int version;
+                bool masked() const;
+                bool bumpmapped() const;
+                bool alphatested() const;
+                bool decaled() const;
+                void setkey();
+                void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
+                Shader *loadshader();
+                void cleanup();
+                void preloadBIH() const;
+                void preloadshader();
+                void setshader(Mesh &m, const AnimState *as);
+                void bind(Mesh &b, const AnimState *as);
+                static void invalidateshaderparams();
+            private:
+                struct ShaderParamsKey
+                {
+                    static std::unordered_map<shaderparams, ShaderParamsKey> keys;
 
-            ShaderParamsKey() : version(-1) {}
+                    static int firstversion, lastversion;
 
-            bool checkversion();
+                    int version;
 
-            static void invalidate()
-            {
-                firstversion = lastversion;
-            }
-        };
+                    ShaderParamsKey() : version(-1) {}
 
-        struct skin : shaderparams
-        {
-            const part *owner;
-            Texture *tex, *decal, *masks, *normalmap;
-            Shader *shader, *rsmshader;
-            int cullface;
-            ShaderParamsKey *key;
+                    bool checkversion();
 
-            skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
-
-            bool masked() const;
-            bool bumpmapped() const;
-            bool alphatested() const;
-            bool decaled() const;
-            void setkey();
-            void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
-            Shader *loadshader();
-            void cleanup();
-            void preloadBIH() const;
-            void preloadshader();
-            void setshader(Mesh &m, const AnimState *as);
-            void bind(Mesh &b, const AnimState *as);
+                    static void invalidate()
+                    {
+                        firstversion = lastversion;
+                    }
+                };
+                ShaderParamsKey *key;
         };
 
         class meshgroup;
