@@ -542,12 +542,12 @@ class animmodel : public model
 
         static bool enabletc, enablebones, enabletangents;
 
-        void startrender() const;
+        void startrender() const override final;
         static void disablebones();
         static void disabletangents();
         static void disabletc();
         static void disablevbo();
-        void endrender() const;
+        void endrender() const override final;
     protected:
         enum
         {
