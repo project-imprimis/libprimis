@@ -792,7 +792,7 @@ void animmodel::part::preloadmeshes()
     }
 }
 
-void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d) const
+void animmodel::part::getdefaultanim(animinfo &info) const
 {
     info.frame = 0;
     info.range = 1;
@@ -848,7 +848,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         }
         else
         {
-            getdefaultanim(info, anim, static_cast<uint>(varseed + info.basetime), d);
+            getdefaultanim(info);
         }
     }
 
