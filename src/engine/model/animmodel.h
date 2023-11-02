@@ -541,7 +541,6 @@ class animmodel : public model
         }
 
         static bool enabletc, enablebones, enabletangents;
-        static int matrixpos;
 
         void startrender() const;
         static void disablebones();
@@ -565,7 +564,7 @@ class animmodel : public model
         }
         int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const override final;
 
-        static matrix4 matrixstack[64];
+        static std::stack<matrix4> matrixstack;
         static float sizescale;
 
     private:

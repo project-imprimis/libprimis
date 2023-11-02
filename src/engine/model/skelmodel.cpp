@@ -732,7 +732,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     for(uint i = 0; i < ragdoll->verts.size(); i++)
     {
         ragdolldata::vert &dv = d.verts[i];
-        matrixstack[matrixpos].transform(vec(dv.pos).mul(p->model->scale), dv.pos);
+        matrixstack.top().transform(vec(dv.pos).mul(p->model->scale), dv.pos);
     }
     for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {

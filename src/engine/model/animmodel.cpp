@@ -73,8 +73,7 @@ Texture *animmodel::lasttex = nullptr,
         *animmodel::lastmasks = nullptr,
         *animmodel::lastnormalmap = nullptr;
 
-int animmodel::matrixpos = 0;
-matrix4 animmodel::matrixstack[64];
+std::stack<matrix4> animmodel::matrixstack;
 
 template <>
 struct std::hash<animmodel::shaderparams>
@@ -953,9 +952,9 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     }
 
     float resize = model->scale * sizescale;
-    int oldpos = matrixpos;
+    size_t oldpos = matrixstack.size();
     vec oaxis, oforward, oo, oray;
-    matrixstack[matrixpos].transposedtransformnormal(axis, oaxis);
+    matrixstack.top().transposedtransformnormal(axis, oaxis);
     float pitchamount = pitchscale*pitch + pitchoffset;
     if(pitchmin || pitchmax)
     {
@@ -967,23 +966,21 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     }
     if(pitchamount)
     {
-        ++matrixpos;
-        matrixstack[matrixpos] = matrixstack[matrixpos-1];
-        matrixstack[matrixpos].rotate(pitchamount/RAD, oaxis);
+        matrixstack.push(matrixstack.top());
+        matrixstack.top().rotate(pitchamount/RAD, oaxis);
     }
     if(this == model->parts[0] && !model->translate.iszero())
     {
-        if(oldpos == matrixpos)
+        if(oldpos == matrixstack.size())
         {
-            ++matrixpos;
-            matrixstack[matrixpos] = matrixstack[matrixpos-1];
+            matrixstack.push(matrixstack.top());
         }
-        matrixstack[matrixpos].translate(model->translate, resize);
+        matrixstack.top().translate(model->translate, resize);
     }
-    matrixstack[matrixpos].transposedtransformnormal(forward, oforward);
-    matrixstack[matrixpos].transposedtransform(o, oo);
+    matrixstack.top().transposedtransformnormal(forward, oforward);
+    matrixstack.top().transposedtransform(o, oo);
     oo.div(resize);
-    matrixstack[matrixpos].transposedtransformnormal(ray, oray);
+    matrixstack.top().transposedtransformnormal(ray, oray);
 
     intersectscale = resize;
     meshes->intersect(as, pitch, oaxis, oforward, d, this, oo, oray);
@@ -997,9 +994,9 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
                 continue;
             }
             link.matrix.translate(link.translate, resize);
-
-            matrixpos++;
-            matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
+            matrix4 mul;
+            mul.mul(matrixstack.top(), link.matrix);
+            matrixstack.push(mul);
 
             int nanim = anim,
                 nbasetime  = basetime,
@@ -1012,11 +1009,14 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
             }
             link.p->intersect(nanim, nbasetime, nbasetime2, pitch, axis, forward, d, o, ray);
 
-            matrixpos--;
+            matrixstack.pop();
         }
     }
 
-    matrixpos = oldpos;
+    while(matrixstack.size() > oldpos)
+    {
+        matrixstack.pop();
+    }
 }
 
 void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
@@ -1054,9 +1054,9 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
     }
 
     float resize = model->scale * sizescale;
-    int oldpos = matrixpos;
+    size_t oldpos = matrixstack.size();
     vec oaxis, oforward;
-    matrixstack[matrixpos].transposedtransformnormal(axis, oaxis);
+    matrixstack.top().transposedtransformnormal(axis, oaxis);
     float pitchamount = pitchscale*pitch + pitchoffset;
     if(pitchmin || pitchmax)
     {
@@ -1068,25 +1068,23 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
     }
     if(pitchamount)
     {
-        ++matrixpos;
-        matrixstack[matrixpos] = matrixstack[matrixpos-1];
-        matrixstack[matrixpos].rotate(pitchamount/RAD, oaxis);
+        matrixstack.push(matrixstack.top());
+        matrixstack.top().rotate(pitchamount/RAD, oaxis);
     }
     if(this == model->parts[0] && !model->translate.iszero())
     {
-        if(oldpos == matrixpos)
+        if(oldpos == matrixstack.size())
         {
-            ++matrixpos;
-            matrixstack[matrixpos] = matrixstack[matrixpos-1];
+            matrixstack.push(matrixstack.top());
         }
-        matrixstack[matrixpos].translate(model->translate, resize);
+        matrixstack.top().translate(model->translate, resize);
     }
-    matrixstack[matrixpos].transposedtransformnormal(forward, oforward);
+    matrixstack.top().transposedtransformnormal(forward, oforward);
 
     if(!(anim & Anim_NoRender))
     {
         matrix4 modelmatrix;
-        modelmatrix.mul(shadowmapping ? shadowmatrix : camprojmatrix, matrixstack[matrixpos]);
+        modelmatrix.mul(shadowmapping ? shadowmatrix : camprojmatrix, matrixstack.top());
         if(resize!=1)
         {
             modelmatrix.scale(resize);
@@ -1094,10 +1092,10 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
         GLOBALPARAM(modelmatrix, modelmatrix);
         if(!(anim & Anim_NoSkin))
         {
-            GLOBALPARAM(modelworld, matrix3(matrixstack[matrixpos]));
+            GLOBALPARAM(modelworld, matrix3(matrixstack.top()));
 
             vec modelcamera;
-            matrixstack[matrixpos].transposedtransform(camera1->o, modelcamera);
+            matrixstack.top().transposedtransform(camera1->o, modelcamera);
             modelcamera.div(resize);
             GLOBALPARAM(modelcamera, modelcamera);
         }
@@ -1110,15 +1108,16 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
         for(linkedpart &link : links)
         {
             link.matrix.translate(link.translate, resize);
-            matrixpos++;
-            matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
+            matrix4 mul;
+            mul.mul(matrixstack.top(), link.matrix);
+            matrixstack.push(mul);
             if(link.pos)
             {
-                *link.pos = matrixstack[matrixpos].gettranslation();
+                *link.pos = matrixstack.top().gettranslation();
             }
             if(!link.p)
             {
-                matrixpos--;
+                matrixstack.pop();
                 continue;
             }
             int nanim = anim,
@@ -1131,11 +1130,14 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
                 nbasetime2 = 0;
             }
             link.p->render(nanim, nbasetime, nbasetime2, pitch, axis, forward, d);
-            matrixpos--;
+            matrixstack.pop();
         }
     }
 
-    matrixpos = oldpos;
+    while(matrixstack.size() > oldpos)
+    {
+        matrixstack.pop();
+    }
 }
 
 void animmodel::part::setanim(int animpart, int num, int frame, int range, float speed, int priority)
@@ -1276,8 +1278,8 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
 {
     vec axis(1, 0, 0), forward(0, 1, 0);
 
-    matrixpos = 0;
-    matrixstack[0].identity();
+    matrixstack.push(matrix4());
+    matrixstack.top().identity();
     if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
     {
         float secs = lastmillis/1000.0f;
@@ -1285,35 +1287,35 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
         pitch += spin.y*secs;
         roll += spin.z*secs;
 
-        matrixstack[0].settranslation(pos);
-        matrixstack[0].rotate_around_z(yaw/RAD);
+        matrixstack.top().settranslation(pos);
+        matrixstack.top().rotate_around_z(yaw/RAD);
         bool usepitch = pitched();
         if(roll && !usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll/RAD);
+            matrixstack.top().rotate_around_y(-roll/RAD);
         }
-        matrixstack[0].transformnormal(vec(axis), axis);
-        matrixstack[0].transformnormal(vec(forward), forward);
+        matrixstack.top().transformnormal(vec(axis), axis);
+        matrixstack.top().transformnormal(vec(forward), forward);
         if(roll && usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll/RAD);
+            matrixstack.top().rotate_around_y(-roll/RAD);
         }
         if(orientation.x)
         {
-            matrixstack[0].rotate_around_z(orientation.x/RAD);
+            matrixstack.top().rotate_around_z(orientation.x/RAD);
         }
         if(orientation.y)
         {
-            matrixstack[0].rotate_around_x(orientation.y/RAD);
+            matrixstack.top().rotate_around_x(orientation.y/RAD);
         }
         if(orientation.z)
         {
-            matrixstack[0].rotate_around_y(-orientation.z/RAD);
+            matrixstack.top().rotate_around_y(-orientation.z/RAD);
         }
     }
     else
     {
-        matrixstack[0].settranslation(d->ragdoll->center);
+        matrixstack.top().settranslation(d->ragdoll->center);
         pitch = 0;
     }
     sizescale = size;
@@ -1435,8 +1437,9 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
 {
     vec axis(1, 0, 0), forward(0, 1, 0);
 
-    matrixpos = 0;
-    matrixstack[0].identity();
+    matrixstack = {};
+    matrixstack.push(matrix4());
+    matrixstack.top().identity();
     if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
     {
         float secs = lastmillis/1000.0f;
@@ -1444,35 +1447,35 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         pitch += spin.y*secs;
         roll += spin.z*secs;
 
-        matrixstack[0].settranslation(o);
-        matrixstack[0].rotate_around_z(yaw/RAD);
+        matrixstack.top().settranslation(o);
+        matrixstack.top().rotate_around_z(yaw/RAD);
         bool usepitch = pitched();
         if(roll && !usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll/RAD);
+            matrixstack.top().rotate_around_y(-roll/RAD);
         }
-        matrixstack[0].transformnormal(vec(axis), axis);
-        matrixstack[0].transformnormal(vec(forward), forward);
+        matrixstack.top().transformnormal(vec(axis), axis);
+        matrixstack.top().transformnormal(vec(forward), forward);
         if(roll && usepitch)
         {
-            matrixstack[0].rotate_around_y(-roll/RAD);
+            matrixstack.top().rotate_around_y(-roll/RAD);
         }
         if(orientation.x)
         {
-            matrixstack[0].rotate_around_z(orientation.x/RAD);
+            matrixstack.top().rotate_around_z(orientation.x/RAD);
         }
         if(orientation.y)
         {
-            matrixstack[0].rotate_around_x(orientation.y/RAD);
+            matrixstack.top().rotate_around_x(orientation.y/RAD);
         }
         if(orientation.z)
         {
-            matrixstack[0].rotate_around_y(-orientation.z/RAD);
+            matrixstack.top().rotate_around_y(-orientation.z/RAD);
         }
     }
     else
     {
-        matrixstack[0].settranslation(d->ragdoll->center);
+        matrixstack.top().settranslation(d->ragdoll->center);
         pitch = 0;
     }
 
