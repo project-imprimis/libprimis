@@ -97,7 +97,7 @@ class model
 
         virtual void preloadshaders() = 0;
         virtual void preloadmeshes() = 0;
-        virtual void cleanup() {}
+        virtual void cleanup() = 0;
 
         virtual void startrender() const = 0;
         virtual void endrender() const = 0;

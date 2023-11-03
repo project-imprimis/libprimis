@@ -471,7 +471,7 @@ class animmodel : public model
 
         ~animmodel();
 
-        void cleanup();
+        void cleanup() override final;
 
         virtual void flushpart() {}
 
