@@ -62,9 +62,6 @@ class stainrenderer
             StainFlag_Saturate   = 1<<5
         };
 
-        int flags, fadeintime, fadeouttime, timetolive;
-        int maxstains, startstain, endstain;
-
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
@@ -338,11 +335,6 @@ class stainrenderer
             verts[sbuf].render();
         }
 
-        ivec bbmin, bbmax;
-        vec staincenter, stainnormal, staintangent, stainbitangent;
-        float stainradius, stainu, stainv;
-        vec4<uchar> staincolor;
-
         void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, const cubeworld &world)
         {
             if(dir.iszero())
@@ -469,7 +461,13 @@ class stainrenderer
         }
 
     private:
+        int flags, fadeintime, fadeouttime, timetolive;
+        int maxstains, startstain, endstain;
 
+        ivec bbmin, bbmax;
+        vec staincenter, stainnormal, staintangent, stainbitangent;
+        float stainradius, stainu, stainv;
+        vec4<uchar> staincolor;
         Texture *tex;
 
         struct stainvert
