@@ -28,7 +28,7 @@ class model
         std::unique_ptr<BIH> bih;
         vec bbextend;
         float eyeheight, collidexyradius, collideheight;
-        const char *collidemodel;
+        std::string collidemodel;
         int collide, batch;
 
         virtual ~model()
@@ -158,7 +158,7 @@ class model
                                   eyeheight(0.9f),
                                   collidexyradius(0),
                                   collideheight(0),
-                                  collidemodel(nullptr),
+                                  collidemodel(""),
                                   collide(Collide_OrientedBoundingBox),
                                   batch(-1),
                                   name(name),

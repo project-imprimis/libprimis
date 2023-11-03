@@ -131,14 +131,13 @@ static void mdltricollide(char *collide)
     {
         return;
     }
-    delete[] loadingmodel->collidemodel;
-    loadingmodel->collidemodel = nullptr;
+    loadingmodel->collidemodel.clear();
     char *end = nullptr;
     int val = std::strtol(collide, &end, 0);
     if(*end)
     {
         val = 1;
-        loadingmodel->collidemodel = newstring(collide);
+        loadingmodel->collidemodel = std::string(collide);
     }
     loadingmodel->collide = val ? Collide_TRI : Collide_None;
 }
@@ -573,7 +572,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         }
     }
 
-    std::vector<const char *> col;
+    std::vector<std::string> col;
     for(uint i = 0; i < used.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
@@ -605,13 +604,13 @@ void preloadusedmapmodels(bool msg, bool bih)
             {
                 m->preloadBIH();
             }
-            else if(m->collide == Collide_TRI && !m->collidemodel && m->bih)
+            else if(m->collide == Collide_TRI && !m->collidemodel.size() && m->bih)
             {
                 m->setBIH();
             }
             m->preloadmeshes();
             m->preloadshaders();
-            if(m->collidemodel && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
+            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
             {
                 col.push_back(m->collidemodel);
             }
@@ -621,12 +620,12 @@ void preloadusedmapmodels(bool msg, bool bih)
     for(uint i = 0; i < col.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/col.size();
-        model *m = loadmodel(col[i], -1, msg);
+        model *m = loadmodel(col[i].c_str(), -1, msg);
         if(!m)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load collide model: %s", col[i]);
+                conoutf(Console_Warn, "could not load collide model: %s", col[i].c_str());
             }
         }
         else if(!m->bih)
