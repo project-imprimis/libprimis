@@ -67,9 +67,9 @@ static void getbackgroundres(int &w, int &h)
 }
 
 static std::string backgroundcaption   = "",
-                   backgroundmapname   = "";
+                   backgroundmapname   = "",
+                   backgroundmapinfo   = "";
 static Texture *backgroundmapshot = nullptr;
-static char *backgroundmapinfo    = nullptr;
 
 static void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
@@ -224,14 +224,14 @@ static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = 
     backgroundmapname = std::string(mapname ? mapname : "");
     if(mapinfo != backgroundmapinfo)
     {
-        delete[] backgroundmapinfo;
+        backgroundmapinfo = "";
         if(mapinfo)
         {
-            backgroundmapinfo = newstring(mapinfo);
+            backgroundmapinfo = std::string(mapinfo);
         }
         else
         {
-            backgroundmapinfo = nullptr;
+            backgroundmapinfo = "";
         }
     }
 }
@@ -276,7 +276,7 @@ static void restorebackground(int w, int h, bool force = false)
     }
     const char * caption = backgroundcaption.c_str()[0] ? backgroundcaption.c_str() : nullptr,
                * mapname = backgroundmapname.c_str()[0] ? backgroundmapname.c_str() : nullptr;
-    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
+    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo.c_str());
 }
 
 float loadprogress = 0;
