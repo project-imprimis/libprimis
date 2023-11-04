@@ -586,22 +586,19 @@ void updatevabb(vtxarray *va, bool force)
     va->bbmax.max(va->watermax);
     va->bbmin.min(va->glassmin);
     va->bbmax.max(va->glassmax);
-    for(uint i = 0; i < va->children.size(); i++)
+    for(vtxarray *child : va->children)
     {
-        vtxarray *child = va->children[i];
         updatevabb(child, force);
         va->bbmin.min(child->bbmin);
         va->bbmax.max(child->bbmax);
     }
-    for(uint i = 0; i < va->mapmodels.size(); i++)
+    for(octaentities *oe : va->mapmodels)
     {
-        octaentities *oe = va->mapmodels[i];
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
     }
-    for(uint i = 0; i < va->decals.size(); i++)
+    for(octaentities *oe : va->decals)
     {
-        octaentities *oe = va->decals[i];
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
     }
