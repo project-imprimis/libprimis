@@ -274,9 +274,7 @@ static void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    const char * caption = backgroundcaption.c_str()[0] ? backgroundcaption.c_str() : nullptr,
-               * mapname = backgroundmapname.c_str()[0] ? backgroundmapname.c_str() : nullptr;
-    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo.c_str());
+    renderbackgroundview(w, h, backgroundcaption.c_str(), backgroundmapshot, backgroundmapname.c_str(), backgroundmapinfo.c_str());
 }
 
 float loadprogress = 0;
