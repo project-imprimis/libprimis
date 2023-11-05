@@ -65,7 +65,7 @@ struct vertmodel : animmodel
         int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
-            minvert = 0xFFFF;
+            minvert = UINT_MAX;
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
