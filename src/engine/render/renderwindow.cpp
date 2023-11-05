@@ -222,10 +222,11 @@ static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = 
     backgroundcaption = std::string(caption ? caption : "");
     backgroundmapshot = mapshot;
     backgroundmapname = std::string(mapname ? mapname : "");
-    if(mapinfo != backgroundmapinfo)
+    std::string minfo = std::string(mapinfo ? mapinfo : "");
+    if(minfo != backgroundmapinfo)
     {
         backgroundmapinfo = "";
-        if(mapinfo)
+        if(!minfo.empty())
         {
             backgroundmapinfo = std::string(mapinfo);
         }
