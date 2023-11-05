@@ -27,7 +27,7 @@ struct vertmodel : animmodel
 
     struct tri
     {
-        ushort vert[3];
+        uint vert[3];
     };
 
     struct vbocacheentry

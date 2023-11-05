@@ -578,7 +578,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             }
         }
         // assign tris to tri array
-        else if(std::sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
+        else if(std::sscanf(buf, " tri %d %u %u %u", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
         {
             if(index>=0 && index<numtris)
             {

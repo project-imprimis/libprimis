@@ -51,7 +51,7 @@ struct skelmodel : animmodel
 
     struct tri
     {
-        ushort vert[3];
+        uint vert[3];
     };
 
     class blendcombo
