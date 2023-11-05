@@ -142,7 +142,7 @@ void vertmodel::vertmesh::assignvert(vvertg &vv, int j, const tcvert &tc, const 
     vv.tangent = v.tangent;
 }
 
-int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
+int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
 {
     voffset = offset;
     eoffset = idxs.size();
@@ -294,7 +294,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    std::vector<ushort> idxs;
+    std::vector<uint> idxs;
 
     vlen = 0;
     if(numframes>1)
@@ -335,7 +335,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(uint), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 

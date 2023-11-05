@@ -47,7 +47,7 @@ struct vertmodel : animmodel
         int numverts, numtris;
 
         int voffset, eoffset, elen;
-        ushort minvert, maxvert;
+        uint minvert, maxvert;
 
         vertmesh();
         virtual ~vertmesh();
@@ -62,7 +62,7 @@ struct vertmodel : animmodel
         static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
             eoffset = idxs.size();
@@ -91,20 +91,20 @@ struct vertmodel : animmodel
                         }
                         else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            idxs.push_back(static_cast<ushort>(vidx));
+                            idxs.push_back(static_cast<uint>(vidx));
                             minvert = std::min(minvert, idxs.back());
                             break;
                         }
                     }
                 }
             }
-            minvert = std::min(minvert, static_cast<ushort>(voffset));
-            maxvert = std::max(minvert, static_cast<ushort>(vverts.size()-1));
+            minvert = std::min(minvert, static_cast<uint>(voffset));
+            maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
             elen = idxs.size()-eoffset;
             return vverts.size()-voffset;
         }
 
-        int genvbo(std::vector<ushort> &idxs, int offset);
+        int genvbo(std::vector<uint> &idxs, int offset);
 
         template<class T>
         static void fillvert(T &vv, tcvert &tc, vert &v)
