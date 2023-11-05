@@ -166,7 +166,7 @@ void vertmodel::vertmesh::render()
     {
         return;
     }
-    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
+    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
 }
