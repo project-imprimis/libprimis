@@ -46,7 +46,7 @@ struct vertmodel : animmodel
         tri *tris;
         int numverts, numtris;
 
-        int voffset, eoffset, elen;
+        int voffset, elen;
         uint minvert, maxvert;
 
         vertmesh();
@@ -65,7 +65,6 @@ struct vertmodel : animmodel
         int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
-            eoffset = idxs.size();
             minvert = 0xFFFF;
             for(int i = 0; i < numtris; ++i)
             {
@@ -100,7 +99,7 @@ struct vertmodel : animmodel
             }
             minvert = std::min(minvert, static_cast<uint>(voffset));
             maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
-            elen = idxs.size()-eoffset;
+            elen = idxs.size();
             return vverts.size()-voffset;
         }
 
@@ -182,7 +181,6 @@ struct vertmodel : animmodel
         static constexpr int maxvbocache = 16;
         vbocacheentry vbocache[maxvbocache];
 
-        ushort *edata;
         GLuint ebuf;
         int vlen, vertsize;
         uchar *vdata;

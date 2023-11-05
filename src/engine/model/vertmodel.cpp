@@ -145,7 +145,6 @@ void vertmodel::vertmesh::assignvert(vvertg &vv, int j, const tcvert &tc, const 
 int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
 {
     voffset = offset;
-    eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
         const tri &t = tris[i];
@@ -156,7 +155,7 @@ int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
     }
     minvert = voffset;
     maxvert = voffset + numverts-1;
-    elen = idxs.size()-eoffset;
+    elen = idxs.size();
     return numverts;
 }
 
@@ -166,7 +165,7 @@ void vertmodel::vertmesh::render()
     {
         return;
     }
-    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
+    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, nullptr);
     glde++;
     xtravertsva += numverts;
 }
@@ -176,7 +175,7 @@ void vertmodel::vertmesh::render()
 //==============================================================================
 
 vertmodel::vertmeshgroup::vertmeshgroup()
-    : numframes(0), tags(nullptr), numtags(0), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vdata(nullptr)
+    : numframes(0), tags(nullptr), numtags(0), ebuf(0), vlen(0), vertsize(0), vdata(nullptr)
 {
 }
 
