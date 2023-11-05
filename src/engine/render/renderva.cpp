@@ -67,7 +67,7 @@ Occluder occlusionengine;
 
 namespace
 {
-    void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
+    void drawtris(GLsizei numindices, const GLvoid *indices, GLuint minvert, GLuint maxvert)
     {
         glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);
         glde++;
@@ -1719,7 +1719,7 @@ namespace
     {
         GLuint ebuf, vbuf;
         int offset, tris, next;
-        ushort minvert, maxvert;
+        GLuint minvert, maxvert;
     };
 
     struct shadowverts
@@ -1758,7 +1758,7 @@ namespace
             return table[h] = verts.size()-1;
         }
     } shadowverts;
-    std::array<std::vector<ushort>, 6> shadowtris;
+    std::array<std::vector<GLuint>, 6> shadowtris;
     std::vector<GLuint> shadowvbos;
     std::unordered_map<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
@@ -1766,7 +1766,7 @@ namespace
     struct shadowdrawinfo
     {
         int last;
-        ushort minvert, maxvert;
+        GLuint minvert, maxvert;
 
         shadowdrawinfo() : last(-1)
         {
@@ -1967,7 +1967,7 @@ namespace
         int i0 = shadowverts.add(v0),
             i1 = shadowverts.add(v1),
             i2 = shadowverts.add(v2);
-        ushort minvert = std::min(i0, std::min(i1, i2)),
+        GLuint minvert = std::min(i0, std::min(i1, i2)),
                maxvert = std::max(i0, std::max(i1, i2));
         for(int k = 0; k < sides; ++k)
         {

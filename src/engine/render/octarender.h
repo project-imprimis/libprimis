@@ -54,7 +54,7 @@ struct vtxarray
     ushort voffset, eoffset, skyoffset, decaloffset; // offset into vertex data
     ushort *edata, *skydata, *decaldata; // vertex indices
     GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
-    ushort minvert, maxvert; // DRE info
+    GLuint minvert, maxvert; // DRE info
     elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
     std::vector<materialsurface> matbuf;
     int verts,
