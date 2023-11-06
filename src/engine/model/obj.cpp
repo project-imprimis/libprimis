@@ -224,9 +224,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     {
                         tris.emplace_back();
                         tri &t = tris.back();
-                        t.vert[0] = static_cast<ushort>(*index);
-                        t.vert[1] = static_cast<ushort>(v1);
-                        t.vert[2] = static_cast<ushort>(v0);
+                        t.vert[0] = static_cast<uint>(*index);
+                        t.vert[1] = static_cast<uint>(v1);
+                        t.vert[2] = static_cast<uint>(v0);
                         v1 = *index;
                     }
                 }
