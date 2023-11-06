@@ -1263,9 +1263,9 @@ static partrenderer *parts[] =
 };
 
 //helper function to return int with # of entries in *parts[]
-static constexpr int numpartparts()
+static constexpr size_t numparts()
 {
-    return static_cast<int>(sizeof(parts)/sizeof(parts[0]));
+    return sizeof(parts)/sizeof(parts[0]);
 }
 
 void initparticles(); //need to prototype either the vars or the the function
@@ -1295,13 +1295,13 @@ void initparticles()
     {
         particletextshader = lookupshaderbyname("particletext");
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->init(parts[i]->parttype()&PT_FEW ? std::min(fewparticles, maxparticles) : maxparticles);
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
-        loadprogress = static_cast<float>(i+1)/numpartparts();
+        loadprogress = static_cast<float>(i+1)/numparts();
         parts[i]->preload();
     }
     loadprogress = 0;
@@ -1309,7 +1309,7 @@ void initparticles()
 
 void clearparticles()
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->reset();
     }
@@ -1318,7 +1318,7 @@ void clearparticles()
 
 void cleanupparticles()
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->cleanup();
     }
@@ -1326,7 +1326,7 @@ void cleanupparticles()
 
 void removetrackedparticles(physent *owner)
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->resettracked(owner);
     }
@@ -1341,7 +1341,7 @@ void GBuffer::renderparticles(int layer) const
     //want to debug BEFORE the lastpass render (that would delete particles)
     if(debugparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
-        for(int i = 0; i < numpartparts(); ++i)
+        for(size_t i = 0; i < numparts(); ++i)
         {
             parts[i]->debuginfo();
         }
@@ -1352,7 +1352,7 @@ void GBuffer::renderparticles(int layer) const
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
          excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         partrenderer *p = parts[i];
         if((p->parttype()&PT_NOLAYER) == excludemask || !p->haswork())
@@ -1900,7 +1900,7 @@ void cubeworld::updateparticles()
     {
         canemit = false;
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->update();
     }
