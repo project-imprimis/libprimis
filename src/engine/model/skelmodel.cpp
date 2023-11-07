@@ -1005,7 +1005,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    std::vector<ushort> idxs;
+    std::vector<GLuint> idxs;
 
     vlen = 0;
     vblends = 0;
@@ -1099,7 +1099,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(GLuint), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 
@@ -1434,7 +1434,7 @@ void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, const vert &v, blendcom
     c.serialize(vv);
 }
 
-int skelmodel::skelmesh::genvbo(std::vector<ushort> &idxs, int offset)
+int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset)
 {
     for(int i = 0; i < numverts; ++i)
     {
@@ -1480,7 +1480,7 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     {
         return;
     }
-    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
+    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
 }
