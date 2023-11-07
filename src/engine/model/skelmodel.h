@@ -203,7 +203,7 @@ struct skelmodel : animmodel
                             vverts.push_back(vv);
                             break;
                         }
-                        else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                        else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
                             minvert = std::min(minvert, idxs.emplace_back(static_cast<GLuint>(vidx)));
                             break;
