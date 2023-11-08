@@ -570,7 +570,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             }
         }
         //assign md5verts to vertinfo array
-        else if(std::sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
+        else if(std::sscanf(buf, " vert %d ( %f %f ) %u %u", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
         {
             if(index>=0 && index<numverts)
             {

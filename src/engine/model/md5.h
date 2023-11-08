@@ -27,7 +27,7 @@ class md5 final : public skelloader<md5>
         struct md5vert
         {
             vec2 tc;
-            ushort start, count;
+            uint start, count;
         };
 
         struct md5hierarchy
