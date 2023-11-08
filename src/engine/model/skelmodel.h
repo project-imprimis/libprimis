@@ -411,7 +411,7 @@ struct skelmodel : animmodel
 
         vbocacheentry vbocache[maxvbocache];
 
-        ushort *edata;
+        GLuint *edata;
         GLuint ebuf;
         int vlen, vertsize, vblends, vweights;
         uchar *vdata;
