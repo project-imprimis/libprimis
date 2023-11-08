@@ -488,7 +488,7 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val) co
     }
 }
 
-void skelmodel::skeleton::applybonemask(const ushort *mask, uchar *partmask, int partindex) const
+void skelmodel::skeleton::applybonemask(const uint *mask, uchar *partmask, int partindex) const
 {
     if(!mask || *mask==Bonemask_End)
     {
@@ -1758,7 +1758,7 @@ void skelmodel::skelpart::initanimparts()
     buildingpartmask = newpartmask();
 }
 
-bool skelmodel::skelpart::addanimpart(const ushort *bonemask)
+bool skelmodel::skelpart::addanimpart(const uint *bonemask)
 {
     if(!buildingpartmask || numanimparts>=maxanimparts)
     {

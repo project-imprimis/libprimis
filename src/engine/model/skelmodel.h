@@ -340,7 +340,7 @@ struct skelmodel : animmodel
             void initpitchdeps();
             void optimize();
             void expandbonemask(uchar *expansion, int bone, int val) const;
-            void applybonemask(const ushort *mask, uchar *partmask, int partindex) const;
+            void applybonemask(const uint *mask, uchar *partmask, int partindex) const;
             void linkchildren();
             int availgpubones() const;
             float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
@@ -531,7 +531,7 @@ struct skelmodel : animmodel
             }
 
             void initanimparts();
-            bool addanimpart(const ushort *bonemask);
+            bool addanimpart(const uint *bonemask);
             void loaded();
         private:
             animpartmask *buildingpartmask;
@@ -877,7 +877,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        std::vector<ushort> bonemask;
+        std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
@@ -953,7 +953,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        std::vector<ushort> bonemask;
+        std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
