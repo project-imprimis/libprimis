@@ -51,8 +51,6 @@ static model *loadingmodel = nullptr;
 #include "model/vertmodel.h"
 #include "model/skelmodel.h"
 
-#include "model/hitzone.h"
-
 model *loadmapmodel(int n)
 {
     if(static_cast<int>(mapmodels.size()) > n)

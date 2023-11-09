@@ -416,9 +416,7 @@ struct skelmodel : animmodel
         int vlen, vertsize, vblends, vweights;
         uchar *vdata;
 
-        skelhitdata *hitdata;
-
-        skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr), hitdata(nullptr)
+        skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr)
         {
             numblends.fill(0);
         }
@@ -491,9 +489,6 @@ struct skelmodel : animmodel
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
         //hitzone
-        void cleanuphitdata();
-        void deletehitdata();
-        void buildhitdata(const uchar *hitzones);
         void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray) const;
         //end hitzone.h
         void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
@@ -947,7 +942,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         part *p = static_cast<part *>(MDL::loading->parts.back());
         meshgroup *m = static_cast<meshgroup *>(p->meshes);
-        if(!m || m->hitdata)
+        if(!m)
         {
             return;
         }

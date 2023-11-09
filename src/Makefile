@@ -53,7 +53,6 @@ CLIENT_OBJS= \
 	engine/interface/textedit.o \
 	engine/interface/ui.o \
 	engine/model/animmodel.o \
-	engine/model/hitzone.o \
 	engine/model/md5.o \
 	engine/model/obj.o \
 	engine/model/ragdoll.o \

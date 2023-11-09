@@ -991,7 +991,6 @@ skelmodel::skelmeshgroup::~skelmeshgroup()
         }
     }
     delete[] vdata;
-    deletehitdata();
 }
 
 void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
@@ -1665,22 +1664,11 @@ void skelmodel::skelmeshgroup::cleanup()
     {
         skel->cleanup(false);
     }
-    cleanuphitdata();
 }
 
 void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
 {
-    if(!hitdata)
-    {
-        return;
-    }
-    if(skel->shouldcleanup())
-    {
-        skel->cleanup();
-    }
-    const skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
-    intersect(hitdata, p, sc, o, ray);
-    skel->calctags(p, &sc);
+    return;
 }
 
 void skelmodel::skelmeshgroup::preload()
