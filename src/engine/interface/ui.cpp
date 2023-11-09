@@ -2602,7 +2602,7 @@ namespace UI
                 Object::layout();
 
                 float k = drawscale(), tw, th;
-                ttr.ttfbounds(getstr(), tw, th);
+                ttr.ttfbounds(getstr(), tw, th, 42);
                 w = std::max(w, tw*k);
                 h = std::max(h, th*k);
             }

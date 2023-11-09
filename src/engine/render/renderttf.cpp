@@ -98,8 +98,9 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     }
 }
 
-void TTFRenderer::ttfbounds(const char *str, float &width, float &height)
+void TTFRenderer::ttfbounds(const char *str, float &width, float &height, int pts)
 {
+    fontsize(pts);
     ivec2 size = ttfsize(str);
     width = size.x;
     height = size.y;

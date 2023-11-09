@@ -23,7 +23,7 @@ class TTFRenderer
         //if the size does not exist already, creates a new one with the appropriate size
         void fontsize(int pts = 12);
 
-        void ttfbounds(const char *str, float &width, float &height);
+        void ttfbounds(const char *str, float &width, float &height, int pts);
         //returns the dimensions (x,y) of the rendered text, without paying the full cost of rendering
         ivec2 ttfsize(const char* message);
     private:
