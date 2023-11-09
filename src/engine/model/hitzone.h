@@ -54,6 +54,9 @@ class skelhitdata
                     delete[] nodes;
                 }
 
+                void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray);
+
+            private:
                 struct node
                 {
                     short split[2];
@@ -63,10 +66,6 @@ class skelhitdata
                     int childindex(int which) const;
                     bool isleaf(int which) const;
                 };
-
-                void intersect(const skelmodel::skelmeshgroup *m, const skelmodel::skin *s, const vec &o, const vec &ray);
-
-            private:
                 node *nodes;
                 int numnodes;
                 const skelhittri *tris;
