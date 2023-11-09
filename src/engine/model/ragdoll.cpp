@@ -495,7 +495,8 @@ void ragdolldata::move(dynent *pl, float ts)
         dpos.z -= 100*ts*ts;
         if(water)
         {
-            dpos.z += 0.25f*std::sin(detrnd(size_t(this)+i, 360)/RAD + lastmillis/10000.0f*M_PI)*ts;
+            //reinterpret cast pointer -> "random" seed value
+            dpos.z += 0.25f*std::sin(detrnd(reinterpret_cast<size_t>(this)+i, 360)/RAD + lastmillis/10000.0f*M_PI)*ts;
         }
         dpos.mul(std::pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
