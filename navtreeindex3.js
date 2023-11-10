@@ -1,5 +1,9 @@
 var NAVTREEINDEX3 =
 {
+"structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb":[10,0,26,4],
+"structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00":[10,0,26,7],
+"structselinfo.html#ae8353821d8834bf1fd29564adadc742d":[10,0,26,5],
+"structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d":[10,0,26,2],
 "structstd_1_1hash_3_01ivec_01_4.html":[10,0,1,0],
 "structstd_1_1hash_3_01vec_01_4.html":[10,0,1,1],
 "structstream.html":[10,0,30],
