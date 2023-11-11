@@ -270,8 +270,8 @@ class partrenderer
                     if(stain >= 0)
                     {
                         vec surface;
-                        float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius),
-                              collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
+                        std::optional<float> floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius);
+                        float collidez = !floorz.has_value() ? o.z-collideradius : p->val - floorz.value();
                         if(o.z >= collidez+collideerror)
                         {
                             p->val = collidez+collideerror;
