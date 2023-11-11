@@ -5,6 +5,8 @@
  * also included is utilities for gz archive support
  *
  */
+#include <sstream>
+
 #include "../libprimis-headers/cube.h"
 #include "stream.h"
 
@@ -164,8 +166,8 @@ done:
 string homedir = "";
 struct packagedir
 {
-    char *dir, *filter;
-    size_t dirlen, filterlen;
+    std::string dir;
+    std::string filter;
 };
 static std::vector<packagedir> packagedirs;
 
@@ -271,6 +273,73 @@ char *path(char *s)
         }
     }
     return s;
+}
+
+std::string path(std::string s)
+{
+    std::string truncated_path, processed_path;
+
+    size_t path_begin = 0,
+           path_end = s.length();
+
+    // Find the in-line command segment and skip it
+    if(s.find('<') != std::string::npos)
+    {
+        size_t command_end = s.rfind('>');
+        if(command_end != std::string::npos)
+        {
+            path_begin = command_end + 1;
+        }
+    }
+
+    // Find the conjugated path and cut it
+    if(s.find('&') != std::string::npos)
+    {
+        path_end = s.find('&');
+    }
+
+    truncated_path = s.substr(path_begin, path_end - path_begin);
+
+    // Handle "."" and ".."" in the path
+    std::istringstream path_stream(truncated_path);
+    std::stack<std::string> path_stack;
+    std::string token;
+
+    // Construct a stack of path tokens
+    while(std::getline(path_stream, token, '/'))
+    {
+        if(token == "..")
+        {
+            if(!path_stack.empty())
+            {
+                path_stack.pop();
+            }
+            else
+            {
+                path_stack.push(token);
+            }
+        }
+        else if(!token.empty() && token != ".")
+        {
+            path_stack.push(token);
+        }
+    }
+
+    // Re-construct the processed path from the stack
+    while(!path_stack.empty())
+    {
+        if(path_stack.size() > 1)
+        {
+            processed_path = "/" + path_stack.top() + processed_path;
+        }
+        else
+        {
+            processed_path = path_stack.top() + processed_path;
+        }
+        path_stack.pop();
+    }
+
+    return processed_path;
 }
 
 char *copypath(const char *s)
@@ -408,12 +477,10 @@ const char *addpackagedir(const char *dir)
         filter += len;
     }
     packagedir pf;
-    pf.dir = filter ? newstring(pdir, filter-pdir) : newstring(pdir);
-    pf.dirlen = filter ? filter-pdir : std::strlen(pdir);
-    pf.filter = filter ? newstring(filter) : nullptr;
-    pf.filterlen = filter ? std::strlen(filter) : 0;
+    pf.dir = filter ? std::string(pdir, filter-pdir) : std::string(pdir);
+    pf.filter = filter ? std::string(filter) : "";
     packagedirs.push_back(pf);
-    return pf.dir;
+    return pf.dir.c_str();
 }
 
 const char *findfile(const char *filename, const char *mode)
@@ -450,11 +517,11 @@ const char *findfile(const char *filename, const char *mode)
     }
     for(const packagedir &pf : packagedirs)
     {
-        if(pf.filter && std::strncmp(filename, pf.filter, pf.filterlen))
+        if(pf.filter.size() > 0 && std::strncmp(filename, pf.filter.c_str(), pf.filter.size()))
         {
             continue;
         }
-        formatstring(s, "%s%s", pf.dir, filename);
+        formatstring(s, "%s%s", pf.dir.c_str(), filename);
         if(fileexists(s, mode))
         {
             return s;
@@ -558,11 +625,11 @@ int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
     }
     for(const packagedir &pf : packagedirs)
     {
-        if(pf.filter && std::strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
+        if(pf.filter.size() && std::strncmp(dirname, pf.filter.c_str(), dirlen == pf.filter.size()-1 ? dirlen : pf.filter.size()))
         {
             continue;
         }
-        formatstring(s, "%s%s", pf.dir, dirname);
+        formatstring(s, "%s%s", pf.dir.c_str(), dirname);
         if(listdir(s, false, ext, files))
         {
             dirs++;
@@ -809,475 +876,476 @@ struct filestream : stream
 
 VAR(debuggz, 0, 0, 1); //toggles gz checking routines
 
-struct gzstream : stream
+class gzstream : public stream
 {
-    enum GzHeader
-    {
-        MAGIC1   = 0x1F,
-        MAGIC2   = 0x8B,
-        BUFSIZE  = 16384,
-        OS_UNIX  = 0x03
-    };
-
-    enum GzFlags
-    {
-        F_ASCII    = 0x01,
-        F_CRC      = 0x02,
-        F_EXTRA    = 0x04,
-        F_NAME     = 0x08,
-        F_COMMENT  = 0x10,
-        F_RESERVED = 0xE0
-    };
-
-    stream *file;
-    z_stream zfile;
-    uchar *buf;
-    bool reading, writing, autoclose;
-    uint crc;
-    size_t headersize;
-
-    gzstream() : file(nullptr), buf(nullptr), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
-    {
-        zfile.zalloc = nullptr;
-        zfile.zfree = nullptr;
-        zfile.opaque = nullptr;
-        zfile.next_in = zfile.next_out = nullptr;
-        zfile.avail_in = zfile.avail_out = 0;
-    }
-
-    ~gzstream()
-    {
-        close();
-    }
-
-    void writeheader()
-    {
-        uchar header[] = { MAGIC1, MAGIC2, Z_DEFLATED, 0, 0, 0, 0, 0, 0, OS_UNIX };
-        file->write(header, sizeof(header));
-    }
-
-    void readbuf(size_t size = BUFSIZE)
-    {
-        if(!zfile.avail_in)
+    public:
+        gzstream() : file(nullptr), buf(nullptr), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
         {
-            zfile.next_in = static_cast<Bytef *>(buf);
-        }
-        size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
-        size_t n = file->read(zfile.next_in + zfile.avail_in, size);
-        if(n > 0)
-        {
-            zfile.avail_in += n;
-        }
-    }
-
-    uchar readbyte(size_t size = BUFSIZE)
-    {
-        if(!zfile.avail_in)
-        {
-            readbuf(size);
-        }
-        if(!zfile.avail_in)
-        {
-            return 0;
-        }
-        zfile.avail_in--;
-        return *static_cast<uchar *>(zfile.next_in++);
-    }
-
-    void skipbytes(size_t n)
-    {
-        while(n > 0 && zfile.avail_in > 0)
-        {
-            size_t skipped = std::min(n, static_cast<size_t>(zfile.avail_in));
-            zfile.avail_in -= skipped;
-            zfile.next_in += skipped;
-            n -= skipped;
-        }
-        if(n <= 0)
-        {
-            return;
-        }
-        file->seek(n, SEEK_CUR);
-    }
-
-    bool checkheader()
-    {
-        readbuf(10);
-        if(readbyte() != MAGIC1 || readbyte() != MAGIC2 || readbyte() != Z_DEFLATED)
-        {
-            return false;
-        }
-        uchar flags = readbyte();
-        if(flags & F_RESERVED)
-        {
-            return false;
-        }
-        skipbytes(6);
-        if(flags & F_EXTRA)
-        {
-            size_t len = readbyte(512);
-            len |= static_cast<size_t>(readbyte(512))<<8;
-            skipbytes(len);
-        }
-        if(flags & F_NAME)
-        {
-            while(readbyte(512))
-            {
-                //(empty body)
-            }
-        }
-        if(flags & F_COMMENT)
-        {
-            while(readbyte(512))
-            {
-                //(empty body)
-            }
-        }
-        if(flags & F_CRC)
-        {
-            skipbytes(2);
-        }
-        headersize = static_cast<size_t>(file->tell() - zfile.avail_in);
-        return zfile.avail_in > 0 || !file->end();
-    }
-
-    bool open(stream *f, const char *mode, bool needclose, int level)
-    {
-        if(file)
-        {
-            return false;
-        }
-        for(; *mode; mode++)
-        {
-            if(*mode=='r')
-            {
-                reading = true;
-                break;
-            }
-            else if(*mode=='w')
-            {
-                writing = true;
-                break;
-            }
-        }
-        if(reading)
-        {
-            if(inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
-            {
-                reading = false;
-            }
-        }
-        else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, std::min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
-        {
-            writing = false;
-        }
-        if(!reading && !writing)
-        {
-            return false;
-        }
-        file = f;
-        crc = crc32(0, nullptr, 0);
-        buf = new uchar[BUFSIZE];
-        if(reading)
-        {
-            if(!checkheader())
-            {
-                stopreading();
-                return false;
-            }
-        }
-        else if(writing)
-        {
-            writeheader();
-        }
-        autoclose = needclose;
-        return true;
-    }
-
-    uint getcrc()
-    {
-        return crc;
-    }
-
-    void finishreading()
-    {
-        if(!reading)
-        {
-            return;
-        }
-        if(debuggz)
-        {
-            uint checkcrc = 0,
-                 checksize = 0;
-            for(int i = 0; i < 4; ++i)
-            {
-                checkcrc |= static_cast<uint>(readbyte()) << (i*8);
-            }
-            for(int i = 0; i < 4; ++i)
-            {
-                checksize |= static_cast<uint>(readbyte()) << (i*8);
-            }
-            if(checkcrc != crc)
-            {
-                conoutf(Console_Debug, "gzip crc check failed: read %X, calculated %X", checkcrc, crc);
-            }
-            if(checksize != zfile.total_out)
-            {
-                conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, static_cast<uint>(zfile.total_out));
-            }
-        }
-    }
-
-    void stopreading()
-    {
-        if(!reading)
-        {
-            return;
-        }
-        inflateEnd(&zfile);
-        reading = false;
-    }
-
-    void finishwriting()
-    {
-        if(!writing)
-        {
-            return;
-        }
-        for(;;)
-        {
-            int err = zfile.avail_out > 0 ? deflate(&zfile, Z_FINISH) : Z_OK;
-            if(err != Z_OK && err != Z_STREAM_END)
-            {
-                break;
-            }
-            flushbuf();
-            if(err == Z_STREAM_END)
-            {
-                break;
-            }
-        }
-        uchar trailer[8] =
-        {
-            static_cast<uchar>(crc&0xFF), static_cast<uchar>((crc>>8)&0xFF), static_cast<uchar>((crc>>16)&0xFF), static_cast<uchar>((crc>>24)&0xFF),
-            static_cast<uchar>(zfile.total_in&0xFF), static_cast<uchar>((zfile.total_in>>8)&0xFF), static_cast<uchar>((zfile.total_in>>16)&0xFF), static_cast<uchar>((zfile.total_in>>24)&0xFF)
-        };
-        file->write(trailer, sizeof(trailer));
-    }
-
-    void stopwriting()
-    {
-        if(!writing)
-        {
-            return;
-        }
-        deflateEnd(&zfile);
-        writing = false;
-    }
-
-    void close()
-    {
-        if(reading)
-        {
-            finishreading();
-        }
-        stopreading();
-        if(writing)
-        {
-            finishwriting();
-        }
-        stopwriting();
-        delete[] buf;
-        buf = nullptr;
-        if(autoclose)
-        {
-            if(file)
-            {
-                delete file;
-                file = nullptr;
-            }
-        }
-    }
-
-    bool end()
-    {
-        return !reading && !writing;
-    }
-
-    offset tell()
-    {
-        return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
-    }
-
-    offset rawtell()
-    {
-        return file ? file->tell() : offset(-1);
-    }
-
-    offset size()
-    {
-        if(!file)
-        {
-            return -1;
-        }
-        offset pos = tell();
-        if(!file->seek(-4, SEEK_END))
-        {
-            return -1;
-        }
-        uint isize = file->get<uint>();
-        return file->seek(pos, SEEK_SET) ? isize : offset(-1);
-    }
-
-    offset rawsize()
-    {
-        return file ? file->size() : offset(-1);
-    }
-
-    bool seek(offset pos, int whence)
-    {
-        if(writing || !reading)
-        {
-            return false;
+            zfile.zalloc = nullptr;
+            zfile.zfree = nullptr;
+            zfile.opaque = nullptr;
+            zfile.next_in = zfile.next_out = nullptr;
+            zfile.avail_in = zfile.avail_out = 0;
         }
 
-        if(whence == SEEK_END)
+        ~gzstream()
         {
-            uchar skip[512];
-            while(read(skip, sizeof(skip)) == sizeof(skip))
-            {
-                //(empty body)
-            }
-            return !pos;
-        }
-        else if(whence == SEEK_CUR)
-        {
-            pos += zfile.total_out;
-        }
-        if(pos >= static_cast<offset>(zfile.total_out))
-        {
-            pos -= zfile.total_out;
-        }
-        else if(pos < 0 || !file->seek(headersize, SEEK_SET))
-        {
-            return false;
-        }
-        else
-        {
-            if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
-            {
-                zfile.avail_in += zfile.total_in;
-                zfile.next_in -= zfile.total_in;
-            }
-            else
-            {
-                zfile.avail_in = 0;
-                zfile.next_in = nullptr;
-            }
-            inflateReset(&zfile);
-            crc = crc32(0, nullptr, 0);
+            close();
         }
 
-        uchar skip[512];
-        while(pos > 0)
+        void writeheader()
         {
-            size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
-            if(read(skip, skipped) != skipped)
-            {
-                stopreading();
-                return false;
-            }
-            pos -= skipped;
+            uchar header[] = { MAGIC1, MAGIC2, Z_DEFLATED, 0, 0, 0, 0, 0, 0, OS_UNIX };
+            file->write(header, sizeof(header));
         }
 
-        return true;
-    }
-
-    size_t read(void *buf, size_t len)
-    {
-        if(!reading || !buf || !len)
-        {
-            return 0;
-        }
-        zfile.next_out = static_cast<Bytef *>(buf);
-        zfile.avail_out = len;
-        while(zfile.avail_out > 0)
+        void readbuf(size_t size = BUFSIZE)
         {
             if(!zfile.avail_in)
             {
-                readbuf(BUFSIZE);
+                zfile.next_in = static_cast<Bytef *>(buf);
+            }
+            size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+            size_t n = file->read(zfile.next_in + zfile.avail_in, size);
+            if(n > 0)
+            {
+                zfile.avail_in += n;
+            }
+        }
+
+        uchar readbyte(size_t size = BUFSIZE)
+        {
+            if(!zfile.avail_in)
+            {
+                readbuf(size);
+            }
+            if(!zfile.avail_in)
+            {
+                return 0;
+            }
+            zfile.avail_in--;
+            return *static_cast<uchar *>(zfile.next_in++);
+        }
+
+        void skipbytes(size_t n)
+        {
+            while(n > 0 && zfile.avail_in > 0)
+            {
+                size_t skipped = std::min(n, static_cast<size_t>(zfile.avail_in));
+                zfile.avail_in -= skipped;
+                zfile.next_in += skipped;
+                n -= skipped;
+            }
+            if(n <= 0)
+            {
+                return;
+            }
+            file->seek(n, SEEK_CUR);
+        }
+
+        bool checkheader()
+        {
+            readbuf(10);
+            if(readbyte() != MAGIC1 || readbyte() != MAGIC2 || readbyte() != Z_DEFLATED)
+            {
+                return false;
+            }
+            uchar flags = readbyte();
+            if(flags & F_RESERVED)
+            {
+                return false;
+            }
+            skipbytes(6);
+            if(flags & F_EXTRA)
+            {
+                size_t len = readbyte(512);
+                len |= static_cast<size_t>(readbyte(512))<<8;
+                skipbytes(len);
+            }
+            if(flags & F_NAME)
+            {
+                while(readbyte(512))
+                {
+                    //(empty body)
+                }
+            }
+            if(flags & F_COMMENT)
+            {
+                while(readbyte(512))
+                {
+                    //(empty body)
+                }
+            }
+            if(flags & F_CRC)
+            {
+                skipbytes(2);
+            }
+            headersize = static_cast<size_t>(file->tell() - zfile.avail_in);
+            return zfile.avail_in > 0 || !file->end();
+        }
+
+        bool open(stream *f, const char *mode, bool needclose, int level)
+        {
+            if(file)
+            {
+                return false;
+            }
+            for(; *mode; mode++)
+            {
+                if(*mode=='r')
+                {
+                    reading = true;
+                    break;
+                }
+                else if(*mode=='w')
+                {
+                    writing = true;
+                    break;
+                }
+            }
+            if(reading)
+            {
+                if(inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
+                {
+                    reading = false;
+                }
+            }
+            else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, std::min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
+            {
+                writing = false;
+            }
+            if(!reading && !writing)
+            {
+                return false;
+            }
+            file = f;
+            crc = crc32(0, nullptr, 0);
+            buf = new uchar[BUFSIZE];
+            if(reading)
+            {
+                if(!checkheader())
+                {
+                    stopreading();
+                    return false;
+                }
+            }
+            else if(writing)
+            {
+                writeheader();
+            }
+            autoclose = needclose;
+            return true;
+        }
+
+        uint getcrc()
+        {
+            return crc;
+        }
+
+        void finishreading()
+        {
+            if(!reading)
+            {
+                return;
+            }
+            if(debuggz)
+            {
+                uint checkcrc = 0,
+                     checksize = 0;
+                for(int i = 0; i < 4; ++i)
+                {
+                    checkcrc |= static_cast<uint>(readbyte()) << (i*8);
+                }
+                for(int i = 0; i < 4; ++i)
+                {
+                    checksize |= static_cast<uint>(readbyte()) << (i*8);
+                }
+                if(checkcrc != crc)
+                {
+                    conoutf(Console_Debug, "gzip crc check failed: read %X, calculated %X", checkcrc, crc);
+                }
+                if(checksize != zfile.total_out)
+                {
+                    conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, static_cast<uint>(zfile.total_out));
+                }
+            }
+        }
+
+        void stopreading()
+        {
+            if(!reading)
+            {
+                return;
+            }
+            inflateEnd(&zfile);
+            reading = false;
+        }
+
+        void finishwriting()
+        {
+            if(!writing)
+            {
+                return;
+            }
+            for(;;)
+            {
+                int err = zfile.avail_out > 0 ? deflate(&zfile, Z_FINISH) : Z_OK;
+                if(err != Z_OK && err != Z_STREAM_END)
+                {
+                    break;
+                }
+                flushbuf();
+                if(err == Z_STREAM_END)
+                {
+                    break;
+                }
+            }
+            uchar trailer[8] =
+            {
+                static_cast<uchar>(crc&0xFF), static_cast<uchar>((crc>>8)&0xFF), static_cast<uchar>((crc>>16)&0xFF), static_cast<uchar>((crc>>24)&0xFF),
+                static_cast<uchar>(zfile.total_in&0xFF), static_cast<uchar>((zfile.total_in>>8)&0xFF), static_cast<uchar>((zfile.total_in>>16)&0xFF), static_cast<uchar>((zfile.total_in>>24)&0xFF)
+            };
+            file->write(trailer, sizeof(trailer));
+        }
+
+        void stopwriting()
+        {
+            if(!writing)
+            {
+                return;
+            }
+            deflateEnd(&zfile);
+            writing = false;
+        }
+
+        void close()
+        {
+            if(reading)
+            {
+                finishreading();
+            }
+            stopreading();
+            if(writing)
+            {
+                finishwriting();
+            }
+            stopwriting();
+            delete[] buf;
+            buf = nullptr;
+            if(autoclose)
+            {
+                if(file)
+                {
+                    delete file;
+                    file = nullptr;
+                }
+            }
+        }
+
+        bool end()
+        {
+            return !reading && !writing;
+        }
+
+        offset tell()
+        {
+            return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
+        }
+
+        offset rawtell()
+        {
+            return file ? file->tell() : offset(-1);
+        }
+
+        offset size()
+        {
+            if(!file)
+            {
+                return -1;
+            }
+            offset pos = tell();
+            if(!file->seek(-4, SEEK_END))
+            {
+                return -1;
+            }
+            uint isize = file->get<uint>();
+            return file->seek(pos, SEEK_SET) ? isize : offset(-1);
+        }
+
+        offset rawsize()
+        {
+            return file ? file->size() : offset(-1);
+        }
+
+        bool seek(offset pos, int whence)
+        {
+            if(writing || !reading)
+            {
+                return false;
+            }
+
+            if(whence == SEEK_END)
+            {
+                uchar skip[512];
+                while(read(skip, sizeof(skip)) == sizeof(skip))
+                {
+                    //(empty body)
+                }
+                return !pos;
+            }
+            else if(whence == SEEK_CUR)
+            {
+                pos += zfile.total_out;
+            }
+            if(pos >= static_cast<offset>(zfile.total_out))
+            {
+                pos -= zfile.total_out;
+            }
+            else if(pos < 0 || !file->seek(headersize, SEEK_SET))
+            {
+                return false;
+            }
+            else
+            {
+                if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
+                {
+                    zfile.avail_in += zfile.total_in;
+                    zfile.next_in -= zfile.total_in;
+                }
+                else
+                {
+                    zfile.avail_in = 0;
+                    zfile.next_in = nullptr;
+                }
+                inflateReset(&zfile);
+                crc = crc32(0, nullptr, 0);
+            }
+
+            uchar skip[512];
+            while(pos > 0)
+            {
+                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
+                if(read(skip, skipped) != skipped)
+                {
+                    stopreading();
+                    return false;
+                }
+                pos -= skipped;
+            }
+
+            return true;
+        }
+
+        size_t read(void *buf, size_t len)
+        {
+            if(!reading || !buf || !len)
+            {
+                return 0;
+            }
+            zfile.next_out = static_cast<Bytef *>(buf);
+            zfile.avail_out = len;
+            while(zfile.avail_out > 0)
+            {
                 if(!zfile.avail_in)
+                {
+                    readbuf(BUFSIZE);
+                    if(!zfile.avail_in)
+                    {
+                        stopreading();
+                        break;
+                    }
+                }
+                int err = inflate(&zfile, Z_NO_FLUSH);
+                if(err == Z_STREAM_END)
+                {
+                    crc = crc32(crc, static_cast<Bytef *>(buf), len - zfile.avail_out);
+                    finishreading();
+                    stopreading();
+                    return len - zfile.avail_out;
+                }
+                else if(err != Z_OK)
                 {
                     stopreading();
                     break;
                 }
             }
-            int err = inflate(&zfile, Z_NO_FLUSH);
-            if(err == Z_STREAM_END)
-            {
-                crc = crc32(crc, static_cast<Bytef *>(buf), len - zfile.avail_out);
-                finishreading();
-                stopreading();
-                return len - zfile.avail_out;
-            }
-            else if(err != Z_OK)
-            {
-                stopreading();
-                break;
-            }
+            crc = crc32(crc, reinterpret_cast<Bytef *>(buf), len - zfile.avail_out);
+            return len - zfile.avail_out;
         }
-        crc = crc32(crc, reinterpret_cast<Bytef *>(buf), len - zfile.avail_out);
-        return len - zfile.avail_out;
-    }
 
-    bool flushbuf(bool full = false)
-    {
-        if(full)
+        bool flushbuf(bool full = false)
         {
-            deflate(&zfile, Z_SYNC_FLUSH);
-        }
-        if(zfile.next_out && zfile.avail_out < BUFSIZE)
-        {
-            if(file->write(buf, BUFSIZE - zfile.avail_out) != BUFSIZE - zfile.avail_out || (full && !file->flush()))
+            if(full)
             {
-                return false;
+                deflate(&zfile, Z_SYNC_FLUSH);
             }
+            if(zfile.next_out && zfile.avail_out < BUFSIZE)
+            {
+                if(file->write(buf, BUFSIZE - zfile.avail_out) != BUFSIZE - zfile.avail_out || (full && !file->flush()))
+                {
+                    return false;
+                }
+            }
+            zfile.next_out = buf;
+            zfile.avail_out = BUFSIZE;
+            return true;
         }
-        zfile.next_out = buf;
-        zfile.avail_out = BUFSIZE;
-        return true;
-    }
 
-    bool flush()
-    {
-        return flushbuf(true);
-    }
+        bool flush()
+        {
+            return flushbuf(true);
+        }
 
-    size_t write(const void *buf, size_t len)
-    {
-        if(!writing || !buf || !len)
+        size_t write(const void *buf, size_t len)
         {
-            return 0;
+            if(!writing || !buf || !len)
+            {
+                return 0;
+            }
+            zfile.next_in = static_cast<Bytef *>(const_cast<void *>(buf)); //cast away constness, then to Bytef
+            zfile.avail_in = len;
+            while(zfile.avail_in > 0)
+            {
+                if(!zfile.avail_out && !flushbuf())
+                {
+                    stopwriting();
+                    break;
+                }
+                int err = deflate(&zfile, Z_NO_FLUSH);
+                if(err != Z_OK)
+                {
+                    stopwriting();
+                    break;
+                }
+            }
+            crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(buf)), len - zfile.avail_in);
+            return len - zfile.avail_in;
         }
-        zfile.next_in = static_cast<Bytef *>(const_cast<void *>(buf)); //cast away constness, then to Bytef
-        zfile.avail_in = len;
-        while(zfile.avail_in > 0)
+    private:
+        enum GzHeader
         {
-            if(!zfile.avail_out && !flushbuf())
-            {
-                stopwriting();
-                break;
-            }
-            int err = deflate(&zfile, Z_NO_FLUSH);
-            if(err != Z_OK)
-            {
-                stopwriting();
-                break;
-            }
-        }
-        crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(buf)), len - zfile.avail_in);
-        return len - zfile.avail_in;
-    }
+            MAGIC1   = 0x1F,
+            MAGIC2   = 0x8B,
+            BUFSIZE  = 16384,
+            OS_UNIX  = 0x03
+        };
+
+        enum GzFlags
+        {
+            F_ASCII    = 0x01,
+            F_CRC      = 0x02,
+            F_EXTRA    = 0x04,
+            F_NAME     = 0x08,
+            F_COMMENT  = 0x10,
+            F_RESERVED = 0xE0
+        };
+
+        stream *file;
+        z_stream zfile;
+        uchar *buf;
+        bool reading, writing, autoclose;
+        uint crc;
+        size_t headersize;
 };
 
 stream *openrawfile(const char *filename, const char *mode)

@@ -59,30 +59,20 @@ void setsunlightdir()
 
 void brightencube(cube &c)
 {
-    static const surfaceinfo brightsurfaces[6] =
-    {
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface,
-        topsurface
-    };
-
     if(!c.ext)
     {
         newcubeext(c, 0, false);
     }
-    std::memcpy(c.ext->surfaces, brightsurfaces, sizeof(brightsurfaces));
+    c.ext->surfaces.fill(surfaceinfo());
 }
 
-void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int numverts)
+void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
 {
     if(!c.ext || c.ext->maxverts < numverts)
     {
         newcubeext(c, numverts, false);
     }
-    std::memcpy(c.ext->surfaces, surfs, sizeof(c.ext->surfaces));
+    std::copy(c.ext->surfaces.begin(), c.ext->surfaces.end(), surfs.begin());
     std::memcpy(c.ext->verts(), verts, numverts*sizeof(vertinfo));
 }
 
@@ -99,7 +89,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             beforeoffset = 0;
         for(int i = 0; i < orient; ++i)
         {
-            surfaceinfo &surf = c.ext->surfaces[i];
+            const surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
             if(!numverts)
             {
@@ -112,7 +102,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             afteroffset = c.ext->maxverts;
         for(int i = 5; i > orient; i--) //note reverse iteration
         {
-            surfaceinfo &surf = c.ext->surfaces[i];
+            const surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
             if(!numverts)
             {
@@ -131,7 +121,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             if(numbefore + numsrcverts + numafter > c.ext->maxverts)
             {
                 ext = growcubeext(c.ext, numbefore + numsrcverts + numafter);
-                std::memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
+                std::copy(ext->surfaces.begin(), ext->surfaces.end(), c.ext->surfaces.begin());
             }
             int offset = 0;
             if(numbefore == beforeoffset)
@@ -340,7 +330,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     available = std::max(child1->available, child2->available);
 }
 
-static void clearsurfaces(cube *c)
+static void clearsurfaces(std::array<cube, 8> &c)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -373,7 +363,7 @@ static void clearsurfaces(cube *c)
         }
         if(c[i].children)
         {
-            clearsurfaces(c[i].children);
+            clearsurfaces(*(c[i].children));
         }
     }
 }
@@ -424,14 +414,12 @@ void clearlightcache(int id)
     }
 }
 
-static uint lightprogress = 0;
-
 static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
 {
-    surfaceinfo surfaces[6];
+    std::array<surfaceinfo, 6> surfaces;
     vertinfo litverts[6*2*Face_MaxVerts];
     int numlitverts = 0;
-    std::memset(surfaces, 0, sizeof(surfaces));
+    surfaces.fill(surfaceinfo());
     for(int i = 0; i < 6; ++i) //for each face of the cube
     {
         int usefaces = usefacemask&0xF;
@@ -442,8 +430,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             {
                 continue;
             }
-            surfaceinfo &surf = surfaces[i];
-            surf = c.ext->surfaces[i];
+            surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
             if(numverts)
             {
@@ -470,7 +457,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             convex = 0;
         if(numverts)
         {
-            vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
+            const vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
             for(int j = 0; j < numverts; ++j)
             {
                 curlitverts[j].set(verts[j].getxyz());
@@ -493,7 +480,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
         else
         {
-            ivec v[4];
+            std::array<ivec, 4> v;
             genfaceverts(c, i, v);
             if(!flataxisface(c, i))
             {
@@ -589,13 +576,12 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     }
     else
     {
-        for(int k = 0; k < 6; ++k)
+        for(const surfaceinfo &surf : surfaces)
         {
-            surfaceinfo &surf = surfaces[k];
             if(surf.used())
             {
                 cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-                std::memcpy(ext->surfaces, surfaces, sizeof(ext->surfaces));
+                std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
                 std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
                 if(c.ext != ext)
                 {
@@ -607,24 +593,22 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     }
 }
 
-static void calcsurfaces(cube *c, const ivec &co, int size)
+static void calcsurfaces(std::array<cube, 8> &c, const ivec &co, int size)
 {
-    lightprogress++;
-
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children)
         {
-            calcsurfaces(c[i].children, o, size >> 1);
+            calcsurfaces(*(c[i].children), o, size >> 1);
         }
         else if(!(c[i].isempty()))
         {
             if(c[i].ext)
             {
-                for(int j = 0; j < 6; ++j)
+                for(surfaceinfo &s : c[i].ext->surfaces)
                 {
-                    c[i].ext->surfaces[j].clear();
+                    s.clear();
                 }
             }
             int usefacemask = 0;
@@ -646,10 +630,9 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 void cubeworld::calclight()
 {
     remip();
-    clearsurfaces(worldroot);
-    lightprogress = 0;
+    clearsurfaces(*worldroot);
     calcnormals(filltjoints > 0);
-    calcsurfaces(worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
+    calcsurfaces(*worldroot, ivec(0, 0, 0), rootworld.mapsize() >> 1);
     clearnormals();
     allchanged();
 }

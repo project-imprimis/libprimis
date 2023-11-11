@@ -66,10 +66,10 @@ static void getbackgroundres(int &w, int &h)
     h = static_cast<int>(std::ceil(h*hk));
 }
 
-static string backgroundcaption   = "",
-              backgroundmapname   = "";
+static std::string backgroundcaption   = "",
+                   backgroundmapname   = "",
+                   backgroundmapinfo   = "";
 static Texture *backgroundmapshot = nullptr;
-static char *backgroundmapinfo    = nullptr;
 
 static void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
@@ -135,7 +135,7 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, Text
           logo_x = 0.5f*(win_w - logo_w),
           logo_y = 0.5f*(win_h*0.5f - logo_h);
 
-    settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw > 1280 || hudh > 800)
+    settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw() > 1280 || hudh() > 800)
               ? "<premul>media/interface/logo_1024.png" //1024x wide logo
               : "<premul>media/interface/logo.png", //512x wide logo for small screens
         3);
@@ -219,19 +219,20 @@ void swapbuffers(bool)
 static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
 {
     renderedframe = false;
-    copystring(backgroundcaption, caption ? caption : "");
+    backgroundcaption = std::string(caption ? caption : "");
     backgroundmapshot = mapshot;
-    copystring(backgroundmapname, mapname ? mapname : "");
-    if(mapinfo != backgroundmapinfo)
+    backgroundmapname = std::string(mapname ? mapname : "");
+    std::string minfo = std::string(mapinfo ? mapinfo : "");
+    if(minfo != backgroundmapinfo)
     {
-        delete[] backgroundmapinfo;
-        if(mapinfo)
+        backgroundmapinfo = "";
+        if(!minfo.empty())
         {
-            backgroundmapinfo = newstring(mapinfo);
+            backgroundmapinfo = std::string(mapinfo);
         }
         else
         {
-            backgroundmapinfo = nullptr;
+            backgroundmapinfo = "";
         }
     }
 }
@@ -242,11 +243,11 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     {
         return;
     }
-    int w = hudw,
-        h = hudh;
+    int w = hudw(),
+        h = hudh();
     if(forceaspect)
     {
-        w = static_cast<int>(std::ceil(h*forceaspect));
+        w = std::ceil(h*forceaspect);
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -274,9 +275,7 @@ static void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr,
-               * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
-    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
+    renderbackgroundview(w, h, backgroundcaption.c_str(), backgroundmapshot, backgroundmapname.c_str(), backgroundmapinfo.c_str());
 }
 
 float loadprogress = 0;
@@ -357,8 +356,8 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         }
         lastprogress = ticks;
     }
-    int w = hudw,
-        h = hudh;
+    int w = hudw(),
+        h = hudh();
     if(forceaspect)
     {
         w = static_cast<int>(std::ceil(h*forceaspect));
@@ -584,15 +583,16 @@ void setupscreen()
         fatal("failed to create OpenGL context: %s", SDL_GetError());
     }
     SDL_GetWindowSize(screen, &screenw, &screenh);
-    renderw = std::min(scr_w, screenw);
-    renderh = std::min(scr_h, screenh);
-    hudw = screenw;
-    hudh = screenh;
 }
 
 //full reset of renderer
 void resetgl()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot reset GL without GL initialized, operation not performed");
+        return;
+    }
     clearchanges(Change_Graphics|Change_Shaders);
 
     renderbackground("resetting OpenGL");
@@ -701,10 +701,7 @@ std::array<int, maxfpshistory> fpshistory;
 
 void resetfpshistory()
 {
-    for(int& i : fpshistory)
-    {
-        i = 1;
-    }
+    fpshistory.fill(1);
     fpspos = 0;
 }
 
@@ -722,9 +719,8 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     int total = fpshistory.at(maxfpshistory-1),
         best = total,
         worst = total;
-    for(int i = 0; i < maxfpshistory-1; ++i)
+    for(const int &millis : fpshistory)
     {
-        int millis = fpshistory[i];
         total += millis;
         if(millis < best)
         {
@@ -735,9 +731,18 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
             worst = millis;
         }
     }
-    fps = (1000*maxfpshistory)/total;
-    bestdiff = 1000/best-fps;
-    worstdiff = fps-1000/worst;
+    if(total) //guard against div by 0
+    {
+        fps = (1000*maxfpshistory)/total;
+        bestdiff = 1000/best-fps;
+        worstdiff = fps-1000/worst;
+    }
+    else
+    {
+        fps = 0;
+        bestdiff = 0;
+        worstdiff = 0;
+    }
 }
 
 void getfpscmd(const int *raw)

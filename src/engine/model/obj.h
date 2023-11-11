@@ -3,14 +3,15 @@
 
 struct obj;
 
-struct obj : vertloader<obj>
+struct obj final : vertloader<obj>
 {
     obj(const char *name) : vertloader(name) {}
 
     static const char *formatname();
     static bool cananimate();
     bool flipy() const;
-    int type() const;
+    int type() const override;
+    bool skeletal() const override;
 
     struct objmeshgroup : vertmeshgroup
     {
@@ -19,8 +20,13 @@ struct obj : vertloader<obj>
 
         private:
             void parsevert(char *s, std::vector<vec> &out);
-            void flushmesh(string meshname, vertmesh *curmesh, std::vector<vert> verts, std::vector<tcvert> tcverts,
-                                               std::vector<tri> tris, std::vector<vec> attrib, float smooth);
+            void flushmesh(const string meshname,
+                           vertmesh *curmesh,
+                           const std::vector<vert> &verts,
+                           const std::vector<tcvert> &tcverts,
+                           const std::vector<tri> &tris,
+                           const std::vector<vec> &attrib,
+                           float smooth);
     };
 
     vertmeshgroup *newmeshes()

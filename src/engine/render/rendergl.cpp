@@ -11,13 +11,13 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "aa.h"
 #include "grass.h"
 #include "hdr.h"
 #include "hud.h"
 #include "octarender.h"
+#include "postfx.h"
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "renderlights.h"
@@ -51,16 +51,11 @@ bool hasFBMSBS = false,
      hasES3    = false,
      hasCI     = false;
 
-int hasstencil = 0;
-
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 
 //read-only info for gl debugging
 VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
-
-// GL_EXT_timer_query
-PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_ = nullptr;
 
 // GL_EXT_framebuffer_blit
 PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_         = nullptr;
@@ -70,8 +65,6 @@ PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_ = null
 
 // GL_ARB_texture_multisample
 PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_ = nullptr;
-PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_ = nullptr;
-PFNGLSAMPLEMASKIPROC           glSampleMaski_           = nullptr;
 
 // OpenGL 1.3
 #ifdef WIN32
@@ -95,21 +88,8 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC   glGetCompressedTexImage_   = nullptr;
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = nullptr;
 #endif
 
-// GL_EXT_draw_buffers2
-PFNGLCOLORMASKIPROC glColorMaski_ = nullptr;
-
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_ = nullptr;
-
-// GL_ARB_color_buffer_float
-PFNGLCLAMPCOLORPROC glClampColor_ = nullptr;
-
-// GL_ARB_map_buffer_range
-PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_         = nullptr;
-
-// GL_ARB_vertex_array_object
-PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_ = nullptr;
-PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_    = nullptr;
 
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
@@ -174,7 +154,6 @@ void glerror(const char *file, int line, GLenum error)
 
 VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(mesa_swap_bug, 0, 0, 1);
-VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
@@ -202,8 +181,8 @@ static bool hasext(const char *ext)
 
 static bool checkdepthtexstencilrb()
 {
-    int w = 256,
-        h = 256;
+    uint w = 256,
+         h = 256;
     GLuint fbo = 0;
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -243,6 +222,10 @@ void gl_checkextensions()
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
+    if(!renderer || !vendor || !version)
+    {
+        fatal("Could not get rendering context information!");
+    }
     if(std::strstr(renderer, "Mesa") || std::strstr(version, "Mesa"))
     {
         mesa = true;
@@ -323,8 +306,6 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 4 draw buffers.");
     }
     //OpenGL 3.0
-    glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
-    glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
 
     if(hasext("GL_EXT_gpu_shader4"))
     {
@@ -334,18 +315,10 @@ void gl_checkextensions()
             conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
     }
-    glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
-    glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
-
-    glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
-    glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
-    useubo = 1;
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
-    glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
-    glSampleMaski_           = (PFNGLSAMPLEMASKIPROC)          getprocaddress("glSampleMaski");
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
@@ -355,7 +328,6 @@ void gl_checkextensions()
         }
     }
     //OpenGL 3.3
-    glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
         GLint val = 0;
@@ -464,7 +436,7 @@ void glext(char *ext)
 void gl_resize()
 {
     gl_setupframe();
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 }
 
 void gl_init()
@@ -497,7 +469,29 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1);
 
-vec worldpos, camdir, camright, camup;
+vec worldpos;
+
+//these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix
+vec camdir()
+{
+    vec out;
+    cammatrix.transposedtransformnormal(vec(viewmatrix.b), out);
+    return out;
+}
+
+vec camright()
+{
+    vec out;
+    cammatrix.transposedtransformnormal(vec(viewmatrix.a).neg(), out);
+    return out;
+}
+
+vec camup()
+{
+    vec out;
+    cammatrix.transposedtransformnormal(vec(viewmatrix.c), out);
+    return out;
+}
 
 static void setcammatrix()
 {
@@ -508,15 +502,11 @@ static void setcammatrix()
     cammatrix.rotate_around_z(camera1->yaw/-RAD);
     cammatrix.translate(vec(camera1->o).neg());
 
-    cammatrix.transposedtransformnormal(vec(viewmatrix.b), camdir);
-    cammatrix.transposedtransformnormal(vec(viewmatrix.a).neg(), camright);
-    cammatrix.transposedtransformnormal(vec(viewmatrix.c), camup);
-
     if(!drawtex)
     {
-        if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
+        if(raycubepos(camera1->o, camdir(), worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
         {
-            worldpos = vec(camdir).mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
+            worldpos = camdir().mul(2*rootworld.mapsize()).add(camera1->o); // if nothing is hit, just far away in the view direction
         }
     }
 }
@@ -529,11 +519,6 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     }
     jitteraa();
     camprojmatrix.muld(projmatrix, cammatrix);
-    if(init)
-    {
-        invcammatrix.invert(cammatrix);
-        invcamprojmatrix.invert(camprojmatrix);
-    }
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
     if(flush && Shader::lastshader)
@@ -660,7 +645,7 @@ FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
  * 333: COD, Destiny, Overwatch, ~BL2/3
  * 400: Cube/RE
  */
-VARP(invmouse, 0, 0, 1);
+VARP(invmouse, 0, 0, 1); //toggles inverting the mouse
 FVARP(mouseaccel, 0, 0, 1000);
 
 physent *camera1 = nullptr;
@@ -730,7 +715,7 @@ void mousemove(int dx, int dy)
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
 
-matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix;
+matrix4 cammatrix, projmatrix, camprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
 
@@ -746,7 +731,7 @@ vec calcavatarpos(const vec &pos, float dist)
     scrpos.z = (eyepos.z*(farplane + nearplane) - 2*nearplane*farplane) / (farplane - nearplane);
     scrpos.w = -eyepos.z;
 
-    vec worldpos = invcamprojmatrix.perspectivetransform(scrpos);
+    vec worldpos = camprojmatrix.inverse().perspectivetransform(scrpos);
     vec dir = vec(worldpos).sub(camera1->o).rescale(dist);
     return dir.add(camera1->o);
 }
@@ -805,6 +790,27 @@ void disablepolygonoffset(GLenum type)
 
 bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
+    //dim must be 0..2
+    //dir should be +/- 1
+    auto checkplane = [] (int dim, const float &dc, int dir, float focaldist, float &low, float &high, const float &cz, const float &drt, const vec &e)
+    {
+        float nzc = (cz*cz + 1) / (cz + dir*drt) - cz,
+              pz = dc/(nzc*e[dim] - e.z);
+        if(pz > 0)
+        {
+            float c = (focaldist)*nzc,
+                  pc = pz*nzc;
+            if(pc < e[dim])
+            {
+                low = c;
+            }
+            else if(pc > e[dim])
+            {
+                high = c;
+            }
+        }
+    };
+
     vec e;
     cammatrix.transform(center, e);
     if(e.z > 2*size)
@@ -842,37 +848,19 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
           focaldist = 1.0f/std::tan(fovy*0.5f/RAD);
     sx1 = sy1 = -1;
     sx2 = sy2 = 1;
-    #define CHECKPLANE(c, dir, focaldist, low, high) \
-    do { \
-        float nzc = (cz*cz + 1) / (cz dir drt) - cz, \
-              pz = (d##c)/(nzc*e.c - e.z); \
-        if(pz > 0) \
-        { \
-            float c = (focaldist)*nzc, \
-                  pc = pz*nzc; \
-            if(pc < e.c) \
-            { \
-                low = c; \
-            } \
-            else if(pc > e.c) \
-            { \
-                high = c; \
-            } \
-        } \
-    } while(0)
     if(dx > 0)
     {
         float cz  = e.x/e.z,
               drt = sqrtf(dx)/size;
-        CHECKPLANE(x, -, focaldist/aspect, sx1, sx2);
-        CHECKPLANE(x, +, focaldist/aspect, sx1, sx2);
+        checkplane(0, dx, -1, focaldist/aspect, sx1, sx2, cz, drt, e);
+        checkplane(0, dx,  1, focaldist/aspect, sx1, sx2, cz, drt, e);
     }
     if(dy > 0)
     {
         float cz  = e.y/e.z,
               drt = sqrtf(dy)/size;
-        CHECKPLANE(y, -, focaldist, sy1, sy2);
-        CHECKPLANE(y, +, focaldist, sy1, sy2);
+        checkplane(1, dy, -1, focaldist, sy1, sy2, cz, drt, e);
+        checkplane(1, dy,  1, focaldist, sy1, sy2, cz, drt, e);
     }
     float z1 = std::min(e.z + size, -1e-3f - nearplane),
           z2 = std::min(e.z - size, -1e-3f - nearplane);
@@ -881,40 +869,40 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
 }
 
-#undef CHECKPLANE
-
 bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1, float &sx2, float &sy2)
 {
-#define ADDXYSCISSOR(p) do { \
-        if(p.z >= -p.w) \
-        { \
-            float x = p.x / p.w, \
-                  y = p.y / p.w; \
-            sx1 = std::min(sx1, x); \
-            sy1 = std::min(sy1, y); \
-            sx2 = std::max(sx2, x); \
-            sy2 = std::max(sy2, y); \
-        } \
-    } while(0)
+    auto addxyscissor = [&] (const vec4<float> &p)
+    {
+        if(p.z >= -p.w)
+        {
+            float x = p.x / p.w,
+                  y = p.y / p.w;
+            sx1 = std::min(sx1, x);
+            sy1 = std::min(sy1, y);
+            sx2 = std::max(sx2, x);
+            sy2 = std::max(sy2, y);
+        }
+    };
+
     vec4<float> v[8];
     sx1 = sy1 = 1;
     sx2 = sy2 = -1;
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmin.z), v[0]);
-    ADDXYSCISSOR(v[0]);
+    addxyscissor(v[0]);
     camprojmatrix.transform(vec(bbmax.x, bbmin.y, bbmin.z), v[1]);
-    ADDXYSCISSOR(v[1]);
+    addxyscissor(v[1]);
     camprojmatrix.transform(vec(bbmin.x, bbmax.y, bbmin.z), v[2]);
-    ADDXYSCISSOR(v[2]);
+    addxyscissor(v[2]);
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmin.z), v[3]);
-    ADDXYSCISSOR(v[3]);
+    addxyscissor(v[3]);
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmax.z), v[4]);
-    ADDXYSCISSOR(v[4]);
+    addxyscissor(v[4]);
     camprojmatrix.transform(vec(bbmax.x, bbmin.y, bbmax.z), v[5]);
-    ADDXYSCISSOR(v[5]);
+    addxyscissor(v[5]);
     camprojmatrix.transform(vec(bbmin.x, bbmax.y, bbmax.z), v[6]);
-    ADDXYSCISSOR(v[6]);
+    addxyscissor(v[6]);
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmax.z), v[7]);
-    ADDXYSCISSOR(v[7]);
+    addxyscissor(v[7]);
     if(sx1 > sx2 || sy1 > sy2)
     {
         return false;
@@ -955,38 +943,52 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
+    static auto addxyzscissor = [] (const vec4<float> &p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
+    {
+        if(p.z >= -p.w)
+        {
+            float x = p.x / p.w,
+                  y = p.y / p.w,
+                  z = p.z / p.w;
+            sx1 = std::min(sx1, x);
+            sy1 = std::min(sy1, y);
+            sz1 = std::min(sz1, z);
+            sx2 = std::max(sx2, x);
+            sy2 = std::max(sy2, y);
+            sz2 = std::max(sz2, z);
+        }
+    };
     float spotscale = radius * tan360(spot);
     vec up     = vec(spotx).mul(spotscale),
         right  = vec(spoty).mul(spotscale),
         center = vec(dir).mul(radius).add(origin);
-//================================================================ ADDXYZSCISSOR
-#define ADDXYZSCISSOR(p) do { \
-        if(p.z >= -p.w) \
-        { \
-            float x = p.x / p.w, \
-                  y = p.y / p.w, \
-                  z = p.z / p.w; \
-            sx1 = std::min(sx1, x); \
-            sy1 = std::min(sy1, y); \
-            sz1 = std::min(sz1, z); \
-            sx2 = std::max(sx2, x); \
-            sy2 = std::max(sy2, y); \
-            sz2 = std::max(sz2, z); \
-        } \
-    } while(0)
     vec4<float> v[5];
     sx1 = sy1 = sz1 = 1;
     sx2 = sy2 = sz2 = -1;
     camprojmatrix.transform(vec(center).sub(right).sub(up), v[0]);
-    ADDXYZSCISSOR(v[0]);
+    addxyzscissor(v[0], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).add(right).sub(up), v[1]);
-    ADDXYZSCISSOR(v[1]);
+    addxyzscissor(v[1], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).sub(right).add(up), v[2]);
-    ADDXYZSCISSOR(v[2]);
+    addxyzscissor(v[2], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(vec(center).add(right).add(up), v[3]);
-    ADDXYZSCISSOR(v[3]);
+    addxyzscissor(v[3], sx1, sy1, sx2, sy2, sz1, sz2);
     camprojmatrix.transform(origin, v[4]);
-    ADDXYZSCISSOR(v[4]);
+    addxyzscissor(v[4], sx1, sy1, sx2, sy2, sz1, sz2);
+
+    static auto interpxyzscissor = [] (const vec4<float> &p, const vec4<float> &o, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1)
+    {
+        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w),
+              w = p.w + t*(o.w - p.w),
+              x = (p.x + t*(o.x - p.x))/w,
+              y = (p.y + t*(o.y - p.y))/w;
+        sx1 = std::min(sx1, x);
+        sy1 = std::min(sy1, y);
+        sz1 = std::min(sz1, -1.0f);
+        sx2 = std::max(sx2, x);
+        sy2 = std::max(sy2, y);
+    };
+
     if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2)
     {
         return false;
@@ -1006,27 +1008,11 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
                 continue;
             }
 
-    #undef ADDXYZSCISSOR
-//==============================================================================
-
-//============================================================= INTERPXYZSCISSOR
-    #define INTERPXYZSCISSOR(p, o) do { \
-        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
-              w = p.w + t*(o.w - p.w), \
-              x = (p.x + t*(o.x - p.x))/w, \
-              y = (p.y + t*(o.y - p.y))/w; \
-        sx1 = std::min(sx1, x); \
-        sy1 = std::min(sy1, y); \
-        sz1 = std::min(sz1, -1.0f); \
-        sx2 = std::max(sx2, x); \
-        sy2 = std::max(sy2, y); \
-        } while(0)
-
-            INTERPXYZSCISSOR(p, o);
+            interpxyzscissor(p, o, sx1, sy1, sx2, sy2, sz1);
         }
         if(v[4].z > -v[4].w)
         {
-            INTERPXYZSCISSOR(p, v[4]);
+            interpxyzscissor(p, v[4], sx1, sy1, sx2, sy2, sz1);
         }
     }
     if(v[4].z < -v[4].w)
@@ -1038,12 +1024,9 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             {
                 continue;
             }
-            INTERPXYZSCISSOR(v[4], o);
+            interpxyzscissor(v[4], o, sx1, sy1, sx2, sy2, sz1);
         }
     }
-
-    #undef INTERPXYZSCISSOR
-//==============================================================================
 
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
@@ -1082,7 +1065,7 @@ void screenquad()
     setupscreenquad();
     gle::bindvbo(screenquadvbo);
     gle::enablevertex();
-    gle::vertexpointer(sizeof(vec2), (const vec2 *)0, GL_FLOAT, 2);
+    gle::vertexpointer(sizeof(vec2), nullptr, GL_FLOAT, 2);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     gle::disablevertex();
     gle::clearvbo();
@@ -1091,7 +1074,11 @@ void screenquad()
 //sets screentexcoord0,screentexcoord1 in glsl
 static void setscreentexcoord(int i, float w, float h, float x = 0, float y = 0)
 {
-    static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
+    static std::array<LocalShaderParam, 2> screentexcoord =
+    {
+        LocalShaderParam("screentexcoord0"),
+        LocalShaderParam("screentexcoord1")
+    };
     screentexcoord[i].setf(w*0.5f, h*0.5f, x + w*0.5f, y + std::fabs(h)*0.5f);
 }
 
@@ -1147,7 +1134,7 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
     int csize;
     do
     {
-        cube &c = rootworld.lookupcube(o, 0, co, csize);
+        const cube &c = rootworld.lookupcube(o, 0, co, csize);
         int mat = c.material&MatFlag_Volume;
         if(mat != fogmat)
         {
@@ -1329,14 +1316,14 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, const cube *c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
+void clipminimap(ivec &bbmin, ivec &bbmax, const std::array<cube, 8> &c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children)
         {
-            clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+            clipminimap(bbmin, bbmax, *(c[i].children), o, size>>1);
         }
         else if(!(c[i].issolid()) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
         {
@@ -1400,7 +1387,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     {
         ivec clipmin(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize()),
              clipmax(0, 0, 0);
-        clipminimap(clipmin, clipmax, world.worldroot);
+        clipminimap(clipmin, clipmax, *world.worldroot);
         for(int k = 0; k < 2; ++k)
         {
             bbmin[k] = std::max(bbmin[k], clipmin[k]);
@@ -1426,8 +1413,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     cmcamera.roll = 0;
     camera1 = &cmcamera;
 
-    float oldldrscale = ldrscale,
-          oldldrscaleb = ldrscaleb;
+    float oldldrscale = ldrscale;
     int oldfarplane = farplane,
         oldvieww    = vieww,
         oldviewh    = viewh;
@@ -1443,10 +1429,9 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     glEnable(GL_DEPTH_TEST);
 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
-    flipqueries();
+    occlusionengine.flipqueries();
 
     ldrscale = 1;
-    ldrscaleb = ldrscale/255;
 
     view.visiblecubes(false);
     gbuf.rendergbuffer();
@@ -1470,7 +1455,6 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     vieww = oldvieww;
     viewh = oldviewh;
     ldrscale = oldldrscale;
-    ldrscaleb = oldldrscaleb;
 
     camera1 = oldcamera;
     drawtex = 0;
@@ -1490,7 +1474,7 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &fbo);
 
-    glViewport(0, 0, hudw, hudh);
+    glViewport(0, 0, hudw(), hudh());
 }
 
 VAR(modelpreviewfov, 10, 20, 100);    //y axis field of view
@@ -1528,7 +1512,6 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
     oldfovy = fovy;
     oldfov = curfov;
     oldldrscale = ldrscale;
-    oldldrscaleb = ldrscaleb;
     oldfarplane = farplane;
     oldvieww = vieww;
     oldviewh = viewh;
@@ -1541,7 +1524,6 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
     vieww = std::min(gw, w);
     viewh = std::min(gh, h);
     ldrscale = 1;
-    ldrscaleb = ldrscale/255;
 
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
@@ -1552,7 +1534,7 @@ void ModelPreview::start(int xcoord, int ycoord, int width, int height, bool bg,
 
 void ModelPreview::end()
 {
-    rendermodelbatches();
+    gbuf.rendermodelbatches();
 
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -1566,7 +1548,6 @@ void ModelPreview::end()
     vieww = oldvieww;
     viewh = oldviewh;
     ldrscale = oldldrscale;
-    ldrscaleb = oldldrscaleb;
 
     camera1 = oldcamera;
     drawtex = 0;
@@ -1627,7 +1608,6 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     glEnable(GL_DEPTH_TEST);
 
     ldrscale = 0.5f;
-    ldrscaleb = ldrscale/255;
     //do occlusion culling
     view.visiblecubes();
     //set to wireframe if applicable
@@ -1721,7 +1701,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
     //antialiasing
-    doaa(setuppostfx(vieww, viewh, scalefbo), gbuf);
+    doaa(setuppostfx(gbuf, vieww, viewh, scalefbo), gbuf);
     //postfx
     renderpostfx(scalefbo);
     if(scalefbo)
@@ -1730,33 +1710,44 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     }
 }
 
-int renderw = 0,
-    renderh = 0,
-    hudw = 0,
-    hudh = 0;
+int renderw()
+{
+    return std::min(scr_w, screenw);
+}
+
+int renderh()
+{
+    return std::min(scr_h, screenh);
+}
+
+int hudw()
+{
+    return screenw;
+}
+
+int hudh()
+{
+    return screenh;
+}
 
 void gl_setupframe(bool force)
 {
-    renderw = std::min(scr_w, screenw);
-    renderh = std::min(scr_h, screenh);
-    hudw = screenw;
-    hudh = screenh;
     if(!force)
     {
         return;
     }
-    setuplights();
+    setuplights(gbuf);
 }
 
 void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void (*editfxn)(), void (*hud2d)())
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
-    flipqueries();
-    aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
+    occlusionengine.flipqueries();
+    aspect = forceaspect ? forceaspect : hudw()/static_cast<float>(hudh());
     fovy = 2*std::atan2(std::tan(curfov/(2*RAD)), aspect)*RAD;
-    vieww = hudw;
-    viewh = hudh;
+    vieww = hudw();
+    viewh = hudh();
     if(mainmenu)
     {
         gl_drawmainmenu();
@@ -1780,8 +1771,19 @@ void cleanupgl()
 void initrenderglcmds()
 {
     addcommand("glext", reinterpret_cast<identfun>(glext), "s", Id_Command);
-    addcommand("getcamyaw", reinterpret_cast<identfun>(+[](){floatret(camera1->yaw);}), "", Id_Command);
-    addcommand("getcampitch", reinterpret_cast<identfun>(+[](){floatret(camera1->pitch);}), "", Id_Command);
-    addcommand("getcamroll", reinterpret_cast<identfun>(+[](){floatret(camera1->roll);}), "", Id_Command);
-    addcommand("getcampos", reinterpret_cast<identfun>(+[](){DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z)); result(pos);}), "", Id_Command);
+    addcommand("getcamyaw", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->yaw : 0);}), "", Id_Command);
+    addcommand("getcampitch", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->pitch : 0);}), "", Id_Command);
+    addcommand("getcamroll", reinterpret_cast<identfun>(+[](){floatret(camera1 ? camera1->roll : 0);}), "", Id_Command);
+    addcommand("getcampos", reinterpret_cast<identfun>(+[]()
+    {
+        if(!camera1)
+        {
+            result("no camera");
+        }
+        else
+        {
+            DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
+            result(pos);
+        }
+    }), "", Id_Command);
 }

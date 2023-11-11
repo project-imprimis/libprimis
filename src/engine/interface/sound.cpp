@@ -19,7 +19,10 @@ SoundEngine::SoundEngine() : gamesounds("game/", *this), mapsounds("mapsound/", 
 {
 }
 
-SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), chunk(nullptr) {}
+SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), chunk(nullptr)
+{
+}
+
 SoundEngine::SoundSample::~SoundSample()
 {
 }
@@ -32,7 +35,6 @@ void SoundEngine::SoundSample::cleanup()
         chunk = nullptr;
     }
 }
-
 
 bool SoundEngine::SoundConfig::hasslot(const soundslot *p, const std::vector<soundslot> &v) const
 {
@@ -261,14 +263,14 @@ int SoundEngine::getsoundchans()
 
 bool SoundEngine::initaudio()
 {
-    static string fallback = "";
+    static std::string fallback = "";
     static bool initfallback = true;
     if(initfallback)
     {
         initfallback = false;
-        if(char *env = SDL_getenv("SDL_AUDIODRIVER"))
+        if(const char *env = SDL_getenv("SDL_AUDIODRIVER"))
         {
-            copystring(fallback, env);
+            fallback = std::string(env);
         }
     }
     if(!fallback[0] && audiodriver[0])
@@ -292,7 +294,7 @@ bool SoundEngine::initaudio()
             delete[] j;
         }
     }
-    SDL_setenv("SDL_AUDIODRIVER", fallback, 1);
+    SDL_setenv("SDL_AUDIODRIVER", fallback.c_str(), 1);
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
     {
         return true;
@@ -431,14 +433,15 @@ void SoundEngine::startmusic(char *name, char *cmd)
     stopmusic();
     if(soundvol && musicvol && *name) //if volume > 0 and music name passed
     {
-        DEF_FORMAT_STRING(file, "media/%s", name);
+        std::string file = "media/";
+        file.append(name);
         path(file);
-        if(loadmusic(file))
+        if(loadmusic(file.c_str()))
         {
             delete[] musicfile;
             delete[] musicdonecmd;
 
-            musicfile = newstring(file);
+            musicfile = newstring(file.c_str());
             if(cmd[0])
             {
                 musicdonecmd = newstring(cmd);
@@ -453,7 +456,7 @@ void SoundEngine::startmusic(char *name, char *cmd)
         }
         else //note that there is no error message for  soundvol/musicvol/name null
         {
-            conoutf(Console_Error, "could not play music: %s", file);
+            conoutf(Console_Error, "could not play music: %s", file.c_str());
             intret(0);
         }
     }
@@ -847,9 +850,9 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
         if(config.maxuses)
         {
             int uses = 0;
-            for(uint i = 0; i < channels.size(); i++)
+            for(const SoundChannel &s : channels)
             {
-                if(sounds.playing(channels[i], config) && ++uses >= config.maxuses)
+                if(sounds.playing(s, config) && ++uses >= config.maxuses)
                 {
                     return -1;
                 }

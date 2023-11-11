@@ -20,8 +20,6 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-VARR(mapversion, 1, currentmapversion, 0);
-
 static std::string clientmap = "";
 
 static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
@@ -70,18 +68,7 @@ void setmapname(const char * newname)
     clientmap = std::string(newname);
 }
 
-static void fixent(entity &e, int version)
-{
-    if(version <= 0)
-    {
-        if(e.type >= EngineEnt_Decal)
-        {
-            e.type++;
-        }
-    }
-}
-
-bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
+bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr) const
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
     {
@@ -182,8 +169,8 @@ void backup(const char *name, const char *backupname)
 {
     string backupfile;
     copystring(backupfile, findfile(backupname, "wb"));
-    remove(backupfile);
-    rename(findfile(name, "wb"), backupfile);
+    std::remove(backupfile);
+    std::rename(findfile(name, "wb"), backupfile);
 }
 
 enum OctaSave
@@ -196,7 +183,7 @@ enum OctaSave
 
 static int savemapprogress = 0;
 
-void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * const f)
+void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, stream * const f)
 {
     if((savemapprogress++&0xFFF)==0)
     {
@@ -208,7 +195,7 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
         if(c[i].children) //recursively note existence of children & call this fxn again
         {
             f->putchar(OctaSave_Children);
-            savec(c[i].children, co, size>>1, f);
+            savec(*(c[i].children), co, size>>1, f);
         }
         else //once we're done with all cube children within cube *c given
         {
@@ -278,7 +265,8 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
                     {
                         surfaceinfo surf = c[i].ext->surfaces[j];
                         vertinfo *verts = c[i].ext->verts() + surf.verts;
-                        int layerverts = surf.numverts&Face_MaxVerts, numverts = surf.totalverts(),
+                        int layerverts = surf.numverts&Face_MaxVerts,
+                            numverts = surf.totalverts(),
                             vertmask   = 0,
                             vertorder  = 0,
                             dim = DIMENSION(j),
@@ -380,17 +368,30 @@ void cubeworld::savec(const cube * const c, const ivec &o, int size, stream * co
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed);
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed);
 
+/**
+ * @param Loads a cube, possibly containing its child cubes.
+ *
+ * Sets the contents of the cube passed depending on the leading flag embedded
+ * in the string.
+ *
+ * If OctaSave_Children, begins recursive loading of cubes into the passed cube's `children` field
+ *
+ * If OctaSave_Empty, clears the cube
+ *
+ * If OctaSave_Solid, fills the cube completely
+ *
+ * If OctaSave_Normal, reads and sets the twelve edges of the cube
+ *
+ * If none of these are passed, failed flag is set and nothing is done.
+ *
+ * Once OctaSave_Empty/Solid/Normal has been initiated, loads texture, material,
+ * normal data, and other meta information for the cube c passed
+ */
 void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
     static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
-
-    struct polysurfacecompat
-    {
-        uchar lmid[2];
-        uchar verts, numverts;
-    };
 
     int octsav = f->getchar();
     switch(octsav&0x7)
@@ -420,7 +421,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             return;
         }
     }
-    for(int i = 0; i < 6; ++i)
+    for(uint i = 0; i < 6; ++i)
     {
         c.texture[i] = f->get<ushort>();
     }
@@ -438,7 +439,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
         surfmask = f->getchar();
         totalverts = std::max(f->getchar(), 0);
         newcubeext(c, totalverts, false);
-        std::memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
+        c.ext->surfaces.fill({0,0});
         std::memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
         int offset = 0;
         for(int i = 0; i < 6; ++i)
@@ -446,18 +447,9 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             if(surfmask&(1<<i))
             {
                 surfaceinfo &surf = c.ext->surfaces[i];
-                if(mapversion <= 0)
-                {
-                    polysurfacecompat psurf;
-                    f->read(&psurf, sizeof(polysurfacecompat));
-                    surf.verts = psurf.verts;
-                    surf.numverts = psurf.numverts;
-                }
-                else
-                {
-                    f->read(&surf, sizeof(surf));
-                }
-                int vertmask = surf.verts, numverts = surf.totalverts();
+                f->read(&surf, sizeof(surf));
+                int vertmask = surf.verts,
+                    numverts = surf.totalverts();
                 if(!numverts)
                 {
                     surf.verts = 0;
@@ -466,10 +458,13 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 surf.verts = offset;
                 vertinfo *verts = c.ext->verts() + offset;
                 offset += numverts;
-                ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
+                std::array<ivec, 4> v;
+                ivec n,
+                     vo = ivec(co).mask(0xFFF).shl(3);
                 int layerverts = surf.numverts&Face_MaxVerts, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
                 genfaceverts(c, i, v);
-                bool hasxyz = (vertmask&0x04)!=0, hasuv = mapversion <= 0 && (vertmask&0x40)!=0, hasnorm = (vertmask&0x80)!=0;
+                bool hasxyz = (vertmask&0x04)!=0,
+                     hasnorm = (vertmask&0x80)!=0;
                 if(hasxyz)
                 {
                     ivec e1, e2, e3;
@@ -521,21 +516,6 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                         verts[3].setxyz(xyz);
                         hasxyz = false;
                     }
-                    if(hasuv && vertmask&0x02)
-                    {
-                        for(int k = 0; k < 4; ++k)
-                        {
-                            f->get<ushort>();
-                        }
-                        if(surf.numverts & layerdup)
-                        {
-                            for(int k = 0; k < 4; ++k)
-                            {
-                                f->get<ushort>();
-                            }
-                        }
-                        hasuv = false;
-                    }
                 }
                 if(hasnorm && vertmask&0x08)
                 {
@@ -546,7 +526,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                     }
                     hasnorm = false;
                 }
-                if(hasxyz || hasuv || hasnorm)
+                if(hasxyz || hasnorm)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
@@ -558,18 +538,13 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                             xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                             v.setxyz(xyz);
                         }
-                        if(hasuv)
-                        {
-                            f->get<ushort>();
-                            f->get<ushort>();
-                        }
                         if(hasnorm)
                         {
                             v.norm = f->get<ushort>();
                         }
                     }
                 }
-                if(hasuv && (surf.numverts & layerdup))
+                if(surf.numverts & layerdup)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
@@ -582,12 +557,20 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     }
 }
 
-cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
+/**
+ * @brief Returns a heap-allocated std::array of cubes read from a file.
+ *
+ * These cubes must be freed using freeocta() when destroyed to prevent a leak.
+ *
+ * All eight cubes are read, unless the stream does not contain a valid leading
+ * digit (see OctaSave enum), whereupon all loading thereafter is not executed.
+ */
+std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &failed)
 {
-    cube *c = newcubes();
+    std::array<cube, 8> *c = newcubes();
     for(int i = 0; i < 8; ++i)
     {
-        loadc(f, c[i], ivec(i, co, size), size, failed);
+        loadc(f, (*c)[i], ivec(i, co, size), size, failed);
         if(failed)
         {
             break;
@@ -961,13 +944,13 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
     }
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
+    savec(*worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1, f);
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;
 }
 
-uint cubeworld::getmapcrc()
+uint cubeworld::getmapcrc() const
 {
     return mapcrc;
 }
@@ -1129,7 +1112,6 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         extentity &e = *entities::newentity();
         ents.push_back(&e);
         f->read(&e, sizeof(entity));
-        fixent(e, hdr.version);
         //delete entities from other games
         if(!samegame)
         {
@@ -1190,4 +1172,5 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
 void initworldiocmds()
 {
     addcommand("mapcfgname", reinterpret_cast<identfun>(mapcfgname), "", Id_Command);
+    addcommand("mapversion", reinterpret_cast<identfun>(+[] () {intret(currentmapversion);}), "", Id_Command);
 }

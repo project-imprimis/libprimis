@@ -11,13 +11,12 @@ struct UniformLoc
 
 struct GlobalShaderParamState
 {
-    const char *name;
     union
     {
         float fval[32];
         int ival[32];
         uint uval[32];
-        uchar buf[32*sizeof(float)];
+        std::array<uchar, 32*sizeof(float)> buf;
     };
     int version;
 
@@ -55,7 +54,7 @@ struct GlobalShaderParamUse : ShaderParamBinding
 
 struct LocalShaderParamState : ShaderParamBinding
 {
-    const char *name;
+    std::string name;
 };
 
 struct SlotShaderParamState : LocalShaderParamState
@@ -79,14 +78,12 @@ struct SlotShaderParamState : LocalShaderParamState
 class Shader
 {
     public:
-        static Shader *lastshader;
+        static Shader *lastshader; //the current shader being used by glUseProgram()
 
         char *name,
-            *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
-            *psstr, //a pointer to a `p`ixel `s`hader `str`ing
             *defer; //a pointer to a deferred shader
-        int type;
-        GLuint program, vsobj, psobj;
+        int type; //type of shader, e.g. world, refractive, deferred, see enum
+        GLuint program;
         std::vector<SlotShaderParamState> defaultparams;
         std::vector<GlobalShaderParamUse> globalparams;
         std::vector<LocalShaderParamState> localparams;
@@ -94,16 +91,8 @@ class Shader
         Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
-        Shader *reusevs, *reuseps;
         std::vector<UniformLoc> uniformlocs;
 
-        struct AttribLoc
-        {
-            const char *name;
-            int loc;
-            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
-        };
-        std::vector<AttribLoc> attriblocs;
         const void *owner;
 
         Shader();
@@ -126,10 +115,23 @@ class Shader
         void set(Slot &slot, const VSlot &vslot);
         bool compile();
         void cleanup(bool full = false);
+        void reusecleanup();
 
         static int uniformlocversion();
+        Shader *setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row);
 
     private:
+        char *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
+             *psstr; //a pointer to a `p`ixel `s`hader `str`ing
+        struct AttribLoc
+        {
+            const char *name;
+            int loc;
+            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
+        };
+        std::vector<AttribLoc> attriblocs;
+        GLuint vsobj, psobj;
+        const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         ushort *variantrows;
         bool used;
         void allocparams();
@@ -140,7 +142,10 @@ class Shader
         void set_();
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
-
+        void linkglslprogram(bool msg = true);
+        void uniformtex(const char * name, int tmu);
+        void genattriblocs(const char *vs, const Shader *reusevs);
+        void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
 };
 
 class GlobalShaderParam
@@ -148,7 +153,7 @@ class GlobalShaderParam
     public:
         GlobalShaderParam(const char *name);
 
-        GlobalShaderParamState *resolve();
+        GlobalShaderParamState &resolve();
         void setf(float x = 0, float y = 0, float z = 0, float w = 0);
         void set(const vec &v, float w = 0);
         void set(const vec2 &v, float z = 0, float w = 0);
@@ -158,12 +163,12 @@ class GlobalShaderParam
         template<class T>
         T *reserve()
         {
-            return (T *)resolve()->buf;
+            return reinterpret_cast<T *>(resolve().buf.data());
         }
     private:
-        const char *name;
+        const std::string name;
         GlobalShaderParamState *param;
-        GlobalShaderParamState *getglobalparam(const char *name) const;
+        GlobalShaderParamState &getglobalparam(const std::string &name) const;
 
 };
 
@@ -223,9 +228,13 @@ class LocalShaderParam
     } while(0)
 
 //creates a globalshaderparam, either by calling set(), setf() or setv()
+//this will create a temp object containing #name, and then attempt to set()
+//it to a value in the global shader param map
+//overrides exist for set() for various different types
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
+
+//same as globalparam, but takes up to 4 float args
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
-#define GLOBALPARAMV(name, vals, num) do { static GlobalShaderParam param( #name ); param.setv(vals, num); } while(0)
 
 //creates a new static variable inside the function called <name>setshader
 //then sets to it any(if present) args passed to set to the shader

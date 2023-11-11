@@ -110,13 +110,6 @@ inline char *copystring(char *d, const stringslice &s, size_t len)
 template<size_t N>
 inline char *copystring(char (&d)[N], const stringslice &s) { return copystring(d, s, N); }
 
-inline uint hthash(const stringslice &s) { return memhash(s.str, s.len); }
-
-inline bool htcmp(const stringslice &x, const char *y)
-{
-    return x.len == (int)strlen(y) && !std::memcmp(x.str, y, x.len);
-}
-
 // not all platforms (windows) can parse hexadecimal integers via strtod
 inline float parsefloat(const char *s)
 {
@@ -239,8 +232,8 @@ extern void poparg(ident &id);
 extern void pusharg(ident &id, const tagval &v, identstack &stack);
 extern bool getbool(const tagval &v);
 extern void cleancode(ident &id);
-extern char *conc(tagval *v, int n, bool space);
-extern char *conc(tagval *v, int n, bool space, const char *prefix);
+extern char *conc(const tagval *v, int n, bool space);
+extern char *conc(const tagval *v, int n, bool space, const char *prefix);
 extern void freearg(tagval &v);
 extern int unescapestring(char *dst, const char *src, const char *end);
 extern const char *parsestring(const char *p);
@@ -257,10 +250,8 @@ extern void setvarchecked(ident *id, int val);
 extern void setfvarchecked(ident *id, float val);
 extern void setsvarchecked(ident *id, const char *val);
 
-extern const char *escapeid(const char *s);
-
-extern void printvar(ident *id);
-extern void printvar(ident *id, int i);
+extern void printvar(const ident *id);
+extern void printvar(const ident *id, int i);
 
 extern void clearoverrides();
 
@@ -275,5 +266,6 @@ extern void alias(const char *name, const char *action);
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);
 extern const char *numberstr(double v);
+extern float clampfvar(std::string name, float val, float minval, float maxval);
 
 #endif

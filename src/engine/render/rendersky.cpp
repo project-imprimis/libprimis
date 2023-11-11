@@ -42,9 +42,9 @@ namespace
 {
     VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
 
-    Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };
+    std::array<const Texture *, 6> sky = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 
-    void loadsky(const char *basename, Texture *texs[6])
+    void loadsky(const char *basename, std::array<const Texture *, 6> &texs)
     {
 
         struct cubemapside
@@ -149,7 +149,7 @@ namespace
         }
     });
     FVARR(cloudoffsetx, 0, 0, 1); //offset of cloud texture: 1 is equal to 1 tex-width x
-    FVARR(cloudoffsety, 0, 0, 1); //offset of cloud texture: 1 is ewual to 1 tex width y
+    FVARR(cloudoffsety, 0, 0, 1); //offset of cloud texture: 1 is equal to 1 tex-width y
     FVARR(cloudscrollx, -16, 0, 16);
     FVARR(cloudscrolly, -16, 0, 16);
     FVARR(cloudscale, 0.001, 1, 64);
@@ -165,7 +165,7 @@ namespace
                         float s1, float t1, int x1, int y1, int z1,
                         float s2, float t2, int x2, int y2, int z2,
                         float s3, float t3, int x3, int y3, int z3,
-                        Texture *tex)
+                        const Texture *tex)
     {
         glBindTexture(GL_TEXTURE_2D, (tex ? tex : notexture)->id);
         gle::begin(GL_TRIANGLE_STRIP);
@@ -176,7 +176,7 @@ namespace
         xtraverts += gle::end();
     }
 
-    void drawenvbox(Texture **sky = nullptr, float z1clip = 0.0f, float z2clip = 1.0f, int faces = 0x3F)
+    void drawenvbox(const std::array<const Texture *, 6> &sky, float z1clip = 0.0f, float z2clip = 1.0f, int faces = 0x3F)
     {
         if(z1clip >= z2clip)
         {
@@ -236,7 +236,7 @@ namespace
         }
     }
 
-    void drawenvoverlay(Texture *overlay = nullptr, float tx = 0, float ty = 0)
+    void drawenvoverlay(const Texture *overlay = nullptr, float tx = 0, float ty = 0)
     {
         int w = farplane/2;
         float z   = w*cloudheight,
@@ -295,7 +295,7 @@ namespace
     {
         SETSHADER(atmosphere);
 
-        matrix4 sunmatrix = invcammatrix;
+        matrix4 sunmatrix = cammatrix.inverse();
         sunmatrix.settranslation(0, 0, 0);
         sunmatrix.mul(projmatrix.inverse());
         LOCALPARAM(sunmatrix, sunmatrix);

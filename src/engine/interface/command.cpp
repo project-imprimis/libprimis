@@ -15,7 +15,6 @@
  */
 
 #include "../libprimis-headers/cube.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "console.h"
@@ -189,11 +188,11 @@ static int getint(const identval &v, int type)
     {
         case Value_Float:
         {
-            return int(v.f);
+            return static_cast<int>(v.f);
         }
         case Value_Integer:
         {
-            return int(v.i);
+            return static_cast<int>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -203,7 +202,7 @@ static int getint(const identval &v, int type)
         }
         default:
         {
-            return int(0);
+            return 0;
         }
     }
 }
@@ -224,11 +223,11 @@ float getfloat(const identval &v, int type)
     {
         case Value_Float:
         {
-            return float(v.f);
+            return static_cast<float>(v.f);
         }
         case Value_Integer:
         {
-            return float(v.i);
+            return static_cast<float>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -238,7 +237,7 @@ float getfloat(const identval &v, int type)
         }
         default:
         {
-            return float(0);
+            return 0.f;
         }
     }
 }
@@ -259,11 +258,11 @@ static double getnumber(const identval &v, int type)
     {
         case Value_Float:
         {
-            return double(v.f);
+            return static_cast<double>(v.f);
         }
         case Value_Integer:
         {
-            return double(v.i);
+            return static_cast<double>(v.i);
         }
         case Value_String:
         case Value_Macro:
@@ -273,7 +272,7 @@ static double getnumber(const identval &v, int type)
         }
         default:
         {
-            return double(0);
+            return 0.0;
         }
     }
 }
@@ -573,8 +572,8 @@ bool initidents()
     initedidents = true;
     for(int i = 0; i < Max_Args; i++)
     {
-        DEF_FORMAT_STRING(argname, "arg%d", i+1);
-        newident(argname, Idf_Arg);
+        std::string argname = std::string("arg").append(std::to_string(i+1));
+        newident(argname.c_str(), Idf_Arg);
     }
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
@@ -740,7 +739,7 @@ void redoarg(ident &id, const identstack &stack)
     cleancode(id);
 }
 
-void pushcmd(ident *id, tagval *v, uint *code)
+void pushcmd(ident *id, tagval *v, const uint *code)
 {
     if(id->type != Id_Alias || id->index < Max_Args)
     {
@@ -771,6 +770,8 @@ static void popalias(ident &id)
     }
 }
 
+//returns whether the string passed starts with a valid number
+//does not check that all characters are valid, only the first number possibly succeeding a +/-/.
 static bool checknumber(const char *s)
 {
     if(isdigit(s[0]))
@@ -794,13 +795,8 @@ static bool checknumber(const char *s)
         }
     }
 }
-static bool checknumber(const stringslice &s)
-{
-    return checknumber(s.str);
-}
 
-template<class T>
-static ident *newident(const T &name, int flags)
+ident *newident(const char *name, int flags)
 {
     ident *id = nullptr;
     const auto itr = idents.find(name);
@@ -846,11 +842,6 @@ static ident *forceident(tagval &v)
     freearg(v);
     v.setident(dummyident);
     return dummyident;
-}
-
-ident *newident(const char *name, int flags)
-{
-    return newident<const char *>(name, flags);
 }
 
 ident *writeident(const char *name, int flags)
@@ -1021,8 +1012,6 @@ struct DefVar : identval
         }
     }
 };
-
-hashnameset<DefVar> defvars;
 
 /**
  * @brief Gets the CubeScript variable.
@@ -1270,7 +1259,7 @@ const char *getalias(const char *name)
     return i && i->type==Id_Alias && (i->index >= Max_Args || aliasstack->usedargs&(1<<i->index)) ? i->getstr() : "";
 }
 
-int clampvar(ident *id, int val, int minval, int maxval)
+int clampvar(bool hex, std::string name, int val, int minval, int maxval)
 {
     if(val < minval)
     {
@@ -1284,10 +1273,10 @@ int clampvar(ident *id, int val, int minval, int maxval)
     {
         return val;
     }
-    debugcode(id->flags&Idf_Hex ?
+    debugcode(hex ?
             (minval <= 255 ? "valid range for %s is %d..0x%X" : "valid range for %s is 0x%X..0x%X") :
             "valid range for %s is %d..%d",
-        id->name, minval, maxval);
+        name.c_str(), minval, maxval);
     return val;
 }
 
@@ -1311,7 +1300,7 @@ void setvarchecked(ident *id, int val)
         storeval(id, id->overrideval.i, id->storage.i);
         if(val < id->minval || val > id->maxval)
         {
-            val = clampvar(id, val, id->minval, id->maxval);
+            val = clampvar(id->flags&Idf_Hex, std::string(id->name), val, id->minval, id->maxval);
         }
         *id->storage.i = val;
         id->changed();                                             // call trigger function if available
@@ -1336,7 +1325,7 @@ static void setvarchecked(ident *id, tagval *args, int numargs)
     setvarchecked(id, val);
 }
 
-static float clampfvar(ident *id, float val, float minval, float maxval)
+float clampfvar(std::string name, float val, float minval, float maxval)
 {
     if(val < minval)
     {
@@ -1350,7 +1339,7 @@ static float clampfvar(ident *id, float val, float minval, float maxval)
     {
         return val;
     }
-    debugcode("valid range for %s is %s..%s", id->name, floatstr(minval), floatstr(maxval));
+    debugcode("valid range for %s is %s..%s", name.c_str(), floatstr(minval), floatstr(maxval));
     return val;
 }
 
@@ -1365,7 +1354,7 @@ void setfvarchecked(ident *id, float val)
         storeval(id, id->overrideval.f, id->storage.f);
         if(val < id->minvalf || val > id->maxvalf)
         {
-            val = clampfvar(id, val, id->minvalf, id->maxvalf);
+            val = clampfvar(id->name, val, id->minvalf, id->maxvalf);
         }
         *id->storage.f = val;
         id->changed();
@@ -1577,7 +1566,7 @@ int unescapestring(char *dst, const char *src, const char *end)
     return dst - start;
 }
 
-static char *conc(std::vector<char> &buf, tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
+static char *conc(std::vector<char> &buf, const tagval *v, int n, bool space, const char *prefix = nullptr, int prefixlen = 0)
 {
     if(prefix)
     {
@@ -1638,7 +1627,7 @@ static char *conc(std::vector<char> &buf, tagval *v, int n, bool space, const ch
     return buf.data();
 }
 
-static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixlen)
+static char *conc(const tagval *v, int n, bool space, const char *prefix, int prefixlen)
 {
     static int vlen[Max_Args];
     static char numbuf[3*maxstrlen];
@@ -1735,12 +1724,12 @@ overflow:
     return buf;
 }
 
-char *conc(tagval *v, int n, bool space)
+char *conc(const tagval *v, int n, bool space)
 {
     return conc(v, n, space, nullptr, 0);
 }
 
-char *conc(tagval *v, int n, bool space, const char *prefix)
+char *conc(const tagval *v, int n, bool space, const char *prefix)
 {
     return conc(v, n, space, prefix, std::strlen(prefix));
 }
@@ -3247,7 +3236,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
             }
             if(!id)
             {
-                if(!checknumber(idname))
+                if(!checknumber(idname.str))
                 {
                     compilestr(code, idname, true);
                     goto noid;
@@ -3912,7 +3901,7 @@ void freecode(uint *code)
     }
 }
 
-void printvar(ident *id, int i)
+void printvar(const ident *id, int i)
 {
     if(i < 0)
     {
@@ -3928,17 +3917,17 @@ void printvar(ident *id, int i)
     }
 }
 
-void printfvar(ident *id, float f)
+void printfvar(const ident *id, float f)
 {
     conoutf("%s = %s", id->name, floatstr(f));
 }
 
-void printsvar(ident *id, const char *s)
+void printsvar(const ident *id, const char *s)
 {
     conoutf(std::strchr(s, '"') ? "%s = [%s]" : "%s = \"%s\"", id->name, s);
 }
 
-void printvar(ident *id)
+void printvar(const ident *id)
 {
     switch(id->type)
     {
@@ -4100,7 +4089,7 @@ static void addreleaseaction(ident *id, tagval *args, int numargs)
  * @param offset the offset for accessing and returning the n-th argument.
  * @return void* the pointer to the string or integer.
  */
-void* arg(ident *id, tagval args[], int n, int offset = 0)
+void* arg(const ident *id, tagval args[], int n, int offset = 0)
 {
     if(id->argmask&(1<<n))
     {
@@ -4124,7 +4113,7 @@ void* arg(ident *id, tagval args[], int n, int offset = 0)
  * @param n the n-th argument to return.
  * @param offset the offset for accessing and returning the n-th argument.
  */
-void callcom(ident *id, tagval args[], int n, int offset=0)
+void callcom(const ident *id, tagval args[], int n, int offset=0)
 {
     /**
      * @brief Return the n-th argument. The lambda expression captures the `id`
@@ -4612,7 +4601,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Local:
             {
                 freearg(result);
-                int numlocals = op>>8, offset = numargs-numlocals;
+                int numlocals = op>>8,
+                                offset = numargs-numlocals;
                 identstack locals[Max_Args];
                 for(int i = 0; i < numlocals; ++i)
                 {
@@ -4642,12 +4632,13 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Do|Ret_String:
             case Code_Do|Ret_Integer:
             case Code_Do|Ret_Float:
+            {
                 freearg(result);
                 runcode(args[--numargs].code, result);
                 freearg(args[numargs]);
                 forcearg(result, op&Code_RetMask);
                 continue;
-
+            }
             case Code_Jump:
             {
                 uint len = op>>8;
@@ -5545,7 +5536,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
                 if(numargs < id->numargs)
                 {
                     tagval buf[Max_Args];
-                    std::memcpy(buf, args, numargs*sizeof(tagval));
+                    std::memcpy(buf, args, numargs*sizeof(tagval)); //copy numargs number of args from passed args tagval
                     callcommand(id, buf, numargs, lookup);
                 }
                 else
@@ -5707,6 +5698,8 @@ static void doargs(uint *body)
     }
 }
 
+std::unordered_map<std::string, DefVar> defvars;
+
 void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
@@ -5721,7 +5714,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
@@ -5737,7 +5731,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
@@ -5753,7 +5748,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
@@ -5769,7 +5765,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
@@ -5785,7 +5782,8 @@ void initcscmds()
                 return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
         };
@@ -5799,7 +5797,8 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name); return;
             }
             name = newstring(name);
-            DefVar &def = defvars[name];
+            auto insert = defvars.insert( { std::string(name), DefVar() } );
+            DefVar &def = (*(insert.first)).second;
             def.name = name;
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);

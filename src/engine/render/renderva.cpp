@@ -4,7 +4,9 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
+
+#include <memory>
+#include <optional>
 
 #include "csm.h"
 #include "grass.h"
@@ -38,8 +40,8 @@ CVARP(outlinecolor, 0); //color of edit mode outlines
 
 float shadowradius = 0,
       shadowbias = 0;
-int shadowside = 0,
-    shadowspot = 0;
+size_t shadowside = 0;
+int shadowspot = 0;
 vec shadoworigin(0, 0, 0),
     shadowdir(0, 0, 0);
 
@@ -55,17 +57,17 @@ struct shadowmesh
     vec spotloc;
     int spotangle;
     int type;
-    int draws[6];
+    std::array<int, 6> draws;
 };
+
+Occluder occlusionengine;
 
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-static void findshadowvas(std::vector<vtxarray *> &vas);
-
 namespace
 {
-    void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
+    void drawtris(GLsizei numindices, const GLvoid *indices, GLuint minvert, GLuint maxvert)
     {
         glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);
         glde++;
@@ -90,9 +92,7 @@ namespace
 
     constexpr int vasortsize = 64;
 
-    vtxarray *vasort[vasortsize];
-
-    void addvisibleva(vtxarray *va)
+    void addvisibleva(vtxarray *va, std::array<vtxarray *, vasortsize> &vasort)
     {
         float dist = vadist(*va, camera1->o);
         va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
@@ -111,15 +111,15 @@ namespace
         *prev = va;
     }
 
-    void sortvisiblevas()
+    void sortvisiblevas(const std::array<vtxarray *, vasortsize> &vasort)
     {
         visibleva = nullptr;
         vtxarray **last = &visibleva;
-        for(int i = 0; i < vasortsize; ++i)
+        for(vtxarray *i : vasort)
         {
-            if(vasort[i])
+            if(i)
             {
-                vtxarray *va = vasort[i];
+                vtxarray *va = i;
                 *last = va;
                 while(va->next)
                 {
@@ -131,7 +131,7 @@ namespace
     }
 
     template<bool fullvis, bool resetocclude>
-    void findvisiblevas(std::vector<vtxarray *> &vas)
+    void findvisiblevas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(uint i = 0; i < vas.size(); i++)
         {
@@ -146,27 +146,27 @@ namespace
                     v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
                     v.query = nullptr;
                 }
-                addvisibleva(&v);
+                addvisibleva(&v, vasort);
                 if(v.children.size())
                 {
                     if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
                     {
                         if(resetchildren)
                         {
-                            findvisiblevas<true, true>(v.children);
+                            findvisiblevas<true, true>(v.children, vasort);
                         }
                         else
                         {
-                            findvisiblevas<true, false>(v.children);
+                            findvisiblevas<true, false>(v.children, vasort);
                         }
                     }
                     else if(resetchildren)
                     {
-                        findvisiblevas<false, true>(v.children);
+                        findvisiblevas<false, true>(v.children, vasort);
                     }
                     else
                     {
-                        findvisiblevas<false, false>(v.children);
+                        findvisiblevas<false, false>(v.children, vasort);
                     }
                 }
             }
@@ -175,98 +175,15 @@ namespace
 
     void findvisiblevas()
     {
-        std::memset(vasort, 0, sizeof(vasort));
-        findvisiblevas<false, false>(varoot);
-        sortvisiblevas();
+        std::array<vtxarray *, vasortsize> vasort;
+        vasort.fill(nullptr);
+        findvisiblevas<false, false>(varoot, vasort);
+        sortvisiblevas(vasort);
     }
 
     ///////// occlusion queries /////////////
 
-    constexpr int maxqueryframes = 2;
-
-    //all members of this struct are used elsewhere (must be public)
-    struct queryframe
-    {
-        public:
-            int cur;
-
-            queryframe() : cur(0), max(0), defer(0) {}
-
-            void flip()
-            {
-                for(int i = 0; i < cur; ++i)
-                {
-                    queries[i].owner = nullptr;
-                }
-                for(; defer > 0 && max < maxquery; defer--)
-                {
-                    queries[max].owner = nullptr;
-                    queries[max].fragments = -1;
-                    glGenQueries(1, &queries[max++].id);
-                }
-                cur = defer = 0;
-            }
-
-            occludequery *newquery(void *owner)
-            {
-                if(cur >= max)
-                {
-                    if(max >= maxquery)
-                    {
-                        return nullptr;
-                    }
-                    if(deferquery)
-                    {
-                        if(max + defer < maxquery)
-                        {
-                            defer++;
-                        }
-                        return nullptr;
-                    }
-                    glGenQueries(1, &queries[max++].id);
-                }
-                occludequery *query = &queries[cur++];
-                query->owner = owner;
-                query->fragments = -1;
-                return query;
-            }
-
-            void reset()
-            {
-                for(int i = 0; i < max; ++i)
-                {
-                    queries[i].owner = nullptr;
-                }
-            }
-
-            void cleanup()
-            {
-                for(int i = 0; i < max; ++i)
-                {
-                    glDeleteQueries(1, &queries[i].id);
-                    queries[i].owner = nullptr;
-                }
-                cur = max = defer = 0;
-            }
-        private:
-            static constexpr int maxquery = 2048;
-
-            int max, defer;
-            occludequery queries[maxquery];
-    };
-
-    queryframe queryframes[maxqueryframes];
-    uint flipquery = 0;
-
-    void clearqueries()
-    {
-        for(int i = 0; i < maxqueryframes; ++i)
-        {
-            queryframes[i].cleanup();
-        }
-    }
-
-    VARF(oqany, 0, 0, 2, clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
+    VARF(oqany, 0, 0, 2, occlusionengine.clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
     VAR(oqwait, 0, 1, 1);
 
     GLenum querytarget()
@@ -341,14 +258,13 @@ namespace
         {
             if(va->occluded < Occlude_BB && va->curvfc < ViewFrustumCull_Fogged)
             {
-                for(uint i = 0; i < va->mapmodels.size(); i++)
+                for(octaentities *oe : va->mapmodels)
                 {
-                    octaentities *oe = va->mapmodels[i];
                     if(view.isfoggedcube(oe->o, oe->size))
                     {
                         continue;
                     }
-                    bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
+                    bool occluded = doquery && oe->query && oe->query->owner == oe && occlusionengine.checkquery(oe->query);
                     if(occluded)
                     {
                         oe->distance = -1;
@@ -359,9 +275,9 @@ namespace
                     else
                     {
                         int visible = 0;
-                        for(uint i = 0; i < oe->mapmodels.size(); i++)
+                        for(const int &i : oe->mapmodels)
                         {
-                            extentity &e = *ents[oe->mapmodels[i]];
+                            extentity &e = *ents[i];
                             if(e.flags&EntFlag_NoVis)
                             {
                                 continue;
@@ -408,7 +324,7 @@ namespace
             br.x <= va.bbmax.x && br.y <= va.bbmax.y && br.z <= va.bbmax.z;
     }
 
-    bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
+    bool bboccluded(const ivec &bo, const ivec &br, const std::array<cube, 8> &c, const ivec &o, int size)
     {
         LOOP_OCTA_BOX(o, size, bo, br)
         {
@@ -421,7 +337,7 @@ namespace
                     continue;
                 }
             }
-            if(c[i].children && bboccluded(bo, br, c[i].children, co, size>>1))
+            if(c[i].children && bboccluded(bo, br, *(c[i].children), co, size>>1))
             {
                 continue;
             }
@@ -506,12 +422,13 @@ namespace
 
     vtxarray *shadowva = nullptr;
 
-    void addshadowva(vtxarray * const va, float dist)
+    void addshadowva(vtxarray * const va, float dist, std::array<vtxarray *, vasortsize> &vasort)
     {
         va->rdistance = static_cast<int>(dist);
 
         int hash = std::clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash], *cur = vasort[hash];
+        vtxarray **prev = &vasort[hash],
+                   *cur = vasort[hash];
 
         while(cur && va->rdistance > cur->rdistance)
         {
@@ -523,15 +440,15 @@ namespace
         *prev = va;
     }
 
-    void sortshadowvas()
+    void sortshadowvas(std::array<vtxarray *, vasortsize> &vasort)
     {
         shadowva = nullptr;
         vtxarray **last = &shadowva;
-        for(int i = 0; i < vasortsize; ++i)
+        for(vtxarray *i : vasort)
         {
-            if(vasort[i])
+            if(i)
             {
-                vtxarray *va = vasort[i];
+                vtxarray *va = i;
                 *last = va;
                 while(va->rnext)
                 {
@@ -542,36 +459,35 @@ namespace
         }
     }
 
-    void findcsmshadowvas(std::vector<vtxarray *> &vas)
+    void findcsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(uint i = 0; i < vas.size(); i++)
+        for(vtxarray * const &v : vas)
         {
-            vtxarray &v = *vas[i];
             ivec bbmin, bbmax;
-            if(v.children.size() || v.mapmodels.size())
+            if(v->children.size() || v->mapmodels.size())
             {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
+                bbmin = v->bbmin;
+                bbmax = v->bbmax;
             }
             else
             {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
+                bbmin = v->geommin;
+                bbmax = v->geommax;
             }
-            v.shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
+            v->shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
+            if(v->shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
-                if(v.children.size())
+                addshadowva(v, dist, vasort);
+                if(v->children.size())
                 {
-                    findcsmshadowvas(v.children);
+                    findcsmshadowvas(v->children, vasort);
                 }
             }
         }
     }
 
-    void findrsmshadowvas(std::vector<vtxarray *> &vas)
+    void findrsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(vtxarray *v :vas)
         {
@@ -590,16 +506,16 @@ namespace
             if(v->shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(v, dist);
+                addshadowva(v, dist, vasort);
                 if(v->children.size())
                 {
-                    findrsmshadowvas(v->children);
+                    findrsmshadowvas(v->children, vasort);
                 }
             }
         }
     }
 
-    void findspotshadowvas(std::vector<vtxarray *> &vas)
+    void findspotshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
         for(vtxarray *v : vas)
         {
@@ -609,10 +525,10 @@ namespace
                 v->shadowmask = !smbbcull || (v->children.size() || v->mapmodels.size() ?
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v->bbmin, v->bbmax) :
                                     bbinsidespot(shadoworigin, shadowdir, shadowspot, v->geommin, v->geommax)) ? 1 : 0;
-                addshadowva(v, dist);
+                addshadowva(v, dist, vasort);
                 if(v->children.size())
                 {
-                    findspotshadowvas(v->children);
+                    findspotshadowvas(v->children, vasort);
                 }
             }
         }
@@ -735,7 +651,7 @@ namespace
 
             renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), globals(-1), alphascale(0), texgenorient(-1),
-                            texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1), slot(nullptr),
+                            texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1),
                             vslot(nullptr), texgenslot(nullptr), texgenvslot(nullptr),
                             texgenscroll(0, 0), refractscale(0), refractcolor(1, 1, 1)
             {
@@ -751,10 +667,9 @@ namespace
             int tmu;
             GLuint textures[7];
             vec colorscale;
-            Slot *slot;
-            VSlot *vslot;
-            Slot *texgenslot;
-            VSlot *texgenvslot;
+            const VSlot *vslot;
+            const Slot *texgenslot;
+            const VSlot *texgenvslot;
             vec2 texgenscroll;
             float refractscale;
             vec refractcolor;
@@ -826,7 +741,7 @@ namespace
         {
             drawbb(va.geommin, ivec(va.geommax).sub(va.geommin));
         }
-        endquery();
+        occlusionengine.endquery();
     }
 
     enum RenderPass
@@ -1084,8 +999,6 @@ namespace
             tmu = 0;
             glActiveTexture(GL_TEXTURE0);
         }
-
-        slot = &newslot;
         vslot = &newvslot;
     }
 
@@ -1093,8 +1006,8 @@ namespace
     {
         if(texgenslot != &slot || texgenvslot != &vslot)
         {
-            Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t,
-                    *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
+            const Texture *curtex = !texgenslot || texgenslot->sts.empty() ? notexture : texgenslot->sts[0].t;
+            const Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t;
             if(!texgenvslot || slot.sts.empty() ||
                 (curtex->xs != tex->xs || curtex->ys != tex->ys ||
                  texgenvslot->rotation != vslot.rotation || texgenvslot->scale != vslot.scale ||
@@ -1200,7 +1113,6 @@ namespace
 
     void renderstate::renderbatches(int pass)
     {
-        slot = nullptr;
         vslot = nullptr;
         int curbatch = firstbatch;
         if(curbatch >= 0)
@@ -1302,25 +1214,6 @@ namespace
         nocolorshader->set();
         drawvatris(va, 3*numtris, offset);
     }
-//====================================================== STARTVAQUERY ENDVAQUERY
-    #define STARTVAQUERY(va, flush) \
-        do { \
-            if(va.query) \
-            { \
-                flush; \
-                va.query->startquery(); \
-            } \
-        } while(0)
-
-
-    #define ENDVAQUERY(va, flush) \
-        do { \
-            if(va.query) \
-            { \
-                flush; \
-                endquery(); \
-            } \
-        } while(0)
 
     VAR(batchgeom, 0, 1, 1);
 
@@ -1333,14 +1226,25 @@ namespace
                 {
                     vverts += va.verts;
                 }
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
+                    if(geombatches.size())
+                    {
+                        cur.renderbatches(pass);
+                    }
+                    va.query->startquery();
                 }
                 mergetexs(cur, va);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(pass); });
+                    if(va.query)
+                    {
+                        if(geombatches.size())
+                        {
+                            cur.renderbatches(pass);
+                        }
+                        occlusionengine.endquery();
+                    }
                 }
                 else if(!batchgeom && geombatches.size())
                 {
@@ -1349,14 +1253,25 @@ namespace
                 break;
 
             case RenderPass_GBufferBlend:
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
+                    if(geombatches.size())
+                    {
+                        cur.renderbatches(RenderPass_GBuffer);
+                    }
+                    va.query->startquery();
                 }
                 mergetexs(cur, va, &va.texelems[va.texs], 3*va.tris);
                 if(doquery)
                 {
-                    ENDVAQUERY(va, { if(geombatches.size()) cur.renderbatches(RenderPass_GBuffer); });
+                    if(va.query)
+                    {
+                        if(geombatches.size())
+                        {
+                            cur.renderbatches(RenderPass_GBuffer);
+                        }
+                        occlusionengine.endquery();
+                    }
                 }
                 else if(!batchgeom && geombatches.size())
                 {
@@ -1378,14 +1293,14 @@ namespace
                 break;
 
             case RenderPass_Z:
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    STARTVAQUERY(va, );
+                    va.query->startquery();
                 }
                 cur.renderzpass(va);
-                if(doquery)
+                if(doquery && va.query)
                 {
-                    ENDVAQUERY(va, );
+                    occlusionengine.endquery();
                 }
                 break;
 
@@ -1407,9 +1322,6 @@ namespace
         }
     }
 
-    #undef STARTVAQUERY
-    #undef ENDVAQUERY
-//==============================================================================
     void setupgeom()
     {
         glActiveTexture(GL_TEXTURE0);
@@ -1807,13 +1719,13 @@ namespace
     {
         GLuint ebuf, vbuf;
         int offset, tris, next;
-        ushort minvert, maxvert;
+        GLuint minvert, maxvert;
     };
 
     struct shadowverts
     {
-        static const int tablesize = 1<<13;
-        int table[tablesize];
+        static constexpr int tablesize = 1<<13;
+        std::array<int, tablesize> table;
         std::vector<vec> verts;
         std::vector<int> chain;
 
@@ -1821,14 +1733,15 @@ namespace
 
         void clear()
         {
-            std::memset(table, -1, sizeof(table));
+            table.fill(-1);
             chain.clear();
             verts.clear();
         }
 
         int add(const vec &v)
         {
-            uint h = hthash(v)&(tablesize-1);
+            auto vechash = std::hash<vec>();
+            uint h = vechash(v)&(tablesize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 if(verts[i] == v)
@@ -1845,15 +1758,15 @@ namespace
             return table[h] = verts.size()-1;
         }
     } shadowverts;
-    std::vector<ushort> shadowtris[6];
+    std::array<std::vector<GLuint>, 6> shadowtris;
     std::vector<GLuint> shadowvbos;
-    hashtable<int, shadowmesh> shadowmeshes;
+    std::unordered_map<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
 
     struct shadowdrawinfo
     {
         int last;
-        ushort minvert, maxvert;
+        GLuint minvert, maxvert;
 
         shadowdrawinfo() : last(-1)
         {
@@ -1867,7 +1780,7 @@ namespace
         }
     };
 
-    void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[6])
+    void flushshadowmeshdraws(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws)
     {
         int numindexes = 0;
         for(int i = 0; i < sides; ++i)
@@ -1879,7 +1792,8 @@ namespace
             return;
         }
 
-        GLuint ebuf = 0, vbuf = 0;
+        GLuint ebuf = 0,
+               vbuf = 0;
         glGenBuffers(1, &ebuf);
         glGenBuffers(1, &vbuf);
         ushort *indexes = new ushort[numindexes];
@@ -2014,7 +1928,7 @@ namespace
         return mask;
     }
 
-    void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
+    void addshadowmeshtri(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws, const vec &v0, const vec &v1, const vec &v2)
     {
         vec l0 = vec(v0).sub(shadoworigin);
         float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0));
@@ -2053,7 +1967,7 @@ namespace
         int i0 = shadowverts.add(v0),
             i1 = shadowverts.add(v1),
             i2 = shadowverts.add(v2);
-        ushort minvert = std::min(i0, std::min(i1, i2)),
+        GLuint minvert = std::min(i0, std::min(i1, i2)),
                maxvert = std::max(i0, std::max(i1, i2));
         for(int k = 0; k < sides; ++k)
         {
@@ -2069,7 +1983,7 @@ namespace
         }
     }
 
-    void genshadowmeshtris(shadowmesh &m, int sides, shadowdrawinfo draws[6], ushort *edata, int numtris, vertex *vdata)
+    void genshadowmeshtris(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws, ushort *edata, int numtris, vertex *vdata)
     {
         for(int j = 0; j < 3*numtris; j += 3)
         {
@@ -2077,7 +1991,7 @@ namespace
         }
     }
 
-    void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draws[6])
+    void genshadowmeshmapmodels(shadowmesh &m, int sides, std::array<shadowdrawinfo, 6> &draws)
     {
         const std::vector<extentity *> &ents = entities::getents();
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
@@ -2095,9 +2009,9 @@ namespace
         std::vector<triangle> tris;
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
-            for(uint j = 0; j < oe->mapmodels.size(); j++)
+            for(const int &j : oe->mapmodels)
             {
-                extentity &e = *ents[oe->mapmodels[j]];
+                extentity &e = *ents[j];
                 if(!(e.flags&EntFlag_Render))
                 {
                     continue;
@@ -2149,7 +2063,7 @@ namespace
         {
             return;
         }
-        std::memset(m.draws, -1, sizeof(m.draws));
+        m.draws.fill(-1);
 
         shadowmapping = m.type;
         shadoworigin = m.origin;
@@ -2161,7 +2075,7 @@ namespace
         findshadowmms();
 
         int sides = m.type == ShadowMap_Spot ? 1 : 6;
-        shadowdrawinfo draws[6];
+        std::array<shadowdrawinfo, 6> draws;
         for(vtxarray *va = shadowva; va; va = va->rnext)
         {
             if(va->shadowmask)
@@ -2273,8 +2187,8 @@ void vfc::visiblecubes(bool cull)
             vfcP[i].x = vfcP[i].y = vfcP[i].z = vfcP[i].offset = 0;
         };
         vfcDfog = farplane;
-        std::memset(vfcDnear, 0, sizeof(vfcDnear));
-        std::memset(vfcDfar, 0, sizeof(vfcDfar));
+        vfcDnear.fill(0);
+        vfcDfar.fill(0);
         visibleva = nullptr;
         for(uint i = 0; i < valist.size(); i++)
         {
@@ -2386,7 +2300,7 @@ int vfc::isvisiblebb(const ivec &bo, const ivec &br) const
     return v;
 }
 
-bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
+bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
 {
     int diff = (bo.x^br.x) | (bo.y^br.y) | (bo.z^br.z);
     if(diff&~((1<<worldscale)-1))
@@ -2396,9 +2310,9 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
     int scale = worldscale-1;
     if(diff&(1<<scale))
     {
-        return ::bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
+        return ::bboccluded(bo, br, *worldroot, ivec(0, 0, 0), 1<<scale);
     }
-    cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+    const cube *c = &(*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
     {
         vtxarray *va = c->ext->va;
@@ -2410,7 +2324,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
+        c = &(*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->va)
         {
             vtxarray *va = c->ext->va;
@@ -2423,65 +2337,9 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
     }
     if(c->children)
     {
-        return ::bboccluded(bo, br, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::bboccluded(bo, br, *(c->children), ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     }
     return false;
-}
-
-void flipqueries()
-{
-    flipquery = (flipquery + 1) % maxqueryframes;
-    queryframes[flipquery].flip();
-}
-
-occludequery *newquery(void *owner)
-{
-    return queryframes[flipquery].newquery(owner);
-}
-
-void occludequery::startquery() const
-{
-    glBeginQuery(querytarget(), this->id);
-}
-
-void endquery()
-{
-    glEndQuery(querytarget());
-}
-
-bool checkquery(occludequery *query, bool nowait)
-{
-    if(query->fragments < 0)
-    {
-        if(nowait || !oqwait)
-        {
-            GLint avail;
-            glGetQueryObjectiv(query->id, GL_QUERY_RESULT_AVAILABLE, &avail);
-            if(!avail)
-            {
-                return false;
-            }
-        }
-
-        GLuint fragments;
-        glGetQueryObjectuiv(query->id, GL_QUERY_RESULT, &fragments);
-        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
-    }
-    return query->fragments < oqfrags;
-}
-
-
-void resetqueries()
-{
-    for(int i = 0; i < maxqueryframes; ++i)
-    {
-        queryframes[i].reset();
-    }
-}
-
-int getnumqueries()
-{
-    return queryframes[flipquery].cur;
 }
 
 void startbb(bool mask)
@@ -2537,6 +2395,121 @@ void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 
 //oq
 
+void Occluder::clearqueries()
+{
+    for(queryframe &i : queryframes)
+    {
+        i.cleanup();
+    }
+}
+
+void Occluder::flipqueries()
+{
+    flipquery = (flipquery + 1) % maxqueryframes;
+    queryframes[flipquery].flip();
+}
+
+void Occluder::endquery()
+{
+    glEndQuery(querytarget());
+}
+
+bool Occluder::checkquery(occludequery *query, bool nowait)
+{
+    if(query->fragments < 0)
+    {
+        if(nowait || !oqwait)
+        {
+            GLint avail;
+            glGetQueryObjectiv(query->id, GL_QUERY_RESULT_AVAILABLE, &avail);
+            if(!avail)
+            {
+                return false;
+            }
+        }
+
+        GLuint fragments;
+        glGetQueryObjectuiv(query->id, GL_QUERY_RESULT, &fragments);
+        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
+    }
+    return query->fragments < oqfrags;
+}
+
+void Occluder::resetqueries()
+{
+    for(queryframe &i : queryframes)
+    {
+        i.reset();
+    }
+}
+
+int Occluder::getnumqueries() const
+{
+    return queryframes[flipquery].cur;
+}
+
+void Occluder::queryframe::flip()
+{
+    for(int i = 0; i < cur; ++i)
+    {
+        queries[i].owner = nullptr;
+    }
+    for(; defer > 0 && max < maxquery; defer--)
+    {
+        queries[max].owner = nullptr;
+        queries[max].fragments = -1;
+        glGenQueries(1, &queries[max++].id);
+    }
+    cur = defer = 0;
+}
+
+occludequery *Occluder::queryframe::newquery(void *owner)
+{
+    if(cur >= max)
+    {
+        if(max >= maxquery)
+        {
+            return nullptr;
+        }
+        if(deferquery)
+        {
+            if(max + defer < maxquery)
+            {
+                defer++;
+            }
+            return nullptr;
+        }
+        glGenQueries(1, &queries[max++].id);
+    }
+    occludequery *query = &queries[cur++];
+    query->owner = owner;
+    query->fragments = -1;
+    return query;
+}
+
+void Occluder::queryframe::reset()
+{
+    for(int i = 0; i < max; ++i)
+    {
+        queries[i].owner = nullptr;
+    }
+}
+
+void Occluder::queryframe::cleanup()
+{
+    for(int i = 0; i < max; ++i)
+    {
+        glDeleteQueries(1, &queries[i].id);
+        queries[i].owner = nullptr;
+    }
+    cur = max = defer = 0;
+}
+
+void occludequery::startquery() const
+{
+    glBeginQuery(querytarget(), this->id);
+}
+
 void rendermapmodels()
 {
     static int skipoq = 0;
@@ -2559,10 +2532,10 @@ void rendermapmodels()
                 if(!rendered)
                 {
                     rendered = true;
-                    oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : nullptr;
+                    oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? occlusionengine.newquery(oe) : nullptr;
                     if(oe->query)
                     {
-                        oe->query->startmodelquery();
+                        occlusionengine.setupmodelquery(oe->query);
                     }
                 }
                 rendermapmodel(e);
@@ -2570,7 +2543,7 @@ void rendermapmodels()
             }
             if(rendered && oe->query)
             {
-                endmodelquery();
+                occlusionengine.endmodelquery();
             }
         }
     }
@@ -2582,7 +2555,7 @@ void rendermapmodels()
     {
         if(oe->distance<0)
         {
-            oe->query = doquery && !camera1->o.insidebb(oe->bbmin, oe->bbmax, 1) ? newquery(oe) : nullptr;
+            oe->query = doquery && !camera1->o.insidebb(oe->bbmin, oe->bbmax, 1) ? occlusionengine.newquery(oe) : nullptr;
             if(!oe->query)
             {
                 continue;
@@ -2594,7 +2567,7 @@ void rendermapmodels()
             }
             oe->query->startquery();
             drawbb(oe->bbmin, ivec(oe->bbmax).sub(oe->bbmin));
-            endquery();
+            occlusionengine.endquery();
         }
     }
     if(queried)
@@ -2727,17 +2700,18 @@ bool renderexplicitsky(bool outline)
 
 void cubeworld::cleanupva()
 {
-    clearvas(worldroot);
-    clearqueries();
+    clearvas(*worldroot);
+    occlusionengine.clearqueries();
     cleanupbb();
     cleanupgrass();
 }
 
-int GBuffer::findalphavas()
+GBuffer::AlphaInfo GBuffer::findalphavas()
 {
     alphavas.clear();
-    alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
-    alphafrontsx2 = alphafrontsy2 = alphabacksx2 = alphabacksy2 = alpharefractsx2 = alpharefractsy2 = -1;
+    AlphaInfo a;
+    a.alphafrontsx1 = a.alphafrontsy1 = a.alphabacksx1 = a.alphabacksy1 = a.alpharefractsx1 = a.alpharefractsy1 = 1;
+    a.alphafrontsx2 = a.alphafrontsy2 = a.alphabacksx2 = a.alphabacksy2 = a.alpharefractsx2 = a.alpharefractsy2 = -1;
     int alphabackvas = 0,
         alpharefractvas = 0;
     std::memset(alphatiles, 0, sizeof(alphatiles));
@@ -2763,17 +2737,17 @@ int GBuffer::findalphavas()
             }
             alphavas.push_back(va);
             masktiles(alphatiles, sx1, sy1, sx2, sy2);
-            alphafrontsx1 = std::min(alphafrontsx1, sx1);
-            alphafrontsy1 = std::min(alphafrontsy1, sy1);
-            alphafrontsx2 = std::max(alphafrontsx2, sx2);
-            alphafrontsy2 = std::max(alphafrontsy2, sy2);
+            a.alphafrontsx1 = std::min(a.alphafrontsx1, sx1);
+            a.alphafrontsy1 = std::min(a.alphafrontsy1, sy1);
+            a.alphafrontsx2 = std::max(a.alphafrontsx2, sx2);
+            a.alphafrontsy2 = std::max(a.alphafrontsy2, sy2);
             if(va->alphabacktris)
             {
                 alphabackvas++;
-                alphabacksx1 = std::min(alphabacksx1, sx1);
-                alphabacksy1 = std::min(alphabacksy1, sy1);
-                alphabacksx2 = std::max(alphabacksx2, sx2);
-                alphabacksy2 = std::max(alphabacksy2, sy2);
+                a.alphabacksx1 = std::min(a.alphabacksx1, sx1);
+                a.alphabacksy1 = std::min(a.alphabacksy1, sy1);
+                a.alphabacksx2 = std::max(a.alphabacksx2, sx2);
+                a.alphabacksy2 = std::max(a.alphabacksy2, sy2);
             }
             if(va->refracttris)
             {
@@ -2782,14 +2756,15 @@ int GBuffer::findalphavas()
                     continue;
                 }
                 alpharefractvas++;
-                alpharefractsx1 = std::min(alpharefractsx1, sx1);
-                alpharefractsy1 = std::min(alpharefractsy1, sy1);
-                alpharefractsx2 = std::max(alpharefractsx2, sx2);
-                alpharefractsy2 = std::max(alpharefractsy2, sy2);
+                a.alpharefractsx1 = std::min(a.alpharefractsx1, sx1);
+                a.alpharefractsy1 = std::min(a.alpharefractsy1, sy1);
+                a.alpharefractsx2 = std::max(a.alpharefractsx2, sx2);
+                a.alpharefractsy2 = std::max(a.alpharefractsy2, sy2);
             }
         }
     }
-    return (alpharefractvas ? 4 : 0) | (alphavas.size() ? 2 : 0) | (alphabackvas ? 1 : 0);
+    a.hasalphavas = (alpharefractvas ? 4 : 0) | (alphavas.size() ? 2 : 0) | (alphabackvas ? 1 : 0);
+    return a;
 }
 
 void renderrefractmask()
@@ -2797,9 +2772,8 @@ void renderrefractmask()
     gle::enablevertex();
 
     const vtxarray *prev = nullptr;
-    for(uint i = 0; i < alphavas.size(); i++)
+    for(const vtxarray *va : alphavas)
     {
-        const vtxarray *va = alphavas[i];
         if(!va->refracttris)
         {
             continue;
@@ -2833,9 +2807,9 @@ void renderalphageom(int side)
 
     if(side == 2)
     {
-        for(uint i = 0; i < alphavas.size(); i++)
+        for(const vtxarray *i : alphavas)
         {
-            renderva(cur, *alphavas[i], RenderPass_GBuffer);
+            renderva(cur, *i, RenderPass_GBuffer);
         }
         if(geombatches.size())
         {
@@ -2845,11 +2819,11 @@ void renderalphageom(int side)
     else
     {
         glCullFace(GL_FRONT);
-        for(uint i = 0; i < alphavas.size(); i++)
+        for(const vtxarray *i : alphavas)
         {
-            if(alphavas[i]->alphabacktris)
+            if(i->alphabacktris)
             {
-                renderva(cur, *alphavas[i], RenderPass_GBuffer);
+                renderva(cur, *i, RenderPass_GBuffer);
             }
         }
         if(geombatches.size())
@@ -2862,7 +2836,7 @@ void renderalphageom(int side)
     cur.cleanupgeom();
 }
 
-void rendergeom()
+void GBuffer::rendergeom()
 {
     bool doOQ = oqfrags && oqgeom && !drawtex,
          multipassing = false;
@@ -2882,9 +2856,10 @@ void rendergeom()
                         va->occluded = Occlude_Parent;
                         continue;
                     }
-                    va->occluded = va->query && va->query->owner == va &&
-                                       checkquery(va->query) ? std::min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
-                    va->query = newquery(va);
+                    va->occluded = va->query && va->query->owner == va && occlusionengine.checkquery(va->query) ?
+                                   std::min(va->occluded+1, static_cast<int>(Occlude_BB)) :
+                                   Occlude_Nothing;
+                    va->query = occlusionengine.newquery(va);
                     if(!va->query || !va->occluded)
                     {
                         va->occluded = Occlude_Nothing;
@@ -2942,7 +2917,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        gbuf.workinoq();
+        workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
@@ -2977,7 +2952,7 @@ void rendergeom()
         {
             if(va->texs && va->occluded >= Occlude_Geom)
             {
-                if((va->parent && va->parent->occluded >= Occlude_BB) || (va->query && checkquery(va->query)))
+                if((va->parent && va->parent->occluded >= Occlude_BB) || (va->query && occlusionengine.checkquery(va->query)))
                 {
                     va->occluded = Occlude_BB;
                     continue;
@@ -3039,7 +3014,7 @@ void rendergeom()
             cur.depthmask = false;
             glDepthMask(GL_FALSE);
         }
-        gbuf.workinoq();
+        workinoq();
         if(!cur.colormask)
         {
             cur.colormask = true;
@@ -3151,7 +3126,7 @@ void clearshadowmeshes()
         glDeleteBuffers(shadowvbos.size(), shadowvbos.data());
         shadowvbos.clear();
     }
-    if(shadowmeshes.numelems)
+    if(shadowmeshes.size())
     {
         std::vector<extentity *> &ents = entities::getents();
         for(uint i = 0; i < ents.size(); i++)
@@ -3191,23 +3166,26 @@ void genshadowmeshes()
 
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
-    shadowmesh *m = shadowmeshes.access(idx);
-    if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius)
+    auto itr = shadowmeshes.find(idx);
+    if(itr == shadowmeshes.end()
+    || (*itr).second.type != shadowmapping
+    || (*itr).second.origin != shadoworigin
+    || (*itr).second.radius < shadowradius)
     {
         return nullptr;
     }
-    switch(m->type)
+    switch((*itr).second.type)
     {
         case ShadowMap_Spot:
         {
-            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < std::clamp(static_cast<int>(e.attached->attr1), 1, 89))
+            if(!e.attached || e.attached->type != EngineEnt_Spotlight || (*itr).second.spotloc != e.attached->o || (*itr).second.spotangle < std::clamp(static_cast<int>(e.attached->attr1), 1, 89))
             {
                 return nullptr;
             }
             break;
         }
     }
-    return m;
+    return &(*itr).second;
 }
 
 void rendershadowmesh(const shadowmesh *m)
@@ -3421,21 +3399,20 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
     return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
 }
 
-static void findshadowvas(std::vector<vtxarray *> &vas)
+static void findshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
 {
-    for(uint i = 0; i < vas.size(); i++)
+    for(vtxarray *&v : vas)
     {
-        vtxarray &v = *vas[i];
-        float dist = vadist(v, shadoworigin);
+        float dist = vadist(*v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.size() || v.mapmodels.size() ?
-                                calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
-                                calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
-            addshadowva(&v, dist);
-            if(v.children.size())
+            v->shadowmask = !smbbcull ? 0x3F : (v->children.size() || v->mapmodels.size() ?
+                                calcbbsidemask(v->bbmin, v->bbmax, shadoworigin, shadowradius, shadowbias) :
+                                calcbbsidemask(v->geommin, v->geommax, shadoworigin, shadowradius, shadowbias));
+            addshadowva(v, dist, vasort);
+            if(v->children.size())
             {
-                findshadowvas(v.children);
+                findshadowvas(v->children, vasort);
             }
         }
     }
@@ -3462,7 +3439,7 @@ void renderrsmgeom(bool dyntex)
                 {
                     gle::bindvbo(va->vbuf);
                     gle::bindebo(va->skybuf);
-                    const vertex *ptr = 0;
+                    const vertex *ptr = nullptr; //note: offset of nullptr is technically UB
                     gle::vertexpointer(sizeof(vertex), ptr->pos.v);
                 }
                 drawvaskytris(*va);
@@ -3490,19 +3467,16 @@ void renderrsmgeom(bool dyntex)
     cur.cleanupgeom();
 }
 
-int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
+void dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
 {
-    int vis = 0;
     for(vtxarray *va = shadowva; va; va = va->rnext)
     {
         if(va->shadowmask&mask && va->dyntexs)
         {
             bbmin.min(vec(va->geommin));
             bbmax.max(vec(va->geommax));
-            vis++;
         }
     }
-    return vis;
 }
 
 void findshadowmms()
@@ -3625,9 +3599,9 @@ void batchshadowmapmodels(bool skipmesh)
     const std::vector<extentity *> &ents = entities::getents();
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(uint k = 0; k < oe->mapmodels.size(); k++)
+        for(const int &k : oe->mapmodels)
         {
-            extentity &e = *ents[oe->mapmodels[k]];
+            extentity &e = *ents[k];
             if(e.flags&nflags)
             {
                 continue;
@@ -3637,9 +3611,9 @@ void batchshadowmapmodels(bool skipmesh)
     }
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        for(uint j = 0; j < oe->mapmodels.size(); j++)
+        for(const int &j : oe->mapmodels)
         {
-            extentity &e = *ents[oe->mapmodels[j]];
+            extentity &e = *ents[j];
             if(!(e.flags&EntFlag_Render))
             {
                 continue;
@@ -3652,29 +3626,30 @@ void batchshadowmapmodels(bool skipmesh)
 
 void findshadowvas()
 {
-    std::memset(vasort, 0, sizeof(vasort));
+    std::array<vtxarray *, vasortsize> vasort;
+    vasort.fill(nullptr);
     switch(shadowmapping)
     {
         case ShadowMap_Reflect:
         {
-            findrsmshadowvas(varoot);
+            findrsmshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_CubeMap:
         {
-            findshadowvas(varoot);
+            findshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_Cascade:
         {
-            findcsmshadowvas(varoot);
+            findcsmshadowvas(varoot, vasort);
             break;
         }
         case ShadowMap_Spot:
         {
-            findspotshadowvas(varoot);
+            findspotshadowvas(varoot, vasort);
             break;
         }
     }
-    sortshadowvas();
+    sortshadowvas(vasort);
 }

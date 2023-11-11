@@ -20,7 +20,7 @@ namespace
 
     void writelog(FILE *file, const char *buf)
     {
-        static uchar ubuf[512];
+        static uchar ubuf[logstrlen];
         size_t len = std::strlen(buf),
                carry = 0;
         while(carry < len)
@@ -159,7 +159,7 @@ int getclockmillis()
 //identification info about engine
 std::string enginestr()
 {
-    return "Libprimis v0.27a";
+    return "Libprimis v0.35a";
 }
 
 std::string enginebuilddate()

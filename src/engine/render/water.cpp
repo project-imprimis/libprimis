@@ -138,7 +138,6 @@ VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
 namespace
 {
     int wx1, wy1, wx2, wy2, wsize;
-    float whscale, whoffset;
 
     float wxscale = 1.0f,
           wyscale = 1.0f;
@@ -149,7 +148,7 @@ namespace
         gle::deftexcoord0();
     }
 
-    void vertwt(float v1, float v2, float v3)
+    void vertwt(float v1, float v2, float v3, float whscale, float whoffset)
     {
         float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
         float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
@@ -178,20 +177,20 @@ namespace
         wx2 = wx1 + size,
         wy2 = wy1 + size;
         wsize = size;
-        whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
+        float whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
         if(mat == Mat_Water)
         {
-            whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+            float whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
             defvertwt();
             gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
             for(int x = wx1; x<wx2; x += subdiv)
             {
-                vertwt(x,        wy1, z);
-                vertwt(x+subdiv, wy1, z);
+                vertwt(x,        wy1, z, whscale, whoffset);
+                vertwt(x+subdiv, wy1, z, whscale, whoffset);
                 for(int y = wy1; y<wy2; y += subdiv)
                 {
-                    vertwt(x,        y+subdiv, z);
-                    vertwt(x+subdiv, y+subdiv, z);
+                    vertwt(x,        y+subdiv, z, whscale, whoffset);
+                    vertwt(x+subdiv, y+subdiv, z, whscale, whoffset);
                 }
                 gle::multidraw();
             }
@@ -367,6 +366,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
     }
     glActiveTexture(GL_TEXTURE0);
 
+    matrix4 invcamprojmatrix = camprojmatrix.inverse();
     vec p[4] =
     {
         invcamprojmatrix.perspectivetransform(vec(-1, -1, -1)),
@@ -382,7 +382,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
     {
         const bvec &deepcolor = getwaterdeepcolor(mat);
         int deep = getwaterdeep(mat);
-        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb, deepcolor.y*ldrscaleb, deepcolor.z*ldrscaleb);
+        GLOBALPARAMF(waterdeepcolor, deepcolor.x*ldrscaleb(), deepcolor.y*ldrscaleb(), deepcolor.z*ldrscaleb());
         vec deepfade = getwaterdeepfade(mat).tocolor().mul(deep);
         GLOBALPARAMF(waterdeepfade,
             deepfade.x ? calcfogdensity(deepfade.x) : -1e4f,
@@ -685,12 +685,12 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x , y + offset, zmin );
+                    vec v(x , y + offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x + csize, y + offset, zmin );
+                    vec v(x + csize, y + offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
@@ -701,7 +701,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
             {
                 gle::begin(GL_TRIANGLE_FAN);
                 {
-                    vec v(x , y - offset, zmin );
+                    vec v(x , y - offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
@@ -716,7 +716,7 @@ static void renderwaterfall(const materialsurface &m, float offset, vec normal =
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
                 {
-                    vec v(x + csize, y - offset, zmin );
+                    vec v(x + csize, y - offset, zmin);
                     gle::attribf(v.x, v.y, v.z);
                     gle::attribf(wfxscale*v.x, -wfyscale*(v.z+wfscroll));
                 }
@@ -839,11 +839,12 @@ void renderwater()
         } while(0)
 
         Shader *aboveshader = nullptr;
+        //this if tree will select which shader is the water aboveshader depending on settings
         if(drawtex == Draw_TexMinimap)
         {
             SETWATERSHADER(above, waterminimap);
         }
-        else if(caustics && causticscale && causticmillis)
+        else if(caustics && causticscale && causticmillis) //caustics
         {
             if(waterreflect)
             {
@@ -854,7 +855,7 @@ void renderwater()
                 SETWATERSHADER(above, watercaustics);
             }
         }
-        else
+        else //no caustics
         {
             if(waterreflect)
             {
@@ -865,7 +866,7 @@ void renderwater()
                 SETWATERSHADER(above, water);
             }
         }
-
+        //now select the water belowshader
         Shader *belowshader = nullptr;
         if(drawtex != Draw_TexMinimap)
         {

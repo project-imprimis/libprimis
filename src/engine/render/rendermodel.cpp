@@ -10,8 +10,10 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
+
+#include <optional>
+#include <memory>
 
 #include "aa.h"
 #include "csm.h"
@@ -49,8 +51,6 @@ static model *loadingmodel = nullptr;
 #include "model/vertmodel.h"
 #include "model/skelmodel.h"
 
-#include "model/hitzone.h"
-
 model *loadmapmodel(int n)
 {
     if(static_cast<int>(mapmodels.size()) > n)
@@ -73,82 +73,116 @@ model *loadmapmodel(int n)
  */
 static vertcommands<obj> objcommands;
 
-static void checkmdl()
+//if no model is being loaded, prints error to console and returns false
+static bool checkmdl()
 {
     if(!loadingmodel)
     {
         conoutf(Console_Error, "not loading a model");
-        return;
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }
 
 static void mdlcullface(int *cullface)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setcullface(*cullface);
 }
 
 static void mdlcolor(float *r, float *g, float *b)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setcolor(vec(*r, *g, *b));
 }
 
 static void mdlcollide(int *collide)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
 
 static void mdlellipsecollide(int *collide)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
 
 static void mdltricollide(char *collide)
 {
-    checkmdl();
-    delete[] loadingmodel->collidemodel;
-    loadingmodel->collidemodel = nullptr;
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->collidemodel.clear();
     char *end = nullptr;
     int val = std::strtol(collide, &end, 0);
     if(*end)
     {
         val = 1;
-        loadingmodel->collidemodel = newstring(collide);
+        loadingmodel->collidemodel = std::string(collide);
     }
     loadingmodel->collide = val ? Collide_TRI : Collide_None;
 }
 
 static void mdlspec(float *percent)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float spec = *percent > 0 ? *percent/100.0f : 0.0f;
     loadingmodel->setspec(spec);
 }
 
 static void mdlgloss(int *gloss)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 
 static void mdlalphatest(float *cutoff)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
 }
 
 static void mdldepthoffset(int *offset)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->depthoffset = *offset!=0;
 }
 
 static void mdlglow(float *percent, float *delta, float *pulse)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float glow = *percent > 0 ? *percent/100.0f : 0.0f,
           glowdelta = *delta/100.0f,
           glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
@@ -158,14 +192,20 @@ static void mdlglow(float *percent, float *delta, float *pulse)
 
 static void mdlfullbright(float *fullbright)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setfullbright(*fullbright);
 }
 
 
 static void mdlshader(char *shader)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->setshader(lookupshaderbyname(shader));
 }
 
@@ -173,67 +213,92 @@ static void mdlshader(char *shader)
 //assigns a new spin speed in three euler angles for the model object currently being loaded
 static void mdlspin(float *yaw, float *pitch, float *roll)
 {
-    checkmdl();
-    loadingmodel->spinyaw = *yaw;
-    loadingmodel->spinpitch = *pitch;
-    loadingmodel->spinroll = *roll;
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->settransformation(std::nullopt, vec(*yaw, *pitch, *roll), std::nullopt, std::nullopt);
 }
 
 //assigns a new scale factor in % for the model object currently being loaded
 static void mdlscale(float *percent)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
-    loadingmodel->scale = scale;
+    loadingmodel->settransformation(std::nullopt, std::nullopt, std::nullopt, scale);
 }
 
 //assigns translation in x,y,z in cube units for the model object currently being loaded
 static void mdltrans(float *x, float *y, float *z)
 {
-    checkmdl();
-    loadingmodel->translate = vec(*x, *y, *z);
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->settransformation(vec(*x, *y, *z), std::nullopt, std::nullopt, std::nullopt);
 }
 
 //assigns angle to the offsetyaw field of the model object currently being loaded
 static void mdlyaw(float *angle)
 {
-    checkmdl();
-    loadingmodel->offsetyaw = *angle;
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->orientation.x = *angle;
 }
 
 
 //assigns angle to the offsetpitch field of the model object currently being loaded
 static void mdlpitch(float *angle)
 {
-    checkmdl();
-    loadingmodel->offsetpitch = *angle;
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->orientation.y = *angle;
 }
 
 //assigns angle to the offsetroll field of the model object currently being loaded
 static void mdlroll(float *angle)
 {
-    checkmdl();
-    loadingmodel->offsetroll = *angle;
+    if(!checkmdl())
+    {
+        return;
+    }
+    loadingmodel->orientation.z = *angle;
 }
 
 //assigns shadow to the shadow field of the model object currently being loaded
 static void mdlshadow(int *shadow)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->shadow = *shadow!=0;
 }
 
 //assigns alphashadow to the alphashadow field of the model object currently being loaded
 static void mdlalphashadow(int *alphashadow)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->alphashadow = *alphashadow!=0;
 }
 
 //assigns rad, h, eyeheight to the fields of the model object currently being loaded
 static void mdlbb(float *rad, float *h, float *eyeheight)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->collidexyradius = *rad;
     loadingmodel->collideheight = *h;
     loadingmodel->eyeheight = *eyeheight;
@@ -241,7 +306,10 @@ static void mdlbb(float *rad, float *h, float *eyeheight)
 
 static void mdlextendbb(float *x, float *y, float *z)
 {
-    checkmdl();
+    if(!checkmdl())
+    {
+        return;
+    }
     loadingmodel->bbextend = vec(*x, *y, *z);
 }
 
@@ -251,42 +319,56 @@ static void mdlextendbb(float *x, float *y, float *z)
  */
 static void mdlname()
 {
-    checkmdl();
-    result(loadingmodel->name);
+    if(!checkmdl())
+    {
+        return;
+    }
+    result(loadingmodel->modelname().c_str());
 }
 
-//========================================================= CHECK_RAGDOLL
-#define CHECK_RAGDOLL \
-    checkmdl(); \
-    if(!loadingmodel->skeletal()) \
-    { \
-        conoutf(Console_Error, "not loading a skeletal model"); \
-        return; \
-    } \
-    skelmodel *m = static_cast<skelmodel *>(loadingmodel); \
-    if(m->parts.empty()) \
-    { \
-        return; \
-    } \
-    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes); \
-    if(!meshes) \
-    { \
-        return; \
-    } \
-    skelmodel::skeleton *skel = meshes->skel; \
-    if(!skel->ragdoll) \
-    { \
-        skel->ragdoll = new ragdollskel; \
-    } \
-    ragdollskel *ragdoll = skel->ragdoll; \
-    if(ragdoll->loaded) \
-    { \
-        return; \
+// if a skeletal model is being loaded, and meets the criteria for a ragdoll,
+// returns the pointer to that ragdollskel (new one made if necessary), returns nullptr otherwise
+static ragdollskel *checkragdoll()
+{
+    if(!checkmdl())
+    {
+        return nullptr;
     }
+    if(!loadingmodel->skeletal())
+    {
+        conoutf(Console_Error, "not loading a skeletal model");
+        return nullptr;
+    }
+    skelmodel *m = static_cast<skelmodel *>(loadingmodel);
+    if(m->parts.empty())
+    {
+        return nullptr;
+    }
+    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+    if(!meshes)
+    {
+        return nullptr;
+    }
+    skelmodel::skeleton *skel = meshes->skel;
+    if(!skel->ragdoll)
+    {
+        skel->ragdoll = new ragdollskel;
+    }
+    ragdollskel *ragdoll = skel->ragdoll;
+    if(ragdoll->loaded)
+    {
+        return nullptr;
+    }
+    return ragdoll;
+}
 
 static void rdvert(float *x, float *y, float *z, float *radius)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::vert v;
     v.pos = vec(*x, *y, *z);
     v.radius = *radius > 0 ? *radius : 1;
@@ -298,13 +380,21 @@ static void rdvert(float *x, float *y, float *z, float *radius)
  */
 static void rdeye(int *v)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdoll->eye = *v;
 }
 
 static void rdtri(int *v1, int *v2, int *v3)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::tri t;
     t.vert[0] = *v1;
     t.vert[1] = *v2;
@@ -314,7 +404,14 @@ static void rdtri(int *v1, int *v2, int *v3)
 
 static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
+    const skelmodel *m = static_cast<skelmodel *>(loadingmodel);
+    const skelmodel::skelmeshgroup *meshes = static_cast<const skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+    const skelmodel::skeleton *skel = meshes->skel;
     if(*n < 0 || *n >= skel->numbones)
     {
         return;
@@ -330,7 +427,11 @@ static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 
 static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::distlimit d;
     d.vert[0] = *v1;
     d.vert[1] = *v2;
@@ -341,7 +442,11 @@ static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 
 static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdollskel::rotlimit r;
     r.tri[0] = *t1;
     r.tri[1] = *t2;
@@ -353,12 +458,14 @@ static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, 
 
 static void rdanimjoints(int *on)
 {
-    CHECK_RAGDOLL;
+    ragdollskel *ragdoll = checkragdoll();
+    if(!ragdoll)
+    {
+        return;
+    }
     ragdoll->animjoints = *on!=0;
 }
 
-#undef CHECK_RAGDOLL
-//==============================================================================
 // mapmodels
 
 std::vector<mapmodelinfo> mapmodels;
@@ -370,11 +477,11 @@ void mapmodel(char *name)
     mapmodelinfo mmi;
     if(name[0])
     {
-        formatstring(mmi.name, "%s%s", mmprefix, name);
+        mmi.name = std::string().append(mmprefix).append(name);
     }
     else
     {
-        mmi.name[0] = '\0';
+        mmi.name.clear();
     }
     mmi.m = mmi.collide = nullptr;
     mapmodels.push_back(mmi);
@@ -391,14 +498,14 @@ void mapmodelreset(int *n)
 
 const char *mapmodelname(int i)
 {
-    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name : nullptr;
+    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name.c_str() : nullptr;
 }
 
 void mapmodelnamecmd(int *index, int *prefix)
 {
     if(static_cast<int>(mapmodels.size()) > *index)
     {
-        result(mapmodels[*index].name[0] ? mapmodels[*index].name + (*prefix ? 0 : mmprefixlen) : "");
+        result(mapmodels[*index].name.empty() ? mapmodels[*index].name.c_str() + (*prefix ? 0 : mmprefixlen) : "");
     }
 }
 
@@ -414,17 +521,17 @@ void nummapmodels()
 
 // model registry
 
-hashnameset<model *> models;
-std::vector<const char *> preloadmodels;
-hashset<char *> failedmodels;
+std::unordered_map<std::string, model *> models;
+std::vector<std::string> preloadmodels;
 
-void preloadmodel(const char *name)
+//used in iengine
+void preloadmodel(std::string name)
 {
-    if(!name || !name[0] || models.access(name) || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
+    if(name.empty() || models.find(name) != models.end() || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
     {
         return;
     }
-    preloadmodels.push_back(newstring(name));
+    preloadmodels.push_back(name);
 }
 
 void flushpreloadedmodels(bool msg)
@@ -432,12 +539,12 @@ void flushpreloadedmodels(bool msg)
     for(uint i = 0; i < preloadmodels.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/preloadmodels.size();
-        model *m = loadmodel(preloadmodels[i], -1, msg);
+        model *m = loadmodel(preloadmodels[i].c_str(), -1, msg);
         if(!m)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i]);
+                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i].c_str());
             }
         }
         else
@@ -445,10 +552,6 @@ void flushpreloadedmodels(bool msg)
             m->preloadmeshes();
             m->preloadshaders();
         }
-    }
-    for(const char * i : preloadmodels)
-    {
-        delete[] i;
     }
     preloadmodels.clear();
 
@@ -459,16 +562,15 @@ void preloadusedmapmodels(bool msg, bool bih)
 {
     std::vector<extentity *> &ents = entities::getents();
     std::vector<int> used;
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity *&e : ents)
     {
-        extentity &e = *ents[i];
-        if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && std::find(used.begin(), used.end(), e.attr1) != used.end() )
+        if(e->type==EngineEnt_Mapmodel && e->attr1 >= 0 && std::find(used.begin(), used.end(), e->attr1) != used.end() )
         {
-            used.push_back(e.attr1);
+            used.push_back(e->attr1);
         }
     }
 
-    std::vector<const char *> col;
+    std::vector<std::string> col;
     for(uint i = 0; i < used.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
@@ -481,8 +583,8 @@ void preloadusedmapmodels(bool msg, bool bih)
             }
             continue;
         }
-        mapmodelinfo &mmi = mapmodels[mmindex];
-        if(!mmi.name[0])
+        const mapmodelinfo &mmi = mapmodels[mmindex];
+        if(mmi.name.empty())
         {
             continue;
         }
@@ -491,7 +593,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load map model: %s", mmi.name);
+                conoutf(Console_Warn, "could not load map model: %s", mmi.name.c_str());
             }
         }
         else
@@ -500,13 +602,13 @@ void preloadusedmapmodels(bool msg, bool bih)
             {
                 m->preloadBIH();
             }
-            else if(m->collide == Collide_TRI && !m->collidemodel && m->bih)
+            else if(m->collide == Collide_TRI && !m->collidemodel.size() && m->bih)
             {
                 m->setBIH();
             }
             m->preloadmeshes();
             m->preloadshaders();
-            if(m->collidemodel && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
+            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
             {
                 col.push_back(m->collidemodel);
             }
@@ -516,12 +618,12 @@ void preloadusedmapmodels(bool msg, bool bih)
     for(uint i = 0; i < col.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/col.size();
-        model *m = loadmodel(col[i], -1, msg);
+        model *m = loadmodel(col[i].c_str(), -1, msg);
         if(!m)
         {
             if(msg)
             {
-                conoutf(Console_Warn, "could not load collide model: %s", col[i]);
+                conoutf(Console_Warn, "could not load collide model: %s", col[i].c_str());
             }
         }
         else if(!m->bih)
@@ -535,13 +637,13 @@ void preloadusedmapmodels(bool msg, bool bih)
 
 model *loadmodel(const char *name, int i, bool msg)
 {
-
     model *(__cdecl *md5loader)(const char *) = +[] (const char *filename) -> model* { return new md5(filename); };
     model *(__cdecl *objloader)(const char *) = +[] (const char *filename) -> model* { return new obj(filename); };
 
     std::vector<model *(__cdecl *)(const char *)> loaders;
     loaders.push_back(md5loader);
     loaders.push_back(objloader);
+    std::unordered_set<std::string> failedmodels;
 
     if(!name)
     {
@@ -549,22 +651,22 @@ model *loadmodel(const char *name, int i, bool msg)
         {
             return nullptr;
         }
-        mapmodelinfo &mmi = mapmodels[i];
+        const mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m)
         {
             return mmi.m;
         }
-        name = mmi.name;
+        name = mmi.name.c_str();
     }
-    model **mm = models.access(name);
+    auto itr = models.find(name);
     model *m;
-    if(mm)
+    if(itr != models.end())
     {
-        m = *mm;
+        m = (*models.find(name)).second;
     }
     else
     {
-        if(!name[0] || loadingmodel || failedmodels.find(name, nullptr))
+        if(!name[0] || loadingmodel || failedmodels.find(name) != failedmodels.end())
         {
             return nullptr;
         }
@@ -594,10 +696,13 @@ model *loadmodel(const char *name, int i, bool msg)
         loadingmodel = nullptr;
         if(!m)
         {
-            failedmodels.add(newstring(name));
+            failedmodels.insert(name);
             return nullptr;
         }
-        models.access(m->name, m);
+        if(models.find(m->modelname()) == models.end())
+        {
+            models[m->modelname()] = m;
+        }
     }
     if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
     {
@@ -608,25 +713,35 @@ model *loadmodel(const char *name, int i, bool msg)
 
 void clear_models()
 {
-    ENUMERATE(models, model *, m, delete m);
+    for(auto [k, i] : models)
+    {
+        delete i;
+    }
 }
 
 void cleanupmodels()
 {
-    ENUMERATE(models, model *, m, m->cleanup());
+    for(auto [k, i] : models)
+    {
+        i->cleanup();
+    }
 }
 
 static void clearmodel(const char *name)
 {
-    model *m = models.find(name, nullptr);
+    model *m = nullptr;
+    auto it = models.find(name);
+    if(it != models.end())
+    {
+        m = (*it).second;
+    }
     if(!m)
     {
         conoutf("model %s is not loaded", name);
         return;
     }
-    for(uint i = 0; i < mapmodels.size(); i++)
+    for(mapmodelinfo &mmi : mapmodels)
     {
-        mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m == m)
         {
             mmi.m = nullptr;
@@ -636,7 +751,7 @@ static void clearmodel(const char *name)
             mmi.collide = nullptr;
         }
     }
-    models.remove(name);
+    models.erase(name);
     m->cleanup();
     delete m;
     conoutf("cleared model %s", name);
@@ -738,7 +853,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
         d->query = nullptr;
         return;
     }
-    d->query = newquery(d);
+    d->query = occlusionengine.newquery(d);
     if(!d->query)
     {
         return;
@@ -746,7 +861,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
     d->query->startquery();
     int br = static_cast<int>(radius*2)+1;
     drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
-    endquery();
+    occlusionengine.endquery();
 }
 
 static int cullmodel(const model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
@@ -763,7 +878,7 @@ static int cullmodel(const model *m, const vec &center, float radius, int flags,
     {
         return Model_CullOccluded;
     }
-    else if(flags&Model_CullQuery && d->query && d->query->owner==d && checkquery(d->query))
+    else if(flags&Model_CullQuery && d->query && d->query->owner==d && occlusionengine.checkquery(d->query))
     {
         return Model_CullQuery;
     }
@@ -936,17 +1051,11 @@ void rendermapmodelbatches()
     aamask::disable();
 }
 
-float transmdlsx1 = -1,
-      transmdlsy1 = -1,
-      transmdlsx2 = 1,
-      transmdlsy2 = 1;
-uint transmdltiles[lighttilemaxheight];
-
-void rendermodelbatches()
+void GBuffer::rendermodelbatches()
 {
-    transmdlsx1 = transmdlsy1 = 1;
-    transmdlsx2 = transmdlsy2 = -1;
-    std::memset(transmdltiles, 0, sizeof(transmdltiles));
+    tmodelinfo.mdlsx1 = tmodelinfo.mdlsy1 = 1;
+    tmodelinfo.mdlsx2 = tmodelinfo.mdlsy2 = -1;
+    tmodelinfo.mdltiles.fill(0);
 
     aamask::enable();
     for(uint i = 0; i < batches.size(); i++)
@@ -972,11 +1081,11 @@ void rendermodelbatches()
                 ivec bbmin(vec(bm.center).sub(bm.radius)), bbmax(vec(bm.center).add(bm.radius+1));
                 if(calcbbscissor(bbmin, bbmax, sx1, sy1, sx2, sy2))
                 {
-                    transmdlsx1 = std::min(transmdlsx1, sx1);
-                    transmdlsy1 = std::min(transmdlsy1, sy1);
-                    transmdlsx2 = std::max(transmdlsx2, sx2);
-                    transmdlsy2 = std::max(transmdlsy2, sy2);
-                    masktiles(transmdltiles, sx1, sy1, sx2, sy2);
+                    tmodelinfo.mdlsx1 = std::min(tmodelinfo.mdlsx1, sx1);
+                    tmodelinfo.mdlsy1 = std::min(tmodelinfo.mdlsy1, sy1);
+                    tmodelinfo.mdlsx2 = std::max(tmodelinfo.mdlsx2, sx2);
+                    tmodelinfo.mdlsy2 = std::max(tmodelinfo.mdlsy2, sy2);
+                    masktiles(tmodelinfo.mdltiles.data(), sx1, sy1, sx2, sy2);
                 }
                 continue;
             }
@@ -988,12 +1097,12 @@ void rendermodelbatches()
             }
             if(bm.flags&Model_CullQuery)
             {
-                bm.d->query = newquery(bm.d);
+                bm.d->query = occlusionengine.newquery(bm.d);
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
-                    endquery();
+                    occlusionengine.endquery();
                     continue;
                 }
             }
@@ -1036,9 +1145,8 @@ void rendermodelbatches()
 void rendertransparentmodelbatches(int stencil)
 {
     aamask::enable(stencil);
-    for(uint i = 0; i < batches.size(); i++)
+    for(modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
             continue;
@@ -1061,12 +1169,12 @@ void rendertransparentmodelbatches(int stencil)
             }
             if(bm.flags&Model_CullQuery)
             {
-                bm.d->query = newquery(bm.d);
+                bm.d->query = occlusionengine.newquery(bm.d);
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
                     renderbatchedmodel(b.m, bm);
-                    endquery();
+                    occlusionengine.endquery();
                     continue;
                 }
             }
@@ -1080,20 +1188,15 @@ void rendertransparentmodelbatches(int stencil)
     aamask::disable();
 }
 
-static occludequery *modelquery = nullptr;
-static int modelquerybatches = -1,
-           modelquerymodels = -1,
-           modelqueryattached = -1;
-
-void occludequery::startmodelquery()
+void Occluder::setupmodelquery(occludequery *q)
 {
-    modelquery = this;
+    modelquery = q;
     modelquerybatches = batches.size();
     modelquerymodels = batchedmodels.size();
     modelqueryattached = modelattached.size();
 }
 
-void endmodelquery()
+void Occluder::endmodelquery()
 {
     if(static_cast<int>(batchedmodels.size()) == modelquerymodels)
     {
@@ -1103,9 +1206,8 @@ void endmodelquery()
     }
     aamask::enable();
     modelquery->startquery();
-    for(uint i = 0; i < batches.size(); i++)
+    for(modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         int j = b.batched;
         if(j < modelquerymodels)
         {
@@ -1122,7 +1224,7 @@ void endmodelquery()
         b.batched = j;
         b.m->endrender();
     }
-    endquery();
+    occlusionengine.endquery();
     modelquery = nullptr;
     batches.resize(modelquerybatches);
     batchedmodels.resize(modelquerymodels);
@@ -1134,7 +1236,7 @@ void clearbatchedmapmodels()
 {
     for(uint i = 0; i < batches.size(); i++)
     {
-        modelbatch &b = batches[i];
+        const modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
             batchedmodels.resize(b.batched);
@@ -1150,8 +1252,8 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-    mapmodelinfo &mmi = mapmodels[idx];
-    model *m = mmi.m ? mmi.m : loadmodel(mmi.name);
+    const mapmodelinfo &mmi = mapmodels[idx];
+    model *m = mmi.m ? mmi.m : loadmodel(mmi.name.c_str());
     if(!m)
     {
         return;
@@ -1295,7 +1397,7 @@ hasboundbox:
         aamask::enable();
         if(flags&Model_CullQuery)
         {
-            d->query = newquery(d);
+            d->query = occlusionengine.newquery(d);
             if(d->query)
             {
                 d->query->startquery();
@@ -1311,7 +1413,7 @@ hasboundbox:
         m->endrender();
         if(flags&Model_CullQuery && d->query)
         {
-            endquery();
+            occlusionengine.endquery();
         }
         aamask::disable();
         return;
@@ -1350,7 +1452,7 @@ hasboundbox:
 
 int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode, dynent *d, modelattach *a, int basetime, int basetime2, float size)
 {
-    model *m = loadmodel(mdl);
+    const model *m = loadmodel(mdl);
     if(!m)
     {
         return -1;
@@ -1420,35 +1522,39 @@ void findanimscmd(char *name)
     result(buf.data());
 }
 
-//literally goes and attempts a textureload for png, jpg four times using the inside of the if statement
-
-//===================================================================== TRY_LOAD
-#define TRY_LOAD(tex, prefix, cmd, name) \
-    if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
-    { \
-        if((tex = textureload(makerelpath(mdir, name ".png", prefix, cmd), 0, true, false))==notexture) \
-        { \
-            if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
-            { \
-                if((tex = textureload(makerelpath(mdir, name ".png", prefix, cmd), 0, true, false))==notexture) \
-                { \
-                    return; \
-                } \
-            } \
-        } \
-    }
-
 void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
 {
+    //goes and attempts a textureload for png, jpg four times using the cascading if statements
+    static auto tryload = [] (Texture *tex, std::string name, const char *mdir)
+    {
+        if((tex = textureload(makerelpath(mdir, name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+        {
+            if((tex = textureload(makerelpath(mdir, name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+            {
+                if((tex = textureload(makerelpath(mdir, name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                {
+                    if((tex = textureload(makerelpath(mdir, name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+
     DEF_FORMAT_STRING(mdir, "media/model/%s", dir);
     DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir);
     masks = notexture;
-    TRY_LOAD(skin, nullptr, nullptr, "skin");
-    TRY_LOAD(masks, nullptr, nullptr, "masks");
+    if(tryload(skin, "skin", mdir))
+    {
+        return;
+    }
+    if(tryload(masks, "masks", mdir))
+    {
+        return;
+    }
 }
-
-#undef TRY_LOAD
-//==============================================================================
 
 void setbbfrommodel(dynent *d, const char *mdl)
 {

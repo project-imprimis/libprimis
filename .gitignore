@@ -9,6 +9,7 @@
 bin_unix/*
 src/tess_client
 src/tess_server
+test/libprimis_testsuite
 .idea/
 *.gcov
 *.gcda
@@ -27,3 +28,9 @@ docs
 cspell.json
 # Ignore html folder produced by Doxygen/Doxywizard.
 html/
+# Ignore common IDE/code editor directories
+.vscode/
+src/vcpp/.vs/
+src/vcpp/Release64/
+src/vcpp/libprimis.vcxproj.user
+.clangd

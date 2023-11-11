@@ -37,8 +37,8 @@
 #include "world/light.h"
 #include "world/world.h"
 
-GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
-       rhfbo = 0;
+std::array<GLuint, 8> rhtex = { 0, 0, 0, 0, 0, 0, 0, 0 };
+GLuint rhfbo = 0;
 
 //radiance hints (global illumination) vars
 VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`r`adiance `h`ints `splits`: number of radiance hints subdivisions
@@ -105,8 +105,8 @@ namespace //internal functionality
     GLuint rsmdepthtex = 0,
            rsmcolortex = 0,
            rsmnormaltex = 0,
-           rsmfbo = 0,
-           rhrb[4] = { 0, 0, 0, 0 };
+           rsmfbo = 0;
+    std::array<GLuint, 4> rhrb = {0, 0, 0, 0};
 
     Shader *radiancehintsshader = nullptr;
 
@@ -175,10 +175,10 @@ namespace //internal functionality
 
 void viewrsm()
 {
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
+    int w = std::min(hudw(), hudh())/2,
+        h = (w*hudh())/hudw(),
+        x = hudw()-w,
+        y = hudh()-h;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, debugrsm == 2 ? rsmnormaltex : rsmcolortex);
@@ -212,7 +212,7 @@ void setupradiancehints()
 
     if(rhrect)
     {
-        for(int i = 0; i < 4; ++i)
+        for(uint i = 0; i < rhrb.size(); ++i)
         {
             if(!rhrb[i])
             {
@@ -232,8 +232,14 @@ void setupradiancehints()
         }
     }
 
-    static const GLenum drawbufs[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-    glDrawBuffers(4, drawbufs);
+    static const std::array<GLenum, 4> drawbufs =
+    {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2,
+        GL_COLOR_ATTACHMENT3
+    };
+    glDrawBuffers(4, drawbufs.data());
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -268,7 +274,7 @@ void setupradiancehints()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, rsmcolortex, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, rsmnormaltex, 0);
 
-    glDrawBuffers(2, drawbufs);
+    glDrawBuffers(2, drawbufs.data());
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -283,19 +289,20 @@ void cleanupradiancehints()
 {
     clearradiancehintscache();
 
-    for(int i = 0; i < 8; ++i)
+    for(GLuint &i : rhtex)
     {
-        if(rhtex[i])
+        if(i)
         {
-            glDeleteTextures(1, &rhtex[i]);
-            rhtex[i] = 0;
+            glDeleteTextures(1, &i);
+            i = 0;
         }
     }
-    for(int i = 0; i < 4; ++i)
+    for(GLuint &i : rhrb)
     {
-        if(rhrb[i])
+        if(i)
         {
-            glDeleteRenderbuffers(1, &rhrb[i]); rhrb[i] = 0;
+            glDeleteRenderbuffers(1, &i);
+            i = 0;
         }
     }
     if(rhfbo)
@@ -329,10 +336,10 @@ void cleanupradiancehints()
 
 void viewrh()
 {
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
+    int w = std::min(hudw(), hudh())/2,
+        h = (w*hudh())/hudw(),
+        x = hudw()-w,
+        y = hudh()-h;
     gle::colorf(1, 1, 1);
     if(debugrh < 0 && rhrect)
     {
@@ -373,7 +380,7 @@ void clearradiancehintscache()
 
 bool useradiancehints()
 {
-    return !sunlight.iszero() && csmshadowmap && gi && giscale && gidist;
+    return !sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap) && gi && giscale && gidist;
 }
 
 //============================= radiance hints object ==========================//
@@ -403,7 +410,7 @@ void radiancehints::setup()
         splitinfo &split = splits[i];
 
         vec c;
-        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir, c);
+        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
 
         // compute the projected bounding box of the sphere
         const float pradius = std::ceil(radius * rhpradiustweak),
@@ -440,16 +447,16 @@ void radiancehints::bindparams() const
 
 void radiancehints::clearcache()
 {
-    for(int i = 0; i < rhmaxsplits; ++i)
+    for(splitinfo &i : splits)
     {
-        splits[i].clearcache();
+        i.clearcache();
     }
 }
 bool radiancehints::allcached() const
 {
-    for(int i = 0; i < rhsplits; ++i)
+    for(const splitinfo &i : splits)
     {
-        if(splits[i].cached != splits[i].center)
+        if(i.cached != i.center)
         {
             return false;
         }
@@ -483,9 +490,9 @@ void radiancehints::renderslices()
         glViewport(0, 0, sw, sh);
         if(rhcache)
         {
-            for(int i = 0; i < 4; ++i)
+            for(size_t i = 0; i < rhtex.size()/2; ++i)
             {
-                std::swap(rhtex[i], rhtex[i+4]);
+                std::swap(rhtex[i], rhtex[i+rhtex.size()/2]);
             }
             uint clearmasks[rhmaxsplits][(rhmaxgrid+2+31)/32];
             std::memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
@@ -518,7 +525,7 @@ void radiancehints::renderslices()
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmnormaltex);
     if(rhborder)
     {
-        for(int i = 0; i < 4; ++i)
+        for(size_t i = 0; i < rhtex.size()/2; ++i)
         {
             glActiveTexture(GL_TEXTURE3 + i);
             glBindTexture(GL_TEXTURE_3D, rhtex[i]);
@@ -526,10 +533,10 @@ void radiancehints::renderslices()
     }
     if(rhcache)
     {
-        for(int i = 0; i < 4; ++i)
+        for(size_t i = 0; i < rhtex.size()/2; ++i)
         {
             glActiveTexture(GL_TEXTURE7 + i);
-            glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i : 4+i]);
+            glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i :  rhtex.size()/2+i]);
         }
     }
     glActiveTexture(GL_TEXTURE0);
@@ -586,9 +593,9 @@ void radiancehints::renderslices()
                 continue;
             }
             split.copied = true;
-            for(int k = 0; k < 4; ++k)
+            for(size_t k = 0; k <  rhtex.size()/2; ++k)
             {
-                glCopyImageSubData_(rhtex[4+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
+                glCopyImageSubData_(rhtex[rhtex.size()/2+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
             }
             continue;
         }
@@ -957,7 +964,7 @@ void reflectiveshadowmap::getprojmatrix()
     minz -= zmargin;
     maxz += zmargin;
     vec c;
-    float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir, c);
+    float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir(), c);
     // compute the projected bounding box of the sphere
     vec tc;
     model.transform(c, tc);

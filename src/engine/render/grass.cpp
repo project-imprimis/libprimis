@@ -164,7 +164,7 @@ namespace //internal functionality not seen by other files
             {
                 const vec *prev = leftv;
                 float prevdist = leftdist;
-                if(--leftv < g.v)
+                if(--leftv < &g.v[0])
                 {
                     leftv += g.numv;
                 }
@@ -173,7 +173,7 @@ namespace //internal functionality not seen by other files
                 {
                     prev = leftv;
                     prevdist = leftdist;
-                    if(--leftv < g.v)
+                    if(--leftv < &g.v[0])
                     {
                         leftv += g.numv;
                     }
@@ -191,7 +191,7 @@ namespace //internal functionality not seen by other files
                 float prevdist = rightdist;
                 if(++rightv >= &g.v[g.numv])
                 {
-                    rightv = g.v;
+                    rightv = &g.v[0];
                 }
                 rightdist = rightv->dot(w.dir);
                 if(dist <= rightdist)
@@ -200,7 +200,7 @@ namespace //internal functionality not seen by other files
                     prevdist = rightdist;
                     if(++rightv >= &g.v[g.numv])
                     {
-                        rightv = g.v;
+                        rightv = &g.v[0];
                     }
                     rightdist = rightv->dot(w.dir);
                 }
@@ -312,22 +312,17 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    Shader *grassshader = nullptr;
+    bool hasgrassshader = false;
 
     void cleargrassshaders()
     {
-        grassshader = nullptr;
+        hasgrassshader = false;
     }
 
     Shader *loadgrassshader()
     {
-        string opts;
-        int optslen = 0;
-
-        opts[optslen] = '\0';
-
-        DEF_FORMAT_STRING(name, "grass%s", opts);
-        return generateshader(name, "grassshader \"%s\"", opts);
+        std::string name = "grass";
+        return generateshader(name.c_str(), "grassshader ");
 
     }
 }
@@ -352,9 +347,8 @@ void generategrass()
         }
     }
 
-    for(int i = 0; i < numgrasswedges; ++i)
+    for(grasswedge &w : grasswedges)
     {
-        grasswedge &w = grasswedges[i];
         w.bound1.offset = -camera1->o.dot(w.bound1);
         w.bound2.offset = -camera1->o.dot(w.bound2);
     }
@@ -393,12 +387,12 @@ void generategrass()
 
 void loadgrassshaders()
 {
-    grassshader = loadgrassshader();
+    hasgrassshader = (loadgrassshader() != nullptr);
 }
 
 void rendergrass()
 {
-    if(!grass || !grassdist || grassgroups.empty() || !grassshader)
+    if(!grass || !grassdist || grassgroups.empty() || !hasgrassshader)
     {
         return;
     }
@@ -418,7 +412,7 @@ void rendergrass()
     GLOBALPARAMF(grasstest, grasstest); //toggles use of grass (depth) test shader
 
     int texid = -1;
-    for(grassgroup &g : grassgroups)
+    for(const grassgroup &g : grassgroups)
     {
         if(texid != g.tex)
         {

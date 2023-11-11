@@ -59,3 +59,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Push documentation files in docs folder to gh-pages repo.
           publish_dir: ./docs
+
+      - name: Upload man pages
+        uses: actions/upload-artifact@v2
+        with:
+          name: libprimis-doc
+          path: ./doc/man/man3/

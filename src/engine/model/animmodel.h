@@ -39,7 +39,6 @@ class animmodel : public model
             bool operator!=(const AnimState &a) const;
         };
 
-        struct linkedpart;
         class Mesh;
 
         struct shaderparams
@@ -47,48 +46,68 @@ class animmodel : public model
             float spec, gloss, glow, glowdelta, glowpulse, fullbright, scrollu, scrollv, alphatest;
             vec color;
 
+
+            bool operator==(const animmodel::shaderparams &y) const
+            {
+                return spec == y.spec
+                    && gloss == y.glow
+                    && glow == y.glow
+                    && glowdelta == y.glowdelta
+                    && glowpulse == y.glowpulse
+                    && fullbright == y.fullbright
+                    && scrollu == y.scrollu
+                    && scrollv == y.scrollv
+                    && alphatest == y.alphatest
+                    && color == y.color;
+            }
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
-        struct ShaderParamsKey
+        class skin : public shaderparams
         {
-            static hashtable<shaderparams, ShaderParamsKey> keys;
-            static int firstversion, lastversion;
+            public:
+                const part *owner;
+                Texture *tex, *decal, *masks, *normalmap;
+                Shader *shader, *rsmshader;
+                int cullface;
 
-            int version;
+                skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
 
-            ShaderParamsKey() : version(-1) {}
 
-            bool checkversion();
+                bool alphatested() const;
+                void setkey();
+                void cleanup();
+                void preloadBIH() const;
+                void preloadshader();
+                void bind(Mesh &b, const AnimState *as);
+                static void invalidateshaderparams();
+            private:
+                struct ShaderParamsKey
+                {
+                    static std::unordered_map<shaderparams, ShaderParamsKey> keys;
 
-            static void invalidate()
-            {
-                firstversion = lastversion;
-            }
-        };
+                    static int firstversion, lastversion;
 
-        struct skin : shaderparams
-        {
-            part *owner;
-            Texture *tex, *decal, *masks, *normalmap;
-            Shader *shader, *rsmshader;
-            int cullface;
-            ShaderParamsKey *key;
+                    int version;
 
-            skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
+                    ShaderParamsKey() : version(-1) {}
 
-            bool masked() const;
-            bool bumpmapped() const;
-            bool alphatested() const;
-            bool decaled() const;
-            void setkey();
-            void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
-            Shader *loadshader();
-            void cleanup();
-            void preloadBIH() const;
-            void preloadshader();
-            void setshader(Mesh &m, const AnimState *as);
-            void bind(Mesh &b, const AnimState *as);
+                    bool checkversion();
+
+                    static void invalidate()
+                    {
+                        firstversion = lastversion;
+                    }
+                };
+                ShaderParamsKey *key;
+
+                bool masked() const;
+                bool bumpmapped() const;
+                bool decaled() const;
+                void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
+                Shader *loadshader();
+                void setshader(Mesh &m, const AnimState *as);
+
         };
 
         class meshgroup;
@@ -139,15 +158,19 @@ class animmodel : public model
                         return;
                     }
                     smoothdata *smooth = new smoothdata[numverts];
-                    hashtable<vec, int> share;
+                    std::unordered_map<vec, int> share;
                     for(int i = 0; i < numverts; ++i)
                     {
-                        V &v = verts[i];
-                        int &idx = share.access(v.pos, i);
-                        if(idx != i)
+                        const V &v = verts[i];
+                        auto itr = share.find(v.pos);
+                        if(itr == share.end())
                         {
-                            smooth[i].next = idx;
-                            idx = i;
+                            share[v.pos] = i;
+                        }
+                        else
+                        {
+                            smooth[i].next = (*itr).second;
+                            (*itr).second = i;
                         }
                     }
                     for(int i = 0; i < numtris; ++i)
@@ -324,7 +347,7 @@ class animmodel : public model
         class meshgroup
         {
             public:
-                char *name;
+                std::string name;
                 std::vector<Mesh *> meshes;
 
                 meshgroup();
@@ -348,7 +371,7 @@ class animmodel : public model
                     } \
                 } while(0)
 
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
@@ -369,7 +392,6 @@ class animmodel : public model
                 virtual void cleanup() {}
                 virtual void preload() {}
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
-                virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
@@ -377,23 +399,9 @@ class animmodel : public model
                 void bindtc(void *v, int stride);
                 void bindtangents(void *v, int stride);
                 void bindbones(void *wv, void *bv, int stride);
-            private:
-                meshgroup *next;
-
         };
 
-        static hashnameset<meshgroup *> meshgroups;
-
-        struct linkedpart
-        {
-            part *p;
-            int tag, anim, basetime;
-            vec translate;
-            vec *pos;
-            matrix4 matrix;
-
-            linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
-        };
+        static std::unordered_map<std::string, meshgroup *> meshgroups;
 
         class part
         {
@@ -401,6 +409,17 @@ class animmodel : public model
                 animmodel *model;
                 int index;
                 meshgroup *meshes;
+
+                struct linkedpart
+                {
+                    part *p;
+                    int tag, anim, basetime;
+                    vec translate;
+                    vec *pos;
+                    matrix4 matrix;
+
+                    linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
+                };
                 std::vector<linkedpart> links;
                 std::vector<skin> skins;
                 int numanimparts;
@@ -411,9 +430,9 @@ class animmodel : public model
 
                 virtual void cleanup();
                 void disablepitch();
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const;
-                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m) const;
-                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const;
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
+                void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const;
                 bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
                 bool unlink(const part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
@@ -421,8 +440,8 @@ class animmodel : public model
                 void preloadBIH() const;
                 void preloadshaders();
                 void preloadmeshes();
-                virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
-                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
+                virtual void getdefaultanim(animinfo &info) const;
+                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
                 void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
@@ -441,25 +460,17 @@ class animmodel : public model
                 std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
         };
 
-        enum
-        {
-            Link_Tag = 0,
-            Link_Coop,
-            Link_Reuse
-        };
-
         static int intersectresult, intersectmode;
         static float intersectdist, intersectscale;
 
-        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a);
-        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color);
+        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
+        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const;
 
         std::vector<part *> parts;
 
-        animmodel(const char *name);
         ~animmodel();
 
-        void cleanup();
+        void cleanup() override final;
 
         virtual void flushpart() {}
 
@@ -476,9 +487,9 @@ class animmodel : public model
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
         void preloadBIH();
         bool setBIH();
-        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
+        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
 
-        bool unlink(const part *p)
+        bool unlink(const part *p) const
         {
             if(parts.empty())
             {
@@ -487,93 +498,82 @@ class animmodel : public model
             return parts[0]->unlink(p);
         }
 
-        bool animated() const;
+        bool animated() const override final;
 
-        bool pitched() const
+        bool pitched() const override final
         {
             return parts[0]->pitchscale != 0;
         }
 
         bool alphatested() const;
 
-        virtual bool flipy() const
-        {
-            return false;
-        }
+        virtual bool flipy() const = 0;
+        virtual bool loadconfig() = 0;
+        virtual bool loaddefaultparts() = 0;
 
-        virtual bool loadconfig()
-        {
-            return false;
-        }
+        virtual void startload() = 0;
+        virtual void endload() = 0;
 
-        virtual bool loaddefaultparts()
-        {
-            return false;
-        }
+        bool load() override;
 
-        virtual void startload()
-        {
-        }
+        void preloadshaders() override final;
+        void preloadmeshes() override final;
 
-        virtual void endload()
-        {
-        }
+        void setshader(Shader *shader) override final;
+        void setspec(float spec) override final;
+        void setgloss(int gloss) override final;
+        void setglow(float glow, float delta, float pulse) override final;
+        void setalphatest(float alphatest) override final;
+        void setfullbright(float fullbright) override final;
+        void setcullface(int cullface) override final;
+        void setcolor(const vec &color) override final;
 
-        bool load();
-
-        void preloadshaders();
-        void preloadmeshes();
-
-        void setshader(Shader *shader);
-        void setspec(float spec);
-        void setgloss(int gloss);
-        void setglow(float glow, float delta, float pulse);
-        void setalphatest(float alphatest);
-        void setfullbright(float fullbright);
-        void setcullface(int cullface);
-        void setcolor(const vec &color);
-
-        void calcbb(vec &center, vec &radius);
+        void calcbb(vec &center, vec &radius) const;
         void calctransform(matrix4x3 &m) const;
 
         virtual void loaded()
         {
-            for(uint i = 0; i < parts.size(); i++)
+            for(part *p : parts)
             {
-                parts[i]->loaded();
+                p->loaded();
             }
         }
 
         static bool enabletc, enablebones, enabletangents;
-        static int matrixpos;
 
-        void startrender();
+        void startrender() const override final;
         static void disablebones();
         static void disabletangents();
         static void disabletc();
         static void disablevbo();
-        void endrender() const;
+        void endrender() const override final;
     protected:
-        virtual int linktype(animmodel *m, part *p) const
+        enum
+        {
+            Link_Tag = 0,
+            Link_Coop,
+            Link_Reuse
+        };
+
+        animmodel(const char *name);
+
+        virtual int linktype(const animmodel *, const part *) const
         {
             return Link_Tag;
         }
-        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode);
+        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const override final;
 
-        static matrix4 matrixstack[64];
+        static std::stack<matrix4> matrixstack;
         static float sizescale;
 
     private:
-        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
+        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray) const;
 
         static bool enablecullface, enabledepthoffset;
         static vec4<float> colorscale;
         static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
         static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
 };
-
-extern uint hthash(const animmodel::shaderparams &k);
-extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
 
 /* modelloader
  *
@@ -616,8 +616,8 @@ struct modelloader : BASE
 
     bool loadconfig()
     {
-        formatstring(dir, "media/model/%s", BASE::name);
-        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name, MDL::formatname());
+        formatstring(dir, "media/model/%s", BASE::modelname().c_str());
+        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::modelname().c_str(), MDL::formatname());
 
         identflags &= ~Idf_Persist;
         bool success = execfile(cfgname, false);
@@ -805,7 +805,7 @@ struct modelcommands
         }
         if(!MDL::loading->parts[*parent]->link(MDL::loading->parts[*child], tagname, vec(*x, *y, *z)))
         {
-            conoutf("could not link model %s", MDL::loading->name);
+            conoutf("could not link model %s", MDL::loading->modelname().c_str());
         }
     }
 

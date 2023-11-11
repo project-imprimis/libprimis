@@ -2,43 +2,100 @@
 
 namespace header_tools
 {
-    void testvector()
+    void testpath()
     {
-        vector<int> a;
-        assert(a.length() == 0);
-        assert(a.empty());
-        //check adding and removing a member
-        a.add(1);
-        assert(a.length() == 1);
-        a.remove(0);
-        assert(a.length() == 0);
+        static std::string_view test_cases[][2] =
+        {
+            {
+                "data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "data/../data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "../data/../data/textures/image.png",
+                "../data/textures/image.png"
+            },
+            {
+                "data/.././data/textures/other_image.png",
+                "data/textures/other_image.png"
+            },
+            {
+                "data/textures/image.png&data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "data/../data/textures/image.png&data/../data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png&data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png&data/../data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "./data/sounds/music.ogg",
+                "data/sounds/music.ogg"
+            },
+            {
+                "../data/other/file.dat",
+                "../data/other/file.dat"
+            }
+        };
 
-        //check adding a large member (vector.put())
-        const char * testtext = "large text",
-                   * testtextstart = "l",
-                   * testtextend   = "t";
+        for(const auto &test_case : test_cases)
+        {
+            std::string before = std::string(test_case[0]);
+            std::string after  = path(before);
 
-        vector<char> b;
-        b.put(testtext, 10);
-        assert(b.length() == 10);
-        assert(b[0] == *testtextstart);
-        assert(b[9] == *testtextend);
+            std::printf("Testing path %s -> %s\n", before.c_str(), after.c_str());
 
-        //check sorting a vector using sort()
-        vector<int> c;
-        c.add(5);
-        c.add(3);
-        c.add(7);
-        c.add(9);
+            assert(after == test_case[1]);
+        }
+    }
 
-        assert(c.length() == 4);
-        c.sort();
-        assert(c[0] == 3);
-        assert(c[3] == 9);
+    void testcopystring()
+    {
+        //test copy with enough chars
+        std::printf("Testing string copy\n");
+        char s[260];
+        const char *s1 = "test string";
+        copystring(s, s1, 260);
+        assert(std::strcmp(s1, s) == 0);
 
-        //setsize
-        b.setsize(5);
-        assert(b.length() == 5);
+        //test copy with not enough chars
+        std::printf("Testing string copy, short string\n");
+        const int len = 7;
+        char s2[len];
+        const char *s3 = "test string";
+        copystring(s2, s3, len);
+        assert(std::strcmp(s2, std::string(s3).substr(0, len-1).c_str()) == 0);
+    }
+
+    void testconcatstring()
+    {
+        std::printf("Testing concat string\n");
+        char s[260];
+        const char *s1 = "test string";
+        std::strcpy(s, s1);
+        const char *s2 = "append";
+
+        concatstring(s, s2, 260);
+        std::printf("test string length: %lu\n" , std::strlen(s));
+        assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
 }
 namespace header_geom
@@ -50,24 +107,25 @@ namespace header_geom
         GenericVec3<float> c = a+b;
 
         c = a-b;
-
-        bool d = a > b;
-        d = a < b;
-        d = a >= b;
-        d = a <= b;
-        d = a == b;
         assert(c == vec(0,0,0));
     }
 
     void testvec3()
     {
+        std::printf("Testing vec object\n");
         vec a(5,5,5);
-        vec b(5,5,5);
         a.mul(2);
+        assert(a == vec(10,10,10));
         a.mul(vec(2,2,3));
+        assert(a == vec(20,20,30));
         a.add(vec(1,1,1));
+        assert(a == vec(21,21,31));
         a.sub(vec(1,1,1));
+        assert(a == vec(20,20,30));
         a.mul(2);
+        assert(a == vec(40,40,60));
+        float adot = a.dot(vec(0.5, 0.5, 0.5));
+        assert(adot == 70);
     }
 
     void testmod360()
@@ -81,19 +139,14 @@ namespace header_geom
         assert(a == 260);
     }
 
-    void testcrc()
-    {
-        clearmapcrc();
-        entitiesinoctanodes();
-        getworldsize();
-    }
 }
 
 void testutils()
 {
-    header_tools::testvector();
+    header_tools::testpath();
+    header_tools::testcopystring();
+    header_tools::testconcatstring();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
-    header_geom::testcrc();
 }

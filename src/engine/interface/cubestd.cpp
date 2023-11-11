@@ -132,7 +132,7 @@ const char *escapeid(const char *s)
 bool validateblock(const char *s)
 {
     constexpr int maxbrak = 100;
-    static char brakstack[maxbrak];
+    static std::array<char, maxbrak> brakstack;
     int brakdepth = 0;
     for(; *s; s++)
     {
@@ -199,17 +199,25 @@ static const char *escapeid(ident &id)
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
     std::fstream f;
-    std::printf("writing to %s\n", copypath(name && name[0] ? name : savedconfig));
-    f.open(copypath(name && name[0] ? name : savedconfig));
-    if(!f)
+    conoutf("writing to %s", copypath(name && name[0] ? name : savedconfig));
+    f.open(copypath(name && name[0] ? name : savedconfig), std::ios::out);
+    if(!f.is_open())
     {
+        conoutf("file not opened, config not written");
         return;
     }
+    //write the top of file comment manually
+    f << "// automatically written on exit, DO NOT MODIFY\n// delete this file to have";
+    if(defaultconfig)
     {
-        char temp[260];
-        std::sprintf(temp, "// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
-        f << temp;
+        f << defaultconfig;
     }
+    f << "overwrite these settings\n// modify settings in game, or put settings in";
+    if(autoexec)
+    {
+        f << autoexec;
+    }
+    f << "to override anything\n\n";
     writecrosshairs(f);
     std::vector<ident *> ids;
     for(auto& [k, id] : idents)
@@ -243,22 +251,21 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
         }
     }
     writebinds(f);
-    for(uint i = 0; i < ids.size(); i++)
+    for(ident *&id : ids)
     {
-        ident &id = *ids[i];
-        if(id.type==Id_Alias && id.flags&Idf_Persist && !(id.flags&Idf_Overridden))
+        if(id->type==Id_Alias && id->flags&Idf_Persist && !(id->flags&Idf_Overridden))
         {
-            switch(id.valtype)
+            switch(id->valtype)
             {
                 case Value_String:
                 {
-                    if(!id.val.s[0])
+                    if(!id->val.s[0])
                     {
                         break;
                     }
-                    if(!validateblock(id.val.s))
+                    if(!validateblock(id->val.s))
                     {
-                        f << escapeid(id) << " = " << escapestring(id.val.s) << std::endl;
+                        f << escapeid(*id) << " = " << escapestring(id->val.s) << std::endl;
                         break;
                     }
                 }
@@ -266,7 +273,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                 case Value_Float:
                 case Value_Integer:
                 {
-                    f << escapeid(id) << " = [" << id.getstr() << "]" << std::endl;
+                    f << escapeid(*id) << " = [" << id->getstr() << "]" << std::endl;
                     break;
                 }
             }
@@ -278,8 +285,8 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
 
 void changedvars()
 {
-    std::vector<ident *> ids;
-    for(auto& [k, id] : idents)
+    std::vector<const ident *> ids;
+    for(const auto& [k, id] : idents)
     {
         if(id.flags&Idf_Overridden)
         {
@@ -287,9 +294,9 @@ void changedvars()
         }
     }
     std::sort(ids.begin(), ids.end());
-    for(uint i = 0; i < ids.size(); i++)
+    for(const ident *i: ids)
     {
-        printvar(ids[i]);
+        printvar(i);
     }
 }
 
@@ -340,21 +347,21 @@ const char *numberstr(double v)
     return retbuf[retidx];
 }
 
-void loopiter(ident *id, identstack &stack, const tagval &v)
+void loopiter(ident &id, identstack &stack, const tagval &v)
 {
-    if(id->stack != &stack)
+    if(id.stack != &stack)
     {
-        pusharg(*id, v, stack);
-        id->flags &= ~Idf_Unknown;
+        pusharg(id, v, stack);
+        id.flags &= ~Idf_Unknown;
     }
     else
     {
-        if(id->valtype == Value_String)
+        if(id.valtype == Value_String)
         {
-            delete[] id->val.s;
+            delete[] id.val.s;
         }
-        cleancode(*id);
-        id->setval(v);
+        cleancode(id);
+        id.setval(v);
     }
 }
 
@@ -362,7 +369,7 @@ void loopiter(ident *id, identstack &stack, int i)
 {
     tagval v;
     v.setint(i);
-    loopiter(id, stack, v);
+    loopiter(*id, stack, v);
 }
 
 void loopend(ident *id, identstack &stack)
@@ -498,6 +505,11 @@ void result(const char *s)
 void format(tagval *args, int numargs)
 {
     std::vector<char> s;
+    if(!args)
+    {
+        conoutf(Console_Error, "no parameters to format");
+        return;
+    }
     const char *f = args[0].getstr();
     while(*f)
     {
@@ -1353,9 +1365,6 @@ void initstrcmds()
     addcommand("error", reinterpret_cast<identfun>(+[] (char *s) { conoutf(Console_Error, "%s", s); }), "C", Id_Command);
     addcommand("strstr", reinterpret_cast<identfun>(+[] (char *a, char *b) { { char *s = std::strstr(a, b); intret(s ? s-a : -1); }; }), "ss", Id_Command);
     addcommand("strlen", reinterpret_cast<identfun>(+[] (char *s) { intret(std::strlen(s)); }), "s", Id_Command);
-    addcommand("strcode", reinterpret_cast<identfun>(+[] (char *s, int *i) { intret(*i > 0 ? (std::memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])); }), "si", Id_Command);
-
-    addcommand("codestr", reinterpret_cast<identfun>(+[] (int *i) { { char *s = newstring(1); s[0] = static_cast<char>(*i); s[1] = '\0'; stringret(s); }; }), "i", Id_Command);
 
     addcommand("strlower", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
     addcommand("strupper", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
@@ -1455,17 +1464,17 @@ void checksleep(int millis)
 void clearsleep(bool clearoverrides)
 {
     int len = 0;
-    for(uint i = 0; i < sleepcmds.size(); i++)
+    for(sleepcmd &i : sleepcmds)
     {
-        if(sleepcmds[i].command)
+        if(i.command)
         {
-            if(clearoverrides && !(sleepcmds[i].flags&Idf_Overridden))
+            if(clearoverrides && !(i.flags&Idf_Overridden))
             {
-                sleepcmds[len++] = sleepcmds[i];
+                sleepcmds[len++] = i;
             }
             else
             {
-                delete[] sleepcmds[i].command;
+                delete[] i.command;
             }
         }
     }

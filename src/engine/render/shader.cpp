@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "octarender.h"
@@ -35,8 +34,8 @@ Shader *nullshader            = nullptr,
        *ldrnotextureshader    = nullptr,
        *stdworldshader        = nullptr;
 
-static hashtable<const char *, int> localparams(256);
-static hashnameset<Shader> shaders(256);
+static std::unordered_map<std::string, int> localparams;
+static std::unordered_map<std::string, Shader> shaders;
 static Shader *slotshader = nullptr;
 static std::vector<SlotShaderParam> slotparams;
 static bool standardshaders = false,
@@ -48,8 +47,6 @@ VAR(maxvsuniforms, 1, 0, 0);
 VAR(maxfsuniforms, 1, 0, 0);
 VAR(mintexoffset, 1, 0, 0);
 VAR(maxtexoffset, 1, 0, 0);
-VAR(mintexrectoffset, 1, 0, 0);
-VAR(maxtexrectoffset, 1, 0, 0);
 VAR(debugshader, 0, 1, 2);
 
 void loadshaders()
@@ -83,8 +80,12 @@ void loadshaders()
 
 Shader *lookupshaderbyname(const char *name)
 {
-    Shader *s = shaders.access(name);
-    return s && s->loaded() ? s : nullptr;
+    auto itr = shaders.find(name);
+    if(itr != shaders.end())
+    {
+        return (*itr).second.loaded() ? &(*itr).second : nullptr;
+    }
+    return nullptr;
 }
 
 Shader *generateshader(const char *name, const char *fmt, ...)
@@ -123,12 +124,63 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     }
     if(length > 1)
     {
-        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "Vertex shader" : (type == GL_FRAGMENT_SHADER ? "Fragment shader" : "PROG"), name);
+        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "Vertex shader" : (type == GL_FRAGMENT_SHADER ? "Fragment shader" : "Program"), name);
+        FILE *l = getlogfile();
+        if(l)
+        {
+            GLchar *log = new GLchar[length];
+            if(type)
+            {
+                glGetShaderInfoLog(obj, length, &length, log);
+            }
+            else
+            {
+                glGetProgramInfoLog(obj, length, &length, log);
+            }
+            std::fprintf(l, "%s\n", log);
+            bool partlines = log[0] != '0';
+            int line = 0;
+            for(int i = 0; i < numparts; ++i)
+            {
+                const char *part = parts[i];
+                int startline = line;
+                while(*part)
+                {
+                    const char *next = std::strchr(part, '\n');
+                    if(++line > 1000)
+                    {
+                        goto done;
+                    }
+                    if(partlines)
+                    {
+                        std::fprintf(l, "%d(%d): ", i, line - startline);
+                    }
+                    else
+                    {
+                        std::fprintf(l, "%d: ", line);
+                    }
+                    std::fwrite(part, 1, next ? next - part + 1 : std::strlen(part), l);
+                    if(!next)
+                    {
+                        std::fputc('\n', l);
+                        break;
+                    }
+                    part = next + 1;
+                }
+            }
+        done:
+            delete[] log;
+        }
     }
 }
 
 static void compileglslshader(const Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot compile GLSL shader without GLSL initialized");
+        return;
+    }
     const char *source = def + std::strspn(def, " \t\r\n");
     char *modsource = nullptr;
     const char *parts[16];
@@ -247,92 +299,97 @@ static void bindglsluniform(const Shader &s, UniformLoc &u)
     }
 }
 
-static void uniformtex(const char * name, int tmu, const Shader &s)
+void Shader::uniformtex(const char * name, int tmu)
 {
-    int loc = glGetUniformLocation(s.program, name);
+    int loc = glGetUniformLocation(program, name);
     if(loc != -1)
     {
         glUniform1i(loc, tmu);
     }
 }
 
-static void linkglslprogram(Shader &s, bool msg = true)
+void Shader::linkglslprogram(bool msg)
 {
-    s.program = s.vsobj && s.psobj ? glCreateProgram() : 0;
+    program = vsobj && psobj ? glCreateProgram() : 0;
     GLint success = 0;
-    if(s.program)
+    if(program)
     {
-        glAttachShader(s.program, s.vsobj);
-        glAttachShader(s.program, s.psobj);
+        glAttachShader(program, vsobj);
+        glAttachShader(program, psobj);
         uint attribs = 0;
-        for(uint i = 0; i < s.attriblocs.size(); i++)
+        for(const Shader::AttribLoc &a : attriblocs)
         {
-            Shader::AttribLoc &a = s.attriblocs[i];
-            glBindAttribLocation(s.program, a.loc, a.name);
+            glBindAttribLocation(program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
         for(int i = 0; i < gle::Attribute_NumAttributes; ++i)
         {
             if(!(attribs&(1<<i)))
             {
-                glBindAttribLocation(s.program, i, gle::attribnames[i]);
+                glBindAttribLocation(program, i, gle::attribnames[i]);
             }
         }
-        glLinkProgram(s.program);
-        glGetProgramiv(s.program, GL_LINK_STATUS, &success);
+        glLinkProgram(program);
+        glGetProgramiv(program, GL_LINK_STATUS, &success);
     }
     if(success)
     {
-        glUseProgram(s.program);
+        glUseProgram(program);
+        static std::array<std::string, 16> texnames = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
         for(int i = 0; i < 16; ++i)
         {
-            static const char * const texnames[16] = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
-            GLint loc = glGetUniformLocation(s.program, texnames[i]);
+            GLint loc = glGetUniformLocation(program, texnames[i].c_str());
             if(loc != -1)
             {
                 glUniform1i(loc, i);
             }
         }
-        if(s.type & Shader_World)
+        if(type & Shader_World)
         {
-            uniformtex("diffusemap", Tex_Diffuse, s);
-            uniformtex("normalmap", Tex_Normal, s);
-            uniformtex("glowmap", Tex_Glow, s);
-            uniformtex("blendmap", 7, s);
-            uniformtex("refractmask", 7, s);
-            uniformtex("refractlight", 8, s);
+            uniformtex("diffusemap", Tex_Diffuse);
+            uniformtex("normalmap", Tex_Normal);
+            uniformtex("glowmap", Tex_Glow);
+            uniformtex("blendmap", 7);
+            uniformtex("refractmask", 7);
+            uniformtex("refractlight", 8);
         }
-        for(uint i = 0; i < s.defaultparams.size(); i++)
+        for(SlotShaderParamState &param : defaultparams)
         {
-            SlotShaderParamState &param = s.defaultparams[i];
-            param.loc = glGetUniformLocation(s.program, param.name);
+            param.loc = glGetUniformLocation(program, param.name.c_str());
         }
-        for(uint i = 0; i < s.uniformlocs.size(); i++)
+        for(UniformLoc &loc : uniformlocs)
         {
-            bindglsluniform(s, s.uniformlocs[i]);
+            bindglsluniform(*this, loc);
         }
         glUseProgram(0);
     }
-    else if(s.program)
+    else if(program)
     {
         if(msg)
         {
-            showglslinfo(GL_FALSE, s.program, s.name);
+            showglslinfo(GL_FALSE, program, name);
         }
-        glDeleteProgram(s.program);
-        s.program = 0;
+        glDeleteProgram(program);
+        program = 0;
     }
 }
 
-int getlocalparam(const char *name)
+size_t getlocalparam(const std::string &name)
 {
-    return localparams.access(name, static_cast<int>(localparams.numelems));
+    auto itr = localparams.find(name);
+    if(itr != localparams.end())
+    {
+        return (*itr).second;
+    }
+    size_t size = localparams.size();
+    localparams.insert( { name, size } );
+    return size;
 }
 
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
 {
-    int idx = getlocalparam(name);
-    if(idx >= static_cast<int>(s.localparamremap.size()))
+    size_t idx = getlocalparam(name);
+    if(idx >= s.localparamremap.size())
     {
         int n = idx + 1 - s.localparamremap.size();
         for(int i = 0; i < n; ++i)
@@ -479,48 +536,44 @@ int GlobalShaderParamState::nextversion = 0;
 
 void GlobalShaderParamState::resetversions()
 {
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(GlobalShaderParamUse &u : s.globalparams)
         {
-            GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version != u.param->version)
             {
                 u.version = -2;
             }
         }
-    });
+    }
     nextversion = 0;
     for(auto& [k, g] : globalparams)
     {
         g.version = ++nextversion;
     }
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(GlobalShaderParamUse &u : s.globalparams)
         {
-            GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version >= 0)
             {
                 u.version = u.param->version;
             }
         }
-    });
+    }
 }
 
 static const float *findslotparam(const Slot &s, const char *name, const float *noval = nullptr)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(const SlotShaderParam &param : s.params)
     {
-        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
         }
     }
-    for(uint i = 0; i < s.shader->defaultparams.size(); i++)
+    for(const SlotShaderParamState &param : s.shader->defaultparams)
     {
-        const SlotShaderParamState &param = s.shader->defaultparams[i];
         if(name == param.name)
         {
             return param.val;
@@ -531,9 +584,8 @@ static const float *findslotparam(const Slot &s, const char *name, const float *
 
 static const float *findslotparam(const VSlot &s, const char *name, const float *noval = nullptr)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(const SlotShaderParam &param : s.params)
     {
-        const SlotShaderParam &param = s.params[i];
         if(name == param.name)
         {
             return param.val;
@@ -646,7 +698,7 @@ static void setdefaultparams(const std::vector<SlotShaderParamState>& defaultpar
 
 //shader
 
-Shader::Shader() : name(nullptr), vsstr(nullptr), psstr(nullptr), defer(nullptr), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(nullptr), standard(false), forced(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr), variantrows(nullptr), used(false)
+Shader::Shader() : name(nullptr), defer(nullptr), type(Shader_Default), program(0), variantshader(nullptr), standard(false), forced(false), owner(nullptr), vsstr(nullptr), psstr(nullptr), vsobj(0), psobj(0), reusevs(nullptr), reuseps(nullptr), variantrows(nullptr), used(false)
 {
 }
 
@@ -666,9 +718,9 @@ void Shader::flushparams()
         allocparams();
         used = true;
     }
-    for(uint i = 0; i < globalparams.size(); i++)
+    for(GlobalShaderParamUse &i : globalparams)
     {
-        globalparams[i].flush();
+        i.flush();
     }
 }
 
@@ -866,7 +918,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             const SlotShaderParamState &l = defaultparams.at(i);
-            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
+            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name.c_str(), l.val) : l.val);
         }
     }
 }
@@ -899,7 +951,7 @@ bool Shader::compile()
     {
         compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
-    linkglslprogram(*this, !variantshader);
+    linkglslprogram(!variantshader);
     return program!=0;
 }
 
@@ -1053,14 +1105,14 @@ void GlobalShaderParamUse::flush()
     version = param->version;
 }
 
-static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
+void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 {
     static int len = std::strlen("//:attrib");
     string name;
     int loc;
     if(reusevs)
     {
-        s.attriblocs = reusevs->attriblocs;
+        attriblocs = reusevs->attriblocs;
     }
     else
     {
@@ -1068,7 +1120,7 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
         {
             if(std::sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
-                s.attriblocs.emplace_back(Shader::AttribLoc(getshaderparamname(name), loc));
+                attriblocs.emplace_back(Shader::AttribLoc(getshaderparamname(name), loc));
             }
             vs += len;
         }
@@ -1076,14 +1128,14 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
+void Shader::genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
     int binding, stride;
     if(reusevs)
     {
-        s.uniformlocs = reusevs->uniformlocs;
+        uniformlocs = reusevs->uniformlocs;
     }
     else
     {
@@ -1092,11 +1144,11 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
             int numargs = std::sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
+                uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
             }
             else if(numargs >= 1)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
+                uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
             }
             vs += len;
         }
@@ -1110,86 +1162,96 @@ static Shader *newshader(int type, const char *name, const char *vs, const char 
         glUseProgram(0);
         Shader::lastshader = nullptr;
     }
-    Shader *exists = shaders.access(name);
+    auto itr = shaders.find(name);
+    Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
     char *rname = exists ? exists->name : newstring(name);
-    Shader &s = shaders[rname];
-    s.name = rname;
-    s.vsstr = newstring(vs);
-    s.psstr = newstring(ps);
+    if(!exists)
+    {
+        itr = shaders.insert( { rname, Shader() } ).first;
+    }
+    Shader *retval = (*itr).second.setupshader(rname, ps, vs, variant, row);
+    return retval; //can be nullptr or s
+}
 
-    delete[] s.defer;
-    s.defer = nullptr;
+Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row)
+{
+    name = rname;
+    vsstr = newstring(vs);
+    psstr = newstring(ps);
 
-    s.type = type & ~(Shader_Invalid | Shader_Deferred);
-    s.variantshader = variant;
-    s.standard = standardshaders;
+    delete[] defer;
+    defer = nullptr;
+
+    type = type & ~(Shader_Invalid | Shader_Deferred);
+    variantshader = variant;
+    standard = standardshaders;
     if(forceshaders)
     {
-        s.forced = true;
+        forced = true;
     }
-    s.reusevs = s.reuseps = nullptr;
+    reusevs = reuseps = nullptr;
     if(variant)
     {
         int row = 0,
             col = 0;
         if(!vs[0] || std::sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
-            delete[] s.vsstr;
-            s.vsstr = nullptr;
-            s.reusevs = !vs[0] ? variant : variant->getvariant(col, row);
+            delete[] vsstr;
+            vsstr = nullptr;
+            reusevs = !vs[0] ? variant : variant->getvariant(col, row);
         }
         row = col = 0;
         if(!ps[0] || std::sscanf(ps, "%d , %d", &row, &col) >= 1)
         {
-            delete[] s.psstr;
-            s.psstr = nullptr;
-            s.reuseps = !ps[0] ? variant : variant->getvariant(col, row);
+            delete[] psstr;
+            psstr = nullptr;
+            reuseps = !ps[0] ? variant : variant->getvariant(col, row);
         }
     }
     if(variant)
     {
         for(uint i = 0; i < variant->defaultparams.size(); i++)
         {
-            s.defaultparams.emplace_back(variant->defaultparams[i]);
+            defaultparams.emplace_back(variant->defaultparams[i]);
         }
     }
     else
     {
         for(uint i = 0; i < slotparams.size(); i++)
         {
-            s.defaultparams.emplace_back(slotparams[i]);
+            defaultparams.emplace_back(slotparams[i]);
         }
     }
-    s.attriblocs.clear();
-    s.uniformlocs.clear();
-    genattriblocs(s, vs, s.reusevs);
-    genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
-    if(!s.compile())
+    attriblocs.clear();
+    uniformlocs.clear();
+    genattriblocs(vs, reusevs);
+    genuniformlocs(vs, ps, reusevs, reuseps);
+    if(!compile())
     {
-        s.cleanup(true);
+        cleanup(true);
         if(variant)
         {
-            shaders.remove(rname);
+            shaders.erase(rname);
         }
         return nullptr;
     }
     if(variant)
     {
-        variant->addvariant(row, &s);
+        variant->addvariant(row, this);
     }
-    return &s;
+    return this;
 }
 
-static const char *findglslmain(const char *s)
+static size_t findglslmain(std::string s)
 {
-    const char *main = std::strstr(s, "main");
-    if(!main)
+    size_t main = s.find("main");
+    if(main == std::string::npos)
     {
-        return nullptr;
+        return std::string::npos;
     }
-    for(; main >= s; main--) //note reverse iteration
+    for(; main >= 0; main--) //note reverse iteration
     {
-        switch(*main)
+        switch(s[main])
         {
             case '\r':
             case '\n':
@@ -1199,7 +1261,7 @@ static const char *findglslmain(const char *s)
             }
         }
     }
-    return s;
+    return 0;
 }
 
 static void gengenericvariant(Shader &s, const char *sname, const char *vs, const char *ps, int row = 0)
@@ -1285,176 +1347,103 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     newshader(s.type, varname, vschanged ? vsv.data() : reuse, pschanged ? psv.data() : reuse, &s, row);
 }
 
-static void genfogshader(std::vector<char> &vsbuf, std::vector<char> &psbuf, const char *vs, const char *ps)
+static void genfogshader(std::string &vs, std::string &ps)
 {
+    constexpr int PRAGMA_LEN = std::string_view("//:fog").size() + 1;
 
-    const char *vspragma = std::strstr(vs, "//:fog"),
-               *pspragma = std::strstr(ps, "//:fog");
-    if(!vspragma && !pspragma)
+    size_t vspragma = vs.find("//:fog"),
+           pspragma = ps.find("//:fog");
+
+    if(vspragma == std::string::npos && pspragma == std::string::npos)
     {
         return;
     }
-    //cannot be constexpr -- strlen is not compile time
-    static const int pragmalen = std::strlen("//:fog");
-    const char *vsmain = findglslmain(vs),
-               *vsend  = std::strrchr(vs, '}');
-    if(vsmain && vsend)
+
+    size_t vsmain = findglslmain(vs),
+           vsend  = vs.rfind('}');
+
+    if(vsmain != std::string::npos && vsend != std::string::npos)
     {
-        if(!std::strstr(vs, "lineardepth"))
+        if(vs.find("lineardepth") == std::string::npos)
         {
-            for(int i = 0; i < vsmain - vs; ++i)
-            {
-                vsbuf.push_back(vs[i]);
-            }
-            const char *fogparams = "\nuniform vec2 lineardepthscale;\nvarying float lineardepth;\n";
-            for(uint i = 0; i < std::strlen(fogparams); ++i)
-            {
-                vsbuf.push_back(fogparams[i]);
-            }
-            for(int i = 0; i < vsend - vsmain; ++i)
-            {
-                vsbuf.push_back(vsmain[i]);
-            }
-            const char *vsfog = "\nlineardepth = dot(lineardepthscale, gl_Position.zw);\n";
-            for(uint i = 0; i < std::strlen(vsfog); ++i)
-            {
-                vsbuf.push_back(vsfog[i]);
-            }
-            for(uint i = 0; i < std::strlen(vsend)+1; ++i)
-            {
-                vsbuf.push_back(vsend[i]);
-            }
+            constexpr std::string_view FOG_PARAMS = "\nuniform vec2 lineardepthscale;\nvarying float lineardepth;\n";
+            constexpr std::string_view VS_FOG = "\nlineardepth = dot(lineardepthscale, gl_Position.zw);\n";
+
+            vs.insert(vsend, VS_FOG);
+            vs.insert(vsmain, FOG_PARAMS);
         }
     }
-    const char *psmain = findglslmain(ps),
-               *psend  = std::strrchr(ps, '}');
-    if(psmain && psend)
+
+    size_t psmain = findglslmain(ps),
+           psend  = ps.rfind('}');
+
+    if(psmain != std::string::npos && psend != std::string::npos)
     {
-        for(int i = 0; i < psmain - ps; ++i)
+        std::string params;
+
+        if(ps.find("lineardepth") == std::string::npos)
         {
-            psbuf.push_back(ps[i]);
+            params = "\nvarying float lineardepth;\n";
         }
-        if(!std::strstr(ps, "lineardepth"))
-        {
-            const char *foginterp = "\nvarying float lineardepth;\n";
-            for(uint i = 0; i < std::strlen(foginterp); ++i)
-            {
-                psbuf.push_back(foginterp[i]);
-            }
-        }
-        const char *fogparams =
+
+        std::string fogparams =
             "\nuniform vec3 fogcolor;\n"
             "uniform vec2 fogdensity;\n"
             "uniform vec4 radialfogscale;\n"
             "#define fogcoord lineardepth*length(vec3(gl_FragCoord.xy*radialfogscale.xy + radialfogscale.zw, 1.0))\n";
-        for(uint i = 0; i < std::strlen(fogparams); ++i)
-        {
-            psbuf.push_back(fogparams[i]);
-        }
-        for(uint i = 0; i < psend - psmain; ++i)
-        {
-            psbuf.push_back(psmain[i]);
-        }
-        const char *psdef = "\n#define FOG_COLOR ",
-                   *psfog =
-            pspragma && !std::strncmp(pspragma+pragmalen, "rgba", 4) ?
-                "\nfragcolor = mix((FOG_COLOR), fragcolor, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n" :
-                "\nfragcolor.rgb = mix((FOG_COLOR).rgb, fragcolor.rgb, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
-        int clen = 0;
-        if(pspragma)
-        {
-            pspragma += pragmalen;
-            while(iscubealpha(*pspragma))
-            {
-                pspragma++;
-            }
-            while(*pspragma && !iscubespace(*pspragma))
-            {
-                pspragma++;
-            }
-            pspragma += std::strspn(pspragma, " \t\v\f");
-            clen = std::strcspn(pspragma, "\r\n");
-        }
-        if(clen <= 0)
-        {
-            pspragma = "fogcolor";
-            clen = std::strlen(pspragma);
-        }
-        for(uint i = 0; i < std::strlen(psdef); ++i)
-        {
-            psbuf.push_back(psdef[i]);
-        }
-        for(int i = 0; i < clen; ++i)
-        {
-            psbuf.push_back(pspragma[i]);
-        }
-        for(uint i = 0; i < std::strlen(psfog); ++i)
-        {
-            psbuf.push_back(psfog[i]);
-        }
-        for(uint i = 0; i < std::strlen(psend) + 1; ++i)
-        {
-            psbuf.push_back(psend[i]);
-        }
+
+        params += fogparams;
+
+        std::string psfog = "\nfragcolor.rgb = mix((fogcolor).rgb, fragcolor.rgb, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
+        ps.insert(psend, psfog);
+        ps.insert(psmain, params);
     }
 }
 
-static void genuniformdefs(std::vector<char> &vsbuf, std::vector<char> &psbuf, const char *vs, const char *ps, Shader *variant = nullptr)
+static void genuniformdefs(std::string &vs, std::string &ps, Shader *variant = nullptr)
 {
     if(variant ? variant->defaultparams.empty() : slotparams.empty())
     {
         return;
     }
-    const char *vsmain = findglslmain(vs),
-               *psmain = findglslmain(ps);
-    if(!vsmain || !psmain)
+
+    size_t vsmain = findglslmain(vs),
+           psmain = findglslmain(ps);
+
+    if(vsmain == std::string::npos || psmain == std::string::npos)
     {
         return;
     }
-    for(int i = 0; i < vsmain - vs; ++i)
-    {
-        vsbuf.push_back(vs[i]);
-    }
-    for(int i = 0; i < psmain - ps; ++i)
-    {
-        psbuf.push_back(ps[i]);
-    }
+
+    std::string params;
     if(variant)
     {
-        for(uint i = 0; i < variant->defaultparams.size(); i++)
+        for(const auto &param : variant->defaultparams)
         {
-            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
-            for(uint j = 0; j < std::strlen(uni); ++j)
-            {
-                vsbuf.push_back(uni[j]);
-                psbuf.push_back(uni[j]);
-            }
+            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", param.name.c_str());
+            params += uni;
         }
     }
     else
     {
-        for(uint i = 0; i < slotparams.size(); i++)
+        for(const auto &param : slotparams)
         {
-            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
-            for(uint j = 0; j < std::strlen(uni); ++j)
-            {
-                vsbuf.push_back(uni[j]);
-                psbuf.push_back(uni[j]);
-            }
+            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", param.name);
+            params += uni;
         }
     }
-    for(uint i = 0; i < std::strlen(vsmain)+1; ++i)
-    {
-        vsbuf.push_back(vsmain[i]);
-    }
-    for(uint i = 0; i < std::strlen(psmain)+1; ++i)
-    {
-        psbuf.push_back(psmain[i]);
-    }
+
+    vs.insert(vsmain, params);
+    ps.insert(psmain, params);
 }
 
 void setupshaders()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot setup GLSL shaders without GLSL initialized, operation not performed");
+        return;
+    }
     GLint val;
     glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &val);
     maxvsuniforms = val/4;
@@ -1465,10 +1454,6 @@ void setupshaders()
     mintexoffset = val;
     glGetIntegerv(GL_MAX_PROGRAM_TEXEL_OFFSET, &val);
     maxtexoffset = val;
-
-    mintexrectoffset = mintexoffset;
-    maxtexrectoffset = maxtexoffset;
-
 
     standardshaders = true;
     nullshader = newshader(0, "<init>null",
@@ -1544,9 +1529,10 @@ void setupshaders()
 
 VAR(defershaders, 0, 1, 1);
 
-void defershader(int *type, const char *name, const char *contents)
+void defershader(const int *type, const char *name, const char *contents)
 {
-    Shader *exists = shaders.access(name);
+    auto itr = shaders.find(name);
+    Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
     if(exists && !exists->invalid())
     {
         return;
@@ -1557,7 +1543,11 @@ void defershader(int *type, const char *name, const char *contents)
         return;
     }
     char *rname = exists ? exists->name : newstring(name);
-    Shader &s = shaders[rname];
+    if(!exists)
+    {
+        itr = shaders.insert( { rname, Shader() } ).first;
+    }
+    Shader &s = (*itr).second;
     s.name = rname;
     delete[] s.defer;
     s.defer = newstring(contents);
@@ -1603,13 +1593,13 @@ int Shader::uniformlocversion()
         return version;
     }
     version = 0;
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
-        for(uint j = 0; j < s.uniformlocs.size(); j++)
+        for(UniformLoc &j : s.uniformlocs)
         {
-            s.uniformlocs[j].version = -1;
+            j.version = -1;
         }
-    });
+    }
     return version;
 }
 
@@ -1624,11 +1614,12 @@ int Shader::uniformlocversion()
  */
 Shader *useshaderbyname(const char *name)
 {
-    Shader *s = shaders.access(name);
-    if(!s)
+    auto itr = shaders.find(name);
+    if(itr == shaders.end())
     {
         return nullptr;
     }
+    Shader *s = &(*itr).second;
     if(s->deferred())
     {
         s->force();
@@ -1637,43 +1628,7 @@ Shader *useshaderbyname(const char *name)
     return s;
 }
 
-
-//=====================================================================GENSHADER
-#define GENSHADER(cond, body) \
-    if(cond) \
-    { \
-        if(vsbuf.size()) \
-        { \
-            vsbak.clear(); \
-            for(uint i = 0; i < std::strlen(vs)+1; ++i) \
-            { \
-                vsbak.push_back(vs[i]); \
-            } \
-            vs = vsbak.data(); \
-            vsbuf.clear(); \
-        } \
-        if(psbuf.size()) \
-        { \
-            psbak.clear(); \
-            for(uint i = 0; i < std::strlen(ps)+1; ++i) \
-            { \
-                psbak.push_back(ps[i]); \
-            } \
-            ps = psbak.data(); \
-            psbuf.clear(); \
-        } \
-        body; \
-        if(vsbuf.size()) \
-        { \
-            vs = vsbuf.data(); \
-        } \
-        if(psbuf.size()) \
-        { \
-            ps = psbuf.data(); \
-        } \
-    }
-
-void shader(int *type, char *name, char *vs, char *ps)
+void shader(int *type, const char *name, char *vs, char *ps)
 {
     if(lookupshaderbyname(name))
     {
@@ -1681,20 +1636,254 @@ void shader(int *type, char *name, char *vs, char *ps)
     }
     DEF_FORMAT_STRING(info, "shader %s", name);
     renderprogress(loadprogress, info);
-    std::vector<char> vsbuf, psbuf, vsbak, psbak;
-    GENSHADER(slotparams.size(), genuniformdefs(vsbuf, psbuf, vs, ps));
-    GENSHADER(std::strstr(vs, "//:fog") || std::strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
-    Shader *s = newshader(*type, name, vs, ps);
+    std::string vs_string(vs), ps_string(ps);
+
+    if(!slotparams.empty())
+    {
+        genuniformdefs(vs_string, ps_string);
+    }
+
+    if(vs_string.find("//:fog") != std::string::npos || ps_string.find("//:fog") != std::string::npos)
+    {
+        genfogshader(vs_string, ps_string);
+    }
+
+    Shader *s = newshader(*type, name, vs_string.c_str(), ps_string.c_str());
     if(s)
     {
-        if(std::strstr(ps, "//:variant") || std::strstr(vs, "//:variant"))
+        if(vs_string.find("//:variant") != std::string::npos || ps_string.find("//:variant") != std::string::npos)
         {
-            gengenericvariant(*s, name, vs, ps);
+            gengenericvariant(*s, name, vs_string.c_str(), ps_string.c_str());
         }
     }
     slotparams.clear();
 }
 
+static bool adding_shader = false;
+static std::vector<std::pair<std::string, std::string>> shader_defines;
+static std::vector<std::string> shader_includes_vs, shader_includes_fs;
+static std::string shader_path_vs, shader_path_fs;
+
+static std::string shader_make_defines()
+{
+    std::string defines;
+
+    for(const std::pair<std::string, std::string> &define : shader_defines)
+    {
+        defines += "#define " + define.first + " " + define.second + "\n";
+    }
+
+    return defines;
+}
+
+static void shader_clear_defines()
+{
+    shader_defines.clear();
+    shader_includes_vs.clear();
+    shader_includes_fs.clear();
+    shader_path_vs.clear();
+    shader_path_fs.clear();
+}
+
+static void shader_assemble(std::string &vs, std::string &ps)
+{
+    std::string defines;
+
+    defines = shader_make_defines();
+
+    if(!shader_path_vs.empty())
+    {
+        char *vs_file = loadfile(path(shader_path_vs).c_str(), nullptr);
+        if(!vs_file)
+        {
+            conoutf(Console_Error, "could not load vertex shader %s", shader_path_vs.c_str());
+            adding_shader = false;
+            return;
+        }
+
+        vs = vs_file;
+
+        std::string includes;
+        for(const std::string &include : shader_includes_vs)
+        {
+            char *vs_include = loadfile(path(include).c_str(), nullptr);
+
+            if(!vs_include)
+            {
+                conoutf(Console_Error, "could not load vertex shader include %s", include.c_str());
+                adding_shader = false;
+                return;
+            }
+
+            includes += std::string(vs_include) + "\n";
+        }
+
+        vs = defines + includes + vs;
+    }
+
+    if(!shader_path_fs.empty())
+    {
+        char *ps_file = loadfile(path(shader_path_fs).c_str(), nullptr);
+        if(!ps_file)
+        {
+            conoutf(Console_Error, "could not load fragment shader %s", shader_path_fs.c_str());
+            adding_shader = false;
+            return;
+        }
+
+        ps = ps_file;
+
+        std::string includes;
+        for(const std::string &include : shader_includes_fs)
+        {
+            char *ps_include = loadfile(path(include).c_str(), nullptr);
+
+            if(!ps_include)
+            {
+                conoutf(Console_Error, "could not load fragment shader include %s", include.c_str());
+                adding_shader = false;
+                return;
+            }
+
+            includes += std::string(ps_include) + "\n";
+        }
+
+        ps = defines + includes + ps;
+    }
+}
+
+static void shader_new(int *type, char *name, uint *code)
+{
+    if(lookupshaderbyname(name))
+    {
+        return;
+    }
+
+    adding_shader = true;
+    shader_clear_defines();
+
+    execute(code);
+
+    std::string vs, ps;
+    shader_assemble(vs, ps);
+
+    DEF_FORMAT_STRING(info, "shader %s", name);
+    renderprogress(loadprogress, info);
+
+    if(!slotparams.empty())
+    {
+        genuniformdefs(vs, ps);
+    }
+
+    if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
+    {
+        genfogshader(vs, ps);
+    }
+
+    Shader *s = newshader(*type, name, vs.c_str(), ps.c_str());
+    if(s)
+    {
+        if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+        {
+            gengenericvariant(*s, name, vs.c_str(), ps.c_str());
+        }
+    }
+    slotparams.clear();
+
+    adding_shader = false;
+}
+
+static void shader_define(char *name, char *value)
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    shader_defines.emplace_back(name, value);
+}
+
+static void shader_get_defines()
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    std::string res;
+
+    for(const std::pair<std::string, std::string> &define : shader_defines)
+    {
+        res += " [" + define.first + " " + define.second + "]";
+    }
+
+    result(res.c_str());
+}
+
+static void shader_include_vs(char *path)
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    shader_includes_vs.emplace_back(path);
+}
+
+static void shader_get_includes_vs()
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    std::string res;
+
+    for(const std::string &include : shader_includes_vs)
+    {
+        res += " \"" + include + "\"";
+    }
+
+    result(res.c_str());
+}
+
+static void shader_include_fs(char *path)
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    shader_includes_fs.emplace_back(path);
+}
+
+static void shader_get_includes_fs()
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    std::string res;
+
+    for(const std::string &include : shader_includes_fs)
+    {
+        res += " \"" + include + "\"";
+    }
+
+    result(res.c_str());
+}
+
+static void shader_source(char *vs, char *fs)
+{
+    if(!adding_shader)
+    {
+        return;
+    }
+
+    shader_path_vs = vs;
+    shader_path_fs = fs;
+}
 
 void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *maxvariants)
 {
@@ -1718,33 +1907,97 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
         DEF_FORMAT_STRING(info, "shader %s", name);
         renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
     }
-    std::vector<char> vsbuf, psbuf, vsbak, psbak;
-    GENSHADER(s->defaultparams.size(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
-    GENSHADER(std::strstr(vs, "//:fog") || std::strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
-    Shader *v = newshader(*type, varname, vs, ps, s, *row);
+
+    std::string vs_string(vs), ps_string(ps);
+
+    if(!s->defaultparams.empty())
+    {
+        genuniformdefs(vs_string, ps_string, s);
+    }
+
+    if(vs_string.find("//:fog") != std::string::npos || ps_string.find("//:fog") != std::string::npos)
+    {
+        genfogshader(vs_string, ps_string);
+    }
+
+    Shader *v = newshader(*type, varname, vs_string.c_str(), ps_string.c_str(), s, *row);
     if(v)
     {
-        if(std::strstr(ps, "//:variant") || std::strstr(vs, "//:variant"))
+        if(vs_string.find("//:variant") != std::string::npos || ps_string.find("//:variant") != std::string::npos)
         {
-            gengenericvariant(*s, varname, vs, ps, *row);
+            gengenericvariant(*s, varname, vs_string.c_str(), ps_string.c_str(), *row);
         }
     }
 }
-#undef GENSHADER
+
+void variantshader_new(int *type, char *name, int *row, int *maxvariants, uint *code)
+{
+    if(*row < 0)
+    {
+        shader_new(type, name, code);
+        return;
+    }
+    else if(*row >= maxvariantrows)
+    {
+        return;
+    }
+    Shader *s = lookupshaderbyname(name);
+    if(!s)
+    {
+        return;
+    }
+
+    adding_shader = true;
+    shader_clear_defines();
+
+    execute(code);
+
+    std::string vs, ps;
+    shader_assemble(vs, ps);
+
+    DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
+    if(*maxvariants > 0)
+    {
+        DEF_FORMAT_STRING(info, "shader %s", name);
+        renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
+    }
+
+    if(!s->defaultparams.empty())
+    {
+        genuniformdefs(vs, ps, s);
+    }
+
+    if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
+    {
+        genfogshader(vs, ps);
+    }
+
+    Shader *v = newshader(*type, varname, vs.c_str(), ps.c_str(), s, *row);
+    if(v)
+    {
+        if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+        {
+            gengenericvariant(*s, varname, vs.c_str(), ps.c_str(), *row);
+        }
+    }
+
+    adding_shader = false;
+}
+
 //==============================================================================
 
 
 void setshader(char *name)
 {
     slotparams.size();
-    Shader *s = shaders.access(name);
-    if(!s)
+    auto itr = shaders.find(name);
+    if(itr == shaders.end())
     {
         conoutf(Console_Error, "no such shader: %s", name);
     }
     else
     {
-        slotshader = s;
+        slotshader = &(*itr).second;
     }
 }
 
@@ -1773,18 +2026,17 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Sha
 {
     if(sh.loaded())
     {
-        for(uint i = 0; i < params.size(); i++)
+        for(SlotShaderParam &param : params)
         {
             int loc = -1;
-            SlotShaderParam &param = params[i];
-            for(uint i = 0; i < sh.defaultparams.size(); i++)
+            for(uint j = 0; j < sh.defaultparams.size(); j++)
             {
-                const SlotShaderParamState &dparam = sh.defaultparams[i];
+                const SlotShaderParamState &dparam = sh.defaultparams[j];
                 if(dparam.name==param.name)
                 {
                     if(std::memcmp(param.val, dparam.val, sizeof(param.val)))
                     {
-                        loc = i;
+                        loc = j;
                     }
                     break;
                 }
@@ -1843,17 +2095,16 @@ bool shouldreuseparams(const Slot &s, const VSlot &p)
         return false;
     }
     const Shader &sh = *s.shader;
-    for(uint i = 0; i < sh.defaultparams.size(); i++)
+    for(const SlotShaderParamState &param : sh.defaultparams)
     {
-        const SlotShaderParamState &param = sh.defaultparams[i];
         if(param.flags & SlotShaderParam::REUSE)
         {
-            const float *val = findslotparam(p, param.name);
+            const float *val = findslotparam(p, param.name.c_str());
             if(val && std::memcmp(param.val, val, sizeof(param.val)))
             {
-                for(uint j = 0; j < s.params.size(); j++)
+                for(const SlotShaderParam &j : s.params)
                 {
-                    if(s.params[j].name == param.name)
+                    if(j.name == param.name)
                     {
                         goto notreused; //bail out of for loop
                     }
@@ -1885,16 +2136,15 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     {
         name = getshaderparamname(name);
     }
-    for(uint i = 0; i < slotparams.size(); i++)
+    for(SlotShaderParam &i : slotparams)
     {
-        SlotShaderParam &param = slotparams[i];
-        if(param.name==name)
+        if(i.name==name)
         {
-            param.val[0] = x;
-            param.val[1] = y;
-            param.val[2] = z;
-            param.val[3] = w;
-            param.flags |= flags;
+            i.val[0] = x;
+            i.val[1] = y;
+            i.val[2] = z;
+            i.val[3] = w;
+            i.flags |= flags;
             return;
         }
     }
@@ -1908,9 +2158,22 @@ void cleanupshaders()
 
     loadedshaders = false;
     nullshader = hudshader = hudnotextureshader = nullptr;
-    ENUMERATE(shaders, Shader, s, s.cleanup());
+    for(auto &[k, s] : shaders)
+    {
+        s.cleanup();
+    }
     Shader::lastshader = nullptr;
     glUseProgram(0);
+}
+
+void Shader::reusecleanup()
+{
+    if((reusevs && reusevs->invalid()) ||
+       (reuseps && reuseps->invalid()) ||
+       !compile())
+    {
+        cleanup(true);
+    }
 }
 
 void reloadshaders()
@@ -1919,7 +2182,7 @@ void reloadshaders()
     loadshaders();
     identflags |= Idf_Persist;
     linkslotshaders();
-    ENUMERATE(shaders, Shader, s,
+    for(auto &[k, s] : shaders)
     {
         if(!s.standard && s.loaded() && !s.variantshader)
         {
@@ -1929,26 +2192,25 @@ void reloadshaders()
             {
                 s.cleanup(true);
             }
-            for(uint i = 0; i < s.variants.size(); i++)
+            for(Shader *&v : s.variants)
             {
-                Shader *v = s.variants[i];
-                if((v->reusevs && v->reusevs->invalid()) ||
-                   (v->reuseps && v->reuseps->invalid()) ||
-                   !v->compile())
-                {
-                    v->cleanup(true);
-                }
+                v->reusecleanup();
             }
         }
         if(s.forced && s.deferred())
         {
             s.force();
         }
-    });
+    }
 }
 
 void resetshaders()
 {
+    if(!glslversion)
+    {
+        conoutf(Console_Error, "Cannot reset GLSL shaders without GLSL initialized, operation not performed");
+        return;
+    }
     clearchanges(Change_Shaders);
 
     cleanuplights();
@@ -1963,6 +2225,11 @@ void resetshaders()
 
 FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
+/*
+ * radius: sets number of weights & offsets for blurring to be made
+ * weights: array of length at least radius + 1
+ * offsets: array of length at least radius + 1
+ */
 void setupblurkernel(int radius, float *weights, float *offsets)
 {
     if(radius<1 || radius>maxblurradius)
@@ -2010,13 +2277,13 @@ void setblurshader(int pass, int size, int radius, const float *weights, const f
         s = lookupshaderbyname(name);
     }
     s->set();
-    LOCALPARAMV(weights, weights, 8);
-    float scaledoffsets[8];
-    for(int k = 0; k < 8; ++k)
+    LOCALPARAMV(weights, weights, maxblurradius+1);
+    float scaledoffsets[maxblurradius+1];
+    for(int k = 0; k < maxblurradius+1; ++k)
     {
         scaledoffsets[k] = offsets[k]/size;
     }
-    LOCALPARAMV(offsets, scaledoffsets, 8);
+    LOCALPARAMV(offsets, scaledoffsets, maxblurradius+1);
 }
 
 void initshadercmds()
@@ -2030,4 +2297,14 @@ void initshadercmds()
     addcommand("setshaderparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w);}), "sfFFf", Id_Command);
     addcommand("reuseuniformparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);}), "sfFFf", Id_Command);
     addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders), "", Id_Command);
+
+    addcommand("variantshader_new", reinterpret_cast<identfun>(variantshader_new), "isiie", Id_Command);
+    addcommand("shader_new", reinterpret_cast<identfun>(shader_new), "ise", Id_Command);
+    addcommand("shader_define", reinterpret_cast<identfun>(shader_define), "ss", Id_Command);
+    addcommand("shader_source", reinterpret_cast<identfun>(shader_source), "ss", Id_Command);
+    addcommand("shader_include_vs", reinterpret_cast<identfun>(shader_include_vs), "s", Id_Command);
+    addcommand("shader_include_fs", reinterpret_cast<identfun>(shader_include_fs), "s", Id_Command);
+    addcommand("shader_get_defines", reinterpret_cast<identfun>(shader_get_defines), "", Id_Command);
+    addcommand("shader_get_includes_vs", reinterpret_cast<identfun>(shader_get_includes_vs), "", Id_Command);
+    addcommand("shader_get_includes_fs", reinterpret_cast<identfun>(shader_get_includes_fs), "", Id_Command);
 }

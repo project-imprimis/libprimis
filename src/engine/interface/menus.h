@@ -5,7 +5,6 @@ extern int mainmenu;
 
 extern void addchange(const char *desc, int type);
 extern void clearchanges(int type);
-extern void menuprocess();
 extern void clearmainmenu();
 
 #endif

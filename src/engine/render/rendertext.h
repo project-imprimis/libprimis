@@ -6,18 +6,18 @@ struct font
     {
         float x, y, w, h, offsetx, offsety, advance;
         int tex;
+
     };
 
-    char *name;
+    std::string name;
     std::vector<Texture *> texs;
     std::vector<charinfo> chars;
     int charoffset, defaultw, defaulth, scale;
     float bordermin, bordermax, outlinemin, outlinemax;
 
-    font() : name(nullptr) {}
+    font() {}
     ~font()
     {
-        delete[] name;
     }
 };
 

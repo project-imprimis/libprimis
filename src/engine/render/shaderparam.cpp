@@ -4,7 +4,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
-#include "../../shared/hashtable.h"
 
 #include "imagedata.h"
 #include "octarender.h"
@@ -26,40 +25,39 @@
 
 GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullptr) {}
 
-GlobalShaderParamState *GlobalShaderParam::getglobalparam(const char *name) const
+GlobalShaderParamState &GlobalShaderParam::getglobalparam(const std::string &name) const
 {
     auto itr = globalparams.find(name);
-    if(itr == globalparams.end())
+    if(itr != globalparams.end())
     {
-        GlobalShaderParamState * param = &globalparams[name];
-        param->name = name;
-        std::memset(param->buf, -1, sizeof(param->buf));
-        param->version = -1;
-        return param;
+        return (*itr).second;
     }
     else
     {
-        return &((*itr).second);
+        GlobalShaderParamState &param = globalparams[name];
+        param.buf.fill(-1);
+        param.version = -1;
+        return param;
     }
 }
 
-GlobalShaderParamState *GlobalShaderParam::resolve()
+GlobalShaderParamState &GlobalShaderParam::resolve()
 {
     if(!param)
     {
-        param = getglobalparam(name);
+        param = &getglobalparam(name);
     }
     param->changed();
-    return param;
+    return *param;
 }
 
 void GlobalShaderParam::setf(float x, float y, float z, float w)
 {
-    GlobalShaderParamState *g = resolve();
-    g->fval[0] = x;
-    g->fval[1] = y;
-    g->fval[2] = z;
-    g->fval[3] = w;
+    GlobalShaderParamState &g = resolve();
+    g.fval[0] = x;
+    g.fval[1] = y;
+    g.fval[2] = z;
+    g.fval[3] = w;
 }
 
 void GlobalShaderParam::set(const vec &v, float w)
@@ -74,12 +72,12 @@ void GlobalShaderParam::set(const vec2 &v, float z, float w)
 
 void GlobalShaderParam::set(const matrix3 &m)
 {
-    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+    std::memcpy(resolve().fval, m.a.v, sizeof(m));
 }
 
 void GlobalShaderParam::set(const matrix4 &m)
 {
-    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+    std::memcpy(resolve().fval, m.a.v, sizeof(m));
 }
 
 std::map<std::string, GlobalShaderParamState> globalparams;
@@ -92,7 +90,7 @@ LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)
 
 const LocalShaderParamState *LocalShaderParam::resolve() const
 {
-    Shader *s = Shader::lastshader;
+    const Shader *s = Shader::lastshader;
     if(!s)
     {
         return nullptr;

@@ -35,7 +35,7 @@ namespace
 
 //sets up alpha handling as needed then executes main particle rendering routine
 //private method of gbuffer
-void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const
 {
     if(particlelayers && ghasstencil)
     {
@@ -52,7 +52,7 @@ void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float all
         glStencilFunc(GL_NOTEQUAL, 0, 0x07);
         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         glEnable(GL_STENCIL_TEST);
-        gbuf.renderparticles(ParticleLayer_Over);
+        renderparticles(ParticleLayer_Over);
         glDisable(GL_STENCIL_TEST);
         if(scissor)
         {
@@ -70,10 +70,11 @@ void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float all
 
 void GBuffer::rendertransparent()
 {
-    MaterialInfo mi = findmaterials(); //generate mat* vars
-    int hasalphavas = findalphavas(),
-        hasmats = mi.hasmats;
-    bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
+    const MaterialInfo &mi = findmaterials(); //generate mat* vars
+    const AlphaInfo &ai = findalphavas(); //generate mat* vars
+    int hasalphavas = ai.hasalphavas;
+    int hasmats = mi.hasmats;
+    bool hasmodels = tmodelinfo.mdlsx1 < tmodelinfo.mdlsx2 && tmodelinfo.mdlsy1 < tmodelinfo.mdlsy2;
     if(!hasalphavas && !hasmats && !hasmodels) //don't transparent render if there is no alpha
     {
         if(!editmode)
@@ -99,10 +100,10 @@ void GBuffer::rendertransparent()
         {
             glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
         }
-        float sx1 = std::min(alpharefractsx1, mi.matrefractsx1),
-              sy1 = std::min(alpharefractsy1, mi.matrefractsy1),
-              sx2 = std::max(alpharefractsx2, mi.matrefractsx2),
-              sy2 = std::max(alpharefractsy2, mi.matrefractsy2);
+        float sx1 = std::min(ai.alpharefractsx1, mi.matrefractsx1),
+              sy1 = std::min(ai.alpharefractsy1, mi.matrefractsy1),
+              sx2 = std::max(ai.alpharefractsx2, mi.matrefractsx2),
+              sy2 = std::max(ai.alpharefractsy2, mi.matrefractsy2);
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
@@ -200,10 +201,10 @@ void GBuffer::rendertransparent()
                 {
                     continue;
                 }
-                sx1 = alphabacksx1;
-                sy1 = alphabacksy1;
-                sx2 = alphabacksx2;
-                sy2 = alphabacksy2;
+                sx1 = ai.alphabacksx1;
+                sy1 = ai.alphabacksy1;
+                sx2 = ai.alphabacksx2;
+                sy2 = ai.alphabacksy2;
                 std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 break;
             }
@@ -213,10 +214,10 @@ void GBuffer::rendertransparent()
                 {
                     continue;
                 }
-                sx1 = alphafrontsx1;
-                sy1 = alphafrontsy1;
-                sx2 = alphafrontsx2;
-                sy2 = alphafrontsy2;
+                sx1 = ai.alphafrontsx1;
+                sy1 = ai.alphafrontsy1;
+                sx2 = ai.alphafrontsx2;
+                sy2 = ai.alphafrontsy2;
                 std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
                 if(hasmats&2)
                 {
@@ -237,11 +238,11 @@ void GBuffer::rendertransparent()
                 {
                     continue;
                 }
-                sx1 = transmdlsx1;
-                sy1 = transmdlsy1;
-                sx2 = transmdlsx2;
-                sy2 = transmdlsy2;
-                std::memcpy(tiles.data(), transmdltiles, tiles.size()*sizeof(uint));
+                sx1 = tmodelinfo.mdlsx1;
+                sy1 = tmodelinfo.mdlsy1;
+                sx2 = tmodelinfo.mdlsx2;
+                sy2 = tmodelinfo.mdlsy2;
+                std::memcpy(tiles.data(), tmodelinfo.mdltiles.data(), tiles.size()*sizeof(uint));
                 break;
             }
             default:

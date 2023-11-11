@@ -5,7 +5,7 @@ class GBuffer;
 
 extern matrix4 nojittermatrix;
 
-extern void setupaa(int w, int h);
+extern void setupaa(GBuffer &buf, int w, int h);
 extern void jitteraa();
 
 namespace aamask
@@ -15,7 +15,7 @@ namespace aamask
     void disable();
 }
 
-extern void doaa(GLuint outfbo, GBuffer gbuffer);
+extern void doaa(GLuint outfbo, GBuffer &gbuffer);
 extern bool debugaa();
 extern void cleanupaa();
 

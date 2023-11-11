@@ -16,6 +16,9 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+#include <optional>
+
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"
@@ -31,21 +34,11 @@
 
 #include "world/bih.h"
 #include "world/entities.h"
+#include "world/material.h"
 #include "world/octaworld.h"
 #include "world/world.h"
 
 #include "model/model.h"
-
-//stainflag enum is local to this file
-enum
-{
-    StainFlag_Rnd4       = 1<<0,
-    StainFlag_Rotate     = 1<<1,
-    StainFlag_InvMod     = 1<<2,
-    StainFlag_Overbright = 1<<3,
-    StainFlag_Glow       = 1<<4,
-    StainFlag_Saturate   = 1<<5
-};
 
 void initstains();
 
@@ -53,19 +46,27 @@ VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initstains to
 VARP(stainfade, 1000, 15000, 60000);                //number of milliseconds before stain geom fades
 VAR(debugstain, 0, 0, 1);                           //toggles printout of stain information to console
 
+//stainrenderer: handles rendering to the gbuffer of a single class of particle
+//each stainrenderer handles the rendering of a single type of particle
+//all the level's particles of a single type will be handled by a single stainrenderer object
 class stainrenderer
 {
     public:
-        int flags, fadeintime, fadeouttime, timetolive;
-        Texture *tex;
-        int maxstains, startstain, endstain;
+        enum
+        {
+            StainFlag_Rnd4       = 1<<0,
+            StainFlag_Rotate     = 1<<1,
+            StainFlag_InvMod     = 1<<2,
+            StainFlag_Overbright = 1<<3,
+            StainFlag_Glow       = 1<<4,
+            StainFlag_Saturate   = 1<<5
+        };
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
-              tex(nullptr),
               maxstains(0), startstain(0), endstain(0),
-              stainu(0), stainv(0), stains(nullptr), texname(texname)
+              stainu(0), stainv(0), tex(nullptr), stains(nullptr), texname(texname)
         {
         }
 
@@ -334,12 +335,7 @@ class stainrenderer
             verts[sbuf].render();
         }
 
-        ivec bbmin, bbmax;
-        vec staincenter, stainnormal, staintangent, stainbitangent;
-        float stainradius, stainu, stainv;
-        vec4<uchar> staincolor;
-
-        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, cubeworld world)
+        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, const cubeworld &world)
         {
             if(dir.iszero())
             {
@@ -372,7 +368,7 @@ class stainrenderer
             {
                 verts[i].lastvert = verts[i].endvert;
             }
-            gentris(world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
+            gentris(*world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
                 stainbuffer &buf = verts[i];
@@ -465,6 +461,15 @@ class stainrenderer
         }
 
     private:
+        int flags, fadeintime, fadeouttime, timetolive;
+        int maxstains, startstain, endstain;
+
+        ivec bbmin, bbmax;
+        vec staincenter, stainnormal, staintangent, stainbitangent;
+        float stainradius, stainu, stainv;
+        vec4<uchar> staincolor;
+        Texture *tex;
+
         struct stainvert
         {
             vec pos;
@@ -551,8 +556,8 @@ class stainrenderer
 
                 void fadestain(const staininfo &d, const vec4<uchar> &color)
                 {
-                    stainvert *vert = &verts[d.startvert],
-                              *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
+                    stainvert *vert = &verts[d.startvert];
+                    const stainvert *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
                     while(vert < end)
                     {
                         vert->color = color;
@@ -706,11 +711,10 @@ class stainrenderer
 
         void findmaterials(vtxarray *va)
         {
-            materialsurface *matbuf = va->matbuf;
             int matsurfs = va->matsurfs;
             for(int i = 0; i < matsurfs; ++i)
             {
-                materialsurface &m = matbuf[i];
+                materialsurface &m = va->matbuf[i];
                 if(!IS_CLIPPED(m.material&MatFlag_Volume))
                 {
                     i += m.skip;
@@ -727,7 +731,7 @@ class stainrenderer
                     r = R[dim];
                 for(;;)
                 {
-                    materialsurface &m = matbuf[i];
+                    const materialsurface &m = va->matbuf[i];
                     if(m.o[dim] >= bbmin[dim] && m.o[dim] <= bbmax[dim] &&
                        m.o[c] + m.csize >= bbmin[c] && m.o[c] <= bbmax[c] &&
                        m.o[r] + m.rsize >= bbmin[r] && m.o[r] <= bbmax[r])
@@ -739,7 +743,7 @@ class stainrenderer
                     {
                         break;
                     }
-                    materialsurface &n = matbuf[i+1];
+                    const materialsurface &n = va->matbuf[i+1];
                     if(n.material != m.material || n.orient != m.orient)
                     {
                         break;
@@ -749,17 +753,17 @@ class stainrenderer
             }
         }
 
-        void findescaped(cube *c, const ivec &o, int size, int escaped)
+        void findescaped(const std::array<cube, 8> &c, const ivec &o, int size, int escaped)
         {
             for(int i = 0; i < 8; ++i)
             {
-                cube &cu = c[i];
+                const cube &cu = c[i];
                 if(escaped&(1<<i))
                 {
                     ivec co(i, o, size);
                     if(cu.children)
                     {
-                        findescaped(cu.children, co, size>>1, cu.escaped);
+                        findescaped(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {
@@ -779,12 +783,12 @@ class stainrenderer
             }
         }
 
-        void gentris(cube *c, const ivec &o, int size, int escaped = 0)
+        void gentris(const std::array<cube, 8> &c, const ivec &o, int size, int escaped = 0)
         {
             int overlap = octaboxoverlap(o, size, bbmin, bbmax);
             for(int i = 0; i < 8; ++i)
             {
-                cube &cu = c[i];
+                const cube &cu = c[i];
                 if(overlap&(1<<i))
                 {
                     ivec co(i, o, size);
@@ -801,7 +805,7 @@ class stainrenderer
                     }
                     if(cu.children)
                     {
-                        gentris(cu.children, co, size>>1, cu.escaped);
+                        gentris(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {
@@ -833,7 +837,7 @@ class stainrenderer
                     ivec co(i, o, size);
                     if(cu.children)
                     {
-                        findescaped(cu.children, co, size>>1, cu.escaped);
+                        findescaped(*cu.children, co, size>>1, cu.escaped);
                     }
                     else
                     {
@@ -853,7 +857,7 @@ class stainrenderer
             }
         }
 
-        void genmmtris(octaentities &oe)
+        void genmmtris(const octaentities &oe)
         {
             const std::vector<extentity *> &ents = entities::getents();
             for(uint i = 0; i < oe.mapmodels.size(); i++)
@@ -883,7 +887,7 @@ class stainrenderer
             }
         }
 
-        void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = nullptr, int vismask = 0)
+        void gentris(const cube &cu, int orient, const ivec &o, int size, const materialsurface *mat = nullptr, int vismask = 0)
         {
             vec pos[Face_MaxVerts+4];
             int numverts = 0,
@@ -914,7 +918,7 @@ class stainrenderer
             }
             else if(cu.ext && (numverts = cu.ext->surfaces[orient].numverts&Face_MaxVerts))
             {
-                vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
+                const vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
                 ivec vo = ivec(o).mask(~0xFFF).shl(3);
                 for(int j = 0; j < numverts; ++j)
                 {
@@ -933,7 +937,7 @@ class stainrenderer
             }
             else if(!vismask || (vismask&0x40 && visibleface(cu, orient, o, size, Mat_Air, (cu.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha)))
             {
-                ivec v[4];
+                std::array<ivec, 4> v;
                 genfaceverts(cu, orient, v);
                 int vis = 3,
                     convex = faceconvexity(v, vis),
@@ -1060,14 +1064,14 @@ void initstains()
     {
         return;
     }
-    stains.emplace_back("<grey>media/particle/blood.png", StainFlag_Rnd4|StainFlag_Rotate|StainFlag_InvMod);
-    stains.emplace_back("<grey>media/particle/pulse_scorch.png", StainFlag_Rotate, 500);
-    stains.emplace_back("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright);
-    stains.emplace_back("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250);
-    stains.emplace_back("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100);
-    for(uint i = 0; i < stains.size(); ++i)
+    stains.emplace_back("<grey>media/particle/blood.png", stainrenderer::StainFlag_Rnd4|stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_InvMod);
+    stains.emplace_back("<grey>media/particle/pulse_scorch.png", stainrenderer::StainFlag_Rotate, 500);
+    stains.emplace_back("<grey>media/particle/rail_hole.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Overbright);
+    stains.emplace_back("<grey>media/particle/pulse_glow.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 250, 1500, 250);
+    stains.emplace_back("<grey>media/particle/rail_glow.png",  stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 100, 1100, 100);
+    for(stainrenderer &i : stains)
     {
-        stains[i].init(maxstaintris);
+        i.init(maxstaintris);
     }
     for(uint i = 0; i < stains.size(); ++i)
     {
@@ -1081,9 +1085,9 @@ void initstains()
  */
 void clearstains()
 {
-    for(uint i = 0; i < stains.size(); ++i)
+    for(stainrenderer &i : stains)
     {
-        stains[i].clearstains();
+        i.clearstains();
     }
 }
 

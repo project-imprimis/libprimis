@@ -4,6 +4,9 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
+#include <memory>
+#include <optional>
+
 #include "bih.h"
 #include "entities.h"
 #include "light.h"
@@ -27,7 +30,6 @@
 #include "render/texture.h"
 
 SVARR(maptitle, "Untitled Map by Unknown");
-VARNR(emptymap, _emptymap, 1, 0, 0);
 
 std::vector<int> outsideents;
 std::vector<int> entgroup;
@@ -154,10 +156,9 @@ void attachentity(extentity &e)
 //used in iengine
 void attachentities()
 {
-    std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(extentity *& i : entities::getents())
     {
-        attachentity(*ents[i]);
+        attachentity(*i);
     }
 }
 
@@ -241,22 +242,21 @@ void freeoctaentities(cube &c)
     {
         while(c.ext->ents && !c.ext->ents->mapmodels.empty())
         {
-            removeentity(c.ext->ents->decals.back());
+            int id = c.ext->ents->mapmodels.back();
             c.ext->ents->mapmodels.pop_back();
+            removeentity(id);
         }
         while(c.ext->ents && !c.ext->ents->decals.empty())
         {
-            removeentity(c.ext->ents->decals.back());
+            int id = c.ext->ents->decals.back();
             c.ext->ents->decals.pop_back();
+            removeentity(id);
         }
         while(c.ext->ents && !c.ext->ents->other.empty())
         {
-            removeentity(c.ext->ents->other.back());
-            //guard against recursive freeoctaentities() deleting this vector
-            if(c.ext->ents)
-            {
-                c.ext->ents->other.pop_back();
-            }
+            int id = c.ext->ents->other.back();
+            c.ext->ents->other.pop_back();
+            removeentity(id);
         }
     }
     if(c.ext->ents)
@@ -276,7 +276,7 @@ static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
         }
         case EngineEnt_Decal:
         {
-            DecalSlot &s = lookupdecalslot(e.attr1, false);
+            const DecalSlot &s = lookupdecalslot(e.attr1, false);
             vec center, radius;
             decalboundbox(e, s, center, radius);
             center.add(e.o);
@@ -309,7 +309,7 @@ static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
     return true;
 }
 
-static void modifyoctaentity(int flags, int id, const extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
+static void modifyoctaentity(int flags, int id, const extentity &e, std::array<cube, 8> &c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
 {
     LOOP_OCTA_BOX(cor, size, bo, br)
     {
@@ -317,7 +317,7 @@ static void modifyoctaentity(int flags, int id, const extentity &e, cube *c, con
         vtxarray *va = c[i].ext && c[i].ext->va ? c[i].ext->va : lastva;
         if(c[i].children != nullptr && size > leafsize)
         {
-            modifyoctaentity(flags, id, e, c[i].children, o, size>>1, bo, br, leafsize, va);
+            modifyoctaentity(flags, id, e, *(c[i].children), o, size>>1, bo, br, leafsize, va);
         }
         else if(flags&ModOctaEnt_Add)
         {
@@ -430,9 +430,9 @@ static void modifyoctaentity(int flags, int id, const extentity &e, cube *c, con
                         }
                         oe.bbmin = oe.bbmax = oe.o;
                         oe.bbmin.add(oe.size);
-                        for(uint j = 0; j < oe.mapmodels.size(); j++)
+                        for(const int &j : oe.mapmodels)
                         {
-                            extentity &e = *entities::getents()[oe.mapmodels[j]];
+                            extentity &e = *entities::getents()[j];
                             ivec eo, er;
                             if(getentboundingbox(e, eo, er))
                             {
@@ -520,7 +520,7 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
         {
             leafsize *= 2;
         }
-        modifyoctaentity(flags, id, e, worldroot, ivec(0, 0, 0), mapsize()>>1, o, r, leafsize);
+        modifyoctaentity(flags, id, e, *worldroot, ivec(0, 0, 0), mapsize()>>1, o, r, leafsize);
     }
     e.flags ^= EntFlag_Octa;
     switch(e.type)
@@ -637,7 +637,7 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
 
 ////////////////////////////// world size/octa /////////////////////////////////
 
-static void splitocta(cube *c, int size)
+static void splitocta(std::array<cube, 8> &c, int size)
 {
     if(size <= 0x1000)
     {
@@ -649,7 +649,7 @@ static void splitocta(cube *c, int size)
         {
             c[i].children = newcubes(c[i].isempty() ? faceempty : facesolid);
         }
-        splitocta(c[i].children, size>>1);
+        splitocta(*(c[i].children), size>>1);
     }
 }
 
@@ -687,11 +687,11 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
     worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
     {
-        setcubefaces(worldroot[i], facesolid);
+        setcubefaces((*worldroot)[i], facesolid);
     }
     if(mapsize() > 0x1000)
     {
-        splitocta(worldroot, mapsize()>>1);
+        splitocta(*worldroot, mapsize()>>1);
     }
     clearmainmenu();
     if(usecfg)
@@ -715,17 +715,17 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
 bool cubeworld::enlargemap(bool force)
 {
     worldscale++;
-    cube *c = newcubes(faceempty);
-    c[0].children = worldroot;
+    std::array<cube, 8> *c = newcubes(faceempty);
+    (*c)[0].children = worldroot;
     for(int i = 0; i < 3; ++i)
     {
-        setcubefaces(c[i+1], facesolid);
+        setcubefaces((*c)[i+1], facesolid);
     }
     worldroot = c;
 
     if(mapsize() > 0x1000)
     {
-        splitocta(worldroot, mapsize()>>1);
+        splitocta(*worldroot, mapsize()>>1);
     }
     allchanged();
     return true;
@@ -748,7 +748,7 @@ static bool isallempty(const cube &c)
     }
     for(int i = 0; i < 8; ++i)
     {
-        if(!isallempty(c.children[i]))
+        if(!isallempty((*c.children)[i]))
         {
             return false;
         }
@@ -775,7 +775,7 @@ void cubeworld::shrinkmap()
     int octant = -1;
     for(int i = 0; i < 8; ++i)
     {
-        if(!isallempty(worldroot[i]))
+        if(!isallempty((*worldroot)[i]))
         {
             if(octant >= 0)
             {
@@ -788,12 +788,12 @@ void cubeworld::shrinkmap()
     {
         return;
     }
-    if(!worldroot[octant].children)
+    if(!(*worldroot)[octant].children)
     {
-        subdividecube(worldroot[octant], false, false);
+        subdividecube((*worldroot)[octant], false, false);
     }
-    cube *root = worldroot[octant].children; //change worldroot to cube 0
-    worldroot[octant].children = nullptr; //free the old largest cube
+    std::array<cube, 8> *&root = (*worldroot)[octant].children; //change worldroot to cube 0
+    (*worldroot)[octant].children = nullptr; //free the old largest cube
     freeocta(worldroot);
     worldroot = root;
     worldscale--;
