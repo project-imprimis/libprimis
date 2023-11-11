@@ -348,12 +348,12 @@ struct skelmodel : animmodel
 
         const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
         skelanimspec &addskelanim(const char *name);
-        int findbone(const char *name) const;
-        int findtag(const char *name) const;
+        std::optional<int> findbone(const char *name) const;
+        std::optional<int> findtag(const char *name) const;
         bool addtag(const char *name, int bone, const matrix4x3 &matrix);
         void addpitchdep(int bone, int frame);
-        int findpitchdep(int bone) const;
-        int findpitchcorrect(int bone) const;
+        std::optional<int> findpitchdep(int bone) const;
+        std::optional<int> findpitchcorrect(int bone) const;
         void initpitchdeps();
         void optimize();
         void expandbonemask(uchar *expansion, int bone, int val);
@@ -421,7 +421,7 @@ struct skelmodel : animmodel
         virtual ~skelmeshgroup();
 
         void shareskeleton(const char *name);
-        int findtag(const char *name);
+        std::optional<int> findtag(const char *name);
         void *animkey();
         int totalframes() const;
 

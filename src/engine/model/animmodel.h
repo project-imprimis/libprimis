@@ -330,9 +330,9 @@ class animmodel : public model
                 meshgroup();
                 virtual ~meshgroup();
 
-                virtual int findtag(const char *name)
+                virtual std::optional<int> findtag(const char *name)
                 {
-                    return -1;
+                    return std::nullopt;
                 }
 
                 virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) {}
