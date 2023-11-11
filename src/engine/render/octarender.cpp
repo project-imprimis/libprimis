@@ -24,6 +24,8 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
+#include <optional>
+
 
 /* global variables */
 //////////////////////
@@ -1726,11 +1728,11 @@ namespace
         vamergemax = 0;
     std::vector<mergedface> vamerges[maxmergelevel+1];
 
-    int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
+    std::optional<int> genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     {
         if(!c.ext || c.isempty())
         {
-            return -1;
+            return std::nullopt;
         }
         int tj = c.ext->tjoints,
             maxlevel = -1;
@@ -1786,14 +1788,14 @@ namespace
             vamergemax = std::max(vamergemax, maxlevel);
             vahasmerges |= Merge_Origin;
         }
-        return maxlevel;
+        return maxlevel < 0 ? std::nullopt : std::optional(maxlevel);
     }
 
-    int findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel)
+    std::optional<int> findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel)
     {
         if(c.ext && c.ext->va && !(c.ext->va->hasmerges&Merge_Origin))
         {
-            return c.ext->va->mergelevel;
+            return std::optional(c.ext->va->mergelevel);
         }
         else if(c.children)
         {
@@ -1801,18 +1803,18 @@ namespace
             for(int i = 0; i < 8; ++i)
             {
                 ivec o(i, co, size/2);
-                int level = findmergedfaces(c.children[i], o, size/2, csi-1, minlevel);
-                maxlevel = std::max(maxlevel, level);
+                std::optional<int> level = findmergedfaces(c.children[i], o, size/2, csi-1, minlevel);
+                maxlevel = level.has_value() ? std::max(maxlevel, level.value()) : maxlevel;
             }
-            return maxlevel;
+            return maxlevel < 0 ? std::nullopt : std::optional(maxlevel);
         }
         else if(c.ext && c.merged)
         {
-            return genmergedfaces(c, co, size, minlevel);
+            return std::optional(genmergedfaces(c, co, size, minlevel));
         }
         else
         {
-            return -1;
+            return std::nullopt;
         }
     }
 
@@ -1907,7 +1909,7 @@ namespace
             gencubeverts(c, co, size);
             if(c.merged)
             {
-                maxlevel = std::max(maxlevel, genmergedfaces(c, co, size));
+                maxlevel = std::max(maxlevel, genmergedfaces(c, co, size).value_or(-1));
             }
         }
         if(c.material != Mat_Air)
@@ -2067,7 +2069,7 @@ namespace
                     {
                         entstack[++entdepth] = c[i].ext->ents;
                     }
-                    count += updateva(c[i].children, o, size/2, csi-1);
+                    count += ::updateva(c[i].children, o, size/2, csi-1);
                     if(c[i].ext && c[i].ext->ents)
                     {
                         --entdepth;
@@ -2075,12 +2077,12 @@ namespace
                 }
                 else
                 {
-                    count += setcubevisibility(c[i], o, size);
+                    count += ::setcubevisibility(c[i], o, size);
                 }
                 int tcount = count + (csi <= maxmergelevel ? vamerges[csi].size() : 0);
                 if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, rootworld.mapsize()/2))
                 {
-                    setva(c[i], o, size, csi);
+                    ::setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
                     {
                         while(static_cast<long>(varoot.size()) > childpos)
@@ -2203,22 +2205,22 @@ void findtjoints(int cur, const edgegroup &g)
                 {
                     if(e.flags&CubeEdge_Start && e.offset > a.offset && e.offset < a.offset+a.size)
                     {
-                        addtjoint(g, a, e.offset);
+                        ::addtjoint(g, a, e.offset);
                     }
                     if(e.flags&CubeEdge_End && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
                     {
-                        addtjoint(g, a, e.offset+e.size);
+                        ::addtjoint(g, a, e.offset+e.size);
                     }
                 }
                 if(!(e.flags&CubeEdge_Dup))
                 {
                     if(a.flags&CubeEdge_Start && a.offset > e.offset && a.offset < e.offset+e.size)
                     {
-                        addtjoint(g, e, a.offset);
+                        ::addtjoint(g, e, a.offset);
                     }
                     if(a.flags&CubeEdge_End && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
                     {
-                        addtjoint(g, e, a.offset+a.size);
+                        ::addtjoint(g, e, a.offset+a.size);
                     }
                 }
             }
@@ -2498,7 +2500,7 @@ void cubeworld::octarender()                               // creates va s for a
     }
     recalcprogress = 0;
     varoot.clear();
-    updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
+    ::updateva(worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
     explicitsky = false;
     for(uint i = 0; i < valist.size(); i++)
@@ -2534,7 +2536,7 @@ void cubeworld::allchanged(bool load)
     octarender();
     if(load)
     {
-        precachetextures();
+        ::precachetextures();
     }
     setupmaterials();
     clearshadowcache();
