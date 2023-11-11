@@ -33,6 +33,8 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
+#include <optional>
+
 std::vector<materialsurface> watersurfs[4], waterfallsurfs[4], glasssurfs[4];
 
 //internally relevant functionality
@@ -974,16 +976,16 @@ vec matnormals(int i)
  *
  * given a material name, returns the bitmask ID of the material as an integer
  */
-int findmaterial(const char *name)
+std::optional<int> findmaterial(const char *name)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(material)); ++i)
     {
         if(!std::strcmp(materials[i].name, name))
         {
-            return materials[i].id;
+            return std::optional(materials[i].id);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 /* findmaterialname
