@@ -572,17 +572,17 @@ bool raycubelos(const vec &o, const vec &dest, vec &hitpos)
     return distance >= mag;
 }
 
-float rayfloor(const vec &o, vec &floor, int mode, float radius)
+std::optional<float> rayfloor(const vec &o, vec &floor, int mode, float radius)
 {
     if(o.z<=0)
     {
-        return -1;
+        return std::nullopt;
     }
     hitsurface = vec(0, 0, 1);
     float dist = rootworld.raycube(o, vec(0, 0, -1), radius, mode);
     if(dist<0 || (radius>0 && dist>=radius))
     {
-        return dist;
+        return std::optional(dist);
     }
     floor = hitsurface;
     return dist;

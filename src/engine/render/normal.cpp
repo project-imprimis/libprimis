@@ -19,6 +19,7 @@
 #include "world/world.h"
 
 struct normalkey
+
 {
     vec pos;
     int smooth;
@@ -429,8 +430,8 @@ void resetsmoothgroups()
 
 static constexpr int maxsmoothgroups = 10000;
 //returns the smoothgroup at the idth location in the smoothgroups vector
-//returns -1 (failure) if you try to ask for an id greater than 10,000
-int smoothangle(int id, int angle)
+//returns std::nullopt (failure) if you try to ask for an id greater than 10,000
+std::optional<int> smoothangle(int id, int angle)
 {
     if(id < 0)
     {
@@ -438,7 +439,7 @@ int smoothangle(int id, int angle)
     }
     if(id >= maxsmoothgroups)
     {
-        return -1;
+        return std::nullopt;
     }
     while(static_cast<int>(smoothgroups.size()) <= id)
     {
@@ -448,10 +449,11 @@ int smoothangle(int id, int angle)
     {
         smoothgroups[id] = std::min(angle, 180);
     }
-    return id;
+    return std::optional(id);
 }
 
 void initnormalcmds()
 {
-    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (int *id, int *angle) {intret(smoothangle(*id, *angle));}), "ib", Id_Command);
+    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (int *id, int *angle) {intret(smoothangle(*id, *angle).value_or(-1));}), "ib", Id_Command);
 }
+

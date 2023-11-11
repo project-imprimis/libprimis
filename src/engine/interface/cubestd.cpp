@@ -17,6 +17,7 @@
 #include "cs.h"
 
 #include "render/hud.h"
+#include <optional>
 
 /* execfile
  *
@@ -969,7 +970,7 @@ void prettylist(const char *s, const char *conj)
 }
 
 //returns the int position of the needle inside the passed list
-int listincludes(const char *list, const char *needle, int needlelen)
+std::optional<int> listincludes(const char *list, const char *needle, int needlelen)
 {
     int offset = 0;
     for(const char *s = list, *start, *end; parselist(s, start, end);)
@@ -977,11 +978,11 @@ int listincludes(const char *list, const char *needle, int needlelen)
         int len = end - start;
         if(needlelen == len && !std::strncmp(needle, start, len))
         {
-            return offset;
+            return std::optional(offset);
         }
         offset++;
     }
-    return -1;
+    return std::nullopt;
 }
 
 void listsplice(const char *s, const char *vals, int *skip, int *count)
@@ -1601,7 +1602,7 @@ void initcontrolcmds()
     addcommand("looplistconcat", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, true); }), "rse", Id_Command);
     addcommand("looplistconcatword", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, false); }), "rse", Id_Command);
     addcommand("prettylist", reinterpret_cast<identfun>(prettylist), "ss", Id_Command);
-    addcommand("indexof", reinterpret_cast<identfun>(+[] (char *list, char *elem) { intret(listincludes(list, elem, std::strlen(elem))); }), "ss", Id_Command);
+    addcommand("indexof", reinterpret_cast<identfun>(+[] (char *list, char *elem) { intret(listincludes(list, elem, std::strlen(elem)).value_or(-1)); }), "ss", Id_Command);
 
     addcommand("listdel", reinterpret_cast<identfun>(+[] (const char *list, const char *elems)
     {
@@ -1610,7 +1611,7 @@ void initcontrolcmds()
             for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);)
             {
                 int len = end - start;
-                if(listincludes(elems, start, len) < 0)
+                if(!listincludes(elems, start, len).has_value())
                 {
                     if(!p.empty())
                     {
@@ -1636,7 +1637,7 @@ void initcontrolcmds()
             for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);)
             {
                 int len = end - start;
-                if(listincludes(elems, start, len) >= 0)
+                if(listincludes(elems, start, len).has_value())
                 {
                     if(!p.empty())
                     {
@@ -1666,7 +1667,7 @@ void initcontrolcmds()
             for(const char *start, *end, *qstart, *qend; parselist(elems, start, end, qstart, qend);)
             {
                 int len = end - start;
-                if(listincludes(list, start, len) < 0)
+                if(!listincludes(list, start, len).has_value())
                 {
                     if(!p.empty())
                     {

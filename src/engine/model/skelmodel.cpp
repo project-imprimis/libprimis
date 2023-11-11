@@ -37,6 +37,8 @@
 #include "animmodel.h"
 #include "skelmodel.h"
 
+#include <optional>
+
 VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
 VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
@@ -126,40 +128,41 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     return skelanims.back();
 }
 
+
 std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
 {
     for(int i = 0; i < numbones; ++i)
     {
         if(bones[i].name && !std::strcmp(bones[i].name, name.c_str()))
         {
-            return i;
+            return std::optional(i);
         }
     }
     return std::nullopt;
 }
 
-int skelmodel::skeleton::findtag(const char *name) const
+std::optional<int>skelmodel::skeleton::findtag(const char *name) const
 {
     for(uint i = 0; i < tags.size(); i++)
     {
         if(!std::strcmp(tags[i].name.c_str(), name))
         {
-            return i;
+            return std::optional(i);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 bool skelmodel::skeleton::addtag(const char *name, int bone, const matrix4x3 &matrix)
 {
-    int idx = findtag(name);
-    if(idx >= 0)
+    std::optional<int> idx = findtag(name);
+    if(idx.has_value())
     {
         if(!testtags)
         {
             return false;
         }
-        tag &t = tags[idx];
+        tag &t = tags[idx.value()];
         t.bone = bone;
         t.matrix = matrix;
     }
@@ -378,28 +381,28 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
     }
 }
 
-int skelmodel::skeleton::findpitchdep(int bone) const
+std::optional<int> skelmodel::skeleton::findpitchdep(int bone) const
 {
     for(uint i = 0; i < pitchdeps.size(); i++)
     {
         if(bone <= pitchdeps[i].bone)
         {
-            return bone == pitchdeps[i].bone ? i : -1;
+            return bone == pitchdeps[i].bone ? std::optional(i) : std::nullopt;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
-int skelmodel::skeleton::findpitchcorrect(int bone) const
+std::optional<int> skelmodel::skeleton::findpitchcorrect(int bone) const
 {
     for(uint i = 0; i < pitchcorrects.size(); i++)
     {
         if(bone <= pitchcorrects[i].bone)
         {
-            return bone == pitchcorrects[i].bone ? i : -1;
+            return bone == pitchcorrects[i].bone ? std::optional(i) : std::nullopt;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 void skelmodel::skeleton::initpitchdeps()
@@ -419,26 +422,26 @@ void skelmodel::skeleton::initpitchdeps()
         int parent = bones[d.bone].parent;
         if(parent >= 0)
         {
-            int j = findpitchdep(parent);
-            if(j >= 0)
+            std::optional<int> j = findpitchdep(parent);
+            if(j.has_value())
             {
-                d.parent = j;
-                d.pose.mul(pitchdeps[j].pose, dualquat(d.pose));
+                d.parent = j.value();
+                d.pose.mul(pitchdeps[j.value()].pose, dualquat(d.pose));
             }
         }
     }
     for(pitchtarget& t : pitchtargets)
     {
-        int j = findpitchdep(t.bone);
-        if(j >= 0)
+        std::optional<int> j = findpitchdep(t.bone);
+        if(j.has_value())
         {
-            t.deps = j;
-            t.pose = pitchdeps[j].pose;
+            t.deps = j.value();
+            t.pose = pitchdeps[j.value()].pose;
         }
         t.corrects = -1;
         for(int parent = t.bone; parent >= 0; parent = bones[parent].parent)
         {
-            t.corrects = findpitchcorrect(parent);
+            t.corrects = findpitchcorrect(parent).value_or(-1);
             if(t.corrects >= 0)
             {
                 break;
@@ -457,7 +460,7 @@ void skelmodel::skeleton::initpitchdeps()
             {
                 break;
             }
-            c.parent = findpitchcorrect(parent);
+            c.parent = findpitchcorrect(parent).value_or(-1);
             if(c.parent >= 0)
             {
                 break;
@@ -1510,7 +1513,7 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
     skel->shared++;
 }
 
-int skelmodel::skelmeshgroup::findtag(const char *name)
+std::optional<int> skelmodel::skelmeshgroup::findtag(const char *name)
 {
     return skel->findtag(name);
 }

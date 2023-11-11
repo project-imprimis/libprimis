@@ -512,7 +512,7 @@ bool SoundEngine::SoundSample::load(const char *dir)
 //SoundType
 SoundEngine::SoundType::SoundType(const char *dir, SoundEngine& p) : parent(&p), dir(dir) {}
 
-int SoundEngine::SoundType::findsound(const char *name, int vol)
+std::optional<int> SoundEngine::SoundType::findsound(const char *name, int vol)
 {
     for(uint i = 0; i < configs.size(); i++)
     {
@@ -522,11 +522,11 @@ int SoundEngine::SoundType::findsound(const char *name, int vol)
             soundslot &c = slots[s.slots+j];
             if(!std::strcmp(c.sample->name.c_str(), name) && (!vol || c.volume==vol))
             {
-                return i;
+                return std::optional(i);
             }
         }
     }
-    return -1;
+    return std::nullopt;
 }
 int SoundEngine::SoundType::addslot(const char *name, int vol)
 {
@@ -817,17 +817,17 @@ void SoundEngine::preloadmapsounds()
 }
 
 //used in iengine.h
-int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int fade, int chanid, int radius, int expire)
+std::optional<int> SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int fade, int chanid, int radius, int expire)
 {
     if(nosound || !soundvol || (minimized && !minimizedsounds)) //mute check
     {
-        return -1;
+        return std::nullopt;
     }
     SoundType &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
     if(!(static_cast<long>(sounds.configs.size()) > n)) //sound isn't within index
     {
         conoutf(Console_Warn, "unregistered sound: %d", n);
-        return -1;
+        return std::nullopt;
     }
     SoundConfig &config = sounds.configs[n];
     if(loc && (maxsoundradius || radius > 0))
@@ -842,7 +842,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
                 Mix_HaltChannel(chanid);
                 freechannel(chanid);
             }
-            return -1;
+            return std::nullopt;
         }
     }
     if(chanid < 0)
@@ -854,7 +854,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
             {
                 if(sounds.playing(s, config) && ++uses >= config.maxuses)
                 {
-                    return -1;
+                    return std::nullopt;
                 }
             }
         }
@@ -872,7 +872,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
         lastsoundmillis = totalmillis;
         if(maxsoundsatonce && soundsatonce > maxsoundsatonce)
         {
-            return -1;
+            return std::nullopt;
         }
     }
     if(channels.size() > static_cast<size_t>(chanid))
@@ -893,12 +893,12 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     }
     if(fade < 0) //attenuation past zero
     {
-        return -1;
+        return std::nullopt;
     }
     soundslot &slot = sounds.slots[config.chooseslot(flags)];
     if(!slot.sample->chunk && !slot.sample->load(sounds.dir))
     {
-        return -1;
+        return std::nullopt;
     }
     if(debugsound)
     {
@@ -932,7 +932,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     }
     if(chanid < 0)
     {
-        return -1;
+        return std::nullopt;
     }
     SoundChannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
     chan.updatechannel();
@@ -959,7 +959,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     {
         freechannel(chanid);
     }
-    return playing;
+    return playing < 0 ? std::nullopt : std::optional(playing);
 }
 
 bool SoundEngine::stopsound(int n, int chanid, int fade)
@@ -1072,12 +1072,12 @@ int SoundEngine::playsoundname(const char *s, const vec *loc, int vol, int flags
     {
         vol = 100;
     }
-    int id = gamesounds.findsound(s, vol);
-    if(id < 0)
+    std::optional<int> id = gamesounds.findsound(s, vol);
+    if(!id.has_value())
     {
         id = gamesounds.addsound(s, vol);
     }
-    return playsound(id, loc, nullptr, flags, loops, fade, chanid, radius, expire);
+    return playsound(id.value(), loc, nullptr, flags, loops, fade, chanid, radius, expire);
 }
 
 void SoundEngine::resetsound()
