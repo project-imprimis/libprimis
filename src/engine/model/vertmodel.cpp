@@ -27,6 +27,8 @@
 #include "animmodel.h"
 #include "vertmodel.h"
 
+#include <optional>
+
 //==============================================================================
 // vertmodel object
 //==============================================================================
@@ -196,22 +198,22 @@ vertmodel::vertmeshgroup::~vertmeshgroup()
     delete[] vdata;
 }
 
-int vertmodel::vertmeshgroup::findtag(const char *name)
+std::optional<int> vertmodel::vertmeshgroup::findtag(const char *name)
 {
     for(int i = 0; i < numtags; ++i)
     {
         if(!std::strcmp(tags[i].name, name))
         {
-            return i;
+            return std::optional(i);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 bool vertmodel::vertmeshgroup::addtag(const char *name, const matrix4x3 &matrix)
 {
-    int idx = findtag(name);
-    if(idx >= 0)
+    std::optional<int> idx = findtag(name);
+    if(idx.has_value())
     {
         if(!testtags)
         {
@@ -219,7 +221,7 @@ bool vertmodel::vertmeshgroup::addtag(const char *name, const matrix4x3 &matrix)
         }
         for(int i = 0; i < numframes; ++i)
         {
-            tag &t = tags[i*numtags + idx];
+            tag &t = tags[i*numtags + idx.value()];
             t.matrix = matrix;
         }
     }

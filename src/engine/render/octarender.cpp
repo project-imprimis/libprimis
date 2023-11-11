@@ -24,6 +24,8 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
+#include <optional>
+
 
 /* global variables */
 //////////////////////
@@ -42,7 +44,9 @@ int allocva  = 0,
  * varoot[0] itself, followed by the same for the other VAs in varoot. The last
  * element should always be `varoot[7]`.
  */
+
 std::vector<vtxarray *> valist;
+
 
 /*
  * A vector containing the highest-level vertex array objects.
@@ -64,6 +68,7 @@ ivec worldmin(0, 0, 0),
 std::vector<tjoint> tjoints;
 
 VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by filling in geom t-joints
+
 
 /* internally relevant functionality */
 ///////////////////////////////////////
@@ -167,6 +172,7 @@ namespace
                     {
                         continue;
                     }
+
                     //axistemp1/2 used in `axis` only
                     // x = 0, y = 1, z = 2, `int axis` is the largest component of `d` using
                     // axistemp1/2 to determine if x,y > z and then if x > y
@@ -178,6 +184,7 @@ namespace
                         d.neg();
                         std::swap(e1, e2);
                     }
+
                     reduceslope(d);
                     int t1 = pos[e1][axis]/d[axis],
                         t2 = pos[e2][axis]/d[axis];
@@ -365,22 +372,22 @@ void findtjoints(int cur, const edgegroup &g)
                 {
                     if(e.flags&CubeEdge_Start && e.offset > a.offset && e.offset < a.offset+a.size)
                     {
-                        addtjoint(g, a, e.offset);
+                        ::addtjoint(g, a, e.offset);
                     }
                     if(e.flags&CubeEdge_End && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
                     {
-                        addtjoint(g, a, e.offset+e.size);
+                        ::addtjoint(g, a, e.offset+e.size);
                     }
                 }
                 if(!(e.flags&CubeEdge_Dup))
                 {
                     if(a.flags&CubeEdge_Start && a.offset > e.offset && a.offset < e.offset+e.size)
                     {
-                        addtjoint(g, e, a.offset);
+                        ::addtjoint(g, e, a.offset);
                     }
                     if(a.flags&CubeEdge_End && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
                     {
-                        addtjoint(g, e, a.offset+a.size);
+                        ::addtjoint(g, e, a.offset+a.size);
                     }
                 }
             }
@@ -648,6 +655,7 @@ void cubeworld::findtjoints()
 
 void cubeworld::allchanged(bool load)
 {
+
     if(!worldroot)
     {
         return;
@@ -672,7 +680,7 @@ void cubeworld::allchanged(bool load)
     octarender();
     if(load)
     {
-        precachetextures();
+        ::precachetextures();
     }
     setupmaterials();
     clearshadowcache();

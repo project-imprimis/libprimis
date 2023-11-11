@@ -189,7 +189,7 @@ struct vertmodel : animmodel
         virtual ~vertmeshgroup();
 
         bool addtag(const char *name, const matrix4x3 &matrix);
-        int findtag(const char *name);
+        std::optional<int> findtag(const char *name);
 
         int totalframes() const;
         void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;

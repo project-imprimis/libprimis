@@ -17,7 +17,7 @@ extern std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs;
 extern int showmat;
 
 extern vec matnormals(int i); //returns one of the six basis vectors for 0 <= i <= 6; 0,0,0 otherwise
-extern int findmaterial(const char *name);
+extern std::optional<int> findmaterial(const char *name);
 extern const char *findmaterialname(int mat);
 extern const char *getmaterialdesc(int mat, const char *prefix = "");
 extern void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs);

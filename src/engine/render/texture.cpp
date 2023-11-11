@@ -23,6 +23,8 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
+#include <optional>
+
 extern const texrotation texrotations[8] =
 {
     { false, false, false }, // 0: default
@@ -1866,7 +1868,7 @@ static void fixinsidefaces(std::array<cube, 8> &c, const ivec &o, int size, int 
     }
 }
 
-int findslottex(const char *name)
+std::optional<int> findslottex(const char *name)
 {
 
     const struct slottex
@@ -1891,15 +1893,16 @@ int findslottex(const char *name)
     {
         if(!std::strcmp(slottexs[i].name, name))
         {
-            return slottexs[i].id;
+            return std::optional(slottexs[i].id);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
 {
-    int tnum = findslottex(type), matslot;
+    int tnum = findslottex(type).value_or(-1);
+    int matslot;
     if(tnum == Tex_Diffuse)
     {
         if(slots.size() >= 0x10000)
@@ -2085,21 +2088,21 @@ void decaldepth(float *depth, float *fade)
     s.fade = std::clamp(*fade, 0.0f, s.depth);
 }
 
-int DecalSlot::cancombine(int type) const
+std::optional<int> DecalSlot::cancombine(int type) const
 {
     switch(type)
     {
         case Tex_Glow:
         {
-            return Tex_Spec;
+            return std::optional(Tex_Spec);
         }
         case Tex_Normal:
         {
-            return texmask&(1 << Tex_Depth) ? Tex_Depth : (texmask & (1 << Tex_Glow) ? -1 : Tex_Spec);
+            return std::optional(texmask&(1 << Tex_Depth) ? Tex_Depth : (texmask & (1 << Tex_Glow) ? -1 : Tex_Spec));
         }
         default:
         {
-            return -1;
+            return std::nullopt;
         }
     }
 }
@@ -2146,33 +2149,33 @@ VSlot &Slot::emptyvslot()
     return *::emptyvslot(*this);
 }
 
-int Slot::findtextype(int type, int last) const
+std::optional<int> Slot::findtextype(int type, int last) const
 {
     for(uint i = last+1; i<sts.size(); i++)
     {
         if((type&(1<<sts[i].type)) && sts[i].combined<0)
         {
-            return i;
+            return std::optional(i);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
-int Slot::cancombine(int type) const
+std::optional<int> Slot::cancombine(int type) const
 {
     switch(type)
     {
         case Tex_Diffuse:
         {
-            return texmask&((1 << Tex_Spec) | (1 << Tex_Normal)) ? Tex_Spec : Tex_Alpha;
+            return std::optional(texmask&((1 << Tex_Spec) | (1 << Tex_Normal)) ? Tex_Spec : Tex_Alpha);
         }
         case Tex_Normal:
         {
-            return texmask&(1 << Tex_Depth) ? Tex_Depth : Tex_Alpha;
+            return std::optional(texmask&(1 << Tex_Depth) ? Tex_Depth : Tex_Alpha);
         }
         default:
         {
-            return -1;
+            return std::nullopt;
         }
     }
 }
@@ -2276,10 +2279,11 @@ void Slot::load()
         {
             continue;
         }
-        int combine = cancombine(t.type);
-        if(combine >= 0 && (combine = findtextype(1<<combine)) >= 0)
+        std::optional<int> combine = cancombine(t.type);
+        if(combine.has_value() && findtextype(1<<combine.value()).has_value())
         {
-            Slot::Tex &c = sts[combine];
+            int comb = findtextype(1<<combine.value()).value();
+            Slot::Tex &c = sts[comb];
             c.combined = i;
         }
     }
