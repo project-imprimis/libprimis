@@ -983,7 +983,6 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     matrixstack.top().transposedtransformnormal(ray, oray);
 
     intersectscale = resize;
-    meshes->intersect(as, pitch, oaxis, oforward, d, this, oo, oray);
 
     if((anim & Anim_Reuse) != Anim_Reuse)
     {

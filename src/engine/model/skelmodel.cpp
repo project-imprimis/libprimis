@@ -1666,11 +1666,6 @@ void skelmodel::skelmeshgroup::cleanup()
     }
 }
 
-void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
-{
-    return;
-}
-
 void skelmodel::skelmeshgroup::preload()
 {
     if(!skel->canpreload())

@@ -488,7 +488,6 @@ struct skelmodel : animmodel
         void cleanup();
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
-        void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
         void preload();
 
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);

@@ -392,7 +392,6 @@ class animmodel : public model
                 virtual void cleanup() {}
                 virtual void preload() {}
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
-                virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
