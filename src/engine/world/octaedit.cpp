@@ -39,6 +39,8 @@
 #include "material.h"
 #include "world.h"
 
+#include <optional>
+
 struct prefabheader
 {
     char magic[4];
@@ -1221,12 +1223,13 @@ class prefabmesh
             table.fill(-1);
         }
 
-        int addvert(const vec &pos, const bvec &norm)
+        std::optional<int> addvert(const vec &pos, const bvec &norm)
         {
             vertex vtx;
             vtx.pos = pos;
             vtx.norm = norm;
-            return addvert(vtx);
+            int res = addvert(vtx);
+            return (res < 0) ? std::nullopt : std::optional(addvert(vtx));
         }
 
         void setup(prefab &p)
@@ -1327,7 +1330,7 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
                 int index[4];
                 for(int j = 0; j < numverts; ++j)
                 {
-                    index[j] = r.addvert(pos[j], bvec(norm[j]));
+                    index[j] = r.addvert(pos[j], bvec(norm[j])).value_or(-1);
                 }
                 for(int j = 0; j < numverts-2; ++j)
                 {
