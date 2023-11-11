@@ -24,15 +24,19 @@ namespace
     VARNP(dynlights, usedynlights, 0, 1, 1); //toggle using dynamic lights
     VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
 
-    struct dynlight
+    class dynlight
     {
-        vec o, hud;
-        float radius, initradius, curradius, dist;
-        vec color, initcolor, curcolor;
-        int fade, peak, expire, flags;
-        physent *owner;
-        vec dir;
-        int spot;
+        public:
+
+        vec o;
+        float curradius, dist;
+        int expire;
+        const physent *owner;
+
+        dynlight(vec o, int expire, physent *owner, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int flags, vec dir, int spot) :
+            o(o), expire(expire), owner(owner), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), flags(flags), dir(dir), spot(spot)
+        {
+        }
 
         void calcradius()
         {
@@ -91,10 +95,37 @@ namespace
             }
             curcolor.mul(intensity);
         }
+
+        /* dynlightinfo: gets information about this dynlight
+         *
+         * Parameters:
+         *  n: the nth closest dynamic light
+         *  o: a reference to set as the location of the specified dynlight
+         *  radius: a reference to set as the radius of the specified dynlight
+         *  color: a reference to set as the color of the specifeid dynlight
+         *  spot: a reference to the spotlight information of the dynlight
+         *  dir: a reference to set as the direction the dynlight is pointing
+         *  flags: a reference to the flag bitmap for the dynlight
+         */
+        void dynlightinfo(vec &origin, float &radius, vec &color, vec &direction, int &spotlight, int &flagmask) const
+        {
+            origin = o;
+            radius = curradius;
+            color = curcolor;
+            spotlight = spot;
+            direction = dir;
+            flagmask = flags & 0xFF;
+        }
+        private:
+            float radius, initradius;
+            vec color, initcolor, curcolor;
+            int fade, peak, flags;
+            vec dir;
+            int spot;
     };
 
     std::vector<dynlight> dynlights;
-    std::vector<dynlight *> closedynlights;
+    std::vector<const dynlight *> closedynlights;
 
     //cleans up dynlights, deletes dynlights contents once none have expire field
     void cleardynlights()
@@ -141,19 +172,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
             break;
         }
     }
-    dynlight d;
-    d.o = d.hud = o;
-    d.radius = radius;
-    d.initradius = initradius;
-    d.color = color;
-    d.initcolor = initcolor;
-    d.fade = fade;
-    d.peak = peak;
-    d.expire = expire;
-    d.flags = flags;
-    d.owner = owner;
-    d.dir = dir;
-    d.spot = spot;
+    dynlight d(o, expire, owner, radius, initradius, color, initcolor, fade, peak, flags, dir, spot);
     dynlights.insert(dynlights.begin() + insert, d);
 }
 
@@ -170,7 +189,7 @@ void removetrackeddynlights(const physent *owner)
 
 //finds which dynamic lights are near enough and are visible to the player
 //returns the number of lights (and sets `closedynlights` vector contents to the appropriate nearby light ents)
-int finddynlights()
+size_t finddynlights()
 {
     closedynlights.clear();
     if(!usedynlights)
@@ -179,9 +198,8 @@ int finddynlights()
     }
     physent e;
     e.type = physent::PhysEnt_Camera;
-    for(uint j = 0; j < dynlights.size(); j++)
+    for(dynlight &d : dynlights)
     {
-        dynlight &d = dynlights[j];
         if(d.curradius <= 0)
         {
             continue;
@@ -218,35 +236,29 @@ int finddynlights()
  *  o: a reference to set as the location of the specified dynlight
  *  radius: a reference to set as the radius of the specified dynlight
  *  color: a reference to set as the color of the specifeid dynlight
+ *  spot: a reference to the spotlight information of the dynlight
  *  dir: a reference to set as the direction the dynlight is pointing
  *  flags: a reference to the flag bitmap for the dynlight
  * Returns:
  *  bool: true if light at position n was found, false otherwise
  *
  */
-bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
+bool getdynlight(size_t n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
-    if(!(static_cast<int>(closedynlights.size()) > n))
+    if(!(closedynlights.size() > n))
     {
         return false;
     }
-    dynlight &d = *closedynlights[n];
-    o = d.o;
-    radius = d.curradius;
-    color = d.curcolor;
-    spot = d.spot;
-    dir = d.dir;
-    flags = d.flags & 0xFF;
+    const dynlight &d = *closedynlights[n];
+    d.dynlightinfo(o, radius, color, dir, spot, flags);
     return true;
 }
 
 void updatedynlights()
 {
     cleardynlights();
-
-    for(uint i = 0; i < dynlights.size(); i++)
+    for(dynlight &d : dynlights)
     {
-        dynlight &d = dynlights[i];
         d.calcradius();
         d.calccolor();
     }

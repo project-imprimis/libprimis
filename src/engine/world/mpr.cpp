@@ -269,7 +269,8 @@ namespace mpr
 
     vec ModelOBB::supportpoint(const vec &n) const
     {
-        vec ln = orient.transform(n), p(0, 0, 0);
+        vec ln = orient.transform(n),
+            p(0, 0, 0);
         if(ln.x > 0)
         {
             p.x += radius.x;

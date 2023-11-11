@@ -18,14 +18,7 @@ struct vertex
     vec4<uchar> tangent;
 };
 
-struct materialsurface
-{
-    ivec o;
-    ushort csize, rsize;
-    ushort material, skip;
-    uchar orient, visible;
-    uchar ends;
-};
+struct materialsurface;
 
 struct elementset
 {
@@ -43,7 +36,7 @@ struct elementset
 
 struct grasstri
 {
-    vec v[4];
+    std::array<vec, 4> v;
     int numv;
     plane surface;
     vec center;
@@ -61,9 +54,9 @@ struct vtxarray
     ushort voffset, eoffset, skyoffset, decaloffset; // offset into vertex data
     ushort *edata, *skydata, *decaldata; // vertex indices
     GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
-    ushort minvert, maxvert; // DRE info
+    GLuint minvert, maxvert; // DRE info
     elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
-    materialsurface *matbuf; // buffer of material surfaces
+    std::vector<materialsurface> matbuf;
     int verts,
         tris,
         texs,
@@ -102,7 +95,7 @@ extern int allocva;
 extern ushort encodenormal(const vec &n);
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
-extern void clearvas(cube *c);
+extern void clearvas(std::array<cube, 8> &c);
 extern void destroyva(vtxarray *va, bool reparent = true);
 extern void updatevabb(vtxarray *va, bool force = false);
 extern void updatevabbs(bool force = false);

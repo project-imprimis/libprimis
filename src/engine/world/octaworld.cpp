@@ -40,8 +40,6 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 
 cubeworld rootworld;
 
-void calcmerges();
-
 cubeext *growcubeext(cubeext *old, int maxverts)
 {
     cubeext *ext = reinterpret_cast<cubeext *>(new uchar[sizeof(cubeext) + maxverts*sizeof(vertinfo)]);
@@ -86,39 +84,52 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
     {
         if(c.ext)
         {
-            std::memcpy(ext->surfaces, c.ext->surfaces, sizeof(ext->surfaces));
+            std::copy(ext->surfaces.begin(), ext->surfaces.end(), c.ext->surfaces.begin());
             std::memcpy(ext->verts(), c.ext->verts(), c.ext->maxverts*sizeof(vertinfo));
         }
         else
         {
-            std::memset(ext->surfaces, 0, sizeof(ext->surfaces));
+            ext->surfaces.fill({0,0});
         }
     }
     setcubeext(c, ext);
     return ext;
 }
 
-cube *newcubes(uint face, int mat)
+/**
+ * @brief Returns an octet of cubes allocated on the heap.
+ *
+ * These cubes should be freed with freeocta() to prevent a leak.
+ *
+ * `allocnodes` is incremented by one for each call of this function.
+ *
+ * @param face The face values to set the eight cubes
+ * @param mat The material mask to assign to the cubes
+ *
+ * @return a std::array<cube, 8> pointer pointing to an array containing the created cubes
+ */
+std::array<cube, 8> *newcubes(uint face, int mat)
 {
-    cube *c = new cube[8];
+    std::array<cube, 8> *c = new std::array<cube, 8> ;
     for(int i = 0; i < 8; ++i)
     {
-        c->children = nullptr;
-        c->ext = nullptr;
-        c->visible = 0;
-        c->merged = 0;
-        setcubefaces(*c, face);
+        (*c)[i].children = nullptr;
+        (*c)[i].ext = nullptr;
+        (*c)[i].visible = 0;
+        (*c)[i].merged = 0;
+        setcubefaces((*c)[i], face);
         for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
         {
-            c->texture[l] = Default_Geom;
+            (*c)[i].texture[l] = Default_Geom;
         }
-        c->material = mat;
-        c++;
+        (*c)[i].material = mat;
     }
     allocnodes++;
-    return c-8;
+    return c;
 }
 
+//returns the size of the tree starting from the specified cube going down
+//the cube in question is counted as part of the family
 int familysize(const cube &c)
 {
     int size = 1;
@@ -126,13 +137,13 @@ int familysize(const cube &c)
     {
         for(int i = 0; i < 8; ++i)
         {
-            size += familysize(c.children[i]);
+            size += familysize((*c.children)[i]);
         }
     }
     return size;
 }
 
-void freeocta(cube *c)
+void freeocta(std::array<cube, 8> *&c)
 {
     if(!c)
     {
@@ -140,9 +151,10 @@ void freeocta(cube *c)
     }
     for(int i = 0; i < 8; ++i)
     {
-        c[i].discardchildren();
+        (*c)[i].discardchildren();
     }
-    delete[] c;
+    delete c;
+    c = nullptr;
     allocnodes--;
 }
 
@@ -189,44 +201,44 @@ void optiface(const uchar *p, cube &c)
 
 void printcube()
 {
-    cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
-    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<void *>(&c), lu.x, lu.y, lu.z, lusize);
+    const cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
+    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<const void *>(&c), lu.x, lu.y, lu.z, lusize);
     conoutf(Console_Debug, " x  %.8x", c.faces[0]);
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
 }
 
-void validatec(cube *c, int size)
+void validatec(std::array<cube, 8> *&c, int size)
 {
     for(int i = 0; i < 8; ++i)
     {
-        if(c[i].children)
+        if((*c)[i].children)
         {
             if(size<=1)
             {
-                setcubefaces(c[i], facesolid);
-                c[i].discardchildren(true);
+                setcubefaces((*c)[i], facesolid);
+                (*c)[i].discardchildren(true);
             }
             else
             {
-                validatec(c[i].children, size>>1);
+                validatec((*c)[i].children, size>>1);
             }
         }
         else if(size > 0x1000)
         {
-            subdividecube(c[i], true, false);
-            validatec(c[i].children, size>>1);
+            subdividecube((*c)[i], true, false);
+            validatec((*c)[i].children, size>>1);
         }
         else
         {
             for(int j = 0; j < 3; ++j)
             {
-                uint f  = c[i].faces[j],
+                uint f  = (*c)[i].faces[j],
                      e0 = f&0x0F0F0F0FU,
                      e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
-                    setcubefaces(c[i], faceempty);
+                    setcubefaces((*c)[i], faceempty);
                     break;
                 }
             }
@@ -244,7 +256,11 @@ cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
         tz = std::clamp(to.z, 0, mapsize()-1);
     int scale = worldscale-1,
         csize = std::abs(tsize);
-    cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
+    cube *c = &(*worldroot)[OCTA_STEP(tx, ty, tz, scale)];
+    if(!c)
+    {
+        return emptycube;
+    }
     if(!(csize>>scale))
     {
         do
@@ -257,13 +273,13 @@ cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
                     {
                         subdividecube(*c);
                         scale--;
-                        c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
+                        c = &(*c->children)[OCTA_STEP(tx, ty, tz, scale)];
                     } while(!(csize>>scale));
                 }
                 break;
             }
             scale--;
-            c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
+            c = &(*c->children)[OCTA_STEP(tx, ty, tz, scale)];
         } while(!(csize>>scale));
     }
     ro = ivec(tx, ty, tz).mask(~0U<<scale);
@@ -279,11 +295,11 @@ int cubeworld::lookupmaterial(const vec &v)
         return Mat_Air;
     }
     int scale = worldscale-1;
-    cube *c = &worldroot[OCTA_STEP(o.x, o.y, o.z, scale)];
+    cube *c = &(*worldroot)[OCTA_STEP(o.x, o.y, o.z, scale)];
     while(c->children)
     {
         scale--;
-        c = &c->children[OCTA_STEP(o.x, o.y, o.z, scale)];
+        c = &(*c->children)[OCTA_STEP(o.x, o.y, o.z, scale)];
     }
     return c->material;
 }
@@ -312,7 +328,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         return emptycube;
     }
     int scale = worldscale;
-    const cube *nc = worldroot;
+    const cube *nc = &(*worldroot)[0];
     if(neighbordepth >= 0)
     {
         scale -= neighbordepth + 1;
@@ -331,7 +347,7 @@ const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &
         do
         {
             scale--;
-            nc = &nc->children[OCTA_STEP(n.x, n.y, n.z, scale)];
+            nc = &(*nc->children)[OCTA_STEP(n.x, n.y, n.z, scale)];
         } while(!(size>>scale) && nc->children);
     }
     ro = n.mask(~0U<<scale);
@@ -362,7 +378,7 @@ static int octacubeindex(int d, int x, int y, int z)
 
 int getmippedtexture(const cube &p, int orient)
 {
-    cube *c = p.children;
+    std::array<cube, 8> &c = *p.children;
     int d = DIMENSION(orient),
         dc = DIM_COORD(orient),
         texs[4] = { -1, -1, -1, -1 },
@@ -406,7 +422,7 @@ int getmippedtexture(const cube &p, int orient)
 
 void forcemip(cube &c, bool fixtex)
 {
-    cube *ch = c.children;
+    std::array<cube, 8> &ch = *c.children;
     setcubefaces(c, faceempty);
     for(int i = 0; i < 8; ++i)
     {
@@ -492,7 +508,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     }
     if(c.ext)
     {
-        std::memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
+        c.ext->surfaces.fill({0,0});
     }
     if(c.isempty() || c.issolid())
     {
@@ -501,16 +517,17 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
             {
-                c.children[i].texture[l] = c.texture[l];
+                (*c.children)[i].texture[l] = c.texture[l];
             }
             if(brighten && !(c.isempty()))
             {
-                brightencube(c.children[i]);
+                brightencube((*c.children)[i]);
             }
         }
         return true;
     }
-    cube *ch = c.children = newcubes(facesolid, c.material);
+    c.children = newcubes(facesolid, c.material);
+    std::array<cube, 8> &ch = *c.children;
     bool perfect = true;
     ivec v[8];
     for(int i = 0; i < 8; ++i)
@@ -567,7 +584,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         }
     }
 
-    validatec(ch);
+    validatec(c.children);
     if(fullcheck)
     {
         for(int i = 0; i < 8; ++i)
@@ -620,8 +637,8 @@ VAR(mipvis, 0, 0, 1);
 
 static bool remip(cube &c, const ivec &co, int size)
 {
-    cube *ch = c.children;
-    if(!ch)
+    std::array<cube, 8> *ch = nullptr;
+    if(!c.children)
     {
         if(size<<1 <= 0x1000)
         {
@@ -630,11 +647,15 @@ static bool remip(cube &c, const ivec &co, int size)
         subdividecube(c);
         ch = c.children;
     }
+    else
+    {
+        ch = c.children;
+    }
     bool perfect = true;
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
-        if(!remip(ch[i], o, size>>1))
+        if(!remip((*ch)[i], o, size>>1))
         {
             perfect = false;
         }
@@ -655,7 +676,7 @@ static bool remip(cube &c, const ivec &co, int size)
     ushort mat = Mat_Air;
     for(int i = 0; i < 8; ++i)
     {
-        mat = ch[i].material;
+        mat = (*ch)[i].material;
         if((mat&MatFlag_Clip) == Mat_NoClip || mat&Mat_Alpha)
         {
             if(i > 0)
@@ -664,19 +685,19 @@ static bool remip(cube &c, const ivec &co, int size)
             }
             while(++i < 8)
             {
-                if(ch[i].material != mat)
+                if((*ch)[i].material != mat)
                 {
                     return false;
                 }
             }
             break;
         }
-        else if(!(ch[i].issolid()))
+        else if(!((*ch)[i].issolid()))
         {
             while(++i < 8)
             {
-                int omat = ch[i].material;
-                if(ch[i].issolid() ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
+                int omat = (*ch)[i].material;
+                if((*ch)[i].issolid() ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
                 {
                     return false;
                 }
@@ -693,28 +714,28 @@ static bool remip(cube &c, const ivec &co, int size)
         freeocta(n.children);
         return false;
     }
-    cube *nh = n.children;
+    std::array<cube, 8> *nh = n.children;
     uchar vis[6] = {0, 0, 0, 0, 0, 0};
     for(int i = 0; i < 8; ++i)
     {
-        if(ch[i].faces[0] != nh[i].faces[0] ||
-           ch[i].faces[1] != nh[i].faces[1] ||
-           ch[i].faces[2] != nh[i].faces[2])
+        if((*ch)[i].faces[0] != (*nh)[i].faces[0] ||
+           (*ch)[i].faces[1] != (*nh)[i].faces[1] ||
+           (*ch)[i].faces[2] != (*nh)[i].faces[2])
         {
             freeocta(nh);
             return false;
         }
 
-        if(ch[i].isempty() && nh[i].isempty())
+        if((*ch)[i].isempty() && (*nh)[i].isempty())
         {
             continue;
         }
 
         ivec o(i, co, size);
         for(int orient = 0; orient < 6; ++orient)
-            if(visibleface(ch[i], orient, o, size, Mat_Air, (mat&Mat_Alpha)^Mat_Alpha, Mat_Alpha))
+            if(visibleface((*ch)[i], orient, o, size, Mat_Air, (mat&Mat_Alpha)^Mat_Alpha, Mat_Alpha))
             {
-                if(ch[i].texture[orient] != n.texture[orient])
+                if((*ch)[i].texture[orient] != n.texture[orient])
                 {
                     freeocta(nh);
                     return false;
@@ -768,22 +789,35 @@ void cubeworld::remip()
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, ivec(0, 0, 0), mapsize()>>1);
-        ::remip(worldroot[i], o, mapsize()>>2);
+        ::remip((*worldroot)[i], o, mapsize()>>2);
     }
-    worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
+    (*worldroot)[0].calcmerges(&(*worldroot)[0]); //created as result of calcmerges being cube member
 }
 
-const ivec cubecoords[8] = // verts of bounding cube
+const ivec cubecoords[8] =
 {
-//================================================================== GENCUBEVERT
-#define GENCUBEVERT(n, x, y, z) ivec(x, y, z),
-    GENCUBEVERTS(0, 8, 0, 8, 0, 8)
-#undef GENCUBEVERT
-//==============================================================================
+    ivec(8, 8, 0),
+    ivec(0, 8, 0),
+    ivec(0, 8, 8),
+    ivec(8, 8, 8),
+    ivec(8, 0, 8),
+    ivec(0, 0, 8),
+    ivec(0, 0, 0),
+    ivec(8, 0, 0)
 };
 
-template<class T>
-static void gencubevert(const cube &c, int i, T &v)
+//================================================================= GENCUBEVERTS
+#define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
+    GENCUBEVERT(0, x1, y1, z0) \
+    GENCUBEVERT(1, x0, y1, z0) \
+    GENCUBEVERT(2, x0, y1, z1) \
+    GENCUBEVERT(3, x1, y1, z1) \
+    GENCUBEVERT(4, x1, y0, z1) \
+    GENCUBEVERT(5, x0, y0, z1) \
+    GENCUBEVERT(6, x0, y0, z0) \
+    GENCUBEVERT(7, x1, y0, z0)
+
+static void gencubevert(const cube &c, int i, vec &v)
 {
     switch(i)
     {
@@ -791,9 +825,9 @@ static void gencubevert(const cube &c, int i, T &v)
 //================================================================== GENCUBEVERT
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
-            v = T(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
-                  EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
-                  EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
+            v = vec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                    EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                    EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
             break;
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
 #undef GENCUBEVERT
@@ -801,7 +835,7 @@ static void gencubevert(const cube &c, int i, T &v)
     }
 }
 
-void genfaceverts(const cube &c, int orient, ivec v[4])
+void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v)
 {
     switch(orient)
     {
@@ -818,6 +852,9 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
     #undef GENFACEVERT
     }
 }
+//==============================================================================
+
+#undef GENCUBEVERTS
 //==============================================================================
 
 bool flataxisface(const cube &c, int orient)
@@ -850,7 +887,7 @@ bool collideface(const cube &c, int orient)
     return true;
 }
 
-int faceconvexity(const ivec v[4])
+int faceconvexity(const std::array<ivec, 4> &v)
 {
     ivec n;
     n.cross(ivec(v[1]).sub(v[0]), ivec(v[2]).sub(v[0]));
@@ -886,7 +923,7 @@ int faceconvexity(const vertinfo *verts, int numverts, int size)
     return verts[3].getxyz().sub(v0).dot(n);
 }
 
-int faceconvexity(const ivec v[4], int &vis)
+int faceconvexity(const std::array<ivec, 4> &v, int &vis)
 {
     ivec e1, e2, e3, n;
     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
@@ -915,7 +952,7 @@ int faceconvexity(const cube &c, int orient)
     {
         return 0;
     }
-    ivec v[4];
+    std::array<ivec, 4> v;
     genfaceverts(c, orient, v);
     return faceconvexity(v);
 }
@@ -925,9 +962,9 @@ int faceorder(const cube &c, int orient) // gets above 'fv' so that each face is
     return faceconvexity(c, orient)<0 ? 1 : 0;
 }
 
-static void faceedges(const cube &c, int orient, uchar edges[4])
+static void faceedges(const cube &c, int orient, std::array<uchar, 4> &edges)
 {
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < edges.size(); ++k)
     {
         edges[k] = c.edges[faceedgesidx[orient][k]];
     }
@@ -937,7 +974,7 @@ uint faceedges(const cube &c, int orient)
 {
     union
     {
-        uchar edges[4];
+        std::array<uchar, 4> edges;
         uint face;
     } u;
     faceedges(c, orient, u.edges);
@@ -945,7 +982,7 @@ uint faceedges(const cube &c, int orient)
 }
 
 
-static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = nullptr)
+static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, std::array<ivec2, 4> &fvecs, const ivec *v = nullptr)
 {
     int i = 0;
     if(solid)
@@ -978,11 +1015,11 @@ static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bo
         }
         return 4;
     }
-    ivec buf[4];
+    std::array<ivec, 4> buf;
     if(!v)
     {
         genfaceverts(cu, orient, buf);
-        v = buf;
+        v = buf.data();
     }
     ivec2 prev(INT_MAX, INT_MAX);
     switch(orient)
@@ -1203,9 +1240,9 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
         {
             return false;
         }
-        ivec2 of[4];
+        std::array<ivec2, 4> of;
         int numo = genfacevecs(c, orient, o, size, false, of);
-        return numo >= 3 && insideface(cf, numc, of, numo);
+        return numo >= 3 && insideface(&cf[0], numc, &of[0], numo);
     }
     size >>= 1;
     int coord = DIM_COORD(orient);
@@ -1213,7 +1250,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
     {
         if(OCTA_COORD(dim, i) == coord)
         {
-            if(!occludesface(c.children[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv))
+            if(!occludesface((*c.children)[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv))
             {
                 return false;
             }
@@ -1245,7 +1282,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     ivec no;
     int nsize;
     const cube &o = ::rootworld.neighborcube(orient, co, size, no, nsize);
-    int opp = OPPOSITE(orient);
+    int opp = oppositeorient(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1273,16 +1310,17 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
         }
         ivec vo = ivec(co).mask(0xFFF);
         no.mask(0xFFF);
-        ivec2 cf[4], of[4];
+        std::array<ivec2, 4> cf,
+                             of;
         int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf),
             numo = genfacevecs(o, opp, no, nsize, false, of);
-        return numo < 3 || !insideface(cf, numc, of, numo);
+        return numo < 3 || !insideface(&cf[0], numc, &of[0], numo);
     }
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
-    ivec2 cf[4];
+    std::array<ivec2, 4> cf;
     int numc = genfacevecs(c, orient, vo, size, mat != Mat_Air, cf);
-    return !occludesface(o, opp, no, nsize, vo, size, mat, nmat, matmask, cf, numc);
+    return !occludesface(o, opp, no, nsize, vo, size, mat, nmat, matmask, cf.data(), numc);
 }
 
 int classifyface(const cube &c, int orient, const ivec &co, int size)
@@ -1333,7 +1371,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     {
         return 0;
     }
-    int opp = OPPOSITE(orient);
+    int opp = oppositeorient(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1368,7 +1406,8 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             {
                 ivec vo = ivec(co).mask(0xFFF);
                 no.mask(0xFFF);
-                ivec2 cf[4], of[4];
+                std::array<ivec2, 4> cf,
+                                     of;
                 int numo = genfacevecs(o, opp, no, nsize, false, of);
                 if(numo < 3)
                 {
@@ -1380,7 +1419,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask&2 && solid)
                     {
                         numc = genfacevecs(c, orient, vo, size, true, cf);
-                        if(!insideface(cf, numc, of, numo))
+                        if(!insideface(&cf[0], numc, &of[0], numo))
                         {
                             forcevis |= 2;
                         }
@@ -1389,7 +1428,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask)
                     {
                         numc = genfacevecs(c, orient, vo, size, false, cf);
-                        if(!insideface(cf, numc, of, numo))
+                        if(!insideface(&cf[0], numc, &of[0], numo))
                         {
                             forcevis |= vismask;
                         }
@@ -1402,12 +1441,12 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     {
         ivec vo = ivec(co).mask(0xFFF);
         no.mask(0xFFF);
-        ivec2 cf[4];
+        std::array<ivec2, 4> cf;
         int numc = 0;
         if(vismask&1)
         {
             numc = genfacevecs(c, orient, vo, size, false, cf);
-            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Air, (c.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha, cf, numc))
+            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Air, (c.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha, &cf[0], numc))
             {
                 forcevis |= 1;
             }
@@ -1418,7 +1457,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             {
                 numc = genfacevecs(c, orient, vo, size, solid, cf);
             }
-            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Clip, Mat_NoClip, MatFlag_Clip, cf, numc))
+            if(!occludesface(o, opp, no, nsize, vo, size, Mat_Clip, Mat_NoClip, MatFlag_Clip, &cf[0], numc))
             {
                 forcevis |= 2;
             }
@@ -1436,7 +1475,11 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
 {
     int vis = 3,
         touching = 0xF;
-    ivec v[4], e1, e2, e3, n;
+    std::array<ivec, 4> v;
+    ivec e1,
+         e2,
+         e3,
+         n;
     genfaceverts(c, orient, v);
     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
     int convex = (e3 = v[0]).sub(v[3]).dot(n);
@@ -1496,8 +1539,9 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     }
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
-    ivec2 cf[4], of[4];
-    int opp = OPPOSITE(orient),
+    std::array<ivec2, 4> cf,
+                         of;
+    int opp = oppositeorient(orient),
         numo = 0,
         numc;
     if(nsize > size || (nsize == size && !o.children))
@@ -1521,21 +1565,21 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         {
             return vis&notouch;
         }
-        numc = genfacevecs(c, orient, vo, size, false, cf, v);
+        numc = genfacevecs(c, orient, vo, size, false, cf, v.data());
         numo = genfacevecs(o, opp, no, nsize, false, of);
         if(numo < 3)
         {
             return vis;
         }
-        if(insideface(cf, numc, of, numo))
+        if(insideface(&cf[0], numc, &of[0], numo))
         {
             return vis&notouch;
         }
     }
     else
     {
-        numc = genfacevecs(c, orient, vo, size, false, cf, v);
-        if(occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, cf, numc))
+        numc = genfacevecs(c, orient, vo, size, false, cf, v.data());
+        if(occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, &cf[0], numc))
         {
             return vis&notouch;
         }
@@ -1563,7 +1607,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
             ivec2 tf[3] = { cf[verts[0]], cf[verts[1]], cf[verts[2]] };
             if(numo > 0)
             {
-                if(!insideface(tf, 3, of, numo))
+                if(!insideface(tf, 3, &of[0], numo))
                 {
                     continue;
                 }
@@ -1659,12 +1703,8 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
     else if(c.visible&0x80)
     {
-        ushort nmat = Mat_Alpha, matmask = Mat_Alpha;
-        if(noclip)
-        {
-            nmat = Mat_NoClip;
-            matmask = MatFlag_Clip;
-        }
+        const ushort nmat = noclip ? Mat_NoClip : Mat_Alpha,
+                     matmask = noclip ? static_cast<ushort>(MatFlag_Clip) : Mat_Alpha; //cast to avoid enum mismatch warning
         int vis;
         for(int i = 0; i < 6; ++i)
         {
@@ -1698,7 +1738,7 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
 }
 
-void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
+void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask) const
 {
     int dim = DIMENSION(orient);
     if(cu.children)
@@ -1709,7 +1749,7 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
         {
             if(OCTA_COORD(dim, i) == coord)
             {
-                mincubeface(cu.children[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
+                mincubeface((*cu.children)[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
             }
         }
         return;
@@ -1845,9 +1885,40 @@ void invalidatemerges(cube &c)
     {
         for(int i = 0; i < 8; ++i)
         {
-            invalidatemerges(c.children[i]);
+            invalidatemerges((*c.children)[i]);
         }
     }
+}
+
+uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
+{
+    uchar p = 0xFF; // bitmask of possible collisions with octants. 0 bit = 0 octant, etc
+    ivec mid = ivec(o).add(size);
+    if(mid.z <= bbmin.z)
+    {
+        p &= 0xF0; // not in a -ve Z octant
+    }
+    else if(mid.z >= bbmax.z)
+    {
+        p &= 0x0F; // not in a +ve Z octant
+    }
+    if(mid.y <= bbmin.y)
+    {
+        p &= 0xCC; // not in a -ve Y octant
+    }
+    else if(mid.y >= bbmax.y)
+    {
+        p &= 0x33; // etc..
+    }
+    if(mid.x <= bbmin.x)
+    {
+        p &= 0xAA;
+    }
+    else if(mid.x >= bbmax.x)
+    {
+        p &= 0x55;
+    }
+    return p;
 }
 
 void initoctaworldcmds()

@@ -53,7 +53,6 @@ CLIENT_OBJS= \
 	engine/interface/textedit.o \
 	engine/interface/ui.o \
 	engine/model/animmodel.o \
-	engine/model/hitzone.o \
 	engine/model/md5.o \
 	engine/model/obj.o \
 	engine/model/ragdoll.o \
@@ -86,6 +85,7 @@ CLIENT_OBJS= \
 	engine/render/shaderparam.o \
 	engine/render/stain.o \
 	engine/render/texture.o \
+	engine/render/vacollect.o \
 	engine/render/water.o \
 	engine/world/bih.o \
 	engine/world/dynlight.o \

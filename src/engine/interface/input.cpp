@@ -159,7 +159,7 @@ bool interceptkey(int sym)
     lastintercept = sym;
     if(sym != SDLK_UNKNOWN)
     {
-        for(uint i = len; i < events.size(); i++)
+        for(size_t i = len; i < events.size(); i++)
         {
             if(events[i].type == SDL_KEYDOWN && events[i].key.keysym.sym == sym)
             {
@@ -202,7 +202,7 @@ static void resetmousemotion()
  */
 static void checkmousemotion(int &dx, int &dy)
 {
-    for(uint i = 0; i < events.size(); i++)
+    for(size_t i = 0; i < events.size(); i++)
     {
         SDL_Event &event = events[i];
         if(event.type != SDL_MOUSEMOTION)
@@ -235,10 +235,12 @@ static void checkmousemotion(int &dx, int &dy)
 // map: which keymap to map the pressed key to
 void checkinput(int map)
 {
-    constexpr int minthreshhold = 5000; // minimum value to register inputs
-    constexpr int maxthreshhold = 27000; // maximum value to register inputs to triggers
-    constexpr int strafethreshhold = 16384; //value when to assign movement in strafe pad
-    constexpr int inverseindex = 16;
+    constexpr uint minthreshhold = 5000; // minimum value to register inputs
+    constexpr uint maxthreshhold = 27000; // maximum value to register inputs to triggers
+    constexpr uint strafethreshhold = 16384; //value when to assign movement in strafe pad
+    constexpr uint inverseindex = 16;
+
+    constexpr uint mousemovescale = 25000; //how much to divide mouse movement by from joystick input
     //carry over joystick states
     static vec2 lpad;
     static vec2 rpad;
@@ -411,8 +413,8 @@ void checkinput(int map)
             }
             case SDL_CONTROLLERAXISMOTION:
             {
-                int axis = event.caxis.axis;
-                int value = event.caxis.value;
+                uint axis = event.caxis.axis;
+                uint value = event.caxis.value;
                 switch(axis)
                 {
                     case 0: //left x axis
@@ -485,9 +487,9 @@ void checkinput(int map)
     { //scoping brakets
         static int oldmillis;
         int delta = lastmillis-oldmillis;
-        if(std::abs(rpad.x) > 5000 || std::abs(rpad.y) > 5000)
+        if(std::abs(rpad.x) > minthreshhold || std::abs(rpad.y) > minthreshhold)
         {
-            mousemove(delta*rpad.x/25000, delta*rpad.y/25000);
+            mousemove(delta*rpad.x/mousemovescale, delta*rpad.y/mousemovescale);
         }
         oldmillis = lastmillis;
     }

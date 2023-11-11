@@ -85,8 +85,6 @@ class particleemitter
         {
             center = vec(bbmin).add(bbmax).mul(0.5f);
             radius = bbmin.dist(bbmax)/2;
-            cullmin = ivec::floor(bbmin);
-            cullmax = ivec::ceil(bbmax);
             if(debugparticleseed)
             {
                 conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
@@ -110,7 +108,6 @@ class particleemitter
         }
     private:
         vec bbmin, bbmax;
-        ivec cullmin, cullmax;
 };
 
 static std::vector<particleemitter> emitters;
@@ -119,13 +116,6 @@ static particleemitter *seedemitter = nullptr;
 const char * getentname(int i)
 {
     return i>=0 && static_cast<size_t>(i) < entnames.size() ? entnames[i].c_str() : "";
-}
-
-char * entname(entity &e)
-{
-    static string fullentname;
-    copystring(fullentname, getentname(e.type));
-    return fullentname;
 }
 
 void clearparticleemitters()
@@ -271,8 +261,9 @@ class partrenderer
                         ts = p->fade;
                     }
                     float t = ts;
-                    o.add(vec(d).mul(t/5000.0f));
-                    o.z -= t*t/(2.0f * 5000.0f * p->gravity);
+                    constexpr float tfactor = 5000.f;
+                    o.add(vec(d).mul(t/tfactor));
+                    o.z -= t*t/(2.0f * tfactor * p->gravity);
                 }
                 if(type&PT_COLLIDE && o.z < p->val && step)
                 {
@@ -539,7 +530,7 @@ class meterrenderer : public listrenderer
             float scale  = FONTH*p.size/80.0f,
                   right  = 8,
                   left   = p.progress/100.0f*right;
-            matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
+            matrix4x3 m(camright(), camup().neg(), camdir().neg(), o);
             m.scale(scale);
             m.translate(-right/2.0f, 0, 0);
 
@@ -614,8 +605,8 @@ static void modifyblend(const vec &o, int &blend)
 template<int T>
 static void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
-    vec udir = vec(camup).sub(camright).mul(size),
-        vdir = vec(camup).add(camright).mul(size);
+    vec udir = camup().sub(camright()).mul(size),
+        vdir = camup().add(camright()).mul(size);
     vs[0].pos = vec(o.x + udir.x, o.y + udir.y, o.z + udir.z);
     vs[1].pos = vec(o.x + vdir.x, o.y + vdir.y, o.z + vdir.z);
     vs[2].pos = vec(o.x - udir.x, o.y - udir.y, o.z - udir.z);
@@ -673,25 +664,26 @@ template<>
 void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     const vec2 *coeffs = rotcoeffs[rot];
-    vs[0].pos = vec(o).madd(camright, coeffs[0].x*size).madd(camup, coeffs[0].y*size);
-    vs[1].pos = vec(o).madd(camright, coeffs[1].x*size).madd(camup, coeffs[1].y*size);
-    vs[2].pos = vec(o).madd(camright, coeffs[2].x*size).madd(camup, coeffs[2].y*size);
-    vs[3].pos = vec(o).madd(camright, coeffs[3].x*size).madd(camup, coeffs[3].y*size);
+    vs[0].pos = vec(o).madd(camright(), coeffs[0].x*size).madd(camup(), coeffs[0].y*size);
+    vs[1].pos = vec(o).madd(camright(), coeffs[1].x*size).madd(camup(), coeffs[1].y*size);
+    vs[2].pos = vec(o).madd(camright(), coeffs[2].x*size).madd(camup(), coeffs[2].y*size);
+    vs[3].pos = vec(o).madd(camright(), coeffs[3].x*size).madd(camup(), coeffs[3].y*size);
 }
 
 template<int T>
 void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
+    constexpr float scale = 5000.f;
     if(grav)
     {
         float t = fade;
-        vec end = vec(o).madd(d, t/5000.0f);
-        end.z -= t*t/(2.0f * 5000.0f * grav);
+        vec end = vec(o).madd(d, t/scale);
+        end.z -= t*t/(2.0f * scale * grav);
         pe.extendbb(end, size);
         float tpeak = d.z*grav;
         if(tpeak > 0 && tpeak < fade)
         {
-            pe.extendbb(o.z + 1.5f*d.z*tpeak/5000.0f, size);
+            pe.extendbb(o.z + 1.5f*d.z*tpeak/scale, size);
         }
     }
 }
@@ -859,48 +851,52 @@ struct varenderer : partrenderer
         if(regen)
         {
             p->flags &= ~0x80;
+
+            auto swaptexcoords = [&] (float u1, float u2, float v1, float v2)
+            {
+                if(p->flags&0x01)
+                {
+                    std::swap(u1, u2);
+                }
+                if(p->flags&0x02)
+                {
+                    std::swap(v1, v2);
+                }
+            };
+
             //sets the partvert vs array's tc fields to four permutations of input parameters
-            //===================================================== SETTEXCOORDS
-            #define SETTEXCOORDS(u1c, u2c, v1c, v2c, body) \
-            { \
-                float u1 = u1c, \
-                      u2 = u2c, \
-                      v1 = v1c, \
-                      v2 = v2c; \
-                body; \
-                vs[0].tc = vec2(u1, v1); \
-                vs[1].tc = vec2(u2, v1); \
-                vs[2].tc = vec2(u2, v2); \
-                vs[3].tc = vec2(u1, v2); \
-            }
+            auto settexcoords = [vs, swaptexcoords] (float u1c, float u2c, float v1c, float v2c, bool swap)
+            {
+                float u1 = u1c,
+                      u2 = u2c,
+                      v1 = v1c,
+                      v2 = v2c;
+                if(swap)
+                {
+                    swaptexcoords(u1, u2, v1, v2);
+                }
+                vs[0].tc = vec2(u1, v1);
+                vs[1].tc = vec2(u2, v1);
+                vs[2].tc = vec2(u2, v2);
+                vs[3].tc = vec2(u1, v2);
+            };
+
             if(parttype()&PT_RND4)
             {
                 float tx = 0.5f*((p->flags>>5)&1),
                       ty = 0.5f*((p->flags>>6)&1);
-                SETTEXCOORDS(tx, tx + 0.5f, ty, ty + 0.5f,
-                {
-                    if(p->flags&0x01)
-                    {
-                        std::swap(u1, u2);
-                    }
-                    if(p->flags&0x02)
-                    {
-                        std::swap(v1, v2);
-                    }
-                });
+                settexcoords(tx, tx + 0.5f, ty, ty + 0.5f, true);
             }
             else if(parttype()&PT_ICON)
             {
                 float tx = 0.25f*(p->flags&3),
                       ty = 0.25f*((p->flags>>2)&3);
-                SETTEXCOORDS(tx, tx + 0.25f, ty, ty + 0.25f, {});
+                settexcoords(tx, tx + 0.25f, ty, ty + 0.25f, false);
             }
             else
             {
-                SETTEXCOORDS(0, 1, 0, 1, {});
+                settexcoords(0, 1, 0, 1, false);
             }
-            #undef SETTEXCOORDS
-            //==================================================================
 
             if(parttype()&PT_MOD)
             {
@@ -1060,8 +1056,8 @@ class fireballrenderer : public listrenderer
             bool inside = dist <= psize*wobble;
             if(inside)
             {
-                s = camright;
-                t = camup;
+                s = camright();
+                t = camup();
             }
             else
             {
@@ -1267,9 +1263,9 @@ static partrenderer *parts[] =
 };
 
 //helper function to return int with # of entries in *parts[]
-static constexpr int numpartparts()
+static constexpr size_t numparts()
 {
-    return static_cast<int>(sizeof(parts)/sizeof(parts[0]));
+    return sizeof(parts)/sizeof(parts[0]);
 }
 
 void initparticles(); //need to prototype either the vars or the the function
@@ -1299,13 +1295,13 @@ void initparticles()
     {
         particletextshader = lookupshaderbyname("particletext");
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->init(parts[i]->parttype()&PT_FEW ? std::min(fewparticles, maxparticles) : maxparticles);
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
-        loadprogress = static_cast<float>(i+1)/numpartparts();
+        loadprogress = static_cast<float>(i+1)/numparts();
         parts[i]->preload();
     }
     loadprogress = 0;
@@ -1313,7 +1309,7 @@ void initparticles()
 
 void clearparticles()
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->reset();
     }
@@ -1322,7 +1318,7 @@ void clearparticles()
 
 void cleanupparticles()
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->cleanup();
     }
@@ -1330,7 +1326,7 @@ void cleanupparticles()
 
 void removetrackedparticles(physent *owner)
 {
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->resettracked(owner);
     }
@@ -1345,7 +1341,7 @@ void GBuffer::renderparticles(int layer) const
     //want to debug BEFORE the lastpass render (that would delete particles)
     if(debugparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
-        for(int i = 0; i < numpartparts(); ++i)
+        for(size_t i = 0; i < numparts(); ++i)
         {
             parts[i]->debuginfo();
         }
@@ -1356,7 +1352,7 @@ void GBuffer::renderparticles(int layer) const
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
          excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         partrenderer *p = parts[i];
         if((p->parttype()&PT_NOLAYER) == excludemask || !p->haswork())
@@ -1904,7 +1900,7 @@ void cubeworld::updateparticles()
     {
         canemit = false;
     }
-    for(int i = 0; i < numpartparts(); ++i)
+    for(size_t i = 0; i < numparts(); ++i)
     {
         parts[i]->update();
     }

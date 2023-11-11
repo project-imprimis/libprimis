@@ -28,9 +28,14 @@ class hmap
 
         void hmapselect()
         {
-            int t = rootworld.lookupcube(cur).texture[orient],
+            const cube &c = rootworld.lookupcube(cur);
+            if(!c.texture)
+            {
+                return;
+            }
+            int t = c.texture[orient],
                 i = std::distance(textures.begin(), std::find(textures.begin(), textures.end(), t));
-            if(i<0)
+            if(i == std::distance(textures.begin(), textures.end()))
             {
                 textures.push_back(t);
             }
@@ -40,7 +45,7 @@ class hmap
             }
         }
 
-        bool isheightmap(int o, bool empty, const cube &c)
+        bool isheightmap(int o, bool empty, const cube &c) const
         {
             return havesel ||
                 (empty && c.isempty()) ||
@@ -50,26 +55,30 @@ class hmap
 
         void clearhbrush()
         {
-            std::memset(brush, 0, sizeof brush);
+            for(auto &i : brush)
+            {
+                i.fill(0);
+            }
             brushmaxx = brushmaxy = 0;
             brushminx = brushminy = maxbrush;
             paintbrush = false;
         }
 
-        void hbrushvert(int *x, int *y, const int * const v)
+        void hbrushvert(const int *x, const int *y, const int * const v)
         {
-            *x += maxbrush2 - brushx + 1; // +1 for automatic padding
-            *y += maxbrush2 - brushy + 1;
-            if(*x<0 || *y<0 || *x>=maxbrush || *y>=maxbrush)
+            int x1, y1;
+            x1 = *x + maxbrush/2 - brushx + 1; // +1 for automatic padding
+            y1 = *y + maxbrush/2 - brushy + 1;
+            if(x1<0 || y1<0 || x1>=maxbrush || y1>=maxbrush)
             {
                 return;
             }
-            brush[*x][*y] = std::clamp(*v, 0, 8);
-            paintbrush = paintbrush || (brush[*x][*y] > 0);
-            brushmaxx = std::min(maxbrush-1, std::max(brushmaxx, *x+1));
-            brushmaxy = std::min(maxbrush-1, std::max(brushmaxy, *y+1));
-            brushminx = std::max(0,          std::min(brushminx, *x-1));
-            brushminy = std::max(0,          std::min(brushminy, *y-1));
+            brush[x1][y1] = std::clamp(*v, 0, 8);
+            paintbrush = paintbrush || (brush[x1][y1] > 0);
+            brushmaxx = std::min(maxbrush-1, std::max(brushmaxx, x1+1));
+            brushmaxy = std::min(maxbrush-1, std::max(brushmaxy, y1+1));
+            brushminx = std::max(0,          std::min(brushminx, x1-1));
+            brushminy = std::max(0,          std::min(brushminy, y1-1));
         }
 
         void run(int dir, int mode)
@@ -80,12 +89,11 @@ class hmap
             dr = dir>0 ? 1 : -1;
          //   biasup = mode == dir<0;
             biasup = dir < 0;
-            bool paintme = paintbrush;
             int cx = (sel.corner&1 ? 0 : -1),
                 cy = (sel.corner&2 ? 0 : -1);
             hws= (rootworld.mapsize()>>gridpower);
-            gx = (cur[R[d]] >> gridpower) + cx - maxbrush2;
-            gy = (cur[C[d]] >> gridpower) + cy - maxbrush2;
+            gx = (cur[R[d]] >> gridpower) + cx - maxbrush/2;
+            gy = (cur[C[d]] >> gridpower) + cy - maxbrush/2;
             gz = (cur[D[d]] >> gridpower);
             fs = dc ? 4 : 0;
             fg = dc ? gridsize : -gridsize;
@@ -100,6 +108,7 @@ class hmap
                 bnx = nx = std::min(nx, (sel.s[R[d]]+(sel.o[R[d]]>>gridpower))-gx-1);
                 bny = ny = std::min(ny, (sel.s[C[d]]+(sel.o[C[d]]>>gridpower))-gy-1);
             }
+            bool paintme = paintbrush;
             if(havesel && mode<0) // -ve means smooth selection
             {
                 paintme = false;
@@ -124,8 +133,8 @@ class hmap
             std::memset(flags, 0, sizeof flags);
 
             selecting = true;
-            select(std::clamp(maxbrush2-cx, bmx, bnx),
-                   std::clamp(maxbrush2-cy, bmy, bny),
+            select(std::clamp(maxbrush/2-cx, bmx, bnx),
+                   std::clamp(maxbrush/2-cy, bmy, bny),
                    dc ? gz : hws - gz);
             selecting = false;
             if(paintme)
@@ -144,12 +153,11 @@ class hmap
         std::vector<int> textures;
         //max brush consts: number of cubes on end that can be heightmap brushed at once
         static constexpr int maxbrush  = 64,
-                             maxbrushc = 63,
-                             maxbrush2 = 32;
+                             maxbrushc = 63;
 
-        int brush[maxbrush][maxbrush]; //2d array of heights for heightmap brushs
-        int brushx = variable("hbrushx", 0, maxbrush2, maxbrush, &brushx, nullptr, 0); //max width for a brush
-        int brushy = variable("hbrushy", 0, maxbrush2, maxbrush, &brushy, nullptr, 0); //max length for a brush
+        std::array<std::array<int, maxbrush>, maxbrush> brush;//2d array of heights for heightmap brushs
+        int brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &brushx, nullptr, 0); //max width for a brush
+        int brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &brushy, nullptr, 0); //max length for a brush
         bool paintbrush = 0;
         int brushmaxx = 0,
             brushminx = maxbrush,
@@ -210,12 +218,12 @@ class hmap
             return c;
         }
 
-        uint getface(cube *c, int d)
+        uint getface(const cube *c, int d) const
         {
             return  0x0f0f0f0f & ((dc ? c->faces[d] : 0x88888888 - c->faces[d]) >> fs);
         }
 
-        void pushside(cube &c, int d, int x, int y, int z)
+        void pushside(cube &c, int d, int x, int y, int z) const
         {
             ivec a;
             getcubevector(c, d, x, y, z, a);
@@ -405,7 +413,7 @@ class hmap
 
             #undef PULL_HEIGHTMAP
 
-            cube **c  = cmap[x][y];
+            cube * const * const c  = cmap[x][y];
             int e[2][2],
                 notempty = 0;
 
@@ -549,7 +557,7 @@ void clearhbrush()
     heightmapper.clearhbrush();
 }
 
-void hbrushvert(int *x, int *y, const int *v)
+void hbrushvert(const int *x, const int *y, const int *v)
 {
     heightmapper.hbrushvert(x, y, v);
 }

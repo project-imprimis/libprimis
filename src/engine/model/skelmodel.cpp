@@ -13,8 +13,9 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
+#include <optional>
+#include <memory>
 
 #include "interface/console.h"
 #include "interface/control.h"
@@ -51,16 +52,16 @@ skelmodel::blendcombo::blendcombo() : uses(1)
 
 bool skelmodel::blendcombo::operator==(const blendcombo &c) const
 {
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < bonedata.size(); ++k)
     {
-        if(bones[k] != c.bones[k])
+        if(bonedata[k].bones != c.bonedata[k].bones)
         {
             return false;
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(size_t k = 0; k < bonedata.size(); ++k)
     {
-        if(weights[k] != c.weights[k])
+        if(bonedata[k].weights != c.bonedata[k].weights)
         {
             return false;
         }
@@ -97,21 +98,21 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
 const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep) const
 {
     int len = sep ? std::strlen(name) : 0;
-    for(uint i = 0; i < skelanims.size(); i++)
+    for(const skelanimspec &i : skelanims)
     {
-        if(!skelanims[i].name.empty())
+        if(!i.name.empty())
         {
             if(sep)
             {
-                const char *end = std::strchr(skelanims[i].name.c_str(), ':');
-                if(end && end - skelanims[i].name.c_str() == len && !std::memcmp(name, skelanims[i].name.c_str(), len))
+                const char *end = std::strchr(i.name.c_str(), ':');
+                if(end && end - i.name.c_str() == len && !std::memcmp(name, i.name.c_str(), len))
                 {
-                    return &skelanims[i];
+                    return &i;
                 }
             }
-            if(!std::strcmp(name, skelanims[i].name.c_str()))
+            if(!std::strcmp(name, i.name.c_str()))
             {
-                return &skelanims[i];
+                return &i;
             }
         }
     }
@@ -127,11 +128,12 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     return skelanims.back();
 }
 
-std::optional<int> skelmodel::skeleton::findbone(const char *name) const
+
+std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
 {
     for(int i = 0; i < numbones; ++i)
     {
-        if(bones[i].name && !std::strcmp(bones[i].name, name))
+        if(bones[i].name && !std::strcmp(bones[i].name, name.c_str()))
         {
             return std::optional(i);
         }
@@ -232,32 +234,31 @@ void skelmodel::skeleton::remapbones()
         info.ragdollindex = -1;
     }
     numgpubones = 0;
-    for(uint i = 0; i < users.size(); i++)
+    //for each blendcombo in each skelmeshgroup
+    for(skelmeshgroup *&group : users)
     {
-        skelmeshgroup *group = users[i];
-        for(uint j = 0; j < group->blendcombos.size(); j++) //loop j
+        for(blendcombo &c : group->blendcombos)
         {
-            blendcombo &c = group->blendcombos[j];
-            for(int k = 0; k < 4; ++k) //loop k
+            for(size_t k = 0; k < c.bonedata.size(); ++k) //loop k
             {
-                if(!c.weights[k])
+                if(!c.bonedata[k].weights)
                 {
-                    c.interpbones[k] = k > 0 ? c.interpbones[k-1] : 0;
+                    c.bonedata[k].interpbones = k > 0 ? c.bonedata[k-1].interpbones : 0;
                     continue;
                 }
-                boneinfo &info = bones[c.bones[k]];
+                boneinfo &info = bones[c.bonedata[k].bones];
                 if(info.interpindex < 0)
                 {
                     info.interpindex = numgpubones++;
                 }
-                c.interpbones[k] = info.interpindex;
+                c.bonedata[k].interpbones = info.interpindex;
                 if(info.group < 0)
                 {
                     continue;
                 }
-                for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
+                for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
                 {
-                    if(!c.weights[l])
+                    if(!c.bonedata[l].weights)
                     {
                         break;
                     }
@@ -265,7 +266,7 @@ void skelmodel::skeleton::remapbones()
                     {
                         continue;
                     }
-                    int parent = c.bones[l];
+                    int parent = c.bonedata[l].bones;
                     if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
                     {
                         info.group = -info.parent;
@@ -275,23 +276,23 @@ void skelmodel::skeleton::remapbones()
                     {
                         continue;
                     }
-                    int child = c.bones[k];
+                    int child = c.bonedata[k].bones;
                     while(parent > child)
                     {
                         parent = bones[parent].parent;
                     }
                     if(parent != child)
                     {
-                        info.group = c.bones[l];
+                        info.group = c.bonedata[l].bones;
                     }
                 }
             }
         }
     }
     numinterpbones = numgpubones;
-    for(uint i = 0; i < tags.size(); i++)
+    for(const tag &i : tags)
     {
-        boneinfo &info = bones[tags[i].bone];
+        boneinfo &info = bones[i.bone];
         if(info.interpindex < 0)
         {
             info.interpindex = numinterpbones++;
@@ -479,7 +480,7 @@ void skelmodel::skeleton::optimize()
     initpitchdeps();
 }
 
-void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val)
+void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val) const
 {
     expansion[bone] = val;
     bone = bones[bone].children;
@@ -490,7 +491,7 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val)
     }
 }
 
-void skelmodel::skeleton::applybonemask(ushort *mask, uchar *partmask, int partindex)
+void skelmodel::skeleton::applybonemask(const uint *mask, uchar *partmask, int partindex) const
 {
     if(!mask || *mask==Bonemask_End)
     {
@@ -541,7 +542,7 @@ bool skelmodel::skeleton::gpuaccelerate() const
     return numframes && gpuskel && numgpubones<=availgpubones();
 }
 
-float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2)
+float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const
 {
     vec forward1 = pose1.transformnormal(forward).project(axis).normalize(),
         forward2 = pose2.transformnormal(forward).project(axis).normalize(),
@@ -612,7 +613,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
 }
 
 //private helper function for interpbones
-dualquat skelmodel::skeleton::interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask )
+dualquat skelmodel::skeleton::interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask)
 {
     const AnimState &s = as[partmask[bone]];
     const framedata &f = partframes[partmask[bone]];
@@ -634,7 +635,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
         sc.bdata = new dualquat[numinterpbones];
     }
     sc.nextversion();
-    framedata partframes[maxanimparts];
+    std::array<framedata, maxanimparts> partframes;
     for(int i = 0; i < numanimparts; ++i)
     {
         partframes[i].fr1 = &framebones[as[i].cur.fr1*numbones];
@@ -645,9 +646,8 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             partframes[i].pfr2 = &framebones[as[i].prev.fr2*numbones];
         }
     }
-    for(uint i = 0; i < pitchdeps.size(); i++)
+    for(pitchdep &p : pitchdeps)
     {
-        pitchdep &p = pitchdeps[i];
         dualquat d = interpbone(p.bone, partframes, as, partmask);
         d.normalize();
         if(p.parent >= 0)
@@ -699,18 +699,17 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             sc.bdata[b.interpindex].mulorient(quat(axis, angle/RAD), b.base);
         }
     }
-    for(uint i = 0; i < antipodes.size(); i++)
+    for(const antipode &i : antipodes)
     {
-        sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+        sc.bdata[i.child].fixantipodal(sc.bdata[i.parent]);
     }
 }
 
 void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p)
 {
     const dualquat *bdata = sc.bdata;
-    for(uint i = 0; i < ragdoll->joints.size(); i++)
+    for(const ragdollskel::joint &j : ragdoll->joints)
     {
-        const ragdollskel::joint &j = ragdoll->joints[i];
         const boneinfo &b = bones[j.bone];
         const dualquat &q = bdata[b.interpindex];
         for(int k = 0; k < 3; ++k)
@@ -736,7 +735,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     for(uint i = 0; i < ragdoll->verts.size(); i++)
     {
         ragdolldata::vert &dv = d.verts[i];
-        matrixstack[matrixpos].transform(vec(dv.pos).mul(p->model->scale), dv.pos);
+        matrixstack.top().transform(vec(dv.pos).mul(p->model->scale), dv.pos);
     }
     for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {
@@ -785,7 +784,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
     }
 }
 
-void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
+void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const
 {
     matrix4x3 t;
     t.mul(bones[tags[i].bone].base, tags[i].matrix);
@@ -794,7 +793,7 @@ void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x
 
 void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc)
 {
-    for(linkedpart &l : p->links)
+    for(part::linkedpart &l : p->links)
     {
         tag &t = tags[l.tag];
         dualquat q;
@@ -852,7 +851,7 @@ void skelmodel::skeleton::preload()
     }
 }
 
-skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
+const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
     if(skelcache.empty())
     {
@@ -914,13 +913,14 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * cons
 
 int skelmodel::skeleton::getblendoffset(const UniformLoc &u)
 {
-    int &offset = blendoffsets.access(Shader::lastshader->program, -1);
-    if(offset < 0)
+    auto itr = blendoffsets.find(Shader::lastshader->program);
+    if(itr == blendoffsets.end())
     {
+        itr = blendoffsets.insert( { Shader::lastshader->program, -1 } ).first;
         DEF_FORMAT_STRING(offsetname, "%s[%d]", u.name, 2*numgpubones);
-        offset = glGetUniformLocation(Shader::lastshader->program, offsetname);
+        (*itr).second = glGetUniformLocation(Shader::lastshader->program, offsetname);
     }
-    return offset;
+    return (*itr).second;
 }
 
 void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count)
@@ -942,7 +942,7 @@ void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, 
     u.data = bc.bdata;
 }
 
-void skelmodel::skeleton::setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count)
+void skelmodel::skeleton::setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count)
 {
     if(!Shader::lastshader)
     {
@@ -994,7 +994,6 @@ skelmodel::skelmeshgroup::~skelmeshgroup()
         }
     }
     delete[] vdata;
-    deletehitdata();
 }
 
 void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
@@ -1008,7 +1007,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    std::vector<ushort> idxs;
+    std::vector<GLuint> idxs;
 
     vlen = 0;
     vblends = 0;
@@ -1017,7 +1016,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         vweights = 1;
         for(blendcombo &c : blendcombos)
         {
-            c.interpindex = c.weights[1] ? skel->numgpubones + vblends++ : -1;
+            c.interpindex = c.bonedata[1].weights ? skel->numgpubones + vblends++ : -1;
         }
 
         vertsize = sizeof(vvert);
@@ -1041,7 +1040,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             }
             for(blendcombo &c : blendcombos)
             {
-                c.interpindex = c.size() > vweights ? skel->numgpubones + vblends++ : -1;
+                c.interpindex = static_cast<int>(c.size()) > vweights ? skel->numgpubones + vblends++ : -1;
             }
         }
         else
@@ -1102,7 +1101,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(GLuint), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 
@@ -1133,7 +1132,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         return;
     }
 
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
+    const skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
@@ -1192,10 +1191,10 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
 
 //blendcombo
 
-int skelmodel::blendcombo::size() const
+size_t skelmodel::blendcombo::size() const
 {
-    int i = 1;
-    while(i < 4 && weights[i])
+    size_t i = 1;
+    while(i < bonedata.size() && bonedata[i].weights)
     {
         i++;
     }
@@ -1204,16 +1203,16 @@ int skelmodel::blendcombo::size() const
 
 bool skelmodel::blendcombo::sortcmp(const blendcombo &x, const blendcombo &y)
 {
-    for(int i = 0; i < 4; ++i)
+    for(size_t i = 0; i < x.bonedata.size(); ++i)
     {
-        if(x.weights[i])
+        if(x.bonedata[i].weights)
         {
-            if(!y.weights[i])
+            if(!y.bonedata[i].weights)
             {
                 return true;
             }
         }
-        else if(y.weights[i])
+        else if(y.bonedata[i].weights)
         {
             return false;
         }
@@ -1233,15 +1232,15 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     }
     for(int k = 0; k < sorted; ++k)
     {
-        if(weight > weights[k])
+        if(weight > bonedata[k].weights)
         {
             for(int l = std::min(sorted-1, 2); l >= k; l--)
             {
-                weights[l+1] = weights[l];
-                bones[l+1] = bones[l];
+                bonedata[l+1].weights = bonedata[l].weights;
+                bonedata[l+1].bones = bonedata[l].bones;
             }
-            weights[k] = weight;
-            bones[k] = bone;
+            bonedata[k].weights = weight;
+            bonedata[k].bones = bone;
             return sorted<4 ? sorted+1 : sorted;
         }
     }
@@ -1249,17 +1248,18 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     {
         return sorted;
     }
-    weights[sorted] = weight;
-    bones[sorted] = bone;
+    bonedata[sorted].weights = weight;
+    bonedata[sorted].bones = bone;
     return sorted+1;
 }
 
+//sorted cannot be greater than 4 (size of bonedata array)
 void skelmodel::blendcombo::finalize(int sorted)
 {
-    for(int j = 0; j < 4-sorted; ++j)
+    for(size_t j = 0; j < bonedata.size()-sorted; ++j)
     {
-        weights[sorted+j] = 0;
-        bones[sorted+j] = 0;
+        bonedata[sorted+j].weights = 0;
+        bonedata[sorted+j].bones = 0;
     }
     if(sorted <= 0)
     {
@@ -1268,16 +1268,16 @@ void skelmodel::blendcombo::finalize(int sorted)
     float total = 0;
     for(int j = 0; j < sorted; ++j)
     {
-        total += weights[j];
+        total += bonedata[j].weights;
     }
     total = 1.0f/total;
     for(int j = 0; j < sorted; ++j)
     {
-        weights[j] *= total;
+        bonedata[j].weights *= total;
     }
 }
 
-void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v)
+void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
 {
     if(interpindex >= 0)
     {
@@ -1295,9 +1295,9 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v)
     else
     {
         int total = 0;
-        for(int k = 0; k < 4; ++k)
+        for(size_t k = 0; k < bonedata.size(); ++k)
         {
-            total += (v.weights[k] = static_cast<uchar>(0.5f + weights[k]*255));
+            total += (v.weights[k] = static_cast<uchar>(0.5f + bonedata[k].weights*255));
         }
         while(total > 255)
         {
@@ -1321,9 +1321,9 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v)
                 }
             }
         }
-        for(int k = 0; k < 4; ++k)
+        for(size_t k = 0; k < bonedata.size(); ++k)
         {
-            v.bones[k] = 2*interpbones[k];
+            v.bones[k] = 2*bonedata[k].interpbones;
         }
     }
 }
@@ -1373,7 +1373,7 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 {
-    maxweights = std::max(maxweights, c.size());
+    maxweights = std::max(maxweights, static_cast<int>(c.size()));
     return (reinterpret_cast<skelmeshgroup *>(group))->addblendcombo(c);
 }
 
@@ -1404,12 +1404,9 @@ void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
 
 void skelmodel::skelmesh::genBIH(BIH::mesh &m)
 {
-    m.tris = reinterpret_cast<const BIH::tri *>(tris);
-    m.numtris = numtris;
-    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
-    m.posstride = sizeof(vert);
-    m.tc = reinterpret_cast<const uchar *>(&verts->tc);
-    m.tcstride = sizeof(vert);
+    m.setmesh(reinterpret_cast<const BIH::mesh::tri *>(tris), numtris,
+              reinterpret_cast<const uchar *>(&verts->pos), sizeof(vert),
+              reinterpret_cast<const uchar *>(&verts->tc), sizeof(vert));
 }
 
 void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
@@ -1424,14 +1421,14 @@ void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void skelmodel::skelmesh::assignvert(vvertg &vv, int j, vert &v, blendcombo &c)
+void skelmodel::skelmesh::assignvert(vvertg &vv, int j, const vert &v, blendcombo &)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
     vv.tangent = v.tangent;
 }
 
-void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
+void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, const vert &v, blendcombo &c)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
@@ -1439,7 +1436,7 @@ void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
     c.serialize(vv);
 }
 
-int skelmodel::skelmesh::genvbo(std::vector<ushort> &idxs, int offset)
+int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset)
 {
     for(int i = 0; i < numverts; ++i)
     {
@@ -1485,7 +1482,7 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     {
         return;
     }
-    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
+    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
 }
@@ -1509,7 +1506,7 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
     else
     {
         skel = new skeleton;
-        skel->name = newstring(name);
+        skel->name = std::string(name);
         skeletons[std::string(name)] = skel;
     }
     skel->users.push_back(this);
@@ -1531,7 +1528,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return std::max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc, blendcacheentry *bc)
 {
     if(!skel->numframes)
     {
@@ -1590,20 +1587,20 @@ void skelmodel::skelmeshgroup::sortblendcombos()
 int skelmodel::skelmeshgroup::remapblend(int blend)
 {
     const blendcombo &c = blendcombos[blend];
-    return c.weights[1] ? c.interpindex : c.interpbones[0];
+    return c.bonedata[1].weights ? c.interpindex : c.bonedata[0].interpbones;
 }
 
 void skelmodel::skelmeshgroup::blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c)
 {
-    d = bdata[c.interpbones[0]];
-    d.mul(c.weights[0]);
-    d.accumulate(bdata[c.interpbones[1]], c.weights[1]);
-    if(c.weights[2])
+    d = bdata[c.bonedata[0].interpbones];
+    d.mul(c.bonedata[0].weights);
+    d.accumulate(bdata[c.bonedata[1].interpbones], c.bonedata[1].weights);
+    if(c.bonedata[2].weights)
     {
-        d.accumulate(bdata[c.interpbones[2]], c.weights[2]);
-        if(c.weights[3])
+        d.accumulate(bdata[c.bonedata[2].interpbones], c.bonedata[2].weights);
+        if(c.bonedata[3].weights)
         {
-            d.accumulate(bdata[c.interpbones[3]], c.weights[3]);
+            d.accumulate(bdata[c.bonedata[3].interpbones], c.bonedata[3].weights);
         }
     }
 }
@@ -1670,22 +1667,6 @@ void skelmodel::skelmeshgroup::cleanup()
     {
         skel->cleanup(false);
     }
-    cleanuphitdata();
-}
-
-void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
-{
-    if(!hitdata)
-    {
-        return;
-    }
-    if(skel->shouldcleanup())
-    {
-        skel->cleanup();
-    }
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
-    intersect(hitdata, p, sc, o, ray);
-    skel->calctags(p, &sc);
 }
 
 void skelmodel::skelmeshgroup::preload()
@@ -1718,14 +1699,14 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, const char *skeln
 }
 animmodel::meshgroup * skelmodel::sharemeshes(const char *name, const char *skelname, float smooth)
 {
-    if(!meshgroups.access(name))
+    if(meshgroups.find(name) == meshgroups.end())
     {
         meshgroup *group = loadmeshes(name, skelname, smooth);
         if(!group)
         {
             return nullptr;
         }
-        meshgroups.add(group);
+        meshgroups[group->name] = group;
     }
     return meshgroups[name];
 }
@@ -1763,7 +1744,7 @@ void skelmodel::skelpart::initanimparts()
     buildingpartmask = newpartmask();
 }
 
-bool skelmodel::skelpart::addanimpart(ushort *bonemask)
+bool skelmodel::skelpart::addanimpart(const uint *bonemask)
 {
     if(!buildingpartmask || numanimparts>=maxanimparts)
     {

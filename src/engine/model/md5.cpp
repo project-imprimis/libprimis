@@ -12,8 +12,10 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
+
+#include <optional>
+#include <memory>
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
@@ -45,6 +47,11 @@ const char *md5::formatname()
     return "md5";
 }
 
+bool md5::flipy() const
+{
+    return false;
+}
+
 int md5::type() const
 {
     return MDL_MD5;
@@ -58,22 +65,24 @@ md5::skelmeshgroup *md5::newmeshes()
 bool md5::loaddefaultparts()
 {
     skelpart &mdl = addpart();
-    const char *fname = name + std::strlen(name);
+    const char *fname = modelname().c_str() + std::strlen(modelname().c_str());
     do
     {
         --fname;
-    } while(fname >= name && *fname!='/' && *fname!='\\');
+    } while(fname >= modelname() && *fname!='/' && *fname!='\\');
     fname++;
-    DEF_FORMAT_STRING(meshname, "media/model/%s/%s.md5mesh", name, fname);
-    mdl.meshes = sharemeshes(path(meshname));
+    std::string meshname = "media/model/";
+    meshname.append(modelname()).append("/").append(fname).append(".md5mesh");
+    mdl.meshes = sharemeshes(path(meshname).c_str());
     if(!mdl.meshes)
     {
         return false;
     }
     mdl.initanimparts();
     mdl.initskins();
-    DEF_FORMAT_STRING(animname, "media/model/%s/%s.md5anim", name, fname);
-    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
+    std::string animname = "media/model/";
+    animname.append(modelname()).append("/").append(fname).append(".md5anim");
+    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname).c_str());
     return true;
 }
 
@@ -85,10 +94,12 @@ md5::md5meshgroup::md5meshgroup()
 //main anim loading functionality
 const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
 {
-    const skelanimspec *sa = skel->findskelanim(filename);
-    if(sa)
     {
-        return sa;
+        const skelanimspec *sa = skel->findskelanim(filename);
+        if(sa)
+        {
+            return sa;
+        }
     }
     stream *f = openfile(filename, "r");
     if(!f)
@@ -217,7 +228,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             dualquat *frame = &animbones[tmp*skel->numbones];
             for(uint i = 0; i < basejoints.size(); i++)
             {
-                md5hierarchy &h = hierarchy[i];
+                const md5hierarchy &h = hierarchy[i];
                 md5joint j = basejoints[i];
                 if(h.start < animdatalen && h.flags)
                 {
@@ -254,7 +265,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 {
                     adjustments[i].adjust(dq);
                 }
-                boneinfo &b = skel->bones[i];
+                const boneinfo &b = skel->bones[i];
                 dq.mul(b.invbase);
                 dualquat &dst = frame[i];
                 if(h.parent < 0)
@@ -435,7 +446,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
 
 bool md5::md5meshgroup::load(const char *meshfile, float smooth)
 {
-    name = newstring(meshfile);
+    name = meshfile;
 
     if(!loadmesh(meshfile, smooth))
     {
@@ -461,16 +472,16 @@ void md5::md5mesh::cleanup()
     weightinfo = nullptr;
 }
 
-void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
+void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 {
     for(int i = 0; i < numverts; ++i)
     {
         md5vert &v = vertinfo[i];
         vec pos(0, 0, 0);
-        for(int k = 0; k < v.count; ++k)
+        for(ushort k = 0; k < v.count; ++k)
         {
-            md5weight &w = weightinfo[v.start+k];
-            md5joint &j = joints[w.joint];
+            const md5weight &w = weightinfo[v.start+k];
+            const md5joint &j = joints[w.joint];
             vec wpos = j.orient.rotate(w.pos);
             wpos.add(j.pos);
             wpos.mul(w.bias);
@@ -482,9 +493,9 @@ void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
 
         blendcombo c;
         int sorted = 0;
-        for(int j = 0; j < v.count; ++j)
+        for(ushort j = 0; j < v.count; ++j)
         {
-            md5weight &w = weightinfo[v.start+j];
+            const md5weight &w = weightinfo[v.start+j];
             sorted = c.addweight(sorted, w.bias, w.joint);
         }
         c.finalize(sorted);
@@ -559,7 +570,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             }
         }
         //assign md5verts to vertinfo array
-        else if(std::sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
+        else if(std::sscanf(buf, " vert %d ( %f %f ) %u %u", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
         {
             if(index>=0 && index<numverts)
             {
@@ -567,7 +578,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             }
         }
         // assign tris to tri array
-        else if(std::sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
+        else if(std::sscanf(buf, " tri %d %u %u %u", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
         {
             if(index>=0 && index<numtris)
             {

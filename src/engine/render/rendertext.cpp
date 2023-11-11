@@ -18,7 +18,6 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
 #include "rendergl.h"
 #include "rendertext.h"
@@ -27,7 +26,7 @@
 
 #include "interface/control.h"
 
-static hashnameset<font> fonts;
+static std::unordered_map<std::string, font> fonts;
 static font *fontdef = nullptr;
 static int fontdeftex = 0;
 
@@ -36,11 +35,9 @@ font *curfont = nullptr;
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 {
-    font *f = &fonts[name];
-    if(!f->name)
-    {
-        f->name = newstring(name);
-    }
+    auto insert = fonts.insert( {name, font()} ).first;
+    font *f = &((*insert).second);
+    f->name = std::string(name);
     f->texs.clear();
     f->texs.push_back(textureload(tex));
     f->chars.clear();
@@ -183,45 +180,14 @@ static void fontskip(int *n)
     }
 }
 
-/* fontalias
- * copies an entry in the fontdef vector to another one
- * copies the entry at *src to *dst
- */
-static void fontalias(const char *dst, const char *src)
-{
-    font *s = fonts.access(src);
-    if(!s)
-    {
-        return;
-    }
-    font *d = &fonts[dst];
-    if(!d->name)
-    {
-        d->name = newstring(dst);
-    }
-    d->texs = s->texs;
-    d->chars = s->chars;
-    d->charoffset = s->charoffset;
-    d->defaultw = s->defaultw;
-    d->defaulth = s->defaulth;
-    d->scale = s->scale;
-    d->bordermin = s->bordermin;
-    d->bordermax = s->bordermax;
-    d->outlinemin = s->outlinemin;
-    d->outlinemax = s->outlinemax;
-
-    fontdef = d;
-    fontdeftex = d->texs.size()-1;
-}
-
 bool setfont(const char *name)
 {
-    font *f = fonts.access(name);
-    if(!f)
+    auto itr = fonts.find(name);
+    if(itr == fonts.end())
     {
         return false;
     }
-    curfont = f;
+    curfont = &(*itr).second;
     return true;
 }
 
@@ -267,15 +233,9 @@ float text_widthf(const char *str)
     return width;
 }
 
-//returns the size of a tab character, which is hardcoded to 4 spaces
-static int fonttab()
-{
-    return 4*fontwidth();
-}
-
 static int texttab(float x)
 {
-    return (static_cast<int>((x)/fonttab())+1.0f)*fonttab();
+    return (static_cast<int>((x)/(4*fontwidth()))+1.0f)*(4*fontwidth());
 }
 
 float textscale = 1;
@@ -474,7 +434,8 @@ void text_boundsf(const char *str, float &width, float &height, int maxwidth)
 
 void reloadfonts()
 {
-    ENUMERATE(fonts, font, f,
+    for(auto &[k, f] : fonts)
+    {
         for(uint i = 0; i < f.texs.size(); i++)
         {
             if(!f.texs[i]->reload())
@@ -482,12 +443,11 @@ void reloadfonts()
                 fatal("failed to reload font texture");
             }
         }
-    );
+    }
 }
 
 void initrendertextcmds()
 {
-    addcommand("fontalias", reinterpret_cast<identfun>(fontalias), "ss", Id_Command);
     addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
     addcommand("fontborder", reinterpret_cast<identfun>(fontborder), "ff", Id_Command);
     addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);

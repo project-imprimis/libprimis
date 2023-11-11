@@ -97,7 +97,6 @@
     <ClInclude Include="..\engine\interface\textedit.h" />
     <ClInclude Include="..\engine\interface\ui.h" />
     <ClInclude Include="..\engine\model\animmodel.h" />
-    <ClInclude Include="..\engine\model\hitzone.h" />
     <ClInclude Include="..\engine\model\md5.h" />
     <ClInclude Include="..\engine\model\model.h" />
     <ClInclude Include="..\engine\model\obj.h" />
@@ -126,6 +125,7 @@
     <ClInclude Include="..\engine\render\shaderparam.h" />
     <ClInclude Include="..\engine\render\stain.h" />
     <ClInclude Include="..\engine\render\texture.h" />
+    <ClInclude Include="..\engine\render\vacollect.h" />
     <ClInclude Include="..\engine\render\water.h" />
     <ClInclude Include="..\engine\world\bih.h" />
     <ClInclude Include="..\engine\world\dynlight.h" />
@@ -158,7 +158,6 @@
     <ClCompile Include="..\engine\interface\textedit.cpp" />
     <ClCompile Include="..\engine\interface\ui.cpp" />
     <ClCompile Include="..\engine\model\animmodel.cpp" />
-    <ClCompile Include="..\engine\model\hitzone.cpp" />
     <ClCompile Include="..\engine\model\md5.cpp" />
     <ClCompile Include="..\engine\model\obj.cpp" />
     <ClCompile Include="..\engine\model\ragdoll.cpp" />
@@ -191,6 +190,7 @@
     <ClCompile Include="..\engine\render\shaderparam.cpp" />
     <ClCompile Include="..\engine\render\stain.cpp" />
     <ClCompile Include="..\engine\render\texture.cpp" />
+    <ClCompile Include="..\engine\render\vacollect.cpp" />
     <ClCompile Include="..\engine\render\water.cpp" />
     <ClCompile Include="..\engine\world\bih.cpp" />
     <ClCompile Include="..\engine\world\dynlight.cpp" />

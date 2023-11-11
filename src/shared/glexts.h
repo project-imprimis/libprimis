@@ -19,17 +19,11 @@ typedef llong GLint64EXT;
 typedef ullong GLuint64EXT;
 typedef void (APIENTRYP PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pname, GLuint64EXT *params);
 #endif
-extern PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_;
-
-// GL_EXT_framebuffer_blit
-extern PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_;
 
 // GL_EXT_framebuffer_multisample
 extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glRenderbufferStorageMultisample_;
 
 extern PFNGLTEXIMAGE2DMULTISAMPLEPROC glTexImage2DMultisample_;
-extern PFNGLTEXIMAGE3DMULTISAMPLEPROC glTexImage3DMultisample_;
-extern PFNGLSAMPLEMASKIPROC           glSampleMaski_;
 
 #ifndef GL_EXT_framebuffer_multisample_blit_scaled
 #define GL_EXT_framebuffer_multisample_blit_scaled 1
@@ -92,17 +86,10 @@ extern PFNGLDEPTHBOUNDSEXTPROC glDepthBounds_;
 #define GL_MAP_UNSYNCHRONIZED_BIT         0x0020
 typedef GLvoid* (APIENTRYP PFNGLMAPBUFFERRANGEPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 #endif
-extern PFNGLMAPBUFFERRANGEPROC         glMapBufferRange_;
 
 #ifndef GL_INVALID_INDEX
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
-
-// GL_EXT_draw_buffers2
-extern PFNGLCOLORMASKIPROC glColorMaski_;
-
-// GL_ARB_color_buffer_float
-extern PFNGLCLAMPCOLORPROC glClampColor_;
 
 #ifndef GL_EXT_texture_integer
 #define GL_EXT_texture_integer 1
@@ -114,17 +101,6 @@ typedef void (APIENTRYP PFNGLCLEARCOLORIUIEXTPROC) (GLuint red, GLuint green, GL
 #define GL_ARB_half_float_vertex 1
 #define GL_HALF_FLOAT                     0x140B
 #endif
-
-
-#ifndef GL_ARB_vertex_array_object
-#define GL_ARB_vertex_array_object 1
-#define GL_VERTEX_ARRAY_BINDING           0x85B5
-typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
-typedef void (APIENTRYP PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint *arrays);
-typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
-#endif
-extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays_;
-extern PFNGLGENVERTEXARRAYSPROC    glGenVertexArrays_;
 
 #ifndef GL_ARB_texture_swizzle
 #define GL_ARB_texture_swizzle 1

@@ -3,7 +3,6 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
 
 #include "SDL_image.h"
@@ -323,31 +322,8 @@ static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum targ
     }
     w = std::min(w, sizelimit);
     h = std::min(h, sizelimit);
-    if(target!=GL_TEXTURE_RECTANGLE && (w&(w-1) || h&(h-1)))
-    {
-        tw = th = 1;
-        while(tw < w)
-        {
-            tw *= 2;
-        }
-        while(th < h)
-        {
-            th *= 2;
-        }
-        if(w < tw - tw/4)
-        {
-            tw /= 2;
-        }
-        if(h < th - th/4)
-        {
-            th /= 2;
-        }
-    }
-    else
-    {
-        tw = w;
-        th = h;
-    }
+    tw = w;
+    th = h;
 }
 
 static int texalign(int w, int bpp)
@@ -774,8 +750,7 @@ void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clam
     glTexImage3D(target, 0, component, w, h, d, 0, format, type, pixels);
 }
 
-
-hashnameset<Texture> textures;
+std::unordered_map<std::string, Texture> textures;
 
 Texture *notexture = nullptr; // used as default, ensured to be loaded
 
@@ -850,7 +825,8 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(!t)
     {
         char *key = newstring(rname);
-        t = &textures[key];
+        auto itr = textures.insert_or_assign(key, Texture()).first;
+        t = &(*itr).second;
         t->name = key;
     }
 
@@ -1065,18 +1041,17 @@ float Texture::ratio() const
 
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
 {
-    string tname;
-    copystring(tname, name);
-    Texture *t = textures.access(path(tname));
-    if(t)
+    std::string tname(name);
+    auto itr = textures.find(path(tname));
+    if(itr != textures.end())
     {
-        return t;
+        return &(*itr).second;
     }
     int compress = 0;
     ImageData s;
-    if(s.texturedata(tname, msg, &compress, &clamp))
+    if(s.texturedata(tname.c_str(), msg, &compress, &clamp))
     {
-        return newtexture(nullptr, tname, s, clamp, mipit, false, false, compress);
+        return newtexture(nullptr, tname.c_str(), s, clamp, mipit, false, false, compress);
     }
     return notexture;
 }
@@ -1228,17 +1203,18 @@ void compactvslot(VSlot &vs)
     }
 }
 
-void compactvslots(cube *c, int n)
+//n will be capped at 8
+void compactvslots(cube * const c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
         renderprogress(std::min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
-    for(int i = 0; i < n; ++i)
+    for(int i = 0; i < std::min(n, 8); ++i)
     {
         if(c[i].children)
         {
-            compactvslots(c[i].children);
+            compactvslots(c[i].children->data());
         }
         else
         {
@@ -1263,6 +1239,11 @@ void compactvslots(cube *c, int n)
 
 int cubeworld::compactvslots(bool cull)
 {
+    if(!worldroot)
+    {
+        conoutf(Console_Error, "no cube to compact");
+        return 0;
+    }
     defslot = nullptr;
     clonedvslots = 0;
     markingvslots = cull;
@@ -1282,39 +1263,37 @@ int cubeworld::compactvslots(bool cull)
     }
     else
     {
-        for(uint i = 0; i < slots.size(); i++)
+        for(const Slot *i : slots)
         {
-            slots[i]->variants->index = compactedvslots++;
+            i->variants->index = compactedvslots++;
         }
-        for(uint i = 0; i < vslots.size(); i++)
+        for(const VSlot *i : vslots)
         {
-            VSlot &vs = *vslots[i];
-            if(!vs.changed && vs.index < 0)
+            if(!i->changed && i->index < 0)
             {
                 markingvslots = true;
                 break;
             }
         }
     }
-    ::compactvslots(worldroot);
+    ::compactvslots(worldroot->data());
     int total = compactedvslots;
     compacteditvslots();
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot *i : vslots)
     {
-        VSlot *vs = vslots[i];
-        if(vs->changed)
+        if(i->changed)
         {
             continue;
         }
-        while(vs->next)
+        while(i->next)
         {
-            if(vs->next->index < 0)
+            if(i->next->index < 0)
             {
-                vs->next = vs->next->next;
+                i->next = i->next->next;
             }
             else
             {
-                vs = vs->next;
+                i = i->next;
             }
         }
     }
@@ -1347,7 +1326,7 @@ int cubeworld::compactvslots(bool cull)
                 vs.index = compactedvslots++;
             }
         }
-        ::compactvslots(worldroot);
+        ::compactvslots(worldroot->data());
         total = compactedvslots;
         compacteditvslots();
     }
@@ -1476,7 +1455,7 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
     }
 }
 
-static void propagatevslot(VSlot *root, int changed)
+static void propagatevslot(const VSlot *root, int changed)
 {
     for(VSlot *vs = root->next; vs; vs = vs->next)
     {
@@ -1867,14 +1846,14 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
     return clonevslot(src, delta);
 }
 
-static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
+static void fixinsidefaces(std::array<cube, 8> &c, const ivec &o, int size, int tex)
 {
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
         if(c[i].children)
         {
-            fixinsidefaces(c[i].children, co, size>>1, tex);
+            fixinsidefaces(*(c[i].children), co, size>>1, tex);
         }
         else
         {
@@ -2217,11 +2196,13 @@ void Slot::load(int index, Slot::Tex &t)
         }
     }
     key.push_back('\0');
-    t.t = textures.access(key.data());
-    if(t.t)
+    auto itr = textures.find(key.data());
+    if(itr != textures.end())
     {
+        t.t = &(*itr).second;
         return;
     }
+    t.t = nullptr;
     int compress = 0,
         wrap = 0;
     ImageData ts;
@@ -2384,18 +2365,18 @@ DecalSlot &lookupdecalslot(int index, bool load)
 
 void linkslotshaders()
 {
-    for(uint i = 0; i < slots.size(); i++)
+    for(Slot * const &i : slots)
     {
-        if(slots[i]->loaded)
+        if(i->loaded)
         {
-            linkslotshader(*slots[i]);
+            linkslotshader(*i);
         }
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot * const &i : vslots)
     {
-        if(vslots[i]->linked)
+        if(i->linked)
         {
-            linkvslotshader(*vslots[i]);
+            linkvslotshader(*i);
         }
     }
     for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
@@ -2406,12 +2387,12 @@ void linkslotshaders()
             linkvslotshader(materialslots[i]);
         }
     }
-    for(uint i = 0; i < decalslots.size(); i++)
+    for(DecalSlot * const &i : decalslots)
     {
-        if(decalslots[i]->loaded)
+        if(i->loaded)
         {
-            linkslotshader(*decalslots[i]);
-            linkvslotshader(*decalslots[i]);
+            linkslotshader(*i);
+            linkvslotshader(*i);
         }
     }
 }
@@ -2478,13 +2459,16 @@ Texture *Slot::loadthumbnail()
         }
     }
     name.push_back('\0');
-    Texture *t = textures.access(path(name.data()));
-    if(t)
+    auto itr = textures.find(path(name.data()));
+    if(itr != textures.end())
     {
-        thumbnail = t;
+        thumbnail = &(*itr).second;
+        return &(*itr).second;
     }
     else
     {
+        auto insert = textures.insert( { std::string(name.data()), Texture() } ).first;
+        Texture *t = &(*insert).second;
         ImageData s, g, l, d;
         s.texturedata(*this, sts[0], false);
         if(glow >= 0)
@@ -2540,54 +2524,53 @@ Texture *Slot::loadthumbnail()
             t->ys = ys;
             thumbnail = t;
         }
+        return t;
     }
-    return t;
 }
 
 // environment mapped reflections
 
-void Texture::cleanup()
-{
-    delete[] alphamask;
-    alphamask = nullptr;
-    if(id)
-    {
-        glDeleteTextures(1, &id);
-        id = 0;
-    }
-    if(type&Texture::TRANSIENT)
-    {
-        textures.remove(name);
-    }
-}
-
 void cleanuptextures()
 {
-    for(uint i = 0; i < slots.size(); i++)
+    for(Slot * const &i : slots)
     {
-        slots[i]->cleanup();
+        i->cleanup();
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(VSlot * const &i : vslots)
     {
-        vslots[i]->cleanup();
+        i->cleanup();
     }
     for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].cleanup();
     }
-    for(uint i = 0; i < decalslots.size(); i++)
+    for(DecalSlot * const &i : decalslots)
     {
-        decalslots[i]->cleanup();
+        i->cleanup();
     }
-    ENUMERATE(textures, Texture, tex, tex.cleanup());
+    for(auto itr = textures.begin(); itr != textures.end(); ++itr)
+    {
+        Texture &t = (*itr).second;
+        delete[] t.alphamask;
+        t.alphamask = nullptr;
+        if(t.id)
+        {
+            glDeleteTextures(1, &t.id);
+            t.id = 0;
+        }
+        if(t.type&Texture::TRANSIENT)
+        {
+            itr = textures.erase(itr);
+        }
+    }
 }
 
 bool reloadtexture(const char *name)
 {
-    Texture *t = textures.access(copypath(name));
-    if(t)
+    auto itr = textures.find(path(std::string(name)));
+    if(itr != textures.end())
     {
-        return t->reload();
+        return (*itr).second.reload();
     }
     return true;
 }
@@ -2616,12 +2599,13 @@ bool Texture::reload()
 
 void reloadtex(char *name)
 {
-    Texture *t = textures.access(copypath(name));
-    if(!t)
+    auto itr = textures.find(path(std::string(name)));
+    if(itr == textures.end())
     {
         conoutf(Console_Error, "texture %s is not loaded", name);
         return;
     }
+    Texture *t = &(*itr).second;
     if(t->type&Texture::TRANSIENT)
     {
         conoutf(Console_Error, "can't reload transient texture %s", name);
@@ -2645,15 +2629,15 @@ void reloadtex(char *name)
 void reloadtextures()
 {
     int reloaded = 0;
-    ENUMERATE(textures, Texture, tex,
+    for(auto &[k, t] : textures)
     {
-        loadprogress = static_cast<float>(++reloaded)/textures.numelems;
-        tex.reload();
-    });
+        loadprogress = static_cast<float>(++reloaded)/textures.size();
+        t.reload();
+    }
     loadprogress = 0;
 }
 
-static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len = 0)
+static void writepngchunk(stream *f, const char *type, const uchar *data = nullptr, uint len = 0)
 {
     f->putbig<uint>(len);
     f->write(type, 4);
@@ -2670,7 +2654,7 @@ static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, ui
 
 VARP(compresspng, 0, 9, 9);
 
-static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, stream* f, uint& crc)
+static void flushzip(z_stream &z, uchar *buf, const uint &buflen, uint &len, stream *f, uint &crc)
 {
     int flush = buflen- z.avail_out;
     crc = crc32(crc, buf, flush);
@@ -2682,6 +2666,11 @@ static void flushzip(z_stream& z, uchar* buf, const uint& buflen, uint& len, str
 
 static void savepng(const char *filename, const ImageData &image, bool flip)
 {
+    if(!image.h || !image.w)
+    {
+        conoutf(Console_Error, "cannot save 0-size png");
+        return;
+    }
     uchar ctype = 0;
     switch(image.bpp)
     {

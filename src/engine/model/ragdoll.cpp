@@ -10,6 +10,9 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 
+#include <memory>
+#include <optional>
+
 #include "interface/console.h"
 #include "interface/control.h"
 
@@ -196,7 +199,7 @@ void ragdolldata::calctris()
 {
     for(uint i = 0; i < skel->tris.size(); i++)
     {
-        ragdollskel::tri &t = skel->tris[i];
+        const ragdollskel::tri &t = skel->tris[i];
         matrix3 &m = tris[i];
         const vec &v1 = verts[t.vert[0]].pos,
                   &v2 = verts[t.vert[1]].pos,
@@ -243,13 +246,12 @@ void ragdolldata::init(const dynent *d)
 
 void ragdolldata::constraindist()
 {
-    float invscale = 1.0f/scale;
     for(const ragdollskel::distlimit &d : skel->distlimits)
     {
         vert &v1 = verts[d.vert[0]],
              &v2 = verts[d.vert[1]];
         vec dir = vec(v2.pos).sub(v1.pos);
-        float dist = dir.magnitude()*invscale,
+        float dist = dir.magnitude()/scale,
               cdist;
         if(dist < d.mindist)
         {
@@ -269,7 +271,7 @@ void ragdolldata::constraindist()
         }
         else
         {
-            dir = vec(0, 0, cdist*0.5f/invscale);
+            dir = vec(0, 0, cdist*0.5f*scale);
         }
         vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
         v1.newpos.add(vec(center).sub(dir));
@@ -279,7 +281,7 @@ void ragdolldata::constraindist()
     }
 }
 
-void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis)
+void ragdolldata::applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis)
 {
     vert &v1a = verts[t1.vert[0]],
          &v1b = verts[t1.vert[1]],
@@ -493,7 +495,8 @@ void ragdolldata::move(dynent *pl, float ts)
         dpos.z -= 100*ts*ts;
         if(water)
         {
-            dpos.z += 0.25f*std::sin(detrnd(size_t(this)+i, 360)/RAD + lastmillis/10000.0f*M_PI)*ts;
+            //reinterpret cast pointer -> "random" seed value
+            dpos.z += 0.25f*std::sin(detrnd(reinterpret_cast<size_t>(this)+i, 360)/RAD + lastmillis/10000.0f*M_PI)*ts;
         }
         dpos.mul(std::pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
@@ -558,6 +561,7 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
     return collide(&v, dir, 0, false);
 }
 
+//used in iengine
 void moveragdoll(dynent *d)
 {
     static FVAR(ragdolleyesmooth, 0, 0.5f, 1);

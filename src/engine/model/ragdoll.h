@@ -109,7 +109,7 @@ class ragdolldata
         void calcboundsphere();
         void constrain();
         void constraindist();
-        void applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis);
+        void applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis);
         void constrainrot();
         void calcrotfriction();
         void applyrotfriction(float ts);
@@ -119,6 +119,5 @@ class ragdolldata
 };
 
 extern void cleanragdoll(dynent *d);
-extern void moveragdoll(dynent *d);
 
 #endif

@@ -18,7 +18,7 @@ extern float blursigma;
 extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
 const int maxblurradius = 7;
 
-extern int getlocalparam(const char *name);
+extern size_t getlocalparam(const std::string &name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 

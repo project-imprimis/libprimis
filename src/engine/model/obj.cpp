@@ -8,8 +8,10 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/stream.h"
+
+#include <optional>
+#include <memory>
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
@@ -56,6 +58,11 @@ int obj::type() const
     return MDL_OBJ;
 }
 
+bool obj::skeletal() const
+{
+    return false;
+}
+
 bool obj::objmeshgroup::load(const char *filename, float smooth)
 {
     int len = std::strlen(filename);
@@ -68,11 +75,11 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     {
         return false;
     }
-    name = newstring(filename);
+    name = filename;
     numframes = 1;
     std::vector<vec> attrib[3];
     char buf[512];
-    hashtable<ivec, int> verthash(1<<11);
+    std::unordered_map<ivec, int> verthash;
     std::vector<vert> verts;
     std::vector<tcvert> tcverts;
     std::vector<tri> tris;
@@ -110,7 +117,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
             }
             case 'g':
             {
-                while(isalpha(*c))
+                while(std::isalpha(*c))
                 {
                     c++;
                 }
@@ -149,7 +156,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 }
                 int v0 = -1,
                     v1 = -1;
-                while(isalpha(*c))
+                while(std::isalpha(*c))
                 {
                     c++;
                 }
@@ -185,8 +192,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         }
                         c++;
                     }
-                    int *index = verthash.access(vkey);
-                    if(!index)
+                    auto itr = verthash.find(vkey);
+                    int *index;
+                    if(itr == verthash.end())
                     {
                         index = &verthash[vkey];
                         *index = verts.size();
@@ -200,6 +208,10 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         tcvert &tcv = tcverts.back();
                         tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
                     }
+                    else
+                    {
+                        index = &(*itr).second;
+                    }
                     if(v0 < 0)
                     {
                         v0 = *index;
@@ -212,9 +224,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     {
                         tris.emplace_back();
                         tri &t = tris.back();
-                        t.vert[0] = static_cast<ushort>(*index);
-                        t.vert[1] = static_cast<ushort>(v1);
-                        t.vert[2] = static_cast<ushort>(v0);
+                        t.vert[0] = static_cast<uint>(*index);
+                        t.vert[1] = static_cast<uint>(v1);
+                        t.vert[2] = static_cast<uint>(v0);
                         v1 = *index;
                     }
                 }
@@ -234,7 +246,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
 {
     out.emplace_back(vec(0, 0, 0));
     vec &v = out.back();
-    while(isalpha(*s))
+    while(std::isalpha(*s))
     {
         s++;
     }
@@ -252,8 +264,13 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, std::vector<vert> verts, std::vector<tcvert> tcverts,
-                                   std::vector<tri> tris, std::vector<vec> attrib, float smooth)
+void obj::objmeshgroup::flushmesh(const string meshname,
+                                  vertmesh *curmesh,
+                                  const std::vector<vert> &verts,
+                                  const std::vector<tcvert> &tcverts,
+                                  const std::vector<tri> &tris,
+                                  const std::vector<vec> &attrib,
+                                  float smooth)
 {
     curmesh->numverts = verts.size();
     if(verts.size())
@@ -283,12 +300,12 @@ void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, std::vecto
 bool obj::loaddefaultparts()
 {
     part &mdl = addpart();
-    const char *pname = parentdir(name);
-    DEF_FORMAT_STRING(name1, "media/model/%s/tris.obj", name);
+    std::string pname = parentdir(modelname().c_str());
+    DEF_FORMAT_STRING(name1, "media/model/%s/tris.obj", modelname().c_str());
     mdl.meshes = sharemeshes(path(name1));
     if(!mdl.meshes)
     {
-        DEF_FORMAT_STRING(name2, "media/model/%s/tris.obj", pname);    // try obj in parent folder (vert sharing)
+        DEF_FORMAT_STRING(name2, "media/model/%s/tris.obj", pname.c_str());    // try obj in parent folder (vert sharing)
         mdl.meshes = sharemeshes(path(name2));
         if(!mdl.meshes)
         {
@@ -296,7 +313,7 @@ bool obj::loaddefaultparts()
         }
     }
     Texture *tex, *masks;
-    loadskin(name, pname, tex, masks);
+    loadskin(modelname().c_str(), pname.c_str(), tex, masks);
     mdl.initskins(tex, masks);
     if(tex==notexture)
     {

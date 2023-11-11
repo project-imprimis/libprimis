@@ -2,13 +2,21 @@
 #define RENDERGL_H_
 
 extern int xtraverts, xtravertsva;
-extern int renderw, renderh;
-extern vec worldpos, camdir, camright, camup;
+extern int renderw();
+extern int renderh();
+extern vec worldpos;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
 extern int glversion, glslversion;
 extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
+
+extern int hudw();
+extern int hudh();
+
+extern vec camdir();
+extern vec camright();
+extern vec camup();
 
 enum
 {
@@ -20,13 +28,12 @@ enum
 extern float forceaspect;
 extern float nearplane;
 extern int farplane;
-extern float ldrscale, ldrscaleb;
 extern int drawtex;
 extern const matrix4 viewmatrix;
 
 inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
 
-extern matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix;
+extern matrix4 cammatrix, projmatrix, camprojmatrix;
 extern int wireframe;
 extern int usetexgather;
 
@@ -85,7 +92,7 @@ class ModelPreview
         physent *oldcamera;
         physent camera;
 
-        float oldaspect, oldfovy, oldfov, oldldrscale, oldldrscaleb;
+        float oldaspect, oldfovy, oldfov, oldldrscale;
         int oldfarplane, oldvieww, oldviewh;
         matrix4 oldprojmatrix;
 

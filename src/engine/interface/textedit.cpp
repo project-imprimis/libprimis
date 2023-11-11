@@ -235,9 +235,9 @@ void Editor::clear(const char *init)
 {
     cx = cy = 0;
     mark(false);
-    for(uint i = 0; i < lines.size(); i++)
+    for(EditLine &i : lines)
     {
-        lines[i].clear();
+        i.clear();
     }
     lines.clear();
     if(init)
@@ -697,7 +697,7 @@ void Editor::key(int code)
             if(linewrap)
             {
                 int x, y;
-                char *str = currentline().text;
+                const char *str = currentline().text;
                 text_pos(str, cx+1, x, y, pixelwidth);
                 if(y > 0)
                 {
@@ -713,7 +713,7 @@ void Editor::key(int code)
             if(linewrap)
             {
                 int x, y, width, height;
-                char *str = currentline().text;
+                const char *str = currentline().text;
                 text_pos(str, cx, x, y, pixelwidth);
                 text_bounds(str, width, height, pixelwidth);
                 y += FONTH;
@@ -1011,11 +1011,11 @@ void flusheditors()
     }
 }
 
-Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
+Editor *useeditor(std::string name, int mode, bool focus, const char *initval)
 {
     for(uint i = 0; i < editors.size(); i++)
     {
-        if(!std::strcmp(editors[i]->name, name))
+        if(editors[i]->name == name)
         {
             Editor *e = editors[i];
             if(focus)
@@ -1041,7 +1041,11 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 
 void textlist()
 {
-    std::vector<char> s;
+    if(!textfocus)
+    {
+        return;
+    }
+    std::string s;
     for(uint i = 0; i < editors.size(); i++)
     {
         if(i > 0)
@@ -1049,16 +1053,12 @@ void textlist()
             s.push_back(',');
             s.push_back(' ');
         }
-        for(size_t j = 0; j < std::strlen(editors[i]->name); ++j)
-        {
-            s.push_back(editors[i]->name[j]);
-        }
+        s.append(editors[i]->name);
     }
-    s.push_back('\0');
-    result(s.data());
+    result(s.c_str());
 }
 
-void textfocuscmd(char *name, int *mode)
+void textfocuscmd(const char *name, const int *mode)
 {
     if(identflags&Idf_Overridden)
     {
@@ -1070,12 +1070,16 @@ void textfocuscmd(char *name, int *mode)
     }
     else if(editors.size() > 0)
     {
-        result(editors.back()->name);
+        result(editors.back()->name.c_str());
     }
 }
 
-void textsave(char *file)
+void textsave(const char *file)
 {
+    if(!textfocus)
+    {
+        return;
+    }
     if(*file)
     {
         textfocus->setfile(copypath(file));
@@ -1084,8 +1088,12 @@ void textsave(char *file)
 }
 
 
-void textload(char *file)
+void textload(const char *file)
 {
+    if(!textfocus)
+    {
+        return;
+    }
     if(*file)
     {
         textfocus->setfile(copypath(file));
@@ -1098,18 +1106,18 @@ void textload(char *file)
 }
 
 
-void textinit(char *name, char *file, char *initval)
+void textinit(std::string name, char *file, char *initval)
 {
     if(identflags&Idf_Overridden)
     {
         return;
     }
     Editor *e = nullptr;
-    for(uint i = 0; i < editors.size(); i++)
+    for(Editor *i : editors)
     {
-        if(!std::strcmp(editors[i]->name, name))
+        if(i->name == name)
         {
-            e = editors[i];
+            e = i;
             break;
         }
     }
@@ -1120,7 +1128,7 @@ void textinit(char *name, char *file, char *initval)
     }
 }
 
-static const char * pastebuffer = "#pastebuffer";
+const std::string pastebuffer = "#pastebuffer";
 
 void inittextcmds()
 {

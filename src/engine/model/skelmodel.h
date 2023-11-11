@@ -51,32 +51,38 @@ struct skelmodel : animmodel
 
     struct tri
     {
-        ushort vert[3];
+        uint vert[3];
     };
 
     class blendcombo
     {
         public:
             int uses, interpindex;
-            float weights[4];
-            uchar bones[4], interpbones[4];
+
+            struct BoneData
+            {
+                float weights;
+                uchar bones;
+                uchar interpbones;
+            };
+            std::array<BoneData, 4> bonedata;
 
             blendcombo();
 
             bool operator==(const blendcombo &c) const;
 
-            int size() const;
+            size_t size() const;
             static bool sortcmp(const blendcombo &x, const blendcombo &y);
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 
-            void serialize(skelmodel::vvertgw &v);
+            void serialize(skelmodel::vvertgw &v) const;
     };
 
 
     struct animcacheentry
     {
-        AnimState as[maxanimparts];
+        std::array<AnimState, maxanimparts> as;
         float pitch;
         int millis;
         uchar *partmask;
@@ -125,7 +131,7 @@ struct skelmodel : animmodel
         int numverts, numtris, maxweights;
 
         int voffset, eoffset, elen;
-        ushort minvert, maxvert;
+        GLuint minvert, maxvert;
 
         skelmesh() : verts(nullptr), tris(nullptr), numverts(0), numtris(0), maxweights(0)
         {
@@ -144,11 +150,11 @@ struct skelmodel : animmodel
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
         void genBIH(BIH::mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
-        static void assignvert(vvertg &vv, int j, vert &v, blendcombo &c);
-        static void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c);
+        static void assignvert(vvertg &vv, int j, const vert &v, blendcombo &);
+        static void assignvert(vvertgw &vv, int j, const vert &v, blendcombo &c);
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts)
+        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<T> &vverts)
         {
             voffset = offset;
             eoffset = idxs.size();
@@ -172,7 +178,7 @@ struct skelmodel : animmodel
         }
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
             eoffset = idxs.size();
@@ -186,31 +192,32 @@ struct skelmodel : animmodel
                     vert &v = verts[index];
                     T vv;
                     assignvert(vv, index, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
-                    int htidx = hthash(v.pos)&(htlen-1);
+                    auto hashfn = std::hash<vec>();
+                    int htidx = hashfn(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)
                     {
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.emplace_back(static_cast<ushort>(vverts.size()));
+                            vidx = idxs.emplace_back(static_cast<GLuint>(vverts.size()));
                             vverts.push_back(vv);
                             break;
                         }
-                        else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                        else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = std::min(minvert, idxs.emplace_back(static_cast<ushort>(vidx)));
+                            minvert = std::min(minvert, idxs.emplace_back(static_cast<GLuint>(vidx)));
                             break;
                         }
                     }
                 }
             }
             elen = idxs.size()-eoffset;
-            minvert = std::min(minvert, static_cast<ushort>(voffset));
-            maxvert = std::max(minvert, static_cast<ushort>(vverts.size()-1));
+            minvert = std::min(minvert, static_cast<GLuint>(voffset));
+            maxvert = std::max(minvert, static_cast<GLuint>(vverts.size()-1));
             return vverts.size()-voffset;
         }
 
-        int genvbo(std::vector<ushort> &idxs, int offset);
+        int genvbo(std::vector<GLuint> &idxs, int offset);
 
         template<class T>
         static inline void fillvert(T &vv, int j, vert &v)
@@ -250,14 +257,6 @@ struct skelmodel : animmodel
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
-    struct tag
-    {
-        std::string name;
-        int bone;
-        matrix4x3 matrix;
-
-    };
-
     struct skelanimspec
     {
         std::string name;
@@ -278,19 +277,6 @@ struct skelmodel : animmodel
         }
     };
 
-    struct antipode
-    {
-        int parent, child;
-
-        antipode(int parent, int child) : parent(parent), child(child) {}
-    };
-
-    struct pitchdep
-    {
-        int bone, parent;
-        dualquat pose;
-    };
-
     struct pitchtarget
     {
         int bone, frame, corrects, deps;
@@ -306,76 +292,94 @@ struct skelmodel : animmodel
         pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0) {}
     };
 
-    struct skeleton
+    class skeleton
     {
-        char *name;
-        int shared;
-        std::vector<skelmeshgroup *> users;
-        boneinfo *bones;
-        int numbones, numinterpbones, numgpubones, numframes;
-        dualquat *framebones;
-        std::vector<skelanimspec> skelanims;
-        std::vector<tag> tags;
-        std::vector<antipode> antipodes;
-        ragdollskel *ragdoll;
-        std::vector<pitchdep> pitchdeps;
-        std::vector<pitchtarget> pitchtargets;
-        std::vector<pitchcorrect> pitchcorrects;
+        public:
+            std::string name;
+            int shared;
+            std::vector<skelmeshgroup *> users;
+            boneinfo *bones; //array of boneinfo, size equal to numbones
+            int numbones, numinterpbones, numgpubones, numframes;
+            dualquat *framebones; //array of quats, size equal to anim frames * bones in model
+            std::vector<skelanimspec> skelanims;
+            ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
+            std::vector<pitchtarget> pitchtargets;
+            std::vector<pitchcorrect> pitchcorrects;
 
-        bool usegpuskel;
-        std::vector<skelcacheentry> skelcache;
-        hashtable<GLuint, int> blendoffsets;
+            bool usegpuskel;
+            std::vector<skelcacheentry> skelcache;
+            std::unordered_map<GLuint, int> blendoffsets;
 
-        skeleton() : name(nullptr), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
-        {
-        }
-
-        ~skeleton()
-        {
-            delete[] name;
-            delete[] bones;
-            delete[] framebones;
-            if(ragdoll)
+            skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
             {
-                delete ragdoll;
-                ragdoll = nullptr;
             }
-            for(uint i = 0; i < skelcache.size(); i++)
+
+            ~skeleton()
             {
-                delete[] skelcache[i].bdata;
+                delete[] bones;
+                delete[] framebones;
+                if(ragdoll)
+                {
+                    delete ragdoll;
+                    ragdoll = nullptr;
+                }
+                for(skelcacheentry &i : skelcache)
+                {
+                    delete[] i.bdata;
+                }
             }
-        }
 
         const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
         skelanimspec &addskelanim(const char *name);
-        std::optional<int> findbone(const char *name) const;
+        std::optional<int> findbone(const std::string &name) const;
         std::optional<int> findtag(const char *name) const;
         bool addtag(const char *name, int bone, const matrix4x3 &matrix);
         void addpitchdep(int bone, int frame);
-        std::optional<int> findpitchdep(int bone) const;
-        std::optional<int> findpitchcorrect(int bone) const;
+        int findpitchdep(int bone) const;
+        int findpitchcorrect(int bone) const;
         void initpitchdeps();
         void optimize();
-        void expandbonemask(uchar *expansion, int bone, int val);
-        void applybonemask(ushort *mask, uchar *partmask, int partindex);
+        void expandbonemask(uchar *expansion, int bone, int val) const;
+        void applybonemask(const uint *mask, uchar *partmask, int partindex) const;
         void linkchildren();
         int availgpubones() const;
-        float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
+        float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
         void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
         void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
         void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
         void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
         void calctags(part *p, const skelcacheentry *sc = nullptr);
         void cleanup(bool full = true);
         bool canpreload() const;
         void preload();
-        skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
-        int getblendoffset(const UniformLoc &u);
-        void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
+        const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
+        void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
         bool shouldcleanup() const;
 
         private:
+            struct pitchdep
+            {
+                int bone, parent;
+                dualquat pose;
+            };
+            std::vector<pitchdep> pitchdeps;
+
+            struct antipode
+            {
+                int parent, child;
+
+                antipode(int parent, int child) : parent(parent), child(child) {}
+            };
+            std::vector<antipode> antipodes;
+
+            struct tag
+            {
+                std::string name;
+                int bone;
+                matrix4x3 matrix;
+            };
+            std::vector<tag> tags;
 
             void calcantipodes();
             void remapbones();
@@ -386,8 +390,9 @@ struct skelmodel : animmodel
             };
 
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
+            int getblendoffset(const UniformLoc &u);
             bool gpuaccelerate() const;
-            dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
+            dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
     };
 
     static std::map<std::string, skeleton *> skeletons;
@@ -397,7 +402,7 @@ struct skelmodel : animmodel
         skeleton *skel;
 
         std::vector<blendcombo> blendcombos;
-        int numblends[4];
+        std::array<int, 4> numblends;
 
         static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
         static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
@@ -406,16 +411,14 @@ struct skelmodel : animmodel
 
         vbocacheentry vbocache[maxvbocache];
 
-        ushort *edata;
+        GLuint *edata;
         GLuint ebuf;
         int vlen, vertsize, vblends, vweights;
         uchar *vdata;
 
-        skelhitdata *hitdata;
-
-        skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr), hitdata(nullptr)
+        skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr)
         {
-            memset(numblends, 0, sizeof(numblends));
+            numblends.fill(0);
         }
 
         virtual ~skelmeshgroup();
@@ -446,7 +449,7 @@ struct skelmodel : animmodel
         }
 
         template<class T>
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -474,7 +477,7 @@ struct skelmodel : animmodel
             bindbones(vverts);
         }
 
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr);
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr, blendcacheentry *bc = nullptr);
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
@@ -485,13 +488,6 @@ struct skelmodel : animmodel
         void cleanup();
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
-        //hitzone
-        void cleanuphitdata();
-        void deletehitdata();
-        void buildhitdata(const uchar *hitzones);
-        void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray) const;
-        //end hitzone.h
-        void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
         void preload();
 
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
@@ -514,11 +510,9 @@ struct skelmodel : animmodel
     class skelpart : public part
     {
         public:
-            animpartmask *buildingpartmask;
-
             uchar *partmask;
 
-            skelpart(animmodel *model, int index = 0) : part(model, index), buildingpartmask(nullptr), partmask(nullptr)
+            skelpart(animmodel *model, int index = 0) : part(model, index), partmask(nullptr), buildingpartmask(nullptr)
             {
             }
 
@@ -528,9 +522,11 @@ struct skelmodel : animmodel
             }
 
             void initanimparts();
-            bool addanimpart(ushort *bonemask);
+            bool addanimpart(const uint *bonemask);
             void loaded();
         private:
+            animpartmask *buildingpartmask;
+
             uchar *sharepartmask(animpartmask *o);
             animpartmask *newpartmask();
             void endanimparts();
@@ -540,7 +536,7 @@ struct skelmodel : animmodel
     {
     }
 
-    int linktype(animmodel *m, part *p) const
+    int linktype(const animmodel *m, const part *p) const
     {
         return type()==m->type() &&
             (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
@@ -580,22 +576,6 @@ struct skelloader : modelloader<MDL, skelmodel>
     static std::vector<uchar> hitzones;
 
     skelloader(const char *name) : modelloader<MDL, skelmodel>(name) {}
-
-    void flushpart()
-    {
-        if(hitzones.size() && skelmodel::parts.size())
-        {
-            skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.back());
-            skelmodel::skelmeshgroup *m = static_cast<skelmodel::skelmeshgroup *>(p->meshes);
-            if(m)
-            {
-                m->buildhitdata(hitzones.data());
-            }
-        }
-
-        adjustments.clear();
-        hitzones.clear();
-    }
 };
 
 template<class MDL>
@@ -620,7 +600,6 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef struct MDL::skin skin;
     typedef struct MDL::boneinfo boneinfo;
     typedef struct MDL::skelanimspec animspec;
-    typedef struct MDL::pitchdep pitchdep;
     typedef struct MDL::pitchtarget pitchtarget;
     typedef struct MDL::pitchcorrect pitchcorrect;
 
@@ -631,12 +610,13 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, meshfile);
+        std::string filename;
+        filename.append(MDL::dir).append("/").append(meshfile);
         part &mdl = MDL::loading->addpart();
-        mdl.meshes = MDL::loading->sharemeshes(path(filename), skelname[0] ? skelname : nullptr, *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), skelname[0] ? skelname : nullptr, *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
         {
-            conoutf("could not load %s", filename);
+            conoutf("could not load %s", filename.c_str());
         }
         else
         {
@@ -657,15 +637,15 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
-        int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
-        if(i >= 0)
+        std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
+        if(i)
         {
             float cx = *rx ? std::cos(*rx/(2*RAD)) : 1, sx = *rx ? std::sin(*rx/(2*RAD)) : 0,
                   cy = *ry ? std::cos(*ry/(2*RAD)) : 1, sy = *ry ? std::sin(*ry/(2*RAD)) : 0,
                   cz = *rz ? std::cos(*rz/(2*RAD)) : 1, sz = *rz ? std::sin(*rz/(2*RAD)) : 0;
             matrix4x3 m(matrix3(quat(sx*cy*cz - cx*sy*sz, cx*sy*cz + sx*cy*sz, cx*cy*sz - sx*sy*cz, cx*cy*cz + sx*sy*sz)),
                         vec(*tx, *ty, *tz));
-            static_cast<meshgroup *>(mdl.meshes)->skel->addtag(tagname, i, m);
+            static_cast<meshgroup *>(mdl.meshes)->skel->addtag(tagname, *i, m);
             return;
         }
         conoutf("could not find bone %s for tag %s", name, tagname);
@@ -684,10 +664,10 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 
         if(name[0])
         {
-            int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
-            if(i>=0)
+            std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
+            if(i)
             {
-                boneinfo &b = static_cast<meshgroup *>(mdl.meshes)->skel->bones[i];
+                boneinfo &b = static_cast<meshgroup *>(mdl.meshes)->skel->bones[*i];
                 b.pitchscale = *pitchscale;
                 b.pitchoffset = *pitchoffset;
                 if(*pitchmin || *pitchmax)
@@ -740,21 +720,21 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
-        int bone = skel ? skel->findbone(name) : -1;
-        if(bone < 0)
+        std::optional<int> bone = skel ? skel->findbone(name) : std::nullopt;
+        if(!bone)
         {
             conoutf("could not find bone %s to pitch target", name);
             return;
         }
         for(uint i = 0; i < skel->pitchtargets.size(); i++)
         {
-            if(skel->pitchtargets[i].bone == bone)
+            if(skel->pitchtargets[i].bone == *bone)
             {
                 return;
             }
         }
         pitchtarget t;
-        t.bone = bone;
+        t.bone = *bone;
         t.frame = sa->frame + std::clamp(*frameoffset, 0, sa->range-1);
         t.pitchmin = *pitchmin;
         t.pitchmax = *pitchmax;
@@ -774,37 +754,37 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
-        int bone = skel ? skel->findbone(name) : -1;
-        if(bone < 0)
+        std::optional<int> bone = skel ? skel->findbone(name) : std::nullopt;
+        if(!bone)
         {
             conoutf("could not find bone %s to pitch correct", name);
             return;
         }
-        if(skel->findpitchcorrect(bone) >= 0)
+        if(skel->findpitchcorrect(*bone) >= 0)
         {
             return;
         }
-        int targetbone = skel->findbone(targetname),
-            target = -1;
-        if(targetbone >= 0)
+        std::optional<int> targetbone = skel->findbone(targetname),
+                           target = std::nullopt;
+        if(targetbone)
         {
             for(uint i = 0; i < skel->pitchtargets.size(); i++)
             {
-                if(skel->pitchtargets[i].bone == targetbone)
+                if(skel->pitchtargets[i].bone == *targetbone)
                 {
                     target = i;
                     break;
                 }
             }
         }
-        if(target < 0)
+        if(!target)
         {
             conoutf("could not find pitch target %s to pitch correct %s", targetname, name);
             return;
         }
         pitchcorrect c;
-        c.bone = bone;
-        c.target = target;
+        c.bone = *bone;
+        c.target = *target;
         c.pitchmin = *pitchmin;
         c.pitchmax = *pitchmax;
         c.pitchscale = *scale;
@@ -888,12 +868,12 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        std::vector<ushort> bonemask;
+        std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
-            int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
-            if(bone<0)
+            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : std::nullopt;
+            if(!bone)
             {
                 conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr);
                 for(char* j : bonestrs)
@@ -902,7 +882,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 }
                 return;
             }
-            bonemask.push_back(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
+            bonemask.push_back(*bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         for(char* i : bonestrs)
         {
@@ -931,17 +911,17 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             return;
         }
-        int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
-        if(i < 0)
+        std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
+        if(!i)
         {
             conoutf("could not find bone %s to adjust", name);
             return;
         }
-        while(!(static_cast<int>(MDL::adjustments.size()) > i))
+        while(!(static_cast<int>(MDL::adjustments.size()) > *i))
         {
             MDL::adjustments.push_back(skeladjustment(0, 0, 0, vec(0, 0, 0)));
         }
-        MDL::adjustments[i] = skeladjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
+        MDL::adjustments[*i] = skeladjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
     }
 
     static void sethitzone(int *id, char *maskstr)
@@ -958,18 +938,18 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         part *p = static_cast<part *>(MDL::loading->parts.back());
         meshgroup *m = static_cast<meshgroup *>(p->meshes);
-        if(!m || m->hitdata)
+        if(!m)
         {
             return;
         }
         std::vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
-        std::vector<ushort> bonemask;
+        std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
             char *bonestr = bonestrs[i];
-            int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
-            if(bone<0)
+            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : std::nullopt;
+            if(!bone)
             {
                 conoutf("could not find bone %s for hit zone mask [%s]", bonestr, maskstr);
                 for(char* j : bonestrs)
@@ -978,7 +958,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 }
                 return;
             }
-            bonemask.push_back(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
+            bonemask.push_back(*bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         for(char* i : bonestrs)
         {

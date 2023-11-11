@@ -23,7 +23,7 @@ namespace
     vec parsevec(const char *arg)
     {
         vec v(0, 0, 0);
-        int i = 0;
+        uint i = 0;
         for(; arg[0] && (!i || arg[0]=='/') && i<3; arg += std::strcspn(arg, "/,><"), i++)
         {
             if(i)
@@ -157,10 +157,10 @@ void ImageData::replace(ImageData &d)
 
 void ImageData::wraptex(SDL_Surface *s)
 {
-    setdata((uchar *)s->pixels, s->w, s->h, s->format->BytesPerPixel);
+    setdata(static_cast<uchar *>(s->pixels), s->w, s->h, s->format->BytesPerPixel);
     pitch = s->pitch;
     owner = s;
-    freefunc = (void (*)(void *))SDL_FreeSurface;
+    freefunc = reinterpret_cast<void (*)(void *)>(SDL_FreeSurface);
 }
 
 #define WRITE_TEX(t, body) do \
@@ -521,8 +521,10 @@ void ImageData::texagrad(float x2, float y2, float x1, float y1)
     }
 }
 
-void ImageData::texblend(ImageData &s, ImageData &m)
+void ImageData::texblend(const ImageData &s0, const ImageData &m0)
 {
+    ImageData s(s0),
+              m(m0);
     if(s.w != w || s.h != h)
     {
         s.scaleimage(w, h);
@@ -605,7 +607,7 @@ void ImageData::texblend(ImageData &s, ImageData &m)
     }
 }
 
-void ImageData::addglow(ImageData &g, const vec &glowcolor)
+void ImageData::addglow(const ImageData &g, const vec &glowcolor)
 {
     if(g.bpp < 3)
     {
@@ -627,7 +629,7 @@ void ImageData::addglow(ImageData &g, const vec &glowcolor)
     }
 }
 
-void ImageData::mergespec(ImageData &s)
+void ImageData::mergespec(const ImageData &s)
 {
     if(s.bpp < 3)
     {
@@ -643,14 +645,14 @@ void ImageData::mergespec(ImageData &s)
     }
 }
 
-void ImageData::mergedepth(ImageData &z)
+void ImageData::mergedepth(const ImageData &z)
 {
     READ_WRITE_RGBA_TEX((*this), z,
         dst[3] = src[0];
     );
 }
 
-void ImageData::mergealpha(ImageData &s)
+void ImageData::mergealpha(const ImageData &s)
 {
     if(s.bpp < 3)
     {
@@ -706,8 +708,34 @@ void ImageData::texnormal(int emphasis)
     replace(d);
 }
 
-bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wrap, const char *tdir, int ttype)
+bool ImageData::texturedata(const char *tname, bool msg, int * const compress, int * const wrap, const char *tdir, int ttype)
 {
+    auto parsetexcommands = [] (const char *&cmds, const char *&cmd, size_t &len, std::array<const char *, 4> &arg)
+    {
+        const char *end = nullptr;
+        cmd = &cmds[1];
+        end = std::strchr(cmd, '>');
+        if(!end)
+        {
+            return true;
+        }
+        cmds = std::strchr(cmd, '<');
+        len = std::strcspn(cmd, ":,><");
+        for(int i = 0; i < 4; ++i)
+        {
+            arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':');
+            if(!arg[i] || arg[i] >= end)
+            {
+                arg[i] = "";
+            }
+            else
+            {
+                arg[i]++;
+            }
+        }
+        return false;
+    };
+
     const char *cmds = nullptr,
                *file = tname;
     if(tname[0]=='<')
@@ -718,7 +746,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
         {
             if(msg)
             {
-                conoutf(Console_Error, "could not load texture %s", tname);
+                conoutf(Console_Error, "could not load <> modified texture %s", tname);
             }
             return false;
         }
@@ -732,32 +760,15 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     for(const char *pcmds = cmds; pcmds;)
     {
-        //===================================================== PARSETEXCOMMANDS
-        #define PARSETEXCOMMANDS(cmds) \
-            const char *cmd = nullptr, \
-                       *end = nullptr, \
-                       *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
-            cmd = &cmds[1]; \
-            end = std::strchr(cmd, '>'); \
-            if(!end) \
-            { \
-                break; \
-            } \
-            cmds = std::strchr(cmd, '<'); \
-            size_t len = std::strcspn(cmd, ":,><"); \
-            for(int i = 0; i < 4; ++i) \
-            { \
-                arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
-                if(!arg[i] || arg[i] >= end) \
-                { \
-                    arg[i] = ""; \
-                } \
-                else \
-                { \
-                    arg[i]++; \
-                } \
-            }
-        PARSETEXCOMMANDS(pcmds);
+        const char *cmd = nullptr;
+        size_t len = 0;
+        std::array<const char *, 4> arg = { nullptr, nullptr, nullptr, nullptr };
+
+        if(parsetexcommands(pcmds, cmd, len, arg))
+        {
+            break;
+        }
+
         if(matchstring(cmd, len, "stub"))
         {
             return canloadsurface(file);
@@ -794,7 +805,15 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
 
     while(cmds)
     {
-        PARSETEXCOMMANDS(cmds);
+        const char *cmd = nullptr;
+        size_t len = 0;
+        std::array<const char *, 4> arg = { nullptr, nullptr, nullptr, nullptr };
+
+        if(parsetexcommands(cmds, cmd, len, arg))
+        {
+            break;
+        }
+
         if(compressed)
         {
             goto compressed; //see `compressed` nested between else & if (yes it's ugly)
@@ -915,9 +934,6 @@ bool ImageData::texturedata(const char *tname, bool msg, int *compress, int *wra
     }
     return true;
 }
-
-#undef PARSETEXCOMMANDS
-//==============================================================================
 
 bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress, int *wrap)
 {

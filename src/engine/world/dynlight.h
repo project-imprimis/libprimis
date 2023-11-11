@@ -2,7 +2,7 @@
 #define DYNLIGHT_H_
 
 extern void updatedynlights();
-extern int finddynlights();
-extern bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags);
+extern size_t finddynlights();
+extern bool getdynlight(size_t n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags);
 
 #endif

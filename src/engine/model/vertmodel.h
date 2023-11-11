@@ -27,7 +27,7 @@ struct vertmodel : animmodel
 
     struct tri
     {
-        ushort vert[3];
+        uint vert[3];
     };
 
     struct vbocacheentry
@@ -46,8 +46,8 @@ struct vertmodel : animmodel
         tri *tris;
         int numverts, numtris;
 
-        int voffset, eoffset, elen;
-        ushort minvert, maxvert;
+        int voffset, elen;
+        uint minvert, maxvert;
 
         vertmesh();
         virtual ~vertmesh();
@@ -56,17 +56,16 @@ struct vertmodel : animmodel
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(BIH::mesh &m);
+        void genBIH(BIH::mesh &m) const;
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
 
         static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
-            eoffset = idxs.size();
-            minvert = 0xFFFF;
+            minvert = UINT_MAX;
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
@@ -77,7 +76,8 @@ struct vertmodel : animmodel
                     tcvert &tc = tcverts[index];
                     T vv;
                     assignvert(vv, index, tc, v);
-                    int htidx = hthash(v.pos)&(htlen-1);
+                    auto hashfn = std::hash<vec>();
+                    int htidx = hashfn(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)
                     {
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
@@ -90,20 +90,20 @@ struct vertmodel : animmodel
                         }
                         else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            idxs.push_back(static_cast<ushort>(vidx));
+                            idxs.push_back(static_cast<uint>(vidx));
                             minvert = std::min(minvert, idxs.back());
                             break;
                         }
                     }
                 }
             }
-            minvert = std::min(minvert, static_cast<ushort>(voffset));
-            maxvert = std::max(minvert, static_cast<ushort>(vverts.size()-1));
-            elen = idxs.size()-eoffset;
+            minvert = std::min(minvert, static_cast<uint>(voffset));
+            maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
+            elen = idxs.size();
             return vverts.size()-voffset;
         }
 
-        int genvbo(std::vector<ushort> &idxs, int offset);
+        int genvbo(std::vector<uint> &idxs, int offset);
 
         template<class T>
         static void fillvert(T &vv, tcvert &tc, vert &v)
@@ -181,7 +181,6 @@ struct vertmodel : animmodel
         static constexpr int maxvbocache = 16;
         vbocacheentry vbocache[maxvbocache];
 
-        ushort *edata;
         GLuint ebuf;
         int vlen, vertsize;
         uchar *vdata;
@@ -193,8 +192,7 @@ struct vertmodel : animmodel
         std::optional<int> findtag(const char *name);
 
         int totalframes() const;
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n);
-        void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix);
+        void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;
 
         void genvbo(vbocacheentry &vc);
 

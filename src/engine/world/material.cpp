@@ -14,6 +14,7 @@
  * the material data is saved in world files along with the octree geometry (see
  * worldio.cpp)
  */
+
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
@@ -33,9 +34,8 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-#include <optional>
 
-std::vector<materialsurface> watersurfs[4], waterfallsurfs[4], glasssurfs[4];
+std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs, glasssurfs;
 
 //internally relevant functionality
 
@@ -132,7 +132,7 @@ namespace
         private:
             int x, y, size;
             uint filled;
-            QuadNode *child[4];
+            std::array<QuadNode *, 4> child;
 
             void clear()
             {
@@ -280,24 +280,6 @@ namespace
         return MatSurf_NotVisible;
     }
 
-    void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m)
-    {
-        int dim = DIMENSION(m.orient);
-        ivec mmin(m.o), mmax(m.o);
-        if(DIM_COORD(m.orient))
-        {
-            mmin[dim] -= 2;
-        }
-        else
-        {
-            mmax[dim] += 2;
-        }
-        mmax[R[dim]] += m.rsize;
-        mmax[C[dim]] += m.csize;
-        matmin.min(mmin);
-        matmax.max(mmax);
-    }
-
     bool mergematcmp(const materialsurface &x, const materialsurface &y)
     {
         int dim = DIMENSION(x.orient),
@@ -314,6 +296,8 @@ namespace
         return x.o[c] < y.o[c];
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergematr(materialsurface *m, int sz, materialsurface &n)
     {
         int dim = DIMENSION(n.orient),
@@ -350,6 +334,8 @@ namespace
         return 0;
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergemat(materialsurface *m, int sz, materialsurface &n)
     {
         for(bool merged = false; sz; merged = true)
@@ -375,6 +361,8 @@ namespace
         return sz;
     }
 
+    //m: pointer to array of materialsurfaces
+    //sz: size of the array passed
     int mergemats(materialsurface *m, int sz)
     {
         std::sort(m, m+sz, mergematcmp);
@@ -423,77 +411,74 @@ namespace
         useshaderbyname("glass");
     }
 
-    int sortdim[3];
-    ivec sortorigin;
-
-//allows for sorting of materialsurface objects
-//intended to meet the standards of c++ stl `Compare`
-    bool editmatcmp(const materialsurface &x, const materialsurface &y)
-    {
-        int xdim = DIMENSION(x.orient),
-            ydim = DIMENSION(y.orient);
-        for(int i = 0; i < 3; ++i)
-        {
-            int dim = sortdim[i], xmin, xmax, ymin, ymax;
-            xmin = xmax = x.o[dim];
-            if(dim==C[xdim])
-            {
-                xmax += x.csize;
-            }
-            else if(dim==R[xdim])
-            {
-                xmax += x.rsize;
-            }
-            ymin = ymax = y.o[dim];
-            if(dim==C[ydim])
-            {
-                ymax += y.csize;
-            }
-            else if(dim==R[ydim])
-            {
-                ymax += y.rsize;
-            }
-            if(xmax > ymin && ymax > xmin)
-            {
-                continue;
-            }
-            int c = sortorigin[dim];
-            if(c > xmin && c < xmax)
-            {
-                return true;
-            }
-            if(c > ymin && c < ymax)
-            {
-                return false;
-            }
-            xmin = std::abs(xmin - c);
-            xmax = std::abs(xmax - c);
-            ymin = std::abs(ymin - c);
-            ymax = std::abs(ymax - c);
-            if(std::max(xmin, xmax) < std::min(ymin, ymax))
-            {
-                return true;
-            }
-            else if(std::max(ymin, ymax) <= std::min(xmin, xmax))
-            {
-                return false;
-            }
-        }
-        if(x.material != y.material)
-        {
-            return x.material < y.material;
-        }
-        return false;
-    }
-
     void sorteditmaterials()
     {
-        sortorigin = ivec(camera1->o);
-        vec dir = vec(camdir).abs();
-        for(int i = 0; i < 3; ++i)
+
+        std::array<int, 3> sortdim {0, 1, 2};
+        ivec sortorigin;
+
+        //allows for sorting of materialsurface objects
+        //intended to meet the standards of c++ stl `Compare`
+        auto editmatcmp = [&sortdim, &sortorigin] (const materialsurface &x, const materialsurface &y)
         {
-            sortdim[i] = i;
-        }
+            int xdim = DIMENSION(x.orient),
+                ydim = DIMENSION(y.orient);
+            for(const int &i : sortdim)
+            {
+                int xmin, xmax, ymin, ymax;
+                xmin = xmax = x.o[i];
+                if(i==C[xdim])
+                {
+                    xmax += x.csize;
+                }
+                else if(i==R[i])
+                {
+                    xmax += x.rsize;
+                }
+                ymin = ymax = y.o[i];
+                if(i==C[ydim])
+                {
+                    ymax += y.csize;
+                }
+                else if(i==R[ydim])
+                {
+                    ymax += y.rsize;
+                }
+                if(xmax > ymin && ymax > xmin)
+                {
+                    continue;
+                }
+                int c = sortorigin[i];
+                if(c > xmin && c < xmax)
+                {
+                    return true;
+                }
+                if(c > ymin && c < ymax)
+                {
+                    return false;
+                }
+                xmin = std::abs(xmin - c);
+                xmax = std::abs(xmax - c);
+                ymin = std::abs(ymin - c);
+                ymax = std::abs(ymax - c);
+                if(std::max(xmin, xmax) < std::min(ymin, ymax))
+                {
+                    return true;
+                }
+                else if(std::max(ymin, ymax) <= std::min(xmin, xmax))
+                {
+                    return false;
+                }
+            }
+            if(x.material != y.material)
+            {
+                return x.material < y.material;
+            }
+            return false;
+        };
+
+        sortorigin = ivec(camera1->o);
+        vec dir = camdir().abs();
         if(dir[sortdim[2]] > dir[sortdim[1]])
         {
             std::swap(sortdim[2], sortdim[1]);
@@ -563,7 +548,7 @@ namespace
                         continue;
                     }
                 }
-                gle::colorf(color.x*ldrscaleb, color.y*ldrscaleb, color.z*ldrscaleb);
+                gle::colorf(color.x*ldrscaleb(), color.y*ldrscaleb(), color.z*ldrscaleb());
                 lastmat = m.material;
             }
             drawmaterial(m, -0.1f);
@@ -586,10 +571,11 @@ namespace
         }
         float x = m.o.x,
               y = m.o.y,
-              z = m.o.z, csize = m.csize,
+              z = m.o.z,
+              csize = m.csize,
               rsize = m.rsize;
         gle::begin(GL_TRIANGLE_FAN);
-        if (normal != vec(0, 0, 0))
+        if(normal != vec(0, 0, 0))
         {
             vec n = normal;
             switch (m.orient)
@@ -914,7 +900,7 @@ namespace
     {
         for(int k = 0; k < 4; ++k)
         {
-            std::vector<materialsurface> &surfs = glasssurfs[k];
+            const std::vector<materialsurface> &surfs = glasssurfs[k];
             if(surfs.empty())
             {
                 continue;
@@ -923,8 +909,8 @@ namespace
             MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
             Texture *tex = gslot.sts.size() ? gslot.sts[0].t : notexture;
-            float glassxscale = defaulttexscale/(tex->xs*gslot.scale);
-            float glassyscale = defaulttexscale/(tex->ys*gslot.scale);
+            float glassxscale = defaulttexscale/(tex->xs*gslot.scale),
+                  glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, tex->id);
@@ -937,15 +923,34 @@ namespace
             GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
             GLOBALPARAMF(glassspec, spec/100.0f);
 
-            for(uint i = 0; i < surfs.size(); i++)
+            for(const materialsurface &m: surfs)
             {
-                materialsurface &m = surfs[i];
                 drawglass(m, 0.1f, glassxscale, glassyscale, matnormals(m.orient));
             }
             xtraverts += gle::end();
         }
     }
 
+    //sets the given material bounding vectors using the provided materialsurface
+    //used by calcmatbb to set vertex array glass/water min/max fields
+    void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m)
+    {
+        int dim = DIMENSION(m.orient);
+        ivec mmin(m.o),
+             mmax(m.o);
+        if(DIM_COORD(m.orient))
+        {
+            mmin[dim] -= 2;
+        }
+        else
+        {
+            mmax[dim] += 2;
+        }
+        mmax[R[dim]] += m.rsize;
+        mmax[C[dim]] += m.csize;
+        matmin.min(mmin);
+        matmax.max(mmax);
+    }
 }
 
 // externally relevant functionality
@@ -1030,12 +1035,17 @@ const char *getmaterialdesc(int mat, const char *prefix)
 
 void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
 {
+    static const std::array<ushort, 4> matmasks =
+    {
+        MatFlag_Volume|MatFlag_Index,
+        MatFlag_Clip,
+        Mat_Death,
+        Mat_Alpha
+    };
     for(int i = 0; i < 6; ++i)
     {
-        static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
-        for(int j = 0; j < static_cast<int>(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
+        for(const ushort &matmask : matmasks)
         {
-            ushort matmask = matmasks[j];
             int vis = visiblematerial(c, i, co, size, matmask&~MatFlag_Index);
             if(vis != MatSurf_NotVisible)
             {
@@ -1056,6 +1066,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     }
 }
 
+//sets the vertex array's material bounding box depending upon the material surfaces given
 void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs)
 {
     va->watermax = va->glassmax = co;
@@ -1089,11 +1100,11 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materia
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     std::sort(matbuf, matbuf+matsurfs, optmatcmp);
-    materialsurface *cur = matbuf,
-                    *end = matbuf+matsurfs;
+    const materialsurface *cur = matbuf,
+                          *end = matbuf+matsurfs;
     while(cur < end)
     {
-         materialsurface *start = cur++;
+         const materialsurface *start = cur++;
          int dim = DIMENSION(start->orient);
          while(cur < end &&
                cur->material == start->material &&
@@ -1142,7 +1153,7 @@ void setupmaterials(int start, int len)
     }
     for(int i = start; i < len; i++)
     {
-        const vtxarray *va = valist[i];
+        vtxarray *va = valist[i]; //only modifies va->matbuf entries of valist
         materialsurface *skip = nullptr;
         for(int j = 0; j < va -> matsurfs; ++j)
         {
@@ -1151,7 +1162,8 @@ void setupmaterials(int start, int len)
             if(IS_LIQUID(matvol) && m.orient!=Orient_Bottom && m.orient!=Orient_Top)
             {
                 m.ends = 0;
-                int dim = DIMENSION(m.orient), coord = DIM_COORD(m.orient);
+                int dim = DIMENSION(m.orient),
+                    coord = DIM_COORD(m.orient);
                 ivec o(m.o);
                 o.z -= 1;
                 o[dim] += coord ? 1 : -1;
@@ -1332,26 +1344,26 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
     return mi;
 }
 
-void rendermaterialmask()
+void GBuffer::rendermaterialmask() const
 {
     glDisable(GL_CULL_FACE);
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : glasssurfs)
     {
-        for(const materialsurface &i : glasssurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, 0.1f);
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : watersurfs)
     {
-        for(const materialsurface &i : watersurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, wateroffset);
         }
     }
-    for(int k = 0; k < 4; ++k)
+    for(const std::vector<materialsurface> &k : waterfallsurfs)
     {
-        for(const materialsurface &i : waterfallsurfs[k])
+        for(const materialsurface &i : k)
         {
             drawmaterial(i, 0.1f);
         }
@@ -1360,7 +1372,7 @@ void rendermaterialmask()
     glEnable(GL_CULL_FACE);
 }
 
-void renderliquidmaterials()
+void GBuffer::renderliquidmaterials() const
 {
     glDisable(GL_CULL_FACE);
 

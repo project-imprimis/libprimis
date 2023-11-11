@@ -4,8 +4,9 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
-#include "../../shared/hashtable.h"
 
+#include <memory>
+#include <optional>
 
 #include "interface/console.h"
 #include "interface/control.h"
@@ -45,14 +46,14 @@ vertmodel::meshgroup * vertmodel::loadmeshes(const char *name, float smooth)
 
 vertmodel::meshgroup * vertmodel::sharemeshes(const char *name, float smooth)
 {
-    if(!meshgroups.access(name))
+    if(meshgroups.find(name) == meshgroups.end())
     {
         meshgroup *group = loadmeshes(name, smooth);
         if(!group)
         {
             return nullptr;
         }
-        meshgroups.add(group);
+        meshgroups[group->name] = group;
     }
     return meshgroups[name];
 }
@@ -117,14 +118,11 @@ void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     }
 }
 
-void vertmodel::vertmesh::genBIH(BIH::mesh &m)
+void vertmodel::vertmesh::genBIH(BIH::mesh &m) const
 {
-    m.tris = reinterpret_cast<const BIH::tri *>(tris);
-    m.numtris = numtris;
-    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
-    m.posstride = sizeof(vert);
-    m.tc = reinterpret_cast<const uchar *>(&tcverts->tc);
-    m.tcstride = sizeof(tcvert);
+    m.setmesh(reinterpret_cast<const BIH::mesh::tri *>(tris), numtris,
+              reinterpret_cast<const uchar *>(&verts->pos), sizeof(vert),
+              reinterpret_cast<const uchar *>(&tcverts->tc), sizeof(tcvert));
 }
 
 void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
@@ -146,13 +144,12 @@ void vertmodel::vertmesh::assignvert(vvertg &vv, int j, const tcvert &tc, const 
     vv.tangent = v.tangent;
 }
 
-int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
+int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
 {
     voffset = offset;
-    eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
-        tri &t = tris[i];
+        const tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
             idxs.push_back(voffset+t.vert[j]);
@@ -160,7 +157,7 @@ int vertmodel::vertmesh::genvbo(std::vector<ushort> &idxs, int offset)
     }
     minvert = voffset;
     maxvert = voffset + numverts-1;
-    elen = idxs.size()-eoffset;
+    elen = idxs.size();
     return numverts;
 }
 
@@ -170,7 +167,7 @@ void vertmodel::vertmesh::render()
     {
         return;
     }
-    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
+    glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, nullptr);
     glde++;
     xtravertsva += numverts;
 }
@@ -180,7 +177,7 @@ void vertmodel::vertmesh::render()
 //==============================================================================
 
 vertmodel::vertmeshgroup::vertmeshgroup()
-    : numframes(0), tags(nullptr), numtags(0), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vdata(nullptr)
+    : numframes(0), tags(nullptr), numtags(0), ebuf(0), vlen(0), vertsize(0), vdata(nullptr)
 {
 }
 
@@ -264,12 +261,7 @@ int vertmodel::vertmeshgroup::totalframes() const
     return numframes;
 }
 
-void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
-{
-    n.mul(m, tags[i].matrix);
-}
-
-void vertmodel::vertmeshgroup::calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix)
+void vertmodel::vertmeshgroup::calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const
 {
     const matrix4x3 &tag1 = tags[as.cur.fr1*numtags + i].matrix,
                     &tag2 = tags[as.cur.fr2*numtags + i].matrix;
@@ -298,7 +290,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    std::vector<ushort> idxs;
+    std::vector<uint> idxs;
 
     vlen = 0;
     if(numframes>1)
@@ -316,8 +308,8 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     {
         vertsize = sizeof(vvertg);
         gle::bindvbo(vc.vbuf);
-        int numverts = 0,
-            htlen = 128;
+        size_t numverts = 0,
+               htlen = 128;
         LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
         while(htlen < numverts)
         {
@@ -339,7 +331,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(uint), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 
@@ -390,7 +382,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
 {
     if(as->cur.anim & Anim_NoRender)
     {
-        for(linkedpart &l : p->links)
+        for(part::linkedpart &l : p->links)
         {
             calctagmatrix(p, l.tag, *as, l.matrix);
         }
@@ -453,7 +445,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         p->skins[i].bind(m, as);
         m.render();
     });
-    for(linkedpart &l : p->links)
+    for(part::linkedpart &l : p->links)
     {
         calctagmatrix(p, l.tag, *as, l.matrix);
     }

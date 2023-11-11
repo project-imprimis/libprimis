@@ -1,10 +1,11 @@
 
-class md5 : public skelloader<md5>
+class md5 final : public skelloader<md5>
 {
     public:
         md5(const char *name);
         static const char *formatname();
-        int type() const;
+        bool flipy() const;
+        int type() const override;
         skelmeshgroup *newmeshes();
 
         bool loaddefaultparts();
@@ -26,7 +27,7 @@ class md5 : public skelloader<md5>
         struct md5vert
         {
             vec2 tc;
-            ushort start, count;
+            uint start, count;
         };
 
         struct md5hierarchy
@@ -55,7 +56,7 @@ class md5 : public skelloader<md5>
                 md5mesh();
                 ~md5mesh();
                 void cleanup();
-                void buildverts(std::vector<md5joint> &joints);
+                void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
                 void load(stream *f, char *buf, size_t bufsize);
 

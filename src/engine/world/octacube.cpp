@@ -6,7 +6,6 @@
  */
 
 #include "../libprimis-headers/cube.h"
-#include "../../shared/hashtable.h"
 #include "../../shared/geomexts.h"
 
 #include "light.h"
@@ -34,7 +33,7 @@ bool notouchingface(const cube &c, int orient)
     return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
 }
 
-bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, facebounds &orig)
+bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, facebounds &orig) const
 {
     ivec no;
     int nsize;
@@ -44,7 +43,7 @@ bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, fac
     mincf.u2 = orig.u1;
     mincf.v1 = orig.v2;
     mincf.v2 = orig.v1;
-    mincubeface(nc, OPPOSITE(orient), no, nsize, orig, mincf, cu.material&Mat_Alpha ? Mat_Air : Mat_Alpha, Mat_Alpha);
+    mincubeface(nc, oppositeorient(orient), no, nsize, orig, mincf, cu.material&Mat_Alpha ? Mat_Air : Mat_Alpha, Mat_Alpha);
     bool smaller = false;
     if(mincf.u1 > orig.u1)
     {
@@ -106,8 +105,8 @@ void cube::discardchildren(bool fixtex, int depth)
         uint filled = faceempty;
         for(int i = 0; i < 8; ++i)
         {
-            children[i].discardchildren(fixtex, depth+1);
-            filled |= children[i].faces[0];
+            (*children)[i].discardchildren(fixtex, depth+1);
+            filled |= (*children)[i].faces[0];
         }
         if(fixtex)
         {
@@ -120,7 +119,7 @@ void cube::discardchildren(bool fixtex, int depth)
                 faces[0] = facesolid;
             }
         }
-        delete[] children;
+        delete children;
         children = nullptr;
         allocnodes--;
     }
@@ -132,10 +131,10 @@ bool cube::isvalidcube() const
     genclipbounds(*this, ivec(0, 0, 0), 256, p);
     genclipplanes(*this, ivec(0, 0, 0), 256, p);
     // test that cube is convex
-    for(int i = 0; i < 8; ++i)
+    for(uint i = 0; i < 8; ++i)
     {
         vec v = p.v[i];
-        for(int j = 0; j < p.size; ++j)
+        for(uint j = 0; j < p.size; ++j)
         {
             if(p.p[j].dist(v)>1e-3f)
             {
@@ -148,7 +147,8 @@ bool cube::isvalidcube() const
 
 bool cube::poly::clippoly(const facebounds &b)
 {
-    pvert verts1[Face_MaxVerts+4], verts2[Face_MaxVerts+4];
+    std::array<pvert, Face_MaxVerts+4> verts1,
+                                       verts2;
     int numverts1 = 0,
         numverts2 = 0,
         px = verts[numverts-1].x,
@@ -254,7 +254,7 @@ bool cube::poly::clippoly(const facebounds &b)
     {
         return false;
     }
-    std::memcpy(verts, verts2, numverts2*sizeof(pvert));
+    std::memcpy(verts, verts2.data(), numverts2*sizeof(pvert));
     numverts = numverts2;
     return true;
 }
@@ -263,7 +263,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
 {
     int dim = DIMENSION(orient),
         coord = DIM_COORD(orient);
-    ivec v[4];
+    std::array<ivec, 4> v;
     genfaceverts(*this, orient, v);
     if(flataxisface(*this, orient))
     {
@@ -385,7 +385,8 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
             p.verts[0] = p.verts[p.numverts-1];
             p.numverts--;
         }
-        px = cx; py = cy;
+        px = cx;
+        py = cy;
         cx = static_cast<int>(p.verts[2].x) - static_cast<int>(p.verts[1].x);
         cy = static_cast<int>(p.verts[2].y) - static_cast<int>(p.verts[1].y);
         dir = px*cy - py*cx;
@@ -427,7 +428,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     return true;
 }
 
-bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::vector<const plink *> &queue, int owner, poly &q, const pedge &e)
+bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const plink *> &queue, int owner, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
@@ -559,12 +560,12 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
     {
         if(ext)
         {
-            ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = surfaceinfo();
         }
         return;
     }
-    surfaceinfo surf = topsurface;
-    vertinfo verts[Face_MaxVerts];
+    std::array<vertinfo, Face_MaxVerts> verts;
+    surfaceinfo surf = surfaceinfo();
     surf.numverts |= p.numverts;
     int dim = DIMENSION(orient),
         coord = DIM_COORD(orient),
@@ -572,7 +573,7 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
         r = R[dim];
     for(int k = 0; k < p.numverts; ++k)
     {
-        pvert &src = p.verts[coord ? k : p.numverts-1-k];
+        const pvert &src = p.verts[coord ? k : p.numverts-1-k];
         vertinfo &dst = verts[k];
         ivec v;
         v[c] = src.x;
@@ -609,7 +610,7 @@ void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
         nomatch:;
         }
     }
-    setsurface(*this, orient, surf, verts, p.numverts);
+    setsurface(*this, orient, surf, verts.data(), p.numverts);
 }
 
 void cube::clearmerge(int orient)
@@ -619,28 +620,27 @@ void cube::clearmerge(int orient)
         merged &= ~(1<<orient);
         if(ext)
         {
-            ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = surfaceinfo();
         }
     }
 }
 
-void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::addmerges(int orient, const ivec &n, int offset, std::deque<poly> &polys)
 {
-    for(uint i = 0; i < polys.size(); i++)
+    for(poly &p : polys)
     {
-        poly &p = polys[i];
         if(p.merged)
         {
-            (*p.c).addmerge(orient, n, offset, p);
+            (*(p.c)).addmerge(orient, n, offset, p);
         }
         else
         {
-            (*p.c).clearmerge(orient);
+            (*(p.c)).clearmerge(orient);
         }
     }
 }
 
-void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::mergepolys(int orient, const ivec &n, int offset, std::deque<poly> &polys)
 {
     if(polys.size() <= 1)
     {
@@ -648,7 +648,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
         return;
     }
     std::unordered_set<plink> links(polys.size() <= 32 ? 128 : 1024);
-    std::vector<const plink *> queue;
+    std::deque<const plink *> queue;
     for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
@@ -677,15 +677,14 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
             prev = j;
         }
     }
-    std::vector<const plink *> nextqueue;
+    std::deque<const plink *> nextqueue;
     while(queue.size())
     {
-        for(uint i = 0; i < queue.size(); i++)
+        for(const plink *&l : queue)
         {
-            const plink &l = *queue[i];
-            if(l.polys[0] >= 0 && l.polys[1] >= 0)
+            if(l->polys[0] >= 0 && l->polys[1] >= 0)
             {
-                polys[l.polys[0]].mergepolys(links, nextqueue, l.polys[0], polys[l.polys[1]], l);
+                polys[l->polys[0]].mergepolys(links, nextqueue, l->polys[0], polys[l->polys[1]], *l);
             }
         }
         queue.clear();
@@ -695,27 +694,25 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
     addmerges(orient, n, offset, polys);
 }
 
-static int genmergeprogress = 0;
-
-bool htcmp(const cube::cfkey &x, const cube::cfkey &y)
+bool operator==(const cube::cfkey &x, const cube::cfkey &y)
 {
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
 }
 
-inline uint hthash(const ivec2 &k)
+template<>
+struct std::hash<cube::cfkey>
 {
-    return k.x^k.y;
-}
-
-uint hthash(const cube::cfkey &k)
-{
-    return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
-}
+    size_t operator()(const cube::cfkey &k) const
+    {
+        auto ivechash = std::hash<ivec>();
+        return ivechash(k.n)^k.offset^k.tex^k.orient^k.material;
+    }
+};
 
 //recursively goes through children of cube passed and attempts to merge faces together
 void cube::genmerges(cube * root, const ivec &o, int size)
 {
-    static hashtable<cfkey, cfpolys> cpolys;
+    static std::unordered_map<cfkey, cfpolys> cpolys;
     neighborstack[++neighbordepth] = this;
     for(int i = 0; i < 8; ++i)
     {
@@ -723,7 +720,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
         int vis;
         if(this[i].children)
         {
-            this[i].children->genmerges(root, co, size>>1);
+            (this[i]).children->at(0).genmerges(root, co, size>>1);
         }
         else if(!(this[i].isempty()))
         {
@@ -756,12 +753,12 @@ void cube::genmerges(cube * root, const ivec &o, int size)
                 }
             }
         }
-        if((size == 1<<maxmerge || this == root) && cpolys.numelems)
+        if((size == 1<<maxmerge || this == root) && cpolys.size())
         {
-            ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
+            for(auto &[k, t] : cpolys)
             {
-                mergepolys(key.orient, key.n, key.offset, val.polys);
-            });
+                mergepolys(k.orient, k.n, k.offset, t.polys);
+            }
             cpolys.clear();
         }
     }
@@ -770,6 +767,5 @@ void cube::genmerges(cube * root, const ivec &o, int size)
 
 void cube::calcmerges(cube * root)
 {
-    genmergeprogress = 0;
     genmerges(root);
 }

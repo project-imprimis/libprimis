@@ -2,7 +2,6 @@
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/stream.h"
-#include "../../shared/hashtable.h"
 
 #include "console.h"
 #include "control.h"
@@ -17,26 +16,320 @@
 
 #include "world/octaedit.h"
 
-//internally relevant functionality
+int commandmillis = -1;
+
 struct FilesKey
 {
-    int type;
-    const char *dir, *ext;
+    const int type;
+    const std::string dir,
+                      ext;
 
-    FilesKey() {}
-    FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
+    FilesKey(int type, const std::string &dir, const std::string &ext) : type(type), dir(dir), ext(ext) {}
+
+    bool operator==(const FilesKey &y) const
+    {
+        return type == y.type && dir == y.dir && ext == y.ext;
+    }
 };
 
-static inline bool htcmp(const FilesKey &x, const FilesKey &y)
+template<>
+struct std::hash<FilesKey>
 {
-    return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
+    size_t operator()(const FilesKey &key) const
+    {
+        size_t h = 5381;
+        for(int i = 0, k; (k = key.dir[i]); i++)
+        {
+            h = ((h<<5)+h)^k;    // bernstein k=33 xor
+        }
+        return h;
+    }
+};
+
+class CompletionFinder
+{
+    public:
+        enum
+        {
+            Files_Directory = 0,
+            Files_List,
+        };
+
+        void resetcomplete();
+        void addfilecomplete(char *command, char *dir, char *ext);
+        void addlistcomplete(char *command, char *list);
+
+        void complete(char *s, size_t maxlen, const char *cmdprefix);
+
+        //print to a stream f the listcompletions in the completions filesval
+        void writecompletions(std::fstream& f);
+
+    private:
+
+        struct FilesVal
+        {
+            public:
+                int type;
+                std::string dir,
+                            ext;
+                std::vector<char *> files;
+
+                FilesVal(int type, std::string dir, std::string ext);
+                ~FilesVal();
+
+                void update();
+
+            private:
+                int millis;
+        };
+
+        friend std::hash<FilesKey>;
+
+        std::unordered_map<FilesKey, FilesVal *> completefiles;
+        std::unordered_map<const char *, FilesVal *> completions;
+
+        int completesize = 0;
+        char *lastcomplete = nullptr;
+
+        void addcomplete(char *command, int type, char *dir, char *ext);
+
+        char *prependstring(char *d, const char *s, size_t len) const;
+};
+
+CompletionFinder::FilesVal::FilesVal(int type, std::string dir, std::string ext) : type(type), dir(dir), ext(ext[0] ? std::string(ext) : ""), millis(-1)
+{
 }
 
-static inline uint hthash(const FilesKey &k)
+CompletionFinder::FilesVal::~FilesVal()
 {
-    return hthash(k.dir);
+    for(char* i : files)
+    {
+        delete[] i;
+    }
 }
 
+void CompletionFinder::FilesVal::update()
+{
+    if(type!=Files_Directory || millis >= commandmillis)
+    {
+        return;
+    }
+    //first delete old cached file vector
+    for(char* i : files)
+    {
+        delete[] i;
+    }
+    //generate new one
+    listfiles(dir.c_str(), ext.c_str(), files);
+    std::sort(files.begin(), files.end());
+    for(uint i = 0; i < files.size(); i++)
+    {
+        if(i && !std::strcmp(files[i], files[i-1]))
+        {
+            delete[] files.at(i);
+            files.erase(files.begin() + i);
+            i--; //we need to make up for the element we destroyed
+        }
+    }
+    millis = totalmillis;
+}
+
+void CompletionFinder::resetcomplete()
+{
+    completesize = 0;
+}
+
+void CompletionFinder::addfilecomplete(char *command, char *dir, char *ext)
+{
+    addcomplete(command, Files_Directory, dir, ext);
+}
+
+void CompletionFinder::addlistcomplete(char *command, char *list)
+{
+    addcomplete(command, Files_List, list, nullptr);
+}
+
+void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
+{
+    size_t cmdlen = 0;
+    if(cmdprefix)
+    {
+        cmdlen = std::strlen(cmdprefix);
+        if(std::strncmp(s, cmdprefix, cmdlen))
+        {
+            prependstring(s, cmdprefix, maxlen);
+        }
+    }
+    if(!s[cmdlen])
+    {
+        return;
+    }
+    if(!completesize)
+    {
+        completesize = static_cast<int>(std::strlen(&s[cmdlen]));
+        delete[] lastcomplete;
+        lastcomplete = nullptr;
+    }
+    FilesVal *f = nullptr;
+    if(completesize)
+    {
+        char *end = std::strchr(&s[cmdlen], ' ');
+        if(end)
+        {
+            f = completions[stringslice(&s[cmdlen], end), nullptr];
+        }
+    }
+    const char *nextcomplete = nullptr;
+    if(f) // complete using filenames
+    {
+        int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
+        f->update();
+        for(const char * i : f->files)
+        {
+            if(std::strncmp(i, &s[commandsize], completesize+cmdlen-commandsize)==0 &&
+                      (!lastcomplete || std::strcmp(i, lastcomplete) > 0) &&
+                      (!nextcomplete || std::strcmp(i, nextcomplete) < 0))
+            {
+                nextcomplete = i;
+            }
+        }
+        cmdprefix = s;
+        cmdlen = commandsize;
+    }
+    else // complete using command or var (ident) names
+    {
+        for(auto& [k, id] : idents)
+        {
+            if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
+                      (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
+                      (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
+            {
+                nextcomplete = id.name;
+            }
+        }
+    }
+
+    delete[] lastcomplete;
+    lastcomplete = nullptr;
+    if(nextcomplete)
+    {
+        cmdlen = std::min(cmdlen, maxlen-1);
+        if(cmdlen)
+        {
+            std::memmove(s, cmdprefix, cmdlen);
+        }
+        copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
+        lastcomplete = newstring(nextcomplete);
+    }
+}
+
+//print to a stream f the listcompletions in the completions filesval
+void CompletionFinder::writecompletions(std::fstream& f)
+{
+    std::vector<std::string> cmds;
+    for(auto &[k, v] : completions)
+    {
+        if(v)
+        {
+            cmds.push_back(k);
+        }
+    }
+    std::sort(cmds.begin(), cmds.end());
+    for(std::string &k : cmds)
+    {
+        FilesVal *v = completions[k.c_str()];
+        if(!v)
+        {
+            conoutf("could not write completion");
+            return;
+        }
+        if(v->type==Files_List)
+        {
+            if(validateblock(v->dir.c_str()))
+            {
+                f << "listcomplete " << escapeid(k.c_str()) << " [" << v->dir << "]\n";
+            }
+            else
+            {
+                f << "listcomplete " << escapeid(k.c_str()) << " " << escapestring(v->dir.c_str()) << std::endl;
+            }
+        }
+        else
+        {
+            f << "complete " << escapeid(k.c_str()) << " " << escapestring(v->dir.c_str()) << " " << escapestring(v->ext.size() ? v->ext.c_str() : "*") << std::endl;
+        }
+    }
+}
+
+void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext)
+{
+    if(identflags&Idf_Overridden)
+    {
+        conoutf(Console_Error, "cannot override complete %s", command);
+        return;
+    }
+    if(!dir[0])
+    {
+        auto hasfilesitr = completions.find(command);
+        if(hasfilesitr != completions.end())
+        {
+            (*hasfilesitr).second = nullptr;
+        }
+        return;
+    }
+    if(type==Files_Directory)
+    {
+        int dirlen = static_cast<int>(std::strlen(dir));
+        while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
+        {
+            dir[--dirlen] = '\0';
+        }
+        if(ext)
+        {
+            if(std::strchr(ext, '*'))
+            {
+                ext[0] = '\0';
+            }
+            if(!ext[0])
+            {
+                ext = nullptr;
+            }
+        }
+    }
+    FilesKey key(type, dir ? dir : "", dir ? dir : "");
+    auto itr = completefiles.find(key);
+    if(itr == completefiles.end())
+    {
+        FilesVal *f = new FilesVal(type, dir ? dir : "", ext ? ext : "");
+        if(type==Files_List)
+        {
+            explodelist(dir, f->files);
+        }
+        FilesKey newfile = FilesKey(type, f->dir, f->ext);
+        itr = completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f)).first;
+    }
+    auto hasfilesitr = completions.find(std::string(command).c_str());
+    if(hasfilesitr != completions.end())
+    {
+        (*hasfilesitr).second = (*itr).second;
+    }
+    else
+    {
+        FilesVal *v = (*itr).second;
+        completions[newstring(command)] = v;
+    }
+}
+
+char *CompletionFinder::prependstring(char *d, const char *s, size_t len) const
+{
+    size_t slen = std::min(std::strlen(s), len);
+    std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
+    std::memcpy(d, s, slen);
+    d[len-1] = 0;
+    return d;
+}
+
+//internally relevant functionality
 namespace
 {
     constexpr int maxconsolelines = 1000;  //maximum length of conlines reverse queue
@@ -49,7 +342,6 @@ namespace
     };
     std::deque<cline> conlines; //global storage of console lines
 
-    int commandmillis = -1;
     string commandbuf;
     char *commandaction = nullptr,
          *commandprompt = nullptr;
@@ -73,8 +365,9 @@ namespace
 
     constexpr int constrlen = 512;
 
-    void resetcomplete();
-    void complete(char *s, int maxlen, const char *cmdprefix);
+    // tab-completion of all idents and base maps
+
+    CompletionFinder cfinder;
 
     void conline(int type, const char *sf)        // add a line to the console buffer
     {
@@ -139,6 +432,11 @@ namespace
             {
                 skip = std::clamp(skip, 0, static_cast<int>(conlines.size()-1));
                 return;
+            }
+            if(skip < 0)
+            {
+                skip = 0;
+                break;
             }
             if(conlines[skip].type&filter)
             {
@@ -234,7 +532,11 @@ namespace
 
     // keymap is defined externally in keymap.cfg
 
-    struct KeyM
+    /*
+     * defines a mapping for a single key
+     * multiple keymap objects are aggregated in keyms to create the entire bindings list
+     */
+    struct KeyMap
     {
         enum
         {
@@ -244,19 +546,19 @@ namespace
             Action_NumActions
         };
 
-        int code;
-        char *name;
-        char *actions[Action_NumActions];
-        bool pressed;
+        int code;                           //unique bind code assigned to the key
+        char *name;                         //name to use to access this key
+        char *actions[Action_NumActions];   //array of strings to execute depending on what mode is being used
+        bool pressed;                       //whether this key is currently depressed
 
-        KeyM() : code(-1), name(nullptr), pressed(false)
+        KeyMap() : code(-1), name(nullptr), pressed(false)
         {
             for(int i = 0; i < Action_NumActions; ++i)
             {
                 actions[i] = newstring("");
             }
         }
-        ~KeyM()
+        ~KeyMap()
         {
             delete[] name;
             name = nullptr;
@@ -278,10 +580,10 @@ namespace
     };
 
 
-    KeyM *keypressed = nullptr;
+    KeyMap *keypressed = nullptr;
     char *keyaction = nullptr;
 
-    void KeyM::clear(int type)
+    void KeyMap::clear(int type)
     {
         char *&binding = actions[type];
         if(binding[0])
@@ -294,7 +596,7 @@ namespace
         }
     }
 
-    hashtable<int, KeyM> keyms(256);
+    std::map<int, KeyMap> keyms;
 
     void keymap(int *code, char *key)
     {
@@ -303,7 +605,7 @@ namespace
             conoutf(Console_Error, "cannot override keymap %d", *code);
             return;
         }
-        KeyM &km = keyms[*code];
+        KeyMap &km = keyms[*code];
         km.code = *code;
         delete[] km.name;
         km.name = newstring(key);
@@ -312,7 +614,7 @@ namespace
     void searchbinds(char *action, int type)
     {
         std::vector<char> names;
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!std::strcmp(km.actions[type], action))
             {
@@ -325,37 +627,37 @@ namespace
                     names.push_back(km.name[i]);
                 }
             }
-        });
+        }
         names.push_back('\0');
         result(names.data());
     }
 
-    KeyM *findbind(char *key)
+    KeyMap *findbind(const char *key)
     {
-        ENUMERATE(keyms, KeyM, km,
+        for(auto &[k, km] : keyms)
         {
             if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
-        });
+        }
         return nullptr;
     }
 
-    void getbind(char *key, int type)
+    void getbind(const char *key, int type)
     {
-        KeyM *km = findbind(key);
+        KeyMap *km = findbind(key);
         result(km ? km->actions[type] : "");
     }
 
-    void bindkey(char *key, char *action, int state, const char *cmd)
+    void bindkey(const char *key, const char *action, int state, const char *cmd)
     {
         if(identflags&Idf_Overridden)
         {
             conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key);
             return;
         }
-        KeyM *km = findbind(key);
+        KeyMap *km = findbind(key);
         if(!km)
         {
             conoutf(Console_Error, "unknown key \"%s\"", key);
@@ -474,7 +776,7 @@ namespace
             prompt = nullptr;
         }
 
-        void restore()
+        void restore() const
         {
             copystring(commandbuf, buf);
             if(commandpos >= static_cast<int>(std::strlen(commandbuf)))
@@ -499,7 +801,7 @@ namespace
             commandflags = flags;
         }
 
-        bool shouldsave()
+        bool shouldsave() const
         {
             return std::strcmp(commandbuf, buf) ||
                    (commandaction ? !action || std::strcmp(commandaction, action) : action!=nullptr) ||
@@ -521,7 +823,7 @@ namespace
             flags = commandflags;
         }
 
-        void run()
+        void run() const
         {
             if(flags&CmdFlags_Execute && buf[0]=='/')
             {
@@ -556,7 +858,7 @@ namespace
 
     struct releaseaction
     {
-        KeyM *key;
+        KeyMap *key;
         union
         {
             char *action;
@@ -587,7 +889,7 @@ namespace
         addreleaseaction(newstring(s));
     }
 
-    static void execbind(KeyM &k, bool isdown, int map)
+    static void execbind(KeyMap &k, bool isdown, int map)
     {
         for(uint i = 0; i < releaseactions.size(); i++)
         {
@@ -612,19 +914,19 @@ namespace
         }
         if(isdown)
         {
-            int state = KeyM::Action_Default;
+            int state = KeyMap::Action_Default;
             if(!mainmenu)
             {
                 if(map == 1)
                 {
-                    state = KeyM::Action_Editing;
+                    state = KeyMap::Action_Editing;
                 }
                 else if(map == 2)
                 {
-                    state = KeyM::Action_Spectator;
+                    state = KeyMap::Action_Spectator;
                 }
             }
-            char *&action = k.actions[state][0] ? k.actions[state] : k.actions[KeyM::Action_Default];
+            char *&action = k.actions[state][0] ? k.actions[state] : k.actions[KeyMap::Action_Default];
             keyaction = action;
             keypressed = &k;
             execute(keyaction);
@@ -643,7 +945,7 @@ namespace
         {
             return false;
         }
-        resetcomplete();
+        ::cfinder.resetcomplete();
         int cmdlen = static_cast<int>(std::strlen(commandbuf)),
             cmdspace = static_cast<int>(sizeof(commandbuf)) - (cmdlen+1);
         len = std::min(len, cmdspace);
@@ -692,14 +994,14 @@ namespace
                 }
                 case SDLK_DELETE:
                 {
-                    int len = static_cast<int>(std::strlen(commandbuf));
+                    size_t len = std::strlen(commandbuf);
                     if(commandpos<0)
                     {
                         break;
                     }
                     std::memmove(&commandbuf[commandpos], &commandbuf[commandpos+1], len - commandpos);
-                    resetcomplete();
-                    if(commandpos>=len-1)
+                    ::cfinder.resetcomplete();
+                    if(commandpos >= static_cast<int>(len-1))
                     {
                         commandpos = -1;
                     }
@@ -707,14 +1009,14 @@ namespace
                 }
                 case SDLK_BACKSPACE:
                 {
-                    int len = static_cast<int>(std::strlen(commandbuf)),
-                        i = commandpos>=0 ? commandpos : len;
+                    size_t len = std::strlen(commandbuf);
+                    int i = commandpos>=0 ? commandpos : len;
                     if(i<1)
                     {
                         break;
                     }
                     std::memmove(&commandbuf[i-1], &commandbuf[i], len - i + 1);
-                    resetcomplete();
+                    ::cfinder.resetcomplete();
                     if(commandpos>0)
                     {
                         commandpos--;
@@ -769,7 +1071,7 @@ namespace
                 {
                     if(commandflags&CmdFlags_Complete)
                     {
-                        complete(commandbuf, sizeof(commandbuf), commandflags&CmdFlags_Execute ? "/" : nullptr);
+                        ::cfinder.complete(commandbuf, sizeof(commandbuf), commandflags&CmdFlags_Execute ? "/" : nullptr);
                         if(commandpos>=0 && commandpos >= static_cast<int>(std::strlen(commandbuf)))
                         {
                             commandpos = -1;
@@ -827,227 +1129,6 @@ namespace
 
         return true;
     }
-
-    // tab-completion of all idents and base maps
-
-    enum
-    {
-        Files_Directory = 0,
-        Files_List,
-    };
-
-    struct FilesVal
-    {
-        public:
-            int type;
-            char *dir, *ext;
-            std::vector<char *> files;
-
-            FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1) {}
-            ~FilesVal()
-            {
-                delete[] dir;
-                delete[] ext;
-
-                dir = nullptr;
-                ext = nullptr;
-                for(char* i : files)
-                {
-                    delete[] i;
-                }
-            }
-
-            void update()
-            {
-                if(type!=Files_Directory || millis >= commandmillis)
-                {
-                    return;
-                }
-                //first delete old cached file vector
-                for(char* i : files)
-                {
-                    delete[] i;
-                }
-                //generate new one
-                listfiles(dir, ext, files);
-                std::sort(files.begin(), files.end());
-                for(uint i = 0; i < files.size(); i++)
-                {
-                    if(i && !std::strcmp(files[i], files[i-1]))
-                    {
-                        delete[] files.at(i);
-                        files.erase(files.begin() + i);
-                        i--; //we need to make up for the element we destroyed
-                    }
-                }
-                millis = totalmillis;
-            }
-
-        private:
-            int millis;
-    };
-
-    char *prependstring(char *d, const char *s, size_t len)
-    {
-        size_t slen = std::min(std::strlen(s), len);
-        std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
-        std::memcpy(d, s, slen);
-        d[len-1] = 0;
-        return d;
-    }
-
-    hashtable<FilesKey, FilesVal *> completefiles;
-    hashtable<char *, FilesVal *> completions;
-
-    int completesize = 0;
-    char *lastcomplete = nullptr;
-
-    void resetcomplete()
-    {
-        completesize = 0;
-    }
-
-    void addcomplete(char *command, int type, char *dir, char *ext)
-    {
-        if(identflags&Idf_Overridden)
-        {
-            conoutf(Console_Error, "cannot override complete %s", command);
-            return;
-        }
-        if(!dir[0])
-        {
-            FilesVal **hasfiles = completions.access(command);
-            if(hasfiles)
-            {
-                *hasfiles = nullptr;
-            }
-            return;
-        }
-        if(type==Files_Directory)
-        {
-            int dirlen = static_cast<int>(std::strlen(dir));
-            while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
-            {
-                dir[--dirlen] = '\0';
-            }
-            if(ext)
-            {
-                if(std::strchr(ext, '*'))
-                {
-                    ext[0] = '\0';
-                }
-                if(!ext[0])
-                {
-                    ext = nullptr;
-                }
-            }
-        }
-        FilesKey key(type, dir, ext);
-        FilesVal **val = completefiles.access(key);
-        if(!val)
-        {
-            FilesVal *f = new FilesVal(type, dir, ext);
-            if(type==Files_List)
-            {
-                explodelist(dir, f->files);
-            }
-            val = &completefiles[FilesKey(type, f->dir, f->ext)];
-            *val = f;
-        }
-        FilesVal **hasfiles = completions.access(command);
-        if(hasfiles)
-        {
-            *hasfiles = *val;
-        }
-        else
-        {
-            completions[newstring(command)] = *val;
-        }
-    }
-
-    void addfilecomplete(char *command, char *dir, char *ext)
-    {
-        addcomplete(command, Files_Directory, dir, ext);
-    }
-
-    void addlistcomplete(char *command, char *list)
-    {
-        addcomplete(command, Files_List, list, nullptr);
-    }
-
-    void complete(char *s, int maxlen, const char *cmdprefix)
-    {
-        int cmdlen = 0;
-        if(cmdprefix)
-        {
-            cmdlen = std::strlen(cmdprefix);
-            if(std::strncmp(s, cmdprefix, cmdlen))
-            {
-                prependstring(s, cmdprefix, maxlen);
-            }
-        }
-        if(!s[cmdlen])
-        {
-            return;
-        }
-        if(!completesize)
-        {
-            completesize = static_cast<int>(std::strlen(&s[cmdlen]));
-            delete[] lastcomplete;
-            lastcomplete = nullptr;
-        }
-        FilesVal *f = nullptr;
-        if(completesize)
-        {
-            char *end = std::strchr(&s[cmdlen], ' ');
-            if(end)
-            {
-                f = completions.find(stringslice(&s[cmdlen], end), nullptr);
-            }
-        }
-        const char *nextcomplete = nullptr;
-        if(f) // complete using filenames
-        {
-            int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
-            f->update();
-            for(uint i = 0; i < f->files.size(); i++)
-            {
-                if(std::strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
-                          (!lastcomplete || std::strcmp(f->files[i], lastcomplete) > 0) &&
-                          (!nextcomplete || std::strcmp(f->files[i], nextcomplete) < 0))
-                {
-                    nextcomplete = f->files[i];
-                }
-            }
-            cmdprefix = s;
-            cmdlen = commandsize;
-        }
-        else // complete using command or var (ident) names
-        {
-            for(auto& [k, id] : idents)
-            {
-                if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
-                          (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
-                          (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
-                {
-                    nextcomplete = id.name;
-                }
-            }
-        }
-
-        delete[] lastcomplete;
-        lastcomplete = nullptr;
-        if(nextcomplete)
-        {
-            cmdlen = std::min(cmdlen, maxlen-1);
-            if(cmdlen)
-            {
-                std::memmove(s, cmdprefix, cmdlen);
-            }
-            copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
-            lastcomplete = newstring(nextcomplete);
-        }
-    }
 }
 
 //iengine.h
@@ -1067,18 +1148,18 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    KeyM *haskey = keyms.access(code);
-    if(haskey && haskey->pressed)
+    auto itr = keyms.find(code);
+    if(itr != keyms.end() && (*itr).second.pressed)
     {
-        execbind(*haskey, isdown, map); // allow pressed keys to release
+        execbind((*itr).second, isdown, map); // allow pressed keys to release
     }
     else if(!UI::keypress(code, isdown)) // UI key intercept
     {
         if(!consolekey(code, isdown))
         {
-            if(haskey)
+            if(itr != keyms.end())
             {
-                execbind(*haskey, isdown, map);
+                execbind((*itr).second, isdown, map);
             }
         }
     }
@@ -1151,8 +1232,8 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    KeyM *km = keyms.access(code);
-    return km ? km->name : nullptr;
+    auto itr = keyms.find(code);
+    return itr != keyms.end() ? (*itr).second.name : nullptr;
 }
 
 tagval *addreleaseaction(ident *id, int numargs)
@@ -1173,61 +1254,34 @@ tagval *addreleaseaction(ident *id, int numargs)
 void writebinds(std::fstream& f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
-    std::vector<KeyM *> binds;
-    ENUMERATE(keyms, KeyM, km, binds.push_back(&km));
+    std::vector<KeyMap *> binds;
+    for(auto &[k, km] : keyms)
+    {
+        binds.push_back(&km);
+    }
     std::sort(binds.begin(), binds.end());
     for(int j = 0; j < 3; ++j)
     {
-        for(uint i = 0; i < binds.size(); i++)
+        for(KeyMap *&km : binds)
         {
-            KeyM &km = *binds[i];
-            if(*km.actions[j])
+            if(*(km->actions[j]))
             {
-                if(validateblock(km.actions[j]))
+                if(validateblock(km->actions[j]))
                 {
-                    f << cmds[j] << " " << escapestring(km.name) << " [" << km.actions[j] << "]\n";
+                    f << cmds[j] << " " << escapestring(km->name) << " [" << km->actions[j] << "]\n";
                 }
                 else
                 {
-                    f << cmds[j] << " " << escapestring(km.name) << " " << escapestring(km.actions[j]) << std::endl;
+                    f << cmds[j] << " " << escapestring(km->name) << " " << escapestring(km->actions[j]) << std::endl;
                 }
             }
         }
     }
 }
 
-//print to a stream f the listcompletions in the completions filesval
-void writecompletions(std::fstream& f)
+extern void writecompletions(std::fstream& f)
 {
-    std::vector<char *> cmds;
-    ENUMERATE_KT(completions, char *, k, FilesVal *, v,
-    {
-        if(v)
-        {
-            cmds.push_back(k);
-        }
-    });
-    std::sort(cmds.begin(), cmds.end());
-    for(uint i = 0; i < cmds.size(); i++)
-    {
-        char *k = cmds[i];
-        FilesVal *v = completions[k];
-        if(v->type==Files_List)
-        {
-            if(validateblock(v->dir))
-            {
-                f << "listcomplete " << escapeid(k) << " [" << v->dir << "]\n";
-            }
-            else
-            {
-                f << "listcomplete " << escapeid(k) << " " << escapestring(v->dir) << std::endl;
-            }
-        }
-        else
-        {
-            f << "complete " << escapeid(k) << " " << escapestring(v->dir) << " " << escapestring(v->ext ? v->ext : "*") << std::endl;
-        }
-    }
+    ::cfinder.writecompletions(f);
 }
 
 void initconsolecmds()
@@ -1253,85 +1307,97 @@ void initconsolecmds()
 
     static auto bind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Default, "bind");
+        bindkey(key, action, KeyMap::Action_Default, "bind");
     };
     addcommand("bind", reinterpret_cast<identfun>(+bind), "ss", Id_Command);
 
     static auto specbind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Spectator, "specbind");
+        bindkey(key, action, KeyMap::Action_Spectator, "specbind");
     };
     addcommand("specbind", reinterpret_cast<identfun>(+specbind), "ss", Id_Command);
 
     static auto editbind = [] (char *key, char *action)
     {
-        bindkey(key, action, KeyM::Action_Editing, "editbind");
+        bindkey(key, action, KeyMap::Action_Editing, "editbind");
     };
     addcommand("editbind", reinterpret_cast<identfun>(+editbind), "ss", Id_Command);
 
     static auto getbindcmd = [] (char *key)
     {
-        getbind(key, KeyM::Action_Default);
+        getbind(key, KeyMap::Action_Default);
     };
     addcommand("getbind", reinterpret_cast<identfun>(+getbindcmd), "s", Id_Command);
 
     static auto getspecbind = [] (char *key)
     {
-        getbind(key, KeyM::Action_Spectator);
+        getbind(key, KeyMap::Action_Spectator);
     };
     addcommand("getspecbind", reinterpret_cast<identfun>(+getspecbind), "s", Id_Command);
 
     static auto geteditbind = [] (char *key)
     {
-        getbind(key, KeyM::Action_Editing);
+        getbind(key, KeyMap::Action_Editing);
     };
     addcommand("geteditbind", reinterpret_cast<identfun>(+geteditbind), "s", Id_Command);
 
     static auto searchbindscmd = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Default);
+        searchbinds(action, KeyMap::Action_Default);
     };
     addcommand("searchbinds", reinterpret_cast<identfun>(+searchbindscmd), "s", Id_Command);
 
     static auto searchspecbinds = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Spectator);
+        searchbinds(action, KeyMap::Action_Spectator);
     };
     addcommand("searchspecbinds", reinterpret_cast<identfun>(+searchspecbinds), "s", Id_Command);
 
     static auto searcheditbinds = [] (char *action)
     {
-        searchbinds(action, KeyM::Action_Editing);
+        searchbinds(action, KeyMap::Action_Editing);
     };
     addcommand("searcheditbinds", reinterpret_cast<identfun>(+searcheditbinds), "s", Id_Command);
 
     static auto clearbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Default);
+        }
     };
     addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
 
     static auto clearspecbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Spectator);
+        }
     };
     addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
 
     static auto cleareditbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+        for(auto &[k, km] : keyms)
+        {
+            km.clear(KeyMap::Action_Editing);
+        }
     };
     addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
 
     static auto clearallbinds = [] ()
     {
-        ENUMERATE(keyms, KeyM, km, km.clear());
+        for(auto &[k, km] : keyms)
+        {
+            km.clear();
+        }
     };
     addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
     addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
     addcommand("saycommand", reinterpret_cast<identfun>(saycommand), "C", Id_Command);
     addcommand("history", reinterpret_cast<identfun>(historycmd), "i", Id_Command);
     addcommand("onrelease", reinterpret_cast<identfun>(onrelease), "s", Id_Command);
-    addcommand("complete", reinterpret_cast<identfun>(addfilecomplete), "sss", Id_Command);
-    addcommand("listcomplete", reinterpret_cast<identfun>(addlistcomplete), "ss", Id_Command);
+    addcommand("complete", reinterpret_cast<identfun>(+[] (char *command, char *dir, char *ext) {::cfinder.addfilecomplete(command, dir, ext);}), "sss", Id_Command);
+    addcommand("listcomplete", reinterpret_cast<identfun>(+[] (char *command, char *list) {::cfinder.addlistcomplete(command, list);}), "ss", Id_Command);
 }

@@ -1,0 +1,31 @@
+name: Makefile CI Tests (C++20)
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update package list
+      run: sudo apt-get update
+
+    - name: Install dependencies
+      run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
+
+    - name: Build
+      run: make CPP_20=1 -Csrc -j4
+
+    - name: Move library to ld path
+      run: sudo cp src/libprimis.so /usr/lib/libprimis.so
+    
+    - name: Build test code
+      run: cd test && make
+      
+    - name: Run tests
+      run: cd test && ./libprimis_testsuite
