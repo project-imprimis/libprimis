@@ -239,7 +239,7 @@ namespace
 
             verthash() { clearverts(); }
 
-            int addvert(const vertex &v)
+            std::optional<int> addvert(const vertex &v)
             {
                 uint h = hthash(v.pos)&(hashsize-1);
                 for(int i = table[h]; i>=0; i = chain[i])
@@ -247,12 +247,12 @@ namespace
                     const vertex &c = verts[i];
                     if(c.pos==v.pos && c.tc==v.tc && c.norm==v.norm && c.tangent==v.tangent)
                     {
-                         return i;
-                     }
+                        return std::optional(i);
+                    }
                 }
                 if(verts.size() >= USHRT_MAX)
                 {
-                    return -1;
+                    return std::nullopt;
                 }
                 verts.push_back(v);
                 chain.emplace_back(table[h]);
@@ -271,7 +271,7 @@ namespace
 
             std::vector<int> chain;
 
-            int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
+            std::optional<int> addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
             {
                 vertex vtx;
                 vtx.pos = pos;
@@ -844,7 +844,7 @@ namespace
                             vec tc = orient.transposedtransform(vec(center).sub(v.pos)).div(size).add(0.5f);
                             v.tc = vec(tc.x, tc.z, s.fade ? tc.y * s.depth / s.fade : 1.0f);
                             v.tangent.lerp(x0, x1, x2, b0, b1, b2);
-                            idx[k] = addvert(v);
+                            idx[k] = addvert(v).value_or(-1);
                         }
                         std::vector<ushort> &tris = decalindices[tkey].tris;
                         for(int k = 0; k < nump-2; ++k)
@@ -1070,8 +1070,8 @@ namespace
                             {
                                 vt.tangent.w = orientation_bitangent[vslot.rotation][orient].scalartriple(vt.norm.tonormal(), vt.tangent.tonormal()) < 0 ? 0 : 255;
                             }
-                            int i2 = vc.addvert(vt);
-                            if(i2 < 0)
+                            std::optional<int> i2 = vc.addvert(vt);
+                            if(!i2.has_value())
                             {
                                 return;
                             }
@@ -1084,12 +1084,12 @@ namespace
                                 total += 3;
                                 idxs.push_back(i0);
                                 idxs.push_back(i1);
-                                idxs.push_back(i2);
-                                i1 = i2;
+                                idxs.push_back(i2.value());
+                                i1 = i2.value();
                             }
                             else
                             {
-                                start = i0 = i2;
+                                start = i0 = i2.value();
                             }
                             ctj = t.next;
                         }
@@ -1309,7 +1309,7 @@ namespace
                 v.norm = bvec(128, 128, 255);
                 v.tangent = vec4<uchar>(255, 128, 128, 255);
             }
-            index[k] = vc.addvert(v);
+            index[k] = vc.addvert(v).value_or(-1);
             if(index[k] < 0)
             {
                 return;
