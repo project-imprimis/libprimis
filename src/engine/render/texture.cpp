@@ -1902,7 +1902,7 @@ std::optional<int> findslottex(const char *name)
 static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
 {
     int tnum = findslottex(type).value_or(-1);
-    int matslot;
+    std::optional<int> matslot = std::nullopt;
     if(tnum == Tex_Diffuse)
     {
         if(slots.size() >= 0x10000)
@@ -1922,10 +1922,10 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
         decalslots.push_back(new DecalSlot(decalslots.size()));
         defslot = decalslots.back();
     }
-    else if((matslot = findmaterial(type)) >= 0)
+    else if((matslot = findmaterial(type)).has_value())
     {
         tnum = Tex_Diffuse;
-        defslot = &materialslots[matslot];
+        defslot = &materialslots[matslot.value()];
         defslot->reset();
     }
     else if(!defslot)
