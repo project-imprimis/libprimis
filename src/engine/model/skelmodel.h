@@ -488,9 +488,6 @@ struct skelmodel : animmodel
         void cleanup();
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
-        //hitzone
-        void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray) const;
-        //end hitzone.h
         void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
         void preload();
 
