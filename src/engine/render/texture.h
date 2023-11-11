@@ -111,9 +111,9 @@ struct MatSlot : Slot, VSlot
         return *this;
     }
 
-    int cancombine(int) const
+    std::optional<int> cancombine(int) const
     {
-        return -1;
+        return std::nullopt;
     }
 
     void reset()
