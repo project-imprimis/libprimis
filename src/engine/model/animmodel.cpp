@@ -46,12 +46,6 @@ VAR(animationinterpolationtime, 0, 200, 1000);
 
 std::unordered_map<std::string, animmodel::meshgroup *> animmodel::meshgroups;
 
-int animmodel::intersectresult = -1,
-    animmodel::intersectmode = 0;
-
-float animmodel::intersectdist = 0,
-      animmodel::intersectscale = 1;
-
 bool animmodel::enabletc = false,
      animmodel::enabletangents = false,
      animmodel::enablebones = false,
@@ -982,8 +976,6 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
     oo.div(resize);
     matrixstack.top().transposedtransformnormal(ray, oray);
 
-    intersectscale = resize;
-
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
         for(linkedpart &link : links)
@@ -1318,15 +1310,9 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
         pitch = 0;
     }
     sizescale = size;
-    intersectresult = -1;
-    intersectmode = mode;
-    intersectdist = dist;
+
     intersect(anim, basetime, basetime2, pitch, axis, forward, d, a, o, ray);
-    if(intersectresult >= 0)
-    {
-        dist = intersectdist;
-    }
-    return intersectresult;
+    return -1;
 }
 
 void animmodel::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const
