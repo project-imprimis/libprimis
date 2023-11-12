@@ -41,9 +41,6 @@ VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
 VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
-std::map<std::string, skelmodel::skeleton *> skelmodel::skeletons; //static member variable
-
-
 skelmodel::blendcombo::blendcombo() : uses(1)
 {
 }
@@ -231,57 +228,53 @@ void skelmodel::skeleton::remapbones()
         info.ragdollindex = -1;
     }
     numgpubones = 0;
-    //for each blendcombo in each skelmeshgroup
-    for(skelmeshgroup *&group : users)
+    for(blendcombo &c : owner->blendcombos)
     {
-        for(blendcombo &c : group->blendcombos)
+        for(size_t k = 0; k < c.bonedata.size(); ++k) //loop k
         {
-            for(size_t k = 0; k < c.bonedata.size(); ++k) //loop k
+            if(!c.bonedata[k].weights)
             {
-                if(!c.bonedata[k].weights)
+                c.bonedata[k].interpbones = k > 0 ? c.bonedata[k-1].interpbones : 0;
+                continue;
+            }
+            boneinfo &info = bones[c.bonedata[k].bones];
+            if(info.interpindex < 0)
+            {
+                info.interpindex = numgpubones++;
+            }
+            c.bonedata[k].interpbones = info.interpindex;
+            if(info.group < 0)
+            {
+                continue;
+            }
+            for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
+            {
+                if(!c.bonedata[l].weights)
                 {
-                    c.bonedata[k].interpbones = k > 0 ? c.bonedata[k-1].interpbones : 0;
+                    break;
+                }
+                if(l == k)
+                {
                     continue;
                 }
-                boneinfo &info = bones[c.bonedata[k].bones];
-                if(info.interpindex < 0)
+                int parent = c.bonedata[l].bones;
+                if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
                 {
-                    info.interpindex = numgpubones++;
+                    info.group = -info.parent;
+                    break;
                 }
-                c.bonedata[k].interpbones = info.interpindex;
-                if(info.group < 0)
+                if(info.group <= parent)
                 {
                     continue;
                 }
-                for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
+                int child = c.bonedata[k].bones;
+                while(parent > child)
                 {
-                    if(!c.bonedata[l].weights)
-                    {
-                        break;
-                    }
-                    if(l == k)
-                    {
-                        continue;
-                    }
-                    int parent = c.bonedata[l].bones;
-                    if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
-                    {
-                        info.group = -info.parent;
-                        break;
-                    }
-                    if(info.group <= parent)
-                    {
-                        continue;
-                    }
-                    int child = c.bonedata[k].bones;
-                    while(parent > child)
-                    {
-                        parent = bones[parent].parent;
-                    }
-                    if(parent != child)
-                    {
-                        info.group = c.bonedata[l].bones;
-                    }
+                    parent = bones[parent].parent;
+                }
+                if(parent != child)
+                {
+                    info.group = c.bonedata[l].bones;
                 }
             }
         }
@@ -824,10 +817,7 @@ void skelmodel::skeleton::cleanup(bool full)
     blendoffsets.clear();
     if(full)
     {
-        for(skelmeshgroup *i : users)
-        {
-            i->cleanup();
-        }
+        owner->cleanup();
     }
 }
 
@@ -962,18 +952,8 @@ skelmodel::skelmeshgroup::~skelmeshgroup()
 {
     if(skel)
     {
-        if(skel->shared)
-        {
-            skel->users.erase(std::find(skel->users.begin(), skel->users.end(), this));
-        }
-        else
-        {
-            if(skel)
-            {
-                delete skel;
-                skel = nullptr;
-            }
-        }
+        delete skel;
+        skel = nullptr;
     }
     if(ebuf)
     {
@@ -1486,33 +1466,6 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
 
 // skelmeshgroup
 
-//if name is null, creates skel as a new skeleton, and assigns its owner as this object
-//if name is provided, attempts to fetch an existing skeleton from static map, if
-//none found, creates one, assigns its owner to this, assigns it to skel, and skeletons
-void skelmodel::skelmeshgroup::shareskeleton(const char *name)
-{
-    if(!name)
-    {
-        skel = new skeleton;
-        skel->users.push_back(this);
-        return;
-    }
-
-    auto itr = skeletons.find(name);
-    if(itr != skeletons.end())
-    {
-        skel = skeletons[std::string(name)];
-    }
-    else
-    {
-        skel = new skeleton;
-        skel->name = std::string(name);
-        skeletons[std::string(name)] = skel;
-    }
-    skel->users.push_back(this);
-    skel->shared++;
-}
-
 int skelmodel::skelmeshgroup::findtag(const char *name)
 {
     return skel->findtag(name);
@@ -1686,10 +1639,11 @@ void skelmodel::skelmeshgroup::preload()
     }
 }
 
-animmodel::meshgroup * skelmodel::loadmeshes(const char *name, const char *skelname, float smooth)
+animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
 {
     skelmeshgroup *group = newmeshes();
-    group->shareskeleton(skelname);
+    group->skel = new skeleton;
+    group->skel->owner = group;
     if(!group->load(name, smooth))
     {
         delete group;
@@ -1697,11 +1651,11 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, const char *skeln
     }
     return group;
 }
-animmodel::meshgroup * skelmodel::sharemeshes(const char *name, const char *skelname, float smooth)
+animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
 {
     if(meshgroups.find(name) == meshgroups.end())
     {
-        meshgroup *group = loadmeshes(name, skelname, smooth);
+        meshgroup *group = loadmeshes(name, smooth);
         if(!group)
         {
             return nullptr;

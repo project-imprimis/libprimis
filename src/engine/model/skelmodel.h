@@ -296,8 +296,7 @@ struct skelmodel : animmodel
     {
         public:
             std::string name;
-            int shared;
-            std::vector<skelmeshgroup *> users;
+            skelmeshgroup *owner;
             boneinfo *bones; //array of boneinfo, size equal to numbones
             int numbones, numinterpbones, numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
@@ -310,7 +309,7 @@ struct skelmodel : animmodel
             std::vector<skelcacheentry> skelcache;
             std::unordered_map<GLuint, int> blendoffsets;
 
-            skeleton() : name(""), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
+            skeleton() : name(""), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
             {
             }
 
@@ -395,8 +394,6 @@ struct skelmodel : animmodel
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
     };
 
-    static std::map<std::string, skeleton *> skeletons;
-
     struct skelmeshgroup : meshgroup
     {
         skeleton *skel;
@@ -423,7 +420,7 @@ struct skelmodel : animmodel
 
         virtual ~skelmeshgroup();
 
-        void shareskeleton(const char *name);
+        void makeskeleton();
         int findtag(const char *name);
         void *animkey();
         int totalframes() const;
@@ -497,8 +494,8 @@ struct skelmodel : animmodel
 
     virtual skelmeshgroup *newmeshes() = 0;
 
-    meshgroup *loadmeshes(const char *name, const char *skelname = nullptr, float smooth = 2);
-    meshgroup *sharemeshes(const char *name, const char *skelname = nullptr, float smooth = 2);
+    meshgroup *loadmeshes(const char *name, float smooth = 2);
+    meshgroup *sharemeshes(const char *name, float smooth = 2);
 
     struct animpartmask
     {
@@ -603,7 +600,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef struct MDL::pitchtarget pitchtarget;
     typedef struct MDL::pitchcorrect pitchcorrect;
 
-    static void loadpart(char *meshfile, char *skelname, float *smooth)
+    //unused second param
+    static void loadpart(char *meshfile, char *, float *smooth)
     {
         if(!MDL::loading)
         {
@@ -613,7 +611,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         std::string filename;
         filename.append(MDL::dir).append("/").append(meshfile);
         part &mdl = MDL::loading->addpart();
-        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), skelname[0] ? skelname : nullptr, *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
         {
             conoutf("could not load %s", filename.c_str());

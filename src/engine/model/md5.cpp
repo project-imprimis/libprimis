@@ -411,15 +411,12 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
         }
     }
 
-    if(skel->shared <= 1)
+    skel->linkchildren();
+    for(uint i = 0; i < basejoints.size(); i++)
     {
-        skel->linkchildren();
-        for(uint i = 0; i < basejoints.size(); i++)
-        {
-            boneinfo &b = skel->bones[i];
-            b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
-            (b.invbase = b.base).invert();
-        }
+        boneinfo &b = skel->bones[i];
+        b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
+        (b.invbase = b.base).invert();
     }
 
     for(uint i = 0; i < meshes.size(); i++)
