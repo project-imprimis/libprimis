@@ -1163,7 +1163,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
         }
 
-        bindvbo(as, p, vc, &sc, bc);
+        bindvbo(as, p, vc, &sc);
 
         LOOP_RENDER_MESHES(skelmesh, m,
         {
@@ -1528,7 +1528,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return std::max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc, blendcacheentry *bc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc)
 {
     if(!skel->numframes)
     {
