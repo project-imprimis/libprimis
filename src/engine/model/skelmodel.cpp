@@ -1486,6 +1486,9 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
 
 // skelmeshgroup
 
+//if name is null, creates skel as a new skeleton, and assigns its owner as this object
+//if name is provided, attempts to fetch an existing skeleton from static map, if
+//none found, creates one, assigns its owner to this, assigns it to skel, and skeletons
 void skelmodel::skelmeshgroup::shareskeleton(const char *name)
 {
     if(!name)
