@@ -150,7 +150,7 @@ struct skelmodel : animmodel
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
         void genBIH(BIH::mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
-        static void assignvert(vvertg &vv, int j, const vert &v, blendcombo &);
+        static void assignvert(vvertg &vv, int j, const vert &v);
         static void assignvert(vvertgw &vv, int j, const vert &v, blendcombo &c);
 
         template<class T>
@@ -191,7 +191,7 @@ struct skelmodel : animmodel
                     int index = t.vert[j];
                     vert &v = verts[index];
                     T vv;
-                    assignvert(vv, index, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
+                    assignvert(vv, index, v);
                     auto hashfn = std::hash<vec>();
                     int htidx = hashfn(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)

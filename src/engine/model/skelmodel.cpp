@@ -1398,7 +1398,7 @@ void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void skelmodel::skelmesh::assignvert(vvertg &vv, int j, const vert &v, blendcombo &)
+void skelmodel::skelmesh::assignvert(vvertg &vv, int j, const vert &v)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
