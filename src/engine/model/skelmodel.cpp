@@ -1642,8 +1642,7 @@ void skelmodel::skelmeshgroup::preload()
 animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
 {
     skelmeshgroup *group = newmeshes();
-    group->skel = new skeleton;
-    group->skel->owner = group;
+    group->skel = new skeleton(group);
     if(!group->load(name, smooth))
     {
         delete group;

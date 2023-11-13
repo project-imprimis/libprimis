@@ -296,7 +296,7 @@ struct skelmodel : animmodel
     {
         public:
             std::string name;
-            skelmeshgroup *owner;
+            skelmeshgroup * const owner;
             boneinfo *bones; //array of boneinfo, size equal to numbones
             int numbones, numinterpbones, numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
@@ -309,7 +309,7 @@ struct skelmodel : animmodel
             std::vector<skelcacheentry> skelcache;
             std::unordered_map<GLuint, int> blendoffsets;
 
-            skeleton() : name(""), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
+            skeleton(skelmeshgroup * const group) : name(""), owner(group), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
             {
             }
 
