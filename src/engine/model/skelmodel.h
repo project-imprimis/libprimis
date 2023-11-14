@@ -157,40 +157,9 @@ struct skelmodel : animmodel
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
         int genvbo(std::vector<GLuint> &idxs, int offset);
 
-        template<class T>
-        static inline void fillvert(T &vv, int j, vert &v)
-        {
-            vv.tc = v.tc;
-        }
-
-        template<class T>
-        void fillverts(T *vdata)
-        {
-            vdata += voffset;
-            for(int i = 0; i < numverts; ++i)
-            {
-                fillvert(vdata[i], i, verts[i]);
-            }
-        }
-
-        template<class T>
-        void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, T * RESTRICT vdata, skin &s)
-        {
-            const int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
-            bdata2 -= blendoffset;
-            vdata += voffset;
-            for(int i = 0; i < numverts; ++i)
-            {
-                const vert &src = verts[i];
-                T &dst = vdata[i];
-                const dualquat &b = (src.interpindex < blendoffset ? bdata1 : bdata2)[src.interpindex];
-                dst.pos = b.transform(src.pos);
-                quat q = b.transform(src.tangent);
-                fixqtangent(q, src.tangent.w);
-                dst.tangent = q;
-            }
-        }
-
+        static void fillvert(vvert &vv, int j, vert &v);
+        void fillverts(vvert *vdata);
+        void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
         void setshader(Shader *s, int row);
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };

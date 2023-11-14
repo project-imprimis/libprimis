@@ -1498,6 +1498,37 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset)
     return numverts;
 }
 
+void skelmodel::skelmesh::fillvert(vvert &vv, int j, vert &v)
+{
+    vv.tc = v.tc;
+}
+
+void skelmodel::skelmesh::fillverts(vvert *vdata)
+{
+    vdata += voffset;
+    for(int i = 0; i < numverts; ++i)
+    {
+        fillvert(vdata[i], i, verts[i]);
+    }
+}
+
+void skelmodel::skelmesh::interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s)
+{
+    const int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
+    bdata2 -= blendoffset;
+    vdata += voffset;
+    for(int i = 0; i < numverts; ++i)
+    {
+        const vert &src = verts[i];
+        vvert &dst = vdata[i];
+        const dualquat &b = (src.interpindex < blendoffset ? bdata1 : bdata2)[src.interpindex];
+        dst.pos = b.transform(src.pos);
+        quat q = b.transform(src.tangent);
+        fixqtangent(q, src.tangent.w);
+        dst.tangent = q;
+    }
+}
+
 void skelmodel::skelmesh::setshader(Shader *s, int row)
 {
     skelmeshgroup *g = static_cast<skelmeshgroup *>(group);
