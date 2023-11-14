@@ -1405,7 +1405,7 @@ void skelmodel::skelmesh::assignvert(vvertg &vv, int j, const vert &v)
     vv.tangent = v.tangent;
 }
 
-void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, const vert &v, blendcombo &c)
+void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;

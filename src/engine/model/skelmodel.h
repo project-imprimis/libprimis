@@ -151,7 +151,7 @@ struct skelmodel : animmodel
         void genBIH(BIH::mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
         static void assignvert(vvertg &vv, int j, const vert &v);
-        static void assignvert(vvertgw &vv, int j, const vert &v, blendcombo &c);
+        static void assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c);
 
         template<class T>
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<T> &vverts)
