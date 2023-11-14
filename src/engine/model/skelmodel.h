@@ -153,70 +153,8 @@ struct skelmodel : animmodel
         static void assignvert(vvertg &vv, int j, const vert &v);
         static void assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c);
 
-        template<class T>
-        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<T> &vverts)
-        {
-            voffset = offset;
-            eoffset = idxs.size();
-            for(int i = 0; i < numverts; ++i)
-            {
-                vert &v = verts[i];
-                vverts.emplace_back(T());
-                assignvert(vverts.back(), i, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
-            }
-            for(int i = 0; i < numtris; ++i)
-            {
-                for(int j = 0; j < 3; ++j)
-                {
-                    idxs.push_back(voffset + tris[i].vert[j]);
-                }
-            }
-            elen = idxs.size()-eoffset;
-            minvert = voffset;
-            maxvert = voffset + numverts-1;
-            return numverts;
-        }
-
-        template<class T>
-        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
-        {
-            voffset = offset;
-            eoffset = idxs.size();
-            minvert = 0xFFFF;
-            for(int i = 0; i < numtris; ++i)
-            {
-                tri &t = tris[i];
-                for(int j = 0; j < 3; ++j)
-                {
-                    int index = t.vert[j];
-                    vert &v = verts[index];
-                    T vv;
-                    assignvert(vv, index, v);
-                    auto hashfn = std::hash<vec>();
-                    int htidx = hashfn(v.pos)&(htlen-1);
-                    for(int k = 0; k < htlen; ++k)
-                    {
-                        int &vidx = htdata[(htidx+k)&(htlen-1)];
-                        if(vidx < 0)
-                        {
-                            vidx = idxs.emplace_back(static_cast<GLuint>(vverts.size()));
-                            vverts.push_back(vv);
-                            break;
-                        }
-                        else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
-                        {
-                            minvert = std::min(minvert, idxs.emplace_back(static_cast<GLuint>(vidx)));
-                            break;
-                        }
-                    }
-                }
-            }
-            elen = idxs.size()-eoffset;
-            minvert = std::min(minvert, static_cast<GLuint>(voffset));
-            maxvert = std::max(minvert, static_cast<GLuint>(vverts.size()-1));
-            return vverts.size()-voffset;
-        }
-
+        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
+        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
         int genvbo(std::vector<GLuint> &idxs, int offset);
 
         template<class T>
