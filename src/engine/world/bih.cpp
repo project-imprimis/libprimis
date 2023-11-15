@@ -1153,23 +1153,23 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
     return false;
 }
 
-void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br) const
+void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
         return;
     }
     const mesh::tri &t = m.tris[tidx];
-    vec v[3] =
+    std::array<vec, 3> v =
     {
         orient.transform(m.getpos(t.vert[0])),
         orient.transform(m.getpos(t.vert[1])),
         orient.transform(m.getpos(t.vert[2]))
     };
-    genstainmmtri(s, v);
+    tris.push_back(v);
 }
 
-void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br) const
+void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br) const
 {
     std::stack<node *> stack;
     ivec bmin = static_cast<ivec>(bo).sub(br),
@@ -1192,13 +1192,13 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
                 }
                 else
                 {
-                    genstaintris(s, m, curnode->childindex(faridx), center, radius, orient, bo, br);
+                    genstaintris(tris, m, curnode->childindex(faridx), center, radius, orient, bo, br);
                 }
             }
         }
         else if(curnode->isleaf(nearidx))
         {
-            genstaintris(s, m, curnode->childindex(nearidx), center, radius, orient, bo, br);
+            genstaintris(tris, m, curnode->childindex(nearidx), center, radius, orient, bo, br);
             if(farsplit <= 0)
             {
                 if(!curnode->isleaf(faridx))
@@ -1208,7 +1208,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
                 }
                 else
                 {
-                    genstaintris(s, m, curnode->childindex(faridx), center, radius, orient, bo, br);
+                    genstaintris(tris, m, curnode->childindex(faridx), center, radius, orient, bo, br);
                 }
             }
         }
@@ -1224,14 +1224,14 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
                     }
                     else
                     {
-                        genstaintris(s, m, center, radius, orient, &nodes[curnode->childindex(nearidx)], bo, br);
+                        genstaintris(tris, m, center, radius, orient, &nodes[curnode->childindex(nearidx)], bo, br);
                         curnode += curnode->childindex(faridx);
                         continue;
                     }
                 }
                 else
                 {
-                    genstaintris(s, m, curnode->childindex(faridx), center, radius, orient, bo, br);
+                    genstaintris(tris, m, curnode->childindex(faridx), center, radius, orient, bo, br);
                 }
             }
             curnode += curnode->childindex(nearidx);
@@ -1246,7 +1246,7 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
     }
 }
 
-void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale) const
+void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
@@ -1294,7 +1294,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
         }
         matrix4x3 morient;
         morient.mul(orient, o, m.xform);
-        genstaintris(s, m, m.invxform().transform(bo), radius, morient, m.nodes, icenter, iradius);
+        genstaintris(tris, m, m.invxform().transform(bo), radius, morient, m.nodes, icenter, iradius);
     }
 }
 

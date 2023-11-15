@@ -15,5 +15,4 @@ class stainrenderer;
 extern void clearstains();
 extern bool renderstains(int sbuf, bool gbuf, int layer = 0);
 extern void cleanupstains();
-extern void genstainmmtri(stainrenderer *s, const vec v[3]);
 #endif

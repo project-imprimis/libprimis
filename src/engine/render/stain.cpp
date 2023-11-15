@@ -393,7 +393,7 @@ class stainrenderer
             }
         }
 
-        void genmmtri(const vec v[3]) // gen map model triangles
+        void genmmtri(const std::array<vec, 3> &v) // gen map model triangles
         {
             vec n;
             n.cross(v[0], v[1], v[2]).normalize();
@@ -419,7 +419,7 @@ class stainrenderer
                 v2[3+4];
             float ptc = pt.dot(pcenter),
                   pbc = pb.dot(pcenter);
-            int numv = polyclip(v, 3, pt, ptc - stainradius, ptc + stainradius, v1);
+            int numv = polyclip(v.data(), v.size(), pt, ptc - stainradius, ptc + stainradius, v1);
             if(numv<3) //check with v1
             {
                 return;
@@ -883,7 +883,12 @@ class stainrenderer
                 int yaw = e.attr2,
                     pitch = e.attr3,
                     roll = e.attr4;
-                m->bih->genstaintris(this, staincenter, stainradius, e.o, yaw, pitch, roll, scale);
+                std::vector<std::array<vec, 3>> tris;
+                m->bih->genstaintris(tris, staincenter, stainradius, e.o, yaw, pitch, roll, scale);
+                for(const std::array<vec, 3> &t : tris)
+                {
+                    genmmtri(t);
+                }
             }
         }
 
@@ -1145,9 +1150,3 @@ void addstain(int type, const vec &center, const vec &surface, float radius, con
     stainrenderer &d = stains[type];
     d.addstain(center, surface, radius, color, info, rootworld);
 }
-
-void genstainmmtri(stainrenderer *s, const vec v[3])
-{
-    s->genmmtri(v);
-}
-
