@@ -38,7 +38,7 @@ class BIH
 
                 struct tri
                 {
-                    std::array<ushort, 3> vert;
+                    std::array<uint, 3> vert;
                 };
                 const tri *tris;
 
@@ -90,7 +90,7 @@ class BIH
         template<int C>
         void tricollide(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const;
 
-        void build(mesh &m, ushort *indices, int numindices, const ivec &vmin, const ivec &vmax) const;
+        void build(mesh &m, uint *indices, int numindices, const ivec &vmin, const ivec &vmax) const;
         bool traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax) const;
         void genstaintris(stainrenderer *s, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br) const;
         void genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &center, float radius, const matrix4x3 &orient, const ivec &bo, const ivec &br) const;

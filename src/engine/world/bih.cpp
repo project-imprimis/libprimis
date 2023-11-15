@@ -339,7 +339,7 @@ bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int
     return false;
 }
 
-void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, const ivec &vmax) const
+void BIH::build(mesh &m, uint *indices, int numindices, const ivec &vmin, const ivec &vmax) const
 {
     int axis = 2;
     for(int k = 0; k < 2; ++k)
@@ -504,7 +504,7 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
 
     nodes = new node[numtris];
     node *curnode = nodes;
-    ushort *indices = new ushort[numtris];
+    uint *indices = new uint[numtris];
     for(mesh &m : meshes)
     {
         m.nodes = curnode;
