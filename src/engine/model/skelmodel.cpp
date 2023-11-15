@@ -481,7 +481,7 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val) co
     }
 }
 
-void skelmodel::skeleton::applybonemask(const uint *mask, uchar *partmask, int partindex) const
+void skelmodel::skeleton::applybonemask(const uint *mask, std::vector<uchar> &partmask, int partindex) const
 {
     if(!mask || *mask==Bonemask_End)
     {
@@ -845,7 +845,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
         usegpuskel = gpuaccelerate();
     }
     int numanimparts = (reinterpret_cast<skelpart *>(as->owner))->numanimparts;
-    uchar *partmask = (reinterpret_cast<skelpart *>(as->owner))->partmask;
+    std::vector<uchar> &partmask = (reinterpret_cast<skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
     bool match = false;
     for(skelcacheentry &c : skelcache)
@@ -857,7 +857,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
                 goto mismatch;
             }
         }
-        if(c.pitch != pitch || c.partmask != partmask || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove))
+        if(c.pitch != pitch || c.partmask != partmask.data() || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove))
         {
             goto mismatch;
         }
@@ -883,7 +883,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
             sc->as[i] = as[i];
         }
         sc->pitch = pitch;
-        sc->partmask = partmask;
+        sc->partmask = partmask.data();
         sc->ragdoll = rdata;
         if(rdata)
         {
@@ -891,7 +891,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
         }
         else
         {
-            interpbones(as, pitch, axis, forward, numanimparts, partmask, *sc);
+            interpbones(as, pitch, axis, forward, numanimparts, partmask.data(), *sc);
         }
     }
     sc->millis = lastmillis;
@@ -1758,52 +1758,60 @@ animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
 }
 
 // skelpart
-uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
+
+/**
+ * @brief Manages caching of part masking data.
+ * 
+ * Attempts to match the passed vector of uchar with one in the internal static vector.
+ * If a matching entry is found, empties the passed vector returns the entry in the cache.
+ * 
+ * @param o a vector of uchar to delete or insert into the internal cache
+ * @return the passed value o, or the equivalent entry in the internal cache
+ */
+std::vector<uchar> &skelmodel::skelpart::sharepartmask(std::vector<uchar> &o)
 {
-    static std::vector<animpartmask *> partmasks;
-    for(animpartmask *p : partmasks) //iterate partmasks linked list
+    static std::vector<std::vector<uchar>> partmasks;
+    for(std::vector<uchar> &p : partmasks)
     {
-        if(p->numbones==o->numbones && !std::memcmp(p->bones, o->bones, p->numbones))
+        if(p == o)
         {
-            delete[] reinterpret_cast<uchar *>(o);
-            return p->bones;
+            o.clear();
+            return p;
         }
     }
     partmasks.push_back(o);
-    return o->bones;
+    o.clear();
+    return partmasks.back();
 }
 
-skelmodel::animpartmask *skelmodel::skelpart::newpartmask()
+std::vector<uchar> skelmodel::skelpart::newpartmask()
 {
-    animpartmask *p = reinterpret_cast<animpartmask *>(new uchar[sizeof(animpartmask) + static_cast<skelmeshgroup *>(meshes)->skel->numbones-1]);
-    p->numbones = (static_cast<skelmeshgroup *>(meshes))->skel->numbones;
-    std::memset(p->bones, 0, p->numbones);
-    return p;
+    return std::vector<uchar>((static_cast<skelmeshgroup *>(meshes))->skel->numbones, 0);
+
 }
 
 void skelmodel::skelpart::initanimparts()
 {
-    delete[] buildingpartmask;
     buildingpartmask = newpartmask();
 }
 
 bool skelmodel::skelpart::addanimpart(const uint *bonemask)
 {
-    if(!buildingpartmask || numanimparts>=maxanimparts)
+    if(buildingpartmask.empty() || numanimparts>=maxanimparts)
     {
         return false;
     }
-    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask, buildingpartmask->bones, numanimparts);
+    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask, buildingpartmask, numanimparts);
     numanimparts++;
     return true;
 }
 
 void skelmodel::skelpart::endanimparts()
 {
-    if(buildingpartmask)
+    if(buildingpartmask.size())
     {
         partmask = sharepartmask(buildingpartmask);
-        buildingpartmask = nullptr;
+        buildingpartmask.clear();
     }
 
     (static_cast<skelmeshgroup *>(meshes))->skel->optimize();

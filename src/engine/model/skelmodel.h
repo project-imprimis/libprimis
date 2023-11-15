@@ -246,7 +246,7 @@ struct skelmodel : animmodel
             void initpitchdeps();
             void optimize();
             void expandbonemask(uchar *expansion, int bone, int val) const;
-            void applybonemask(const uint *mask, uchar *partmask, int partindex) const;
+            void applybonemask(const uint *mask, std::vector<uchar> &partmask, int partindex) const;
             void linkchildren();
             int availgpubones() const;
             float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
@@ -404,34 +404,27 @@ struct skelmodel : animmodel
     meshgroup *loadmeshes(const char *name, float smooth = 2);
     meshgroup *sharemeshes(const char *name, float smooth = 2);
 
-    struct animpartmask
-    {
-        int numbones;
-        uchar bones[1];
-    };
-
     class skelpart : public part
     {
         public:
-            uchar *partmask;
+            std::vector<uchar> partmask;
 
-            skelpart(animmodel *model, int index = 0) : part(model, index), partmask(nullptr), buildingpartmask(nullptr)
+            skelpart(animmodel *model, int index = 0) : part(model, index)
             {
             }
 
             virtual ~skelpart()
             {
-                delete[] buildingpartmask;
             }
 
             void initanimparts();
             bool addanimpart(const uint *bonemask);
             void loaded();
         private:
-            animpartmask *buildingpartmask;
+            std::vector<uchar> buildingpartmask;
 
-            uchar *sharepartmask(animpartmask *o);
-            animpartmask *newpartmask();
+            std::vector<uchar> &sharepartmask(std::vector<uchar> &o);
+            std::vector<uchar> newpartmask();
             void endanimparts();
     };
 
@@ -879,7 +872,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             MDL::hitzones.emplace_back(0xFF);
         }
-        m->skel->applybonemask(bonemask.data(), MDL::hitzones.data(), *id < 0 ? 0xFF : *id);
+        m->skel->applybonemask(bonemask.data(), MDL::hitzones, *id < 0 ? 0xFF : *id);
     }
 
     skelcommands()
