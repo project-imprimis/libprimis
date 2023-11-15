@@ -99,6 +99,11 @@ struct skelmodel : animmodel
         GLuint vbuf;
         int owner;
 
+        bool check()
+        {
+            return !vbuf;
+        }
+
         vbocacheentry() : vbuf(0), owner(-1) {}
     };
 
@@ -118,6 +123,11 @@ struct skelmodel : animmodel
     struct blendcacheentry : skelcacheentry
     {
         int owner;
+
+        bool check()
+        {
+            return false;
+        }
 
         blendcacheentry() : owner(-1) {}
     };

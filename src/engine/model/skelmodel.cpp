@@ -1305,46 +1305,45 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
     }
 }
 
-//================================================================== SEARCHCACHE
-#define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
-    for(int i = 0; i < cachesize; ++i) \
-    { \
-        cacheentry &c = cache[i]; \
-        if(c.owner==owner) \
-        { \
-             if(c==sc) \
-             { \
-                 return c; \
-             } \
-             else \
-             { \
-                 c.owner = -1; \
-             } \
-             break; \
-        } \
-    } \
-    for(int i = 0; i < cachesize-1; ++i) \
-    { \
-        cacheentry &c = cache[i]; \
-        if(reusecheck c.owner < 0 || c.millis < lastmillis) \
-        { \
-            return c; \
-        } \
-    } \
+template<class T>
+T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, int owner)
+{
+    for(size_t i = 0; i < cachesize; ++i)
+    {
+        T &c = cache[i];
+        if(c.owner==owner)
+        {
+             if(c==sc)
+             {
+                 return c;
+             }
+             else
+             {
+                 c.owner = -1;
+             }
+             break;
+        }
+    }
+    for(size_t i = 0; i < cachesize-1; ++i)
+    {
+        T &c = cache[i];
+        if(c.check() || c.owner < 0 || c.millis < lastmillis)
+        {
+            return c;
+        }
+    }
     return cache[cachesize-1];
+}
 
 skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(const skelcacheentry &sc, int owner)
 {
-    SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
+    return searchcache<vbocacheentry>(maxvbocache, vbocache, sc, owner);
 }
 
 skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skelcacheentry &sc, int owner)
 {
-    SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
+    return searchcache<blendcacheentry>(maxblendcache, blendcache, sc, owner);
 }
-
-#undef SEARCHCACHE
-//==============================================================================
 
 //skelmesh
 
