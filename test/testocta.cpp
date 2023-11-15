@@ -42,9 +42,21 @@ namespace
         test = octaboxoverlap({0,0,0}, 0, {-2,-2,-2}, {1, 1, 1});
         assert(test == 255); //all octants
     }
+
+    void testfamilysize()
+    {
+        std::printf("Testing cube familysize\n");
+        cube c1;
+        c1.children = newcubes();
+        assert(familysize(c1) == 9);
+        (*c1.children)[0].children = newcubes();
+        assert(familysize(c1) == 17);
+        assert(familysize((*c1.children)[0]) == 9);
+    }
 }
 
 void test_octa()
 {
     testoctaboxoverlap();
+    testfamilysize();
 }
