@@ -1760,9 +1760,8 @@ animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
 // skelpart
 uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
 {
-    static animpartmask *partmasks = nullptr;
-    animpartmask *p = partmasks;
-    for(; p; p = p->next)
+    static std::vector<animpartmask *> partmasks;
+    for(animpartmask *p : partmasks) //iterate partmasks linked list
     {
         if(p->numbones==o->numbones && !std::memcmp(p->bones, o->bones, p->numbones))
         {
@@ -1770,9 +1769,7 @@ uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
             return p->bones;
         }
     }
-
-    o->next = p;
-    partmasks = o;
+    partmasks.push_back(o);
     return o->bones;
 }
 

@@ -406,7 +406,6 @@ struct skelmodel : animmodel
 
     struct animpartmask
     {
-        animpartmask *next;
         int numbones;
         uchar bones[1];
     };
