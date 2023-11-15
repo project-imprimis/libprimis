@@ -466,7 +466,7 @@ class skeladjustment
 {
     public:
         skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
-        void adjust(dualquat &dq);
+        void adjust(dualquat &dq) const;
 
     private:
         float yaw, pitch, roll;

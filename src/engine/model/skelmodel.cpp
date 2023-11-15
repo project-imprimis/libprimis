@@ -1821,7 +1821,7 @@ void skelmodel::skelpart::loaded()
 /*    ====    skeladjustment    ====    */
 /*======================================*/
 
-void skeladjustment::adjust(dualquat &dq)
+void skeladjustment::adjust(dualquat &dq) const
 {
     if(yaw)
     {
