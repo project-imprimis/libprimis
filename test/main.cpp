@@ -5,6 +5,7 @@
 #include "testcs.h"
 #include "testshadowatlas.h"
 #include "testprops.h"
+#include "testocta.h"
 
 int main(int argc, char **argv)
 {
@@ -14,5 +15,6 @@ int main(int argc, char **argv)
     testcs();
     testpacknode();
     test_props();
+    test_octa();
     return EXIT_SUCCESS;
 }
