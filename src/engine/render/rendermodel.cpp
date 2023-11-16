@@ -780,7 +780,7 @@ struct batchedmodel
 };
 struct modelbatch
 {
-    model *m;
+    const model *m;
     int flags, batched;
 };
 static std::vector<batchedmodel> batchedmodels;
@@ -818,7 +818,7 @@ foundbatch:
     b->batched = idx;
 }
 
-static void renderbatchedmodel(model *m, const batchedmodel &b)
+static void renderbatchedmodel(const model *m, const batchedmodel &b)
 {
     modelattach *a = nullptr;
     if(b.attached>=0)
