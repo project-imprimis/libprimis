@@ -781,11 +781,11 @@ void skelmodel::skeleton::concattagtransform(int i, const matrix4x3 &m, matrix4x
     n.mul(m, t);
 }
 
-void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc)
+void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc) const
 {
     for(part::linkedpart &l : p->links)
     {
-        tag &t = tags[l.tag];
+        const tag &t = tags[l.tag];
         dualquat q;
         if(sc)
         {
