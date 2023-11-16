@@ -185,7 +185,7 @@ struct skelmodel : animmodel
         const char *name;
         int parent, children, next, group, scheduled, interpindex, interpparent, ragdollindex, correctindex;
         float pitchscale, pitchoffset, pitchmin, pitchmax;
-        dualquat base, invbase;
+        dualquat base;
 
         boneinfo() : name(nullptr), parent(-1), children(-1), next(-1), group(INT_MAX), scheduled(-1), interpindex(-1), interpparent(-1), ragdollindex(-1), correctindex(-1), pitchscale(0), pitchoffset(0), pitchmin(0), pitchmax(0) {}
         ~boneinfo()

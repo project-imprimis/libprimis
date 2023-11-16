@@ -266,7 +266,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                     adjustments[i].adjust(dq);
                 }
                 const boneinfo &b = skel->bones[i];
-                dq.mul(b.invbase);
+                dq.mul(dualquat(b.base).invert());
                 dualquat &dst = frame[i];
                 if(h.parent < 0)
                 {
@@ -416,7 +416,6 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
     {
         boneinfo &b = skel->bones[i];
         b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
-        (b.invbase = b.base).invert();
     }
 
     for(uint i = 0; i < meshes.size(); i++)
