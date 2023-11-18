@@ -206,6 +206,10 @@ struct skelmodel : animmodel
         int bone, target, parent;
         float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
+        pitchcorrect(int bone, int target, float pitchscale, float pitchmin, float pitchmax) :
+            bone(bone), target(target), parent (-1), pitchmin(pitchmin), pitchmax(pitchmax),
+            pitchscale(pitchscale), pitchangle(0), pitchtotal(0) {}
+
         pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0) {}
     };
 
@@ -689,12 +693,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("could not find pitch target %s to pitch correct %s", targetname, name);
             return;
         }
-        pitchcorrect c;
-        c.bone = *bone;
-        c.target = *target;
-        c.pitchmin = *pitchmin;
-        c.pitchmax = *pitchmax;
-        c.pitchscale = *scale;
+        pitchcorrect c(*bone, *target, *pitchmin, *pitchmax, *scale);
         uint pos = skel->pitchcorrects.size();
         for(uint i = 0; i < skel->pitchcorrects.size(); i++)
         {
