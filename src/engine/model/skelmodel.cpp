@@ -857,7 +857,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
                 goto mismatch;
             }
         }
-        if(c.pitch != pitch || c.partmask != partmask.data() || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove))
+        if(c.pitch != pitch || *c.partmask != partmask || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove))
         {
             goto mismatch;
         }
@@ -883,7 +883,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
             sc->as[i] = as[i];
         }
         sc->pitch = pitch;
-        sc->partmask = partmask.data();
+        sc->partmask = &partmask;
         sc->ragdoll = rdata;
         if(rdata)
         {

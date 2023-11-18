@@ -85,7 +85,7 @@ struct skelmodel : animmodel
         std::array<AnimState, maxanimparts> as;
         float pitch;
         int millis;
-        uchar *partmask;
+        const std::vector<uchar> * partmask;
         const ragdolldata *ragdoll;
 
         animcacheentry();
