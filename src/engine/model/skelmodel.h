@@ -514,7 +514,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef struct MDL::pitchcorrect pitchcorrect;
 
     //unused second param
-    static void loadpart(char *meshfile, char *, float *smooth)
+    static void loadpart(const char *meshfile, const char *, const float *smooth)
     {
         if(!MDL::loading)
         {
@@ -540,7 +540,9 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
     }
 
-    static void settag(char *name, char *tagname, float *tx, float *ty, float *tz, float *rx, float *ry, float *rz)
+    static void settag(const char *name, const char *tagname,
+                       const float *tx, const float *ty, const float *tz,
+                       const float *rx, const float *ry, const float *rz)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -564,7 +566,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 
     //attempts to set the pitch of a named bone within a MDL object, within the bounds set
     //prints to console failure messages if no model or no bone with name passed
-    static void setpitch(char *name, float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
+    static void setpitch(const char *name, const float *pitchscale,
+                         const float *pitchoffset, const float *pitchmin, const float *pitchmax)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -611,7 +614,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
     }
 
-    static void setpitchtarget(char *name, char *animfile, int *frameoffset, float *pitchmin, float *pitchmax)
+    static void setpitchtarget(const char *name, const char *animfile, const int *frameoffset,
+                               const float *pitchmin, const float *pitchmax)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -652,7 +656,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         skel->pitchtargets.push_back(t);
     }
 
-    static void setpitchcorrect(char *name, char *targetname, float *scale, float *pitchmin, float *pitchmax)
+    static void setpitchcorrect(const char *name, const char *targetname,
+                                const float *scale, const float *pitchmin, const float *pitchmax)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -709,7 +714,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     //attempts to give a model object an animation by the name of *anim parameter
     //loaded from *animfile with speed/priority/offsets to determine how fast
     //and what frames play
-    static void setanim(char *anim, char *animfile, float *speed, int *priority, int *startoffset, int *endoffset)
+    static void setanim(const char *anim, const char *animfile, const float *speed,
+                        const int *priority, const int *startoffset, const int *endoffset)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -763,7 +769,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
     }
 
-    static void setanimpart(char *maskstr)
+    static void setanimpart(const char *maskstr)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -805,7 +811,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
     }
 
-    static void setadjust(char *name, float *yaw, float *pitch, float *roll, float *tx, float *ty, float *tz)
+    static void setadjust(const char *name, const float *yaw, const float *pitch, const float *roll,
+                                            const float *tx,  const float *ty,    const float *tz)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -830,7 +837,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         MDL::adjustments[*i] = skeladjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
     }
 
-    static void sethitzone(int *id, char *maskstr)
+    static void sethitzone(const int *id, const char *maskstr)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
