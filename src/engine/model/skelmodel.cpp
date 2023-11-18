@@ -1134,7 +1134,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         if(!skel->usegpuskel && vc.owner != owner)
         {
             vc.owner = owner;
-            (animcacheentry &)vc = sc;
+            static_cast<animcacheentry &>(vc) = sc;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
                 m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
