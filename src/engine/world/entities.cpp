@@ -192,7 +192,8 @@ dynent::~dynent()
 {
     if(ragdoll)
     {
-        cleanragdoll(this);
+        delete ragdoll;
+        ragdoll = nullptr;
     }
 }
 
