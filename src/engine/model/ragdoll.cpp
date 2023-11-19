@@ -386,7 +386,7 @@ void ragdolldata::applyrotfriction(float ts)
 void ragdolldata::tryunstick(float speed)
 {
     vec unstuck(0, 0, 0);
-    int stuck = 0;
+    size_t stuck = 0;
     for(uint i = 0; i < verts.size(); i++)
     {
         vert &v = verts[i];
@@ -402,7 +402,7 @@ void ragdolldata::tryunstick(float speed)
         unstuck.add(v.pos);
     }
     unsticks = 0;
-    if(!stuck || stuck >= static_cast<int>(verts.size()))
+    if(!stuck || stuck >= verts.size())
     {
         return;
     }
