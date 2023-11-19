@@ -80,8 +80,14 @@ class ragdolldata
         int millis, collidemillis, lastmove;
         float radius;
         vec offset, center;
-        matrix3 *tris;
+
+        //shadows the elements in skel->tris
+        std::vector<matrix3> tris;
+
+        //shadows the elements in skel->animjoints
         matrix4x3 *animjoints;
+
+        //shadows the elements in skel->reljoints
         dualquat *reljoints;
 
         struct vert
@@ -92,7 +98,8 @@ class ragdolldata
             vert() : oldpos(0, 0, 0), pos(0, 0, 0), newpos(0, 0, 0), undo(0, 0, 0), weight(0), collided(false), stuck(true) {}
         };
 
-        vert *verts;
+        //shadows the elements in skel->verts
+        std::vector<vert> verts;
 
         ragdolldata(ragdollskel *skel, float scale = 1);
         ~ragdolldata();

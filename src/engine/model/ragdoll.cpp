@@ -134,10 +134,10 @@ ragdolldata::ragdolldata(ragdollskel *skel, float scale)
       collidemillis(0),
       lastmove(lastmillis),
       radius(0),
-      tris(new matrix3[skel->tris.size()]),
+      tris(skel->tris.size()),
       animjoints(!skel->animjoints || skel->joints.empty() ? nullptr : new matrix4x3[skel->joints.size()]),
       reljoints(skel->reljoints.empty() ? nullptr : new dualquat[skel->reljoints.size()]),
-      verts(new vert[skel->verts.size()]),
+      verts(skel->verts.size()),
       collisions(0),
       floating(0),
       unsticks(INT_MAX),
@@ -148,8 +148,6 @@ ragdolldata::ragdolldata(ragdollskel *skel, float scale)
 
 ragdolldata::~ragdolldata()
 {
-    delete[] verts;
-    delete[] tris;
     if(animjoints)
     {
         delete[] animjoints;
