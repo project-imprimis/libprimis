@@ -211,15 +211,15 @@ void ragdolldata::calctris()
 void ragdolldata::calcboundsphere()
 {
     center = vec(0, 0, 0);
-    for(uint i = 0; i < verts.size(); i++)
+    for(const vert &v : verts)
     {
-        center.add(verts[i].pos);
+        center.add(v.pos);
     }
     center.div(verts.size());
     radius = 0;
-    for(uint i = 0; i < verts.size(); i++)
+    for(const vert &v : verts)
     {
-        radius = std::max(radius, verts[i].pos.dist(center));
+        radius = std::max(radius, v.pos.dist(center));
     }
 }
 
@@ -229,9 +229,9 @@ VAR(ragdolltimestepmax, 1, 10, 50);
 void ragdolldata::init(const dynent *d)
 {
     float ts = ragdolltimestepmin/1000.0f;
-    for(uint i = 0; i < verts.size(); i++)
+    for(vert &v : verts)
     {
-        (verts[i].oldpos = verts[i].pos).sub(vec(d->vel).add(d->falling).mul(ts));
+        (v.oldpos = v.pos).sub(vec(d->vel).add(d->falling).mul(ts));
     }
     timestep = ts;
 
@@ -407,9 +407,8 @@ void ragdolldata::tryunstick(float speed)
         return;
     }
     unstuck.div(verts.size() - stuck);
-    for(uint i = 0; i < verts.size(); i++)
+    for(vert &v : verts)
     {
-        vert &v = verts[i];
         if(v.stuck)
         {
             v.pos.add(vec(unstuck).sub(v.pos).rescale(speed));
@@ -425,9 +424,8 @@ void ragdolldata::constrain()
     for(int i = 0; i < ragdollconstrain; ++i)
     {
         constraindist();
-        for(uint j = 0; j < verts.size(); j++)
+        for(vert &v : verts)
         {
-            vert &v = verts[j];
             v.undo = v.pos;
             if(v.weight)
             {
