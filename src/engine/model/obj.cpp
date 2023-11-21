@@ -292,7 +292,10 @@ void obj::objmeshgroup::flushmesh(const string meshname,
         {
             curmesh->smoothnorms(smooth);
         }
-        else curmesh->buildnorms();
+        else
+        {
+            curmesh->buildnorms();
+        }
     }
     curmesh->calctangents();
 }
