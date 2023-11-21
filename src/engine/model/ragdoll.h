@@ -16,6 +16,7 @@ class ragdollskel
         {
             int vert[3];
 
+            //returns true if the the passed triangle has the same vertex indices
             bool shareverts(const tri &t) const;
         };
         std::vector<tri> tris;
@@ -81,7 +82,7 @@ class ragdolldata
         float radius;
         vec offset, center;
 
-        //shadows the elements in skel->tris
+        //shadows the elements in skel->tris, should not be resized after construction
         std::vector<matrix3> tris;
 
         //shadows the elements in skel->animjoints
@@ -98,7 +99,7 @@ class ragdolldata
             vert() : oldpos(0, 0, 0), pos(0, 0, 0), newpos(0, 0, 0), undo(0, 0, 0), weight(0), collided(false), stuck(true) {}
         };
 
-        //shadows the elements in skel->verts
+        //shadows the elements in skel->verts, should not be resized after construction
         std::vector<vert> verts;
 
         ragdolldata(ragdollskel *skel, float scale = 1);
