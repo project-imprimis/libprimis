@@ -507,7 +507,6 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef struct MDL::skeleton skeleton;
     typedef struct MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
-    typedef struct MDL::skin skin;
     typedef struct MDL::boneinfo boneinfo;
     typedef struct MDL::skelanimspec animspec;
     typedef struct MDL::pitchtarget pitchtarget;
