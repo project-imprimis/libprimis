@@ -54,10 +54,20 @@ namespace
         assert(familysize((*c1.children)[0]) == 9);
         freeocta(c1.children);
     }
+
+    void testgetcubevector()
+    {
+        std::printf("Testing getcubevector\n");
+        cube c1;
+        ivec p = {0,0,0};
+        getcubevector(c1, 0, 1, 1, 1, p);
+        assert(p == ivec(15, 0, 0));
+    }
 }
 
 void test_octa()
 {
     testoctaboxoverlap();
     testfamilysize();
+    testgetcubevector();
 }
