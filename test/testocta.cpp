@@ -52,6 +52,7 @@ namespace
         (*c1.children)[0].children = newcubes();
         assert(familysize(c1) == 17);
         assert(familysize((*c1.children)[0]) == 9);
+        freeocta(c1.children);
     }
 }
 
