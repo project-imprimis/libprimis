@@ -481,18 +481,21 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val) co
     }
 }
 
-void skelmodel::skeleton::applybonemask(const uint *mask, std::vector<uchar> &partmask, int partindex) const
+void skelmodel::skeleton::applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const
 {
-    if(!mask || *mask==Bonemask_End)
+    if(mask.empty() || mask.front()==Bonemask_End)
     {
         return;
     }
     uchar *expansion = new uchar[numbones];
-    std::memset(expansion, *mask&Bonemask_Not ? 1 : 0, numbones);
-    while(*mask!=Bonemask_End)
+    std::memset(expansion, mask.front()&Bonemask_Not ? 1 : 0, numbones);
+    for(const uint &i : mask)
     {
-        expandbonemask(expansion, *mask&Bonemask_Bone, *mask&Bonemask_Not ? 0 : 1);
-        mask++;
+        if(i == Bonemask_End)
+        {
+            break;
+        }
+        expandbonemask(expansion, i&Bonemask_Bone, i&Bonemask_Not ? 0 : 1);
     }
     for(int i = 0; i < numbones; ++i)
     {
@@ -1800,7 +1803,7 @@ bool skelmodel::skelpart::addanimpart(const std::vector<uint> &bonemask)
     {
         return false;
     }
-    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask.data(), buildingpartmask, numanimparts);
+    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask, buildingpartmask, numanimparts);
     numanimparts++;
     return true;
 }

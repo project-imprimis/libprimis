@@ -260,7 +260,7 @@ struct skelmodel : animmodel
             void initpitchdeps();
             void optimize();
             void expandbonemask(uchar *expansion, int bone, int val) const;
-            void applybonemask(const uint *mask, std::vector<uchar> &partmask, int partindex) const;
+            void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
             void linkchildren();
             int availgpubones() const;
             float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
@@ -887,7 +887,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             MDL::hitzones.emplace_back(0xFF);
         }
-        m->skel->applybonemask(bonemask.data(), MDL::hitzones, *id < 0 ? 0xFF : *id);
+        m->skel->applybonemask(bonemask, MDL::hitzones, *id < 0 ? 0xFF : *id);
     }
 
     skelcommands()
