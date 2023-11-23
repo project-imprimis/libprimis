@@ -582,3 +582,12 @@ void moveragdoll(dynent *d)
     float k = std::pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
     d->o.lerp(eye, 1-k);
 }
+
+void cleanragdoll(dynent *d)
+{
+    if(d->ragdoll)
+    {
+        delete d->ragdoll;
+        d->ragdoll = nullptr;
+    }
+}

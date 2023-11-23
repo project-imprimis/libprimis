@@ -126,4 +126,6 @@ class ragdolldata
         bool collidevert(const vec &pos, const vec &dir, float radius);
 };
 
+extern void cleanragdoll(dynent *d);
+
 #endif
