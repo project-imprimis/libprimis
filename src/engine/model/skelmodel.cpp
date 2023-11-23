@@ -1794,13 +1794,13 @@ void skelmodel::skelpart::initanimparts()
     buildingpartmask = newpartmask();
 }
 
-bool skelmodel::skelpart::addanimpart(const uint *bonemask)
+bool skelmodel::skelpart::addanimpart(const std::vector<uint> &bonemask)
 {
     if(buildingpartmask.empty() || numanimparts>=maxanimparts)
     {
         return false;
     }
-    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask, buildingpartmask, numanimparts);
+    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask.data(), buildingpartmask, numanimparts);
     numanimparts++;
     return true;
 }

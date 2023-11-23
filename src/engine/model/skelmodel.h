@@ -432,7 +432,7 @@ struct skelmodel : animmodel
             }
 
             void initanimparts();
-            bool addanimpart(const uint *bonemask);
+            bool addanimpart(const std::vector<uint> &bonemask);
             void loaded();
         private:
             std::vector<uchar> buildingpartmask;
@@ -804,7 +804,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         {
             bonemask.push_back(Bonemask_End);
         }
-        if(!p->addanimpart(bonemask.data()))
+        if(!p->addanimpart(bonemask))
         {
             conoutf("too many animation parts");
         }
