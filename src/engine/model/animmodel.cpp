@@ -516,7 +516,7 @@ void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BI
     }
 }
 
-void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t)
+void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const
 {
     LOOP_RENDER_MESHES(Mesh, m, m.genshadowmesh(tris, t));
 }
