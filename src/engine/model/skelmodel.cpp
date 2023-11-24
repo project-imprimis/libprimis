@@ -1388,7 +1388,7 @@ void skelmodel::skelmesh::genBIH(BIH::mesh &m)
               reinterpret_cast<const uchar *>(&verts->tc), sizeof(vert));
 }
 
-void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
+void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const
 {
     for(int j = 0; j < numtris; ++j)
     {

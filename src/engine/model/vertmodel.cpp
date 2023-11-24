@@ -123,7 +123,7 @@ void vertmodel::vertmesh::genBIH(BIH::mesh &m) const
               reinterpret_cast<const uchar *>(&tcverts->tc), sizeof(tcvert));
 }
 
-void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
+void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const
 {
     for(int j = 0; j < numtris; ++j)
     {

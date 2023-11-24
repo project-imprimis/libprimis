@@ -159,7 +159,7 @@ struct skelmodel : animmodel
         void calctangents(bool areaweight = true);
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
         void genBIH(BIH::mesh &m);
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const;
         static void assignvert(vvertg &vv, int j, const vert &v);
         static void assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c);
 
