@@ -676,7 +676,7 @@ void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3
     matrix4x3 t = m;
     t.scale(modelscale);
     meshes->genshadowmesh(tris, t);
-    for(linkedpart i : links)
+    for(const linkedpart &i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
