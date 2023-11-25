@@ -1419,7 +1419,7 @@ hasboundbox:
     }
 
     batchedmodels.emplace_back();
-    batchedmodel & b = batchedmodels.back();
+    batchedmodel &b = batchedmodels.back();
     b.pos = o;
     b.center = center;
     b.radius = radius;
