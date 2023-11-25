@@ -361,9 +361,9 @@ class animmodel : public model
                 virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) {}
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
-                    for(auto &i : meshes) \
+                    for(uint i = 0; i < meshes.size(); i++) \
                     { \
-                        type &name = *static_cast<type *>(i); \
+                        type &name = *static_cast<type *>(meshes[i]); \
                         if(name.canrender || debugcolmesh) \
                         { \
                             body; \
