@@ -766,8 +766,9 @@ static bool modeloccluded(const vec &center, float radius)
 
 struct batchedmodel
 {
-    vec pos, center;
-    float radius, yaw, pitch, roll, sizescale;
+    //orient = yaw, pitch, roll
+    vec pos, orient, center;
+    float radius, sizescale;
     vec4<float> colorscale;
     int anim, basetime, basetime2, flags, attached;
     union
@@ -838,7 +839,7 @@ static void renderbatchedmodel(const model *m, const batchedmodel &b)
         }
     }
 
-    m->render(anim, b.basetime, b.basetime2, b.pos, b.yaw, b.pitch, b.roll, b.d, a, b.sizescale, b.colorscale);
+    m->render(anim, b.basetime, b.basetime2, b.pos, b.orient.x, b.orient.y, b.orient.z, b.d, a, b.sizescale, b.colorscale);
 }
 
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
@@ -1297,9 +1298,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     b.center = center;
     b.radius = radius;
     b.anim = anim;
-    b.yaw = yaw;
-    b.pitch = pitch;
-    b.roll = roll;
+    b.orient = {yaw, pitch, roll};
     b.basetime = basetime;
     b.basetime2 = 0;
     b.sizescale = size;
@@ -1425,9 +1424,7 @@ hasboundbox:
     b.center = center;
     b.radius = radius;
     b.anim = anim;
-    b.yaw = yaw;
-    b.pitch = pitch;
-    b.roll = roll;
+    b.orient = {yaw, pitch, roll};
     b.basetime = basetime;
     b.basetime2 = basetime2;
     b.sizescale = size;
