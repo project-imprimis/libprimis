@@ -1592,7 +1592,7 @@ void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheent
     }
 }
 
-void skelmodel::skelmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n)
+void skelmodel::skelmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const
 {
     skel->concattagtransform(i, m, n);
 }
