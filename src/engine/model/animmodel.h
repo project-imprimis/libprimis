@@ -389,8 +389,8 @@ class animmodel : public model
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
 
-                virtual void cleanup() {}
-                virtual void preload() {}
+                virtual void cleanup() = 0;
+                virtual void preload() = 0;
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
