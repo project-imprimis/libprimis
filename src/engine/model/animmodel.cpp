@@ -690,7 +690,7 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
     int i = meshes ? meshes->findtag(tag) : -1;
     if(i<0)
     {
-        for(linkedpart i : links)
+        for(const linkedpart &i : links)
         {
             if(i.p && i.p->link(p, tag, translate, anim, basetime, pos))
             {
