@@ -13,7 +13,7 @@ extern std::vector<std::string> animnames; //set by game at runtime
 
 std::vector<int> findanims(const char *pattern);
 
-extern void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks);
+extern void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void resetmodelbatches();
 extern void rendershadowmodelbatches(bool dynmodel = true);

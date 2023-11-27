@@ -316,7 +316,7 @@ bool obj::loaddefaultparts()
         }
     }
     Texture *tex, *masks;
-    loadskin(modelname().c_str(), pname.c_str(), tex, masks);
+    loadskin(modelname(), pname, tex, masks);
     mdl.initskins(tex, masks);
     if(tex==notexture)
     {

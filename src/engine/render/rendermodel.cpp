@@ -1519,7 +1519,7 @@ void findanimscmd(char *name)
     result(buf.data());
 }
 
-void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
+void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks) // model skin sharing
 {
     //goes and attempts a textureload for png, jpg four times using the cascading if statements
     static auto tryload = [] (Texture *tex, std::string name, const char *mdir)
@@ -1540,8 +1540,8 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
         return false;
     };
 
-    DEF_FORMAT_STRING(mdir, "media/model/%s", dir);
-    DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir);
+    DEF_FORMAT_STRING(mdir, "media/model/%s", dir.c_str());
+    DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir.c_str());
     masks = notexture;
     if(tryload(skin, "skin", mdir))
     {
