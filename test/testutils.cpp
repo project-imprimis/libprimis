@@ -1,4 +1,5 @@
 #include "libprimis.h"
+#include "../shared/stream.h"
 
 namespace header_tools
 {
@@ -64,6 +65,40 @@ namespace header_tools
             std::printf("Testing path %s -> %s\n", before.c_str(), after.c_str());
 
             assert(after == test_case[1]);
+        }
+    }
+
+    void testparentdir()
+    {
+        static const char * test_cases[][2] =
+        {
+            {
+                "data/textures/image.png",
+                "data/textures"
+            },
+            {
+                "./data/sounds/music.ogg",
+                "./data/sounds"
+            },
+            {
+                "../data/other/file.dat",
+                "../data/other"
+            },
+            {
+                "/data/other//file.dat",
+                "/data/other/"
+            },
+
+        };
+
+        for(const auto &test_case : test_cases)
+        {
+            const char * before = test_case[0];
+            const char * after  = parentdir(before);
+
+            std::printf("Testing parentdir %s -> %s\n", before, after);
+
+            assert(std::string(after) == std::string(test_case[1]));
         }
     }
 
@@ -146,6 +181,7 @@ void testutils()
     header_tools::testpath();
     header_tools::testcopystring();
     header_tools::testconcatstring();
+    header_tools::testparentdir();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
