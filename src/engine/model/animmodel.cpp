@@ -648,7 +648,7 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float m
     matrix4x3 t = m;
     t.scale(modelscale);
     meshes->calcbb(bbmin, bbmax, t);
-    for(linkedpart i : links)
+    for(const linkedpart &i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
@@ -662,7 +662,7 @@ void animmodel::part::genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, fl
     matrix4x3 t = m;
     t.scale(modelscale);
     meshes->genBIH(skins, bih, t);
-    for(linkedpart i : links)
+    for(const linkedpart &i : links)
     {
         matrix4x3 n;
         meshes->concattagtransform(i.tag, m, n);
