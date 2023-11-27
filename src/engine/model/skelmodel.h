@@ -396,7 +396,7 @@ struct skelmodel : animmodel
         }
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override;
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
         int remapblend(int blend);
