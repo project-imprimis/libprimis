@@ -88,7 +88,14 @@ namespace header_tools
                 "/data/other//file.dat",
                 "/data/other/"
             },
-
+            {
+                "/data/other/",
+                "/data/other"
+            },
+            {
+                "/data/other//",
+                "/data/other/"
+            },
         };
 
         for(const auto &test_case : test_cases)
