@@ -153,7 +153,7 @@ struct skelmodel : animmodel
             delete[] tris;
         }
 
-        int addblendcombo(const blendcombo &c);
+        uint addblendcombo(const blendcombo &c);
         void smoothnorms(float limit = 0, bool areaweight = true);
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
@@ -397,7 +397,7 @@ struct skelmodel : animmodel
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
         void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override;
-        int addblendcombo(const blendcombo &c);
+        uint addblendcombo(const blendcombo &c);
         void sortblendcombos();
         int remapblend(int blend);
         static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);

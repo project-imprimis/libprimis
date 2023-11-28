@@ -1350,7 +1350,7 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 //skelmesh
 
-int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
+uint skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 {
     maxweights = std::max(maxweights, static_cast<int>(c.size()));
     return (reinterpret_cast<skelmeshgroup *>(group))->addblendcombo(c);
@@ -1597,7 +1597,7 @@ void skelmodel::skelmeshgroup::concattagtransform(int i, const matrix4x3 &m, mat
     skel->concattagtransform(i, m, n);
 }
 
-int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
+uint skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
 {
     for(uint i = 0; i < blendcombos.size(); i++)
     {
@@ -1610,7 +1610,9 @@ int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
     numblends[c.size()-1]++;
     blendcombos.push_back(c);
     blendcombo &a = blendcombos.back();
-    return a.interpindex = blendcombos.size()-1;
+    //always >= 0 because of push_back
+    a.interpindex = blendcombos.size()-1;
+    return blendcombos.size() > 1;
 }
 
 void skelmodel::skelmeshgroup::sortblendcombos()
