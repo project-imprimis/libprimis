@@ -109,6 +109,36 @@ namespace header_tools
         }
     }
 
+    void testfixpackagedir()
+    {
+        static const char * test_cases[][2] =
+        {
+            {
+                "data/textures",
+                "data/texture/"
+            },
+            {
+                "config/ui/",
+                "config/ui/"
+            },
+            {
+                "data/ui\\",
+                "data/ui/"
+            },
+        };
+
+        for(const auto &test_case : test_cases)
+        {
+            const char * before = test_case[0];
+            char s[260];
+            char * after = copystring(s, before, strlen(before));
+            fixpackagedir(after);
+
+            std::printf("Testing fixpackagedir %s -> %s\n", before, after);
+
+            assert(std::string(after) == std::string(test_case[1]));
+        }
+    }
     void testcopystring()
     {
         //test copy with enough chars
@@ -189,6 +219,7 @@ void testutils()
     header_tools::testcopystring();
     header_tools::testconcatstring();
     header_tools::testparentdir();
+    header_tools::testfixpackagedir();
     header_geom::testgenericvec3();
     header_geom::testvec3();
     header_geom::testmod360();
