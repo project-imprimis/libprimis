@@ -1421,7 +1421,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     eoffset = idxs.size();
     for(int i = 0; i < numverts; ++i)
     {
-        vert &v = verts[i];
+        const vert &v = verts[i];
         vverts.emplace_back(vvertgw());
         assignvert(vverts.back(), i, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
     }
@@ -1449,10 +1449,10 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
         for(int j = 0; j < 3; ++j)
         {
             int index = t.vert[j];
-            vert &v = verts[index];
+            const vert &v = verts[index];
             vvertg vv;
             assignvert(vv, index, v);
-            auto hashfn = std::hash<vec>();
+            const auto hashfn = std::hash<vec>();
             int htidx = hashfn(v.pos)&(htlen-1);
             for(int k = 0; k < htlen; ++k)
             {
