@@ -474,7 +474,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
     {
         md5vert &v = vertinfo[i];
         vec pos(0, 0, 0);
-        for(ushort k = 0; k < v.count; ++k)
+        for(uint k = 0; k < v.count; ++k)
         {
             const md5weight &w = weightinfo[v.start+k];
             const md5joint &j = joints[w.joint];
@@ -489,7 +489,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 
         blendcombo c;
         int sorted = 0;
-        for(ushort j = 0; j < v.count; ++j)
+        for(uint j = 0; j < v.count; ++j)
         {
             const md5weight &w = weightinfo[v.start+j];
             sorted = c.addweight(sorted, w.bias, w.joint);
