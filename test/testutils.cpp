@@ -115,7 +115,7 @@ namespace header_tools
         {
             {
                 "data/textures",
-                "data/texture/"
+                "data/textures/"
             },
             {
                 "config/ui/",
@@ -131,7 +131,7 @@ namespace header_tools
         {
             const char * before = test_case[0];
             char s[260];
-            char * after = copystring(s, before, strlen(before));
+            char * after = copystring(s, before, 260);
             fixpackagedir(after);
 
             std::printf("Testing fixpackagedir %s -> %s\n", before, after);
@@ -139,6 +139,7 @@ namespace header_tools
             assert(std::string(after) == std::string(test_case[1]));
         }
     }
+
     void testcopystring()
     {
         //test copy with enough chars
