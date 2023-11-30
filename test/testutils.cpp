@@ -68,6 +68,74 @@ namespace header_tools
         }
     }
 
+    void testcpath()
+    {
+        //note: <command> tests do not behave the same way as std::string path
+        static const char * test_cases[][2] =
+        {
+            {
+                "data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "data/../data/textures/image.png",
+                "data/textures/image.png"
+            },
+            {
+                "../data/../data/textures/image.png",
+                "../data/textures/image.png"
+            },
+            {
+                "data/.././data/textures/other_image.png",
+                "data/textures/other_image.png"
+            },
+            {
+                "data/textures/image.png&data/textures/other_image.png",
+                "data/textures/image.png&data/textures/other_image.png"
+            },
+            {
+                "data/../data/textures/image.png&data/../data/textures/other_image.png",
+                "data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png",
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png",
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png&data/textures/other_image.png",
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png&data/textures/other_image.png"
+            },
+            {
+                "<command:0.5f,0.25f/1.0f,0.33f>data/../data/./textures/image.png&data/../data/textures/other_image.png",
+                "<command:0.5f,0.25f/1.0f,0.33f>data/textures/image.png"
+            },
+            {
+                "./data/sounds/music.ogg",
+                "data/sounds/music.ogg"
+            },
+            {
+                "../data/other/file.dat",
+                "../data/other/file.dat"
+            }
+        };
+
+        for(const auto &test_case : test_cases)
+        {
+            const char * before = test_case[0];
+            char s[500];
+            char * after = copystring(s, before, 500);
+            path(after);
+
+            std::printf("Testing cpath %s -> %s\n", before, after);
+
+            assert(std::string(after) == std::string(test_case[1]));
+        }
+    }
+
     void testparentdir()
     {
         static const char * test_cases[][2] =
@@ -217,6 +285,7 @@ namespace header_geom
 void testutils()
 {
     header_tools::testpath();
+    header_tools::testcpath();
     header_tools::testcopystring();
     header_tools::testconcatstring();
     header_tools::testparentdir();
