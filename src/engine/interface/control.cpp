@@ -159,7 +159,7 @@ int getclockmillis()
 //identification info about engine
 std::string enginestr()
 {
-    return "Libprimis v0.35a";
+    return "Libprimis v0.36a";
 }
 
 std::string enginebuilddate()
