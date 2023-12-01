@@ -804,7 +804,7 @@ ident *newident(const char *name, int flags)
     {
         if(checknumber(name))
         {
-            debugcode("number %.*s is not a valid identifier name", stringlen(name), stringptr(name));
+            debugcode("number %s is not a valid identifier name", name);
             return dummyident;
         }
         id = addident(ident(Id_Alias, newstring(name), flags));
