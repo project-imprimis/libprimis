@@ -476,13 +476,13 @@ void ragdolldata::move(dynent *pl, float ts)
     {
         return;
     }
-    int material = rootworld.lookupmaterial(vec(center.x, center.y, center.z + radius/2));
-    bool water = (material&MatFlag_Volume) == Mat_Water;
+    const int material = rootworld.lookupmaterial(vec(center.x, center.y, center.z + radius/2));
+    const bool water = (material&MatFlag_Volume) == Mat_Water;
     pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
     calcrotfriction();
-    float tsfric = timestep ? ts/timestep : 1,
-          airfric = ragdollairfric + std::min((ragdollbodyfricscale*collisions)/verts.size(), 1.0f)*(ragdollbodyfric - ragdollairfric);
+    const float tsfric = timestep ? ts/timestep : 1,
+                airfric = ragdollairfric + std::min((ragdollbodyfricscale*collisions)/verts.size(), 1.0f)*(ragdollbodyfric - ragdollairfric);
     collisions = 0;
     for(uint i = 0; i < verts.size(); i++)
     {
