@@ -568,7 +568,7 @@ void moveragdoll(dynent *d)
     }
     if(!d->ragdoll->collidemillis || lastmillis < d->ragdoll->collidemillis)
     {
-        int lastmove = d->ragdoll->lastmove;
+        const int lastmove = d->ragdoll->lastmove;
         while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= lastmillis)
         {
             int timestep = std::min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
@@ -579,7 +579,7 @@ void moveragdoll(dynent *d)
 
     vec eye = d->ragdoll->skel->eye >= 0 ? d->ragdoll->verts[d->ragdoll->skel->eye].pos : d->ragdoll->center;
     eye.add(d->ragdoll->offset);
-    float k = std::pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
+    const float k = std::pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
     d->o.lerp(eye, 1-k);
 }
 
