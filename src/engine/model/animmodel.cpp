@@ -730,7 +730,7 @@ bool animmodel::part::unlink(const part *p)
     return false;
 }
 
-void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
+void animmodel::part::initskins(Texture *tex, Texture *masks, uint limit)
 {
     if(!limit)
     {
@@ -740,7 +740,7 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
         }
         limit = meshes->meshes.size();
     }
-    while(skins.size() < static_cast<uint>(limit))
+    while(skins.size() < limit)
     {
         skin s;
         s.owner = this;
