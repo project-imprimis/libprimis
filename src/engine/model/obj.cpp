@@ -77,7 +77,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     }
     name = filename;
     numframes = 1;
-    std::vector<vec> attrib[3];
+    std::array<std::vector<vec>, 3> attrib;
     char buf[512];
     std::unordered_map<ivec, int> verthash;
     std::vector<vert> verts;
