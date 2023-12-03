@@ -79,7 +79,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     numframes = 1;
     std::array<std::vector<vec>, 3> attrib;
     char buf[512];
-    std::unordered_map<ivec, int> verthash;
+    std::unordered_map<ivec, uint> verthash;
     std::vector<vert> verts;
     std::vector<tcvert> tcverts;
     std::vector<tri> tris;
@@ -154,8 +154,8 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     tcverts.clear();
                     tris.clear();
                 }
-                int v0 = -1,
-                    v1 = -1;
+                std::optional<uint> v0 = std::nullopt,
+                                    v1 = std::nullopt;
                 while(std::isalpha(*c))
                 {
                     c++;
@@ -193,7 +193,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         c++;
                     }
                     auto itr = verthash.find(vkey);
-                    int *index;
+                    uint *index;
                     if(itr == verthash.end())
                     {
                         index = &verthash[vkey];
@@ -212,11 +212,11 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     {
                         index = &(*itr).second;
                     }
-                    if(v0 < 0)
+                    if(!v0)
                     {
                         v0 = *index;
                     }
-                    else if(v1 < 0)
+                    else if(!v1)
                     {
                         v1 = *index;
                     }
@@ -224,9 +224,10 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     {
                         tris.emplace_back();
                         tri &t = tris.back();
-                        t.vert[0] = static_cast<uint>(*index);
-                        t.vert[1] = static_cast<uint>(v1);
-                        t.vert[2] = static_cast<uint>(v0);
+                        t.vert[0] = *index;
+                        t.vert[1] = v1.value();
+                        t.vert[2] = v0.value();
+
                         v1 = *index;
                     }
                 }
