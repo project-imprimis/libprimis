@@ -1445,10 +1445,10 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     minvert = 0xFFFF;
     for(int i = 0; i < numtris; ++i)
     {
-        tri &t = tris[i];
+        const tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
-            int index = t.vert[j];
+            const uint index = t.vert[j];
             const vert &v = verts[index];
             vvertg vv;
             assignvert(vv, index, v);

@@ -176,9 +176,9 @@ class animmodel : public model
                     for(int i = 0; i < numtris; ++i)
                     {
                         T &t = tris[i];
-                        int v1 = t.vert[0],
-                            v2 = t.vert[1],
-                            v3 = t.vert[2];
+                        const uint v1 = t.vert[0],
+                                   v2 = t.vert[1],
+                                   v3 = t.vert[2];
                         vec norm;
                         norm.cross(verts[v1].pos, verts[v2].pos, verts[v3].pos);
                         if(!areaweight)
