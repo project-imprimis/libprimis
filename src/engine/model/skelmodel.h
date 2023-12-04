@@ -99,12 +99,8 @@ struct skelmodel : animmodel
         GLuint vbuf;
         int owner;
 
-        bool check()
-        {
-            return !vbuf;
-        }
-
-        vbocacheentry() : vbuf(0), owner(-1) {}
+        bool check() const;
+        vbocacheentry();
     };
 
     struct skelcacheentry : animcacheentry
@@ -112,24 +108,16 @@ struct skelmodel : animmodel
         dualquat *bdata;
         int version;
 
-        skelcacheentry() : bdata(nullptr), version(-1) {}
-
-        void nextversion()
-        {
-            version = Shader::uniformlocversion();
-        }
+        skelcacheentry();
+        void nextversion();
     };
 
     struct blendcacheentry : skelcacheentry
     {
         int owner;
 
-        bool check()
-        {
-            return false;
-        }
-
-        blendcacheentry() : owner(-1) {}
+        blendcacheentry();
+        bool check() const;
     };
 
     struct skelmeshgroup;
@@ -143,15 +131,9 @@ struct skelmodel : animmodel
         int voffset, eoffset, elen;
         GLuint minvert, maxvert;
 
-        skelmesh() : verts(nullptr), tris(nullptr), numverts(0), numtris(0), maxweights(0)
-        {
-        }
+        skelmesh();
 
-        virtual ~skelmesh()
-        {
-            delete[] verts;
-            delete[] tris;
-        }
+        virtual ~skelmesh();
 
         int addblendcombo(const blendcombo &c);
         void smoothnorms(float limit = 0, bool areaweight = true);
@@ -187,11 +169,8 @@ struct skelmodel : animmodel
         float pitchscale, pitchoffset, pitchmin, pitchmax;
         dualquat base;
 
-        boneinfo() : name(nullptr), parent(-1), children(-1), next(-1), group(INT_MAX), scheduled(-1), interpindex(-1), interpparent(-1), ragdollindex(-1), correctindex(-1), pitchscale(0), pitchoffset(0), pitchmin(0), pitchmax(0) {}
-        ~boneinfo()
-        {
-            delete[] name;
-        }
+        boneinfo();
+        ~boneinfo();
     };
 
     struct pitchtarget
@@ -206,11 +185,8 @@ struct skelmodel : animmodel
         int bone, target, parent;
         float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
-        pitchcorrect(int bone, int target, float pitchscale, float pitchmin, float pitchmax) :
-            bone(bone), target(target), parent (-1), pitchmin(pitchmin), pitchmax(pitchmax),
-            pitchscale(pitchscale), pitchangle(0), pitchtotal(0) {}
-
-        pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0) {}
+        pitchcorrect(int bone, int target, float pitchscale, float pitchmin, float pitchmax);
+        pitchcorrect();
     };
 
     class skeleton
@@ -230,24 +206,8 @@ struct skelmodel : animmodel
             std::vector<skelcacheentry> skelcache;
             std::unordered_map<GLuint, int> blendoffsets;
 
-            skeleton(skelmeshgroup * const group) : name(""), owner(group), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false)
-            {
-            }
-
-            ~skeleton()
-            {
-                delete[] bones;
-                delete[] framebones;
-                if(ragdoll)
-                {
-                    delete ragdoll;
-                    ragdoll = nullptr;
-                }
-                for(skelcacheentry &i : skelcache)
-                {
-                    delete[] i.bdata;
-                }
-            }
+            skeleton(skelmeshgroup * const group);
+            ~skeleton();
 
             const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
             skelanimspec &addskelanim(const char *name);
@@ -423,13 +383,8 @@ struct skelmodel : animmodel
         public:
             std::vector<uchar> partmask;
 
-            skelpart(animmodel *model, int index = 0) : part(model, index)
-            {
-            }
-
-            virtual ~skelpart()
-            {
-            }
+            skelpart(animmodel *model, int index = 0);
+            virtual ~skelpart();
 
             void initanimparts();
             bool addanimpart(const std::vector<uint> &bonemask);
@@ -442,30 +397,12 @@ struct skelmodel : animmodel
             void endanimparts();
     };
 
-    skelmodel(const char *name) : animmodel(name)
-    {
-    }
+    skelmodel(const char *name);
 
-    int linktype(const animmodel *m, const part *p) const
-    {
-        return type()==m->type() &&
-            (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
-                Link_Reuse :
-                Link_Tag;
-    }
+    int linktype(const animmodel *m, const part *p) const;
+    bool skeletal() const;
 
-    bool skeletal() const
-    {
-        return true;
-    }
-
-    skelpart &addpart()
-    {
-        flushpart();
-        skelpart *p = new skelpart(this, parts.size());
-        parts.push_back(p);
-        return *p;
-    }
+    skelpart &addpart();
 };
 
 class skeladjustment

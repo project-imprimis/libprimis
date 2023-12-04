@@ -41,6 +41,37 @@ VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
 VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
+//animcacheentry child classes
+
+bool skelmodel::vbocacheentry::check() const
+{
+    return !vbuf;
+}
+
+skelmodel::vbocacheentry::vbocacheentry() : vbuf(0), owner(-1)
+{
+}
+
+void skelmodel::skelcacheentry::nextversion()
+{
+    version = Shader::uniformlocversion();
+}
+
+skelmodel::skelcacheentry::skelcacheentry() : bdata(nullptr), version(-1)
+{
+}
+
+bool skelmodel::blendcacheentry::check() const
+{
+    return false;
+}
+
+skelmodel::blendcacheentry::blendcacheentry() : owner(-1)
+{
+}
+
+//blendcombo
+
 skelmodel::blendcombo::blendcombo() : uses(1)
 {
 }
@@ -90,6 +121,20 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
     return !(*this == c);
 }
 
+//pitchcorrect
+
+skelmodel::pitchcorrect::pitchcorrect(int bone, int target, float pitchscale, float pitchmin, float pitchmax) :
+    bone(bone), target(target), parent (-1), pitchmin(pitchmin), pitchmax(pitchmax),
+    pitchscale(pitchscale), pitchangle(0), pitchtotal(0)
+{
+}
+
+skelmodel::pitchcorrect::pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0)
+{
+}
+
+//skeleton
+
 const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep) const
 {
     int len = sep ? std::strlen(name) : 0;
@@ -121,6 +166,35 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
     skelanimspec & sa = skelanims.back();
     sa.name = name ? newstring(name) : nullptr;
     return skelanims.back();
+}
+
+skelmodel::skeleton::skeleton(skelmeshgroup * const group) :
+    name(""),
+    owner(group),
+    bones(nullptr),
+    numbones(0),
+    numinterpbones(0),
+    numgpubones(0),
+    numframes(0),
+    framebones(nullptr),
+    ragdoll(nullptr),
+    usegpuskel(false)
+{
+}
+
+skelmodel::skeleton::~skeleton()
+{
+    delete[] bones;
+    delete[] framebones;
+    if(ragdoll)
+    {
+        delete ragdoll;
+        ragdoll = nullptr;
+    }
+    for(skelcacheentry &i : skelcache)
+    {
+        delete[] i.bdata;
+    }
 }
 
 std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
@@ -1350,6 +1424,16 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 //skelmesh
 
+skelmodel::skelmesh::skelmesh() : verts(nullptr), tris(nullptr), numverts(0), numtris(0), maxweights(0)
+{
+}
+
+skelmodel::skelmesh::~skelmesh()
+{
+    delete[] verts;
+    delete[] tris;
+}
+
 int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 {
     maxweights = std::max(maxweights, static_cast<int>(c.size()));
@@ -1559,6 +1643,31 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     xtravertsva += numverts;
 }
 
+// boneinfo
+
+skelmodel::boneinfo::boneinfo() :
+    name(nullptr),
+    parent(-1),
+    children(-1),
+    next(-1),
+    group(INT_MAX),
+    scheduled(-1),
+    interpindex(-1),
+    interpparent(-1),
+    ragdollindex(-1),
+    correctindex(-1),
+    pitchscale(0),
+    pitchoffset(0),
+    pitchmin(0),
+    pitchmax(0)
+{
+}
+
+skelmodel::boneinfo::~boneinfo()
+{
+    delete[] name;
+}
+
 // skelmeshgroup
 
 int skelmodel::skelmeshgroup::findtag(const char *name)
@@ -1734,6 +1843,33 @@ void skelmodel::skelmeshgroup::preload()
     }
 }
 
+//skelmodel
+
+skelmodel::skelmodel(const char *name) : animmodel(name)
+{
+}
+
+int skelmodel::linktype(const animmodel *m, const part *p) const
+{
+    return type()==m->type() &&
+        (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
+            Link_Reuse :
+            Link_Tag;
+}
+
+bool skelmodel::skeletal() const
+{
+    return true;
+}
+
+skelmodel::skelpart &skelmodel::addpart()
+{
+    flushpart();
+    skelpart *p = new skelpart(this, parts.size());
+    parts.push_back(p);
+    return *p;
+}
+
 animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
 {
     skelmeshgroup *group = newmeshes();
@@ -1745,6 +1881,7 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
     }
     return group;
 }
+
 animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
 {
     if(meshgroups.find(name) == meshgroups.end())
@@ -1760,6 +1897,14 @@ animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
 }
 
 // skelpart
+
+skelmodel::skelpart::skelpart(animmodel *model, int index   ) : part(model, index)
+{
+}
+
+skelmodel::skelpart::~skelpart()
+{
+}
 
 /**
  * @brief Manages caching of part masking data.
