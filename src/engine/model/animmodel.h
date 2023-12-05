@@ -220,7 +220,7 @@ class animmodel : public model
                 }
 
                 template<class V, class T>
-                void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight)
+                void buildnorms(V *verts, int numverts, const T *tris, int numtris, bool areaweight)
                 {
                     if(!numverts)
                     {
@@ -232,7 +232,7 @@ class animmodel : public model
                     }
                     for(int i = 0; i < numtris; ++i)
                     {
-                        T &t = tris[i];
+                        const T &t = tris[i];
                         V &v1 = verts[t.vert[0]],
                           &v2 = verts[t.vert[1]],
                           &v3 = verts[t.vert[2]];
