@@ -220,7 +220,7 @@ class animmodel : public model
                 }
 
                 template<class V, class T>
-                void buildnorms(V *verts, int numverts, const T *tris, int numtris, bool areaweight)
+                static void buildnorms(V *verts, int numverts, const T *tris, int numtris, bool areaweight)
                 {
                     if(!numverts)
                     {
