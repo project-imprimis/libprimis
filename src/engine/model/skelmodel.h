@@ -563,7 +563,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
+        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), animfile);
         const animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
@@ -670,7 +670,7 @@ struct skelcommands : modelcommands<MDL>
             {
                 return;
             }
-            DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
+            DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), animfile);
             const animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
             if(!sa)
             {

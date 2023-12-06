@@ -533,7 +533,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
                 part *p = loading->parts.back();
                 p->initskins(notexture, notexture, group->meshes.size());
                 skin &s = p->skins.back();
-                s.tex = textureload(makerelpath(dir, texname), 0, true, false);
+                s.tex = textureload(makerelpath(dir.c_str(), texname), 0, true, false);
                 delete[] texname;
             }
         }

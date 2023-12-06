@@ -583,7 +583,7 @@ template<class MDL, class BASE>
 struct modelloader : BASE
 {
     static MDL *loading;
-    static string dir;
+    static std::string dir;
 
     modelloader(const char *name) : BASE(name) {}
 
@@ -612,7 +612,8 @@ struct modelloader : BASE
 
     bool loadconfig()
     {
-        formatstring(dir, "media/model/%s", BASE::modelname().c_str());
+        dir.clear();
+        dir.append("media/model/").append(BASE::modelname());
         DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::modelname().c_str(), MDL::formatname());
 
         identflags &= ~Idf_Persist;
@@ -626,7 +627,7 @@ template<class MDL, class BASE>
 MDL *modelloader<MDL, BASE>::loading = nullptr;
 
 template<class MDL, class BASE>
-string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
+std::string modelloader<MDL, BASE>::dir = {""}; // crashes clang if "" is used here
 
 /* modelloader
  *
@@ -649,7 +650,8 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        formatstring(MDL::dir, "media/model/%s", name);
+        MDL::dir.clear();
+        MDL::dir.append("media/model/").append(name);
     }
 
 //======================================================= LOOP_MESHES LOOP_SKINS
@@ -685,10 +687,10 @@ struct modelcommands
     static void setskin(char *meshname, char *tex, char *masks)
     {
         LOOP_SKINS(meshname, s,
-            s.tex = textureload(makerelpath(MDL::dir, tex), 0, true, false);
+            s.tex = textureload(makerelpath(MDL::dir.c_str(), tex), 0, true, false);
             if(*masks)
             {
-                s.masks = textureload(makerelpath(MDL::dir, masks), 0, true, false);
+                s.masks = textureload(makerelpath(MDL::dir.c_str(), masks), 0, true, false);
             }
         );
     }
@@ -730,14 +732,14 @@ struct modelcommands
 
     static void setbumpmap(char *meshname, char *normalmapfile)
     {
-        Texture *normalmaptex = textureload(makerelpath(MDL::dir, normalmapfile), 0, true, false);
+        Texture *normalmaptex = textureload(makerelpath(MDL::dir.c_str(), normalmapfile), 0, true, false);
         LOOP_SKINS(meshname, s, s.normalmap = normalmaptex);
     }
 
     static void setdecal(char *meshname, char *decal)
     {
         LOOP_SKINS(meshname, s,
-            s.decal = textureload(makerelpath(MDL::dir, decal), 0, true, false);
+            s.decal = textureload(makerelpath(MDL::dir.c_str(), decal), 0, true, false);
         );
     }
 

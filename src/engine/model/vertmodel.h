@@ -263,7 +263,7 @@ struct vertcommands : modelcommands<MDL>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, model);
+        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), model);
         part &mdl = MDL::loading->addpart();
         if(mdl.index)
         {
