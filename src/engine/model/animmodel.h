@@ -3,6 +3,8 @@
 
 extern int fullbrightmodels, testtags, debugcolmesh;
 
+const std::string modelpath = "media/model/";
+
 /* animmodel: generic class for an animated model object, derived from the very
  * general model structure
  *
@@ -613,7 +615,7 @@ struct modelloader : BASE
     bool loadconfig()
     {
         dir.clear();
-        dir.append("media/model/").append(BASE::modelname());
+        dir.append(modelpath).append(BASE::modelname());
         DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::modelname().c_str(), MDL::formatname());
 
         identflags &= ~Idf_Persist;
@@ -651,9 +653,8 @@ struct modelcommands
             return;
         }
         MDL::dir.clear();
-        MDL::dir.append("media/model/").append(name);
+        MDL::dir.append(modelpath).append(name);
     }
-
 //======================================================= LOOP_MESHES LOOP_SKINS
     #define LOOP_MESHES(meshname, m, body) do { \
         if(!MDL::loading || MDL::loading->parts.empty()) \
