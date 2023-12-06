@@ -438,9 +438,9 @@ std::vector<uchar> skelloader<MDL>::hitzones;
  *
  */
 template<class MDL>
-struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
+struct skelcommands : modelcommands<MDL>
 {
-    typedef modelcommands<MDL, struct MDL::skelmesh> commands;
+    typedef modelcommands<MDL> commands;
     typedef struct MDL::skeleton skeleton;
     typedef struct MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;

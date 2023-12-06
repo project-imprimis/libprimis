@@ -250,7 +250,7 @@ struct vertloader : modelloader<MDL, vertmodel>
 };
 
 template<class MDL>
-struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
+struct vertcommands : modelcommands<MDL>
 {
     typedef struct MDL::vertmeshgroup meshgroup;
     typedef class  MDL::part part;

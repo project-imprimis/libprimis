@@ -636,7 +636,7 @@ string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
  * this template class generates unique command names for each separate model type
  * such as objcolor for obj, or md5color for md5 models
  */
-template<class MDL, class MESH>
+template<class MDL>
 struct modelcommands
 {
     typedef class MDL::part part;
@@ -666,7 +666,7 @@ struct modelcommands
         } \
         for(uint i = 0; i < mdl.meshes->meshes.size(); i++) \
         { \
-            MESH &m = *static_cast<MESH *>(mdl.meshes->meshes[i]); \
+            auto &m = *(mdl.meshes->meshes[i]); \
             if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
             { \
                 body; \
