@@ -393,7 +393,7 @@ class animmodel : public model
 
                 virtual void cleanup() = 0;
                 virtual void preload() = 0;
-                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
+                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
