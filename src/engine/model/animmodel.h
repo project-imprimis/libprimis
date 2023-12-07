@@ -576,10 +576,12 @@ class animmodel : public model
 /* modelloader
  *
  * modelloader is a template for a wrapper to load a model into a model/animmodel
- * object from a transactional format
+ * object from a transactional format, it is intended to be a child template class
+ * of an animmodel derivative (the BASE template parameter)
  *
  * skelloader is a specialization of this class which uses modelloader to load
  * a skeletal model
+ *
  */
 template<class MDL, class BASE>
 struct modelloader : BASE
@@ -631,13 +633,16 @@ MDL *modelloader<MDL, BASE>::loading = nullptr;
 template<class MDL, class BASE>
 std::string modelloader<MDL, BASE>::dir = {""}; // crashes clang if "" is used here
 
-/* modelloader
+/* modelcommands
  *
  * this template class adds a series of commands to the cubescript binding
  * adaptable to a specific model type
  *
  * this template class generates unique command names for each separate model type
- * such as objcolor for obj, or md5color for md5 models
+ * such as objcolor for obj, or md5color for md5 models; they are static and the
+ * same for any given MDL template parameter
+ *
+ * the intended MDL template parameter is one of the model formats (md5, obj, etc)
  */
 template<class MDL>
 struct modelcommands
