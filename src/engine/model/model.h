@@ -15,6 +15,48 @@ enum
  * a model format loader (e.g. md5 or obj) extends model or one of its children
  * and assigns the data from the file format into the object (by setting its
  * fields and overriding its methods)
+ *
+ * model class hierarchy (all are objects except bottom gvars)
+ *
+ *  /-------\
+ *  | model |
+ *  \-------/
+ *      |
+ *      v
+ *  /-----------\
+ *  | animmodel |
+ *  \-----------/
+ *      |     \__________
+ *      v                \
+ *  /-----------\         v
+ *  | skelmodel |       /-----------\
+ *  \-----------/       | vertmodel |
+ *    |                 \-----------/
+ *    |     /-------------\       |
+ *    |     | modelloader |       |
+ *    |     \-------------/       |
+ *    |            |              |
+ *     \__________/ \_____________/  <-- multiple inheritance via template class
+ *          |                 |
+ *          v                 v
+ *      /------------\      /------------\
+ *      | skelloader |      | vertloader |
+ *      \------------/      \------------/
+ *          |                           |
+ *          v     /---------------\     v
+ *     /-----\    | modelcommands |    /-----\
+ *     | md5 |    \---------------/    | obj |
+ *     \-----/        |        |       \-----/
+ *      |             v        v            |
+ *      | /--------------\ /--------------\ |
+ *      | | skelcommands | | vertcommands | |
+ *      | \--------------/ \--------------/ |
+ *      |   |                           |   |
+ *      v   v                           v   v
+ * /-------------------\    /-------------------\
+ * | skelcommands<md5> |    | vertcommands<obj> |
+ * | md5commands       |    | md5commands       |
+ * \-------gvar--------/    \-------gvar--------/
  */
 class model
 {
