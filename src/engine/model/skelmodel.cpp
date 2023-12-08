@@ -921,8 +921,8 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
     {
         usegpuskel = gpuaccelerate();
     }
-    int numanimparts = (reinterpret_cast<skelpart *>(as->owner))->numanimparts;
-    std::vector<uchar> &partmask = (reinterpret_cast<skelpart *>(as->owner))->partmask;
+    const int numanimparts = (reinterpret_cast<const skelpart *>(as->owner))->numanimparts;
+    const std::vector<uchar> &partmask = (reinterpret_cast<const skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
     bool match = false;
     for(skelcacheentry &c : skelcache)

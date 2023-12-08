@@ -33,7 +33,7 @@ class animmodel : public model
 
         struct AnimState
         {
-            part *owner;
+            const part *owner;
             AnimPos cur, prev;
             float interp;
 
