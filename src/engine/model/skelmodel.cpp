@@ -476,12 +476,12 @@ void skelmodel::skeleton::initpitchdeps()
     {
         return;
     }
-    for(pitchtarget& t : pitchtargets)
+    for(pitchtarget &t : pitchtargets)
     {
         t.deps = -1;
         addpitchdep(t.bone, t.frame);
     }
-    for(pitchdep& d : pitchdeps)
+    for(pitchdep &d : pitchdeps)
     {
         int parent = bones[d.bone].parent;
         if(parent >= 0)
@@ -494,7 +494,7 @@ void skelmodel::skeleton::initpitchdeps()
             }
         }
     }
-    for(pitchtarget& t : pitchtargets)
+    for(pitchtarget &t : pitchtargets)
     {
         int j = findpitchdep(t.bone);
         if(j >= 0)
