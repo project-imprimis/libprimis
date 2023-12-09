@@ -4144,7 +4144,7 @@ namespace UI
                 }
                 else
                 {
-                    std::vector<int> anims = findanims(animspec);
+                    std::vector<size_t> anims = findanims(animspec);
                     if(anims.size())
                     {
                         anim = anims[0];

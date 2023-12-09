@@ -333,14 +333,14 @@ struct vertcommands : modelcommands<MDL>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        std::vector<int> anims = findanims(anim);
+        std::vector<size_t> anims = findanims(anim);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);
         }
         else
         {
-            for(const int &i : anims)
+            for(const size_t &i : anims)
             {
                 MDL::loading->parts.back()->setanim(0, i, *frame, *range, *speed, *priority);
             }

@@ -25,6 +25,6 @@ extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
 extern model *loadmapmodel(int n);
-extern std::vector<int> findanims(const char *pattern);
+extern std::vector<size_t> findanims(const char *pattern);
 
 #endif
