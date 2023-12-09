@@ -340,9 +340,9 @@ struct vertcommands : modelcommands<MDL>
         }
         else
         {
-            for(int i = 0; i < static_cast<int>(anims.size()); i++)
+            for(const int &i : anims)
             {
-                MDL::loading->parts.back()->setanim(0, anims[i], *frame, *range, *speed, *priority);
+                MDL::loading->parts.back()->setanim(0, i, *frame, *range, *speed, *priority);
             }
         }
     }
