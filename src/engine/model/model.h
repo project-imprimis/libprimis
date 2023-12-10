@@ -83,7 +83,7 @@ class model
         virtual void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a = nullptr, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1)) const = 0;
         virtual bool load() = 0;
         virtual int type() const = 0;
-        virtual bool setBIH() { return false; }
+        virtual bool setBIH() = 0;
         virtual bool skeletal() const = 0;
         virtual bool animated() const = 0;
         virtual bool pitched() const = 0;
