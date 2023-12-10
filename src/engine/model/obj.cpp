@@ -38,6 +38,10 @@
 
 #include "interface/console.h"
 
+obj::obj(std::string name) : vertloader(name)
+{
+}
+
 const char *obj::formatname()
 {
     return "obj";
