@@ -397,7 +397,7 @@ struct skelmodel : animmodel
             void endanimparts();
     };
 
-    skelmodel(const char *name);
+    skelmodel(std::string name);
 
     int linktype(const animmodel *m, const part *p) const;
     bool skeletal() const;
@@ -422,7 +422,7 @@ struct skelloader : modelloader<MDL, skelmodel>
     static std::vector<skeladjustment> adjustments;
     static std::vector<uchar> hitzones;
 
-    skelloader(const char *name) : modelloader<MDL, skelmodel>(name) {}
+    skelloader(std::string name) : modelloader<MDL, skelmodel>(name) {}
 };
 
 template<class MDL>

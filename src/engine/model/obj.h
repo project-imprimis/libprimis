@@ -5,7 +5,7 @@ struct obj;
 
 struct obj final : vertloader<obj>
 {
-    obj(const char *name) : vertloader(name) {}
+    obj(std::string name) : vertloader(name) {}
 
     static const char *formatname();
     static bool cananimate();

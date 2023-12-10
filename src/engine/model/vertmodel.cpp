@@ -56,7 +56,7 @@ vertmodel::meshgroup * vertmodel::sharemeshes(const char *name, float smooth)
     return meshgroups[name];
 }
 
-vertmodel::vertmodel(const char *name) : animmodel(name)
+vertmodel::vertmodel(std::string name) : animmodel(name)
 {
 }
 

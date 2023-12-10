@@ -40,7 +40,7 @@
 
 #include "md5.h"
 
-md5::md5(const char *name) : skelloader(name) {}
+md5::md5(std::string name) : skelloader(name) {}
 
 const char *md5::formatname()
 {

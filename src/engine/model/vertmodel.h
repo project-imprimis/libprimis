@@ -240,13 +240,13 @@ struct vertmodel : animmodel
     meshgroup *loadmeshes(const char *name, float smooth = 2);
     meshgroup *sharemeshes(const char *name, float smooth = 2);
 
-    vertmodel(const char *name);
+    vertmodel(std::string name);
 };
 
 template<class MDL>
 struct vertloader : modelloader<MDL, vertmodel>
 {
-    vertloader(const char *name) : modelloader<MDL, vertmodel>(name) {}
+    vertloader(std::string name) : modelloader<MDL, vertmodel>(name) {}
 };
 
 template<class MDL>

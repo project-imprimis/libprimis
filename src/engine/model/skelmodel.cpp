@@ -1845,7 +1845,7 @@ void skelmodel::skelmeshgroup::preload()
 
 //skelmodel
 
-skelmodel::skelmodel(const char *name) : animmodel(name)
+skelmodel::skelmodel(std::string name) : animmodel(name)
 {
 }
 

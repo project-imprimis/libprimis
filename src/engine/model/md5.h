@@ -2,7 +2,7 @@
 class md5 final : public skelloader<md5>
 {
     public:
-        md5(const char *name);
+        md5(std::string name);
         static const char *formatname();
         bool flipy() const;
         int type() const override;

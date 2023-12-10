@@ -189,7 +189,7 @@ class model
         }
 
     protected:
-        model(const char *name) : spin(0, 0, 0),
+        model(std::string name) : spin(0, 0, 0),
                                   orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),

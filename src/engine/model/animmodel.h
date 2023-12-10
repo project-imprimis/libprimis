@@ -552,7 +552,7 @@ class animmodel : public model
             Link_Reuse
         };
 
-        animmodel(const char *name);
+        animmodel(std::string name);
 
         virtual int linktype(const animmodel *, const part *) const
         {
@@ -589,7 +589,7 @@ struct modelloader : BASE
     static MDL *loading;
     static std::string dir;
 
-    modelloader(const char *name) : BASE(name) {}
+    modelloader(std::string name) : BASE(name) {}
 
     static bool cananimate()
     {
