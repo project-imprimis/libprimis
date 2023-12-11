@@ -577,9 +577,9 @@ struct skelcommands : modelcommands<MDL>
             conoutf("could not find bone %s to pitch target", name);
             return;
         }
-        for(uint i = 0; i < skel->pitchtargets.size(); i++)
+        for(const pitchtarget &i : skel->pitchtargets)
         {
-            if(skel->pitchtargets[i].bone == *bone)
+            if(i.bone == *bone)
             {
                 return;
             }
