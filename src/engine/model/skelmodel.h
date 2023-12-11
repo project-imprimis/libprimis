@@ -329,7 +329,7 @@ struct skelmodel : animmodel
         template<class T>
         void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
         {
-            T *vverts = 0;
+            T *vverts = nullptr;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
             if(as->cur.anim & Anim_NoSkin)
             {
