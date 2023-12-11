@@ -313,6 +313,7 @@ struct skelmodel : animmodel
 
         void genvbo(vbocacheentry &vc);
 
+        //for vvert, vvertg (vvertgw see below function), disable bones if active
         template<class T>
         void bindbones(T *vverts)
         {
@@ -321,6 +322,7 @@ struct skelmodel : animmodel
                 disablebones();
             }
         }
+        //for vvertgw only, call parent bindbones function
         void bindbones(vvertgw *vverts)
         {
             meshgroup::bindbones(vverts->weights, vverts->bones, vertsize);
