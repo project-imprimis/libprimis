@@ -1485,10 +1485,10 @@ void abovemodel(vec &o, const char *mdl)
     o.z += m->above();
 }
 
-std::vector<int> findanims(const char *pattern)
+std::vector<size_t> findanims(const char *pattern)
 {
-    std::vector<int> anims;
-    for(int i = 0; i < static_cast<int>(animnames.size()); ++i)
+    std::vector<size_t> anims;
+    for(size_t i = 0; animnames.size(); ++i)
     {
         if(!animnames.at(i).compare(pattern))
         {
@@ -1500,12 +1500,12 @@ std::vector<int> findanims(const char *pattern)
 
 void findanimscmd(char *name)
 {
-    std::vector<int> anims = findanims(name);
+    std::vector<size_t> anims = findanims(name);
     std::vector<char> buf;
     string num;
-    for(int i = 0; i < static_cast<int>(anims.size()); i++)
+    for(size_t i = 0; i < anims.size(); i++)
     {
-        formatstring(num, "%d", anims[i]);
+        formatstring(num, "%lu", anims[i]);
         if(i > 0)
         {
             buf.push_back(' ');

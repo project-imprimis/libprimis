@@ -660,7 +660,7 @@ struct skelcommands : modelcommands<MDL>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        std::vector<int> anims = findanims(anim);
+        std::vector<size_t> anims = findanims(anim);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);
