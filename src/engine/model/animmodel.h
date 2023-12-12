@@ -349,18 +349,38 @@ class animmodel : public model
         class meshgroup
         {
             public:
-                std::string name;
                 std::vector<Mesh *> meshes;
+                std::string name;
 
-                meshgroup();
                 virtual ~meshgroup();
+
+                virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const {}
 
                 virtual int findtag(const char *name)
                 {
                     return -1;
                 }
 
-                virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const {}
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
+                void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
+                bool hasframe(int i) const;
+                bool hasframes(int i, int n) const;
+                int clipframes(int i, int n) const;
+
+                virtual int totalframes() const
+                {
+                    return 1;
+                }
+
+                virtual void *animkey()
+                {
+                    return this;
+                }
+
+                virtual void cleanup() = 0;
+                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
+                virtual void preload() = 0;
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(uint i = 0; i < meshes.size(); i++) \
@@ -373,27 +393,8 @@ class animmodel : public model
                     } \
                 } while(0)
 
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
-                void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
-                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
-
-                virtual void *animkey()
-                {
-                    return this;
-                }
-
-                virtual int totalframes() const
-                {
-                    return 1;
-                }
-
-                bool hasframe(int i) const;
-                bool hasframes(int i, int n) const;
-                int clipframes(int i, int n) const;
-
-                virtual void cleanup() = 0;
-                virtual void preload() = 0;
-                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
+            protected:
+                meshgroup();
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
@@ -401,6 +402,7 @@ class animmodel : public model
                 void bindtc(void *v, int stride);
                 void bindtangents(void *v, int stride);
                 void bindbones(void *wv, void *bv, int stride);
+            //no private-able members
         };
 
         static std::unordered_map<std::string, meshgroup *> meshgroups;
