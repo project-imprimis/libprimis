@@ -444,8 +444,7 @@ class animmodel : public model
                 void preloadBIH() const;
                 void preloadshaders();
                 void preloadmeshes();
-                virtual void getdefaultanim(animinfo &info) const;
-                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
+
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
                 void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
@@ -453,6 +452,11 @@ class animmodel : public model
                 void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
                 bool animated() const;
                 virtual void loaded();
+
+            protected:
+                virtual void getdefaultanim(animinfo &info) const;
+                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
+
             private:
                 struct animspec
                 {
