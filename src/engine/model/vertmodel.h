@@ -188,6 +188,7 @@ struct vertmodel : animmodel
         vertmeshgroup();
         virtual ~vertmeshgroup();
 
+        virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
         bool addtag(const char *name, const matrix4x3 &matrix);
         int findtag(const char *name);
 

@@ -194,6 +194,10 @@ vertmodel::vertmeshgroup::~vertmeshgroup()
     delete[] vdata;
 }
 
+void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const
+{
+}
+
 int vertmodel::vertmeshgroup::findtag(const char *name)
 {
     for(int i = 0; i < numtags; ++i)
