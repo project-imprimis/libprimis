@@ -304,7 +304,7 @@ struct skelmodel : animmodel
         void makeskeleton();
         int findtag(const char *name) override final;
         void *animkey();
-        int totalframes() const;
+        int totalframes() const override final;
 
         virtual const skelanimspec *loadanim(const char *filename)
         {

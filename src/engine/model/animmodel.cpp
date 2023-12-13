@@ -536,11 +536,6 @@ int animmodel::meshgroup::clipframes(int i, int n) const
     return std::min(n, totalframes() - i);
 }
 
-int animmodel::meshgroup::totalframes() const
-{
-    return 1;
-}
-
 void *animmodel::meshgroup::animkey()
 {
     return this;

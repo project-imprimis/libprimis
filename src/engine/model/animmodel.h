@@ -364,7 +364,7 @@ class animmodel : public model
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
 
-                virtual int totalframes() const;
+                virtual int totalframes() const = 0;
                 virtual void *animkey();
                 virtual void cleanup() = 0;
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
