@@ -354,13 +354,9 @@ class animmodel : public model
 
                 virtual ~meshgroup();
 
-                virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const {}
+                virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const {};
 
-                virtual int findtag(const char *name)
-                {
-                    return -1;
-                }
-
+                virtual int findtag(const char *name);
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
@@ -368,16 +364,8 @@ class animmodel : public model
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
 
-                virtual int totalframes() const
-                {
-                    return 1;
-                }
-
-                virtual void *animkey()
-                {
-                    return this;
-                }
-
+                virtual int totalframes() const;
+                virtual void *animkey();
                 virtual void cleanup() = 0;
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
                 virtual void preload() = 0;
