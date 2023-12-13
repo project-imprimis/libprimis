@@ -302,7 +302,7 @@ struct skelmodel : animmodel
         virtual ~skelmeshgroup();
 
         void makeskeleton();
-        int findtag(const char *name);
+        int findtag(const char *name) override final;
         void *animkey();
         int totalframes() const;
 

@@ -356,7 +356,7 @@ class animmodel : public model
 
                 virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const = 0;
 
-                virtual int findtag(const char *name);
+                virtual int findtag(const char *name) = 0;
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
