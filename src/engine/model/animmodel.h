@@ -420,7 +420,7 @@ class animmodel : public model
                 part(animmodel *model, int index = 0);
                 virtual ~part();
 
-                virtual void cleanup();
+                void cleanup();
                 void disablepitch();
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
