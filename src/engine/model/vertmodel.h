@@ -1,36 +1,36 @@
 struct vertmodel : animmodel
 {
-    struct vert
+    struct vert final
     {
         vec pos, norm;
         vec4<float> tangent;
     };
 
-    struct vvert
+    struct vvert final
     {
         vec pos;
         GenericVec2<half> tc;
         squat tangent;
     };
 
-    struct vvertg
+    struct vvertg final
     {
         vec4<half> pos;
         GenericVec2<half> tc;
         squat tangent;
     };
 
-    struct tcvert
+    struct tcvert final
     {
         vec2 tc;
     };
 
-    struct tri
+    struct tri final
     {
         uint vert[3];
     };
 
-    struct vbocacheentry
+    struct vbocacheentry final
     {
         GLuint vbuf;
         AnimState as;
@@ -160,7 +160,7 @@ struct vertmodel : animmodel
         void render();
     };
 
-    struct tag
+    struct tag final
     {
         char *name;
         matrix4x3 matrix;
