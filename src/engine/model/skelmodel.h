@@ -21,7 +21,7 @@ class skelhitdata; //defined in hitzone.h
  */
 struct skelmodel : animmodel
 {
-    struct vert
+    struct vert final
     {
         vec pos, norm;
         vec2 tc;
@@ -29,7 +29,7 @@ struct skelmodel : animmodel
         int blend, interpindex;
     };
 
-    struct vvert
+    struct vvert final
     {
         vec pos;
         GenericVec2<half> tc;
@@ -43,18 +43,18 @@ struct skelmodel : animmodel
         squat tangent;
     };
 
-    struct vvertgw : vvertg
+    struct vvertgw final : vvertg
     {
         uchar weights[4];
         uchar bones[4];
     };
 
-    struct tri
+    struct tri final
     {
         uint vert[3];
     };
 
-    class blendcombo
+    class blendcombo final
     {
         public:
             int uses, interpindex;
@@ -94,7 +94,7 @@ struct skelmodel : animmodel
         bool operator!=(const animcacheentry &c) const;
     };
 
-    struct vbocacheentry : animcacheentry
+    struct vbocacheentry final : animcacheentry
     {
         GLuint vbuf;
         int owner;
@@ -112,7 +112,7 @@ struct skelmodel : animmodel
         void nextversion();
     };
 
-    struct blendcacheentry : skelcacheentry
+    struct blendcacheentry final : skelcacheentry
     {
         int owner;
 
@@ -156,13 +156,13 @@ struct skelmodel : animmodel
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
-    struct skelanimspec
+    struct skelanimspec final
     {
         std::string name;
         int frame, range;
     };
 
-    struct boneinfo
+    struct boneinfo final
     {
         const char *name;
         int parent, children, next, group, scheduled, interpindex, interpparent, ragdollindex, correctindex;
@@ -173,14 +173,14 @@ struct skelmodel : animmodel
         ~boneinfo();
     };
 
-    struct pitchtarget
+    struct pitchtarget final
     {
         int bone, frame, corrects, deps;
         float pitchmin, pitchmax, deviated;
         dualquat pose;
     };
 
-    struct pitchcorrect
+    struct pitchcorrect final
     {
         int bone, target, parent;
         float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
@@ -407,7 +407,7 @@ struct skelmodel : animmodel
     skelpart &addpart();
 };
 
-class skeladjustment
+class skeladjustment final
 {
     public:
         skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
