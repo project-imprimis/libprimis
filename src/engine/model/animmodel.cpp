@@ -536,11 +536,6 @@ int animmodel::meshgroup::clipframes(int i, int n) const
     return std::min(n, totalframes() - i);
 }
 
-void *animmodel::meshgroup::animkey()
-{
-    return this;
-}
-
 void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
 {
     if(lastebuf!=ebuf)

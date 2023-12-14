@@ -347,6 +347,11 @@ void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, const part *p, const
     }
 }
 
+void *vertmodel::meshgroup::animkey()
+{
+    return this;
+}
+
 void vertmodel::vertmeshgroup::cleanup()
 {
     for(int i = 0; i < maxvbocache; ++i)

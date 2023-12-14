@@ -229,6 +229,7 @@ struct vertmodel : animmodel
         }
 
         void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
+        void *animkey() override final;
         void cleanup();
         void preload();
         void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p);
