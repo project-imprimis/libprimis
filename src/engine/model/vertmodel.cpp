@@ -347,7 +347,7 @@ void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, const part *p, const
     }
 }
 
-void *vertmodel::meshgroup::animkey()
+void *vertmodel::vertmeshgroup::animkey()
 {
     return this;
 }
