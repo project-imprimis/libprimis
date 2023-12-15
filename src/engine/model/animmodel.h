@@ -350,7 +350,6 @@ class animmodel : public model
         {
             public:
                 std::vector<Mesh *> meshes;
-                std::string name;
 
                 virtual ~meshgroup();
 
@@ -368,6 +367,7 @@ class animmodel : public model
                 bool hasframe(int i) const;
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
+                const std::string &groupname() const;
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(uint i = 0; i < meshes.size(); i++) \
@@ -382,6 +382,8 @@ class animmodel : public model
 
             protected:
                 meshgroup();
+
+                std::string name;
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);

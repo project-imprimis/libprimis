@@ -51,7 +51,7 @@ vertmodel::meshgroup * vertmodel::sharemeshes(const char *name, float smooth)
         {
             return nullptr;
         }
-        meshgroups[group->name] = group;
+        meshgroups[group->groupname()] = group;
     }
     return meshgroups[name];
 }
