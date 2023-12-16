@@ -677,6 +677,43 @@ struct modelcommands
         } \
     } while(0)
 
+    /**
+     * @brief Returns an iterator vector of meshes with the given name
+     *
+     * Returns a vector of MDL::loading->parts.back()'s meshgroup's mesh vector
+     * iterators where those iterator's contents' name field compares equal to the
+     * passed string. If the wildcard "*" is passed as `meshname` then all elements
+     * will be added regardless of name. If no such mesh vector exists (or there is
+     * no loading model) then an empty vector is returned.
+     *
+     * @param meshname the mesh name to select from the mesh vector
+     *
+     * @return vector of iterators corresponding to meshes with the given name
+     */
+    static std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string meshname)
+    {
+        std::vector<std::vector<animmodel::Mesh *>::iterator> meshlist;
+        if(!MDL::loading || MDL::loading->parts.empty())
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return meshlist; //empty vector
+        }
+        part &mdl = *MDL::loading->parts.back();
+        if(!mdl.meshes)
+        {
+            return meshlist; //empty vector
+        }
+        for(std::vector<animmodel::Mesh *>::iterator i = mdl.meshes->meshes.begin(); i != mdl.meshes->meshes.end(); ++i)
+        {
+            animmodel::Mesh &tempmesh = **i;
+            if(!std::strcmp(meshname.c_str(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.c_str())))
+            {
+                meshlist.push_back(i);
+            }
+        }
+        return meshlist;
+    }
+
     #define LOOP_SKINS(meshname, s, body) do { \
         LOOP_MESHES(meshname, m, \
         { \
@@ -761,28 +798,36 @@ struct modelcommands
 
     static void setnoclip(char *meshname, int *noclip)
     {
-        LOOP_MESHES(meshname, m, m.noclip = *noclip!=0);
+        auto meshlist = getmeshes(std::string(meshname));
+        for(auto &i : meshlist)
+        {
+            (*i)->noclip = *noclip!=0;
+        }
     }
 
     static void settricollide(char *meshname)
     {
         bool init = true;
-        LOOP_MESHES("*", m,
+        auto meshlist = getmeshes(std::string(meshname));
+        for(auto &i : meshlist)
         {
-            if(!m.cancollide)
+            if(!(*i)->cancollide)
             {
                 init = false;
             }
-        });
+        }
         if(init)
         {
-            LOOP_MESHES("*", m, m.cancollide = false);
+            for(auto &i : meshlist)
+            {
+                (*i)->cancollide = false;
+            }
         }
-        LOOP_MESHES(meshname, m,
+        for(auto &i : meshlist)
         {
-            m.cancollide = true;
-            m.canrender = false;
-        });
+            (*i)->cancollide = true;
+            (*i)->canrender = false;
+        }
         MDL::loading->collide = Collide_TRI;
     }
 
