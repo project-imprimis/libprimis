@@ -34,7 +34,7 @@ struct obj final : vertloader<obj>
         return new objmeshgroup;
     }
 
-    bool loaddefaultparts();
+    bool loaddefaultparts() override final;
 };
 
 #endif

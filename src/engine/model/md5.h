@@ -8,7 +8,7 @@ class md5 final : public skelloader<md5>
         int type() const override;
         skelmeshgroup *newmeshes();
 
-        bool loaddefaultparts();
+        bool loaddefaultparts() override final;
 
     private:
         struct md5joint
