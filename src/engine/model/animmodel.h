@@ -793,6 +793,10 @@ struct modelcommands
     static void setnoclip(char *meshname, int *noclip)
     {
         auto meshlist = getmeshes(std::string(meshname));
+        if(meshlist.empty())
+        {
+            return;
+        }
         for(auto &i : meshlist)
         {
             (*i)->noclip = *noclip!=0;
@@ -803,26 +807,32 @@ struct modelcommands
     {
         bool init = true;
         auto meshlist = getmeshes(std::string(meshname));
-        for(auto &i : meshlist)
+        if(!meshlist.empty())
         {
-            if(!(*i)->cancollide)
-            {
-                init = false;
-            }
+            return;
         }
-        if(init)
+        else
         {
             for(auto &i : meshlist)
             {
-                (*i)->cancollide = false;
+                if(!(*i)->cancollide)
+                {
+                    init = false;
+                }
+            }
+            if(init)
+            {
+                for(auto &i : meshlist)
+                {
+                    (*i)->cancollide = false;
+                }
+            }
+            for(auto &i : meshlist)
+            {
+                (*i)->cancollide = true;
+                (*i)->canrender = false;
             }
         }
-        for(auto &i : meshlist)
-        {
-            (*i)->cancollide = true;
-            (*i)->canrender = false;
-        }
-        MDL::loading->collide = Collide_TRI;
     }
 
 #undef LOOP_SKINS
