@@ -656,26 +656,6 @@ struct modelcommands
         MDL::dir.append(modelpath).append(name);
     }
 //======================================================= LOOP_MESHES LOOP_SKINS
-    #define LOOP_MESHES(meshname, m, body) do { \
-        if(!MDL::loading || MDL::loading->parts.empty()) \
-        { \
-            conoutf("not loading an %s", MDL::formatname()); \
-            return; \
-        } \
-        part &mdl = *MDL::loading->parts.back(); \
-        if(!mdl.meshes) \
-        { \
-            return; \
-        } \
-        for(uint i = 0; i < mdl.meshes->meshes.size(); i++) \
-        { \
-            auto &m = *(mdl.meshes->meshes[i]); \
-            if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
-            { \
-                body; \
-            } \
-        } \
-    } while(0)
 
     /**
      * @brief Returns an iterator vector of meshes with the given name
@@ -715,11 +695,25 @@ struct modelcommands
     }
 
     #define LOOP_SKINS(meshname, s, body) do { \
-        LOOP_MESHES(meshname, m, \
+        if(!MDL::loading || MDL::loading->parts.empty()) \
         { \
-            skin &s = mdl.skins[i]; \
-            body; \
-        }); \
+            conoutf("not loading an %s", MDL::formatname()); \
+            return; \
+        } \
+        part &mdl = *MDL::loading->parts.back(); \
+        if(!mdl.meshes) \
+        { \
+            return; \
+        } \
+        for(uint i = 0; i < mdl.meshes->meshes.size(); i++) \
+        { \
+            auto &m = *(mdl.meshes->meshes[i]); \
+            if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
+            { \
+                skin &s = mdl.skins[i]; \
+                body; \
+            } \
+        } \
     } while(0)
 
     static void setskin(char *meshname, char *tex, char *masks)
@@ -831,7 +825,6 @@ struct modelcommands
         MDL::loading->collide = Collide_TRI;
     }
 
-#undef LOOP_MESHES
 #undef LOOP_SKINS
 //==============================================================================
 
