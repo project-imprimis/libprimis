@@ -541,6 +541,19 @@ const std::string &animmodel::meshgroup::groupname() const
     return name;
 }
 
+std::vector<std::vector<const animmodel::Mesh *>::iterator> animmodel::meshgroup::getrendermeshes() const
+{
+    std::vector<std::vector<const animmodel::Mesh *>::iterator> rendermeshes;
+    for(std::vector<const animmodel::Mesh *>::iterator i = meshes.begin(); i != meshes.end(); ++i)
+    {
+        if((*i)->canrender || debugcolmesh)
+        {
+            rendermeshes.push_back(i);
+        }
+    }
+    return rendermeshes;
+}
+
 void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
 {
     if(lastebuf!=ebuf)

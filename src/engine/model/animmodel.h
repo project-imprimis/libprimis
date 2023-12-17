@@ -369,6 +369,18 @@ class animmodel : public model
                 int clipframes(int i, int n) const;
                 const std::string &groupname() const;
 
+                /**
+                 * @brief Returns a list of valid renderable meshes contained within this object.
+                 *
+                 * Returns a vector of std::vector<>::iterator objects which point to valid
+                 * elements of the object's mesh list which can be rendered (the relevant flag
+                 * field is true). Alternatively if the global debugcolmesh is enabled, all
+                 * meshes will be returned.
+                 *
+                 * @return a vector of std::vector iterators pointing to renderable meshes
+                 */
+                std::vector<std::vector<const Mesh *>::iterator> getrendermeshes() const;
+
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(uint i = 0; i < meshes.size(); i++) \
                     { \
