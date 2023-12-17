@@ -379,7 +379,7 @@ class animmodel : public model
                  *
                  * @return a vector of std::vector iterators pointing to renderable meshes
                  */
-                std::vector<std::vector<const Mesh *>::iterator> getrendermeshes() const;
+                std::vector<std::vector<Mesh *>::const_iterator> getrendermeshes() const;
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(uint i = 0; i < meshes.size(); i++) \

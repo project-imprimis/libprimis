@@ -505,7 +505,11 @@ animmodel::meshgroup::~meshgroup()
 
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const
 {
-    LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
+    auto rendermeshes = getrendermeshes();
+    for(auto i : rendermeshes)
+    {
+        (*i)->calcbb(bbmin, bbmax, t);
+    }
 }
 
 void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
@@ -518,7 +522,11 @@ void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BI
 
 void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const
 {
-    LOOP_RENDER_MESHES(Mesh, m, m.genshadowmesh(tris, t));
+    auto rendermeshes = getrendermeshes();
+    for(auto i : rendermeshes)
+    {
+        (*i)->genshadowmesh(tris, t);
+    }
 }
 
 bool animmodel::meshgroup::hasframe(int i) const
@@ -541,10 +549,10 @@ const std::string &animmodel::meshgroup::groupname() const
     return name;
 }
 
-std::vector<std::vector<const animmodel::Mesh *>::iterator> animmodel::meshgroup::getrendermeshes() const
+std::vector<std::vector<animmodel::Mesh *>::const_iterator> animmodel::meshgroup::getrendermeshes() const
 {
-    std::vector<std::vector<const animmodel::Mesh *>::iterator> rendermeshes;
-    for(std::vector<const animmodel::Mesh *>::iterator i = meshes.begin(); i != meshes.end(); ++i)
+    std::vector<std::vector<animmodel::Mesh *>::const_iterator> rendermeshes;
+    for(std::vector<animmodel::Mesh *>::const_iterator i = meshes.begin(); i != meshes.end(); ++i)
     {
         if((*i)->canrender || debugcolmesh)
         {
