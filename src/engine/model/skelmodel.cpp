@@ -1107,26 +1107,12 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         }
 
         gle::bindvbo(vc.vbuf);
-//====================================================================== GENVBO*
-        #define GENVBO(type, args) \
-            do \
-            { \
-                vertsize = sizeof(type); \
-                std::vector<type> vverts; \
-                LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo args); \
-                glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(type), vverts.data(), GL_STATIC_DRAW); \
-            } while(0)
-        /* need these macros so it's possible to pass a variadic chain of
-         * args in a single package
-         *
-         * (the set of values in the latter argument are all passed together
-         * as "args" which can't be done by a single standard macro)
-         */
-        #define GENVBOANIM(type) GENVBO(type, (idxs, vlen, vverts))
-        #define GENVBOSTAT(type) GENVBO(type, (idxs, vlen, vverts, htdata, htlen))
+
         if(skel->numframes)
         {
-            GENVBOANIM(vvertgw);
+            std::vector<vvertgw> vvertgws;
+            LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgws));
+            glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
         }
         else
         {
@@ -1143,13 +1129,11 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             }
             int *htdata = new int[htlen];
             std::memset(htdata, -1, htlen*sizeof(int));
-            GENVBOSTAT(vvertg);
+            std::vector<vvertg> vvertgs;
+            LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgs, htdata, htlen));
+            glBufferData(GL_ARRAY_BUFFER, vvertgs.size()*sizeof(vvertg), vvertgs.data(), GL_STATIC_DRAW);
             delete[] htdata;
         }
-        #undef GENVBO
-        #undef GENVBOANIM
-        #undef GENVBOSTAT
-//==============================================================================
         gle::clearvbo();
     }
 
