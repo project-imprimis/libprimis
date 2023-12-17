@@ -490,9 +490,9 @@ class animmodel : public model
 
         void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
-        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
-        void preloadBIH();
-        bool setBIH();
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) override;
+        void preloadBIH() override;
+        bool setBIH() override;
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
 
         bool unlink(const part *p) const
