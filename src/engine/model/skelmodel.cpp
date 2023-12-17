@@ -1110,6 +1110,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
         if(skel->numframes)
         {
+            vertsize = sizeof(vvertgw);//silent parameter to genvbo()
             std::vector<vvertgw> vvertgws;
             LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgws));
             glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
@@ -1129,6 +1130,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             }
             int *htdata = new int[htlen];
             std::memset(htdata, -1, htlen*sizeof(int));
+            vertsize = sizeof(vvertg); //silent parameter to genvbo()
             std::vector<vvertg> vvertgs;
             LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgs, htdata, htlen));
             glBufferData(GL_ARRAY_BUFFER, vvertgs.size()*sizeof(vvertg), vvertgs.data(), GL_STATIC_DRAW);
