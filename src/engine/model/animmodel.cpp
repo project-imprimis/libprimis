@@ -562,6 +562,20 @@ std::vector<std::vector<animmodel::Mesh *>::const_iterator> animmodel::meshgroup
     return rendermeshes;
 }
 
+//identical to above but non-const iterator and non const this
+std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getrendermeshes()
+{
+    std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes;
+    for(std::vector<animmodel::Mesh *>::iterator i = meshes.begin(); i != meshes.end(); ++i)
+    {
+        if((*i)->canrender || debugcolmesh)
+        {
+            rendermeshes.push_back(i);
+        }
+    }
+    return rendermeshes;
+}
+
 void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
 {
     if(lastebuf!=ebuf)

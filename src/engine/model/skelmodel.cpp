@@ -1074,13 +1074,17 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         }
 
         vertsize = sizeof(vvert);
-        LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen));
+        auto rendermeshes = getrendermeshes();
+        for(auto i : rendermeshes)
+        {
+            vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen);
+        }
         delete[] vdata;
         vdata = new uchar[vlen*vertsize];
-        LOOP_RENDER_MESHES(skelmesh, m,
+        for(auto i : rendermeshes)
         {
-            m.fillverts(reinterpret_cast<vvert *>(vdata));
-        });
+             static_cast<skelmesh *>(*i)->fillverts(reinterpret_cast<vvert *>(vdata));
+        }
     }
     else
     {
@@ -1107,19 +1111,25 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         }
 
         gle::bindvbo(vc.vbuf);
-
+        auto rendermeshes = getrendermeshes();
         if(skel->numframes)
         {
             vertsize = sizeof(vvertgw);//silent parameter to genvbo()
             std::vector<vvertgw> vvertgws;
-            LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgws));
+            for(auto i : rendermeshes)
+            {
+                vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgws);
+            }
             glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
         }
         else
         {
             int numverts = 0,
                 htlen = 128;
-            LOOP_RENDER_MESHES(skelmesh, m, numverts += m.numverts);
+            for(auto i : rendermeshes)
+            {
+                numverts += static_cast<skelmesh *>(*i)->numverts;
+            }
             while(htlen < numverts)
             {
                 htlen *= 2;
@@ -1132,7 +1142,10 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             std::memset(htdata, -1, htlen*sizeof(int));
             vertsize = sizeof(vvertg); //silent parameter to genvbo()
             std::vector<vvertg> vvertgs;
-            LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen, vvertgs, htdata, htlen));
+            for(auto i : rendermeshes)
+            {
+                vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgs, htdata, htlen);
+            }
             glBufferData(GL_ARRAY_BUFFER, vvertgs.size()*sizeof(vvertg), vvertgs.data(), GL_STATIC_DRAW);
             delete[] htdata;
         }
@@ -1716,14 +1729,15 @@ void skelmodel::skelmeshgroup::sortblendcombos()
     {
         remap[blendcombos[i].interpindex] = i;
     }
-    LOOP_RENDER_MESHES(skelmesh, m,
+    auto rendermeshes = getrendermeshes();
+    for(auto i : rendermeshes)
     {
-        for(int j = 0; j < m.numverts; ++j)
+        for(int j = 0; j < static_cast<skelmesh *>(*i)->numverts; ++j)
         {
-            vert &v = m.verts[j];
+            vert &v = static_cast<skelmesh *>(*i)->verts[j];
             v.blend = remap[v.blend];
         }
-    });
+    }
     delete[] remap;
 }
 
