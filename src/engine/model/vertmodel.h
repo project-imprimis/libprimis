@@ -129,18 +129,17 @@ struct vertmodel : animmodel
                        * RESTRICT vert2 = &verts[as.cur.fr2 * numverts],
                        * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : nullptr,
                        * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : nullptr;
-                       //lerp: Linear intERPolation
-            //========================================================== IP_VERT
-            //InterPolate_VERTex
-            #define IP_VERT(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
-            #define IP_VERT_P(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
             if(as.interp<1)
             {
                 for(int i = 0; i < numverts; ++i)
                 {
                     T &v = vdata[i];
-                    IP_VERT_P(pos, vec);
-                    IP_VERT_P(tangent, vec4<float>);
+                    v.pos.lerp(vec().lerp(pvert1[i].pos, pvert2[i].pos, as.prev.t),
+                               vec().lerp(vert1[i].pos, vert2[i].pos, as.cur.t),
+                               as.interp);
+                    v.tangent.lerp(vec4<float>().lerp(pvert1[i].tangent, pvert2[i].tangent, as.prev.t),
+                                   vec4<float>().lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t),
+                                   as.interp);
                 }
             }
             else
@@ -148,13 +147,10 @@ struct vertmodel : animmodel
                 for(int i = 0; i < numverts; ++i)
                 {
                     T &v = vdata[i];
-                    IP_VERT(pos, vec);
-                    IP_VERT(tangent, vec4<float>);
+                    v.pos.lerp(vert1[i].pos, vert2[i].pos, as.cur.t);
+                    v.tangent.lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t);
                 }
             }
-            #undef IP_VERT
-            #undef IP_VERT_P
-            //==================================================================
         }
 
         void render();
