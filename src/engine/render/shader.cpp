@@ -1989,7 +1989,7 @@ void variantshader_new(int *type, char *name, int *row, int *maxvariants, uint *
 
 void setshader(char *name)
 {
-    slotparams.size();
+    slotparams.clear();
     auto itr = shaders.find(name);
     if(itr == shaders.end())
     {
@@ -2005,7 +2005,7 @@ void setshader(char *name)
 void resetslotshader()
 {
     slotshader = nullptr;
-    slotparams.size();
+    slotparams.clear();
 }
 
 void setslotshader(Slot &s)
