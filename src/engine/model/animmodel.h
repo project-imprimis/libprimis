@@ -132,7 +132,7 @@ class animmodel : public model
 
                 virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) = 0;
 
-                virtual void genBIH(BIH::mesh &m) {}
+                virtual void genBIH(BIH::mesh &m) const {}
 
                 void genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
@@ -471,7 +471,7 @@ class animmodel : public model
         };
 
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
-        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const;
+        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override;
 
         std::vector<part *> parts;
 
@@ -512,7 +512,7 @@ class animmodel : public model
             return parts[0]->pitchscale != 0;
         }
 
-        bool alphatested() const;
+        bool alphatested() const override final;
 
         virtual bool flipy() const = 0;
         virtual bool loadconfig() = 0;
@@ -535,8 +535,8 @@ class animmodel : public model
         void setcullface(int cullface) override final;
         void setcolor(const vec &color) override final;
 
-        void calcbb(vec &center, vec &radius) const;
-        void calctransform(matrix4x3 &m) const;
+        void calcbb(vec &center, vec &radius) const override final;
+        void calctransform(matrix4x3 &m) const override final;
 
         virtual void loaded()
         {

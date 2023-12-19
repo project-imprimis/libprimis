@@ -9,9 +9,9 @@ struct obj final : vertloader<obj>
 
     static const char *formatname();
     static bool cananimate();
-    bool flipy() const;
-    int type() const override;
-    bool skeletal() const override;
+    bool flipy() const override final;
+    int type() const override final;
+    bool skeletal() const override final;
 
     struct objmeshgroup : vertmeshgroup
     {
@@ -29,7 +29,7 @@ struct obj final : vertloader<obj>
                            float smooth);
     };
 
-    vertmeshgroup *newmeshes()
+    vertmeshgroup *newmeshes() override final
     {
         return new objmeshgroup;
     }

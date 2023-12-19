@@ -4,9 +4,9 @@ class md5 final : public skelloader<md5>
     public:
         md5(std::string name);
         static const char *formatname();
-        bool flipy() const;
-        int type() const override;
-        skelmeshgroup *newmeshes();
+        bool flipy() const override final;
+        int type() const override final;
+        skelmeshgroup *newmeshes() override final;
 
         bool loaddefaultparts() override final;
 

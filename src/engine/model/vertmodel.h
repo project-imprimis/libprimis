@@ -55,9 +55,9 @@ struct vertmodel : animmodel
         void smoothnorms(float limit = 0, bool areaweight = true);
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
-        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(BIH::mesh &m) const;
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const;
+        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) override final;
+        void genBIH(BIH::mesh &m) const override final;
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
 
         static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
 
@@ -226,9 +226,9 @@ struct vertmodel : animmodel
 
         void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
         void *animkey() override final;
-        void cleanup();
-        void preload();
-        void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p);
+        void cleanup() override final;
+        void preload() override final;
+        void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p) override final;
 
         virtual bool load(const char *name, float smooth) = 0;
     };

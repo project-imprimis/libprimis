@@ -139,9 +139,9 @@ struct skelmodel : animmodel
         void smoothnorms(float limit = 0, bool areaweight = true);
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
-        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(BIH::mesh &m);
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const;
+        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) override final;
+        void genBIH(BIH::mesh &m) const override final;
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
         static void assignvert(vvertg &vv, int j, const vert &v);
         static void assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c);
 
@@ -152,7 +152,7 @@ struct skelmodel : animmodel
         static void fillvert(vvert &vv, int j, vert &v);
         void fillverts(vvert *vdata);
         void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
-        void setshader(Shader *s, int row);
+        void setshader(Shader *s, int row) override final;
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
@@ -303,7 +303,7 @@ struct skelmodel : animmodel
 
         void makeskeleton();
         int findtag(const char *name) override final;
-        void *animkey();
+        void *animkey() override final;
         int totalframes() const override final;
 
         virtual const skelanimspec *loadanim(const char *filename)
@@ -365,12 +365,12 @@ struct skelmodel : animmodel
         static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
         void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
         static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
-        void cleanup();
+        void cleanup() override final;
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
-        void preload();
+        void preload() override final;
 
-        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
         virtual bool load(const char *name, float smooth) = 0;
     };
@@ -443,7 +443,7 @@ template<class MDL>
 struct skelcommands : modelcommands<MDL>
 {
     typedef modelcommands<MDL> commands;
-    typedef class MDL::skeleton skeleton;
+    typedef class  MDL::skeleton skeleton;
     typedef struct MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
     typedef struct MDL::boneinfo boneinfo;
