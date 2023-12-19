@@ -340,18 +340,6 @@ void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 
 void animmodel::skin::bind(Mesh &b, const AnimState *as)
 {
-    //============================================= SETMODELSHADER DOMODELSHADER
-    #define DOMODELSHADER(name, body) \
-        do { \
-            static Shader *name##shader = nullptr; \
-            if(!name##shader) \
-            { \
-                name##shader = useshaderbyname(#name); \
-            } \
-            body; \
-        } while(0)
-    #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
-
     if(cullface > 0)
     {
         if(!enablecullface)
@@ -375,12 +363,22 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
                 glBindTexture(GL_TEXTURE_2D, tex->id);
                 lasttex = tex;
             }
-            SETMODELSHADER(b, alphashadowmodel);
+            static Shader *alphashadowmodelshader = nullptr;
+            if(!alphashadowmodelshader)
+            {
+                alphashadowmodelshader = useshaderbyname("alphashadowmodel");
+            }
+            b.setshader(alphashadowmodelshader);
             setshaderparams(b, as, false);
         }
         else
         {
-            SETMODELSHADER(b, shadowmodel);
+            static Shader *shadowmodelshader = nullptr;
+            if(!shadowmodelshader)
+            {
+                shadowmodelshader = useshaderbyname("shadowmodel");
+            }
+            b.setshader(shadowmodelshader);
         }
         return;
     }
@@ -417,10 +415,6 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     }
     setshader(b, as);
     setshaderparams(b, as);
-    #undef SETMODELSHADER
-    #undef DOMODELSHADER
-    //==============================================================================
-
 }
 
 void animmodel::skin::invalidateshaderparams()
