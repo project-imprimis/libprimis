@@ -255,17 +255,6 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
 
 Shader *animmodel::skin::loadshader()
 {
-    //============================================= SETMODELSHADER DOMODELSHADER
-    #define DOMODELSHADER(name, body) \
-        do { \
-            static Shader *name##shader = nullptr; \
-            if(!name##shader) \
-            { \
-                name##shader = useshaderbyname(#name); \
-            } \
-            body; \
-        } while(0)
-    #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
     if(shadowmapping == ShadowMap_Reflect)
     {
         if(rsmshader)
@@ -348,8 +337,21 @@ void animmodel::skin::setshader(Mesh &m, const AnimState *as)
     m.setshader(loadshader(), gbuf.istransparentlayer());
 }
 
+
 void animmodel::skin::bind(Mesh &b, const AnimState *as)
 {
+    //============================================= SETMODELSHADER DOMODELSHADER
+    #define DOMODELSHADER(name, body) \
+        do { \
+            static Shader *name##shader = nullptr; \
+            if(!name##shader) \
+            { \
+                name##shader = useshaderbyname(#name); \
+            } \
+            body; \
+        } while(0)
+    #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
+
     if(cullface > 0)
     {
         if(!enablecullface)
@@ -415,17 +417,16 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     }
     setshader(b, as);
     setshaderparams(b, as);
+    #undef SETMODELSHADER
+    #undef DOMODELSHADER
+    //==============================================================================
+
 }
 
 void animmodel::skin::invalidateshaderparams()
 {
     ShaderParamsKey::invalidate();
 }
-
-
-#undef SETMODELSHADER
-#undef DOMODELSHADER
-//==============================================================================
 
 //Mesh
 
