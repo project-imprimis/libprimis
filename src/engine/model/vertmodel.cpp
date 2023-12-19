@@ -291,18 +291,22 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     }
 
     std::vector<uint> idxs;
-
+    auto rendermeshes = getrendermeshes();
     vlen = 0;
     if(numframes>1)
     {
         vertsize = sizeof(vvert);
-        LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen));
+
+        for(auto i : rendermeshes)
+        {
+            vlen += static_cast<vertmesh *>(*i)->genvbo(idxs, vlen);
+        }
         delete[] vdata;
         vdata = new uchar[vlen*vertsize];
-        LOOP_RENDER_MESHES(vertmesh, m,
+        for(auto i : rendermeshes)
         {
-            m.fillverts(reinterpret_cast<vvert *>(vdata));
-        });
+            static_cast<vertmesh *>(*i)->fillverts(reinterpret_cast<vvert *>(vdata));
+        }
     }
     else
     {
@@ -310,7 +314,10 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         gle::bindvbo(vc.vbuf);
         size_t numverts = 0,
                htlen = 128;
-        LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
+        for(auto i : rendermeshes)
+        {
+            numverts += static_cast<vertmesh *>(*i)->numverts;
+        }
         while(htlen < numverts)
         {
             htlen *= 2;
@@ -322,7 +329,10 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         int *htdata = new int[htlen];
         std::memset(htdata, -1, htlen*sizeof(int));
         std::vector<vvertg> vverts;
-        LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen));
+        for(auto i : rendermeshes)
+        {
+            vlen += static_cast<vertmesh *>(*i)->genvbo(idxs, vlen, vverts, htdata, htlen);
+        }
         glBufferData(GL_ARRAY_BUFFER, vverts.size()*sizeof(vvertg), vverts.data(), GL_STATIC_DRAW);
         delete[] htdata;
         htdata = nullptr;
@@ -435,10 +445,11 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         {
             vc->as = *as;
             vc->millis = lastmillis;
-            LOOP_RENDER_MESHES(vertmesh, m,
+            auto rendermeshes = getrendermeshes();
+            for(auto i : rendermeshes)
             {
-                m.interpverts(*as, reinterpret_cast<vvert *>(vdata));
-            });
+                static_cast<vertmesh *>(*i)->interpverts(*as, reinterpret_cast<vvert *>(vdata));
+            }
             gle::bindvbo(vc->vbuf);
             glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
         }
