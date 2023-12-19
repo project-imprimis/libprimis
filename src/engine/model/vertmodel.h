@@ -252,7 +252,7 @@ struct vertcommands : modelcommands<MDL>
 {
     typedef struct MDL::vertmeshgroup meshgroup;
     typedef class  MDL::part part;
-    typedef struct MDL::skin skin;
+    typedef class  MDL::skin skin;
 
     static void loadpart(char *model, float *smooth)
     {

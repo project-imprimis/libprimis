@@ -656,7 +656,7 @@ template<class MDL>
 struct modelcommands
 {
     typedef class MDL::part part;
-    typedef struct MDL::skin skin;
+    typedef class MDL::skin skin;
 
     static void setdir(char *name)
     {
