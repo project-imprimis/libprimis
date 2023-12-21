@@ -97,18 +97,18 @@ struct MatSlot : Slot, VSlot
 {
     MatSlot();
 
-    int type() const
+    int type() const override final
     {
         return SlotType_Material;
     }
-    const char *name() const;
+    const char *name() const override final;
 
-    VSlot &emptyvslot()
+    VSlot &emptyvslot() override final
     {
         return *this;
     }
 
-    int cancombine(int) const
+    int cancombine(int) const override final
     {
         return -1;
     }
