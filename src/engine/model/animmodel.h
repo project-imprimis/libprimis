@@ -612,17 +612,17 @@ struct modelloader : BASE
         return true;
     }
 
-    void startload()
+    void startload() override final
     {
         loading = static_cast<MDL *>(this);
     }
 
-    void endload()
+    void endload() override final
     {
         loading = nullptr;
     }
 
-    bool loadconfig()
+    bool loadconfig() override final
     {
         dir.clear();
         dir.append(modelpath).append(BASE::modelname());
