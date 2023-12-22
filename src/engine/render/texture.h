@@ -93,7 +93,7 @@ inline bool VSlot::isdynamic() const
     return !scroll.iszero() || slot->shader->isdynamic();
 }
 
-struct MatSlot : Slot, VSlot
+struct MatSlot final : Slot, VSlot
 {
     MatSlot();
 
