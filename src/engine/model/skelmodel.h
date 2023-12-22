@@ -390,7 +390,7 @@ struct skelmodel : animmodel
 
             void initanimparts();
             bool addanimpart(const std::vector<uint> &bonemask);
-            void loaded();
+            void loaded() override final;
         private:
             std::vector<uchar> buildingpartmask;
 
@@ -401,8 +401,8 @@ struct skelmodel : animmodel
 
     skelmodel(std::string name);
 
-    int linktype(const animmodel *m, const part *p) const;
-    bool skeletal() const;
+    int linktype(const animmodel *m, const part *p) const override final;
+    bool skeletal() const override final;
 
     skelpart &addpart();
 };
