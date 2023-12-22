@@ -752,7 +752,7 @@ size_t stream::printf(const char *fmt, ...)
     return n;
 }
 
-struct filestream : stream
+struct filestream final : stream
 {
     FILE *file;
 
@@ -789,7 +789,7 @@ struct filestream : stream
             return file!=nullptr;
         }
     #endif
-    void close()
+    void close() override final
     {
         if(file)
         {
@@ -798,11 +798,12 @@ struct filestream : stream
         }
     }
 
-    bool end()
+    bool end() override final
     {
         return feof(file)!=0;
     }
-    offset tell()
+
+    offset tell() override final
     {
 #ifdef WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__)
@@ -816,7 +817,8 @@ struct filestream : stream
         // ftello returns LONG_MAX for directories on some platforms
         return off + 1 >= 0 ? off : -1;
     }
-    bool seek(offset pos, int whence)
+
+    bool seek(offset pos, int whence) override final
     {
 #ifdef WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__)
@@ -829,42 +831,42 @@ struct filestream : stream
 #endif
     }
 
-    size_t read(void *buf, size_t len)
+    size_t read(void *buf, size_t len) override final
     {
         return fread(buf, 1, len, file);
     }
 
-    size_t write(const void *buf, size_t len)
+    size_t write(const void *buf, size_t len) override final
     {
         return fwrite(buf, 1, len, file);
     }
 
-    bool flush()
+    bool flush() override final
     {
         return !fflush(file);
     }
 
-    int getchar()
+    int getchar() override final
     {
         return fgetc(file);
     }
 
-    bool putchar(int c)
+    bool putchar(int c) override final
     {
         return fputc(c, file)!=EOF;
     }
 
-    bool getline(char *str, size_t len)
+    bool getline(char *str, size_t len) override final
     {
         return fgets(str, len, file)!=nullptr;
     }
 
-    bool putstring(const char *str)
+    bool putstring(const char *str) override final
     {
         return fputs(str, file)!=EOF;
     }
 
-    size_t printf(const char *fmt, ...)
+    size_t printf(const char *fmt, ...) override final
     {
         va_list v;
         va_start(v, fmt);
@@ -876,7 +878,7 @@ struct filestream : stream
 
 VAR(debuggz, 0, 0, 1); //toggles gz checking routines
 
-class gzstream : public stream
+class gzstream final : public stream
 {
     public:
         gzstream() : file(nullptr), buf(nullptr), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
@@ -1037,7 +1039,7 @@ class gzstream : public stream
             return true;
         }
 
-        uint getcrc()
+        uint getcrc() override final
         {
             return crc;
         }
@@ -1118,7 +1120,7 @@ class gzstream : public stream
             writing = false;
         }
 
-        void close()
+        void close() override final
         {
             if(reading)
             {
@@ -1142,22 +1144,22 @@ class gzstream : public stream
             }
         }
 
-        bool end()
+        bool end() override final
         {
             return !reading && !writing;
         }
 
-        offset tell()
+        offset tell() override final
         {
             return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
         }
 
-        offset rawtell()
+        offset rawtell() override final
         {
             return file ? file->tell() : offset(-1);
         }
 
-        offset size()
+        offset size() override final
         {
             if(!file)
             {
@@ -1172,12 +1174,12 @@ class gzstream : public stream
             return file->seek(pos, SEEK_SET) ? isize : offset(-1);
         }
 
-        offset rawsize()
+        offset rawsize() override final
         {
             return file ? file->size() : offset(-1);
         }
 
-        bool seek(offset pos, int whence)
+        bool seek(offset pos, int whence) override final
         {
             if(writing || !reading)
             {
@@ -1236,7 +1238,7 @@ class gzstream : public stream
             return true;
         }
 
-        size_t read(void *buf, size_t len)
+        size_t read(void *buf, size_t len) override final
         {
             if(!reading || !buf || !len)
             {
@@ -1291,12 +1293,12 @@ class gzstream : public stream
             return true;
         }
 
-        bool flush()
+        bool flush() override final
         {
             return flushbuf(true);
         }
 
-        size_t write(const void *buf, size_t len)
+        size_t write(const void *buf, size_t len) override final
         {
             if(!writing || !buf || !len)
             {
