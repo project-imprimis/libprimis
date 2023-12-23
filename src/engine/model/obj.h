@@ -16,7 +16,7 @@ struct obj final : vertloader<obj>
     struct objmeshgroup : vertmeshgroup
     {
         public:
-            bool load(const char *filename, float smooth);
+            bool load(const char *filename, float smooth) override final;
 
         private:
             void parsevert(char *s, std::vector<vec> &out);
