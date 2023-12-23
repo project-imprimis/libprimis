@@ -365,7 +365,7 @@ class listrenderer : public partrenderer
         virtual void endrender() = 0;
         virtual void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) = 0;
 
-        bool haswork() const
+        bool haswork() const override final
         {
             return (list != nullptr);
         }
@@ -383,7 +383,7 @@ class listrenderer : public partrenderer
             return p->fade > 5;
         }
 
-        void render()
+        void render() override final
         {
             startrender();
             if(tex)
@@ -416,7 +416,7 @@ class listrenderer : public partrenderer
             }
             endrender();
         }
-        void reset()
+        void reset() override final
         {
             if(!list)
             {
@@ -440,7 +440,7 @@ class listrenderer : public partrenderer
             list = nullptr;
         }
 
-        void resettracked(const physent *owner)
+        void resettracked(const physent *owner) override final
         {
             if(!(parttype()&PT_TRACK))
             {
@@ -461,7 +461,7 @@ class listrenderer : public partrenderer
             }
         }
 
-        particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity)
+        particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity) override final
         {
             if(!parempty)
             {
@@ -489,7 +489,7 @@ class listrenderer : public partrenderer
             return p;
         }
 
-        int count() const
+        int count() const override final
         {
             int num = 0;
             const listparticle *lp;
@@ -505,7 +505,7 @@ class listrenderer : public partrenderer
 
 listparticle *listrenderer::parempty = nullptr;
 
-class meterrenderer : public listrenderer
+class meterrenderer final : public listrenderer
 {
     public:
         meterrenderer(int type)
@@ -513,18 +513,18 @@ class meterrenderer : public listrenderer
         {
         }
     private:
-        void startrender()
+        void startrender() override final
         {
             glDisable(GL_BLEND);
             gle::defvertex();
         }
 
-        void endrender()
+        void endrender() override final
         {
             glEnable(GL_BLEND);
         }
 
-        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
+        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) override final
         {
             int basetype = parttype()&0xFF;
             float scale  = FONTH*p.size/80.0f,
@@ -717,7 +717,7 @@ static void setcolor(float r, float g, float b, float a, partvert * vs)
 };
 
 template<int T>
-struct varenderer : partrenderer
+struct varenderer final : partrenderer
 {
     partvert *verts;
     particle *parts;
@@ -746,7 +746,7 @@ struct varenderer : partrenderer
         }
     }
 
-    void cleanup()
+    void cleanup() override final
     {
         if(vbo)
         {
@@ -755,7 +755,7 @@ struct varenderer : partrenderer
         }
     }
 
-    void init(int n)
+    void init(int n) override final
     {
         delete[] parts;
         delete[] verts;
@@ -766,13 +766,13 @@ struct varenderer : partrenderer
         lastupdate = -1;
     }
 
-    void reset()
+    void reset() override final
     {
         numparts = 0;
         lastupdate = -1;
     }
 
-    void resettracked(const physent *owner)
+    void resettracked(const physent *owner) override final
     {
         if(!(parttype()&PT_TRACK))
         {
@@ -789,17 +789,17 @@ struct varenderer : partrenderer
         lastupdate = -1;
     }
 
-    int count() const
+    int count() const override final
     {
         return numparts;
     }
 
-    bool haswork() const
+    bool haswork() const override final
     {
         return (numparts > 0);
     }
 
-    particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity)
+    particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity) override final
     {
         particle *p = parts + (numparts < maxparts ? numparts++ : randomint(maxparts)); //next free slot, or kill a random kitten
         p->o = o;
@@ -815,7 +815,7 @@ struct varenderer : partrenderer
         return p;
     }
 
-    void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
+    void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) override final
     {
         pe.maxfade = std::max(pe.maxfade, fade);
         size *= SQRT2;
@@ -974,7 +974,7 @@ struct varenderer : partrenderer
         gle::clearvbo();
     }
 
-    void render()
+    void render() override final
     {
         genvbo();
 
@@ -1003,7 +1003,7 @@ struct varenderer : partrenderer
 VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
 VARP(softexplosionblend, 1, 16, 64);
 
-class fireballrenderer : public listrenderer
+class fireballrenderer final : public listrenderer
 {
     public:
         fireballrenderer(const char *texname)
@@ -1012,7 +1012,7 @@ class fireballrenderer : public listrenderer
 
         static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
 
-        void startrender()
+        void startrender() override final
         {
             if(softexplosion)
             {
@@ -1025,23 +1025,23 @@ class fireballrenderer : public listrenderer
             sr.enable();
         }
 
-        void endrender()
+        void endrender() override final
         {
             sr.disable();
         }
 
-        void cleanup()
+        void cleanup() override final
         {
             sr.cleanup();
         }
 
-        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
+        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) override final
         {
             pe.maxfade = std::max(pe.maxfade, fade);
             pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
         }
 
-        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts)
+        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) override final
         {
             float pmax = p.val,
                   size = p.fade ? static_cast<float>(ts)/p.fade : 1,
