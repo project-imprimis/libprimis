@@ -11,7 +11,7 @@
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
 
-CXXFLAGS ?= -O3 -ffast-math -Wall
+CXXFLAGS ?= -O3 -ffast-math -Wall -Wsuggest-override
 CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
 #-Ishared
 CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
