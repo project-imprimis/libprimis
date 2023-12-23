@@ -393,7 +393,7 @@ bool removezip(const char *name)
     return true;
 }
 
-class zipstream : public stream
+class zipstream final : public stream
 {
     public:
         enum
