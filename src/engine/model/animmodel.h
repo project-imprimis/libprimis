@@ -470,44 +470,40 @@ class animmodel : public model
                 std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
         };
 
-        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
-        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override;
 
         std::vector<part *> parts;
 
+
+        //ordinary methods
         ~animmodel();
-
-        void cleanup() override final;
-
-        virtual void flushpart() {}
-
         part &addpart();
-
         void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
-        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) override final;
-        void preloadBIH() override final;
-        bool setBIH() override final;
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
         void loaded();
-
         bool unlink(const part *p) const;
-        bool animated() const override final;
-        bool pitched() const override final;
-        bool alphatested() const override final;
+        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
 
+        //virtual methods
         virtual bool flipy() const = 0;
         virtual bool loadconfig() = 0;
         virtual bool loaddefaultparts() = 0;
-
         virtual void startload() = 0;
         virtual void endload() = 0;
+        virtual void flushpart() {}
 
+        //model object overrides
+        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override final;
+        void cleanup() override final;
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) override final;
+        void preloadBIH() override final;
+        bool setBIH() override final;
+        bool animated() const override final;
+        bool pitched() const override final;
+        bool alphatested() const override final;
         bool load() override final;
-
         void preloadshaders() override final;
         void preloadmeshes() override final;
-
         void setshader(Shader *shader) override final;
         void setspec(float spec) override final;
         void setgloss(int gloss) override final;
@@ -516,16 +512,17 @@ class animmodel : public model
         void setfullbright(float fullbright) override final;
         void setcullface(int cullface) override final;
         void setcolor(const vec &color) override final;
-
         void calcbb(vec &center, vec &radius) const override final;
         void calctransform(matrix4x3 &m) const override final;
-
         void startrender() const override final;
+        void endrender() const override final;
+
+        //static methods
         static void disablebones();
         static void disabletangents();
         static void disabletc();
         static void disablevbo();
-        void endrender() const override final;
+
     protected:
         enum
         {

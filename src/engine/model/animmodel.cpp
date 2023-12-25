@@ -1604,6 +1604,32 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     }
 }
 
+bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos) const
+{
+    if(parts.empty())
+    {
+        return false;
+    }
+    return parts[0]->link(p, tag, translate, anim, basetime, pos);
+}
+
+void animmodel::loaded()
+{
+    for(part *p : parts)
+    {
+        p->loaded();
+    }
+}
+
+bool animmodel::unlink(const part *p) const
+{
+    if(parts.empty())
+    {
+        return false;
+    }
+    return parts[0]->unlink(p);
+}
+
 void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient)
 {
     if(parts.empty())
@@ -1652,32 +1678,6 @@ bool animmodel::setBIH()
     genBIH(meshes);
     bih = std::make_unique<BIH>(meshes);
     return true;
-}
-
-bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos) const
-{
-    if(parts.empty())
-    {
-        return false;
-    }
-    return parts[0]->link(p, tag, translate, anim, basetime, pos);
-}
-
-void animmodel::loaded()
-{
-    for(part *p : parts)
-    {
-        p->loaded();
-    }
-}
-
-bool animmodel::unlink(const part *p) const
-{
-    if(parts.empty())
-    {
-        return false;
-    }
-    return parts[0]->unlink(p);
 }
 
 bool animmodel::animated() const
@@ -1926,6 +1926,22 @@ void animmodel::startrender() const
     skin::invalidateshaderparams();
 }
 
+void animmodel::endrender() const
+{
+    if(lastvbuf || lastebuf)
+    {
+        disablevbo();
+    }
+    if(!enablecullface)
+    {
+        glEnable(GL_CULL_FACE);
+    }
+    if(enabledepthoffset)
+    {
+        disablepolygonoffset(GL_POLYGON_OFFSET_FILL);
+    }
+}
+
 void animmodel::disablebones()
 {
     gle::disableboneweight();
@@ -1969,20 +1985,4 @@ void animmodel::disablevbo()
         disablebones();
     }
     lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = 0;
-}
-
-void animmodel::endrender() const
-{
-    if(lastvbuf || lastebuf)
-    {
-        disablevbo();
-    }
-    if(!enablecullface)
-    {
-        glEnable(GL_CULL_FACE);
-    }
-    if(enabledepthoffset)
-    {
-        disablepolygonoffset(GL_POLYGON_OFFSET_FILL);
-    }
 }
