@@ -481,13 +481,7 @@ class animmodel : public model
 
         virtual void flushpart() {}
 
-        part& addpart()
-        {
-            flushpart();
-            part *p = new part(this, parts.size());
-            parts.push_back(p);
-            return *p;
-        }
+        part &addpart();
 
         void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
@@ -495,23 +489,11 @@ class animmodel : public model
         void preloadBIH() override final;
         bool setBIH() override final;
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
+        void loaded();
 
-        bool unlink(const part *p) const
-        {
-            if(parts.empty())
-            {
-                return false;
-            }
-            return parts[0]->unlink(p);
-        }
-
+        bool unlink(const part *p) const;
         bool animated() const override final;
-
-        bool pitched() const override final
-        {
-            return parts[0]->pitchscale != 0;
-        }
-
+        bool pitched() const override final;
         bool alphatested() const override final;
 
         virtual bool flipy() const = 0;
@@ -538,14 +520,6 @@ class animmodel : public model
         void calcbb(vec &center, vec &radius) const override final;
         void calctransform(matrix4x3 &m) const override final;
 
-        virtual void loaded()
-        {
-            for(part *p : parts)
-            {
-                p->loaded();
-            }
-        }
-
         void startrender() const override final;
         static void disablebones();
         static void disabletangents();
@@ -562,10 +536,7 @@ class animmodel : public model
 
         animmodel(std::string name);
 
-        virtual int linktype(const animmodel *, const part *) const
-        {
-            return Link_Tag;
-        }
+        virtual int linktype(const animmodel *, const part *) const;
         int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const override final;
 
         static bool enabletc, enablebones, enabletangents;

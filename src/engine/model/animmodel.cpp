@@ -1209,6 +1209,11 @@ void animmodel::part::loaded()
     }
 }
 
+int animmodel::linktype(const animmodel *, const part *) const
+{
+    return Link_Tag;
+}
+
 void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray) const
 {
     int numtags = 0;
@@ -1542,6 +1547,14 @@ void animmodel::cleanup()
     }
 }
 
+animmodel::part &animmodel::addpart()
+{
+    flushpart();
+    part *p = new part(this, parts.size());
+    parts.push_back(p);
+    return *p;
+}
+
 void animmodel::initmatrix(matrix4x3 &m) const
 {
     m.identity();
@@ -1650,6 +1663,23 @@ bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, i
     return parts[0]->link(p, tag, translate, anim, basetime, pos);
 }
 
+void animmodel::loaded()
+{
+    for(part *p : parts)
+    {
+        p->loaded();
+    }
+}
+
+bool animmodel::unlink(const part *p) const
+{
+    if(parts.empty())
+    {
+        return false;
+    }
+    return parts[0]->unlink(p);
+}
+
 bool animmodel::animated() const
 {
     if(spin.x || spin.y || spin.z)
@@ -1664,6 +1694,11 @@ bool animmodel::animated() const
         }
     }
     return false;
+}
+
+bool animmodel::pitched() const
+{
+    return parts[0]->pitchscale != 0;
 }
 
 bool animmodel::alphatested() const
