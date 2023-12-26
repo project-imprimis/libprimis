@@ -79,7 +79,6 @@ struct skelmodel : animmodel
             void serialize(skelmodel::vvertgw &v) const;
     };
 
-
     struct animcacheentry
     {
         std::array<AnimState, maxanimparts> as;
@@ -375,11 +374,6 @@ struct skelmodel : animmodel
         virtual bool load(const char *name, float smooth) = 0;
     };
 
-    virtual skelmeshgroup *newmeshes() = 0;
-
-    meshgroup *loadmeshes(const char *name, float smooth = 2);
-    meshgroup *sharemeshes(const char *name, float smooth = 2);
-
     class skelpart : public part
     {
         public:
@@ -399,12 +393,17 @@ struct skelmodel : animmodel
             void endanimparts();
     };
 
+    //ordinary methods
     skelmodel(std::string name);
-
+    skelpart &addpart();
+    meshgroup *loadmeshes(const char *name, float smooth = 2);
+    meshgroup *sharemeshes(const char *name, float smooth = 2);
+    //virtual methods
+    virtual skelmeshgroup *newmeshes() = 0;
+    //override methods
     int linktype(const animmodel *m, const part *p) const override final;
     bool skeletal() const override final;
 
-    skelpart &addpart();
 };
 
 class skeladjustment final

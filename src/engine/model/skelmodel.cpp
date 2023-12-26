@@ -1843,59 +1843,6 @@ void skelmodel::skelmeshgroup::preload()
     }
 }
 
-//skelmodel
-
-skelmodel::skelmodel(std::string name) : animmodel(name)
-{
-}
-
-int skelmodel::linktype(const animmodel *m, const part *p) const
-{
-    return type()==m->type() &&
-        (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
-            Link_Reuse :
-            Link_Tag;
-}
-
-bool skelmodel::skeletal() const
-{
-    return true;
-}
-
-skelmodel::skelpart &skelmodel::addpart()
-{
-    flushpart();
-    skelpart *p = new skelpart(this, parts.size());
-    parts.push_back(p);
-    return *p;
-}
-
-animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
-{
-    skelmeshgroup *group = newmeshes();
-    group->skel = new skeleton(group);
-    if(!group->load(name, smooth))
-    {
-        delete group;
-        return nullptr;
-    }
-    return group;
-}
-
-animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
-{
-    if(meshgroups.find(name) == meshgroups.end())
-    {
-        meshgroup *group = loadmeshes(name, smooth);
-        if(!group)
-        {
-            return nullptr;
-        }
-        meshgroups[group->groupname()] = group;
-    }
-    return meshgroups[name];
-}
-
 // skelpart
 
 skelmodel::skelpart::skelpart(animmodel *model, int index   ) : part(model, index)
@@ -1968,6 +1915,61 @@ void skelmodel::skelpart::loaded()
 {
     endanimparts();
     part::loaded();
+}
+
+//skelmodel
+
+skelmodel::skelmodel(std::string name) : animmodel(name)
+{
+}
+
+skelmodel::skelpart &skelmodel::addpart()
+{
+    flushpart();
+    skelpart *p = new skelpart(this, parts.size());
+    parts.push_back(p);
+    return *p;
+}
+
+animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
+{
+    skelmeshgroup *group = newmeshes();
+    group->skel = new skeleton(group);
+    if(!group->load(name, smooth))
+    {
+        delete group;
+        return nullptr;
+    }
+    return group;
+}
+
+animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
+{
+    if(meshgroups.find(name) == meshgroups.end())
+    {
+        meshgroup *group = loadmeshes(name, smooth);
+        if(!group)
+        {
+            return nullptr;
+        }
+        meshgroups[group->groupname()] = group;
+    }
+    return meshgroups[name];
+}
+
+//skelmodel overrides
+
+int skelmodel::linktype(const animmodel *m, const part *p) const
+{
+    return type()==m->type() &&
+        (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
+            Link_Reuse :
+            Link_Tag;
+}
+
+bool skelmodel::skeletal() const
+{
+    return true;
 }
 
 /*    ====    skeladjustment    ====    */
