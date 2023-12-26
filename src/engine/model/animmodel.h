@@ -470,9 +470,7 @@ class animmodel : public model
                 std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
         };
 
-
         std::vector<part *> parts;
-
 
         //ordinary methods
         ~animmodel();
