@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['calcangleaxis_0',['calcangleaxis',['../classmatrix3.html#a9341f59191df2d1dfdd436d04ccb900e',1,'matrix3::calcangleaxis(float &amp;angle, vec &amp;axis, float threshold=1e-16f) const'],['../classmatrix3.html#a13c3402c3805055422ddbcd7bd7cbd5e',1,'matrix3::calcangleaxis(float tr, float &amp;angle, vec &amp;axis, float threshold=1e-16f) const']]],
+  ['calcangleaxis_0',['calcangleaxis',['../classmatrix3.html#a13c3402c3805055422ddbcd7bd7cbd5e',1,'matrix3::calcangleaxis(float tr, float &amp;angle, vec &amp;axis, float threshold=1e-16f) const'],['../classmatrix3.html#a9341f59191df2d1dfdd436d04ccb900e',1,'matrix3::calcangleaxis(float &amp;angle, vec &amp;axis, float threshold=1e-16f) const']]],
   ['calclight_1',['calclight',['../classcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc',1,'cubeworld']]],
   ['calcmerges_2',['calcmerges',['../classcube.html#a61edd51dddd8eaae36e411eae156caeb',1,'cube']]],
   ['camdir_3',['camdir',['../iengine_8h.html#a591539d09cbe3fb6b825e941fad8ed4b',1,'iengine.h']]],

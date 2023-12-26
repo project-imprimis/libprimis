@@ -11,8 +11,9 @@ var searchData=
   ['update_8',['update',['../iengine_8h.html#a47c96192a9924bbd6c6b610922770988',1,'UI']]],
   ['updatefpshistory_9',['updatefpshistory',['../iengine_8h.html#a62536bc1addc4abef4f8216cb43b127f',1,'iengine.h']]],
   ['updatesounds_10',['updatesounds',['../classSoundEngine.html#ae4cb3a14b4b7dc6e7f48cb8b909d8bd2',1,'SoundEngine']]],
-  ['us_11',['us',['../index.html#autotoc_md7',1,'Join Us'],['../structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d',1,'selinfo::us()']]],
-  ['usage_12',['1. Usage',['../md_interface.html#autotoc_md211',1,'']]],
-  ['user_20and_20system_20interfaces_13',['7. User and System Interfaces',['../md_engine.html#autotoc_md182',1,'']]],
-  ['ux_20refinement_14',['Phase V: UX Refinement',['../md_timeline.html#autotoc_md241',1,'']]]
+  ['us_11',['Join Us',['../index.html#autotoc_md7',1,'']]],
+  ['us_12',['us',['../structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d',1,'selinfo']]],
+  ['usage_13',['1. Usage',['../md_interface.html#autotoc_md211',1,'']]],
+  ['user_20and_20system_20interfaces_14',['7. User and System Interfaces',['../md_engine.html#autotoc_md182',1,'']]],
+  ['ux_20refinement_15',['Phase V: UX Refinement',['../md_timeline.html#autotoc_md241',1,'']]]
 ];

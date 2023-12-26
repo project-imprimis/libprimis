@@ -59,18 +59,18 @@ var searchData=
   ['transforms_56',['`texrotate &lt;index&gt;` `vrotate &lt;index&gt;`: coarse texture rotations/transforms',['../md_engine.html#autotoc_md72',1,'']]],
   ['translational_20offset_57',['`texscroll &lt;x&gt; &lt;y&gt;`, `vscroll &lt;x&gt; &lt;y&gt;`: time-varying translational offset',['../md_engine.html#autotoc_md74',1,'']]],
   ['translational_20texture_20offset_58',['`texoffset &lt;x&gt; &lt;y&gt;`, `voffset &lt;x&gt; &lt;y&gt;`: translational texture offset',['../md_engine.html#autotoc_md70',1,'']]],
-  ['transparency_59',['transparency',['../md_engine.html#autotoc_md160',1,'5.3 Transparency'],['../md_engine.html#autotoc_md162',1,'5.3.2 Backface Transparency']]],
+  ['transparency_59',['Transparency',['../md_engine.html#autotoc_md160',1,'5.3 Transparency'],['../md_engine.html#autotoc_md162',1,'5.3.2 Backface Transparency']]],
   ['transparency_20modifiers_60',['`texalpha &lt;front&gt; &lt;back&gt;`, `valpha &lt;front&gt; &lt;back&gt;`: transparency modifiers',['../md_engine.html#autotoc_md67',1,'']]],
   ['transparency_20reflection_20and_20refraction_61',['Transparency, reflection, and refraction',['../md_tesseract-renderer.html#autotoc_md230',1,'']]],
   ['transparency_20stenciling_62',['5.3.1 Transparency Stenciling',['../md_engine.html#autotoc_md161',1,'']]],
-  ['transpose_63',['transpose',['../structmatrix4.html#ae286bd9aec8651a3e8da22b7e7d78c43',1,'matrix4::transpose(const matrix4 &amp;m)'],['../structmatrix4.html#a3149cea5649dabf36554b2dacf3c502f',1,'matrix4::transpose()'],['../classmatrix3.html#accf661a3b5cbba59d81d4a1828066b45',1,'matrix3::transpose()']]],
-  ['transposedtransform_64',['transposedtransform',['../classmatrix3.html#a913fd35c7f822140a5e00169c9c2e831',1,'matrix3::transposedtransform(const vec2 &amp;o) const'],['../classmatrix3.html#ad80c0868a7fd8239d25853969d888074',1,'matrix3::transposedtransform(const vec &amp;o) const']]],
-  ['transposemul_65',['transposemul',['../classmatrix3.html#ace55aa434ded31ecefa54f0ffc3172b5',1,'matrix3::transposemul(const matrix3 &amp;n)'],['../classmatrix3.html#a9981ee9f9df8c61bed812bef9559f0fa',1,'matrix3::transposemul(const matrix3 &amp;m, const matrix3 &amp;n)']]],
+  ['transpose_63',['transpose',['../classmatrix3.html#accf661a3b5cbba59d81d4a1828066b45',1,'matrix3::transpose()'],['../structmatrix4.html#a3149cea5649dabf36554b2dacf3c502f',1,'matrix4::transpose()'],['../structmatrix4.html#ae286bd9aec8651a3e8da22b7e7d78c43',1,'matrix4::transpose(const matrix4 &amp;m)']]],
+  ['transposedtransform_64',['transposedtransform',['../classmatrix3.html#ad80c0868a7fd8239d25853969d888074',1,'matrix3::transposedtransform(const vec &amp;o) const'],['../classmatrix3.html#a913fd35c7f822140a5e00169c9c2e831',1,'matrix3::transposedtransform(const vec2 &amp;o) const']]],
+  ['transposemul_65',['transposemul',['../classmatrix3.html#a9981ee9f9df8c61bed812bef9559f0fa',1,'matrix3::transposemul(const matrix3 &amp;m, const matrix3 &amp;n)'],['../classmatrix3.html#ace55aa434ded31ecefa54f0ffc3172b5',1,'matrix3::transposemul(const matrix3 &amp;n)']]],
   ['triggerqueue_66',['triggerqueue',['../command_8h.html#ae653e8a430e6baa97073fbaa061abfb2',1,'command.h']]],
   ['triplanar_20detail_20mapping_20triplanardetailworld_67',['Triplanar detail mapping (`triplanardetailworld`)',['../md_engine.html#autotoc_md151',1,'']]],
   ['triplanar_20mapping_20triplanarworld_68',['Triplanar mapping (`triplanarworld`)',['../md_engine.html#autotoc_md150',1,'']]],
   ['triplanardetailworld_69',['Triplanar detail mapping (`triplanardetailworld`)',['../md_engine.html#autotoc_md151',1,'']]],
   ['triplanarworld_70',['Triplanar mapping (`triplanarworld`)',['../md_engine.html#autotoc_md150',1,'']]],
   ['type_71',['type',['../structident.html#a89f53b6ecbddf478efd372ffe0ae6eda',1,'ident::type'],['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type']]],
-  ['types_72',['types',['../md_engine.html#autotoc_md131',1,'3.5.1 Particle Types'],['../md_engine.html#autotoc_md194',1,'Interpreter return types']]]
+  ['types_72',['Types',['../md_engine.html#autotoc_md131',1,'3.5.1 Particle Types'],['../md_engine.html#autotoc_md194',1,'Interpreter return types']]]
 ];

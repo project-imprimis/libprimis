@@ -25,7 +25,7 @@ var searchData=
   ['ambient_20lighting_22',['2.4.3 Ambient Lighting',['../md_engine.html#autotoc_md80',1,'']]],
   ['ambient_20obscurance_23',['Screen-space ambient obscurance',['../md_tesseract-renderer.html#autotoc_md228',1,'']]],
   ['ambient_20occlusion_20ssao_24',['5.4.2 Screenspace Ambient Occlusion (SSAO)',['../md_engine.html#autotoc_md165',1,'']]],
-  ['an_20interface_25',['an interface',['../md_interface.html#autotoc_md212',1,'1.1 What is an interface'],['../md_interface.html#autotoc_md213',1,'1.2 Augmenting an interface']]],
+  ['an_20interface_25',['An interface',['../md_interface.html#autotoc_md212',1,'1.1 What is an interface'],['../md_interface.html#autotoc_md213',1,'1.2 Augmenting an interface']]],
   ['an_20open_20source_20standalone_20engine_26',['An Open Source Standalone Engine',['../index.html#autotoc_md3',1,'']]],
   ['and_20bloom_27',['Tonemapping and bloom',['../md_tesseract-renderer.html#autotoc_md232',1,'']]],
   ['and_20bracing_28',['Indentation and Bracing',['../md_engine.html#autotoc_md18',1,'']]],
@@ -59,7 +59,7 @@ var searchData=
   ['attrib_56',['attrib',['../iengine_8h.html#a03ba03dc9f5a261c1970446fc0c9c963',1,'gle']]],
   ['attribf_57',['attribf',['../iengine_8h.html#ad5122f1efaefee55b5504b0a1a69a833',1,'gle']]],
   ['attribute_20overview_58',['3.2.1 Projectile Attribute Overview',['../md_engine.html#autotoc_md111',1,'']]],
-  ['attributes_59',['attributes',['../md_engine.html#autotoc_md112',1,'3.2.2 Projectile Vector Attributes'],['../md_engine.html#autotoc_md118',1,'3.2.3 Other Projectile Attributes'],['../md_engine.html#autotoc_md97',1,'Attributes'],['../md_engine.html#autotoc_md99',1,'Attributes'],['../md_engine.html#autotoc_md101',1,'Attributes'],['../md_engine.html#autotoc_md103',1,'Attributes'],['../md_engine.html#autotoc_md105',1,'Attributes'],['../md_engine.html#autotoc_md107',1,'Attributes'],['../md_engine.html#autotoc_md109',1,'Attributes']]],
+  ['attributes_59',['Attributes',['../md_engine.html#autotoc_md112',1,'3.2.2 Projectile Vector Attributes'],['../md_engine.html#autotoc_md118',1,'3.2.3 Other Projectile Attributes'],['../md_engine.html#autotoc_md97',1,'Attributes'],['../md_engine.html#autotoc_md99',1,'Attributes'],['../md_engine.html#autotoc_md101',1,'Attributes'],['../md_engine.html#autotoc_md103',1,'Attributes'],['../md_engine.html#autotoc_md105',1,'Attributes'],['../md_engine.html#autotoc_md107',1,'Attributes'],['../md_engine.html#autotoc_md109',1,'Attributes']]],
   ['augmenting_20an_20interface_60',['1.2 Augmenting an interface',['../md_interface.html#autotoc_md213',1,'']]],
   ['avg_61',['avg',['../structvec4.html#aeb1e9327842a67e5b9a0638a8c38fabc',1,'vec4']]]
 ];

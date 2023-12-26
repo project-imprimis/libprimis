@@ -33,7 +33,7 @@ var NAVTREE =
     [ "Join Us", "index.html#autotoc_md7", null ],
     [ "The Libprimis Engine", "md_engine.html", [
       [ "Preface", "md_engine.html#autotoc_md9", null ],
-      [ "1. Standards", "md_engine.html#autotoc_md10", [
+      [ "Standards", "md_engine.html#autotoc_md10", [
         [ "1.1 Coding Standards", "md_engine.html#autotoc_md11", [
           [ "1.1.1 This File", "md_engine.html#autotoc_md12", null ],
           [ "1.1.2 C/C++ Standards", "md_engine.html#autotoc_md13", [
@@ -71,7 +71,7 @@ var NAVTREE =
           ] ]
         ] ]
       ] ],
-      [ "2. World", "md_engine.html#autotoc_md39", [
+      [ "World", "md_engine.html#autotoc_md39", [
         [ "2.1 Octree Geometry", "md_engine.html#autotoc_md40", [
           [ "2.1.1 Octree Data Structure & Cube Geometry", "md_engine.html#autotoc_md41", null ],
           [ "2.1.2 Child Nodes", "md_engine.html#autotoc_md42", null ],
@@ -107,9 +107,9 @@ var NAVTREE =
             [ "Commands", "md_engine.html#autotoc_md62", null ],
             [ "`texalpha <front> <back>`, `valpha <front> <back>`: transparency modifiers", "md_engine.html#autotoc_md67", null ],
             [ "`texangle <index>`, `vangle <index>` : fine texture rotation", "md_engine.html#autotoc_md68", null ],
-            [ "`texcolor <R> <G> <B>`, `vcolor <R> <G> <B>`: texture tinting", "md_engine.html#autotoc_md69", null ],
+            [ "`texcolor <R> <G> `, `vcolor <R> <G> `: texture tinting", "md_engine.html#autotoc_md69", null ],
             [ "`texoffset <x> <y>`, `voffset <x> <y>`: translational texture offset", "md_engine.html#autotoc_md70", null ],
-            [ "`texrefract <scale> <R> <G> <B>`, `vrefract <scale> <R> <G> <B>`: refract", "md_engine.html#autotoc_md71", null ],
+            [ "`texrefract <scale> <R> <G> `, `vrefract <scale> <R> <G> `: refract", "md_engine.html#autotoc_md71", null ],
             [ "`texrotate <index>` `vrotate <index>`: coarse texture rotations/transforms", "md_engine.html#autotoc_md72", null ],
             [ "`texscale <scale>`, `vscale <scale>`: texture scaling", "md_engine.html#autotoc_md73", null ],
             [ "`texscroll <x> <y>`, `vscroll <x> <y>`: time-varying translational offset", "md_engine.html#autotoc_md74", null ]
@@ -143,7 +143,7 @@ var NAVTREE =
           [ "2.5.5 Map Vslots", "md_engine.html#autotoc_md93", null ]
         ] ]
       ] ],
-      [ "3. Entities", "md_engine.html#autotoc_md94", [
+      [ "Entities", "md_engine.html#autotoc_md94", [
         [ "3.1 Static Entities", "md_engine.html#autotoc_md95", [
           [ "3.1.1 Lights", "md_engine.html#autotoc_md96", [
             [ "Attributes", "md_engine.html#autotoc_md97", null ]
@@ -258,7 +258,7 @@ var NAVTREE =
           [ "6.2.3 Animated Model Commands", "md_engine.html#autotoc_md181", null ]
         ] ]
       ] ],
-      [ "7. User and System Interfaces", "md_engine.html#autotoc_md182", [
+      [ "User and System Interfaces", "md_engine.html#autotoc_md182", [
         [ "7.4 Scripting", "md_engine.html#autotoc_md183", [
           [ "7.4.1 Cubescript Semantics", "md_engine.html#autotoc_md184", [
             [ "Lazy Execution `[]`", "md_engine.html#autotoc_md185", null ],
@@ -293,11 +293,11 @@ var NAVTREE =
       ] ]
     ] ],
     [ "The Libprimis Interface Specification", "md_interface.html", [
-      [ "1. Usage", "md_interface.html#autotoc_md211", [
+      [ "Usage", "md_interface.html#autotoc_md211", [
         [ "1.1 What is an interface", "md_interface.html#autotoc_md212", null ],
         [ "1.2 Augmenting an interface", "md_interface.html#autotoc_md213", null ]
       ] ],
-      [ "2. Standard Interfaces", "md_interface.html#autotoc_md214", [
+      [ "Standard Interfaces", "md_interface.html#autotoc_md214", [
         [ "2.1 Game", "md_interface.html#autotoc_md215", [
           [ "2.1.1 Player", "md_interface.html#autotoc_md216", null ],
           [ "2.1.2 Weapon", "md_interface.html#autotoc_md217", null ],
