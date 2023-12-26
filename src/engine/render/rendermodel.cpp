@@ -602,13 +602,13 @@ void preloadusedmapmodels(bool msg, bool bih)
             {
                 m->preloadBIH();
             }
-            else if(m->collide == Collide_TRI && !m->collidemodel.size() && m->bih)
+            else if(m->collide == Collide_TRI && m->collidemodel.empty() && m->bih)
             {
                 m->setBIH();
             }
             m->preloadmeshes();
             m->preloadshaders();
-            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) != col.end())
+            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) == col.end())
             {
                 col.push_back(m->collidemodel);
             }
