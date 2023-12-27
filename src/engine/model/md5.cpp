@@ -40,6 +40,8 @@
 
 #include "md5.h"
 
+skelcommands<md5> md5::md5commands;
+
 md5::md5(std::string name) : skelloader(name) {}
 
 const char *md5::formatname()

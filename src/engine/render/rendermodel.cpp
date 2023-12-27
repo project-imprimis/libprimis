@@ -65,14 +65,6 @@ model *loadmapmodel(int n)
 #include "model/md5.h"
 #include "model/obj.h"
 
-/* note about objcommands variable:
- *
- * this variable is never used anywhere at all in the codebase
- * it only exists to call its constructor which adds commands to the cubescript
- * ident hash table of the given template type (obj)
- */
-static vertcommands<obj> objcommands;
-
 //if no model is being loaded, prints error to console and returns false
 static bool checkmdl()
 {

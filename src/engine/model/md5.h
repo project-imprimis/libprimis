@@ -69,7 +69,5 @@ class md5 final : public skelloader<md5>
                 int numweights;
                 md5vert *vertinfo;
         };
+        static skelcommands<md5> md5commands;
 };
-
-extern skelcommands<md5> md5commands; //see skelmodel.h for these commands
-

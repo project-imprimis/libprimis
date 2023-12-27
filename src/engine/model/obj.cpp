@@ -38,6 +38,8 @@
 
 #include "interface/console.h"
 
+vertcommands<obj> obj::objcommands;
+
 obj::obj(std::string name) : vertloader(name)
 {
 }
