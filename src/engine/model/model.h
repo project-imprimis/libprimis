@@ -101,25 +101,7 @@ class model
         virtual void settransformation(const std::optional<vec> pos,
                                        const std::optional<vec> rotate,
                                        const std::optional<vec> orient,
-                                       const std::optional<float> size)
-        {
-            if(pos)
-            {
-                translate = pos.value();
-            }
-            if(rotate)
-            {
-                spin = rotate.value();
-            }
-            if(orient)
-            {
-                orientation = orient.value();
-            }
-            if(size)
-            {
-                scale = size.value();
-            }
-        }
+                                       const std::optional<float> size) = 0;
 
         //returns the location and size of the model
         virtual vec4<float> locationsize() const

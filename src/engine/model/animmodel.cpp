@@ -1881,6 +1881,29 @@ void animmodel::setcolor(const vec &color)
     }
 }
 
+void animmodel::settransformation(const std::optional<vec> pos,
+                                  const std::optional<vec> rotate,
+                                  const std::optional<vec> orient,
+                                  const std::optional<float> size)
+{
+    if(pos)
+    {
+        translate = pos.value();
+    }
+    if(rotate)
+    {
+        spin = rotate.value();
+    }
+    if(orient)
+    {
+        orientation = orient.value();
+    }
+    if(size)
+    {
+        scale = size.value();
+    }
+}
+
 void animmodel::calcbb(vec &center, vec &radius) const
 {
     if(parts.empty())
