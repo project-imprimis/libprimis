@@ -2,13 +2,17 @@
 class md5 final : public skelloader<md5>
 {
     public:
+        //ordinary methods
         md5(std::string name);
-        static const char *formatname();
+
+        //method overrides
         bool flipy() const override final;
         int type() const override final;
         skelmeshgroup *newmeshes() override final;
-
         bool loaddefaultparts() override final;
+
+        //static methods
+        static const char *formatname();
 
     private:
         struct md5joint
