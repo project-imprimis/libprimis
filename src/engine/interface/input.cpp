@@ -237,7 +237,7 @@ void checkinput(int map)
 {
     constexpr uint minthreshhold = 5000; // minimum value to register inputs
     constexpr uint maxthreshhold = 27000; // maximum value to register inputs to triggers
-    constexpr uint strafethreshhold = 16384; //value when to assign movement in strafe pad
+    constexpr int strafethreshhold = 16384; //value when to assign movement in strafe pad, signed to allow unary negation
     constexpr uint inverseindex = 16;
 
     constexpr uint mousemovescale = 25000; //how much to divide mouse movement by from joystick input
