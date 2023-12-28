@@ -214,9 +214,6 @@
     <ClCompile Include="..\shared\zip.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="tesseract.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Library Include="..\libprimis-headers\3rdparty\bin\glew32.lib" />
     <Library Include="..\libprimis-headers\3rdparty\bin\SDL2.lib" />
     <Library Include="..\libprimis-headers\3rdparty\bin\SDL2_image.lib" />

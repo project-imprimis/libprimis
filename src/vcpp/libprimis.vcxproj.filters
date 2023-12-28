@@ -141,9 +141,6 @@
     <ClInclude Include="..\engine\render\renderalpha.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="tesseract.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="shared">
       <UniqueIdentifier>{31e3d751-04b0-4c38-94f9-eddd8ef4c42a}</UniqueIdentifier>
     </Filter>
