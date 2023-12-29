@@ -61,7 +61,7 @@ jobs:
           publish_dir: ./docs
 
       - name: Upload man pages
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: libprimis-doc
           path: ./doc/man/man3/
