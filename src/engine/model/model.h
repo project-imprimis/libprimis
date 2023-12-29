@@ -77,10 +77,10 @@ class model
         {
         }
 
-        virtual void calcbb(vec &center, vec &radius) const = 0;
-        virtual void calctransform(matrix4x3 &m) const = 0;
-        virtual int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const = 0;
-        virtual void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a = nullptr, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1)) const = 0;
+        virtual void calcbb(vec &, vec &) const = 0;
+        virtual void calctransform(matrix4x3 &) const = 0;
+        virtual int intersect(int, int, int, const vec &, float, float, float, dynent *, modelattach *, float, const vec &, const vec &, float &, int) const = 0;
+        virtual void render(int, int, int, const vec&, float, float, float , dynent *, modelattach * = nullptr, float = 1, const vec4<float>& = vec4<float>(1, 1, 1, 1)) const = 0;
         virtual bool load() = 0;
         virtual int type() const = 0;
         virtual bool setBIH() = 0;
@@ -97,10 +97,10 @@ class model
         virtual void setfullbright(float) = 0;
         virtual void setcullface(int) = 0;
         virtual void setcolor(const vec &) = 0;
-        virtual void settransformation(const std::optional<vec> pos,
-                                       const std::optional<vec> rotate,
-                                       const std::optional<vec> orient,
-                                       const std::optional<float> size) = 0;
+        virtual void settransformation(const std::optional<vec>,
+                                       const std::optional<vec>,
+                                       const std::optional<vec>,
+                                       const std::optional<float>) = 0;
         //returns the location and size of the model
         virtual vec4<float> locationsize() const = 0;
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
