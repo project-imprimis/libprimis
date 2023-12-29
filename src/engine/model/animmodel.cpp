@@ -1904,6 +1904,11 @@ void animmodel::settransformation(const std::optional<vec> pos,
     }
 }
 
+vec4<float> animmodel::locationsize() const
+{
+    return vec4<float>(translate.x, translate.y, translate.z, scale);
+}
+
 void animmodel::calcbb(vec &center, vec &radius) const
 {
     if(parts.empty())

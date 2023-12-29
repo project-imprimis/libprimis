@@ -97,18 +97,12 @@ class model
         virtual void setfullbright(float) = 0;
         virtual void setcullface(int) = 0;
         virtual void setcolor(const vec &) = 0;
-
         virtual void settransformation(const std::optional<vec> pos,
                                        const std::optional<vec> rotate,
                                        const std::optional<vec> orient,
                                        const std::optional<float> size) = 0;
-
         //returns the location and size of the model
-        virtual vec4<float> locationsize() const
-        {
-            return vec4<float>(translate.x, translate.y, translate.z, scale);
-        }
-
+        virtual vec4<float> locationsize() const = 0;
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
         virtual void preloadBIH()
