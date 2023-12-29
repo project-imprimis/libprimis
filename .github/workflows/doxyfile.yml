@@ -52,13 +52,16 @@ jobs:
       # Show what files were created. Nice for debugging.
       - run: ls --recursive
       
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          # Provide a GitHub token to authenticate pushing files.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Push documentation files in docs folder to gh-pages repo.
-          publish_dir: ./docs
+          # Upload _site/ directory
+          path: 'docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Upload man pages
         uses: actions/upload-artifact@v4
