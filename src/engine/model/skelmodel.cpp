@@ -820,7 +820,8 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
         sc.bdata = new dualquat[numinterpbones];
     }
     sc.nextversion();
-    vec trans = vec(d.center).div(p->model->scale).add(p->model->translate);
+    vec pmodeltranslate = vec(p->model->locationsize().x, p->model->locationsize().y, p->model->locationsize().z);
+    vec trans = vec(d.center).div(p->model->locationsize().w).add(pmodeltranslate);
     for(uint i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
@@ -833,7 +834,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
                 pos.add(d.verts[j.vert[k]].pos);
             }
         }
-        pos.mul(j.weight/p->model->scale).sub(trans);
+        pos.mul(j.weight/p->model->locationsize().w).sub(trans);
         matrix4x3 m;
         m.mul(d.tris[j.tri], pos, d.animjoints ? d.animjoints[i] : j.orient);
         sc.bdata[b.interpindex] = dualquat(m);

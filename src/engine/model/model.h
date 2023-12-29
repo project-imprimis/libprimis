@@ -66,7 +66,6 @@ class model
             orientation;
         bool shadow, alphashadow, depthoffset;
         float scale;
-        vec translate;
         std::unique_ptr<BIH> bih;
         vec bbextend;
         float eyeheight, collidexyradius, collideheight;
@@ -165,13 +164,14 @@ class model
         }
 
     protected:
+        vec translate;
+
         model(std::string name) : spin(0, 0, 0),
                                   orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),
                                   depthoffset(false),
                                   scale(1.0f),
-                                  translate(0, 0, 0),
                                   bbextend(0, 0, 0),
                                   eyeheight(0.9f),
                                   collidexyradius(0),
@@ -179,6 +179,7 @@ class model
                                   collidemodel(""),
                                   collide(Collide_OrientedBoundingBox),
                                   batch(-1),
+                                  translate(0, 0, 0),
                                   name(name),
                                   bbcenter(0, 0, 0),
                                   bbradius(-1, -1, -1),
