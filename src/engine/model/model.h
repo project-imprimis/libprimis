@@ -102,7 +102,7 @@ class model
                                        const std::optional<float>) = 0;
         //returns the location and size of the model
         virtual vec4<float> locationsize() const = 0;
-        virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
+        virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) = 0;
 
         virtual void preloadBIH() = 0;
         virtual void preloadshaders() = 0;
