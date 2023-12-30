@@ -104,67 +104,22 @@ class model
         virtual vec4<float> locationsize() const = 0;
         virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &) {}
 
-        virtual void preloadBIH()
-        {
-            if(!bih)
-            {
-                setBIH();
-            }
-        }
-
+        virtual void preloadBIH() = 0;
         virtual void preloadshaders() = 0;
         virtual void preloadmeshes() = 0;
         virtual void cleanup() = 0;
-
         virtual void startrender() const = 0;
         virtual void endrender() const = 0;
-
-        void boundbox(vec &center, vec &radius)
-        {
-            if(bbradius.x < 0)
-            {
-                calcbb(bbcenter, bbradius);
-                bbradius.add(bbextend);
-            }
-            center = bbcenter;
-            radius = bbradius;
-        }
-
-        float collisionbox(vec &center, vec &radius)
-        {
-            if(collideradius.x < 0)
-            {
-                boundbox(collidecenter, collideradius);
-                if(collidexyradius)
-                {
-                    collidecenter.x = collidecenter.y = 0;
-                    collideradius.x = collideradius.y = collidexyradius;
-                }
-                if(collideheight)
-                {
-                    collidecenter.z = collideradius.z = collideheight/2;
-                }
-                rejectradius = collideradius.magnitude();
-            }
-            center = collidecenter;
-            radius = collideradius;
-            return rejectradius;
-        }
-
-        float above()
-        {
-            vec center, radius;
-            boundbox(center, radius);
-            return center.z+radius.z;
-        }
-
-        const std::string &modelname() const
-        {
-            return name;
-        }
+        virtual void boundbox(vec &center, vec &radius) = 0;
+        virtual float collisionbox(vec &center, vec &radius) = 0;
+        virtual float above() = 0;
+        virtual const std::string &modelname() const = 0;
 
     protected:
         vec translate;
+        std::string name;
+        vec bbcenter, bbradius, collidecenter, collideradius;
+        float rejectradius;
 
         model(std::string name) : spin(0, 0, 0),
                                   orientation(0, 0, 0),
@@ -187,10 +142,6 @@ class model
                                   collideradius(-1, -1, -1),
                                   rejectradius(-1)
                                   {}
-    private:
-        std::string name;
-        vec bbcenter, bbradius, collidecenter, collideradius;
-        float rejectradius;
 };
 
 #endif

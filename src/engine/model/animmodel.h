@@ -519,7 +519,10 @@ class animmodel : public model
         void calctransform(matrix4x3 &m) const override final;
         void startrender() const override final;
         void endrender() const override final;
-
+        void boundbox(vec &center, vec &radius) override final;
+        float collisionbox(vec &center, vec &radius) override final;
+        float above() override final;
+        const std::string &modelname() const override final;
         //static methods
         static void disablebones();
         static void disabletangents();

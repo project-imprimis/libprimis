@@ -1970,6 +1970,50 @@ void animmodel::endrender() const
     }
 }
 
+void animmodel::boundbox(vec &center, vec &radius)
+{
+    if(bbradius.x < 0)
+    {
+        calcbb(bbcenter, bbradius);
+        bbradius.add(bbextend);
+    }
+    center = bbcenter;
+    radius = bbradius;
+}
+
+float animmodel::collisionbox(vec &center, vec &radius)
+{
+    if(collideradius.x < 0)
+    {
+        boundbox(collidecenter, collideradius);
+        if(collidexyradius)
+        {
+            collidecenter.x = collidecenter.y = 0;
+            collideradius.x = collideradius.y = collidexyradius;
+        }
+        if(collideheight)
+        {
+            collidecenter.z = collideradius.z = collideheight/2;
+        }
+        rejectradius = collideradius.magnitude();
+    }
+    center = collidecenter;
+    radius = collideradius;
+    return rejectradius;
+}
+
+float animmodel::above()
+{
+    vec center, radius;
+    boundbox(center, radius);
+    return center.z+radius.z;
+}
+
+const std::string &animmodel::modelname() const
+{
+    return name;
+}
+
 void animmodel::disablebones()
 {
     gle::disableboneweight();
