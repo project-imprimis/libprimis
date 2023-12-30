@@ -1657,7 +1657,10 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
 
 void animmodel::preloadBIH()
 {
-    model::preloadBIH();
+    if(!bih)
+    {
+        setBIH();
+    }
     if(bih)
     {
         for(const part* i : parts)
