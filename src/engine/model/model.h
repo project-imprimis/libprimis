@@ -45,18 +45,18 @@ enum
  *          |                           |
  *          v     /---------------\     v
  *     /-----\    | modelcommands |    /-----\
- *     | md5 |    \---------------/    | obj |
- *     \-----/        |        |       \-----/
- *      |             v        v            |
- *      | /--------------\ /--------------\ |
- *      | | skelcommands | | vertcommands | |
- *      | \--------------/ \--------------/ |
- *      |   |                           |   |
- *      v   v                           v   v
+ *  -->| md5 |    \---------------/    | obj |<-
+ *  |  \-----/        |        |       \-----/ |
+ *  |   |             v        v            |  |
+ *  |   | /--------------\ /--------------\ |  |
+ *  |   | | skelcommands | | vertcommands | |  |
+ *  |   | \--------------/ \--------------/ |  |
+ *  |   |   |                           |   |  |
+ *  |   v   v                           v   v  |
  * /-------------------\    /-------------------\
  * | skelcommands<md5> |    | vertcommands<obj> |
- * | md5commands       |    | md5commands       |
- * \-------gvar--------/    \-------gvar--------/
+ * | md5::md5commands  |    | obj::objcommands  |
+ * \---static field----/    \---static field----/
  */
 class model
 {
