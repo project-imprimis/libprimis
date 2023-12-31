@@ -275,7 +275,7 @@ void vertmodel::vertmeshgroup::calctagmatrix(const part *p, int i, const AnimSta
         tagp.lerp(tag1p, tag2p, as.prev.t);
         tag.lerp(tagp, tag, as.interp);
     }
-    tag.d.mul(p->model->scale * sizescale);
+    tag.d.mul(p->model->locationsize().w * sizescale);
     matrix = matrix4(tag);
 }
 

@@ -802,7 +802,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     for(uint i = 0; i < ragdoll->verts.size(); i++)
     {
         ragdolldata::vert &dv = d.verts[i];
-        matrixstack.top().transform(vec(dv.pos).mul(p->model->scale), dv.pos);
+        matrixstack.top().transform(vec(dv.pos).mul(p->model->locationsize().w), dv.pos);
     }
     for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {
@@ -875,7 +875,7 @@ void skelmodel::skeleton::calctags(part *p, const skelcacheentry *sc) const
         }
         matrix4x3 m;
         m.mul(q, t.matrix);
-        m.d.mul(p->model->scale * sizescale);
+        m.d.mul(p->model->locationsize().w * sizescale);
         l.matrix = m;
     }
 }
@@ -1237,7 +1237,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
 
     if(as->cur.anim & Anim_Ragdoll && skel->ragdoll && !d->ragdoll)
     {
-        d->ragdoll = new ragdolldata(skel->ragdoll, p->model->scale);
+        d->ragdoll = new ragdolldata(skel->ragdoll, p->model->locationsize().w);
         skel->initragdoll(*d->ragdoll, sc, p);
         d->ragdoll->init(d);
     }
