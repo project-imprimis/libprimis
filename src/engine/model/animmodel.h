@@ -488,7 +488,6 @@ class animmodel : public model
         virtual bool loaddefaultparts() = 0;
         virtual void startload() = 0;
         virtual void endload() = 0;
-        virtual void flushpart() {}
 
         //model object overrides
         void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override final;

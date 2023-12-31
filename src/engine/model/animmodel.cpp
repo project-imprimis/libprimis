@@ -1549,7 +1549,6 @@ void animmodel::cleanup()
 
 animmodel::part &animmodel::addpart()
 {
-    flushpart();
     part *p = new part(this, parts.size());
     parts.push_back(p);
     return *p;
@@ -1724,7 +1723,6 @@ bool animmodel::load()
     {
         success = loaddefaultparts(); // model without configuration, try default tris and skin
     }
-    flushpart();
     endload();
     if(flipy())
     {

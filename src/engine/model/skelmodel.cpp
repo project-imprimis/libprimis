@@ -1926,7 +1926,6 @@ skelmodel::skelmodel(std::string name) : animmodel(name)
 
 skelmodel::skelpart &skelmodel::addpart()
 {
-    flushpart();
     skelpart *p = new skelpart(this, parts.size());
     parts.push_back(p);
     return *p;
