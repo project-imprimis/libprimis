@@ -62,8 +62,7 @@ class model
 {
     public:
         //for spin, orientation: x = yaw, y = pitch, z = roll
-        vec spin,
-            orientation;
+        vec orientation;
         bool shadow, alphashadow, depthoffset;
         std::unique_ptr<BIH> bih;
         vec bbextend;
@@ -115,14 +114,14 @@ class model
         virtual const std::string &modelname() const = 0;
 
     protected:
-        vec translate;
+        vec translate,
+            spin;
         float scale;
         std::string name;
         vec bbcenter, bbradius, collidecenter, collideradius;
         float rejectradius;
 
-        model(std::string name) : spin(0, 0, 0),
-                                  orientation(0, 0, 0),
+        model(std::string name) : orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),
                                   depthoffset(false),
@@ -134,6 +133,7 @@ class model
                                   collide(Collide_OrientedBoundingBox),
                                   batch(-1),
                                   translate(0, 0, 0),
+                                  spin(0, 0, 0),
                                   scale(1.0f),
                                   name(name),
                                   bbcenter(0, 0, 0),
