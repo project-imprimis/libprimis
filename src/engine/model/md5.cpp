@@ -594,5 +594,3 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
         }
     }
 }
-
-skelcommands<md5> md5commands; //see skelmodel.h for these commands
