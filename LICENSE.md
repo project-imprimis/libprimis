@@ -6,7 +6,7 @@ which is provided inside this repository.
 Libprimis' engine license covers all contents of this repository as well as the
 engine headers (included as a submodule inside /src).
 
-Copyright (c) 2020-2022 Project Imprimis:
+Copyright (c) 2020-2024 Project Imprimis:
 
 Core Developers:
 
