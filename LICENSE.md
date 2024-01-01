@@ -15,10 +15,13 @@ Core Developers:
 
 Additional contributors:
 
-* "beam brain" (@OlRabiesAbe)
-* "NoNo" (@nonoesimposible)
-* Kamil Zelech (@azkoon)
+* David Chen (@TheEgghead27)
+* Elijah Cole (@OlRabiesAbe)
+* Luis David Licea Torres (@Luis-Licea)
+* Kamil Zelech † (@azkoon)
 * Sławomir Błauciak (@q009)
+* "Duskhorn" (@Duskhorn)
+* "NoNo" (@nonoesimposible)
 
 Contributors to the original Tesseract engine are omitted here but listed in
 /src/readme_tesseract.txt. In no way does this license imply that this work is
