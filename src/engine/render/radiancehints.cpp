@@ -464,6 +464,17 @@ bool radiancehints::allcached() const
     return true;
 }
 
+void radiancehints::rotatedynlimits()
+{
+    prevdynmin = dynmin;
+    prevdynmax = dynmax;
+}
+
+bool radiancehints::checkprevbounds()
+{
+    return prevdynmin.z < rh.prevdynmax.z;
+}
+
 static void bindslice(int sx, int sy, int sw, int sh, int i, int j)
 {
     if(rhrect)
@@ -889,8 +900,7 @@ void GBuffer::renderradiancehints() const
     shadowmaskbatchedmodels(false);
     batchshadowmapmodels();
 
-    rh.prevdynmin = rh.dynmin;
-    rh.prevdynmax = rh.dynmax;
+    rh.rotatedynlimits();
     rh.dynmin = vec(1e16f, 1e16f, 1e16f);
     rh.dynmax = vec(-1e16f, -1e16f, -1e16f);
     if(rhdyntex)
@@ -901,7 +911,7 @@ void GBuffer::renderradiancehints() const
     {
         batcheddynamicmodelbounds(1<<shadowside, rh.dynmin, rh.dynmax);
     }
-    if(rhforce || rh.prevdynmin.z < rh.prevdynmax.z || rh.dynmin.z < rh.dynmax.z || !rh.allcached())
+    if(rhforce || rh.checkprevbounds() || rh.dynmin.z < rh.dynmax.z || !rh.allcached())
     {
         if(inoq)
         {

@@ -36,13 +36,18 @@ class radiancehints
     public:
         radiancehints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
 
-        vec dynmin, dynmax, prevdynmin, prevdynmax;
+        vec dynmin, dynmax;
         void setup();
         void renderslices();
         void bindparams() const;
         void clearcache();
         bool allcached() const;
+        //copies dynmin/max to prevdynmin/max
+        void rotatedynlimits();
+        //checks if prevmin's z value is less than prevmax
+        bool checkprevbounds();
     private:
+        vec prevdynmin, prevdynmax;
         //splits are used to LOD global illumination (more detail near camera)
         struct splitinfo
         {
