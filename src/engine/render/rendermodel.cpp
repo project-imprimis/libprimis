@@ -41,8 +41,6 @@ VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 
 std::vector<std::string> animnames; //set by game at runtime
 
-static model *loadingmodel = nullptr;
-
 //need the above vars inited before these headers will load properly
 
 #include "model/model.h"
@@ -265,7 +263,7 @@ model *loadmodel(const char *name, int i, bool msg)
     }
     else
     {
-        if(!name[0] || loadingmodel || failedmodels.find(name) != failedmodels.end())
+        if(!name[0] || failedmodels.find(name) != failedmodels.end())
         {
             return nullptr;
         }
@@ -281,7 +279,6 @@ model *loadmodel(const char *name, int i, bool msg)
             {
                 continue;
             }
-            loadingmodel = m;
             if(m->load())
             {
                 break;
@@ -292,7 +289,6 @@ model *loadmodel(const char *name, int i, bool msg)
                 m = nullptr;
             }
         }
-        loadingmodel = nullptr;
         if(!m)
         {
             failedmodels.insert(name);
