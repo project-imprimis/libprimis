@@ -631,6 +631,258 @@ struct modelcommands
     typedef class MDL::part part;
     typedef class MDL::skin skin;
 
+    static bool checkmdl()
+    {
+        if(!MDL::loading)
+        {
+            conoutf(Console_Error, "not loading a model");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    static void mdlcullface(int *cullface)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setcullface(*cullface);
+    }
+
+    static void mdlcolor(float *r, float *g, float *b)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setcolor(vec(*r, *g, *b));
+    }
+
+    static void mdlcollide(int *collide)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->collide = *collide!=0 ? (MDL::loading->collide ? MDL::loading->collide : Collide_OrientedBoundingBox) : Collide_None;
+    }
+
+    static void mdlellipsecollide(int *collide)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
+    }
+
+    static void mdltricollide(char *collide)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->collidemodel.clear();
+        char *end = nullptr;
+        int val = std::strtol(collide, &end, 0);
+        if(*end)
+        {
+            val = 1;
+            MDL::loading->collidemodel = std::string(collide);
+        }
+        MDL::loading->collide = val ? Collide_TRI : Collide_None;
+    }
+
+    static void mdlspec(float *percent)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        float spec = *percent > 0 ? *percent/100.0f : 0.0f;
+        MDL::loading->setspec(spec);
+    }
+
+    static void mdlgloss(int *gloss)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setgloss(std::clamp(*gloss, 0, 2));
+    }
+
+    static void mdlalphatest(float *cutoff)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
+    }
+
+    static void mdldepthoffset(int *offset)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->depthoffset = *offset!=0;
+    }
+
+    static void mdlglow(float *percent, float *delta, float *pulse)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        float glow = *percent > 0 ? *percent/100.0f : 0.0f,
+              glowdelta = *delta/100.0f,
+              glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
+        glowdelta -= glow;
+        MDL::loading->setglow(glow, glowdelta, glowpulse);
+    }
+
+    static void mdlfullbright(float *fullbright)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setfullbright(*fullbright);
+    }
+
+
+    static void mdlshader(char *shader)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->setshader(lookupshaderbyname(shader));
+    }
+
+
+    //assigns a new spin speed in three euler angles for the model object currently being loaded
+    static void mdlspin(float *yaw, float *pitch, float *roll)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->settransformation(std::nullopt, vec(*yaw, *pitch, *roll), std::nullopt, std::nullopt);
+    }
+
+    //assigns a new scale factor in % for the model object currently being loaded
+    static void mdlscale(float *percent)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        float scale = *percent > 0 ? *percent/100.0f : 1.0f;
+        MDL::loading->settransformation(std::nullopt, std::nullopt, std::nullopt, scale);
+    }
+
+    //assigns translation in x,y,z in cube units for the model object currently being loaded
+    static void mdltrans(float *x, float *y, float *z)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->settransformation(vec(*x, *y, *z), std::nullopt, std::nullopt, std::nullopt);
+    }
+
+    //assigns angle to the offsetyaw field of the model object currently being loaded
+    static void mdlyaw(float *angle)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->orientation.x = *angle;
+    }
+
+
+    //assigns angle to the offsetpitch field of the model object currently being loaded
+    static void mdlpitch(float *angle)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->orientation.y = *angle;
+    }
+
+    //assigns angle to the offsetroll field of the model object currently being loaded
+    static void mdlroll(float *angle)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->orientation.z = *angle;
+    }
+
+    //assigns shadow to the shadow field of the model object currently being loaded
+    static void mdlshadow(int *shadow)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->shadow = *shadow!=0;
+    }
+
+    //assigns alphashadow to the alphashadow field of the model object currently being loaded
+    static void mdlalphashadow(int *alphashadow)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->alphashadow = *alphashadow!=0;
+    }
+
+    //assigns rad, h, eyeheight to the fields of the model object currently being loaded
+    static void mdlbb(float *rad, float *h, float *eyeheight)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->collidexyradius = *rad;
+        MDL::loading->collideheight = *h;
+        MDL::loading->eyeheight = *eyeheight;
+    }
+
+    static void mdlextendbb(float *x, float *y, float *z)
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        MDL::loading->bbextend = vec(*x, *y, *z);
+    }
+
+    /* mdlname
+     *
+     * returns the name of the model currently loaded [most recently]
+     */
+    static void mdlname()
+    {
+        if(!checkmdl())
+        {
+            return;
+        }
+        result(MDL::loading->modelname().c_str());
+    }
+
     static void setdir(char *name)
     {
         if(!MDL::loading)
@@ -641,6 +893,7 @@ struct modelcommands
         MDL::dir.clear();
         MDL::dir.append(modelpath).append(name);
     }
+
 //======================================================= LOOP_MESHES LOOP_SKINS
 
     /**
@@ -854,6 +1107,30 @@ struct modelcommands
         modelcommand(setdir, "dir", "s");//<fmt>dir [name]
         if(MDL::multimeshed())
         {
+            modelcommand(mdlcullface, "cullface", "i");
+            modelcommand(mdlcolor, "color", "fff");
+            modelcommand(mdlcollide, "collide", "i");
+            modelcommand(mdlellipsecollide, "ellipsecollide", "i");
+            modelcommand(mdltricollide, "tricollide", "s");
+            modelcommand(mdlspec, "spec", "f");
+            modelcommand(mdlgloss, "gloss", "i");
+            modelcommand(mdlalphatest, "alphatest", "f");
+            modelcommand(mdldepthoffset, "depthoffset", "i");
+            modelcommand(mdlglow, "glow", "fff");
+            modelcommand(mdlfullbright, "fullbright", "f");
+            modelcommand(mdlshader, "shader", "s");
+            modelcommand(mdlspin, "spin", "fff");
+            modelcommand(mdlscale, "scale", "f");
+            modelcommand(mdltrans, "trans", "fff");
+            modelcommand(mdlyaw, "yaw", "f");
+            modelcommand(mdlpitch, "pitch", "f");
+            modelcommand(mdlroll, "roll", "f");
+            modelcommand(mdlshadow, "shadow", "i");
+            modelcommand(mdlalphashadow, "alphashadow", "i");
+            modelcommand(mdlbb, "bb", "fff");
+            modelcommand(mdlextendbb, "extendbb", "fff");
+            modelcommand(mdlname, "name", "");
+
             modelcommand(setskin, "skin", "sss");           //<fmt>skin [meshname] [tex] [masks]
             modelcommand(setspec, "spec", "sf");            //<fmt>spec [tex] [scale]
             modelcommand(setgloss, "gloss", "si");          //<fmt>gloss [tex] [type] type ranges 0..2
