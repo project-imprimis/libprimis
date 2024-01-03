@@ -1136,7 +1136,7 @@ struct modelcommands
             modelcommand(setgloss, "texgloss", "si");           //<fmt>texgloss [tex] [type] type ranges 0..2
             modelcommand(setglow, "texglow", "sfff");           //<fmt>texglow [tex] [pct] [del] [pulse]
             modelcommand(setalphatest, "meshalphatest", "sf");  //<fmt>meshalphatest [mesh] [cutoff]
-            modelcommand(setcullface, "cullface", "si");        //<fmt>cullface [mesh] [cullface]
+            modelcommand(setcullface, "meshcullface", "si");    //<fmt>cullface [mesh] [cullface]
             modelcommand(setcolor, "meshcolor", "sfff");        //<fmt>meshcolor [mesh] [r] [g] [b]
             modelcommand(setbumpmap, "bumpmap", "ss");          //<fmt>bumpmap [mesh] [tex]
             modelcommand(setdecal, "decal", "ss");              //<fmt>decal [mesh] [tex]
