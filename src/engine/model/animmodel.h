@@ -1131,20 +1131,20 @@ struct modelcommands
             modelcommand(mdlextendbb, "extendbb", "fff");
             modelcommand(mdlname, "name", "");
 
-            modelcommand(setskin, "skin", "sss");           //<fmt>skin [meshname] [tex] [masks]
-            modelcommand(setspec, "spec", "sf");            //<fmt>spec [tex] [scale]
-            modelcommand(setgloss, "gloss", "si");          //<fmt>gloss [tex] [type] type ranges 0..2
-            modelcommand(setglow, "glow", "sfff");          //<fmt>glow [tex] [pct] [del] [pulse]
-            modelcommand(setalphatest, "alphatest", "sf");  //<fmt>alphatest [mesh] [cutoff]
-            modelcommand(setcullface, "cullface", "si");    //<fmt>cullface [mesh] [cullface]
-            modelcommand(setcolor, "color", "sfff");        //<fmt>color [mesh] [r] [g] [b]
-            modelcommand(setbumpmap, "bumpmap", "ss");      //<fmt>bumpmap [mesh] [tex]
-            modelcommand(setdecal, "decal", "ss");          //<fmt>decal [mesh] [tex]
-            modelcommand(setfullbright, "fullbright", "sf");//<fmt>fullbright [mesh] [bright]
-            modelcommand(setshader, "shader", "ss");        //<fmt>shader [mesh] [shader]
-            modelcommand(setscroll, "scroll", "sff");       //<fmt>scroll [mesh] [x] [y]
-            modelcommand(setnoclip, "noclip", "si");        //<fmt>noclip [mesh] [bool]
-            modelcommand(settricollide, "tricollide", "s"); //<fmt>settricollide [mesh]
+            modelcommand(setskin, "skin", "sss");               //<fmt>skin [meshname] [tex] [masks]
+            modelcommand(setspec, "texspec", "sf");             //<fmt>texspec [tex] [scale]
+            modelcommand(setgloss, "texgloss", "si");           //<fmt>texgloss [tex] [type] type ranges 0..2
+            modelcommand(setglow, "texglow", "sfff");           //<fmt>texglow [tex] [pct] [del] [pulse]
+            modelcommand(setalphatest, "meshalphatest", "sf");  //<fmt>meshalphatest [mesh] [cutoff]
+            modelcommand(setcullface, "cullface", "si");        //<fmt>cullface [mesh] [cullface]
+            modelcommand(setcolor, "meshcolor", "sfff");        //<fmt>meshcolor [mesh] [r] [g] [b]
+            modelcommand(setbumpmap, "bumpmap", "ss");          //<fmt>bumpmap [mesh] [tex]
+            modelcommand(setdecal, "decal", "ss");              //<fmt>decal [mesh] [tex]
+            modelcommand(setfullbright, "meshfullbright", "sf");//<fmt>meshfullbright [mesh] [bright]
+            modelcommand(setshader, "meshshader", "ss");        //<fmt>meshshader [mesh] [shader]
+            modelcommand(setscroll, "scroll", "sff");           //<fmt>scroll [mesh] [x] [y]
+            modelcommand(setnoclip, "noclip", "si");            //<fmt>noclip [mesh] [bool]
+            modelcommand(settricollide, "tricollide", "s");     //<fmt>settricollide [mesh]
         }
         if(MDL::multiparted())
         {
