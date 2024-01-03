@@ -828,6 +828,147 @@ struct skelcommands : modelcommands<MDL>
         m->skel->applybonemask(bonemask, MDL::hitzones, *id < 0 ? 0xFF : *id);
     }
 
+    // if a skeletal model is being loaded, and meets the criteria for a ragdoll,
+    // returns the pointer to that ragdollskel (new one made if necessary), returns nullptr otherwise
+    static ragdollskel *checkragdoll()
+    {
+        if(!MDL::loading)
+        {
+            conoutf(Console_Error, "not loading a model");
+            return nullptr;
+        }
+        if(!MDL::loading->skeletal())
+        {
+            conoutf(Console_Error, "not loading a skeletal model");
+            return nullptr;
+        }
+        skelmodel *m = static_cast<skelmodel *>(MDL::loading);
+        if(m->parts.empty())
+        {
+            return nullptr;
+        }
+        skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+        if(!meshes)
+        {
+            return nullptr;
+        }
+        skelmodel::skeleton *skel = meshes->skel;
+        if(!skel->ragdoll)
+        {
+            skel->ragdoll = new ragdollskel;
+        }
+        ragdollskel *ragdoll = skel->ragdoll;
+        if(ragdoll->loaded)
+        {
+            return nullptr;
+        }
+        return ragdoll;
+    }
+
+    static void rdvert(float *x, float *y, float *z, float *radius)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdollskel::vert v;
+        v.pos = vec(*x, *y, *z);
+        v.radius = *radius > 0 ? *radius : 1;
+        ragdoll->verts.push_back(v);
+    }
+
+    /* ragdoll eye level: sets the ragdoll's eye point to the level passed
+     * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
+     */
+    static void rdeye(int *v)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdoll->eye = *v;
+    }
+
+    static void rdtri(int *v1, int *v2, int *v3)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdollskel::tri t;
+        t.vert[0] = *v1;
+        t.vert[1] = *v2;
+        t.vert[2] = *v3;
+        ragdoll->tris.emplace_back(t);
+    }
+
+    static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        const skelmodel *m = static_cast<skelmodel *>(MDL::loading);
+        const skelmodel::skelmeshgroup *meshes = static_cast<const skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+        const skelmodel::skeleton *skel = meshes->skel;
+        if(*n < 0 || *n >= skel->numbones)
+        {
+            return;
+        }
+        ragdollskel::joint j;
+        j.bone = *n;
+        j.tri = *t;
+        j.vert[0] = *v1;
+        j.vert[1] = *v2;
+        j.vert[2] = *v3;
+        ragdoll->joints.push_back(j);
+    }
+
+    static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdollskel::distlimit d;
+        d.vert[0] = *v1;
+        d.vert[1] = *v2;
+        d.mindist = *mindist;
+        d.maxdist = std::max(*maxdist, *mindist);
+        ragdoll->distlimits.push_back(d);
+    }
+
+    static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdollskel::rotlimit r;
+        r.tri[0] = *t1;
+        r.tri[1] = *t2;
+        r.maxangle = *maxangle / RAD;
+        r.maxtrace = 1 + 2*std::cos(r.maxangle);
+        r.middle = matrix3(quat(*qx, *qy, *qz, *qw));
+        ragdoll->rotlimits.push_back(r);
+    }
+
+    static void rdanimjoints(int *on)
+    {
+        ragdollskel *ragdoll = checkragdoll();
+        if(!ragdoll)
+        {
+            return;
+        }
+        ragdoll->animjoints = *on!=0;
+    }
+
     skelcommands()
     {
         if(MDL::multiparted())
@@ -845,6 +986,14 @@ struct skelcommands : modelcommands<MDL>
             this->modelcommand(setanimpart, "animpart", "s"); //<fmt>animpart [maskstr]
             this->modelcommand(setadjust, "adjust", "sffffff"); //<fmt>adjust [name] [yaw] [pitch] [tx] [ty] [tz]
         }
+
+        this->modelcommand(rdvert, "rdvert", "ffff");
+        this->modelcommand(rdeye, "rdeye", "i");
+        this->modelcommand(rdtri, "rdtri", "iii");
+        this->modelcommand(rdjoint, "rdjoint", "iibbb");
+        this->modelcommand(rdlimitdist, "rdlimitdist", "iiff");
+        this->modelcommand(rdlimitrot, "rdlimitrot", "iifffff");
+        this->modelcommand(rdanimjoints, "rdanimjoints", "i");
     }
 };
 
