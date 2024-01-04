@@ -62,7 +62,7 @@ class md5 final : public skelloader<md5>
                 void cleanup();
                 void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
-                void load(stream *f, char *buf, size_t bufsize, part &p);
+                void load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir);
 
             private:
                 md5weight *weightinfo;

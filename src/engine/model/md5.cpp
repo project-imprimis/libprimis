@@ -399,7 +399,10 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
             md5mesh *m = new md5mesh;
             m->group = this;
             meshes.push_back(m);
-            m->load(f, buf, sizeof(buf), p);
+
+            std::string modeldir = filename;
+            modeldir.resize(modeldir.rfind("/")); //truncate to file's directory
+            m->load(f, buf, sizeof(buf), p, modeldir);
             if(!m->numtris || !m->numverts) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename);
@@ -502,7 +505,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 }
 
 //md5 model loader
-void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p)
+void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir)
 {
     md5weight w;
     md5vert v;
@@ -534,7 +537,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p)
                 char *texname = newstring(start+1, end-(start+1));
                 p.initskins(notexture, notexture, group->meshes.size());
                 skin &s = p.skins.back();
-                s.tex = textureload(makerelpath(dir.c_str(), texname), 0, true, false);
+                s.tex = textureload(makerelpath(modeldir.c_str(), texname), 0, true, false);
                 delete[] texname;
             }
         }
