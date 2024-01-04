@@ -570,16 +570,20 @@ struct modelloader : BASE
     static MDL *loading;
     static std::string dir;
 
-    modelloader(std::string name) : BASE(name) {}
+    modelloader(std::string name) : BASE(name)
+    {
+    }
 
     static bool cananimate()
     {
         return true;
     }
+
     static bool multiparted()
     {
         return true;
     }
+
     static bool multimeshed()
     {
         return true;
