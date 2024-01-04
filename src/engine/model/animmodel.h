@@ -603,10 +603,11 @@ struct modelloader : BASE
     {
         dir.clear();
         dir.append(modelpath).append(BASE::modelname());
-        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::modelname().c_str(), MDL::formatname());
+        std::string cfgname;
+        cfgname.append(modelpath).append(BASE::modelname()).append("/").append(MDL::formatname()).append(".cfg");
 
         identflags &= ~Idf_Persist;
-        bool success = execfile(cfgname, false);
+        bool success = execfile(cfgname.c_str(), false);
         identflags |= Idf_Persist;
         return success;
     }
