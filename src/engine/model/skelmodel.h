@@ -371,7 +371,7 @@ struct skelmodel : animmodel
 
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
-        virtual bool load(const char *name, float smooth) = 0;
+        virtual bool load(const char *name, float smooth, part &p) = 0;
     };
 
     class skelpart : public part

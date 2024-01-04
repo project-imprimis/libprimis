@@ -1935,7 +1935,8 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
 {
     skelmeshgroup *group = newmeshes();
     group->skel = new skeleton(group);
-    if(!group->load(name, smooth))
+    part &p = *parts.back();
+    if(!group->load(name, smooth, p))
     {
         delete group;
         return nullptr;

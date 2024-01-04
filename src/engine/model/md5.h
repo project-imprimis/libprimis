@@ -48,8 +48,8 @@ class md5 final : public skelloader<md5>
                 const skelanimspec * loadanim(const char *filename) override final;
 
             private:
-                bool loadmesh(const char *filename, float smooth);
-                bool load(const char *meshfile, float smooth) override final;
+                bool loadmesh(const char *filename, float smooth, part &p);
+                bool load(const char *meshfile, float smooth, part &p) override final;
         };
 
 
@@ -62,7 +62,7 @@ class md5 final : public skelloader<md5>
                 void cleanup();
                 void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
-                void load(stream *f, char *buf, size_t bufsize);
+                void load(stream *f, char *buf, size_t bufsize, part &p);
 
             private:
                 md5weight *weightinfo;

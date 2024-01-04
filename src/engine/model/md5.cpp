@@ -292,7 +292,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     return sas;
 }
 
-bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
+bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
 {
     stream *f = openfile(filename, "r");
     if(!f) //immediately bail if no file present
@@ -399,7 +399,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
             md5mesh *m = new md5mesh;
             m->group = this;
             meshes.push_back(m);
-            m->load(f, buf, sizeof(buf));
+            m->load(f, buf, sizeof(buf), p);
             if(!m->numtris || !m->numverts) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename);
@@ -442,11 +442,11 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
     return true;
 }
 
-bool md5::md5meshgroup::load(const char *meshfile, float smooth)
+bool md5::md5meshgroup::load(const char *meshfile, float smooth, part &p)
 {
     name = meshfile;
 
-    if(!loadmesh(meshfile, smooth))
+    if(!loadmesh(meshfile, smooth, p))
     {
         return false;
     }
@@ -502,7 +502,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 }
 
 //md5 model loader
-void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
+void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p)
 {
     md5weight w;
     md5vert v;
@@ -532,9 +532,8 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize)
             if(start && end)
             {
                 char *texname = newstring(start+1, end-(start+1));
-                part *p = loading->parts.back();
-                p->initskins(notexture, notexture, group->meshes.size());
-                skin &s = p->skins.back();
+                p.initskins(notexture, notexture, group->meshes.size());
+                skin &s = p.skins.back();
                 s.tex = textureload(makerelpath(dir.c_str(), texname), 0, true, false);
                 delete[] texname;
             }
