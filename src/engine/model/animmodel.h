@@ -484,7 +484,7 @@ class animmodel : public model
 
         //virtual methods
         virtual bool flipy() const = 0;
-        virtual bool loadconfig() = 0;
+        virtual bool loadconfig(const std::string &mdlname) = 0;
         virtual bool loaddefaultparts() = 0;
         virtual void startload() = 0;
         virtual void endload() = 0;
@@ -599,12 +599,12 @@ struct modelloader : BASE
         loading = nullptr;
     }
 
-    bool loadconfig() override final
+    bool loadconfig(const std::string &mdlname) override final
     {
         dir.clear();
-        dir.append(modelpath).append(BASE::modelname());
+        dir.append(modelpath).append(mdlname);
         std::string cfgname;
-        cfgname.append(modelpath).append(BASE::modelname()).append("/").append(MDL::formatname()).append(".cfg");
+        cfgname.append(modelpath).append(mdlname).append("/").append(MDL::formatname()).append(".cfg");
 
         identflags &= ~Idf_Persist;
         bool success = execfile(cfgname.c_str(), false);

@@ -1718,7 +1718,7 @@ bool animmodel::alphatested() const
 bool animmodel::load()
 {
     startload();
-    bool success = loadconfig() && parts.size(); // configured model, will call the model commands below
+    bool success = loadconfig(modelname()) && parts.size(); // configured model, will call the model commands below
     if(!success)
     {
         success = loaddefaultparts(); // model without configuration, try default tris and skin
