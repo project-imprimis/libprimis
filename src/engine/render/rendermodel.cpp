@@ -398,20 +398,19 @@ void addbatchedmodel(model *m, batchedmodel &bm, int idx)
         b = &batches[m->batch];
         if(b->m == m && (b->flags & Model_Mapmodel) == (bm.flags & Model_Mapmodel))
         {
-            goto foundbatch; //skip some shit
+            b->flags |= bm.flags;
+            bm.next = b->batched;
+            b->batched = idx;
+            return;
         }
     }
+    //if no batched model is found
     m->batch = batches.size();
     batches.emplace_back();
     b = &batches.back();
     b->m = m;
     b->flags = 0;
     b->batched = -1;
-
-foundbatch:
-    b->flags |= bm.flags;
-    bm.next = b->batched;
-    b->batched = idx;
 }
 
 static void renderbatchedmodel(const model *m, const batchedmodel &b)
