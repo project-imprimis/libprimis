@@ -84,22 +84,23 @@ class animmodel : public model
                 void bind(Mesh &b, const AnimState *as);
                 static void invalidateshaderparams();
             private:
-                struct ShaderParamsKey
+                class ShaderParamsKey
                 {
-                    static std::unordered_map<shaderparams, ShaderParamsKey> keys;
+                    public:
+                        static std::unordered_map<shaderparams, ShaderParamsKey> keys;
 
-                    static int firstversion, lastversion;
+                        ShaderParamsKey() : version(-1) {}
 
-                    int version;
+                        bool checkversion();
 
-                    ShaderParamsKey() : version(-1) {}
+                        static void invalidate()
+                        {
+                            firstversion = lastversion;
+                        }
+                    private:
+                        static int firstversion, lastversion;
 
-                    bool checkversion();
-
-                    static void invalidate()
-                    {
-                        firstversion = lastversion;
-                    }
+                        int version;
                 };
                 ShaderParamsKey *key;
 
