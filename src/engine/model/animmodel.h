@@ -133,7 +133,7 @@ class animmodel : public model
 
                 virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) = 0;
 
-                virtual void genBIH(BIH::mesh &m) const {}
+                virtual void genBIH(BIH::mesh &m) const = 0;
 
                 void genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
