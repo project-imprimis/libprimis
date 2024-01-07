@@ -1066,7 +1066,7 @@ int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float p
             }
         }
     }
-    return m->intersect(anim, basetime, basetime2, pos, yaw, pitch, roll, d, a, size, o, ray, dist, mode);
+    return m->intersect(anim, basetime, basetime2, pos, yaw, pitch, roll, d, a, size, o, ray, dist);
 }
 
 void abovemodel(vec &o, const char *mdl)

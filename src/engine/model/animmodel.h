@@ -540,7 +540,7 @@ class animmodel : public model
         animmodel(std::string name);
 
         virtual int linktype(const animmodel *, const part *) const;
-        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) const override final;
+        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist) const override final;
 
         static bool enabletc, enablebones, enabletangents;
         static std::stack<matrix4> matrixstack;

@@ -76,7 +76,7 @@ class model
 
         virtual void calcbb(vec &, vec &) const = 0;
         virtual void calctransform(matrix4x3 &) const = 0;
-        virtual int intersect(int, int, int, const vec &, float, float, float, dynent *, modelattach *, float, const vec &, const vec &, float &, int) const = 0;
+        virtual int intersect(int, int, int, const vec &, float, float, float, dynent *, modelattach *, float, const vec &, const vec &, float &) const = 0;
         virtual void render(int, int, int, const vec&, float, float, float , dynent *, modelattach * = nullptr, float = 1, const vec4<float>& = vec4<float>(1, 1, 1, 1)) const = 0;
         virtual bool load() = 0;
         virtual int type() const = 0;
