@@ -300,12 +300,12 @@ struct skelmodel : animmodel
 
         virtual ~skelmeshgroup();
 
-        void makeskeleton();
         int findtag(const char *name) override final;
         void *animkey() override final;
         int totalframes() const override final;
-
-        void genvbo(vbocacheentry &vc);
+        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
+        void preload() override final;
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
         //for vvert, vvertg (vvertgw see below function), disable bones if active
         template<class T>
@@ -351,8 +351,9 @@ struct skelmodel : animmodel
             bindbones(vverts);
         }
 
+        void makeskeleton();
+        void genvbo(vbocacheentry &vc);
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
         int remapblend(int blend);
@@ -362,9 +363,6 @@ struct skelmodel : animmodel
         void cleanup() override final;
         vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
         blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
-        void preload() override final;
-
-        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
         virtual bool load(const char *name, float smooth, part &p) = 0;
         virtual const skelanimspec *loadanim(const char *filename) = 0;
