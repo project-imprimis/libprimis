@@ -305,11 +305,6 @@ struct skelmodel : animmodel
         void *animkey() override final;
         int totalframes() const override final;
 
-        virtual const skelanimspec *loadanim(const char *filename)
-        {
-            return nullptr;
-        }
-
         void genvbo(vbocacheentry &vc);
 
         //for vvert, vvertg (vvertgw see below function), disable bones if active
@@ -372,6 +367,8 @@ struct skelmodel : animmodel
         void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
         virtual bool load(const char *name, float smooth, part &p) = 0;
+        virtual const skelanimspec *loadanim(const char *filename) = 0;
+
     };
 
     class skelpart : public part
