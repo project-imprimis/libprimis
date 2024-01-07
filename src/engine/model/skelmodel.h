@@ -274,98 +274,100 @@ struct skelmodel : animmodel
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
     };
 
-    struct skelmeshgroup : meshgroup
+    class skelmeshgroup : public meshgroup
     {
-        skeleton *skel;
+        public:
+            skeleton *skel;
 
-        std::vector<blendcombo> blendcombos;
-        std::array<int, 4> numblends;
+            std::vector<blendcombo> blendcombos;
 
-        static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
-        static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
+            GLuint *edata;
+            int vweights;
 
-        blendcacheentry blendcache[maxblendcache];
-
-        vbocacheentry vbocache[maxvbocache];
-
-        GLuint *edata;
-        GLuint ebuf;
-        int vlen, vertsize, vblends, vweights;
-        uchar *vdata;
-
-        skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vblends(0), vweights(0), vdata(nullptr)
-        {
-            numblends.fill(0);
-        }
-
-        virtual ~skelmeshgroup();
-
-        int findtag(const char *name) override final;
-        void *animkey() override final;
-        int totalframes() const override final;
-        void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
-        void preload() override final;
-        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
-
-        //for vvert, vvertg (vvertgw see below function), disable bones if active
-        template<class T>
-        void bindbones(T *vverts)
-        {
-            if(enablebones)
+            skelmeshgroup() : skel(nullptr), edata(nullptr), vweights(0), ebuf(0), vlen(0), vertsize(0), vblends(0), vdata(nullptr)
             {
-                disablebones();
+                numblends.fill(0);
             }
-        }
-        //for vvertgw only, call parent bindbones function
-        void bindbones(vvertgw *vverts)
-        {
-            meshgroup::bindbones(vverts->weights, vverts->bones, vertsize);
-        }
 
-        template<class T>
-        void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
-        {
-            T *vverts = nullptr;
-            bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim & Anim_NoSkin)
+            virtual ~skelmeshgroup();
+
+            int findtag(const char *name) override final;
+            void *animkey() override final;
+            int totalframes() const override final;
+            void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
+            void preload() override final;
+            void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
+
+            //for vvert, vvertg (vvertgw see below function), disable bones if active
+            template<class T>
+            void bindbones(T *vverts)
             {
-                if(enabletangents)
+                if(enablebones)
                 {
-                    disabletangents();
+                    disablebones();
                 }
-                if(p->alphatested())
+            }
+            //for vvertgw only, call parent bindbones function
+            void bindbones(vvertgw *vverts)
+            {
+                meshgroup::bindbones(vverts->weights, vverts->bones, vertsize);
+            }
+
+            template<class T>
+            void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
+            {
+                T *vverts = nullptr;
+                bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
+                if(as->cur.anim & Anim_NoSkin)
                 {
+                    if(enabletangents)
+                    {
+                        disabletangents();
+                    }
+                    if(p->alphatested())
+                    {
+                        bindtc(&vverts->tc, vertsize);
+                    }
+                    else if(enabletc)
+                    {
+                        disabletc();
+                    }
+                }
+                else
+                {
+                    bindtangents(&vverts->tangent, vertsize);
+
                     bindtc(&vverts->tc, vertsize);
                 }
-                else if(enabletc)
-                {
-                    disabletc();
-                }
+                bindbones(vverts);
             }
-            else
-            {
-                bindtangents(&vverts->tangent, vertsize);
 
-                bindtc(&vverts->tc, vertsize);
-            }
-            bindbones(vverts);
-        }
+            void makeskeleton();
+            void genvbo(vbocacheentry &vc);
+            void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
+            int addblendcombo(const blendcombo &c);
+            void sortblendcombos();
+            int remapblend(int blend);
+            static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
+            void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
+            static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
+            void cleanup() override final;
+            vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
+            blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
 
-        void makeskeleton();
-        void genvbo(vbocacheentry &vc);
-        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
-        int addblendcombo(const blendcombo &c);
-        void sortblendcombos();
-        int remapblend(int blend);
-        static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
-        void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
-        static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
-        void cleanup() override final;
-        vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
-        blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
+            virtual bool load(const char *name, float smooth, part &p) = 0;
+            virtual const skelanimspec *loadanim(const char *filename) = 0;
+        private:
+            std::array<int, 4> numblends;
 
-        virtual bool load(const char *name, float smooth, part &p) = 0;
-        virtual const skelanimspec *loadanim(const char *filename) = 0;
+            static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
+            static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
+
+            blendcacheentry blendcache[maxblendcache];
+            vbocacheentry vbocache[maxvbocache];
+            GLuint ebuf;
+            int vlen, vertsize, vblends;
+            uchar *vdata;
 
     };
 
