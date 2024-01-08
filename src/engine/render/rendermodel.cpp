@@ -283,11 +283,8 @@ model *loadmodel(const char *name, int i, bool msg)
             {
                 break;
             }
-            if(m)
-            {
-                delete m;
-                m = nullptr;
-            }
+            delete m;
+            m = nullptr;
         }
         if(!m)
         {
