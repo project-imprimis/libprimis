@@ -234,10 +234,10 @@ void preloadusedmapmodels(bool msg, bool bih)
 
 model *loadmodel(const char *name, int i, bool msg)
 {
-    model *(__cdecl *md5loader)(const char *) = +[] (const char *filename) -> model* { return new md5(filename); };
-    model *(__cdecl *objloader)(const char *) = +[] (const char *filename) -> model* { return new obj(filename); };
+    model *(__cdecl *md5loader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new md5(filename); };
+    model *(__cdecl *objloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new obj(filename); };
 
-    std::vector<model *(__cdecl *)(const char *)> loaders;
+    std::vector<model *(__cdecl *)(const std::string &)> loaders;
     loaders.push_back(md5loader);
     loaders.push_back(objloader);
     std::unordered_set<std::string> failedmodels;
@@ -272,7 +272,7 @@ model *loadmodel(const char *name, int i, bool msg)
             DEF_FORMAT_STRING(filename, "media/model/%s", name);
             renderprogress(loadprogress, filename);
         }
-        for(model *(__cdecl *i)(const char *) : loaders)
+        for(model *(__cdecl *i)(const std::string &) : loaders)
         {
             m = i(name);
             if(!m)
