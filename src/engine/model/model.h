@@ -8,9 +8,11 @@ enum
     MDL_NumMDLTypes
 };
 
-/* model: the base class for an ingame model
+/* model: the base class for an ingame model, with only pure virtual methods,
+ * all methods are defined in animmodel or one of its defined classes
  *
  * extended by animmodel (animated model) which is itself extended by skelmodel
+ * and vertmodel
  *
  * a model format loader (e.g. md5 or obj) extends model or one of its children
  * and assigns the data from the file format into the object (by setting its
