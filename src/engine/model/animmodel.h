@@ -122,10 +122,6 @@ class animmodel : public model
                 char *name;
                 bool cancollide, canrender, noclip;
 
-                Mesh() : group(nullptr), name(nullptr), cancollide(true), canrender(true), noclip(false)
-                {
-                }
-
                 virtual ~Mesh()
                 {
                     delete[] name;
@@ -151,6 +147,11 @@ class animmodel : public model
                     {
                         s->set();
                     }
+                }
+
+            protected:
+                Mesh() : group(nullptr), name(nullptr), cancollide(true), canrender(true), noclip(false)
+                {
                 }
 
                 template<class V, class T>
@@ -337,6 +338,7 @@ class animmodel : public model
                         calctangents(&verts[i*numverts], tcverts, numverts, tris, numtris, areaweight);
                     }
                 }
+
             private:
                 struct smoothdata
                 {
