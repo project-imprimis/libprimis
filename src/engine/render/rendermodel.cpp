@@ -274,15 +274,16 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         for(model *(__cdecl *i)(const std::string &) : loaders)
         {
-            m = i(name);
+            m = i(name); //call model ctor
             if(!m)
             {
                 continue;
             }
-            if(m->load())
+            if(m->load()) //now load the model
             {
                 break;
             }
+            //delete model if not successful
             delete m;
             m = nullptr;
         }
