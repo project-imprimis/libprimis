@@ -1442,7 +1442,7 @@ int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 
 void skelmodel::skelmesh::smoothnorms(float limit, bool areaweight)
 {
-    Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+    Mesh::smoothnorms<skelmodel>(verts, numverts, tris, numtris, limit, areaweight);
 }
 
 void skelmodel::skelmesh::buildnorms(bool areaweight)

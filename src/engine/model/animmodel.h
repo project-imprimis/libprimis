@@ -154,8 +154,8 @@ class animmodel : public model
                 {
                 }
 
-                template<class V, class T>
-                static void smoothnorms(V *verts, int numverts, const T *tris, int numtris, float limit, bool areaweight)
+                template<class T>
+                static void smoothnorms(typename T::vert *verts, int numverts, const typename T::tri *tris, int numtris, float limit, bool areaweight)
                 {
                     if(!numverts)
                     {
@@ -165,7 +165,7 @@ class animmodel : public model
                     std::unordered_map<vec, int> share;
                     for(int i = 0; i < numverts; ++i)
                     {
-                        const V &v = verts[i];
+                        const typename T::vert &v = verts[i];
                         const auto itr = share.find(v.pos);
                         if(itr == share.end())
                         {
@@ -179,7 +179,7 @@ class animmodel : public model
                     }
                     for(int i = 0; i < numtris; ++i)
                     {
-                        const T &t = tris[i];
+                        const typename T::tri &t = tris[i];
                         const uint v1 = t.vert[0],
                                    v2 = t.vert[1],
                                    v3 = t.vert[2];

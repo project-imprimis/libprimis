@@ -88,7 +88,7 @@ void vertmodel::vertmesh::smoothnorms(float limit, bool areaweight)
 {
     if((static_cast<vertmeshgroup *>(group))->numframes == 1)
     {
-        Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+        Mesh::smoothnorms<vertmodel>(verts, numverts, tris, numtris, limit, areaweight);
     }
     else
     {
