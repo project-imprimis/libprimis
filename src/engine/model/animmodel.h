@@ -925,14 +925,14 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname());
             return meshlist; //empty vector
         }
-        part &mdl = *MDL::loading->parts.back();
+        const part &mdl = *MDL::loading->parts.back();
         if(!mdl.meshes)
         {
             return meshlist; //empty vector
         }
         for(std::vector<animmodel::Mesh *>::iterator i = mdl.meshes->meshes.begin(); i != mdl.meshes->meshes.end(); ++i)
         {
-            animmodel::Mesh &tempmesh = **i;
+            const animmodel::Mesh &tempmesh = **i;
             if(!std::strcmp(meshname.c_str(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.c_str())))
             {
                 meshlist.push_back(i);
