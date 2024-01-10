@@ -223,8 +223,8 @@ class animmodel : public model
                     delete[] smooth;
                 }
 
-                template<class V, class T>
-                static void buildnorms(V *verts, int numverts, const T *tris, int numtris, bool areaweight)
+                template<class T>
+                static void buildnorms(typename T::vert *verts, int numverts, const typename T::tri *tris, int numtris, bool areaweight)
                 {
                     if(!numverts)
                     {
@@ -236,10 +236,10 @@ class animmodel : public model
                     }
                     for(int i = 0; i < numtris; ++i)
                     {
-                        const T &t = tris[i];
-                        V &v1 = verts[t.vert[0]],
-                          &v2 = verts[t.vert[1]],
-                          &v3 = verts[t.vert[2]];
+                        const typename T::tri &t = tris[i];
+                        typename T::vert &v1 = verts[t.vert[0]],
+                                        &v2 = verts[t.vert[1]],
+                                        &v3 = verts[t.vert[2]];
                         vec norm;
                         norm.cross(v1.pos, v2.pos, v3.pos);
                         if(!areaweight)
@@ -256,8 +256,8 @@ class animmodel : public model
                     }
                 }
 
-                template<class V, class T>
-                static void buildnorms(V *verts, int numverts, const T *tris, int numtris, bool areaweight, int numframes)
+                template<class T>
+                static void buildnorms(typename T::vert *verts, int numverts, const typename T::tri *tris, int numtris, bool areaweight, int numframes)
                 {
                     if(!numverts)
                     {
@@ -265,7 +265,7 @@ class animmodel : public model
                     }
                     for(int i = 0; i < numframes; ++i)
                     {
-                        buildnorms(&verts[i*numverts], numverts, tris, numtris, areaweight);
+                        buildnorms<T>(&verts[i*numverts], numverts, tris, numtris, areaweight);
                     }
                 }
 

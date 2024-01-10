@@ -98,7 +98,7 @@ void vertmodel::vertmesh::smoothnorms(float limit, bool areaweight)
 
 void vertmodel::vertmesh::buildnorms(bool areaweight)
 {
-    Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
+    Mesh::buildnorms<vertmodel>(verts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
 }
 
 void vertmodel::vertmesh::calctangents(bool areaweight)

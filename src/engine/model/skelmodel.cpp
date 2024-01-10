@@ -1447,7 +1447,7 @@ void skelmodel::skelmesh::smoothnorms(float limit, bool areaweight)
 
 void skelmodel::skelmesh::buildnorms(bool areaweight)
 {
-    Mesh::buildnorms(verts, numverts, tris, numtris, areaweight);
+    Mesh::buildnorms<skelmodel>(verts, numverts, tris, numtris, areaweight);
 }
 
 void skelmodel::skelmesh::calctangents(bool areaweight)
