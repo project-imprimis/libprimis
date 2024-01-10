@@ -271,8 +271,8 @@ class animmodel : public model
 
                 static void fixqtangent(quat &q, float bt);
 
-                template<class V, class TC, class T>
-                void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight)
+                template<class T, class TC>
+                void calctangents(typename T::vert *verts, TC *tcverts, int numverts, typename T::tri *tris, int numtris, bool areaweight)
                 {
                     vec *tangent = new vec[2*numverts],
                         *bitangent = tangent+numverts;
@@ -280,7 +280,7 @@ class animmodel : public model
 
                     for(int i = 0; i < numtris; ++i)
                     {
-                        const T &t = tris[i];
+                        const typename T::tri &t = tris[i];
                         const vec &e0 = verts[t.vert[0]].pos;
                         vec e1 = vec(verts[t.vert[1]].pos).sub(e0),
                             e2 = vec(verts[t.vert[2]].pos).sub(e0);
@@ -316,7 +316,7 @@ class animmodel : public model
                     }
                     for(int i = 0; i < numverts; ++i)
                     {
-                        V &v = verts[i];
+                        typename T::vert &v = verts[i];
                         const vec &t = tangent[i],
                                   &bt = bitangent[i];
                         matrix3 m;
@@ -330,12 +330,12 @@ class animmodel : public model
                     delete[] tangent;
                 }
 
-                template<class V, class TC, class T>
-                void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
+                template<class T, class TC>
+                void calctangents(typename T::vert *verts, TC *tcverts, int numverts, typename T::tri *tris, int numtris, bool areaweight, int numframes)
                 {
                     for(int i = 0; i < numframes; ++i)
                     {
-                        calctangents(&verts[i*numverts], tcverts, numverts, tris, numtris, areaweight);
+                        calctangents<T, TC>(&verts[i*numverts], tcverts, numverts, tris, numtris, areaweight);
                     }
                 }
 
