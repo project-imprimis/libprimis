@@ -126,8 +126,8 @@ namespace mpr
     //templates
     const float boundarytolerance = 1e-3f;
 
-    template<class T, class U>
-    bool collide(const T &p1, const U &p2)
+    template<class T>
+    bool collide(const T &p1, const EntOBB &p2)
     {
         // v0 = center of Minkowski difference
         vec v0 = p2.center().sub(p1.center());
@@ -242,8 +242,8 @@ namespace mpr
         return false;
     }
 
-    template<class T, class U>
-    bool collide(const T &p1, const U &p2, vec *contactnormal, vec *contactpoint1, vec *contactpoint2)
+    template<class T>
+    bool collide(const EntOBB &p1, const T &p2, vec *contactnormal, vec *contactpoint1, vec *contactpoint2)
     {
         // v0 = center of Minkowski sum
         vec v01 = p1.center();
