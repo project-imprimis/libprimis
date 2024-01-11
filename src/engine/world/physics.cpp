@@ -285,10 +285,10 @@ void updatedynentcache(physent *d)
     }
 }
 
-template<class E, class O>
+template<class O>
 static bool plcollide(const physent *d, const vec &dir, const physent *o)
 {
-    E entvol(d);
+    mpr::EntOBB entvol(d);
     O obvol(o);
     vec cp;
     if(mpr::collide(entvol, obvol, nullptr, nullptr, &cp))
@@ -323,11 +323,11 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
         {
             if(o->collidetype == Collide_Ellipse)
             {
-                return plcollide<mpr::EntOBB, mpr::EntCylinder>(d, dir, o);
+                return plcollide<mpr::EntCylinder>(d, dir, o);
             }
             else
             {
-                return plcollide<mpr::EntOBB, mpr::EntOBB>(d, dir, o);
+                return plcollide<mpr::EntOBB>(d, dir, o);
             }
         }
         default:
@@ -377,10 +377,10 @@ bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // col
 #undef LOOPDYNENTCACHE
 //==============================================================================
 
-template<class E, class M>
+template<class M>
 static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
-    E entvol(d);
+    mpr::EntOBB entvol(d);
     M mdlvol(e.o, center, radius, yaw, pitch, roll);
     vec cp;
     if(mpr::collide(entvol, mdlvol, nullptr, nullptr, &cp))
@@ -693,12 +693,12 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                 {
                     if(mcol == Collide_Ellipse)
                     {
-                        if(mmcollide<mpr::EntOBB, mpr::ModelEllipse>(d, dir, e, center, radius, yaw, pitch, roll))
+                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, yaw, pitch, roll))
                         {
                             return true;
                         }
                     }
-                    else if(mmcollide<mpr::EntOBB, mpr::ModelOBB>(d, dir, e, center, radius, yaw, pitch, roll))
+                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, yaw, pitch, roll))
                     {
                         return true;
                     }
