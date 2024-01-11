@@ -396,7 +396,6 @@ static bool mmcollide(const physent *d, const vec &dir, const extentity &e, cons
     return false;
 }
 
-template<class E>
 static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
     mpr::ModelOBB mdlvol(o, center, radius, yaw, pitch, roll);
@@ -406,7 +405,7 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
     {
         return false;
     }
-    E entvol(d);
+    mpr::EntCapsule entvol(d);
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     for(int i = 0; i < 6; ++i)
@@ -678,7 +677,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     }
                     else if(pitch || roll)
                     {
-                        if(fuzzycollidebox<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll))
+                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll))
                         {
                             return true;
                         }
