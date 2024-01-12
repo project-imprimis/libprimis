@@ -814,7 +814,6 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
     return false;
 }
 
-template<class E>
 static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, *d);
@@ -839,7 +838,7 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
         return false;
     }
 
-    E entvol(d);
+    mpr::EntCapsule entvol(d);
     int bestplane = -1;
     for(int i = 0; i < p.size; ++i)
     {
@@ -1025,7 +1024,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
             }
             else
             {
-                return fuzzycollideplanes<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
+                return fuzzycollideplanes(d, dir, cutoff, c, co, size);
             }
         }
         default:
