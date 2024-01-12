@@ -743,7 +743,6 @@ static bool checkside(const physent &d, int side, const vec &dir, const int visi
     return true;
 }
 
-template<class E>
 static bool fuzzycollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
@@ -1020,7 +1019,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
         {
             if(c.issolid() || solid)
             {
-                return fuzzycollidesolid<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
+                return fuzzycollidesolid(d, dir, cutoff, c, co, size);
             }
             else
             {
