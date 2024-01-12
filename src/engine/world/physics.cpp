@@ -888,7 +888,6 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
     return true;
 }
 
-template<class E>
 static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
@@ -897,7 +896,7 @@ static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, con
     {
         return false;
     }
-    E entvol(d);
+    mpr::EntOBB entvol(d);
     bool collided = mpr::collide(mpr::SolidCube(co, size), entvol);
     if(!collided)
     {
@@ -1007,7 +1006,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
         {
             if(c.issolid() || solid)
             {
-                return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
+                return cubecollidesolid(d, dir, cutoff, c, co, size);
             }
             else
             {
