@@ -926,7 +926,6 @@ static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, con
     return true;
 }
 
-template<class E>
 static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, *d);
@@ -935,7 +934,7 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
     {
         return false;
     }
-    E entvol(d);
+    mpr::EntOBB entvol(d);
     bool collided = mpr::collide(mpr::CubePlanes(p), entvol);
     if(!collided)
     {
@@ -1012,7 +1011,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
             }
             else
             {
-                return cubecollideplanes<mpr::EntOBB>(d, dir, cutoff, c, co, size);
+                return cubecollideplanes(d, dir, cutoff, c, co, size);
             }
         }
         case Collide_Ellipse:
