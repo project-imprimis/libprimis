@@ -941,15 +941,15 @@ struct modelcommands
         return meshlist;
     }
 
-    static std::vector<std::vector<animmodel::skin *>::iterator> getskins(std::string meshname)
+    static std::vector<std::vector<animmodel::skin>::iterator> getskins(std::string meshname)
     {
-        std::vector<std::vector<animmodel::skin *>::iterator> skinlist;
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist;
         if(!MDL::loading || MDL::loading->parts.empty())
         {
             conoutf("not loading an %s", MDL::formatname());
             return skinlist;
         }
-        const part &mdl = *MDL::loading->parts.back();
+        part &mdl = *MDL::loading->parts.back();
         if(!mdl.meshes)
         {
             return skinlist;
@@ -957,9 +957,10 @@ struct modelcommands
         for(uint i = 0; i < mdl.meshes->meshes.size(); i++)
         {
             auto &m = *(mdl.meshes->meshes[i]);
-            if(!std::strcmp(meshname.c_str(), "*") || (m.name && !std::strcmp(m.name, meshname)))
+            if(!std::strcmp(meshname.c_str(), "*") || (m.name && !std::strcmp(m.name, meshname.c_str())))
             {
-                skinlist.push_back(mdl.skins[i]);
+                std::vector<animmodel::skin>::iterator itr = mdl.skins.begin() + i;
+                skinlist.push_back(itr);
             }
         }
         return skinlist;
@@ -989,13 +990,15 @@ struct modelcommands
 
     static void setskin(char *meshname, char *tex, char *masks)
     {
-        LOOP_SKINS(meshname, s,
-            s.tex = textureload(makerelpath(MDL::dir.c_str(), tex), 0, true, false);
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).tex = textureload(makerelpath(MDL::dir.c_str(), tex), 0, true, false);
             if(*masks)
             {
-                s.masks = textureload(makerelpath(MDL::dir.c_str(), masks), 0, true, false);
+                (*s).masks = textureload(makerelpath(MDL::dir.c_str(), masks), 0, true, false);
             }
-        );
+        }
     }
 
     static void setspec(char *meshname, float *percent)
