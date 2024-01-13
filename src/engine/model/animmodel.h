@@ -1106,8 +1106,9 @@ struct modelcommands
     template<class F>
     void modelcommand(F *fun, const char *suffix, const char *args)
     {
-        DEF_FORMAT_STRING(name, "%s%s", MDL::formatname(), suffix);
-        addcommand(newstring(name), (identfun)fun, args);
+        std::string name;
+        name.append(MDL::formatname()).append(suffix);
+        addcommand(newstring(name.c_str()), (identfun)fun, args);
     }
 
     modelcommands()
