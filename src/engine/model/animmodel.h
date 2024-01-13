@@ -941,6 +941,30 @@ struct modelcommands
         return meshlist;
     }
 
+    static std::vector<std::vector<animmodel::skin *>::iterator> getskins(std::string meshname)
+    {
+        std::vector<std::vector<animmodel::skin *>::iterator> skinlist;
+        if(!MDL::loading || MDL::loading->parts.empty())
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return skinlist;
+        }
+        const part &mdl = *MDL::loading->parts.back();
+        if(!mdl.meshes)
+        {
+            return skinlist;
+        }
+        for(uint i = 0; i < mdl.meshes->meshes.size(); i++)
+        {
+            auto &m = *(mdl.meshes->meshes[i]);
+            if(!std::strcmp(meshname.c_str(), "*") || (m.name && !std::strcmp(m.name, meshname)))
+            {
+                skinlist.push_back(mdl.skins[i]);
+            }
+        }
+        return skinlist;
+    }
+
     #define LOOP_SKINS(meshname, s, body) do { \
         if(!MDL::loading || MDL::loading->parts.empty()) \
         { \
