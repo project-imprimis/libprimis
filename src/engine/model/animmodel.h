@@ -774,7 +774,6 @@ struct modelcommands
         MDL::loading->setshader(lookupshaderbyname(shader));
     }
 
-
     //assigns a new spin speed in three euler angles for the model object currently being loaded
     static void mdlspin(float *yaw, float *pitch, float *roll)
     {
