@@ -940,6 +940,19 @@ struct modelcommands
         return meshlist;
     }
 
+    /**
+     * @brief Returns an iterator vector of skins associated with the given name
+     *
+     * Returns a vector of MDL::loading->parts.back()'s meshgroup's skin vector
+     * iterators where those iterator's contents' name field compares equal to the
+     * passed string. If the wildcard "*" is passed as `meshname` then all elements
+     * will be added regardless of name. If no such mesh vector exists (or there is
+     * no loading model) then an empty vector is returned.
+     *
+     * @param meshname the mesh name to select from the skin vector
+     *
+     * @return vector of iterators corresponding to skins with the given name
+     */
     static std::vector<std::vector<animmodel::skin>::iterator> getskins(std::string meshname)
     {
         std::vector<std::vector<animmodel::skin>::iterator> skinlist;
@@ -965,28 +978,6 @@ struct modelcommands
         return skinlist;
     }
 
-    #define LOOP_SKINS(meshname, s, body) do { \
-        if(!MDL::loading || MDL::loading->parts.empty()) \
-        { \
-            conoutf("not loading an %s", MDL::formatname()); \
-            return; \
-        } \
-        part &mdl = *MDL::loading->parts.back(); \
-        if(!mdl.meshes) \
-        { \
-            return; \
-        } \
-        for(uint i = 0; i < mdl.meshes->meshes.size(); i++) \
-        { \
-            auto &m = *(mdl.meshes->meshes[i]); \
-            if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
-            { \
-                skin &s = mdl.skins[i]; \
-                body; \
-            } \
-        } \
-    } while(0)
-
     static void setskin(char *meshname, char *tex, char *masks)
     {
         auto skinlist = getskins(meshname);
@@ -1003,12 +994,20 @@ struct modelcommands
     static void setspec(char *meshname, float *percent)
     {
         float spec = *percent > 0 ? *percent/100.0f : 0.0f;
-        LOOP_SKINS(meshname, s, s.spec = spec);
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).spec = spec;
+        }
     }
 
     static void setgloss(char *meshname, int *gloss)
     {
-        LOOP_SKINS(meshname, s, s.gloss = std::clamp(*gloss, 0, 2));
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).gloss = std::clamp(*gloss, 0, 2);
+        }
     }
 
     static void setglow(char *meshname, float *percent, float *delta, float *pulse)
@@ -1017,50 +1016,87 @@ struct modelcommands
               glowdelta = *delta/100.0f,
               glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
         glowdelta -= glow;
-        LOOP_SKINS(meshname, s, { s.glow = glow; s.glowdelta = glowdelta; s.glowpulse = glowpulse; });
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).glow = glow;
+            (*s).glowdelta = glowdelta;
+            (*s).glowpulse = glowpulse;
+        }
     }
 
     static void setalphatest(char *meshname, float *cutoff)
     {
-        LOOP_SKINS(meshname, s, s.alphatest = std::max(0.0f, std::min(1.0f, *cutoff)));
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).alphatest = std::max(0.0f, std::min(1.0f, *cutoff));
+        }
     }
 
     static void setcullface(char *meshname, int *cullface)
     {
-        LOOP_SKINS(meshname, s, s.cullface = *cullface);
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).cullface = *cullface;
+        }
     }
 
     static void setcolor(char *meshname, float *r, float *g, float *b)
     {
-        LOOP_SKINS(meshname, s, s.color = vec(*r, *g, *b));
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).color = vec(*r, *g, *b);
+        }
     }
 
     static void setbumpmap(char *meshname, char *normalmapfile)
     {
         Texture *normalmaptex = textureload(makerelpath(MDL::dir.c_str(), normalmapfile), 0, true, false);
-        LOOP_SKINS(meshname, s, s.normalmap = normalmaptex);
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).normalmap = normalmaptex;
+        }
     }
 
     static void setdecal(char *meshname, char *decal)
     {
-        LOOP_SKINS(meshname, s,
-            s.decal = textureload(makerelpath(MDL::dir.c_str(), decal), 0, true, false);
-        );
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).decal = textureload(makerelpath(MDL::dir.c_str(), decal), 0, true, false);
+        }
     }
 
     static void setfullbright(char *meshname, float *fullbright)
     {
-        LOOP_SKINS(meshname, s, s.fullbright = *fullbright);
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).fullbright = *fullbright;
+        }
     }
 
     static void setshader(char *meshname, char *shader)
     {
-        LOOP_SKINS(meshname, s, s.shader = lookupshaderbyname(shader));
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).shader = lookupshaderbyname(shader);
+        }
     }
 
     static void setscroll(char *meshname, float *scrollu, float *scrollv)
     {
-        LOOP_SKINS(meshname, s, { s.scrollu = *scrollu; s.scrollv = *scrollv; });
+        auto skinlist = getskins(meshname);
+        for(auto s : skinlist)
+        {
+            (*s).scrollu = *scrollu;
+            (*s).scrollv = *scrollv;
+        }
     }
 
     static void setnoclip(char *meshname, int *noclip)
@@ -1107,9 +1143,6 @@ struct modelcommands
             }
         }
     }
-
-#undef LOOP_SKINS
-//==============================================================================
 
     static void setlink(int *parent, int *child, char *tagname, float *x, float *y, float *z)
     {
