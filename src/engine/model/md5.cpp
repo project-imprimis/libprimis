@@ -228,6 +228,11 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 }
             }
             dualquat *frame = &animbones[tmp*skel->numbones];
+            if(basejoints.size() != hierarchy.size())
+            {
+                conoutf("Invalid model data: hierarchy (%lu) and baseframe (%lu) size mismatch", hierarchy.size(), basejoints.size());
+                return nullptr;
+            }
             for(uint i = 0; i < basejoints.size(); i++)
             {
                 const md5hierarchy &h = hierarchy[i];
