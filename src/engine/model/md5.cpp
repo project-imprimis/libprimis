@@ -108,6 +108,8 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     {
         return nullptr;
     }
+    //hierarchy, basejoints vectors are to have correlating indices with
+    // skel->bones, this->adjustments, this->frame, skel->framebones
     std::vector<md5hierarchy> hierarchy;
     std::vector<md5joint> basejoints;
     int animdatalen = 0,
@@ -236,7 +238,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             for(uint i = 0; i < basejoints.size(); i++)
             {
                 const md5hierarchy &h = hierarchy[i];
-                md5joint j = basejoints[i];
+                md5joint j = basejoints[i]; //intentionally getting by value to modify temp copy
                 if(h.start < animdatalen && h.flags)
                 {
                     float *jdata = &animdata[h.start];
