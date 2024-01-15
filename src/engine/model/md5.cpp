@@ -40,6 +40,8 @@
 
 #include "md5.h"
 
+static constexpr int md5version = 10;
+
 skelcommands<md5> md5::md5commands;
 
 md5::md5(std::string name) : skelloader(name) {}
@@ -124,7 +126,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
         int tmp;
         if(std::sscanf(buf, " MD5Version %d", &tmp) == 1)
         {
-            if(tmp != 10)
+            if(tmp != md5version)
             {
                 delete f; //bail out if md5version is not what we want
                 return nullptr;
