@@ -116,7 +116,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     dualquat *animbones = nullptr;
     char buf[512]; //presumably lines over 512 char long will break this loader
     //for each line in the opened file
-    skelanimspec * sas;
+    skelanimspec *sas = nullptr;
     while(f->getline(buf, sizeof(buf)))
     {
         int tmp;
