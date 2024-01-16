@@ -35,7 +35,6 @@
 #include "model.h"
 #include "ragdoll.h"
 #include "animmodel.h"
-#include "vertmodel.h"
 #include "skelmodel.h"
 
 #include "md5.h"

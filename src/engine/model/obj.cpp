@@ -32,7 +32,6 @@
 #include "ragdoll.h"
 #include "animmodel.h"
 #include "vertmodel.h"
-#include "skelmodel.h"
 
 #include "obj.h"
 
