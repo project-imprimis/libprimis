@@ -74,7 +74,7 @@ bool md5::loaddefaultparts()
         --fname;
     } while(fname >= modelname() && *fname!='/' && *fname!='\\');
     fname++;
-    std::string meshname = "media/model/";
+    std::string meshname = modelpath;
     meshname.append(modelname()).append("/").append(fname).append(".md5mesh");
     mdl.meshes = sharemeshes(path(meshname).c_str());
     if(!mdl.meshes)
@@ -83,7 +83,7 @@ bool md5::loaddefaultparts()
     }
     mdl.initanimparts();
     mdl.initskins();
-    std::string animname = "media/model/";
+    std::string animname = modelpath;
     animname.append(modelname()).append("/").append(fname).append(".md5anim");
     static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname).c_str());
     return true;
