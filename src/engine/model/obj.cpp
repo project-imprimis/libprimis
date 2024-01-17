@@ -309,11 +309,11 @@ bool obj::loaddefaultparts()
 {
     part &mdl = addpart();
     std::string pname = parentdir(modelname().c_str());
-    DEF_FORMAT_STRING(name1, "media/model/%s/tris.obj", modelname().c_str());
+    DEF_FORMAT_STRING(name1, "%s%s/tris.obj", modelpath.c_str(), modelname().c_str());
     mdl.meshes = sharemeshes(path(name1));
     if(!mdl.meshes)
     {
-        DEF_FORMAT_STRING(name2, "media/model/%s/tris.obj", pname.c_str());    // try obj in parent folder (vert sharing)
+        DEF_FORMAT_STRING(name2, "%s%s/tris.obj", modelpath.c_str(), pname.c_str());    // try obj in parent folder (vert sharing)
         mdl.meshes = sharemeshes(path(name2));
         if(!mdl.meshes)
         {
