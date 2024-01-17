@@ -269,8 +269,9 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         if(msg)
         {
-            DEF_FORMAT_STRING(filename, "media/model/%s", name);
-            renderprogress(loadprogress, filename);
+            std::string filename;
+            filename.append(modelpath).append(name);
+            renderprogress(loadprogress, filename.c_str());
         }
         for(model *(__cdecl *i)(const std::string &) : loaders)
         {
