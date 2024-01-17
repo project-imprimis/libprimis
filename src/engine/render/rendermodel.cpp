@@ -1115,16 +1115,16 @@ void findanimscmd(char *name)
 
 void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks) // model skin sharing
 {
-    //goes and attempts a textureload for png, jpg four times using the cascading if statements
-    static auto tryload = [] (Texture *tex, std::string name, const std::string &mdir)
+    //goes and attempts a textureload for png, jpg four times using the cascading if statements, first for default then for alt directory
+    static auto tryload = [] (Texture *tex, std::string name, const std::string &mdir, const std::string &maltdir) -> bool
     {
         if((tex = textureload(makerelpath(mdir.c_str(), name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
         {
             if((tex = textureload(makerelpath(mdir.c_str(), name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
             {
-                if((tex = textureload(makerelpath(mdir.c_str(), name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                if((tex = textureload(makerelpath(maltdir.c_str(), name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
                 {
-                    if((tex = textureload(makerelpath(mdir.c_str(), name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                    if((tex = textureload(makerelpath(maltdir.c_str(), name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
                     {
                         return true;
                     }
@@ -1134,14 +1134,16 @@ void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin,
         return false;
     };
 
-    std::string mdir;
+    std::string mdir,
+                maltdir;
     mdir.append(modelpath).append(dir);
+    mdir.append(modelpath).append(altdir);
     masks = notexture;
-    if(tryload(skin, "skin", mdir))
+    if(tryload(skin, "skin", mdir, maltdir))
     {
         return;
     }
-    if(tryload(masks, "masks", mdir))
+    if(tryload(masks, "masks", mdir, maltdir))
     {
         return;
     }
