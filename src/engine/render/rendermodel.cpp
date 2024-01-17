@@ -512,9 +512,8 @@ static int shadowmaskmodel(const vec &center, float radius)
 
 void shadowmaskbatchedmodels(bool dynshadow)
 {
-    for(uint i = 0; i < batchedmodels.size(); i++)
+    for(batchedmodel &b : batchedmodels)
     {
-        batchedmodel &b = batchedmodels[i];
         if(b.flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
         {
             break;
@@ -526,25 +525,23 @@ void shadowmaskbatchedmodels(bool dynshadow)
 int batcheddynamicmodels()
 {
     int visible = 0;
-    for(uint i = 0; i < batchedmodels.size(); i++)
+    for(const batchedmodel &b : batchedmodels)
     {
-        batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
         {
             break;
         }
         visible |= b.visible;
     }
-    for(uint i = 0; i < batches.size(); i++)
+    for(const modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel) || !b.m->animated())
         {
             continue;
         }
         for(int j = b.batched; j >= 0;)
         {
-            batchedmodel &bm = batchedmodels[j];
+            const batchedmodel &bm = batchedmodels[j];
             j = bm.next;
             visible |= bm.visible;
         }
@@ -555,9 +552,8 @@ int batcheddynamicmodels()
 int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 {
     int vis = 0;
-    for(uint i = 0; i < batchedmodels.size(); i++)
+    for(const batchedmodel &b : batchedmodels)
     {
-        batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
         {
             break;
@@ -569,16 +565,15 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
             ++vis;
         }
     }
-    for(uint i = 0; i < batches.size(); i++)
+    for(const modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel) || !b.m->animated())
         {
             continue;
         }
         for(int j = b.batched; j >= 0;)
         {
-            batchedmodel &bm = batchedmodels[j];
+            const batchedmodel &bm = batchedmodels[j];
             j = bm.next;
             if(bm.visible&mask)
             {
@@ -593,9 +588,8 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 
 void rendershadowmodelbatches(bool dynmodel)
 {
-    for(uint i = 0; i < batches.size(); i++)
+    for(const modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(!b.m->shadow || (!dynmodel && (!(b.flags&Model_Mapmodel) || b.m->animated())))
         {
             continue;
@@ -603,7 +597,7 @@ void rendershadowmodelbatches(bool dynmodel)
         bool rendered = false;
         for(int j = b.batched; j >= 0;)
         {
-            batchedmodel &bm = batchedmodels[j];
+            const batchedmodel &bm = batchedmodels[j];
             j = bm.next;
             if(!(bm.visible&(1<<shadowside)))
             {
@@ -626,9 +620,8 @@ void rendershadowmodelbatches(bool dynmodel)
 void rendermapmodelbatches()
 {
     aamask::enable();
-    for(uint i = 0; i < batches.size(); i++)
+    for(const modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel))
         {
             continue;
@@ -637,7 +630,7 @@ void rendermapmodelbatches()
         aamask::set(b.m->animated());
         for(int j = b.batched; j >= 0;)
         {
-            batchedmodel &bm = batchedmodels[j];
+            const batchedmodel &bm = batchedmodels[j];
             renderbatchedmodel(b.m, bm);
             j = bm.next;
         }
@@ -653,9 +646,8 @@ void GBuffer::rendermodelbatches()
     tmodelinfo.mdltiles.fill(0);
 
     aamask::enable();
-    for(uint i = 0; i < batches.size(); i++)
+    for(const modelbatch &b : batches)
     {
-        modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
             continue;
