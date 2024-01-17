@@ -1116,15 +1116,15 @@ void findanimscmd(char *name)
 void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks) // model skin sharing
 {
     //goes and attempts a textureload for png, jpg four times using the cascading if statements
-    static auto tryload = [] (Texture *tex, std::string name, const char *mdir)
+    static auto tryload = [] (Texture *tex, std::string name, const std::string &mdir)
     {
-        if((tex = textureload(makerelpath(mdir, name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+        if((tex = textureload(makerelpath(mdir.c_str(), name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
         {
-            if((tex = textureload(makerelpath(mdir, name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+            if((tex = textureload(makerelpath(mdir.c_str(), name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
             {
-                if((tex = textureload(makerelpath(mdir, name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                if((tex = textureload(makerelpath(mdir.c_str(), name.append(".jpg").c_str(), nullptr, nullptr), 0, true, false))==notexture)
                 {
-                    if((tex = textureload(makerelpath(mdir, name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
+                    if((tex = textureload(makerelpath(mdir.c_str(), name.append(".png").c_str(), nullptr, nullptr), 0, true, false))==notexture)
                     {
                         return true;
                     }
@@ -1134,8 +1134,8 @@ void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin,
         return false;
     };
 
-    DEF_FORMAT_STRING(mdir, "media/model/%s", dir.c_str());
-    DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir.c_str());
+    std::string mdir;
+    mdir.append(modelpath).append(dir);
     masks = notexture;
     if(tryload(skin, "skin", mdir))
     {
