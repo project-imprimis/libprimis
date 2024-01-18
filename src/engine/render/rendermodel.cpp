@@ -69,7 +69,7 @@ std::vector<mapmodelinfo> mapmodels;
 static const char * const mmprefix = "mapmodel/";
 static const int mmprefixlen = std::strlen(mmprefix);
 
-void mapmodel(char *name)
+void mapmodel(const char *name)
 {
     mapmodelinfo mmi;
     if(name[0])
@@ -84,7 +84,7 @@ void mapmodel(char *name)
     mapmodels.push_back(mmi);
 }
 
-void mapmodelreset(int *n)
+void mapmodelreset(const int *n)
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
     {
@@ -98,7 +98,7 @@ const char *mapmodelname(int i)
     return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name.c_str() : nullptr;
 }
 
-void mapmodelnamecmd(int *index, int *prefix)
+void mapmodelnamecmd(const int *index, const int *prefix)
 {
     if(static_cast<int>(mapmodels.size()) > *index)
     {
@@ -106,7 +106,7 @@ void mapmodelnamecmd(int *index, int *prefix)
     }
 }
 
-void mapmodelloaded(int *index)
+void mapmodelloaded(const int *index)
 {
     intret(static_cast<int>(mapmodels.size()) > *index && mapmodels[*index].m ? 1 : 0);
 }
@@ -305,6 +305,7 @@ model *loadmodel(const char *name, int i, bool msg)
     return m;
 }
 
+//used in iengine.h
 void clear_models()
 {
     for(auto [k, i] : models)
