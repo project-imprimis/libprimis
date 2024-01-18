@@ -804,7 +804,7 @@ void Occluder::endmodelquery()
         aamask::set(!(b.flags&Model_Mapmodel) || b.m->animated());
         do
         {
-            batchedmodel &bm = batchedmodels[j];
+            const batchedmodel &bm = batchedmodels[j];
             renderbatchedmodel(b.m, bm);
             j = bm.next;
         } while(j >= modelquerymodels);
