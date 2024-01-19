@@ -869,10 +869,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdollskel::vert v;
-        v.pos = vec(*x, *y, *z);
-        v.radius = *radius > 0 ? *radius : 1;
-        ragdoll->verts.push_back(v);
+        ragdoll->verts.push_back({vec(*x, *y, *z), *radius > 0 ? *radius : 1});
     }
 
     /* ragdoll eye level: sets the ragdoll's eye point to the level passed
@@ -895,11 +892,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdollskel::tri t;
-        t.vert[0] = *v1;
-        t.vert[1] = *v2;
-        t.vert[2] = *v3;
-        ragdoll->tris.emplace_back(t);
+        ragdoll->tris.push_back({*v1, *v2, *v3});
     }
 
     static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
@@ -932,12 +925,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdollskel::distlimit d;
-        d.vert[0] = *v1;
-        d.vert[1] = *v2;
-        d.mindist = *mindist;
-        d.maxdist = std::max(*maxdist, *mindist);
-        ragdoll->distlimits.push_back(d);
+        ragdoll->distlimits.push_back({*v1, *v2, *mindist, std::max(*maxdist, *mindist)});
     }
 
     static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
@@ -947,13 +935,12 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdollskel::rotlimit r;
-        r.tri[0] = *t1;
-        r.tri[1] = *t2;
-        r.maxangle = *maxangle / RAD;
-        r.maxtrace = 1 + 2*std::cos(r.maxangle);
-        r.middle = matrix3(quat(*qx, *qy, *qz, *qw));
-        ragdoll->rotlimits.push_back(r);
+        float rmaxangle = *maxangle / RAD;
+        ragdoll->rotlimits.push_back({*t1,
+                                      *t2,
+                                      rmaxangle,
+                                      1 + 2*std::cos(rmaxangle),
+                                      matrix3(quat(*qx, *qy, *qz, *qw))});
     }
 
     static void rdanimjoints(int *on)
