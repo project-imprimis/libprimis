@@ -1181,12 +1181,7 @@ void animmodel::part::setanim(int animpart, int num, int frame, int range, float
     {
         anims[animpart] = new std::vector<animspec>[animnames.size()];
     }
-    anims[animpart][num].emplace_back();
-    animspec &spec = anims[animpart][num].back();
-    spec.frame = frame;
-    spec.range = range;
-    spec.speed = speed;
-    spec.priority = priority;
+    anims[animpart][num].push_back({frame, range, speed, priority});
 }
 
 bool animmodel::part::animated() const
