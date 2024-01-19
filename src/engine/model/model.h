@@ -72,10 +72,7 @@ class model
         std::string collidemodel;
         int collide, batch;
 
-        virtual ~model()
-        {
-        }
-
+        virtual ~model() = default;
         virtual void calcbb(vec &, vec &) const = 0;
         virtual void calctransform(matrix4x3 &) const = 0;
         virtual int intersect(int, int, int, const vec &, float, float, float, dynent *, modelattach *, float, const vec &, const vec &, float &) const = 0;
