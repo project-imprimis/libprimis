@@ -920,7 +920,7 @@ struct modelcommands
      *
      * @return vector of iterators corresponding to meshes with the given name
      */
-    static std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string meshname)
+    static std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string_view meshname)
     {
         std::vector<std::vector<animmodel::Mesh *>::iterator> meshlist;
         if(!MDL::loading || MDL::loading->parts.empty())
@@ -950,7 +950,7 @@ struct modelcommands
      *
      * @return vector of iterators corresponding to skins with the given name
      */
-    static std::vector<std::vector<animmodel::skin>::iterator> getskins(std::string meshname)
+    static std::vector<std::vector<animmodel::skin>::iterator> getskins(std::string_view meshname)
     {
         std::vector<std::vector<animmodel::skin>::iterator> skinlist;
         if(!MDL::loading || MDL::loading->parts.empty())
@@ -966,7 +966,7 @@ struct modelcommands
         for(uint i = 0; i < mdl.meshes->meshes.size(); i++)
         {
             auto &m = *(mdl.meshes->meshes[i]);
-            if(!std::strcmp(meshname.c_str(), "*") || (m.name && !std::strcmp(m.name, meshname.c_str())))
+            if(!std::strcmp(meshname.data(), "*") || (m.name && !std::strcmp(m.name, meshname.data())))
             {
                 std::vector<animmodel::skin>::iterator itr = mdl.skins.begin() + i;
                 skinlist.push_back(itr);
