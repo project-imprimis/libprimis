@@ -364,6 +364,7 @@ class animmodel : public model
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
                 virtual void preload() = 0;
 
+                std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string_view meshname);
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
@@ -932,14 +933,7 @@ struct modelcommands
         {
             return meshlist; //empty vector
         }
-        for(std::vector<animmodel::Mesh *>::iterator i = mdl.meshes->meshes.begin(); i != mdl.meshes->meshes.end(); ++i)
-        {
-            const animmodel::Mesh &tempmesh = **i;
-            if(!std::strcmp(meshname.c_str(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.c_str())))
-            {
-                meshlist.push_back(i);
-            }
-        }
+        meshlist = mdl.meshes->getmeshes(meshname);
         return meshlist;
     }
 

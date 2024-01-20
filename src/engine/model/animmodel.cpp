@@ -498,6 +498,20 @@ animmodel::meshgroup::~meshgroup()
     meshes.clear();
 }
 
+std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getmeshes(std::string_view meshname)
+{
+    std::vector<std::vector<animmodel::Mesh *>::iterator> meshlist;
+    for(std::vector<animmodel::Mesh *>::iterator i = meshes.begin(); i != meshes.end(); ++i)
+    {
+        const animmodel::Mesh &tempmesh = **i;
+        if(!std::strcmp(meshname.data(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.data())))
+        {
+            meshlist.push_back(i);
+        }
+    }
+    return meshlist;
+}
+
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const
 {
     auto rendermeshes = getrendermeshes();
