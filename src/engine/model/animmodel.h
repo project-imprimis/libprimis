@@ -477,6 +477,9 @@ class animmodel : public model
 
         //ordinary methods
         ~animmodel();
+        animmodel(const animmodel& a) = delete;
+        animmodel &operator=(const animmodel &a) = delete;
+
         part &addpart();
         void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
