@@ -209,11 +209,11 @@ std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
     return std::nullopt;
 }
 
-int skelmodel::skeleton::findtag(const char *name) const
+int skelmodel::skeleton::findtag(std::string_view name) const
 {
     for(uint i = 0; i < tags.size(); i++)
     {
-        if(!std::strcmp(tags[i].name.c_str(), name))
+        if(!std::strcmp(tags[i].name.c_str(), name.data()))
         {
             return i;
         }
@@ -1670,7 +1670,7 @@ skelmodel::boneinfo::~boneinfo()
 
 // skelmeshgroup
 
-int skelmodel::skelmeshgroup::findtag(const char *name)
+int skelmodel::skelmeshgroup::findtag(std::string_view name)
 {
     return skel->findtag(name);
 }

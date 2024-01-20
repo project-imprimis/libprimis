@@ -187,7 +187,7 @@ class vertmodel : public animmodel
 
             virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
             bool addtag(const char *name, const matrix4x3 &matrix);
-            int findtag(const char *name) override final;
+            int findtag(std::string_view name) override final;
 
             int totalframes() const override final;
             void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;

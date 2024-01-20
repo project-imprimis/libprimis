@@ -198,11 +198,11 @@ void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, mat
 {
 }
 
-int vertmodel::vertmeshgroup::findtag(const char *name)
+int vertmodel::vertmeshgroup::findtag(std::string_view name)
 {
     for(int i = 0; i < numtags; ++i)
     {
-        if(!std::strcmp(tags[i].name, name))
+        if(!std::strcmp(tags[i].name, name.data()))
         {
             return i;
         }

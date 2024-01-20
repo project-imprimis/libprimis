@@ -211,7 +211,7 @@ struct skelmodel : animmodel
             const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
             skelanimspec &addskelanim(const char *name);
             std::optional<int> findbone(const std::string &name) const;
-            int findtag(const char *name) const;
+            int findtag(std::string_view name) const;
             bool addtag(const char *name, int bone, const matrix4x3 &matrix);
             void addpitchdep(int bone, int frame);
             int findpitchdep(int bone) const;
@@ -291,7 +291,7 @@ struct skelmodel : animmodel
 
             virtual ~skelmeshgroup();
 
-            int findtag(const char *name) override final;
+            int findtag(std::string_view) override final;
             void *animkey() override final;
             int totalframes() const override final;
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;

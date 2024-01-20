@@ -357,7 +357,7 @@ class animmodel : public model
                 virtual ~meshgroup();
 
                 virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const = 0;
-                virtual int findtag(const char *name) = 0;
+                virtual int findtag(std::string_view name) = 0;
                 virtual int totalframes() const = 0;
                 virtual void *animkey() = 0;
                 virtual void cleanup() = 0;
