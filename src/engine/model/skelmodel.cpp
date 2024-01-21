@@ -221,7 +221,7 @@ int skelmodel::skeleton::findtag(std::string_view name) const
     return -1;
 }
 
-bool skelmodel::skeleton::addtag(const char *name, int bone, const matrix4x3 &matrix)
+bool skelmodel::skeleton::addtag(std::string_view name, int bone, const matrix4x3 &matrix)
 {
     int idx = findtag(name);
     if(idx >= 0)

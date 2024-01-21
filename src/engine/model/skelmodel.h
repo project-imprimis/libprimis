@@ -212,7 +212,7 @@ struct skelmodel : animmodel
             skelanimspec &addskelanim(const char *name);
             std::optional<int> findbone(const std::string &name) const;
             int findtag(std::string_view name) const;
-            bool addtag(const char *name, int bone, const matrix4x3 &matrix);
+            bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
             void addpitchdep(int bone, int frame);
             int findpitchdep(int bone) const;
             int findpitchcorrect(int bone) const;
