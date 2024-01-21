@@ -276,18 +276,18 @@ void skelmodel::skeleton::calcantipodes()
         }
         if(i + 1 == schedule.size())
         {
-            int conflict = INT_MAX;
+            std::optional<int> conflict = std::nullopt;
             for(int j = 0; j < numbones; ++j)
             {
                 if(bones[j].group < numbones && bones[j].scheduled < 0)
                 {
-                    conflict = std::min(conflict, std::abs(bones[j].group));
+                    conflict = std::min(conflict.value(), std::abs(bones[j].group));
                 }
             }
-            if(conflict < numbones)
+            if(conflict)
             {
-                bones[conflict].scheduled = schedule.size();
-                schedule.push_back(conflict);
+                bones[conflict.value()].scheduled = schedule.size();
+                schedule.push_back(conflict.value());
             }
         }
     }
