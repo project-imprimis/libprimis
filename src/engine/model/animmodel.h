@@ -364,7 +364,17 @@ class animmodel : public model
                 virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) = 0;
                 virtual void preload() = 0;
 
+                /**
+                 * Returns a list of Mesh iterators corresponding to a given name
+                 * The iterators may be invalidated by other method calls.
+                 */
                 std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string_view meshname);
+                /**
+                 * Returns a list of indices corresponding to locations in animmodel::part::skins.
+                 * These indices are invalidated if animmodel::skins is modified after calling.
+                 */
+                std::vector<size_t> getskins(std::string_view meshname);
+
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
@@ -963,14 +973,10 @@ struct modelcommands
         {
             return skinlist;
         }
-        for(uint i = 0; i < mdl.meshes->meshes.size(); i++)
+        std::vector<size_t> skinindices = mdl.meshes->getskins(meshname);
+        for(size_t i : skinindices)
         {
-            auto &m = *(mdl.meshes->meshes[i]);
-            if(!std::strcmp(meshname.data(), "*") || (m.name && !std::strcmp(m.name, meshname.data())))
-            {
-                std::vector<animmodel::skin>::iterator itr = mdl.skins.begin() + i;
-                skinlist.push_back(itr);
-            }
+            skinlist.push_back(mdl.skins.begin() + i);
         }
         return skinlist;
     }

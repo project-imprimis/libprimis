@@ -512,6 +512,20 @@ std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getm
     return meshlist;
 }
 
+std::vector<size_t> animmodel::meshgroup::getskins(std::string_view meshname)
+{
+    std::vector<size_t> skinlist;
+    for(uint i = 0; i < meshes.size(); i++)
+    {
+        auto &m = *(meshes[i]);
+        if(!std::strcmp(meshname.data(), "*") || (m.name && !std::strcmp(m.name, meshname.data())))
+        {
+            skinlist.push_back(i);
+        }
+    }
+    return skinlist;
+}
+
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const
 {
     auto rendermeshes = getrendermeshes();
