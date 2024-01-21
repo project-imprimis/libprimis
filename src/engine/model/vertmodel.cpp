@@ -210,7 +210,7 @@ int vertmodel::vertmeshgroup::findtag(std::string_view name)
     return -1;
 }
 
-bool vertmodel::vertmeshgroup::addtag(const char *name, const matrix4x3 &matrix)
+bool vertmodel::vertmeshgroup::addtag(std::string_view name, const matrix4x3 &matrix)
 {
     int idx = findtag(name);
     if(idx >= 0)
@@ -238,7 +238,7 @@ bool vertmodel::vertmeshgroup::addtag(const char *name, const matrix4x3 &matrix)
                 {
                     std::swap(dst[j].name, src[j].name);
                 }
-                dst[numtags].name = newstring(name);
+                dst[numtags].name = newstring(name.data());
             }
             for(int j = 0; j < numtags; ++j)
             {
