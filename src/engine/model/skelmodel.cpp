@@ -237,7 +237,7 @@ bool skelmodel::skeleton::addtag(std::string_view name, int bone, const matrix4x
     else
     {
         tags.emplace_back();
-        tag & t = tags.back();
+        tag &t = tags.back();
         t.name.append(name);
         t.bone = bone;
         t.matrix = matrix;
