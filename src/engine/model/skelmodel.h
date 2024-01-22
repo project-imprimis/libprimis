@@ -208,7 +208,7 @@ struct skelmodel : animmodel
             skeleton(skelmeshgroup * const group);
             ~skeleton();
 
-            const skelanimspec *findskelanim(const char *name, char sep = '\0') const;
+            const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
             skelanimspec &addskelanim(const char *name);
             std::optional<int> findbone(const std::string &name) const;
             int findtag(std::string_view name) const;
