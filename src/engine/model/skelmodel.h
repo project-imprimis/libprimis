@@ -308,7 +308,7 @@ struct skelmodel : animmodel
                 }
             }
             //for vvertgw only, call parent bindbones function
-            void bindbones(vvertgw *vverts)
+            void bindbones(const vvertgw *vverts)
             {
                 meshgroup::bindbones(vverts->weights, vverts->bones, vertsize);
             }
