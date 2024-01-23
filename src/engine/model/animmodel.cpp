@@ -512,12 +512,12 @@ std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getm
     return meshlist;
 }
 
-std::vector<size_t> animmodel::meshgroup::getskins(std::string_view meshname)
+std::vector<size_t> animmodel::meshgroup::getskins(std::string_view meshname) const
 {
     std::vector<size_t> skinlist;
     for(uint i = 0; i < meshes.size(); i++)
     {
-        auto &m = *(meshes[i]);
+        const animmodel::Mesh &m = *(meshes[i]);
         if(!std::strcmp(meshname.data(), "*") || (m.name && !std::strcmp(m.name, meshname.data())))
         {
             skinlist.push_back(i);

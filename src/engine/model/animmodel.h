@@ -373,7 +373,7 @@ class animmodel : public model
                  * Returns a list of indices corresponding to locations in animmodel::part::skins.
                  * These indices are invalidated if animmodel::skins is modified after calling.
                  */
-                std::vector<size_t> getskins(std::string_view meshname);
+                std::vector<size_t> getskins(std::string_view meshname) const;
 
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
