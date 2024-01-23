@@ -627,7 +627,7 @@ void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec4<half> *v, int 
     bindpos(ebuf, vbuf, v, stride, GL_HALF_FLOAT, 4);
 }
 
-void animmodel::meshgroup::bindtc(void *v, int stride)
+void animmodel::meshgroup::bindtc(const void *v, int stride)
 {
     if(!enabletc)
     {
@@ -641,7 +641,7 @@ void animmodel::meshgroup::bindtc(void *v, int stride)
     }
 }
 
-void animmodel::meshgroup::bindtangents(void *v, int stride)
+void animmodel::meshgroup::bindtangents(const void *v, int stride)
 {
     if(!enabletangents)
     {
@@ -655,7 +655,7 @@ void animmodel::meshgroup::bindtangents(void *v, int stride)
     }
 }
 
-void animmodel::meshgroup::bindbones(void *wv, void *bv, int stride)
+void animmodel::meshgroup::bindbones(const void *wv, const void *bv, int stride)
 {
     if(!enablebones)
     {

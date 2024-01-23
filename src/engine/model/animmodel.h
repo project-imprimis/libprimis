@@ -415,9 +415,9 @@ class animmodel : public model
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec4<half> *v, int stride);
-                void bindtc(void *v, int stride);
-                void bindtangents(void *v, int stride);
-                void bindbones(void *wv, void *bv, int stride);
+                void bindtc(const void *v, int stride);
+                void bindtangents(const void *v, int stride);
+                void bindbones(const void *wv, const void *bv, int stride);
             //no private-able members
         };
 
