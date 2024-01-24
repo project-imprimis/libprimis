@@ -300,7 +300,7 @@ struct skelmodel : animmodel
 
             //for vvert, vvertg (vvertgw see below function), disable bones if active
             template<class T>
-            void bindbones(T *vverts)
+            void bindbones(T *)
             {
                 if(enablebones)
                 {
