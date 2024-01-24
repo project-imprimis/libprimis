@@ -298,7 +298,8 @@ struct skelmodel : animmodel
             void preload() override final;
             void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
 
-            //for vvert, vvertg (vvertgw see below function), disable bones if active
+            //for vvert, vvertg and vvertgw (also for vvertgw see below function),
+            //disable bones if active
             template<class T>
             void bindbones(T *)
             {
@@ -307,11 +308,13 @@ struct skelmodel : animmodel
                     disablebones();
                 }
             }
-            //for vvertgw only, call parent bindbones function
-            void bindbones(const vvertgw *vverts)
-            {
-                meshgroup::bindbones(vverts->weights, vverts->bones, vertsize);
-            }
+
+            /* this function is only called if `bindbones(vvertgw *)` is used to call it;
+             * if you call bindbones<vvertgw>(), that will call the above template
+             * (this function can be called if no <> specifier is provided, because
+             * of partial ordering rules -- see C++20 N4849 13.10.2.4)
+             */
+            void bindbones(const vvertgw *vverts);
 
             template<class T>
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
