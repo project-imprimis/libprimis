@@ -1685,7 +1685,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return std::max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc)
 {
     if(!skel->numframes)
     {

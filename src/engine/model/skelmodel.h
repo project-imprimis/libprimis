@@ -314,7 +314,7 @@ struct skelmodel : animmodel
             }
 
             template<class T>
-            void bindvbo(const AnimState *as, part *p, const vbocacheentry &vc)
+            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
             {
                 T *vverts = nullptr;
                 bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -344,7 +344,7 @@ struct skelmodel : animmodel
 
             void makeskeleton();
             void genvbo(vbocacheentry &vc);
-            void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, const skelcacheentry *sc = nullptr);
+            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
             int addblendcombo(const blendcombo &c);
             void sortblendcombos();
             int remapblend(int blend);
