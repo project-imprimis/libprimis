@@ -447,6 +447,8 @@ class animmodel : public model
 
                 part(animmodel *model, int index = 0);
                 virtual ~part();
+                part(const part& a) = delete;
+                part &operator=(const part &a) = delete;
 
                 void cleanup();
                 void disablepitch();
