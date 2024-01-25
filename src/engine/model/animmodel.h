@@ -412,9 +412,9 @@ class animmodel : public model
 
                 std::string name;
 
-                void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
-                void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
-                void bindpos(GLuint ebuf, GLuint vbuf, vec4<half> *v, int stride);
+                void bindpos(GLuint ebuf, GLuint vbuf, const void *v, int stride, int type, int size);
+                void bindpos(GLuint ebuf, GLuint vbuf, const vec *v, int stride);
+                void bindpos(GLuint ebuf, GLuint vbuf, const vec4<half> *v, int stride);
                 void bindtc(const void *v, int stride);
                 void bindtangents(const void *v, int stride);
                 void bindbones(const void *wv, const void *bv, int stride);

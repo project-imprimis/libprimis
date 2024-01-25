@@ -599,7 +599,7 @@ std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getr
     return rendermeshes;
 }
 
-void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, const void *v, int stride, int type, int size)
 {
     if(lastebuf!=ebuf)
     {
@@ -617,12 +617,12 @@ void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride
         lastvbuf = vbuf;
     }
 }
-void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride)
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, const vec *v, int stride)
 {
     bindpos(ebuf, vbuf, v, stride, GL_FLOAT, 3);
 }
 
-void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec4<half> *v, int stride)
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, const vec4<half> *v, int stride)
 {
     bindpos(ebuf, vbuf, v, stride, GL_HALF_FLOAT, 4);
 }
