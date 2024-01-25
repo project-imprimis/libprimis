@@ -300,8 +300,9 @@ struct skelmodel : animmodel
 
             //for vvert, vvertg and vvertgw (also for vvertgw see below function),
             //disable bones if active
+            //must have same const-qualification to properly interact with bindbones() below
             template<class T>
-            void bindbones(T *)
+            void bindbones(const T *)
             {
                 if(enablebones)
                 {
