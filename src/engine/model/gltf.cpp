@@ -91,6 +91,10 @@ gltf::gltfmeshgroup::gltfmeshgroup()
 
 bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
 {
+    if(!fileexists(filename, "w"))
+    {
+        return false;
+    }
     GLTFModelInfo mi(filename);
     
     gltfmesh *m = new gltfmesh;
