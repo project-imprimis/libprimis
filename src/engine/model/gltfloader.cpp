@@ -13,6 +13,8 @@
 //for GL types (GL_FLOAT, GL_UNSIGNED_INT, etc.)
 #include <GL/gl.h>
 
+typedef unsigned int uint;
+
 //populates the object vectors with the data in the gltf file
 GLTFModelInfo::GLTFModelInfo(std::string_view path)
 {
