@@ -22,12 +22,26 @@
 #include <cstdint>
 
 typedef unsigned int uint;
+typedef unsigned short ushort;
 
 #include "gltfloader.h"
 
 //for GL types (GL_FLOAT, GL_UNSIGNED_INT, etc.)
 #include <GL/gl.h>
 
+//these values should be loaded by gl.h, fallback if not defined
+#ifndef GL_UNSIGNED_INT
+    #define GL_UNSIGNED_INT 5125
+#endif
+#ifndef GL_UNSIGNED_SHORT
+    #define GL_UNSIGNED_SHORT 5123
+#endif
+#ifndef GL_UNSIGNED_BYTE
+    #define GL_UNSIGNED_SHORT 5121
+#endif
+#ifndef GL_FLOAT
+    #define GL_FLOAT 5126
+#endif
 
 //populates the object vectors with the data in the gltf file
 GLTFModelInfo::GLTFModelInfo(std::string_view path)
