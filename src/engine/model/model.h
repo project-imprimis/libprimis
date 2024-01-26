@@ -21,45 +21,50 @@ enum
  *
  * model class hierarchy (all are objects except bottom gvars)
  *
- *  /-------\
- *  | model |
- *  \-------/
- *      |
- *      v
- *  /-----------\
- *  | animmodel |
- *  \-----------/
- *      |     \__________
- *      v                \
- *  /-----------\         v
- *  | skelmodel |       /-----------\
- *  \-----------/       | vertmodel |
- *    |                 \-----------/
- *    |     /-------------\       |
- *    |     | modelloader |       |
- *    |     \-------------/       |
- *    |            |              |
- *     \__________/ \_____________/  <-- multiple inheritance via template class
- *          |                 |
- *          v                 v
- *      /------------\      /------------\
- *      | skelloader |      | vertloader |
- *      \------------/      \------------/
- *          |                           |
- *          v     /---------------\     v
- *     /-----\    | modelcommands |    /-----\
- *  -->| md5 |    \---------------/    | obj |<-
- *  |  \-----/        |        |       \-----/ |
- *  |   |             v        v            |  |
- *  |   | /--------------\ /--------------\ |  |
- *  |   | | skelcommands | | vertcommands | |  |
- *  |   | \--------------/ \--------------/ |  |
- *  |   |   |                           |   |  |
- *  |   v   v                           v   v  |
- * /-------------------\    /-------------------\
- * | skelcommands<md5> |    | vertcommands<obj> |
- * | md5::md5commands  |    | obj::objcommands  |
- * \---static field----/    \---static field----/
+ *      /-------\
+ *      | model |
+ *      \-------/
+ *          |
+ *          v
+ *      /-----------\
+ *      | animmodel |
+ *      \-----------/
+ *          |     \__________
+ *          v                \
+ *      /-----------\         v
+ *      | skelmodel |       /-----------\
+ *      \-----------/       | vertmodel |
+ *        |                 \-----------/
+ *        |     /-------------\       |
+ *        |     | modelloader |       |
+ *        |     \-------------/       |
+ *        |            |              |
+ *        \__________/ \_____________/  <-- multiple inheritance via template class
+ *              |                 |
+ *              v                 v
+ *          /------------\        /------------\
+ *          | skelloader |        | vertloader |
+ *          \------------/        \------------/
+ *     _______|    |                           |
+ *    |            v     /---------------\     v
+ * /----\     /-----\    | modelcommands |    /-----\
+ * |gltf|  -->| md5 |    \---------------/    | obj |<-
+ * \----/  |  \-----/        |        |       \-----/ |
+ *  ^ |    |   |             v        v            |  |
+ *  | |    |   | /--------------\ /--------------\ |  |
+ *  | |    |   | | skelcommands | | vertcommands | |  |
+ *  | |    |   | \--------------/ \--------------/ |  |
+ *  | |    |   |   |           |               |   |  |
+ *  | |    |   v   v           |               v   v  |
+ *  | | /-------------------\  | /-------------------\
+ *  | | | skelcommands<md5> |  | | vertcommands<obj> |
+ *  | | | md5::md5commands  |  | | obj::objcommands  |
+ *  | | \---static field----/  | \---static field----/
+ *  | v                       /
+ *  /--------------------\   /
+ *  | skelcommands<gltf> |<-/
+ *  | gltf::gltfcommands |
+ *  \----static field----/
  */
 class model
 {
