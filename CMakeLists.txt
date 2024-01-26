@@ -32,6 +32,10 @@ add_library(primis SHARED
         src/engine/interface/ui.h
         src/engine/model/animmodel.cpp
         src/engine/model/animmodel.h
+        src/engine/model/gltf.cpp
+        src/engine/model/gltf.h
+        src/engine/model/gltfloader.cpp
+        src/engine/model/gltfloader.h
         src/engine/model/md5.cpp
         src/engine/model/md5.h
         src/engine/model/model.h

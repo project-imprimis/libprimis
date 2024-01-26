@@ -5,6 +5,7 @@ enum
 {
     MDL_MD5 = 0,
     MDL_OBJ,
+    MDL_GLTF,
     MDL_NumMDLTypes
 };
 

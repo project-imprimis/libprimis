@@ -62,6 +62,7 @@ model *loadmapmodel(int n)
 //need the above macros & fxns inited before these headers will load properly
 #include "model/md5.h"
 #include "model/obj.h"
+#include "model/gltf.h"
 
 // mapmodels
 
@@ -236,10 +237,12 @@ model *loadmodel(const char *name, int i, bool msg)
 {
     model *(__cdecl *md5loader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new md5(filename); };
     model *(__cdecl *objloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new obj(filename); };
+    model *(__cdecl *gltfloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new gltf(filename); };
 
     std::vector<model *(__cdecl *)(const std::string &)> loaders;
     loaders.push_back(md5loader);
     loaders.push_back(objloader);
+    loaders.push_back(gltfloader);
     std::unordered_set<std::string> failedmodels;
 
     if(!name)

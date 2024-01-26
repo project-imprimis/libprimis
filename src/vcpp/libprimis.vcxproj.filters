@@ -28,6 +28,8 @@
     <ClCompile Include="..\engine\interface\sound.cpp" />
     <ClCompile Include="..\engine\interface\ui.cpp" />
     <ClCompile Include="..\engine\model\animmodel.cpp" />
+    <ClCompile Include="..\engine\model\gltf.cpp" />
+    <ClCompile Include="..\engine\model\gltfloader.cpp" />
     <ClCompile Include="..\engine\model\md5.cpp" />
     <ClCompile Include="..\engine\model\obj.cpp" />
     <ClCompile Include="..\engine\model\ragdoll.cpp" />
@@ -90,6 +92,8 @@
     <ClInclude Include="..\engine\interface\textedit.h" />
     <ClInclude Include="..\engine\interface\ui.h" />
     <ClInclude Include="..\engine\model\animmodel.h" />
+    <ClInclude Include="..\engine\model\gltf.h" />
+    <ClInclude Include="..\engine\model\gltfloader.h" />
     <ClInclude Include="..\engine\model\md5.h" />
     <ClInclude Include="..\engine\model\model.h" />
     <ClInclude Include="..\engine\model\obj.h" />
