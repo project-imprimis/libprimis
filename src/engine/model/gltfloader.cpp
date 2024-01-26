@@ -10,12 +10,8 @@
 
 #include "gltfloader.h"
 
-#define GL_UNSIGNED_BYTE 5121
-#define GL_UNSIGNED_SHORT 5123
-#define GL_UNSIGNED_INT 5125
-#define GL_FLOAT 5126
-#define GL_DOUBLE 5130
-
+//for GL types (GL_FLOAT, GL_UNSIGNED_INT, etc.)
+#include <GL/gl.h>
 
 //populates the object vectors with the data in the gltf file
 GLTFModelInfo::GLTFModelInfo(std::string_view path)
