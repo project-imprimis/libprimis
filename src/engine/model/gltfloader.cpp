@@ -1,4 +1,17 @@
 
+/**
+ * @brief GLTF 2.0 loading functionality
+ *
+ * This file handles the loading of GLTF 2.0 files, converting them into data
+ * structures readable by the program.
+ *
+ * The various get() functions *generate* the output vectors of arrays on demand;
+ * they are not stored inside the object.
+ *
+ * This file, and gltfloader.h along with it, are explicitly designed not to rely
+ * on the dependencies of the rest of the engine. It should be possible to compile
+ * this file without the build system of the engine at large.
+ */
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -8,12 +21,13 @@
 #include <optional>
 #include <cstdint>
 
+typedef unsigned int uint;
+
 #include "gltfloader.h"
 
 //for GL types (GL_FLOAT, GL_UNSIGNED_INT, etc.)
 #include <GL/gl.h>
 
-typedef unsigned int uint;
 
 //populates the object vectors with the data in the gltf file
 GLTFModelInfo::GLTFModelInfo(std::string_view path)
@@ -311,7 +325,7 @@ void GLTFModelInfo::cleanstring(std::string &s)
             s.erase(i, 1);
             i--;
         }
-    } 
+    }
 }
 //return a list of strings corresponding to the named objects in the gltf file
 size_t GLTFModelInfo::findmeshes(std::string_view path)
