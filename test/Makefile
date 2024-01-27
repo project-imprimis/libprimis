@@ -1,33 +1,31 @@
+# test suite Makefile
+# assumes library is in ld library path
+# creates binary libprimis_testsuite, run with no arguments
+
 CXXFLAGS= -O0 -ffast-math -std=c++17 --coverage -Wall -fsigned-char -fno-exceptions
 
-INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags`
+CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include 
+CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW
 
-all: libprimis-testsuite
+#list of source code files to be compiled
+CLIENT_OBJS= \
+	main.o \
+	testcs.o \
+	testgltfloader.o \
+	testidents.o \
+	testocta.o \
+	testprops.o \
+	testshadowatlas.o \
+	testutils.o \
 
-libprimis-testsuite : main.o testutils.o testidents.o testcs.o testshadowatlas.o testprops.o testocta.o
-	g++ $(CXXFLAGS) $(INCLUDES) -o libprimis_testsuite main.o testutils.o testidents.o testcs.o testshadowatlas.o testprops.o testocta.o -Igame -Ienet/include `sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW
-
-
-main.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c main.cpp
-
-testutils.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testutils.cpp
-
-testidents.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testidents.cpp
-
-testcs.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testcs.cpp
-
-testshadowatlas.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testshadowatlas.cpp
-
-testprops.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testprops.cpp
-
-testocta.o :
-		g++ $(CXXFLAGS) $(INCLUDES) -c testocta.cpp
+#default: compiles the test executable and places it in the same directory as this file
+default: client
 
 clean:
-		rm -f main.o testutils.o testidents.o testcs.o testshadowatlas.o testocta.o libprimis_testsuite
+	-$(RM) -r $(CLIENT_OBJS)
+
+#compiles the objects
+$(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
+
+client: $(CLIENT_OBJS)
+	$(CXX) $(CXXFLAGS) -o libprimis_testsuite $(CLIENT_OBJS) $(CLIENT_LIBS)

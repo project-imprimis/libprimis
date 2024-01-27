@@ -6,8 +6,9 @@
 #include "testshadowatlas.h"
 #include "testprops.h"
 #include "testocta.h"
+#include "testgltfloader.h"
 
-int main(int argc, char **argv)
+int main()
 {
     testutils();
 
@@ -16,5 +17,6 @@ int main(int argc, char **argv)
     testpacknode();
     test_props();
     test_octa();
+    test_gltf();
     return EXIT_SUCCESS;
 }
