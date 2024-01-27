@@ -72,6 +72,10 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) 
     {
         if(m.name == name && m.positions)
         {
+            if(!m.positions) //bail out if optional is nullopt
+            {
+                return positions;
+            }
             const Accessor &a = accessors[m.positions.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -96,6 +100,10 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string name) co
     {
         if(m.name == name && m.normals)
         {
+            if(!m.normals) //bail out if optional is nullopt
+            {
+                return normals;
+            }
             const Accessor &a = accessors[m.normals.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -120,6 +128,10 @@ std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string name) 
     {
         if(m.name == name && m.texcoords)
         {
+            if(!m.texcoords) //bail out if optional is nullopt
+            {
+                return texcoords;
+            }
             const Accessor &a = accessors[m.texcoords.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -144,6 +156,10 @@ std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string name) cons
     {
         if(m.name == name && m.indices)
         {
+            if(!m.joints) //bail out if optional is nullopt
+            {
+                return joints;
+            }
             const Accessor &a = accessors[m.joints.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_UNSIGNED_BYTE)
@@ -173,6 +189,10 @@ std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string name) co
     {
         if(m.name == name && m.indices)
         {
+            if(!m.weights) //bail out if optional is nullopt
+            {
+                return weights;
+            }
             const Accessor &a = accessors[m.weights.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -197,6 +217,10 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
     {
         if(m.name == name && m.indices)
         {
+            if(!m.indices) //bail out if optional is nullopt
+            {
+                return indices;
+            }
             const Accessor &a = accessors[m.indices.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_UNSIGNED_SHORT)
@@ -403,7 +427,15 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
                 m.indices = indices;
             }
         }
-        std::printf("new mesh created: %s %u %u %u %u %u %u\n", m.name.c_str(), m.positions.value(), m.normals.value(), m.texcoords.value(), m.joints.value(), m.weights.value(), m.indices.value());
+        std::printf("new mesh created: %s %u %u %u %u %u %u\n",
+            m.name.c_str(),
+            m.positions ? m.positions.value() : -1,
+            m.normals ? m.normals.value() : -1,
+            m.texcoords ? m.texcoords.value() : -1,
+            m.joints ? m.joints.value() : -1,
+            m.weights ? m.weights.value() : -1,
+            m.indices ? m.indices.value() : -1
+        );
         meshes.push_back(m);
         i += block.size();
         numaccessors++;

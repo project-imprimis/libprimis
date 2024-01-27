@@ -294,6 +294,21 @@ void testindices()
     }
 }
 
+void testmissingskeletal()
+{
+    //this model has no weights/joints/anims
+    std::string modelname = "gltf/obj_cube.gltf";
+
+    GLTFModelInfo mi(modelname);
+    std::string meshname = mi.getmeshnames()[0];
+
+    std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
+    std::vector<std::array<uint, 4>> joints = mi.getjoints(meshname);
+
+    assert(weights.size() == 0);
+    assert(joints.size() == 0);
+}
+
 void test_gltf()
 {
     testmeshnames();
@@ -304,4 +319,5 @@ void test_gltf()
     testjoints();
     testweights();
     testindices();
+    testmissingskeletal();
 };
