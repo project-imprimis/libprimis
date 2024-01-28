@@ -144,10 +144,6 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
             m.cleanup();
         }
         sortblendcombos();
-        skel->bones = new boneinfo[1];
-        skel->bones->base = dualquat(quat(0,0,0,0), vec(1,0,0));
-        skel->bones->name = newstring("test");
-        skel->bones->parent = 0;
         return true;
     }
     catch(const std::ios_base::failure &e)
