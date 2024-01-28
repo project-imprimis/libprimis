@@ -309,6 +309,30 @@ void testmissingskeletal()
     assert(joints.size() == 0);
 }
 
+void testminified()
+{
+    std::printf("testing minified GLTF file loading\n");
+    std::string modelname1 = "gltf/obj_cube.gltf";
+    std::string modelname2 = "gltf/obj_cube_minified.gltf";
+
+    GLTFModelInfo mi1(modelname1);
+    GLTFModelInfo mi2(modelname2);
+
+    assert(mi1 == mi2);
+}
+
+void testtabulated()
+{
+    std::printf("testing tab-indented GLTF file loading\n");
+    std::string modelname1 = "gltf/obj_cube.gltf";
+    std::string modelname2 = "gltf/obj_cube_tabs.gltf";
+
+    GLTFModelInfo mi1(modelname1);
+    GLTFModelInfo mi2(modelname2);
+
+    assert(mi1 == mi2);
+}
+
 void test_gltf()
 {
     testmeshnames();
@@ -320,4 +344,6 @@ void test_gltf()
     testweights();
     testindices();
     testmissingskeletal();
+    testminified();
+    testtabulated();
 };

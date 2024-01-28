@@ -18,6 +18,9 @@ class GLTFModelInfo
         std::vector<std::array<float, 4>> getweights(std::string name) const;
         std::vector<std::array<uint, 3>> getindices(std::string name) const;
 
+        //two models are equal if their getters return the same (slow, requires loading data pointed to by file)
+        bool operator==(const GLTFModelInfo &m) const;
+
     private:
         struct Mesh
         {

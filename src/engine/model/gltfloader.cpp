@@ -243,6 +243,32 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
     return indices; //empty fallback
 }
 
+bool GLTFModelInfo::operator==(const GLTFModelInfo &m) const
+{
+    std::vector<std::string> names = getmeshnames();
+    std::vector<std::string> mnames = m.getmeshnames();
+    if(names != mnames)
+    {
+        return false;
+    }
+    for(std::string s : names)
+    {
+        if( !( getpositions(s) == m.getpositions(s)
+            && getnormals(s) == m.getnormals(s)
+            && gettexcoords(s) == m.gettexcoords(s)
+            && getjoints(s) == m.getjoints(s)
+            && getweights(s) == m.getweights(s)
+            && getindices(s) == m.getindices(s)))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+////////////////////////////////////////
+//private methods
+////////////////////////////////////////
 /* loadjsonfile: loads a (gltf) json file to a std::vector
  *
  * Loads a JSON file and creates a new line for each bracket level and entry.
@@ -277,7 +303,7 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
             }
             if(!stringliteral)
             {
-                if(line[i] == ' ')
+                if(line[i] == ' ' || line[i] == '\t')
                 {
                     line.erase(i, 1);
                     i--;
