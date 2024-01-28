@@ -46,6 +46,11 @@ typedef unsigned short ushort;
 //populates the object vectors with the data in the gltf file
 GLTFModelInfo::GLTFModelInfo(std::string_view path)
 {
+    std::ifstream infile;
+    infile.exceptions(std::ifstream::failbit);
+    infile.open(path.data());
+    std::vector<std::string> output;
+
     findmeshes(path);
     findaccessors(path);
     findbufferviews(path);
@@ -286,10 +291,10 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
     infile.open(name.data());
     std::vector<std::string> output;
 
-    if(!infile.is_open())
+    if(!infile.good())
     {
-      perror("Error opening file");
-      return output;//empty vector
+        perror("Error opening GLTF file");
+        return output;//empty vector
     }
     while(getline(infile, line))
     {

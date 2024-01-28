@@ -4,6 +4,7 @@
 #include <array>
 #include <optional>
 #include <cassert>
+#include <ios>
 
 typedef unsigned int uint;
 typedef unsigned short ushort;
@@ -333,6 +334,23 @@ void testtabulated()
     assert(mi1 == mi2);
 }
 
+void testinvalidfile()
+{
+    std::printf("testing exception throwing for invalid GLTF file path\n");
+    std::string modelname1 = "gltf/not_a_gltf.gltf";
+    bool exceptioncaught = false;
+    try
+    {
+        GLTFModelInfo mi1(modelname1);
+    }
+    catch(const std::ios_base::failure &e)
+    {
+        exceptioncaught = true;
+        std::printf("Exception thrown: %s\n", e.what());
+    }
+    assert(exceptioncaught);
+}
+
 void test_gltf()
 {
     testmeshnames();
@@ -346,4 +364,5 @@ void test_gltf()
     testmissingskeletal();
     testminified();
     testtabulated();
+    testinvalidfile();
 };
