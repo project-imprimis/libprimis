@@ -151,6 +151,11 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
         conoutf("model loading failed: caught %s\n", e.what());
         return false;
     }
+    catch(const std::logic_error &e)
+    {
+        conoutf("invalid model file contents: caught %s\n", e.what());
+        return false;
+    }
 }
 
 bool gltf::gltfmeshgroup::load(const char *meshfile, float smooth, part &p)

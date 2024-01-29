@@ -351,6 +351,40 @@ void testinvalidfile()
     assert(exceptioncaught);
 }
 
+void testbraceoverflow()
+{
+    std::printf("testing file with too many closing braces\n");
+    std::string modelname1 = "gltf/braces.gltf";
+    bool exceptioncaught = false;
+    try
+    {
+        GLTFModelInfo mi1(modelname1);
+    }
+    catch(const std::logic_error &e)
+    {
+        exceptioncaught = true;
+        std::printf("Exception thrown: %s\n", e.what());
+    }
+    assert(exceptioncaught);
+}
+
+void testbracketunderflow()
+{
+    std::printf("testing file with too few closing brackets\n");
+    std::string modelname1 = "gltf/brackets.gltf";
+    bool exceptioncaught = false;
+    try
+    {
+        GLTFModelInfo mi1(modelname1);
+    }
+    catch(const std::logic_error &e)
+    {
+        exceptioncaught = true;
+        std::printf("Exception thrown: %s\n", e.what());
+    }
+    assert(exceptioncaught);
+}
+
 void test_gltf()
 {
     testmeshnames();
@@ -365,4 +399,6 @@ void test_gltf()
     testminified();
     testtabulated();
     testinvalidfile();
+    testbraceoverflow();
+    testbracketunderflow();
 };

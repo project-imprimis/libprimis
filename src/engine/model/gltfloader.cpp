@@ -333,6 +333,10 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
     {
         if(wholefile[i] == ']' || wholefile[i] == '}')
         {
+            if(bracketdepth == 0)
+            {
+                throw std::logic_error("GLTF loader error: too many closing } or ]");
+            }
             pushstring(bracketdepth, output, wholefile, lastbreak, i);
             bracketdepth--;
             lastbreak = i;
@@ -360,6 +364,10 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
             lastbreak = i;
             i--;
         }
+    }
+    if(bracketdepth != 0)
+    {
+        throw std::logic_error("GLTF loader error: too few } or ]");
     }
 
     infile.close();

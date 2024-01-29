@@ -7,6 +7,7 @@ class GLTFModelInfo
     public:
         //populates the object vectors with the data in the gltf file
         //throws std::ios_base::failure if unable to load file
+        //throws std::logic_error if invalid bracketing
         GLTFModelInfo(std::string_view path);
         //return list of mesh names
         std::vector<std::string> getmeshnames() const;
