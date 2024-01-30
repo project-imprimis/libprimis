@@ -99,8 +99,10 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
         m->group = this;
         meshes.push_back(m);
         p.initskins(notexture, notexture, m->group->meshes.size());
+
         //get GLTF data from file/binary
         std::string meshname = mi.getmeshnames()[0];
+        m->name = newstring(meshname.c_str());
         std::vector<std::array<float, 3>> positions = mi.getpositions(meshname);
         std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
         std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);
