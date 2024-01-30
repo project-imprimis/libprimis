@@ -378,7 +378,7 @@ class animmodel : public model
                  * Returns a list of Mesh iterators corresponding to a given name
                  * The iterators may be invalidated by other method calls.
                  */
-                std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string_view meshname);
+                std::vector<std::vector<animmodel::Mesh *>::const_iterator> getmeshes(std::string_view meshname) const;
                 /**
                  * Returns a list of indices corresponding to locations in animmodel::part::skins.
                  * These indices are invalidated if animmodel::skins is modified after calling.
@@ -386,7 +386,7 @@ class animmodel : public model
                 std::vector<size_t> getskins(std::string_view meshname) const;
 
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
-                void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
                 bool hasframe(int i) const;
                 bool hasframes(int i, int n) const;
@@ -932,8 +932,6 @@ struct modelcommands
         MDL::dir.append(modelpath).append(name);
     }
 
-//======================================================= LOOP_MESHES LOOP_SKINS
-
     /**
      * @brief Returns an iterator vector of meshes with the given name
      *
@@ -947,9 +945,9 @@ struct modelcommands
      *
      * @return vector of iterators corresponding to meshes with the given name
      */
-    static std::vector<std::vector<animmodel::Mesh *>::iterator> getmeshes(std::string_view meshname)
+    static std::vector<std::vector<animmodel::Mesh *>::const_iterator> getmeshes(std::string_view meshname)
     {
-        std::vector<std::vector<animmodel::Mesh *>::iterator> meshlist;
+        std::vector<std::vector<animmodel::Mesh *>::const_iterator> meshlist;
         if(!MDL::loading || MDL::loading->parts.empty())
         {
             conoutf("not loading an %s", MDL::formatname());

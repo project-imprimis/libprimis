@@ -498,10 +498,10 @@ animmodel::meshgroup::~meshgroup()
     meshes.clear();
 }
 
-std::vector<std::vector<animmodel::Mesh *>::iterator> animmodel::meshgroup::getmeshes(std::string_view meshname)
+std::vector<std::vector<animmodel::Mesh *>::const_iterator> animmodel::meshgroup::getmeshes(std::string_view meshname) const
 {
-    std::vector<std::vector<animmodel::Mesh *>::iterator> meshlist;
-    for(std::vector<animmodel::Mesh *>::iterator i = meshes.begin(); i != meshes.end(); ++i)
+    std::vector<std::vector<animmodel::Mesh *>::const_iterator> meshlist;
+    for(std::vector<animmodel::Mesh *>::const_iterator i = meshes.begin(); i != meshes.end(); ++i)
     {
         const animmodel::Mesh &tempmesh = **i;
         if(!std::strcmp(meshname.data(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.data())))
@@ -535,7 +535,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) co
     }
 }
 
-void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t) const
 {
     for(uint i = 0; i < meshes.size(); i++)
     {
