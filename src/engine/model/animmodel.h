@@ -65,6 +65,9 @@ class animmodel : public model
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
+        //An object used to store texture data for a mesh, contained inside a `part` object.
+        //A `meshgroup` object is paired with a `skin` object to provide texture & geometry
+        //data for a mesh
         class skin final : public shaderparams
         {
             public:
@@ -115,6 +118,10 @@ class animmodel : public model
 
         class meshgroup;
 
+        //An object used to store a single geometry mesh inside a `meshgroup` object.
+        //This object is to be extended to contain the actual geometry of a type of
+        //model, such as `skelmesh` or `vertmesh`. In its base class form, the object
+        //contains no geometry data.
         class Mesh
         {
             public:
@@ -349,6 +356,9 @@ class animmodel : public model
                 };
         };
 
+        //A group of one or more meshes, which are used by a `part` to represent its contained geometry.
+        //A global (static field) map of meshgroups are kept to cache model geometry; the actual `part`'s
+        //refered mesh group object is kept as a pointer to a member of the static meshgroup map.
         class meshgroup
         {
             public:
@@ -423,6 +433,11 @@ class animmodel : public model
 
         static std::unordered_map<std::string, meshgroup *> meshgroups;
 
+        /* The `part` object is the highest level of organization in a model object.
+         * Each `part` is a logically separate part of an overall model, containing
+         * its own skin(s) (`skin` objects), mesh(es) (`meshgroup` objects), and
+         * model rendering parameters.
+         */
         class part
         {
             public:
