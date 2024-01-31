@@ -2,10 +2,17 @@
 # assumes library is in ld library path
 # creates binary libprimis_testsuite, run with no arguments
 
-CXXFLAGS= -O0 -ffast-math -std=c++17 --coverage -Wall -fsigned-char
+CXXFLAGS= -O0 -ffast-math --coverage -Wall -fsigned-char
 
 CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include 
 CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW
+
+# if you want to compile with c++20, use `make CPP_20=1`, else c++17
+ifeq (1,$(CPP_20))
+	CXXFLAGS += -std=c++20
+else
+	CXXFLAGS += -std=c++17
+endif
 
 #list of source code files to be compiled
 CLIENT_OBJS= \
