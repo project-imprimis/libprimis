@@ -1433,6 +1433,15 @@ skelmodel::skelmesh::skelmesh() : verts(nullptr), tris(nullptr), numverts(0), nu
 {
 }
 
+skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : Mesh(name),
+    verts(verts),
+    tris(tris),
+    numverts(numverts),
+    numtris(numtris),
+    maxweights(0)
+{
+}
+
 skelmodel::skelmesh::~skelmesh()
 {
     delete[] verts;

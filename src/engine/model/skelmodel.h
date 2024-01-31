@@ -131,6 +131,7 @@ struct skelmodel : animmodel
         GLuint minvert, maxvert;
 
         skelmesh();
+        skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
 
         virtual ~skelmesh();
 

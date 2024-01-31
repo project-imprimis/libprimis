@@ -95,14 +95,8 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
     {
         GLTFModelInfo mi(filename);
 
-        gltfmesh *m = new gltfmesh;
-        m->group = this;
-        meshes.push_back(m);
-        p.initskins(notexture, notexture, m->group->meshes.size());
-
         //get GLTF data from file/binary
         std::string meshname = mi.getmeshnames()[0];
-        m->name = newstring(meshname.c_str());
         std::vector<std::array<float, 3>> positions = mi.getpositions(meshname);
         std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
         std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);
@@ -110,33 +104,40 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
         std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
         std::vector<std::array<uint, 3>> indices = mi.getindices(meshname);
         //set skelmodel::vert and skelmodel::tris
+        vert *verts;
+        size_t numverts;
         if(positions.size() == normals.size() && normals.size() == texcoords.size())
         {
-            m->verts = new vert[positions.size()];
-            m->numverts = positions.size();
+            verts = new vert[positions.size()];
+            numverts = positions.size();
             for(size_t i = 0; i < positions.size(); ++i)
             {
-                m->verts[i].pos = vec(positions[i][0], positions[i][1], positions[i][2]);
-                m->verts[i].norm = vec(normals[i][0], normals[i][1], normals[i][2]);
-                m->verts[i].tc = vec2(texcoords[i][0], texcoords[i][1]);
+                verts[i].pos = vec(positions[i][0], positions[i][1], positions[i][2]);
+                verts[i].norm = vec(normals[i][0], normals[i][1], normals[i][2]);
+                verts[i].tc = vec2(texcoords[i][0], texcoords[i][1]);
                 blendcombo c;
                 c.addweight(0,0,0);
                 c.finalize(0);
-                m->verts[i].blend = addblendcombo(c);
+                verts[i].blend = addblendcombo(c);
             }
         }
         else
         {
-            conoutf("gltf sizes %lu %lu %lu", positions.size(), normals.size(), texcoords.size());
+            throw std::logic_error("index mismatch: positions/normals/texcoords different sizes");
         }
-        m->tris = new tri[indices.size()];
-        m->numtris = indices.size();
+        tri *tris = new tri[indices.size()];
+        size_t numtris = indices.size();
         for(size_t i = 0; i < indices.size(); ++i)
         {
-            m->tris[i].vert[0] = indices[i][0];
-            m->tris[i].vert[1] = indices[i][1];
-            m->tris[i].vert[2] = indices[i][2];
+            tris[i].vert[0] = indices[i][0];
+            tris[i].vert[1] = indices[i][1];
+            tris[i].vert[2] = indices[i][2];
         }
+        //if able to create the verts/tris arrays without throwing, create new gltfmesh
+        gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris);
+        m->group = this;
+        meshes.push_back(m);
+        p.initskins(notexture, notexture, m->group->meshes.size());
 
         for(uint i = 0; i < meshes.size(); i++)
         {
@@ -148,6 +149,7 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
         sortblendcombos();
         return true;
     }
+    //catch errors thrown by GLTFModelInfo
     catch(const std::ios_base::failure &e)
     {
         conoutf("model loading failed: caught %s\n", e.what());
@@ -171,7 +173,7 @@ bool gltf::gltfmeshgroup::load(const char *meshfile, float smooth, part &p)
     return true;
 }
 
-gltf::gltfmesh::gltfmesh()
+gltf::gltfmesh::gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : skelmesh(name, verts, numverts, tris, numtris)
 {
 }
 

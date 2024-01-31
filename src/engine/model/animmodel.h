@@ -161,6 +161,10 @@ class animmodel : public model
                 {
                 }
 
+                Mesh(std::string_view name) : group(nullptr), name(newstring(name.data())), cancollide(true), canrender(true), noclip(false)
+                {
+                }
+
                 template<class T>
                 static void smoothnorms(typename T::vert *verts, int numverts, const typename T::tri *tris, int numtris, float limit, bool areaweight)
                 {
