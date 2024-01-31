@@ -50,6 +50,7 @@ void testbounds()
 
 void testpositions()
 {
+    std::printf("testing GLTF file vertex positions loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
 
@@ -97,6 +98,7 @@ void testpositions()
 
 void testnormals()
 {
+    std::printf("testing GLTF file vertex normals loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
     std::string meshname = mi.getmeshnames()[0];
@@ -143,6 +145,7 @@ void testnormals()
 
 void testtexcoords()
 {
+    std::printf("testing GLTF file texture coordinates loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
     std::string meshname = mi.getmeshnames()[0];
@@ -177,6 +180,7 @@ void testtexcoords()
 
 void testjoints()
 {
+    std::printf("testing GLTF file joints data loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
     std::string meshname = mi.getmeshnames()[0];
@@ -209,6 +213,7 @@ void testjoints()
 
 void testweights()
 {
+    std::printf("testing GLTF file vertex weights loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
     std::string meshname = mi.getmeshnames()[0];
@@ -269,6 +274,7 @@ void testweights()
 
 void testindices()
 {
+    std::printf("testing GLTF file vertex index loading\n");
     std::string modelname = "gltf/box.gltf";
     GLTFModelInfo mi(modelname);
     std::string meshname = mi.getmeshnames()[0];
@@ -297,7 +303,7 @@ void testindices()
 
 void testmissingskeletal()
 {
-    //this model has no weights/joints/anims
+    std::printf("testing file with no skeletal or weights data\n");
     std::string modelname = "gltf/obj_cube.gltf";
 
     GLTFModelInfo mi(modelname);
@@ -353,7 +359,7 @@ void testinvalidfile()
 
 void testbraceoverflow()
 {
-    std::printf("testing file with too many closing braces\n");
+    std::printf("testing GLTF file with too many closing braces\n");
     std::string modelname1 = "gltf/braces.gltf";
     bool exceptioncaught = false;
     try
@@ -370,7 +376,7 @@ void testbraceoverflow()
 
 void testbracketunderflow()
 {
-    std::printf("testing file with too few closing brackets\n");
+    std::printf("testing GLTF file with too few closing brackets\n");
     std::string modelname1 = "gltf/brackets.gltf";
     bool exceptioncaught = false;
     try
