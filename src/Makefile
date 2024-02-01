@@ -11,7 +11,7 @@
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
 
-CXXFLAGS ?= -O3 -ffast-math -Wall -Wsuggest-override
+CXXFLAGS ?= -ffast-math -Wall -Wsuggest-override
 CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
 #-Ishared
 CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
@@ -25,7 +25,9 @@ PREFIX ?= /usr/local
 # if you want to compile with coverage flags, use `make -Csrc COVERAGE_BUILD=1`
 
 ifeq (1,$(COVERAGE_BUILD))
-	CXXFLAGS += --coverage -fno-inline -fno-inline-small-functions -fno-default-inline
+	CXXFLAGS += -O0 -fno-inline -fno-inline-small-functions -fno-default-inline -fprofile-arcs -ftest-coverage
+else
+	CXXFLAGS += -O3
 endif
 
 # if you want to compile with c++20, use `make -Csrc CPP_20=1`, else c++17
@@ -112,6 +114,7 @@ install: client emplace
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS)
+	-$(RM) -r engine/*/*.gcda engine/*/*.gcno shared/*.gcda shared/*.gcno
 
 #compiles the objects
 $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
@@ -120,7 +123,7 @@ $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
 #for gcc coverage checking
 ifeq (1,$(COVERAGE_BUILD))
 client: $(CLIENT_OBJS)
-	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS) -lgcov
+	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS) --coverage
 else
 client: $(CLIENT_OBJS)
 	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS)
