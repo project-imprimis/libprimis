@@ -91,6 +91,7 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) 
             else
             {
                 std::printf("invalid component type %u\n (want: %u)", a.componenttype, GL_FLOAT);
+                throw std::logic_error("invalid vertex position component type");
             }
             return positions;
         }
@@ -119,6 +120,7 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string name) co
             else
             {
                 std::printf("invalid component type %u\n (want: %u)", a.componenttype, GL_FLOAT);
+                throw std::logic_error("invalid vertex normal component type");
             }
             return normals;
         }
@@ -147,6 +149,7 @@ std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string name) 
             else
             {
                 std::printf("invalid component type %u\n (want: %u)", a.componenttype, GL_FLOAT);
+                throw std::logic_error("invalid vertex texture coordinate component type");
             }
             return texcoords;
         }
@@ -180,6 +183,7 @@ std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string name) cons
             else
             {
                 std::printf("invalid component type %u\n (want: %u %u)", a.componenttype, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT);
+                throw std::logic_error("invalid vertex joint component type");
             }
             return joints;
         }
@@ -208,6 +212,7 @@ std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string name) co
             else
             {
                 std::printf("invalid component type %u\n (want: %u)", a.componenttype, GL_FLOAT);
+                throw std::logic_error("invalid vertex weight component type");
             }
             return weights;
         }
@@ -241,6 +246,7 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
             else
             {
                 std::printf("invalid component type %u\n (want: %u %u)", a.componenttype, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT);
+                throw std::logic_error("invalid vertex index component type");
             }
             return indices;
         }
