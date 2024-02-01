@@ -2,10 +2,10 @@
 # assumes library is in ld library path
 # creates binary libprimis_testsuite, run with no arguments
 
-CXXFLAGS= -O0 -ffast-math --coverage -Wall -fsigned-char
+CXXFLAGS= -O0 -ffast-math -Wall -fsigned-char -ftest-coverage -fprofile-arcs
 
 CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include 
-CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW
+CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW -lgcov
 
 # if you want to compile with c++20, use `make CPP_20=1`, else c++17
 ifeq (1,$(CPP_20))
@@ -30,6 +30,7 @@ default: client
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS)
+	-$(RM) -r *.gcno *.gcda
 
 #compiles the objects
 $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
