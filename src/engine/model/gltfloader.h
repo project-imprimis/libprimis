@@ -9,7 +9,7 @@ class GLTFModelInfo
         //throws std::ios_base::failure if unable to load file
         //throws std::logic_error if invalid bracketing
         //throws std::logic_error if invalid geometry data type (e.g. float vertex indices)
-        GLTFModelInfo(std::string_view path);
+        GLTFModelInfo(std::string_view path, bool messages = false);
         //return list of mesh names
         std::vector<std::string> getmeshnames() const;
         //getter functions generate vectors of arrays of the appropriate type
@@ -147,6 +147,7 @@ class GLTFModelInfo
         uint findanimations(std::string_view path);
         std::vector<std::string> getblock(const std::vector<std::string> &file, uint line);
 
+        const bool messages;
         std::vector<Mesh> meshes;
         std::vector<Accessor> accessors;
         std::vector<BufferView> bufferviews;

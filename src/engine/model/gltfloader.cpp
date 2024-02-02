@@ -44,7 +44,7 @@ typedef unsigned short ushort;
 #endif
 
 //populates the object vectors with the data in the gltf file
-GLTFModelInfo::GLTFModelInfo(std::string_view path)
+GLTFModelInfo::GLTFModelInfo(std::string_view path, bool messages) : messages(messages)
 {
     std::ifstream infile;
     infile.exceptions(std::ifstream::failbit);
@@ -472,15 +472,18 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
                 m.indices = indices;
             }
         }
-        std::printf("new mesh created: %s %u %u %u %u %u %u\n",
-            m.name.c_str(),
-            m.positions ? m.positions.value() : -1,
-            m.normals ? m.normals.value() : -1,
-            m.texcoords ? m.texcoords.value() : -1,
-            m.joints ? m.joints.value() : -1,
-            m.weights ? m.weights.value() : -1,
-            m.indices ? m.indices.value() : -1
-        );
+        if(messages)
+        {
+            std::printf("new mesh created: %s %u %u %u %u %u %u\n",
+                m.name.c_str(),
+                m.positions ? m.positions.value() : -1,
+                m.normals ? m.normals.value() : -1,
+                m.texcoords ? m.texcoords.value() : -1,
+                m.joints ? m.joints.value() : -1,
+                m.weights ? m.weights.value() : -1,
+                m.indices ? m.indices.value() : -1
+            );
+        }
         meshes.push_back(m);
         i += block.size();
         numaccessors++;
@@ -526,7 +529,10 @@ size_t GLTFModelInfo::findaccessors(std::string_view path)
                 a.type = s.data();
             }
         }
-        std::printf("new accessor created: %lu %u %u %u %s\n", a.index, a.bufferview, a.componenttype, a.count, a.type.c_str());
+        if(messages)
+        {
+            std::printf("new accessor created: %lu %u %u %u %s\n", a.index, a.bufferview, a.componenttype, a.count, a.type.c_str());
+        }
         accessors.push_back(a);
         i += block.size();
         numaccessors++;
@@ -564,7 +570,10 @@ uint GLTFModelInfo::findbufferviews(std::string_view path)
                 std::sscanf( j.c_str(), " \"byteOffset\":%u", &b.byteoffset);
             }
         }
-        std::printf("new bufferview created: %lu %u %u %u\n", b.index, b.buffer, b.bytelength, b.byteoffset);
+        if(messages)
+        {
+            std::printf("new bufferview created: %lu %u %u %u\n", b.index, b.buffer, b.bytelength, b.byteoffset);
+        }
         bufferviews.push_back(b);
         i += block.size();
         numbufferviews++;
@@ -604,7 +613,10 @@ uint GLTFModelInfo::findbuffers(std::string_view path)
         std::ifstream binary(b.uri, std::ios::binary);
         std::vector<char> buffer(std::istreambuf_iterator<char>(binary), {});
         b.buf = buffer;
-        std::printf("new buffer created: %lu %u %s %lu\n", b.index, b.bytelength, b.uri.c_str(), buffer.size());
+        if(messages)
+        {
+            std::printf("new buffer created: %lu %u %s %lu\n", b.index, b.bytelength, b.uri.c_str(), buffer.size());
+        }
         buffers.push_back(b);
         i += block.size();
         numbuffers++;
@@ -667,7 +679,10 @@ uint GLTFModelInfo::findanimations(std::string_view path)
                             cleanstring(c.targetpath);
                         }
                     }
-                    std::printf("new channel (animation %lu) added: %lu %lu %s\n", animations.size(), c.sampler, c.targetnode, c.targetpath.c_str());
+                    if(messages)
+                    {
+                        std::printf("new channel (animation %lu) added: %lu %lu %s\n", animations.size(), c.sampler, c.targetnode, c.targetpath.c_str());
+                    }
                     a.channels.push_back(c);
                     k += channeldata.size();
                 }
@@ -702,13 +717,19 @@ uint GLTFModelInfo::findanimations(std::string_view path)
                             cleanstring(s.interpolation);
                         }
                     }
-                    std::printf("new sampler (animation %lu) added: %lu %lu %s %lu\n", animations.size(), s.index, s.input, s.interpolation.c_str(), s.output);
+                    if(messages)
+                    {
+                        std::printf("new sampler (animation %lu) added: %lu %lu %s %lu\n", animations.size(), s.index, s.input, s.interpolation.c_str(), s.output);
+                    }
                     a.samplers.push_back(s);
                     k += channeldata.size();
                 }
             }
         }
-        std::printf("new animation (index %lu) created: %s\n", animations.size(), a.name.c_str());
+        if(messages)
+        {
+            std::printf("new animation (index %lu) created: %s\n", animations.size(), a.name.c_str());
+        }
         animations.push_back(a);
         i += animationsblock.size();
         numanimations++;
