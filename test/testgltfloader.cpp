@@ -37,7 +37,7 @@ void testbounds()
     std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
     std::vector<std::array<uint, 3>> indices = mi.getindices(meshname);
 
-    std::printf("checking gltfloader data size: %lu positions %lu normals %lu texcoords %lu joints %lu weights %lu indices\n",
+    std::printf("checking GLTF data size: %lu positions %lu normals %lu texcoords %lu joints %lu weights %lu indices\n",
         positions.size(), normals.size(), texcoords.size(), joints.size(), weights.size(), indices.size());
 
     assert(positions.size() == 80);
@@ -303,7 +303,7 @@ void testindices()
 
 void testmissingskeletal()
 {
-    std::printf("testing file with no skeletal or weights data\n");
+    std::printf("testing GLTF file with no skeletal or weights data\n");
     std::string modelname = "gltf/obj_cube.gltf";
 
     GLTFModelInfo mi(modelname);
@@ -393,6 +393,12 @@ void testbracketunderflow()
 
 void test_gltf()
 {
+    std::printf(
+"===============================================================\n\
+testing GLTF file loader\n\
+===============================================================\n"
+    );
+
     testmeshnames();
     testbounds();
     testpositions();
