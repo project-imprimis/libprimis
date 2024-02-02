@@ -248,6 +248,17 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
                 std::printf("invalid component type %u\n (want: %u %u)", a.componenttype, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT);
                 throw std::logic_error("invalid vertex index component type");
             }
+            //check that all indices are <= size of that mesh's texture coordinate list
+            for(std::array<uint,3> i : indices)
+            {
+                for(size_t j = 0; j < 3; ++j)
+                {
+                    if(i[j] >= accessors[m.positions.value()].count)
+                    {
+                        throw std::logic_error("invalid texture index");
+                    }
+                }
+            }
             return indices;
         }
     }

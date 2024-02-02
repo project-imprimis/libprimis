@@ -391,6 +391,29 @@ void testbracketunderflow()
     assert(exceptioncaught);
 }
 
+
+//test object with vertex indices out of bounds of the vertex positions array
+void testvertexmismatch()
+{
+    std::printf("testing GLTF file with invalid vertex indices\n");
+    std::string modelname1 = "gltf/obj_cube_missing_vertex.gltf";
+    GLTFModelInfo mi1(modelname1);
+    std::string meshname = mi1.getmeshnames()[0];
+
+    bool exceptioncaught = false;
+    try
+    {
+        mi1.getindices(meshname);
+    }
+    catch(const std::logic_error &e)
+    {
+        exceptioncaught = true;
+        std::printf("Exception thrown: %s\n", e.what());
+    }
+    assert(exceptioncaught);
+}
+
+
 void test_gltf()
 {
     std::printf(
@@ -413,4 +436,5 @@ testing GLTF file loader\n\
     testinvalidfile();
     testbraceoverflow();
     testbracketunderflow();
+    testvertexmismatch();
 };
