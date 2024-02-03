@@ -7,6 +7,7 @@
 #include "testprops.h"
 #include "testocta.h"
 #include "testgltfloader.h"
+#include "testskel.h"
 
 int main()
 {
@@ -18,5 +19,6 @@ int main()
     test_props();
     test_octa();
     test_gltf();
+    test_skel();
     return EXIT_SUCCESS;
 }

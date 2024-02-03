@@ -2,7 +2,7 @@
 # assumes library is in ld library path
 # creates binary libprimis_testsuite, run with no arguments
 
-CXXFLAGS= -O0 -ffast-math -Wall -fsigned-char -ftest-coverage -fprofile-arcs
+CXXFLAGS= -O0 -ffast-math -Wall -fsigned-char -ftest-coverage -fprofile-arcs -fno-rtti
 
 CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include 
 CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW -lgcov
@@ -22,6 +22,7 @@ CLIENT_OBJS= \
 	testidents.o \
 	testocta.o \
 	testprops.o \
+	testskel.o \
 	testshadowatlas.o \
 	testutils.o \
 
