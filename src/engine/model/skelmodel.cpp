@@ -1801,16 +1801,6 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
     }
 }
 
-void skelmodel::skelmeshgroup::blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends)
-{
-    for(int i = 0; i < numblends; ++i)
-    {
-        dualquat &d = dst[i];
-        blendbones(d, bdata, c[i]);
-        d.normalize();
-    }
-}
-
 void skelmodel::skelmeshgroup::cleanup()
 {
     for(int i = 0; i < maxblendcache; ++i)

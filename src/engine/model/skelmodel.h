@@ -355,7 +355,6 @@ struct skelmodel : animmodel
             int remapblend(int blend);
             static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
-            static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
             void cleanup() override final;
             vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
             blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
