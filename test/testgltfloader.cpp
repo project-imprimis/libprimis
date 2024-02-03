@@ -413,6 +413,14 @@ void testvertexmismatch()
     assert(exceptioncaught);
 }
 
+void testmultimesh()
+{
+    std::printf("test loading of GLTF file with multiple meshes\n");
+    std::string modelname = "gltf/twocube.gltf";
+    GLTFModelInfo mi(modelname);
+    std::vector<std::string> meshnames = mi.getmeshnames();
+    assert(meshnames.size() == 2);
+}
 
 void test_gltf()
 {
@@ -437,4 +445,5 @@ testing GLTF file loader\n\
     testbraceoverflow();
     testbracketunderflow();
     testvertexmismatch();
+    testmultimesh();
 };
