@@ -49,7 +49,7 @@ class md5 final : public skelloader<md5>
 
             private:
                 bool loadmesh(const char *filename, float smooth, part &p);
-                bool load(const char *meshfile, float smooth, part &p) override final;
+                bool load(std::string_view meshfile, float smooth, part &p) override final;
         };
 
 

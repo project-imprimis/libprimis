@@ -453,11 +453,11 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
     return true;
 }
 
-bool md5::md5meshgroup::load(const char *meshfile, float smooth, part &p)
+bool md5::md5meshgroup::load(std::string_view meshfile, float smooth, part &p)
 {
     name = meshfile;
 
-    if(!loadmesh(meshfile, smooth, p))
+    if(!loadmesh(meshfile.data(), smooth, p))
     {
         return false;
     }

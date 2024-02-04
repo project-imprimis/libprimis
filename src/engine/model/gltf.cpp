@@ -162,11 +162,11 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
     }
 }
 
-bool gltf::gltfmeshgroup::load(const char *meshfile, float smooth, part &p)
+bool gltf::gltfmeshgroup::load(std::string_view meshfile, float smooth, part &p)
 {
     name = meshfile;
 
-    if(!loadmesh(meshfile, smooth, p))
+    if(!loadmesh(meshfile.data(), smooth, p))
     {
         return false;
     }

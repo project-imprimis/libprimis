@@ -49,7 +49,7 @@ class gltf final : public skelloader<gltf>
 
             private:
                 bool loadmesh(const char *filename, float smooth, part &p);
-                bool load(const char *meshfile, float smooth, part &p) override final;
+                bool load(std::string_view meshname, float smooth, part &p) override final;
         };
 
 
