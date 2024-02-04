@@ -1259,11 +1259,6 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
                     p->index = link(p, a[i].tag, vec(0, 0, 0), a[i].anim, a[i].basetime, a[i].pos) ? index : -1;
                     break;
                 }
-                case Link_Coop:
-                {
-                    p->index = index;
-                    break;
-                }
                 default:
                 {
                     continue;
@@ -1280,13 +1275,11 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     {
         switch(linktype(this, p))
         {
-            case Link_Coop:
-                p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
-                break;
-
             case Link_Reuse:
+            {
                 p->intersect(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
                 break;
+            }
         }
     }
 
@@ -1309,12 +1302,6 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
                     {
                         unlink(p);
                     }
-                    p->index = 0;
-                    break;
-                }
-                case Link_Coop:
-                {
-                    p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
                     p->index = 0;
                     break;
                 }
@@ -1405,11 +1392,6 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
                     p->index = link(p, a[i].tag, vec(0, 0, 0), a[i].anim, a[i].basetime, a[i].pos) ? index : -1;
                     break;
                 }
-                case Link_Coop:
-                {
-                    p->index = index;
-                    break;
-                }
                 default:
                 {
                     continue;
@@ -1427,11 +1409,6 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
         part *p = parts[i];
         switch(linktype(this, p))
         {
-            case Link_Coop:
-            {
-                p->render(anim, basetime, basetime2, pitch, axis, forward, d);
-                break;
-            }
             case Link_Reuse:
             {
                 p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
@@ -1462,12 +1439,6 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
                     {
                         unlink(p);
                     }
-                    p->index = 0;
-                    break;
-                }
-                case Link_Coop:
-                {
-                    p->render(anim, basetime, basetime2, pitch, axis, forward, d);
                     p->index = 0;
                     break;
                 }
@@ -1612,7 +1583,6 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
         const part *p = parts[i];
         switch(linktype(this, p))
         {
-            case Link_Coop:
             case Link_Reuse:
             {
                 for(skin &s : parts[i]->skins)
@@ -1667,7 +1637,6 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
         const part *p = parts[i];
         switch(linktype(this, p))
         {
-            case Link_Coop:
             case Link_Reuse:
             {
                 p->genshadowmesh(tris, m, scale);
@@ -1948,7 +1917,6 @@ void animmodel::calcbb(vec &center, vec &radius) const
     {
         switch(linktype(this, p))
         {
-            case Link_Coop:
             case Link_Reuse:
             {
                 p->calcbb(bbmin, bbmax, m, scale);

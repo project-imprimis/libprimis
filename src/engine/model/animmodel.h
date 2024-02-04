@@ -570,7 +570,6 @@ class animmodel : public model
         enum
         {
             Link_Tag = 0,
-            Link_Coop,
             Link_Reuse
         };
 
