@@ -199,22 +199,6 @@ struct dualquat
     explicit dualquat(const matrix4x3 &m);
 
     dualquat &mul(float k) { real.mul(k); dual.mul(k); return *this; }
-    dualquat &add(const dualquat &d) { real.add(d.real); dual.add(d.dual); return *this; }
-
-    dualquat &lerp(const dualquat &to, float t)
-    {
-        float k = real.dot(to.real) < 0 ? -t : t;
-        real.mul(1-t).madd(to.real, k);
-        dual.mul(1-t).madd(to.dual, k);
-        return *this;
-    }
-    dualquat &lerp(const dualquat &from, const dualquat &to, float t)
-    {
-        float k = from.real.dot(to.real) < 0 ? -t : t;
-        (real = from.real).mul(1-t).madd(to.real, k);
-        (dual = from.dual).mul(1-t).madd(to.dual, k);
-        return *this;
-    }
 
     dualquat &invert()
     {
@@ -262,11 +246,6 @@ struct dualquat
         dual.w += -0.5f*( p.x*real.x + p.y*real.y + p.z*real.z);
     }
 
-    void scale(float k)
-    {
-        dual.mul(k);
-    }
-
     void fixantipodal(const dualquat &d)
     {
         if(real.dot(d.real) < 0)
@@ -296,25 +275,11 @@ struct dualquat
         return quat().mul(real, q);
     }
 
-    vec transposedtransform(const vec &v) const
-    {
-        return dualquat(*this).invert().transform(v);
-    }
-
     vec transformnormal(const vec &v) const
     {
         return real.rotate(v);
     }
 
-    vec transposedtransformnormal(const vec &v) const
-    {
-        return real.invertedrotate(v);
-    }
-
-    vec gettranslation() const
-    {
-        return vec().cross(real, dual).madd(vec(dual), real.w).msub(vec(real), dual.w).mul(2);
-    }
 };
 
 inline dualquat::dualquat(const matrix4x3 &m) : real(m)
