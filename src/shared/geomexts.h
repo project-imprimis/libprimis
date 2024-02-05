@@ -110,11 +110,8 @@ struct quat : vec4<float>
     quat &add(const vec4<float> &o) { vec4<float>::add(o); return *this; }
     quat &sub(const vec4<float> &o) { vec4<float>::sub(o); return *this; }
     quat &mul(float k) { vec4<float>::mul(k); return *this; }
-    template<class B>
-    quat &madd(const vec4<float> &a, const B &b) { return add(vec4<float>(a).mul(b)); }
-
-    template<class B>
-    quat &msub(const vec4<float> &a, const B &b) { return sub(vec4<float>(a).mul(b)); }
+    quat &madd(const vec4<float> &a, const float &b) { return add(vec4<float>(a).mul(b)); }
+    quat &msub(const vec4<float> &a, const float &b) { return sub(vec4<float>(a).mul(b)); }
 
     quat &mul(const quat &p, const quat &o)
     {
