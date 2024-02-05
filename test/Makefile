@@ -18,6 +18,7 @@ endif
 CLIENT_OBJS= \
 	main.o \
 	testcs.o \
+	testgeomexts.o \
 	testgltfloader.o \
 	testidents.o \
 	testocta.o \
