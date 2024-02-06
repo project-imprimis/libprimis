@@ -84,7 +84,7 @@ jobs:
         run: cd test && ./libprimis_testsuite
 
       - name: Build lcov tracefile
-        run: lcov -c -d . -o output && lcov -r output "/usr*" -o output && lcov -r output "test/*" -o output
+        run: lcov -c -d . -o output && lcov -r output "/usr*" -o output && lcov -r output "*/test/*" -o output
 
       - name: Build lcov HTML
         run: genhtml -o lcov -t "Libprimis Test Coverage" --num-spaces 4 output
