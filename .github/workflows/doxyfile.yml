@@ -1,4 +1,4 @@
-name: Doxyfile CD
+name: GH Pages CD
 
 # Controls when the workflow will run.
 on:
@@ -29,20 +29,20 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:     
-      
+    steps:
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
           # Get the libprimis-header submodules.
           submodules: true
-      
+
       # Show the current working directory. Nice for debugging.
       - run: pwd
-      
+
       # Show what files are in the repo. Nice for debugging.
       - run: ls --recursive
-      
+
       - name: Doxygen Action
       # You may pin to the exact commit or the version.
       # uses: mattnotmitt/doxygen-action@9039b4cfaf5097b76489c53c0cdc8cba59091b57
@@ -60,10 +60,38 @@ jobs:
           enable-latex: false
           # Extra alpine packages for the build environment.
           # additional-packages: # optional
-      
+
       # Show what files were created. Nice for debugging.
       - run: ls --recursive
-      
+
+      # Now build the test suite, for gcov files
+      - name: Update package list
+        run: sudo apt-get update
+
+      - name: Install dependencies
+        run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev lcov
+
+      - name: Build
+        run: make CPP_20=1 -Csrc -j4 COVERAGE_BUILD=1
+
+      - name: Move library to ld path
+        run: sudo cp src/libprimis.so /usr/lib/libprimis.so
+
+      - name: Build test code
+        run: cd test && make
+
+      - name: Run tests
+        run: cd test && ./libprimis_testsuite
+
+      - name: Build lcov tracefile
+        run: lcov -c -d . -o output && lcov -r output "/usr*" -o output && lcov -r output "test/*" -o output
+
+      - name: Build lcov HTML
+        run: genhtml -o lcov -t "Libprimis Test Coverage" --num-spaces 4 output
+
+      - name: Move lcov HTML to docs dir
+        run: sudo cp -r lcov docs/lcov
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
