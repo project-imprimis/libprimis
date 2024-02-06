@@ -263,6 +263,112 @@ void test_plane_dist()
     }
 }
 
+void test_quat_ctor()
+{
+    //quat(vec, float)
+    {
+        quat q({1,0,0}, 0);
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        quat q({1,0,0}, M_PI/2);
+        assert(q.sub(quat(sqrt(2)/2, 0, 0, sqrt(2)/2)).magnitude() < tolerance);
+    }
+    {
+        quat q({1,0,0}, M_PI);
+        assert(q.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q({1,0,0}, 3*M_PI/2);
+        assert(q.sub(quat(sqrt(2)/2, 0, 0, -sqrt(2)/2)).magnitude() < tolerance);
+    }
+    //quat(vec, vec)
+    {
+        vec a(1,0,0);
+        quat q(a,a);
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        vec a(1,0,0);
+        vec b(0,1,0);
+        quat q(a,b);
+        assert(q.sub(quat(0, 0, sqrt(2)/2, sqrt(2)/2)).magnitude() < tolerance);
+    }
+    {
+        vec a(1,0,0);
+        vec b(0,1,0);
+        quat q(b,a);
+        assert(q.sub(quat(0, 0, -sqrt(2)/2, sqrt(2)/2)).magnitude() < tolerance);
+    }
+    //quat(vec)
+    {
+        vec a(0,0,0);
+        quat q(a);
+        assert(q.sub(quat(0,0,0,-1)).magnitude() < tolerance);
+    }
+    {
+        vec a(1,2,3);
+        quat q(a);
+        assert(q.sub(quat(1,2,3,0)).magnitude() < tolerance);
+    }
+    {
+        vec a(0.5,0,0);
+        quat q(a);
+        assert(q.sub(quat(0.5, 0, 0, -sqrt(3)/2)).magnitude() < tolerance);
+    }
+    //quat(matrix3)
+    {
+        matrix3 a;
+        a.identity();
+        quat q(a);
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        matrix3 a;
+        //rotate 180 about x axis
+        a.a = {1,0,0};
+        a.b = {0,-1,0};
+        a.c = {0,0,-1};
+        quat q(a);
+        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
+        assert(q.sub(quat(1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        matrix3 a;
+        //rotate 180 about y axis
+        a.a = {-1,0,0};
+        a.b = {0,1,0};
+        a.c = {0,0,-1};
+        quat q(a);
+        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
+        assert(q.sub(quat(0,1,0,0)).magnitude() < tolerance);
+    }
+    {
+        matrix3 a;
+        //rotate 180 about z axis
+        a.a = {-1,0,0};
+        a.b = {0,-1,0};
+        a.c = {0,0,1};
+        quat q(a);
+        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
+        assert(q.sub(quat(0,0,1,0)).magnitude() < tolerance);
+    }
+    //quat(matrix4x3)
+    {
+        matrix4x3 a;
+        a.identity();
+        quat q(a);
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    //quat(matrix4)
+    {
+        matrix4 a;
+        a.identity();
+        quat q(a);
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+}
+
 void test_geomexts()
 {
     std::printf(
@@ -283,4 +389,6 @@ testing geometry extensions\n\
     test_plane_reflectz();
     test_plane_toplane();
     test_plane_dist();
+
+    test_quat_ctor();
 }
