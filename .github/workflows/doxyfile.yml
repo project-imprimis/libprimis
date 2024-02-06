@@ -89,15 +89,16 @@ jobs:
       - name: Build lcov HTML
         run: genhtml -o lcov -t "Libprimis Test Coverage" --num-spaces 4 output
 
+      - name: Move lcov HTML to docs dir
+        run: cp -r lcov docs/lcov
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload _site/ directory
-          path: |
-            docs
-            lcov
+          path: 'docs'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
