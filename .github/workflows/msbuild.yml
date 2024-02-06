@@ -22,7 +22,7 @@ jobs:
         submodules: true
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.2
+      uses: microsoft/setup-msbuild@v2.0.0
 
 #     errors due to this project not using NuGet
 #    - name: Restore NuGet packages
