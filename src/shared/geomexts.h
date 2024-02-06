@@ -300,15 +300,37 @@ struct plane : vec
     bool operator!=(const plane &p) const { return x!=p.x || y!=p.y || z!=p.z || offset!=p.offset; }
 
     plane() {}
-    plane(const vec &c, float off) : vec(c), offset(off) {}
-    plane(const vec4<float> &p) : vec(p), offset(p.w) {}
+    plane(const vec &c, float off) : vec(c), offset(off)
+    {
+        if(x == 0 && y == 0 && z == 0)
+        {
+            throw std::invalid_argument("cannot create plane with no normal vector");
+        }
+    }
+    plane(const vec4<float> &p) : vec(p), offset(p.w)
+    {
+        if(x == 0 && y == 0 && z == 0)
+        {
+            throw std::invalid_argument("cannot create plane with no normal vector");
+        }
+    }
     plane(int d, float off)
     {
+        if(d < 0 || d > 2)
+        {
+            throw std::invalid_argument("cannot specify plane index outside 0..2");
+        }
         x = y = z = 0.0f;
         v[d] = 1.0f;
         offset = -off;
     }
-    plane(float a, float b, float c, float d) : vec(a, b, c), offset(d) {}
+    plane(float a, float b, float c, float d) : vec(a, b, c), offset(d)
+    {
+        if(x == 0 && y == 0 && z == 0)
+        {
+            throw std::invalid_argument("cannot create plane with no normal vector");
+        }
+    }
 
     void toplane(const vec &n, const vec &p)
     {
@@ -331,7 +353,7 @@ struct plane : vec
         return true;
     }
 
-    bool rayintersect(const vec &o, const vec &ray, float &dist)
+    bool rayintersect(const vec &o, const vec &ray, float &dist) const
     {
         float cosalpha = dot(ray);
         if(cosalpha==0)
