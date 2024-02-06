@@ -90,7 +90,7 @@ jobs:
         run: genhtml -o lcov -t "Libprimis Test Coverage" --num-spaces 4 output
 
       - name: Move lcov HTML to docs dir
-        run: cp -r lcov docs/lcov
+        run: sudo cp -r lcov docs/lcov
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
