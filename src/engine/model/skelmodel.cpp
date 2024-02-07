@@ -1598,7 +1598,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset)
     return numverts;
 }
 
-void skelmodel::skelmesh::fillvert(vvert &vv, int j, vert &v)
+void skelmodel::skelmesh::fillvert(vvert &vv, vert &v)
 {
     vv.tc = v.tc;
 }
@@ -1608,7 +1608,7 @@ void skelmodel::skelmesh::fillverts(vvert *vdata)
     vdata += voffset;
     for(int i = 0; i < numverts; ++i)
     {
-        fillvert(vdata[i], i, verts[i]);
+        fillvert(vdata[i], verts[i]);
     }
 }
 

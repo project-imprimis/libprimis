@@ -149,7 +149,7 @@ struct skelmodel : animmodel
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
         int genvbo(std::vector<GLuint> &idxs, int offset);
 
-        static void fillvert(vvert &vv, int j, vert &v);
+        static void fillvert(vvert &vv, vert &v);
         void fillverts(vvert *vdata);
         void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
         void setshader(Shader *s, int row) override final;

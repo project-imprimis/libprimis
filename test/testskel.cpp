@@ -113,6 +113,17 @@ void test_skelmesh_assignvert()
     }
 }
 
+void test_skelmesh_fillvert()
+{
+    std::printf("testing skelmesh fillvert\n");
+
+    skelmodel::vert v = { {0,0,0}, {1,0,0}, {1,1}, {0,0,0,1}, 1, 2 };
+    skelmodel::vvert vv;
+    skelmodel::skelmesh::fillvert(vv, v);
+    assert(vv.tc.x.val == 15360);
+    assert(vv.tc.y.val == 15360);
+}
+
 void test_skel()
 {
     std::printf(
@@ -123,4 +134,5 @@ testing skelmodel functionality\n\
 
     test_skel_ctor();
     test_skelmesh_assignvert();
+    test_skelmesh_fillvert();
 }
