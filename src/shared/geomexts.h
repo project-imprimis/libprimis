@@ -75,6 +75,11 @@ struct triangle
  * @brief quaternion object:
  * four component "vector" with three imaginary components
  * used for object rotations (quats have 3 DoF)
+ *
+ * x represents the i component
+ * y represents the j component
+ * z represents the k component
+ * w represents the real component
  */
 struct quat : vec4<float>
 {
@@ -125,7 +130,7 @@ struct quat : vec4<float>
 
     quat &invert() { neg3(); return *this; }
 
-    quat &normalize() { vec4<float>::normalize(); return *this; }
+    quat &normalize() { vec4<float>::safenormalize(); return *this; }
 
     vec rotate(const vec &v) const
     {
@@ -407,27 +412,32 @@ struct plane : vec
 };
 
 //short integer quaternion
-struct squat
+class squat
 {
-    short x, y, z, w;
+    public:
+        short x, y, z, w;
 
-    squat() {}
-    squat(const vec4<float> &q) { convert(q); }
+        squat() {}
+        //all dimensions of `q` should be <= 1 (normalized)
+        squat(const vec4<float> &q)
+        {
+            convert(q);
+        }
 
-    void convert(const vec4<float> &q)
-    {
-        x = static_cast<short>(q.x*32767.5f-0.5f);
-        y = static_cast<short>(q.y*32767.5f-0.5f);
-        z = static_cast<short>(q.z*32767.5f-0.5f);
-        w = static_cast<short>(q.w*32767.5f-0.5f);
-    }
-
-    void lerp(const vec4<float> &a, const vec4<float> &b, float t)
-    {
-        vec4<float> q;
-        q.lerp(a, b, t);
-        convert(q);
-    }
+        void lerp(const vec4<float> &a, const vec4<float> &b, float t)
+        {
+            vec4<float> q;
+            q.lerp(a, b, t);
+            convert(q);
+        }
+    private:
+        void convert(const vec4<float> &q)
+        {
+            x = static_cast<short>(q.x*32767.5f-0.5f);
+            y = static_cast<short>(q.y*32767.5f-0.5f);
+            z = static_cast<short>(q.z*32767.5f-0.5f);
+            w = static_cast<short>(q.w*32767.5f-0.5f);
+        }
 };
 
 struct matrix2

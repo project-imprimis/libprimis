@@ -4,6 +4,42 @@
 
 constexpr float tolerance = 0.001;
 
+void test_half_ctor()
+{
+    std::printf("testing half float ctor\n");
+
+    {
+        half h(0.f);
+        assert(h.val == 0);
+    }
+    {
+        half h(1.f);
+        assert(h.val == 15360);
+    }
+    {
+        half h(10.f);
+        assert(h.val == 18688);
+    }
+}
+
+void test_half_equals()
+{
+    std::printf("testing half float operator==\n");
+    half h1(5.f);
+    half h2(5.f);
+    assert(h1 == h2);
+    assert(h1 == h1);
+}
+
+void test_half_nequals()
+{
+    std::printf("testing half float operator!=\n");
+    half h1(0.f);
+    half h2(1.f);
+
+    assert(h1 != h2);
+}
+
 void test_triangle_add()
 {
     std::printf("testing triangle add method\n");
@@ -265,6 +301,7 @@ void test_plane_dist()
 
 void test_quat_ctor()
 {
+    std::printf("testing quaternion ctor\n");
     //quat(vec, float)
     {
         quat q({1,0,0}, 0);
@@ -330,7 +367,6 @@ void test_quat_ctor()
         a.b = {0,-1,0};
         a.c = {0,0,-1};
         quat q(a);
-        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
         assert(q.sub(quat(1,0,0,0)).magnitude() < tolerance);
     }
     {
@@ -340,7 +376,6 @@ void test_quat_ctor()
         a.b = {0,1,0};
         a.c = {0,0,-1};
         quat q(a);
-        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
         assert(q.sub(quat(0,1,0,0)).magnitude() < tolerance);
     }
     {
@@ -350,7 +385,6 @@ void test_quat_ctor()
         a.b = {0,-1,0};
         a.c = {0,0,1};
         quat q(a);
-        std::printf("quat q %f %f %f %f\n", q.x, q.y, q.z, q.w);
         assert(q.sub(quat(0,0,1,0)).magnitude() < tolerance);
     }
     //quat(matrix4x3)
@@ -369,6 +403,563 @@ void test_quat_ctor()
     }
 }
 
+void test_quat_add()
+{
+    std::printf("testing quaternion addition\n");
+
+    {
+        quat a(0,0,0,1);
+        a.add(a);
+        assert(a.sub(quat(0,0,0,2)).magnitude() < tolerance);
+    }
+    {
+        quat a(0,0,0,1);
+        quat b(0,0,0,-1);
+        a.add(b);
+        assert(a.magnitude() < tolerance);
+    }
+}
+
+void test_quat_sub()
+{
+    std::printf("testing quaternion subtraction\n");
+    {
+        quat a(0,0,0,1);
+        a.sub(a);
+        assert(a.magnitude() < tolerance);
+    }
+    {
+        quat a(0,0,0,1);
+        quat b(0,0,0,-1);
+        a.sub(b);
+        assert(a.sub(quat(0,0,0,2)).magnitude() < tolerance);
+    }
+
+}
+
+void test_quat_mul()
+{
+    std::printf("testing quaternion multiplication\n");
+    //mul(float)
+    {
+        quat a(0,0,0,1);
+        a.mul(2);
+        assert(a.sub(quat(0,0,0,2)).magnitude() < tolerance);
+    }
+    {
+        quat a(0,0,0,1);
+        a.mul(0);
+        assert(a.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    //mul(quat)
+    {
+        quat a(0,0,0,1);
+        a.mul(a);
+        assert(a.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        quat a(0,0,0,1),
+             b(1,0,0,0);
+        a.mul(b);
+        assert(a.sub(quat(1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        a.mul(b);
+        assert(a.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+    }
+    //mul(quat, quat)
+    {
+        quat a,
+             b(0,0,0,1),
+             c(0,0,0,1);
+        a.mul(b,c);
+        assert(a.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        quat a,
+             b(0,0,0,1),
+             c(1,0,0,0);
+        a.mul(b,c);
+        assert(a.sub(quat(1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat a,
+             b(1,2,3,0),
+             c(4,0,2,1);
+        a.mul(b,c);
+        assert(a.sub(quat(5,12,-5,-10)).magnitude() < tolerance);
+    }
+}
+
+void test_quat_madd()
+{
+    std::printf("testing quaternion multiply-add\n");
+
+    {
+        quat q(0,0,0,1);
+        vec4<float> b(0,0,0,1);
+        q.madd(b, 1);
+        assert(q.sub(quat(0,0,0,2)).magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,0,1);
+        vec4<float> b(1,1,1,1);
+        q.madd(b, 2);
+        assert(q.sub(quat(2,2,2,3)).magnitude() < tolerance);
+    }
+}
+
+void test_quat_msub()
+{
+    std::printf("testing quaternion multiply-subtract\n");
+
+    {
+        quat q(0,0,0,1);
+        vec4<float> b(0,0,0,1);
+        q.msub(b, 1);
+        assert(q.magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,0,1);
+        vec4<float> b(1,1,1,1);
+        q.msub(b, 2);
+        assert(q.sub(quat(-2,-2,-2,-1)).magnitude() < tolerance);
+    }
+}
+
+void test_quat_invert()
+{
+    std::printf("testing quaternion inversion\n");
+
+    {
+        quat q(0,0,0,1);
+        q.invert();
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,0,0);
+        q.invert();
+        assert(q.magnitude() < tolerance);
+    }
+    {
+        quat q(-1,1,-1,1);
+        q.invert();
+        assert(q.sub(quat(1,-1,1,1)).magnitude() < tolerance);
+    }
+}
+
+void test_quat_normalize()
+{
+    std::printf("testing quaternion normalization\n");
+
+    {
+        quat q(0,0,0,1);
+        q.normalize();
+        assert(q.sub(quat(0,0,0,1)).magnitude() < tolerance);
+    }
+    {
+        //attempt normalizing zero quaternion
+        quat q(0,0,0,0);
+        q.normalize();
+        assert(q == quat(0,0,0,0));
+    }
+    {
+        quat q(0,0,1,1);
+        q.normalize();
+        assert(q.sub(quat(0,0,std::sqrt(2)/2,std::sqrt(2)/2)).magnitude() < tolerance);
+    }
+}
+
+void test_quat_rotate()
+{
+    std::printf("testing quaternion rotation\n");
+
+    {
+        //identity transformation
+        quat q(0,0,0,1);
+        vec v = q.rotate(vec(1,0,0));
+        assert(v.sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,std::sqrt(2)/2,std::sqrt(2)/2);
+        vec v = q.rotate(vec(1,0,0));
+        assert(v.sub(vec(0,1,0)).magnitude() < tolerance);
+    }
+    {
+        //rotate does not preserve behavior if not normalized
+        quat q(0,0,1,1);
+        vec v = q.rotate(vec(1,0,0));
+        assert(v.sub(vec(-1,2,0)).magnitude() < tolerance);
+    }
+
+}
+
+void test_quat_invertedrotate()
+{
+    std::printf("testing quaternion inverse rotation\n");
+    {
+        //identity transformation
+        quat q(0,0,0,1);
+        vec v = q.invertedrotate(vec(1,0,0));
+        assert(v.sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,std::sqrt(2)/2,std::sqrt(2)/2);
+        vec v = q.invertedrotate(vec(1,0,0));
+        assert(v.sub(vec(0,-1,0)).magnitude() < tolerance);
+    }
+    {
+        //inverted rotate does not preserve behavior if not normalized
+        quat q(0,0,1,1);
+        vec v = q.invertedrotate(vec(1,0,0));
+        assert(v.sub(vec(-1,-2,0)).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_ctor()
+{
+    std::printf("testing dual quaternion ctors\n");
+
+    //dualquat(quat,vec)
+    {
+        quat q(0,0,0,1);
+        vec v(1,0,0);
+        dualquat dq(q, v);
+        assert(dq.real.sub(quat(0,0,0,1)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0.5,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q(1,0,0,1);
+        vec v(1,2,3);
+        dualquat dq(q, v);
+        assert(dq.real.sub(quat(1,0,0,1)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0.5,2.5,0.5,-0.5)).magnitude() < tolerance);
+    }
+    //dualquat(quat)
+    {
+        quat q(1,2,3,1);
+        dualquat dq(q);
+        assert(dq.real == q);
+        assert(dq.dual == quat(0,0,0,0));
+    }
+    //dualquat(matrix4x3)
+    {
+        matrix4x3 m;
+        m.identity();
+        dualquat dq(m);
+        assert(dq.real.sub(quat(0,0,0,1)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m;
+        m.identity();
+        m.b.y = -1;
+        m.a.x = -1;
+        dualquat dq(m);
+        assert(dq.real.sub(quat(0,0,1,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_mul()
+{
+    std::printf("testing dual quaternion multiplication\n");
+
+    //mul(float)
+    {
+        //multipy by zero
+        quat q(1,0,0,1);
+        vec v(1,2,3);
+        dualquat dq(q, v);
+        dq.mul(0);
+        assert(dq.real.sub(quat(0,0,0,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q(1,0,0,1);
+        vec v(1,2,3);
+        dualquat dq(q, v);
+        dq.mul(2);
+        assert(dq.real.sub(quat(2,0,0,2)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(1,5,1,-1)).magnitude() < tolerance);
+    }
+    //mul(dualquat, dualquat)
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dq,
+                 dqa(a),
+                 dqb(b);
+        dq.mul(dqa, dqb);
+        assert(dq.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dq,
+                 dqa(a),
+                 dqb(b);
+        dqa.dual = b;
+        dqb.dual = a;
+        dq.mul(dqa, dqb);
+        assert(dq.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(16,22,28,-26)).magnitude() < tolerance);
+    }
+    //mul(dualquat)
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dqa(a),
+                 dqb(b);
+        dqa.mul(dqb);
+        assert(dqa.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dqa.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dqa(a),
+                 dqb(b);
+        dqa.dual = b;
+        dqb.dual = a;
+        dqa.mul(dqb);
+        assert(dqa.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dqa.dual.sub(quat(16,22,28,-26)).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_mulorient()
+{
+    std::printf("testing dual quaternion mulorient\n");
+
+    quat a(1,2,3,4),
+         b(4,3,2,1);
+    //mulorient(quat)
+    {
+        dualquat dqa(a);
+        dqa.dual = b;
+        dqa.mulorient(a);
+        assert(dqa.real.sub(quat(8,16,24,2)).magnitude() < tolerance);
+        assert(dqa.dual.sub(quat(20,0,10,20)).magnitude() < tolerance);
+    }
+    {
+        dualquat dqa(a);
+        dqa.dual = a;
+        dqa.mulorient(a);
+        assert(dqa.real.sub(quat(8,16,24,2)).magnitude() < tolerance);
+        assert(dqa.dual.sub(quat(0,0,0,30)).magnitude() < tolerance);
+    }
+    {
+        dualquat dqb(b);
+        dqb.dual = a;
+        dqb.mulorient(a);
+        assert(dqb.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dqb.dual.sub(quat(0,0,0,30)).magnitude() < tolerance);
+    }
+    //mulorient(quat,dualquat)
+    {
+        dualquat dqa(a);
+        dqa.dual = b;
+        dualquat dqc = dqa;
+        dqa.mulorient(a, dqc);
+        assert(dqa.real.sub(quat(8,16,24,2)).magnitude() < tolerance);
+        assert(dqa.dual.sub(quat(620,0,-470,980)).magnitude() < tolerance);
+    }
+    {
+        dualquat dqb(b);
+        dqb.dual = a;
+        dualquat dqc = dqb;
+        dqb.mulorient(a, dqc);
+        assert(dqb.real.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(dqb.dual.sub(quat(-80,-1160,-320,270)).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_normalize()
+{
+    std::printf("testing dual quaternion normalize\n");
+
+    {
+        //test trivial case (no scaling)
+        quat a(1,0,0,0),
+             b(2,2,2,2);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        dq.normalize();
+        assert(dq.real.sub(quat(1,0,0,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(2,2,2,2)).magnitude() < tolerance);
+    }
+    {
+        //scale by sqrt(2)/2
+        quat a(1,1,0,0),
+             b(2,2,2,2);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        dq.normalize();
+        assert(dq.real.sub(quat(std::sqrt(2)/2,std::sqrt(2)/2,0,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(std::sqrt(2),std::sqrt(2),std::sqrt(2),std::sqrt(2))).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_translate()
+{
+    std::printf("testing dual quaternion translate\n");
+
+}
+
+void test_dualquat_fixantipodal()
+{
+    std::printf("testing dual quaternion fixantipodal\n");
+
+    {
+        //test case where no action (dot >= 0)
+        quat a(1,0,0,0),
+             b(1,1,1,1);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        dualquat dq2 = dq;
+        dq.fixantipodal(dq);
+        assert(dq.real == dq2.real);
+        assert(dq.dual == dq2.dual);
+    }
+    {
+        //test case where negation action taken(dot < 0)
+        quat a(-1,0,0,0),
+             b(2,2,2,2);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        //make dot product negative
+        dualquat dq2 = dq;
+        dq2.real.x = 1;
+
+        dq.fixantipodal(dq2);
+        assert(dq.real.sub(quat(1,0,0,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(-2,-2,-2,-2)).magnitude() < tolerance);
+    }
+
+}
+
+void test_dualquat_accumulate()
+{
+    std::printf("testing dual quaternion accumulate\n");
+
+    {
+        //test case where k > 0
+        quat a(1,1,1,1),
+             b(1,1,1,1);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        dq.accumulate(dq, 2);
+        assert(dq.real.sub(quat(3,3,3,3)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(3,3,3,3)).magnitude() < tolerance);
+    }
+    {
+        //test case where k > 0
+        quat a(1,1,1,1),
+             b(1,1,1,1),
+             c(-1,-1,-1,-1);
+        dualquat dq;
+        dq.real = a;
+        dq.dual = b;
+        //make dot product negative
+        dualquat dq2 = dq;
+        dq2.real = c;
+        dq.accumulate(dq2, 2);
+        assert(dq.real.sub(quat(3,3,3,3)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(-1,-1,-1,-1)).magnitude() < tolerance);
+    }
+}
+
+void test_dualquat_transform()
+{
+    std::printf("testing dual quaternion transform\n");
+
+    {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dq(a);
+        quat qout = dq.transform(b);
+        assert(qout.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+    }
+    {
+        //test that setting dual does not affect result
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        dualquat dq(a);
+        dq.dual = b;
+        quat qout = dq.transform(b);
+        assert(qout.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+    }
+
+}
+
+void test_dualquat_transformnormal()
+{
+    std::printf("testing dual quaternion transform normal\n");
+
+    {
+        //identity transformation
+        quat q(0,0,0,1);
+        dualquat dq(q);
+        vec v = dq.transformnormal(vec(1,0,0));
+        assert(v.sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        quat q(0,0,std::sqrt(2)/2,std::sqrt(2)/2);
+        dualquat dq(q);
+        vec v = dq.transformnormal(vec(1,0,0));
+        assert(v.sub(vec(0,1,0)).magnitude() < tolerance);
+    }
+}
+
+void test_squat_ctor()
+{
+    std::printf("testing short quaternion ctor\n");
+    {
+        quat q(0,0,0,0.1);
+        squat s(q);
+        assert(s.x == 0 && s.y == 0 && s.z == 0 && s.w == 3276);
+    }
+    {
+        quat q(0,0,0,1);
+        squat s(q);
+        assert(s.x == 0 && s.y == 0 && s.z == 0 && s.w == 32767);
+    }
+}
+
+void test_squat_lerp()
+{
+    std::printf("testing short quaternion lerp\n");
+    {
+        vec4<float> a(0,0,0,0);
+        squat s;
+        s.lerp(a,a,1);
+        assert(s.x == 0 && s.y == 0 && s.z == 0 && s.w == 0);
+    }
+    {
+        vec4<float> a(0,0,0,1),
+                    b(0,0,0,1);
+        squat s;
+        s.lerp(a,b,1);
+        assert(s.x == 0 && s.y == 0 && s.z == 0 && s.w == 32767);
+    }
+    {
+        vec4<float> a(0,0,0,1),
+                    b(0.5,0,0,0);
+        squat s;
+        s.lerp(a,b,2);
+        assert(s.x == 32767 && s.y == 0 && s.z == 0 && s.w == -32768);
+    }
+}
+
 void test_geomexts()
 {
     std::printf(
@@ -376,6 +967,11 @@ void test_geomexts()
 testing geometry extensions\n\
 ===============================================================\n"
     );
+
+    test_half_ctor();
+    test_half_equals();
+    test_half_nequals();
+
     test_triangle_add();
     test_triangle_sub();
     test_triangle_equals();
@@ -391,4 +987,26 @@ testing geometry extensions\n\
     test_plane_dist();
 
     test_quat_ctor();
+    test_quat_add();
+    test_quat_sub();
+    test_quat_mul();
+    test_quat_madd();
+    test_quat_msub();
+    test_quat_invert();
+    test_quat_normalize();
+    test_quat_rotate();
+    test_quat_invertedrotate();
+
+    test_dualquat_ctor();
+    test_dualquat_mul();
+    test_dualquat_mulorient();
+    test_dualquat_normalize();
+    test_dualquat_translate();
+    test_dualquat_fixantipodal();
+    test_dualquat_accumulate();
+    test_dualquat_transform();
+    test_dualquat_transformnormal();
+
+    test_squat_ctor();
+    test_squat_lerp();
 }
