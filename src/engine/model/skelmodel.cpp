@@ -1498,14 +1498,14 @@ void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void skelmodel::skelmesh::assignvert(vvertg &vv, int j, const vert &v)
+void skelmodel::skelmesh::assignvert(vvertg &vv, const vert &v)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
     vv.tangent = v.tangent;
 }
 
-void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c)
+void skelmodel::skelmesh::assignvert(vvertgw &vv, const vert &v, const blendcombo &c)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
@@ -1521,7 +1521,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     {
         const vert &v = verts[i];
         vverts.emplace_back(vvertgw());
-        assignvert(vverts.back(), i, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
+        assignvert(vverts.back(), v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
     }
     for(int i = 0; i < numtris; ++i)
     {
@@ -1549,7 +1549,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
             const uint index = t.vert[j];
             const vert &v = verts[index];
             vvertg vv;
-            assignvert(vv, index, v);
+            assignvert(vv, v);
             const auto hashfn = std::hash<vec>();
             int htidx = hashfn(v.pos)&(htlen-1);
             for(int k = 0; k < htlen; ++k)

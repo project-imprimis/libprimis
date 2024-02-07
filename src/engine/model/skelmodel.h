@@ -142,8 +142,8 @@ struct skelmodel : animmodel
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) override final;
         void genBIH(BIH::mesh &m) const override final;
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
-        static void assignvert(vvertg &vv, int j, const vert &v);
-        static void assignvert(vvertgw &vv, int j, const vert &v, const blendcombo &c);
+        static void assignvert(vvertg &vv, const vert &v);
+        static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);

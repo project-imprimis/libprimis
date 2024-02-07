@@ -23,6 +23,8 @@
 #include "../src/engine/model/animmodel.h"
 #include "../src/engine/model/skelmodel.h"
 
+constexpr float tolerance = 0.001;
+
 struct MinimalSkelModel : skelmodel
 {
     MinimalSkelModel(std::string name) : skelmodel(name)
@@ -63,11 +65,51 @@ struct MinimalSkelModel : skelmodel
     }
 };
 
-void constructskel()
+void test_skel_ctor()
 {
     std::printf("constructing a skelmodel object\n");
     MinimalSkelModel s = MinimalSkelModel(std::string("test"));
     assert(s.modelname() == "test");
+}
+
+void test_skelmesh_assignvert()
+{
+    std::printf("testing skelmesh assignvert");
+
+    //skelmesh::assignvert(vvertg, vert)
+    {
+        skelmodel::vert v = { {0,0,0}, {1,0,0}, {1,1}, {0,0,0,1}, 1, 2 };
+        skelmodel::vvertg vv;
+        skelmodel::skelmesh::assignvert(vv, v);
+        assert(vv.pos.x.val == 0);
+        assert(vv.pos.y.val == 0);
+        assert(vv.pos.z.val == 0);
+        assert(vv.pos.w.val == 15360); // == 1
+        assert(vv.tc.x.val == 15360);
+        assert(vv.tc.y.val == 15360);
+        squat s = squat(quat(0,0,0,1));
+        assert(vv.tangent.x == s.x);
+        assert(vv.tangent.y == s.y);
+        assert(vv.tangent.z == s.z);
+        assert(vv.tangent.w == s.w);
+    }
+    {
+        skelmodel::blendcombo c;
+        skelmodel::vert v = { {0,0,0}, {1,0,0}, {1,1}, {0,0,0,1}, 1, 2 };
+        skelmodel::vvertgw vv;
+        skelmodel::skelmesh::assignvert(vv, v, c);
+        assert(vv.pos.x.val == 0);
+        assert(vv.pos.y.val == 0);
+        assert(vv.pos.z.val == 0);
+        assert(vv.pos.w.val == 15360); // == 1
+        assert(vv.tc.x.val == 15360);
+        assert(vv.tc.y.val == 15360);
+        squat s = squat(quat(0,0,0,1));
+        assert(vv.tangent.x == s.x);
+        assert(vv.tangent.y == s.y);
+        assert(vv.tangent.z == s.z);
+        assert(vv.tangent.w == s.w);
+    }
 }
 
 void test_skel()
@@ -78,5 +120,6 @@ testing skelmodel functionality\n\
 ===============================================================\n"
     );
 
-    constructskel();
+    test_skel_ctor();
+    test_skelmesh_assignvert();
 }
