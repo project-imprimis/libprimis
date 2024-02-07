@@ -74,7 +74,7 @@ void test_skel_ctor()
 
 void test_skelmesh_assignvert()
 {
-    std::printf("testing skelmesh assignvert");
+    std::printf("testing skelmesh assignvert\n");
 
     //skelmesh::assignvert(vvertg, vert)
     {
@@ -93,6 +93,7 @@ void test_skelmesh_assignvert()
         assert(vv.tangent.z == s.z);
         assert(vv.tangent.w == s.w);
     }
+    //skelmesh::assignvert(vvertgw, vert, blendcombo)
     {
         skelmodel::blendcombo c;
         skelmodel::vert v = { {0,0,0}, {1,0,0}, {1,1}, {0,0,0,1}, 1, 2 };
