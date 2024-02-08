@@ -548,9 +548,9 @@ class animmodel : public model
         void setcullface(int cullface) override final;
         void setcolor(const vec &color) override final;
         void settransformation(const std::optional<vec> pos,
-                                       const std::optional<vec> rotate,
-                                       const std::optional<vec> orient,
-                                       const std::optional<float> size) override final;
+                               const std::optional<vec> rotate,
+                               const std::optional<vec> orient,
+                               const std::optional<float> size) override final;
         vec4<float> locationsize() const override final;
         void calcbb(vec &center, vec &radius) const override final;
         void calctransform(matrix4x3 &m) const override final;
