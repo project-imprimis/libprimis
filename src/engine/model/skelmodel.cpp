@@ -1078,7 +1078,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         auto rendermeshes = getrendermeshes();
         for(auto i : rendermeshes)
         {
-            vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen);
+            vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen);
         }
         delete[] vdata;
         vdata = new uchar[vlen*vertsize];
@@ -1119,7 +1119,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             std::vector<vvertgw> vvertgws;
             for(auto i : rendermeshes)
             {
-                vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgws);
+                vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen, vvertgws);
             }
             glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
         }
@@ -1214,7 +1214,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             static_cast<animcacheentry &>(vc) = sc;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
+                m.interpverts(skel->numgpubones, sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
             });
             gle::bindvbo(vc.vbuf);
             glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
@@ -1513,7 +1513,7 @@ void skelmodel::skelmesh::assignvert(vvertgw &vv, const vert &v, const blendcomb
     c.serialize(vv);
 }
 
-int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts)
+int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts)
 {
     voffset = offset;
     eoffset = idxs.size();
@@ -1521,7 +1521,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     {
         const vert &v = verts[i];
         vverts.emplace_back(vvertgw());
-        assignvert(vverts.back(), v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
+        assignvert(vverts.back(), v, bcs[v.blend]);
     }
     for(int i = 0; i < numtris; ++i)
     {
@@ -1575,11 +1575,11 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     return vverts.size()-voffset;
 }
 
-int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset)
+int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset)
 {
     for(int i = 0; i < numverts; ++i)
     {
-        verts[i].interpindex = (static_cast<skelmeshgroup *>(group))->remapblend(verts[i].blend);
+        verts[i].interpindex = remapblend(bcs, verts[i].blend);
     }
 
     voffset = offset;
@@ -1612,16 +1612,15 @@ void skelmodel::skelmesh::fillverts(vvert *vdata)
     }
 }
 
-void skelmodel::skelmesh::interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s)
+void skelmodel::skelmesh::interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s)
 {
-    const int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
-    bdata2 -= blendoffset;
+    bdata2 -= numgpubones;
     vdata += voffset;
     for(int i = 0; i < numverts; ++i)
     {
         const vert &src = verts[i];
         vvert &dst = vdata[i];
-        const dualquat &b = (src.interpindex < blendoffset ? bdata1 : bdata2)[src.interpindex];
+        const dualquat &b = (src.interpindex < numgpubones ? bdata1 : bdata2)[src.interpindex];
         dst.pos = b.transform(src.pos);
         quat q = b.transform(src.tangent);
         fixqtangent(q, src.tangent.w);
@@ -1655,6 +1654,12 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
+}
+
+int skelmodel::skelmesh::remapblend(const std::vector<blendcombo> &bcs, int blend) const
+{
+    const blendcombo &c = bcs[blend];
+    return c.bonedata[1].weights ? c.interpindex : c.bonedata[0].interpbones;
 }
 
 // boneinfo
@@ -1754,12 +1759,6 @@ void skelmodel::skelmeshgroup::sortblendcombos()
         }
     }
     delete[] remap;
-}
-
-int skelmodel::skelmeshgroup::remapblend(int blend)
-{
-    const blendcombo &c = blendcombos[blend];
-    return c.bonedata[1].weights ? c.interpindex : c.bonedata[0].interpbones;
 }
 
 void skelmodel::skelmeshgroup::blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c)

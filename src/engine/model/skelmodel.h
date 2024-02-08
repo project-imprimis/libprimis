@@ -136,6 +136,8 @@ struct skelmodel : animmodel
         virtual ~skelmesh();
 
         int addblendcombo(const blendcombo &c);
+        int remapblend(const std::vector<blendcombo> &bcs, int blend) const;
+
         void smoothnorms(float limit = 0, bool areaweight = true);
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
@@ -145,13 +147,13 @@ struct skelmodel : animmodel
         static void assignvert(vvertg &vv, const vert &v);
         static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
-        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
+        int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
         int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
-        int genvbo(std::vector<GLuint> &idxs, int offset);
+        int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset);
 
         static void fillvert(vvert &vv, vert &v);
         void fillverts(vvert *vdata);
-        void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
+        void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
         void setshader(Shader *s, int row) override final;
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
@@ -352,7 +354,6 @@ struct skelmodel : animmodel
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
             int addblendcombo(const blendcombo &c);
             void sortblendcombos();
-            int remapblend(int blend);
             static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
             void cleanup() override final;
