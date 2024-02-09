@@ -72,6 +72,52 @@ void test_skel_ctor()
     assert(s.modelname() == "test");
 }
 
+void test_blendcombo_equals()
+{
+    std::printf("testing blendcombo operator==\n");
+
+    skelmodel::blendcombo::BoneData b1 = { 1.f, 1, 2 },
+                                    b2 = { 2.f, 3, 4 },
+                                    b3 = { 2.f, 3, 5 };
+
+    {
+        //test trivial inequality
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b1);
+        b.bonedata.fill(b2);
+        assert(!(a == b));
+    }
+    {
+        //test trivial equality
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b1);
+        b.bonedata.fill(b1);
+        assert(a == b);
+    }
+    {
+        //test that interpbones value does not matter
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b2);
+        b.bonedata.fill(b3);
+        assert(a == b);
+    }
+    {
+        //test that uses/interpindex does not matter
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b3);
+        a.uses = 2;
+        a.interpindex = 3;
+        b.bonedata.fill(b3);
+        a.uses = 4;
+        a.interpindex = 5;
+        assert(a == b);
+    }
+}
+
 void test_skelmesh_assignvert()
 {
     std::printf("testing skelmesh assignvert\n");
@@ -133,6 +179,9 @@ testing skelmodel functionality\n\
     );
 
     test_skel_ctor();
+
+    test_blendcombo_equals();
+
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();
 }

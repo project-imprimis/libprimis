@@ -78,16 +78,10 @@ skelmodel::blendcombo::blendcombo() : uses(1)
 
 bool skelmodel::blendcombo::operator==(const blendcombo &c) const
 {
-    for(size_t k = 0; k < bonedata.size(); ++k)
+    for(size_t i = 0; i < bonedata.size(); ++i)
     {
-        if(bonedata[k].bones != c.bonedata[k].bones)
-        {
-            return false;
-        }
-    }
-    for(size_t k = 0; k < bonedata.size(); ++k)
-    {
-        if(bonedata[k].weights != c.bonedata[k].weights)
+        if((bonedata[i].bones != c.bonedata[i].bones) ||
+           (bonedata[i].weights != c.bonedata[i].weights))
         {
             return false;
         }
