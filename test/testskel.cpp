@@ -118,6 +118,81 @@ void test_blendcombo_equals()
     }
 }
 
+void test_blendcombo_size()
+{
+    std::printf("testing blendcombo size\n");
+
+    skelmodel::blendcombo::BoneData b1 = { 1.f, 0, 0 },
+                                    b2 = { 0.f, 0, 0 };
+    {
+        //all weights
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        assert(a.size() == 4);
+    }
+    {
+        //three weights
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.bonedata[3] = b2;
+        assert(a.size() == 3);
+    }
+    {
+        //test that size only counts to first null
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.bonedata[2] = b2;
+        assert(a.size() == 2);
+    }
+    {
+        //one weight
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b2);
+        a.bonedata[0] = b1;
+        assert(a.size() == 1);
+    }
+    {
+        //empty weights, test returning min of 1
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b2);
+        assert(a.size() == 1);
+    }
+}
+
+void test_blendcombo_sortcmp()
+{
+    std::printf("testing blendcombo sortcmp\n");
+
+    skelmodel::blendcombo::BoneData b1 = { 1.f, 0, 0 },
+                                    b2 = { 0.f, 0, 0 };
+    {
+        //compare self, ensure false
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b1);
+        b.bonedata.fill(b1);
+        assert(skelmodel::blendcombo::sortcmp(a,b) == false);
+    }
+    {
+        //make a[3] zero
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b1);
+        a.bonedata[3] = b2;
+        b.bonedata.fill(b1);
+        assert(skelmodel::blendcombo::sortcmp(a,b) == false);
+    }
+    {
+        //make b[3] zero
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b1);
+        b.bonedata.fill(b1);
+        b.bonedata[3] = b2;
+        assert(skelmodel::blendcombo::sortcmp(a,b));
+    }
+}
+
 void test_skelmesh_assignvert()
 {
     std::printf("testing skelmesh assignvert\n");
@@ -181,6 +256,8 @@ testing skelmodel functionality\n\
     test_skel_ctor();
 
     test_blendcombo_equals();
+    test_blendcombo_sortcmp();
+    test_blendcombo_size();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();
