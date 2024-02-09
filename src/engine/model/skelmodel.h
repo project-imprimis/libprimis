@@ -73,6 +73,33 @@ struct skelmodel : animmodel
 
             size_t size() const;
             static bool sortcmp(const blendcombo &x, const blendcombo &y);
+
+            /**
+             * @brief Attempts to assign a weight to one of the bonedata slots.
+             *
+             * Attempts to add the passed weight/bone combination to this blendcombo.
+             * If the weight passed is less than 1e-3, the weight will not be added
+             * regardless of the status of the object.
+             *
+             * If a weight/bone combo with a weight larger than any of the existing
+             * members of the object are stored, the smaller weights are shifted
+             * (and the smallest one removed) to make space for it. The stored
+             * blends are assumed to be stored in descending order, and if added,
+             * the inserted object will also be inserted to preserve descending
+             * order.
+             *
+             * The returned value sorted indicates the depth into the object at
+             * which the object should attempt to add an element. If an element
+             * is successfully added, and if the bone data is not filled, then
+             * sorted is returned incremented by one. Otherwise, the same value
+             * passed as sorted will be returned.
+             *
+             * @param sorted the depth to add a weight in this object
+             * @param weight the weight to attempt to add
+             * @param bone the corresponding bone index
+             *
+             * @return the resulting number of allocated weights
+             */
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 

@@ -193,6 +193,92 @@ void test_blendcombo_sortcmp()
     }
 }
 
+/**
+ * @brief Attempts to assign a weight to one of the bonedata slots.
+ *
+ * Attempts to add the passed weight/bone combination to this blendcombo. If the
+ * weight passed is less than 1e-3, the weight will not be added regardless of the
+ * status of the object.
+ *
+ * If a weight/bone combo with a weight larger than any of the existing members of the
+ * object are stored, the smaller weights are shifted (and the smallest one removed) to
+ * make space for it.
+ *
+ * The returned value sorted indicates the depth into the object at which the object
+ * should attempt to add an element. If an element is successfully added, and if the
+ * bone data is not filled, then sorted is returned incremented by one. Otherwise, the
+ * same value passed as sorted will be returned.
+ *
+ * @param sorted the depth to add a weight in this object
+ * @param weight the weight to attempt to add
+ * @param bone the corresponding bone index
+ *
+ * @return the resulting number of allocated weights
+ */
+void test_blendcombo_addweight()
+{
+    std::printf("testing blendcombo addweight\n");
+
+    {
+        //test value below minimum weight
+        skelmodel::blendcombo a;
+        int sorted = 0;
+        sorted = a.addweight(sorted, 0.9e-3, 1);
+        assert(sorted == 0);
+        assert(a.bonedata[0].weights == 0.f);
+        assert(a.bonedata[0].bones == 0);
+    }
+    {
+        //test adding single value
+        skelmodel::blendcombo a;
+        int sorted = 0;
+        sorted = a.addweight(sorted, 1.f, 1);
+        assert(sorted == 1);
+        assert(a.bonedata[0].weights == 1.f);
+        assert(a.bonedata[0].bones == 1);
+    }
+    {
+        //test failing to add value, all existing bones larger
+        skelmodel::blendcombo a;
+        a.bonedata.fill({2.f, 1, 2});
+        int sorted = 4;
+        sorted = a.addweight(sorted, 1.f, 1);
+        assert(sorted == 4);
+        assert(a.bonedata[0].weights == 2.f);
+        assert(a.bonedata[0].bones == 1);
+    }
+    {
+        //test adding new entry to appropriate spot
+        skelmodel::blendcombo a;
+        a.bonedata[0] = {4.f, 4, 0};
+        a.bonedata[1] = {3.f, 3, 0};
+        a.bonedata[2] = {2.f, 2, 0};
+        a.bonedata[3] = {1.f, 1, 0};
+        int sorted = 4;
+        sorted = a.addweight(sorted, 2.5f, 5);
+        assert(sorted == 4);
+        assert(a.bonedata[2].weights == 2.5f);
+        assert(a.bonedata[2].bones == 5);
+    }
+    {
+        //test adding enty with small sorted value
+        skelmodel::blendcombo a;
+        a.bonedata[0] = {4.f, 4, 0};
+        a.bonedata[1] = {3.f, 3, 0};
+        a.bonedata[2] = {2.f, 2, 0};
+        a.bonedata[3] = {1.f, 1, 0};
+        int sorted = 0;
+        sorted = a.addweight(sorted, 2.5f, 5);
+        assert(sorted == 1);
+        //check that weight was added to bonedata[sorted]
+        assert(a.bonedata[sorted-1].weights == 2.5f);
+        assert(a.bonedata[sorted-1].bones == 5);
+        //check that ordinary position if sorted >2 was not affected
+        assert(a.bonedata[2].weights == 2.f);
+        assert(a.bonedata[2].bones == 2);
+    }
+}
+
 void test_skelmesh_assignvert()
 {
     std::printf("testing skelmesh assignvert\n");
@@ -255,6 +341,7 @@ testing skelmodel functionality\n\
 
     test_skel_ctor();
 
+    test_blendcombo_addweight();
     test_blendcombo_equals();
     test_blendcombo_sortcmp();
     test_blendcombo_size();

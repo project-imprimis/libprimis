@@ -74,6 +74,7 @@ skelmodel::blendcacheentry::blendcacheentry() : owner(-1)
 
 skelmodel::blendcombo::blendcombo() : uses(1)
 {
+    bonedata.fill({0,0,0});
 }
 
 bool skelmodel::blendcombo::operator==(const blendcombo &c) const
@@ -1279,7 +1280,7 @@ bool skelmodel::blendcombo::sortcmp(const blendcombo &x, const blendcombo &y)
 
 int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
 {
-    if(weight <= 1e-3f)
+    if(weight <= 1e-3f) //do not add trivially small weights
     {
         return sorted;
     }
@@ -1287,6 +1288,7 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     {
         if(weight > bonedata[k].weights)
         {
+            //push weights in bonedata to make room for new larger weights
             for(int l = std::min(sorted-1, 2); l >= k; l--)
             {
                 bonedata[l+1].weights = bonedata[l].weights;
@@ -1294,10 +1296,10 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
             }
             bonedata[k].weights = weight;
             bonedata[k].bones = bone;
-            return sorted<4 ? sorted+1 : sorted;
+            return sorted < static_cast<int>(bonedata.size()) ? sorted+1 : sorted;
         }
     }
-    if(sorted>=4)
+    if(sorted >= static_cast<int>(bonedata.size()))
     {
         return sorted;
     }
