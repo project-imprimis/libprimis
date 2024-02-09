@@ -6,13 +6,9 @@
 
 ## Documentation
 
-  - [API Documentation Website](https://project-imprimis.github.io/libprimis/)
-  - [Engine](doc/engine.md)
-  - [Interface](doc/interface.md)
-  - [Tesseract Renderer](doc/tesseract-renderer.md)
-  - [Timeline](doc/timeline.md)
-
-Check out the project [timeline](doc/timeline.md) to see future plans!
+  - [API Documentation](https://project-imprimis.github.io/libprimis/)
+  - [Test Coverage](https://project-imprimis.github.io/libprimis/lcov/)
+  - [Tesseract Renderer Overview](doc/tesseract-renderer.md)
 
 ## An Open Source Standalone Engine
 
