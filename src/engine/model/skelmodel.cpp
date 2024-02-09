@@ -1178,7 +1178,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             bindvbo(as, p, *vbocache);
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                p->skins[i].bind(m, as);
+                p->skins[i].bind(m, as, skel->usegpuskel, vweights);
                 m.render(as, p->skins[i], *vbocache);
             });
         }
@@ -1224,7 +1224,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
 
         LOOP_RENDER_MESHES(skelmesh, m,
         {
-            p->skins[i].bind(m, as);
+            p->skins[i].bind(m, as, skel->usegpuskel, vweights);
             if(skel->usegpuskel)
             {
                 skel->setgpubones(sc, bc, vblends);
@@ -1628,16 +1628,15 @@ void skelmodel::skelmesh::interpverts(int numgpubones, const dualquat * RESTRICT
     }
 }
 
-void skelmodel::skelmesh::setshader(Shader *s, int row)
+void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, int row)
 {
-    skelmeshgroup *g = static_cast<skelmeshgroup *>(group);
     if(row)
     {
-        s->setvariant(g->skel->usegpuskel ? std::min(maxweights, g->vweights) : 0, row);
+        s->setvariant(usegpuskel ? std::min(maxweights, vweights) : 0, row);
     }
-    else if(g->skel->usegpuskel)
+    else if(usegpuskel)
     {
-        s->setvariant(std::min(maxweights, g->vweights)-1, 0);
+        s->setvariant(std::min(maxweights, vweights)-1, 0);
     }
     else
     {

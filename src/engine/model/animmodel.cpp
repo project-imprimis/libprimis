@@ -332,13 +332,13 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(Mesh &m, const AnimState *as)
+void animmodel::skin::setshader(Mesh &m, const AnimState *as, bool usegpuskel, int vweights)
 {
-    m.setshader(loadshader(), gbuf.istransparentlayer());
+    m.setshader(loadshader(), usegpuskel, vweights, gbuf.istransparentlayer());
 }
 
 
-void animmodel::skin::bind(Mesh &b, const AnimState *as)
+void animmodel::skin::bind(Mesh &b, const AnimState *as, bool usegpuskel, int vweights)
 {
     if(cullface > 0)
     {
@@ -368,7 +368,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
             {
                 alphashadowmodelshader = useshaderbyname("alphashadowmodel");
             }
-            b.setshader(alphashadowmodelshader);
+            b.setshader(alphashadowmodelshader, usegpuskel, vweights);
             setshaderparams(b, as, false);
         }
         else
@@ -378,7 +378,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
             {
                 shadowmodelshader = useshaderbyname("shadowmodel");
             }
-            b.setshader(shadowmodelshader);
+            b.setshader(shadowmodelshader, usegpuskel, vweights);
         }
         return;
     }
@@ -413,7 +413,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     {
         glActiveTexture(GL_TEXTURE0);
     }
-    setshader(b, as);
+    setshader(b, as, usegpuskel, vweights);
     setshaderparams(b, as);
 }
 

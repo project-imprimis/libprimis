@@ -458,7 +458,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
     bindvbo(as, p, *vc);
     LOOP_RENDER_MESHES(vertmesh, m,
     {
-        p->skins[i].bind(m, as);
+        p->skins[i].bind(m, as); //not a skeletal model, do not need to include trailing params
         m.render();
     });
     for(part::linkedpart &l : p->links)

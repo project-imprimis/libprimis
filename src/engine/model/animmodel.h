@@ -84,7 +84,7 @@ class animmodel : public model
                 void cleanup();
                 void preloadBIH() const;
                 void preloadshader();
-                void bind(Mesh &b, const AnimState *as);
+                void bind(Mesh &b, const AnimState *as, bool usegpuskel = false, int vweights = 0);
                 static void invalidateshaderparams();
             private:
                 class ShaderParamsKey
@@ -112,7 +112,7 @@ class animmodel : public model
                 bool decaled() const;
                 void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
                 Shader *loadshader();
-                void setshader(Mesh &m, const AnimState *as);
+                void setshader(Mesh &m, const AnimState *as, bool usegpuskel, int vweights);
 
         };
 
@@ -144,7 +144,7 @@ class animmodel : public model
                 {
                 }
 
-                virtual void setshader(Shader *s, int row = 0)
+                virtual void setshader(Shader *s, bool, int, int row = 0)
                 {
                     if(row)
                     {

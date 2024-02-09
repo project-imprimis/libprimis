@@ -154,7 +154,7 @@ struct skelmodel : animmodel
         static void fillvert(vvert &vv, vert &v);
         void fillverts(vvert *vdata);
         void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
-        void setshader(Shader *s, int row) override final;
+        void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
         void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
@@ -285,7 +285,6 @@ struct skelmodel : animmodel
             std::vector<blendcombo> blendcombos;
 
             GLuint *edata;
-            int vweights;
 
             skelmeshgroup() : skel(nullptr), edata(nullptr), vweights(0), ebuf(0), vlen(0), vertsize(0), vblends(0), vdata(nullptr)
             {
@@ -363,6 +362,7 @@ struct skelmodel : animmodel
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;
             virtual const skelanimspec *loadanim(const char *filename) = 0;
         private:
+            int vweights;
             std::array<int, 4> numblends;
 
             static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
