@@ -70,26 +70,6 @@ skelmodel::blendcacheentry::blendcacheentry() : owner(-1)
 {
 }
 
-//blendcombo
-
-skelmodel::blendcombo::blendcombo() : uses(1)
-{
-    bonedata.fill({0,0,0});
-}
-
-bool skelmodel::blendcombo::operator==(const blendcombo &c) const
-{
-    for(size_t i = 0; i < bonedata.size(); ++i)
-    {
-        if((bonedata[i].bones != c.bonedata[i].bones) ||
-           (bonedata[i].weights != c.bonedata[i].weights))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 //skelmodel::animcacheentry object
 skelmodel::animcacheentry::animcacheentry() : ragdoll(nullptr)
 {
@@ -1244,6 +1224,24 @@ void skelmodel::skelmeshgroup::bindbones(const vvertgw *vverts)
 }
 
 //blendcombo
+
+skelmodel::blendcombo::blendcombo() : uses(1)
+{
+    bonedata.fill({0,0,0});
+}
+
+bool skelmodel::blendcombo::operator==(const blendcombo &c) const
+{
+    for(size_t i = 0; i < bonedata.size(); ++i)
+    {
+        if((bonedata[i].bones != c.bonedata[i].bones) ||
+           (bonedata[i].weights != c.bonedata[i].weights))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 size_t skelmodel::blendcombo::size() const
 {
