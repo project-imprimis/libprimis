@@ -1311,11 +1311,6 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
 //sorted cannot be greater than 4 (size of bonedata array)
 void skelmodel::blendcombo::finalize(int sorted)
 {
-    for(size_t j = 0; j < bonedata.size()-sorted; ++j)
-    {
-        bonedata[sorted+j].weights = 0;
-        bonedata[sorted+j].bones = 0;
-    }
     if(sorted <= 0)
     {
         return;
