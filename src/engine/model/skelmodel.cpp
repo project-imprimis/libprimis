@@ -1316,14 +1316,14 @@ void skelmodel::blendcombo::finalize(int sorted)
         return;
     }
     float total = 0;
-    for(int j = 0; j < sorted; ++j)
+    for(int i = 0; i < sorted; ++i)
     {
-        total += bonedata[j].weights;
+        total += bonedata[i].weights;
     }
     total = 1.0f/total;
-    for(int j = 0; j < sorted; ++j)
+    for(int i = 0; i < sorted; ++i)
     {
-        bonedata[j].weights *= total;
+        bonedata[i].weights *= total;
     }
 }
 
