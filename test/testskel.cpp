@@ -280,11 +280,18 @@ void test_blendcombo_finalize()
         assert(a.bonedata[0].weights == 1.f);
     }
     {
-        //test normalization of finalize < size of array
+        //test normalization of finalize with sorted < size of array
         skelmodel::blendcombo a;
         a.bonedata.fill(b1);
         a.finalize(2);
         assert(a.bonedata[0].weights - 0.5f < tolerance);
+    }
+    {
+        //test no effect if sorted = 0
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.finalize(0);
+        assert(a.bonedata[0].weights - 2.f < tolerance);
     }
 
 
