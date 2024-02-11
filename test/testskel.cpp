@@ -257,6 +257,39 @@ void test_blendcombo_addweight()
     }
 }
 
+void test_blendcombo_finalize()
+{
+    std::printf("testing blendcombo finalize\n");
+
+    skelmodel::blendcombo::BoneData b1 = { 2.f, 0, 0 },
+                                    b2 = { 0.f, 0, 0 };
+
+    {
+        //test normalization of same value in all four channels
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.finalize(4);
+        assert(a.bonedata[0].weights == 0.25f);
+    }
+    {
+        //test normalization of single value
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b2);
+        a.bonedata[0] = b1;
+        a.finalize(4);
+        assert(a.bonedata[0].weights == 1.f);
+    }
+    {
+        //test normalization of finalize < size of array
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.finalize(2);
+        assert(a.bonedata[0].weights - 0.5f < tolerance);
+    }
+
+
+}
+
 void test_skelmesh_assignvert()
 {
     std::printf("testing skelmesh assignvert\n");
@@ -323,6 +356,7 @@ testing skelmodel functionality\n\
     test_blendcombo_equals();
     test_blendcombo_sortcmp();
     test_blendcombo_size();
+    test_blendcombo_finalize();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();

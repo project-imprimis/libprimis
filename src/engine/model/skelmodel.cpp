@@ -1307,6 +1307,8 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
 }
 
 //sorted cannot be greater than 4 (size of bonedata array)
+//normalizes the elements in the weights part of the bonedata array (up to `output`
+//number of bones to normalize)
 void skelmodel::blendcombo::finalize(int sorted)
 {
     if(sorted <= 0)
