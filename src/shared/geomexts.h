@@ -304,7 +304,10 @@ struct plane : vec
     bool operator==(const plane &p) const { return x==p.x && y==p.y && z==p.z && offset==p.offset; }
     bool operator!=(const plane &p) const { return x!=p.x || y!=p.y || z!=p.z || offset!=p.offset; }
 
-    plane() {}
+    plane() : vec(0,0,0), offset(0)
+    {
+    }
+
     plane(const vec &c, float off) : vec(c), offset(off)
     {
         if(x == 0 && y == 0 && z == 0)

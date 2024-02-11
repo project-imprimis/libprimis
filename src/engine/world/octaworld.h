@@ -109,7 +109,7 @@ struct clipplanes
         }
         for(int i = 0; i < 12; ++i)
         {
-            p[i] = plane {0,0,0,0};
+            p[i] = plane();
             side[i] = 0;
         }
         size = 0;
