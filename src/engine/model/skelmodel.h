@@ -103,6 +103,28 @@ struct skelmodel : animmodel
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 
+            /**
+             * @brief Assigns unsigned character values to a vvertgw using the data in the blendcombo object
+             *
+             * If interpindex >=0:
+             *  Sets the zeroth weight to 255 (1.f) and the others to zero
+             *  Sets all of the bone values to 2*interpindex
+             *  Note that none of the blendcombo's saved weights/bones values impact this operation
+             *
+             * If interpindex <0:
+             *  Sets the passed vvertgw's weight values using floating point values ranging from 0..1
+             *  converted to an unsigned character value ranging from 0..255
+             *
+             *  While the sum of the weights is greater than 1 (255), for each nonzero weight, remove
+             *  1/255 from that weight, until the sum of weights is 1
+             *
+             *  Otherwise, while the sum of the weights is less than 1 (255), for each weight < 1, add
+             *  1/255 from that weight, until the sum of the weights is 1
+             *
+             *  Assigns the passed object's bones to be equal to two times this objects' respective interpbones index
+             *
+             * @param v the vvertgw object to set weight/bone values to
+             */
             void serialize(skelmodel::vvertgw &v) const;
     };
 

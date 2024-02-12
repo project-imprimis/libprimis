@@ -261,7 +261,7 @@ void test_blendcombo_finalize()
 {
     std::printf("testing blendcombo finalize\n");
 
-    skelmodel::blendcombo::BoneData b1 = { 2.f, 0, 0 },
+    skelmodel::blendcombo::BoneData b1 = { 0.5f, 0, 0 },
                                     b2 = { 0.f, 0, 0 };
 
     {
@@ -291,10 +291,97 @@ void test_blendcombo_finalize()
         skelmodel::blendcombo a;
         a.bonedata.fill(b1);
         a.finalize(0);
-        assert(a.bonedata[0].weights - 2.f < tolerance);
+        assert(a.bonedata[0].weights - 0.5f < tolerance);
     }
+}
 
+void test_blendcombo_serialize()
+{
+    std::printf("testing blendcombo serialize\n");
 
+    skelmodel::blendcombo::BoneData b1 = { 0.5f, 0, 0 },
+                                    b2 = { 0.1f, 0, 1 },
+                                    b3 = { 0.f,  0, 0 };
+
+    {
+        //test behavior when interpindex >=0
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.interpindex = 1;
+        a.serialize(vv);
+        assert(vv.weights[0] == 255);
+        assert(vv.weights[1] == 0);
+        assert(vv.weights[2] == 0);
+        assert(vv.weights[3] == 0);
+        for(size_t i = 0; i < 4; ++i)
+        {
+            assert(vv.bones[i] == 2);
+        }
+    }
+    {
+        //test values that sum >1
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.interpindex = -1;
+        a.serialize(vv);
+        for(size_t i = 0; i < 4; ++i)
+        {
+            assert(vv.weights[i] == 63 || vv.weights[i] == 64); //either is okay and ~=0.25, +/-1 to sum to 255
+        }
+    }
+    {
+        //test array of differing values { 0.1, 0.5, 0.5, 0.5 }
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b1);
+        a.bonedata[0] = b2;
+        a.interpindex = -1;
+        a.serialize(vv);
+        assert(vv.weights[0] == 0);
+        for(size_t i = 1; i < 4; ++i)
+        {
+            assert(vv.weights[i] == 85);
+        }
+    }
+    {
+        //test array of differing values { 0.5, 0, 0, 0 }
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b3);
+        a.bonedata[0] = b1;
+        a.interpindex = -1;
+        a.serialize(vv);
+        assert(vv.weights[0] == 160);
+        for(size_t i = 1; i < 4; ++i)
+        {
+            assert(vv.weights[i] == 32 || vv.weights[i] == 31); //either is okay and ~=0.25, +/-1 to sum to 255
+        }
+    }
+    {
+        //test values that sum <1
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b2);
+        a.interpindex = -1;
+        a.serialize(vv);
+        for(size_t i = 0; i < 4; ++i)
+        {
+            assert(vv.weights[i] == 63 || vv.weights[i] == 64); //either is okay and ~=0.25, +/-1 to sum to 255
+        }
+    }
+    {
+        //test values assigned from interpbones
+        skelmodel::vvertgw vv;
+        skelmodel::blendcombo a;
+        a.bonedata.fill(b2);
+        a.interpindex = -1;
+        a.serialize(vv);
+        for(size_t i = 0; i < 4; ++i)
+        {
+            assert(vv.bones[i] == 2);
+        }
+    }
 }
 
 void test_skelmesh_assignvert()
@@ -364,6 +451,7 @@ testing skelmodel functionality\n\
     test_blendcombo_sortcmp();
     test_blendcombo_size();
     test_blendcombo_finalize();
+    test_blendcombo_serialize();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();

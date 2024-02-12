@@ -1347,7 +1347,8 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
         int total = 0;
         for(size_t k = 0; k < bonedata.size(); ++k)
         {
-            total += (v.weights[k] = static_cast<uchar>(0.5f + bonedata[k].weights*255));
+            v.weights[k] = static_cast<uchar>(0.5f + bonedata[k].weights*255);
+            total += (v.weights[k]);
         }
         while(total > 255)
         {
