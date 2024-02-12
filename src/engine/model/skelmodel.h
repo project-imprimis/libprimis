@@ -243,7 +243,6 @@ struct skelmodel : animmodel
     class skeleton
     {
         public:
-            std::string name;
             skelmeshgroup * const owner;
             boneinfo *bones; //array of boneinfo, size equal to numbones
             int numbones, numinterpbones, numgpubones, numframes;

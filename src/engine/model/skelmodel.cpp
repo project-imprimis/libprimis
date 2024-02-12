@@ -144,7 +144,6 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
 }
 
 skelmodel::skeleton::skeleton(skelmeshgroup * const group) :
-    name(""),
     owner(group),
     bones(nullptr),
     numbones(0),
