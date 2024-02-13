@@ -18,6 +18,55 @@ class skelhitdata; //defined in hitzone.h
  *
  * extending skelmodel for a specific file format allows a program to use these
  * formats with skeletal animation support
+ *
+ * arrows indicate pointer fields pointing towards an object of the pointed type
+ * arrows point to base or derived type specifically (which share a box)
+ *
+ *          /-----------------------\
+ *          | skelmodel : animmodel |
+ *          \--------------|---Λ----/
+ *                         |   \_______________
+ *                         |                   \   ____
+ *                         |                   |  /    \
+ *                         |      /------------V--V-\  |
+ *                         |      | skelpart : part-+--/
+ *                         |      \-------------|-Λ-/
+ *                          \      _____________/ \___
+ *                           |    /                   \
+ *        /------------------V----V---\           /---V----\
+ *        | skelmeshgroup : meshgroup |           |  skin  |
+ *        \--|-----|--|-Λ----------Λ--/           \-|----|-/
+ *           |     |  | |          |                |    |
+ * /---------V---\ |  | |          |                |    |
+ * |vbocacheentry| |  | |          |                |    |
+ * \-------------/ |  | |          |                |    |
+ *                /   | |          |                |    |
+ *                |   | |          |                |    |
+ *  /-------------V-\ | |          |                |    \_____
+ *  |blendcacheentry| | |          \____________    |          \
+ *  \---------------/ | |                       \ /-V----\     |
+ *                   /  |                       | |shader|     |
+ *                  /   |                       | \------/ /---V---\
+ *                 /    |                       |          |texture|
+ *       /--------V-\ /-V------\  /-------------V---\      \-------/
+ *       |blendcombo| |skeleton|  | skelmesh : Mesh |
+ *       \----------/ \-|---|--/  \--|----|---------/
+ *                      |   |        |    |
+ *    /------\   /------V-\ |     /--V-\  |
+ *    |dynent|   |boneinfo| |     |vert|  |
+ *    \----|-/   \--------/ |     \----/  |
+ *         \____            |             |
+ *              \           |           /-V-\
+ *           /--V--------\  |           |tri|
+ *           |ragdolldata|  |           \---/
+ *           \-|-|-----|-/  |
+ *             | |     |    |
+ *        ____/  |  /--V----V---\
+ *       /       |  |ragdollskel|
+ *       |       |  \-----------/
+ *     /-V-\  /--V-\
+ *     |tri|  |vert|
+ *     \---/  \----/
  */
 struct skelmodel : animmodel
 {
