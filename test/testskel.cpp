@@ -191,6 +191,14 @@ void test_blendcombo_sortcmp()
         b.bonedata[3] = b2;
         assert(skelmodel::blendcombo::sortcmp(a,b));
     }
+    {
+        //pass two empty bonedatas
+        skelmodel::blendcombo a,
+                              b;
+        a.bonedata.fill(b2);
+        b.bonedata.fill(b2);
+        assert(skelmodel::blendcombo::sortcmp(a,b) == false);
+    }
 }
 
 void test_blendcombo_addweight()
