@@ -422,6 +422,16 @@ void testmultimesh()
     assert(meshnames.size() == 2);
 }
 
+void testequals()
+{
+    std::printf("test GLTF file equality\n");
+    std::string modelname = "gltf/twocube.gltf",
+                modelname2 = "gltf/box.gltf";
+    GLTFModelInfo mi(modelname),
+                  mi2(modelname2);
+    assert((mi == mi2) == false);
+}
+
 void test_gltf()
 {
     std::printf(
@@ -446,4 +456,5 @@ testing GLTF file loader\n\
     testbracketunderflow();
     testvertexmismatch();
     testmultimesh();
+    testequals();
 };
