@@ -137,6 +137,11 @@ struct skelmodel : animmodel
              * the inserted object will also be inserted to preserve descending
              * order.
              *
+             * The inserted object will only be inserted at a depth inside the
+             * weights buffer as deep as `sorted`. If this occurs, the descending
+             * order of the buffer may not be maintained, and future operations
+             * depending on this may not function properly.
+             *
              * The returned value sorted indicates the depth into the object at
              * which the object should attempt to add an element. If an element
              * is successfully added, and if the bone data is not filled, then
