@@ -22,9 +22,11 @@ class skelhitdata; //defined in hitzone.h
  * arrows indicate pointer fields pointing towards an object of the pointed type
  * arrows point to base or derived type specifically (which share a box)
  *
- *          /-----------------------\
- *          | skelmodel : animmodel |
- *          \--------------|---Λ----/
+ *
+ *
+ *          /-------------------------------\
+ *          | skelmodel : animmodel : model |
+ *          \--------------|---Λ------------/
  *                         |   \_______________
  *                         |                   \   ____
  *                         |                   |  /    \
