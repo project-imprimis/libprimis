@@ -668,10 +668,28 @@ void test_dualquat_invert()
     std::printf("testing dual quaternion inversion\n");
 
     {
+        //test ordinary case
         dualquat dq(quat(0,1,0,1));
         dq.dual = quat(0,1,0,1);
         dq.invert();
         assert(dq.real.sub(quat(0,-1,0,1)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,3,0,-3)).magnitude() < tolerance);
+    }
+    {
+        //test zero dual case
+        dualquat dq(quat(1,1,1,1));
+        dq.dual = quat(0,0,0,0);
+        dq.invert();
+        assert(dq.real.sub(quat(-1,-1,-1,1)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        //test zero real/dual case
+        dualquat dq(quat(0,0,0,0));
+        dq.dual = quat(0,0,0,0);
+        dq.invert();
+        assert(dq.real.sub(quat(0,0,0,0)).magnitude() < tolerance);
+        assert(dq.dual.sub(quat(0,0,0,0)).magnitude() < tolerance);
     }
 }
 
