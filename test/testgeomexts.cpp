@@ -663,6 +663,18 @@ void test_dualquat_ctor()
     }
 }
 
+void test_dualquat_invert()
+{
+    std::printf("testing dual quaternion inversion\n");
+
+    {
+        dualquat dq(quat(0,1,0,1));
+        dq.dual = quat(0,1,0,1);
+        dq.invert();
+        assert(dq.real.sub(quat(0,-1,0,1)).magnitude() < tolerance);
+    }
+}
+
 void test_dualquat_mul()
 {
     std::printf("testing dual quaternion multiplication\n");
@@ -998,6 +1010,7 @@ testing geometry extensions\n\
     test_quat_invertedrotate();
 
     test_dualquat_ctor();
+    test_dualquat_invert();
     test_dualquat_mul();
     test_dualquat_mulorient();
     test_dualquat_normalize();
