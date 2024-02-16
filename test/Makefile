@@ -21,6 +21,7 @@ CLIENT_OBJS= \
 	testgeomexts.o \
 	testgltfloader.o \
 	testidents.o \
+	testmatrix.o \
 	testocta.o \
 	testprops.o \
 	testskel.o \

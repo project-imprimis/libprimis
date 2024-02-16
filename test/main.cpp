@@ -3,6 +3,7 @@
 #include "testutils.h"
 #include "testidents.h"
 #include "testcs.h"
+#include "testmatrix.h"
 #include "testshadowatlas.h"
 #include "testprops.h"
 #include "testocta.h"
@@ -22,5 +23,6 @@ int main()
     test_gltf();
     test_skel();
     test_geomexts();
+    test_matrix();
     return EXIT_SUCCESS;
 }
