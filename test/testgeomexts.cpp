@@ -845,7 +845,6 @@ void test_dualquat_translate()
         dualquat dq(quat(0,1,0,1));
         dq.dual = quat(0,1,0,1);
         dq.translate(vec(0,0,0));
-        std::printf("dualquat q %f %f %f %f\n", dq.dual.x, dq.dual.y, dq.dual.z, dq.dual.w);
         assert(dq.real.sub(quat(0,1,0,1)).magnitude() < tolerance);
         assert(dq.dual.sub(quat(0,1,0,1)).magnitude() < tolerance);
     }
