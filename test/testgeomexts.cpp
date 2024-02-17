@@ -20,6 +20,14 @@ void test_half_ctor()
         half h(10.f);
         assert(h.val == 18688);
     }
+    {
+        //test values near/above exponent max
+        half h0(32767.f);
+        half h1(32768.f);
+        half h2(32769.f);
+        assert(h1.val == h2.val); //both => overflow value, so are set to 65635
+        assert(h0.val != h1.val); //32767 is below overflow limit
+    }
 }
 
 void test_half_equals()
@@ -60,9 +68,14 @@ void test_triangle_equals()
     triangle t1 = triangle({1,1,1}, {2,2,2}, {3,3,3});
     triangle t2 = triangle({1,1,1}, {2,2,2}, {3,3,3});
     triangle t3 = triangle({0,0,0}, {2,2,2}, {3,3,3});
+    triangle t4;
+    t4.a = vec(0,0,0);
+    t4.b = vec(2,2,2);
+    t4.c = vec(3,3,3);
     assert(!(t1 == t3));
     assert(t1 == t2);
     assert(t1 == t1);
+    assert(t4 == t3);
 }
 
 void test_plane_rayintersect()
@@ -928,6 +941,7 @@ void test_dualquat_transform()
 {
     std::printf("testing dual quaternion transform\n");
 
+    //transform(quat)
     {
         quat a(1,2,3,4),
              b(4,3,2,1);
@@ -943,6 +957,25 @@ void test_dualquat_transform()
         dq.dual = b;
         quat qout = dq.transform(b);
         assert(qout.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+    }
+    //transform(vec)
+    {
+        //test identity operation
+        quat a(0,0,0,1),
+             b(0,0,0,0);
+        dualquat dq(a);
+        dq.dual = b;
+        vec vout = dq.transform(vec(1,0,0));
+        assert(vout.sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        //test simple transformation
+        quat a(0.5,0.5,0.5,0.5),
+             b(1,0,0,0);
+        dualquat dq(a);
+        dq.dual = b;
+        vec vout = dq.transform(vec(1,0,0));
+        assert(vout.sub(vec(1,2,-1)).magnitude() < tolerance);
     }
 
 }
