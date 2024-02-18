@@ -78,6 +78,25 @@ void test_matrix3_ctor()
         assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
         assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
     }
+    //matrix3(matrix4x3)
+    {
+        matrix4x3 m1(vec(1,2,3), vec(4,5,6), vec(7,8,9), vec(10,11,12));
+        matrix3 m2(m1);
+        assert(m2.a == vec(1,2,3));
+        assert(m2.b == vec(4,5,6));
+        assert(m2.c == vec(7,8,9));
+    }
+    //matrix3(matrix4)
+    {
+        matrix4 m1(vec4<float>(1,2,3,4),
+                   vec4<float>(5,6,7,8),
+                   vec4<float>(9,10,11,12),
+                   vec4<float>(13,14,15,16));
+        matrix3 m2(m1);
+        assert(m2.a == vec(1,2,3));
+        assert(m2.b == vec(5,6,7));
+        assert(m2.c == vec(9,10,11));
+    }
 }
 
 void test_matrix3_identity()
