@@ -111,7 +111,7 @@ void test_matrix3_identity()
 
 void test_matrix4x3_setscale()
 {
-    std::printf("testing matrix3 setscale\n");
+    std::printf("testing matrix4x3 setscale\n");
     matrix4x3 output(vec(1,0,0), vec(0,2,0), vec(0,0,3), vec(0,0,0)),
               output2(vec(2,0,0), vec(0,2,0), vec(0,0,2), vec(0,0,0));
     //setscale(float, float, float)
@@ -134,6 +134,40 @@ void test_matrix4x3_setscale()
     {
         matrix4x3 m;
         m.setscale(2);
+        assert(m.a == output2.a);
+        assert(m.b == output2.b);
+        assert(m.c == output2.c);
+    }
+}
+
+void test_matrix4x3_scale()
+{
+    std::printf("testing matrix4x3 scale\n");
+    matrix4x3 output(vec(1,0,0), vec(0,2,0), vec(0,0,3), vec(0,0,0)),
+              output2(vec(2,0,0), vec(0,2,0), vec(0,0,2), vec(0,0,0));
+    //setscale(float, float, float)
+    {
+        matrix4x3 m;
+        m.identity();
+        m.scale(1,2,3);
+        assert(m.a == output.a);
+        assert(m.b == output.b);
+        assert(m.c == output.c);
+    }
+    //setscale(vec)
+    {
+        matrix4x3 m;
+        m.identity();
+        m.scale(vec(1,2,3));
+        assert(m.a == output.a);
+        assert(m.b == output.b);
+        assert(m.c == output.c);
+    }
+    //setscale(float)
+    {
+        matrix4x3 m;
+        m.identity();
+        m.scale(2);
         assert(m.a == output2.a);
         assert(m.b == output2.b);
         assert(m.c == output2.c);
@@ -174,6 +208,7 @@ testing matrices\n\
     test_matrix3_identity();
 
     test_matrix4x3_setscale();
+    test_matrix4x3_scale();
     test_matrix4x3_identity();
 
     test_matrix4_identity();
