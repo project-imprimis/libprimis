@@ -99,6 +99,30 @@ void test_matrix3_ctor()
     }
 }
 
+void test_matrix3_normalize()
+{
+    std::printf("testing matrix3 normalize\n");
+    {
+        //test identity -> identity
+        matrix3 m;
+        m.identity();
+        m.normalize();
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+    }
+    {
+        //test normal normalization case
+        matrix3 m;
+        m.a = vec(3,4,0);
+        m.b = vec(0,4,3);
+        m.c = vec(4,0,3);
+        m.normalize();
+        assert(m.a.sub(vec(0.6,0.8,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,0.8,0.6)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0.8,0,0.6)).magnitude() < tolerance);
+    }
+}
 void test_matrix3_identity()
 {
     std::printf("testing matrix3 identity\n");
@@ -238,6 +262,7 @@ testing matrices\n\
     );
 
     test_matrix3_ctor();
+    test_matrix3_normalize();
     test_matrix3_identity();
 
     test_matrix4x3_mul();
