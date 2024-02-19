@@ -109,6 +109,20 @@ void test_matrix3_identity()
     assert(m.c == vec(0,0,1));
 }
 
+void test_matrix4x3_mul()
+{
+    std::printf("testing matrix4x3 mul\n");
+    {
+        matrix4x3 m;
+        m.identity();
+        m.mul(2);
+        assert(m.a == vec(2,0,0));
+        assert(m.b == vec(0,2,0));
+        assert(m.c == vec(0,0,2));
+        assert(m.d == vec(0,0,0));
+    }
+}
+
 void test_matrix4x3_setscale()
 {
     std::printf("testing matrix4x3 setscale\n");
@@ -207,6 +221,7 @@ testing matrices\n\
     test_matrix3_ctor();
     test_matrix3_identity();
 
+    test_matrix4x3_mul();
     test_matrix4x3_setscale();
     test_matrix4x3_scale();
     test_matrix4x3_identity();
