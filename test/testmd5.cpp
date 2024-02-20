@@ -32,6 +32,29 @@ void test_md5_ctor()
     assert(m.modelname() == "test");
 }
 
+void test_md5_formatname()
+{
+    std::printf("testing md5 formatname\n");
+
+    assert(std::string(md5::formatname()) == std::string("md5"));
+}
+
+void test_md5_flipy()
+{
+    std::printf("testing md5 flipy\n");
+
+    md5 m("test");
+    assert(m.flipy() == false);
+}
+
+void test_md5_type()
+{
+    std::printf("testing md5 type\n");
+
+    md5 m("test");
+    assert(m.flipy() == false);
+}
+
 void test_md5()
 {
     std::printf(
@@ -41,4 +64,7 @@ testing md5 functionality\n\
     );
 
     test_md5_ctor();
+    test_md5_formatname();
+    test_md5_flipy();
+    test_md5_type();
 }
