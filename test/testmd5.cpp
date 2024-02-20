@@ -52,7 +52,7 @@ void test_md5_type()
     std::printf("testing md5 type\n");
 
     md5 m("test");
-    assert(m.flipy() == false);
+    assert(m.type() == MDL_MD5);
 }
 
 void test_md5()
