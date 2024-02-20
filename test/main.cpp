@@ -10,6 +10,7 @@
 #include "testgeomexts.h"
 #include "testgltfloader.h"
 #include "testskel.h"
+#include "testmd5.h"
 
 int main()
 {
@@ -21,6 +22,7 @@ int main()
     test_props();
     test_octa();
     test_gltf();
+    test_md5();
     test_skel();
     test_geomexts();
     test_matrix();

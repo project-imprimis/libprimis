@@ -4,7 +4,7 @@
 
 CXXFLAGS= -O0 -ffast-math -Wall -fsigned-char -ftest-coverage -fprofile-arcs -fno-rtti
 
-CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include 
+CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include
 CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW -lgcov
 
 # if you want to compile with c++20, use `make CPP_20=1`, else c++17
@@ -22,6 +22,7 @@ CLIENT_OBJS= \
 	testgltfloader.o \
 	testidents.o \
 	testmatrix.o \
+	testmd5.o \
 	testocta.o \
 	testprops.o \
 	testskel.o \
