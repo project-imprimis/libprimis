@@ -94,9 +94,11 @@ jobs:
 
         #Generates float value from lcov summary for tests, then generates its int representation;
         #macro substitutes it into SVG template to generate badge
+        #We can just host this object along with the website, then reference it to have a dynamic frontpage badge,
+        #instead of using an external service
       - name: Generate coverage badge
         run: pct=$(lcov --summary output | grep "lines" | cut -d "%" -f1 | cut -d ":" -f2 | cut -d " " -f2);
-             ipct=$(echo "90.3" | cut -d "." -f1);
+             ipct=$(echo $pct | cut -d "." -f1);
              gcc -xc -E -P test/coverage.svg -DVAL=$pct -DIVAL=$ipct > covout.svg
 
       - name: Move coverage badge to docs
