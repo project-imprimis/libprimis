@@ -1,0 +1,25 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="200" height="20">
+    <g style="fill:dimgray;">
+        <rect x="0" y="0" width="130" height="20"/>
+    </g>
+    #if IVAL >= 90
+    <g style="fill:limegreen;">
+    #elif IVAL >= 75
+    <g style="fill:sandybrown;">
+    #else
+    <g style="fill:firebrick;">
+    #endif
+        <rect x="130" y="0" width="70" height="20"/>
+    </g>
+    <g style="font-size:12;font-family:DejaVu-Sans;fill:white;stroke-width:1;">
+        <text x="12" y="14">LCOV Coverage:</text>
+    </g>
+    <g style="font-size:12;font-family:DejaVu-Sans;fill:white;stroke-width:1;">
+        <text x="140" y="14">
+            VAL%
+        </text>
+    </g>
+</svg>

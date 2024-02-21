@@ -92,6 +92,16 @@ jobs:
       - name: Move lcov HTML to docs dir
         run: sudo cp -r lcov docs/lcov
 
+        #Generates float value from lcov summary for tests, then generates its int representation;
+        #macro substitutes it into SVG template to generate badge
+      - name: Generate coverage badge
+        run: pct=$(lcov --summary output | grep "lines" | cut -d "%" -f1 | cut -d ":" -f2 | cut -d " " -f2);
+             ipct=$(echo "90.3" | cut -d "." -f1);
+             gcc -xc -E -P test/coverage.svg -DVAL=$pct -DIVAL=$ipct > covout.svg
+
+      - name: Move coverage badge to docs
+        run: sudo cp covout.svg docs/lcov/coverage.svg
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
