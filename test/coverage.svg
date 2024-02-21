@@ -5,7 +5,7 @@
         <rect x="0" y="0" width="110" height="20"/>
     </g>
     #if IVAL >= 90
-    <g sfill="limegreen">
+    <g fill="limegreen">
     #elif IVAL >= 75
     <g fill="sandybrown">
     #else
