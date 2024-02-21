@@ -421,12 +421,12 @@ void GLTFModelInfo::cleanstring(std::string &s)
         }
     }
 }
-//return a list of strings corresponding to the named objects in the gltf file
+//returns number of accessors
 size_t GLTFModelInfo::findmeshes(std::string_view path)
 {
-    accessors.clear();
+    meshes.clear();
     std::vector<std::string> accessorblock = getblockbyname(path, "\"meshes\"");
-    size_t numaccessors = 0;
+    size_t nummeshes = 0;
     //get indices by parsing sub-blocks
     for(size_t i = 0; i < accessorblock.size(); ++i)
     {
@@ -497,9 +497,9 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
         }
         meshes.push_back(m);
         i += block.size();
-        numaccessors++;
+        nummeshes++;
     }
-    return numaccessors;
+    return nummeshes;
 }
 
 //clears accessors vector, assigns to it ones found in the given math, returns number of accessors
