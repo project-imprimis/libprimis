@@ -133,6 +133,63 @@ void test_matrix3_identity()
     assert(m.c == vec(0,0,1));
 }
 
+void test_matrix4x3_ctor()
+{
+    std::printf("testing matrix4x3 ctor\n");
+
+    //matrix4x3()
+    {
+        matrix4x3 m;
+        assert(m.a == vec(0,0,0));
+        assert(m.b == vec(0,0,0));
+        assert(m.c == vec(0,0,0));
+        assert(m.d == vec(0,0,0));
+    }
+    //matrix4x3(vec,vec,vec,vec)
+    {
+        matrix4x3 m({1,0,0}, {0,1,0}, {0,0,1}, {0,0,0});
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+        assert(m.d == vec(0,0,0));
+    }
+    //matrix4x3(matrix3, vec)
+    {
+        matrix3 m0;
+        m0.identity();
+        matrix4x3 m(m0, {1,1,1});
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+        assert(m.d == vec(1,1,1));
+    }
+    //matrix4x3(dualquat)
+    {
+        //test trivial case: identity dualquat
+        quat a(0,0,0,1),
+             b(0,0,0,0);
+        dualquat dq(a);
+        dq.dual = b;
+        matrix4x3 m(dq);
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+    }
+    {
+        //test rotation and translation
+        quat a(0.5,0.5,0.5,0.5),
+             b(0,0,0,1);
+        dualquat dq(a);
+        dq.dual = b;
+        matrix4x3 m(dq);
+        assert(m.a.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.c.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.d.sub(vec(-1,-1,-1)).magnitude() < tolerance);
+    }
+}
+
 void test_matrix4x3_mul()
 {
     std::printf("testing matrix4x3 mul\n");
@@ -276,6 +333,7 @@ testing matrices\n\
     test_matrix3_normalize();
     test_matrix3_identity();
 
+    test_matrix4x3_ctor();
     test_matrix4x3_mul();
     test_matrix4x3_setscale();
     test_matrix4x3_scale();
