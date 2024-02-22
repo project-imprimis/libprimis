@@ -10,10 +10,10 @@ class GLTFModelInfo
         //throws std::logic_error if invalid bracketing
         //throws std::logic_error if invalid geometry data type (e.g. float vertex indices)
         GLTFModelInfo(std::string_view path, bool messages = false);
-        //return list of mesh names
-        std::vector<std::string> getmeshnames() const;
+        //return list of mesh names, using one of the NodeTypes
+        std::vector<std::string> getnodenames(int type) const;
         //getter functions generate vectors of arrays of the appropriate type
-        //given the mesh name
+        //given the node name
         std::vector<std::array<float, 3>> getpositions(std::string name) const;
         std::vector<std::array<float, 3>> getnormals(std::string name) const;
         std::vector<std::array<float, 2>> gettexcoords(std::string name) const;
@@ -24,7 +24,23 @@ class GLTFModelInfo
         //two models are equal if their getters return the same (slow, requires loading data pointed to by file)
         bool operator==(const GLTFModelInfo &m) const;
 
+        enum NodeTypes
+        {
+            NodeType_All,
+            NodeType_Mesh,
+            NodeType_Armature,
+            NodeType_Bone
+        };
     private:
+
+        struct Node
+        {
+            std::string name;
+            std::optional<std::array<float, 3>> translation;
+            std::optional<std::array<float, 4>> rotation;
+            std::optional<size_t> mesh;
+        };
+
         struct Mesh
         {
             std::string name;
@@ -138,8 +154,9 @@ class GLTFModelInfo
          *  - std::vector<std::string> of file
          */
         std::vector<std::string> loadjsonfile(std::string_view name);
-        std::vector<std::string> getblockbyname(std::string_view path, std::string blockname);
+        std::vector<std::string> getblockbyname(std::string_view path, std::string blockname, size_t maxdepth = 0);
         void cleanstring(std::string &s);
+        size_t findnodes(std::string_view path);
         size_t findmeshes(std::string_view path);
         size_t findaccessors(std::string_view path);
         uint findbufferviews(std::string_view path);
@@ -148,6 +165,7 @@ class GLTFModelInfo
         std::vector<std::string> getblock(const std::vector<std::string> &file, uint line);
 
         const bool messages;
+        std::vector<Node> nodes;
         std::vector<Mesh> meshes;
         std::vector<Accessor> accessors;
         std::vector<BufferView> bufferviews;

@@ -96,7 +96,7 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
         GLTFModelInfo mi(filename);
 
         //get GLTF data from file/binary
-        std::string meshname = mi.getmeshnames()[0];
+        std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
         std::vector<std::array<float, 3>> positions = mi.getpositions(meshname);
         std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
         std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);

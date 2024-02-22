@@ -51,6 +51,7 @@ GLTFModelInfo::GLTFModelInfo(std::string_view path, bool messages) : messages(me
     infile.open(path.data());
     std::vector<std::string> output;
 
+    findnodes(path);
     findmeshes(path);
     findaccessors(path);
     findbufferviews(path);
@@ -58,14 +59,22 @@ GLTFModelInfo::GLTFModelInfo(std::string_view path, bool messages) : messages(me
     findanimations(path);
 }
 
-std::vector<std::string> GLTFModelInfo::getmeshnames() const
+//NodeType_Mesh will return all nodes which contain meshes
+std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
 {
-    std::vector<std::string> meshnames;
-    for(const Mesh &m : meshes)
+    std::vector<std::string> nodenames;
+    for(const Node &n : nodes)
     {
-        meshnames.push_back(m.name);
+        if(type == NodeType_All)
+        {
+            nodenames.push_back(n.name);
+        }
+        if(type == NodeType_Mesh && n.mesh)
+        {
+            nodenames.push_back(n.name);
+        }
     }
-    return meshnames;
+    return nodenames;
 }
 
 //getter functions generate vectors of arrays of the appropriate type
@@ -267,8 +276,8 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
 
 bool GLTFModelInfo::operator==(const GLTFModelInfo &m) const
 {
-    std::vector<std::string> names = getmeshnames();
-    std::vector<std::string> mnames = m.getmeshnames();
+    std::vector<std::string> names = getnodenames(NodeType_Mesh);
+    std::vector<std::string> mnames = m.getnodenames(NodeType_Mesh);
     if(names != mnames)
     {
         return false;
@@ -392,13 +401,23 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
 }
 
 //helper for find<object> functions
-std::vector<std::string> GLTFModelInfo::getblockbyname(std::string_view path, std::string blockname)
+std::vector<std::string> GLTFModelInfo::getblockbyname(std::string_view path, std::string blockname, size_t maxdepth)
 {
     std::vector<std::string> file = loadjsonfile(path);
     size_t blockstart = 0;
     for(size_t i = 0; i < file.size(); ++i)
     {
-        if(file[i].find(blockname) != std::string::npos)
+        size_t itr = file[i].find(blockname);
+        if(maxdepth)
+        {
+            std::printf("getting block with bounds %lu %lu\n", itr, maxdepth);
+            if(itr <= maxdepth)
+            {
+                blockstart = i;
+                break;
+            }
+        }
+        else if(itr != std::string::npos)
         {
             blockstart = i;
             break;
@@ -421,7 +440,69 @@ void GLTFModelInfo::cleanstring(std::string &s)
         }
     }
 }
-//returns number of accessors
+
+//returns number of nodes
+size_t GLTFModelInfo::findnodes(std::string_view path)
+{
+    nodes.clear();
+    std::vector<std::string> nodeblock = getblockbyname(path, "\"nodes\"", 1); //get only "node" at indent depth 1
+    size_t numnodes = 0;
+    //get indices by parsing sub-blocks
+    for(std::string k : nodeblock)
+    {
+        std::printf("node %s\n", k.c_str());
+    }
+    for(size_t i = 0; i < nodeblock.size(); ++i)
+    {
+        std::vector<std::string> block = getblock(nodeblock, i);
+        if(!block.size())
+        {
+            continue;
+        }
+        Node n{"", std::nullopt, std::nullopt, std::nullopt};
+        for(size_t j = 0; j < block.size(); ++j)
+        {
+            if(block[j].find(" \"name\":") != std::string::npos)
+            {
+                std::array<char, 256> s;
+                s.fill(0);
+                std::sscanf(block[j].c_str(), " \"name\":\%s", s.data());
+                n.name = s.data();
+                cleanstring(n.name);
+            }
+            else if(block[j].find("\"mesh\"") != std::string::npos)
+            {
+                uint mesh = 0;
+                std::sscanf( block[j].c_str(), " \"mesh\":%u", &mesh);
+                n.mesh = mesh;
+            }
+            else if(block[j].find("\"translation\"") != std::string::npos)
+            {
+                std::array<float, 3> translation = {0,0,0};
+                std::vector<std::string> translationblock = getblock(block, j);
+                for(size_t k = 0; k < translationblock.size(); ++k)
+                {
+                    std::sscanf( translationblock[k].c_str(), " %f", &translation[k]);
+                }
+                n.translation = translation;
+                std::printf("%f %f %f\n", n.translation.value()[0], n.translation.value()[1], n.translation.value()[2]);
+            }
+        }
+        if(messages)
+        {
+            std::printf("new node created: %s %lu\n",
+                n.name.c_str(),
+                n.mesh ? n.mesh.value() : -1
+            );
+        }
+        nodes.push_back(n);
+        i += block.size();
+        numnodes++;
+    }
+    return numnodes;
+}
+
+//returns number of meshes
 size_t GLTFModelInfo::findmeshes(std::string_view path)
 {
     meshes.clear();
