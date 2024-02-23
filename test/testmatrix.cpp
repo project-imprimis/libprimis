@@ -310,6 +310,56 @@ void test_matrix4x3_settranslate()
     }
 }
 
+void test_matrix4_ctor()
+{
+    std::printf("testing matrix4 ctor\n");
+
+    //matrix4(float*)
+    {
+        std::array<float, 16> f{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+        matrix4 m(f.data());
+        assert(m.a == vec4<float>(1,2,3,4));
+        assert(m.b == vec4<float>(5,6,7,8));
+        assert(m.c == vec4<float>(9,10,11,12));
+        assert(m.d == vec4<float>(13,14,15,16));
+    }
+    //matrix4(vec,vec,vec)
+    {
+        matrix4 m({1,0,0}, {0,1,0}, {0,0,1});
+        assert(m.a == vec4<float>(1,0,0,0));
+        assert(m.b == vec4<float>(0,1,0,0));
+        assert(m.c == vec4<float>(0,0,1,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+    //matrix4(vec4<float>,vec4<float>,vec4<float>,vec4<float>)
+    {
+        matrix4 m({1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,1});
+        assert(m.a == vec4<float>(1,0,0,0));
+        assert(m.b == vec4<float>(0,1,0,0));
+        assert(m.c == vec4<float>(0,0,1,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+    //matrix4(matrix3, vec)
+    {
+        matrix3 m0;
+        m0.identity();
+        matrix4 m(m0, {1,1,1});
+        assert(m.a == vec4<float>(1,0,0,0));
+        assert(m.b == vec4<float>(0,1,0,0));
+        assert(m.c == vec4<float>(0,0,1,0));
+        assert(m.d == vec4<float>(1,1,1,1));
+    }
+    //matrix4(matrix4x3)
+    {
+        matrix4x3 m0({1,0,0}, {0,1,0}, {0,0,1}, {0,0,0});
+        matrix4 m(m0);
+        assert(m.a == vec4<float>(1,0,0,0));
+        assert(m.b == vec4<float>(0,1,0,0));
+        assert(m.c == vec4<float>(0,0,1,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+}
+
 void test_matrix4_identity()
 {
     std::printf("testing matrix4 identity\n");
@@ -341,5 +391,6 @@ testing matrices\n\
     test_matrix4x3_identity();
     test_matrix4x3_row();
 
+    test_matrix4_ctor();
     test_matrix4_identity();
 }
