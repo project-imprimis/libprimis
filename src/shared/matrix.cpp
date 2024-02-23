@@ -406,7 +406,7 @@ matrix4 matrix4::inverse(double mindet) const
     }
 }
 
-matrix4::matrix4()
+matrix4::matrix4() : a(0,0,0,0), b(0,0,0,0), c(0,0,0,0), d(0,0,0,0)
 {
 }
 

@@ -316,6 +316,14 @@ void test_matrix4_ctor()
 
     //matrix4(float*)
     {
+        matrix4 m;
+        assert(m.a == vec4<float>(0,0,0,0));
+        assert(m.b == vec4<float>(0,0,0,0));
+        assert(m.c == vec4<float>(0,0,0,0));
+        assert(m.d == vec4<float>(0,0,0,0));
+    }
+    //matrix4(float*)
+    {
         std::array<float, 16> f{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
         matrix4 m(f.data());
         assert(m.a == vec4<float>(1,2,3,4));
