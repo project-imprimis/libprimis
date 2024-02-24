@@ -379,6 +379,40 @@ void test_matrix4_identity()
     assert(m.d == vec4<float>(0,0,0,1));
 }
 
+void test_matrix4_jitter()
+{
+    std::printf("testing matrix4 jitter\n");
+    {
+        //test jitter with nonzero w values
+        matrix4 m({1,1,1,1},{1,1,1,2}, {1,1,1,3}, {1,1,1,4});
+        m.jitter(1,2);
+        assert(m.a == vec4<float>(2,3,1,1));
+        assert(m.b == vec4<float>(3,5,1,2));
+        assert(m.c == vec4<float>(4,7,1,3));
+        assert(m.d == vec4<float>(5,9,1,4));
+    }
+    {
+        //test jitter with zero w values
+        matrix4 m({1,1,1,0},{1,1,1,0}, {1,1,1,0}, {1,1,1,0});
+        m.jitter(1,2);
+        assert(m.a == vec4<float>(1,1,1,0));
+        assert(m.b == vec4<float>(1,1,1,0));
+        assert(m.c == vec4<float>(1,1,1,0));
+        assert(m.d == vec4<float>(1,1,1,0));
+    }
+}
+
+void test_matrix4_transpose()
+{
+    std::printf("testing matrix4 transpose\n");
+    matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+    m.transpose();
+    assert(m.a == vec4<float>(1,5,9,13));
+    assert(m.b == vec4<float>(2,6,10,14));
+    assert(m.c == vec4<float>(3,7,11,15));
+    assert(m.d == vec4<float>(4,8,12,16));
+}
+
 void test_matrix()
 {
     std::printf(
@@ -401,4 +435,6 @@ testing matrices\n\
 
     test_matrix4_ctor();
     test_matrix4_identity();
+    test_matrix4_jitter();
+    test_matrix4_transpose();
 }
