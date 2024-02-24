@@ -513,50 +513,50 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
             continue;
         }
         Mesh m{"",std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt};
-        for(std::string j : block)
+        for(std::string_view j : block)
         {
-            if(j.find(" \"name\":") != std::string::npos)
+            if(j.find(" \"name\":") != std::string_view::npos)
             {
                 std::array<char, 256> s;
                 s.fill(0);
-                std::sscanf(j.c_str(), " \"name\":\%s", s.data());
+                std::sscanf(j.data(), " \"name\":\%s", s.data());
                 m.name = s.data();
                 cleanstring(m.name);
             }
-            else if(j.find(" \"POSITION\":") != std::string::npos)
+            else if(j.find(" \"POSITION\":") != std::string_view::npos)
             {
                 uint positions = 0;
-                std::sscanf(j.c_str(), " \"POSITION\":%u", &positions);
+                std::sscanf(j.data(), " \"POSITION\":%u", &positions);
                 m.positions = positions; //assign to optional with operator=
             }
-            else if(j.find("\"NORMAL\"") != std::string::npos)
+            else if(j.find("\"NORMAL\"") != std::string_view::npos)
             {
                 uint normals = 0;
-                std::sscanf(j.c_str(), " \"NORMAL\":%u", &normals);
+                std::sscanf(j.data(), " \"NORMAL\":%u", &normals);
                 m.normals = normals;
             }
-            else if(j.find("\"TEXCOORD_0\"") != std::string::npos)
+            else if(j.find("\"TEXCOORD_0\"") != std::string_view::npos)
             {
                 uint texcoords = 0;
-                std::sscanf( j.c_str(), " \"TEXCOORD_0\":%u", &texcoords);
+                std::sscanf( j.data(), " \"TEXCOORD_0\":%u", &texcoords);
                 m.texcoords = texcoords;
             }
-            else if(j.find("\"JOINTS_0\"") != std::string::npos)
+            else if(j.find("\"JOINTS_0\"") != std::string_view::npos)
             {
                 uint joints = 0;
-                std::sscanf( j.c_str(), " \"JOINTS_0\":%u", &joints);
+                std::sscanf( j.data(), " \"JOINTS_0\":%u", &joints);
                 m.joints = joints;
             }
-            else if(j.find("\"WEIGHTS_0\"") != std::string::npos)
+            else if(j.find("\"WEIGHTS_0\"") != std::string_view::npos)
             {
                 uint weights = 0;
-                std::sscanf( j.c_str(), " \"WEIGHTS_0\":%u", &weights);
+                std::sscanf( j.data(), " \"WEIGHTS_0\":%u", &weights);
                 m.weights = weights;
             }
-            else if(j.find("\"indices\"") != std::string::npos)
+            else if(j.find("\"indices\"") != std::string_view::npos)
             {
                 uint indices = 0;
-                std::sscanf( j.c_str(), " \"indices\":%u", &indices);
+                std::sscanf( j.data(), " \"indices\":%u", &indices);
                 m.indices = indices;
             }
         }
@@ -595,25 +595,25 @@ size_t GLTFModelInfo::findaccessors(std::string_view path)
         }
         Accessor a{0,0,0,0,""};
         a.index = accessors.size();
-        for(std::string j : block)
+        for(std::string_view j : block)
         {
-            if(j.find(" \"bufferView\":") != std::string::npos)
+            if(j.find(" \"bufferView\":") != std::string_view::npos)
             {
-                std::sscanf(j.c_str(), " \"bufferView\":%u", &a.bufferview);
+                std::sscanf(j.data(), " \"bufferView\":%u", &a.bufferview);
             }
-            else if(j.find("\"componentType\"") != std::string::npos)
+            else if(j.find("\"componentType\"") != std::string_view::npos)
             {
-                std::sscanf(j.c_str(), " \"componentType\":%u", &a.componenttype);
+                std::sscanf(j.data(), " \"componentType\":%u", &a.componenttype);
             }
-            else if(j.find("\"count\"") != std::string::npos)
+            else if(j.find("\"count\"") != std::string_view::npos)
             {
-                std::sscanf( j.c_str(), " \"count\":%u", &a.count);
+                std::sscanf( j.data(), " \"count\":%u", &a.count);
             }
-            else if(j.find("\"type\"") != std::string::npos)
+            else if(j.find("\"type\"") != std::string_view::npos)
             {
                 std::array<char, 32> s;
                 s.fill(0);
-                std::sscanf(j.c_str(), " \"type\":%s", s.data());
+                std::sscanf(j.data(), " \"type\":%s", s.data());
                 a.type = s.data();
             }
         }
@@ -643,19 +643,19 @@ uint GLTFModelInfo::findbufferviews(std::string_view path)
         }
         BufferView b{0,0,0};
         b.index = bufferviews.size();
-        for(std::string j : block)
+        for(std::string_view j : block)
         {
-            if(j.find(" \"buffer\":") != std::string::npos)
+            if(j.find(" \"buffer\":") != std::string_view::npos)
             {
-                std::sscanf(j.c_str(), " \"buffer\":%u", &b.buffer);
+                std::sscanf(j.data(), " \"buffer\":%u", &b.buffer);
             }
-            else if(j.find("\"byteLength\"") != std::string::npos)
+            else if(j.find("\"byteLength\"") != std::string_view::npos)
             {
-                std::sscanf(j.c_str(), " \"byteLength\":%u", &b.bytelength);
+                std::sscanf(j.data(), " \"byteLength\":%u", &b.bytelength);
             }
-            else if(j.find("\"byteOffset\"") != std::string::npos)
+            else if(j.find("\"byteOffset\"") != std::string_view::npos)
             {
-                std::sscanf( j.c_str(), " \"byteOffset\":%u", &b.byteoffset);
+                std::sscanf( j.data(), " \"byteOffset\":%u", &b.byteoffset);
             }
         }
         if(messages)
@@ -683,17 +683,17 @@ uint GLTFModelInfo::findbuffers(std::string_view path)
         }
         Buffer b{0,0,""};
         b.index = buffers.size();
-        for(std::string j : block)
+        for(std::string_view j : block)
         {
-            if(j.find(" \"byteLength\":") != std::string::npos)
+            if(j.find(" \"byteLength\":") != std::string_view::npos)
             {
-                std::sscanf(j.c_str(), " \"byteLength\":%u", &b.bytelength);
+                std::sscanf(j.data(), " \"byteLength\":%u", &b.bytelength);
             }
-            else if(j.find("\"uri\"") != std::string::npos)
+            else if(j.find("\"uri\"") != std::string_view::npos)
             {
                 std::array<char, 256> s;
                 s.fill(0);
-                std::sscanf(j.c_str(), " \"uri\":\"%s", s.data());
+                std::sscanf(j.data(), " \"uri\":\"%s", s.data());
                 b.uri = s.data();
                 cleanstring(b.uri);
             }
@@ -750,15 +750,15 @@ uint GLTFModelInfo::findanimations(std::string_view path)
                     Animation::Channel c{a.channels.size(),0,0,""};
                     for(std::string_view l : channeldata)
                     {
-                        if(l.find(" \"sampler\":") != std::string::npos)
+                        if(l.find(" \"sampler\":") != std::string_view::npos)
                         {
                             std::sscanf(l.data(), " \"sampler\":%lu", &c.sampler);
                         }
-                        else if(l.find("\"node\"") != std::string::npos)
+                        else if(l.find("\"node\"") != std::string_view::npos)
                         {
                             std::sscanf(l.data(), " \"node\":%lu", &c.targetnode);
                         }
-                        else if(l.find("\"path\"") != std::string::npos)
+                        else if(l.find("\"path\"") != std::string_view::npos)
                         {
                             std::array<char, 256> s;
                             s.fill(0);
@@ -788,15 +788,15 @@ uint GLTFModelInfo::findanimations(std::string_view path)
                     Animation::Sampler s{a.samplers.size(),0,"", 0};
                     for(std::string_view l : channeldata)
                     {
-                        if(l.find(" \"input\":") != std::string::npos)
+                        if(l.find(" \"input\":") != std::string_view::npos)
                         {
                             std::sscanf(l.data(), " \"input\":%lu", &s.input);
                         }
-                        else if(l.find("\"output\"") != std::string::npos)
+                        else if(l.find("\"output\"") != std::string_view::npos)
                         {
                             std::sscanf(l.data(), " \"output\":%lu", &s.output);
                         }
-                        else if(l.find("\"interpolation\"") != std::string::npos)
+                        else if(l.find("\"interpolation\"") != std::string_view::npos)
                         {
                             std::array<char, 256> str;
                             str.fill(0);
