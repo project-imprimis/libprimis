@@ -123,6 +123,7 @@ void test_matrix3_normalize()
         assert(m.c.sub(vec(0.8,0,0.6)).magnitude() < tolerance);
     }
 }
+
 void test_matrix3_identity()
 {
     std::printf("testing matrix3 identity\n");
@@ -132,6 +133,17 @@ void test_matrix3_identity()
     assert(m.b == vec(0,1,0));
     assert(m.c == vec(0,0,1));
 }
+
+void test_matrix3_transpose()
+{
+    std::printf("testing matrix4 transpose\n");
+    matrix3 m({1,2,3}, {4,5,6}, {7,8,9});
+    m.transpose();
+    assert(m.a == vec(1,4,7));
+    assert(m.b == vec(2,5,8));
+    assert(m.c == vec(3,6,9));
+}
+
 
 void test_matrix4x3_ctor()
 {
@@ -424,6 +436,7 @@ testing matrices\n\
     test_matrix3_ctor();
     test_matrix3_normalize();
     test_matrix3_identity();
+    test_matrix3_transpose();
 
     test_matrix4x3_ctor();
     test_matrix4x3_mul();
