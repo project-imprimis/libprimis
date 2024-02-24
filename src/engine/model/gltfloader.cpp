@@ -448,10 +448,6 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
     std::vector<std::string> nodeblock = getblockbyname(path, "\"nodes\"", 1); //get only "node" at indent depth 1
     size_t numnodes = 0;
     //get indices by parsing sub-blocks
-    for(std::string k : nodeblock)
-    {
-        std::printf("node %s\n", k.c_str());
-    }
     for(size_t i = 0; i < nodeblock.size(); ++i)
     {
         std::vector<std::string> block = getblock(nodeblock, i);
