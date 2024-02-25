@@ -492,6 +492,18 @@ void test_matrix4_transpose()
     assert(m.d == vec4<float>(4,8,12,16));
 }
 
+void test_matrix4_row()
+{
+    std::printf("testing matrix4 rowx/rowy/rowz/roww\n");
+
+    matrix4 m;
+    m.identity();
+    assert(m.rowx() == vec4<float>(1,0,0,0));
+    assert(m.rowy() == vec4<float>(0,1,0,0));
+    assert(m.rowz() == vec4<float>(0,0,1,0));
+    assert(m.roww() == vec4<float>(0,0,0,1));
+}
+
 void test_matrix()
 {
     std::printf(
@@ -519,4 +531,5 @@ testing matrices\n\
     test_matrix4_setscale();
     test_matrix4_jitter();
     test_matrix4_transpose();
+    test_matrix4_row();
 }
