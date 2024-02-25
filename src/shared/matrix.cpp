@@ -627,10 +627,14 @@ void matrix4::scale(float n)
 
 void matrix4::scalexy(float x, float y)
 {
-    a.x *= x; a.y *= y;
-    b.x *= x; b.y *= y;
-    c.x *= x; c.y *= y;
-    d.x *= x; d.y *= y;
+    a.x *= x;
+    a.y *= y;
+    b.x *= x;
+    b.y *= y;
+    c.x *= x;
+    c.y *= y;
+    d.x *= x;
+    d.y *= y;
 }
 
 void matrix4::scalez(float k)
@@ -942,7 +946,8 @@ void matrix4x3::mul(const matrix3 &rot, const vec &trans, const matrix4x3 &n)
 void matrix4x3::transpose()
 {
     d = vec(a.dot(d), b.dot(d), c.dot(d)).neg();
-    std::swap(a.y, b.x); std::swap(a.z, c.x);
+    std::swap(a.y, b.x);
+    std::swap(a.z, c.x);
     std::swap(b.z, c.y);
 }
 
