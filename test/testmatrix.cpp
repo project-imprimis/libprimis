@@ -391,6 +391,73 @@ void test_matrix4_identity()
     assert(m.d == vec4<float>(0,0,0,1));
 }
 
+void test_matrix4_setscale()
+{
+    //setscale(float)
+    std::printf("testing matrix4 setscale methods\n");
+    {
+        matrix4 m;
+        m.setscale(2);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,2,0,0));
+        assert(m.c == vec4<float>(0,0,2,0));
+        assert(m.d == vec4<float>(0,0,0,0));
+    }
+    //setscale(float,float,float)
+    {
+        matrix4 m;
+        m.setscale(2,3,4);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,3,0,0));
+        assert(m.c == vec4<float>(0,0,4,0));
+        assert(m.d == vec4<float>(0,0,0,0));
+    }
+    //setscale(vec)
+    {
+        matrix4 m;
+        m.setscale(vec(2,3,4));
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,3,0,0));
+        assert(m.c == vec4<float>(0,0,4,0));
+        assert(m.d == vec4<float>(0,0,0,0));
+    }
+}
+
+void test_matrix4_scale()
+{
+    //setscale(float)
+    std::printf("testing matrix4 scale methods\n");
+    {
+        matrix4 m;
+        m.identity();
+        m.setscale(2);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,2,0,0));
+        assert(m.c == vec4<float>(0,0,2,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+    //setscale(float,float,float)
+    {
+        matrix4 m;
+        m.identity();
+        m.setscale(2,3,4);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,3,0,0));
+        assert(m.c == vec4<float>(0,0,4,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+    //setscale(vec)
+    {
+        matrix4 m;
+        m.identity();
+        m.setscale(vec(2,3,4));
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,3,0,0));
+        assert(m.c == vec4<float>(0,0,4,0));
+        assert(m.d == vec4<float>(0,0,0,1));
+    }
+}
+
 void test_matrix4_jitter()
 {
     std::printf("testing matrix4 jitter\n");
@@ -448,6 +515,8 @@ testing matrices\n\
 
     test_matrix4_ctor();
     test_matrix4_identity();
+    test_matrix4_scale();
+    test_matrix4_setscale();
     test_matrix4_jitter();
     test_matrix4_transpose();
 }
