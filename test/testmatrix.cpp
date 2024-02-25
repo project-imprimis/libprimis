@@ -144,6 +144,16 @@ void test_matrix3_transpose()
     assert(m.c == vec(3,6,9));
 }
 
+void test_matrix3_row()
+{
+    std::printf("testing matrix3 rowx/rowy/rowz\n");
+
+    matrix3 m;
+    m.identity();
+    assert(m.rowx() == vec(1,0,0));
+    assert(m.rowy() == vec(0,1,0));
+    assert(m.rowz() == vec(0,0,1));
+}
 
 void test_matrix4x3_ctor()
 {
@@ -516,6 +526,7 @@ testing matrices\n\
     test_matrix3_normalize();
     test_matrix3_identity();
     test_matrix3_transpose();
+    test_matrix3_row();
 
     test_matrix4x3_ctor();
     test_matrix4x3_mul();
