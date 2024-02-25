@@ -136,7 +136,7 @@ void test_matrix3_identity()
 
 void test_matrix3_transpose()
 {
-    std::printf("testing matrix4 transpose\n");
+    std::printf("testing matrix3 transpose\n");
     matrix3 m({1,2,3}, {4,5,6}, {7,8,9});
     m.transpose();
     assert(m.a == vec(1,4,7));
