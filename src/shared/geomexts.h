@@ -72,113 +72,128 @@ struct triangle
 };
 
 /**
- * @brief quaternion object:
- * four component "vector" with three imaginary components
- * used for object rotations (quats have 3 DoF)
+ * @brief An object in four-dimensional complex space.
+ *
+ * This object is a four component "vector" with three imaginary components and
+ * one scalar component used for object rotations: quats have 6 DoF among their
+ * four terms, avoiding gimbal lock inherent to Euler angles.
+ *
+ * Follows the Hamiltonian convention (i*j = k) for dimensional relationships.
  *
  * x represents the i component
  * y represents the j component
  * z represents the k component
- * w represents the real component
+ * w represents the real (scalar) component
  */
 struct quat : vec4<float>
 {
-    quat() {}
-    quat(float x, float y, float z, float w) : vec4<float>(x, y, z, w) {}
-    quat(const vec &axis, float angle)
-    {
-        w = cosf(angle/2);
-        float s = std::sin(angle/2);
-        x = s*axis.x;
-        y = s*axis.y;
-        z = s*axis.z;
-    }
-    quat(const vec &u, const vec &v)
-    {
-        w = sqrtf(u.squaredlen() * v.squaredlen()) + u.dot(v);
-        cross(u, v);
-        normalize();
-    }
-    explicit quat(const vec &v)
-    {
-        x = v.x;
-        y = v.y;
-        z = v.z;
-        restorew();
-    }
-    explicit quat(const matrix3 &m) { convertmatrix(m); }
-    explicit quat(const matrix4x3 &m) { convertmatrix(m); }
-    explicit quat(const matrix4 &m) { convertmatrix(m); }
-
-    void restorew() { w = 1.0f-x*x-y*y-z*z; w = w<0 ? 0 : -sqrtf(w); }
-
-    quat &add(const vec4<float> &o) { vec4<float>::add(o); return *this; }
-    quat &sub(const vec4<float> &o) { vec4<float>::sub(o); return *this; }
-    quat &mul(float k) { vec4<float>::mul(k); return *this; }
-    quat &madd(const vec4<float> &a, const float &b) { return add(vec4<float>(a).mul(b)); }
-    quat &msub(const vec4<float> &a, const float &b) { return sub(vec4<float>(a).mul(b)); }
-
-    quat &mul(const quat &p, const quat &o)
-    {
-        x = p.w*o.x + p.x*o.w + p.y*o.z - p.z*o.y;
-        y = p.w*o.y - p.x*o.z + p.y*o.w + p.z*o.x;
-        z = p.w*o.z + p.x*o.y - p.y*o.x + p.z*o.w;
-        w = p.w*o.w - p.x*o.x - p.y*o.y - p.z*o.z;
-        return *this;
-    }
-    quat &mul(const quat &o) { return mul(quat(*this), o); }
-
-    quat &invert() { neg3(); return *this; }
-
-    quat &normalize() { vec4<float>::safenormalize(); return *this; }
-
-    vec rotate(const vec &v) const
-    {
-        return vec().cross(*this, vec().cross(*this, v).madd(v, w)).mul(2).add(v);
-    }
-
-    vec invertedrotate(const vec &v) const
-    {
-        return vec().cross(*this, vec().cross(*this, v).msub(v, w)).mul(2).add(v);
-    }
-
-    template<class M>
-    void convertmatrix(const M &m)
-    {
-        float trace = m.a.x + m.b.y + m.c.z;
-        if(trace>0)
+    public:
+        quat() {}
+        quat(float x, float y, float z, float w) : vec4<float>(x, y, z, w) {}
+        quat(const vec &axis, float angle)
         {
-            float r = sqrtf(1 + trace), inv = 0.5f/r;
-            w = 0.5f*r;
-            x = (m.b.z - m.c.y)*inv;
-            y = (m.c.x - m.a.z)*inv;
-            z = (m.a.y - m.b.x)*inv;
+            w = cosf(angle/2);
+            float s = std::sin(angle/2);
+            x = s*axis.x;
+            y = s*axis.y;
+            z = s*axis.z;
         }
-        else if(m.a.x > m.b.y && m.a.x > m.c.z)
+        quat(const vec &u, const vec &v)
         {
-            float r = sqrtf(1 + m.a.x - m.b.y - m.c.z), inv = 0.5f/r;
-            x = 0.5f*r;
-            y = (m.a.y + m.b.x)*inv;
-            z = (m.c.x + m.a.z)*inv;
-            w = (m.b.z - m.c.y)*inv;
+            w = sqrtf(u.squaredlen() * v.squaredlen()) + u.dot(v);
+            cross(u, v);
+            normalize();
         }
-        else if(m.b.y > m.c.z)
+        explicit quat(const vec &v)
         {
-            float r = sqrtf(1 + m.b.y - m.a.x - m.c.z), inv = 0.5f/r;
-            x = (m.a.y + m.b.x)*inv;
-            y = 0.5f*r;
-            z = (m.b.z + m.c.y)*inv;
-            w = (m.c.x - m.a.z)*inv;
+            x = v.x;
+            y = v.y;
+            z = v.z;
+            restorew();
         }
-        else
+        explicit quat(const matrix3 &m) { convertmatrix(m); }
+        explicit quat(const matrix4x3 &m) { convertmatrix(m); }
+        explicit quat(const matrix4 &m) { convertmatrix(m); }
+
+        void restorew() { w = 1.0f-x*x-y*y-z*z; w = w<0 ? 0 : -sqrtf(w); }
+
+        quat &add(const vec4<float> &o) { vec4<float>::add(o); return *this; }
+        quat &sub(const vec4<float> &o) { vec4<float>::sub(o); return *this; }
+        quat &mul(float k) { vec4<float>::mul(k); return *this; }
+        quat &madd(const vec4<float> &a, const float &b) { return add(vec4<float>(a).mul(b)); }
+        quat &msub(const vec4<float> &a, const float &b) { return sub(vec4<float>(a).mul(b)); }
+
+        quat &mul(const quat &p, const quat &o)
         {
-            float r = sqrtf(1 + m.c.z - m.a.x - m.b.y), inv = 0.5f/r;
-            x = (m.c.x + m.a.z)*inv;
-            y = (m.b.z + m.c.y)*inv;
-            z = 0.5f*r;
-            w = (m.a.y - m.b.x)*inv;
+            x = p.w*o.x + p.x*o.w + p.y*o.z - p.z*o.y;
+            y = p.w*o.y - p.x*o.z + p.y*o.w + p.z*o.x;
+            z = p.w*o.z + p.x*o.y - p.y*o.x + p.z*o.w;
+            w = p.w*o.w - p.x*o.x - p.y*o.y - p.z*o.z;
+            return *this;
         }
-    }
+        quat &mul(const quat &o) { return mul(quat(*this), o); }
+
+        /**
+         * @brief Turns this quaternion into its inverse.
+         *
+         * The inverse q⁻¹ of the quaternion (used in the rotation formula q*a*q⁻¹)
+         * is one with the imaginary components equal to their additive inverse, with
+         * no change to the real (scalar) component.
+         *
+         * @return a reference to `this` object
+         */
+        quat &invert() { neg3(); return *this; }
+
+        quat &normalize() { vec4<float>::safenormalize(); return *this; }
+
+        vec rotate(const vec &v) const
+        {
+            return vec().cross(*this, vec().cross(*this, v).madd(v, w)).mul(2).add(v);
+        }
+
+        vec invertedrotate(const vec &v) const
+        {
+            return vec().cross(*this, vec().cross(*this, v).msub(v, w)).mul(2).add(v);
+        }
+
+    private:
+        template<class M>
+        void convertmatrix(const M &m)
+        {
+            float trace = m.a.x + m.b.y + m.c.z;
+            if(trace>0)
+            {
+                float r = sqrtf(1 + trace), inv = 0.5f/r;
+                w = 0.5f*r;
+                x = (m.b.z - m.c.y)*inv;
+                y = (m.c.x - m.a.z)*inv;
+                z = (m.a.y - m.b.x)*inv;
+            }
+            else if(m.a.x > m.b.y && m.a.x > m.c.z)
+            {
+                float r = sqrtf(1 + m.a.x - m.b.y - m.c.z), inv = 0.5f/r;
+                x = 0.5f*r;
+                y = (m.a.y + m.b.x)*inv;
+                z = (m.c.x + m.a.z)*inv;
+                w = (m.b.z - m.c.y)*inv;
+            }
+            else if(m.b.y > m.c.z)
+            {
+                float r = sqrtf(1 + m.b.y - m.a.x - m.c.z), inv = 0.5f/r;
+                x = (m.a.y + m.b.x)*inv;
+                y = 0.5f*r;
+                z = (m.b.z + m.c.y)*inv;
+                w = (m.c.x - m.a.z)*inv;
+            }
+            else
+            {
+                float r = sqrtf(1 + m.c.z - m.a.x - m.b.y), inv = 0.5f/r;
+                x = (m.c.x + m.a.z)*inv;
+                y = (m.b.z + m.c.y)*inv;
+                z = 0.5f*r;
+                w = (m.a.y - m.b.x)*inv;
+            }
+        }
 };
 
 /**
