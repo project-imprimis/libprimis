@@ -639,9 +639,16 @@ void test_quat_rotate()
         assert(v.sub(vec(1,0,0)).magnitude() < tolerance);
     }
     {
+        //90 degree rotation about z axis
         quat q(0,0,std::sqrt(2)/2,std::sqrt(2)/2);
         vec v = q.rotate(vec(1,0,0));
         assert(v.sub(vec(0,1,0)).magnitude() < tolerance);
+    }
+    {
+        //test rotating 90 degrees around (1,1,1) axis
+        quat q(sqrt(3)/3,std::sqrt(3)/3,std::sqrt(3)/3,0);
+        vec v = q.rotate(vec(1,0,0));
+        assert(v.sub(vec(-1.f/3,2.f/3,2.f/3)).magnitude() < tolerance);
     }
     {
         //rotate does not preserve behavior if not normalized
