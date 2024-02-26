@@ -471,16 +471,59 @@ void test_quat_mul()
         assert(a.sub(quat(0,0,0,1)).magnitude() < tolerance);
     }
     {
+        quat a(1,2,3,4),
+             b(4,3,2,1);
+        a.mul(b);
+        assert(a.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+    }
+    {
+        // 1 * i = i
         quat a(0,0,0,1),
              b(1,0,0,0);
         a.mul(b);
         assert(a.sub(quat(1,0,0,0)).magnitude() < tolerance);
     }
     {
-        quat a(1,2,3,4),
-             b(4,3,2,1);
+        // i * j = k
+        quat a(1,0,0,0),
+             b(0,1,0,0);
         a.mul(b);
-        assert(a.sub(quat(12,24,6,-12)).magnitude() < tolerance);
+        assert(a.sub(quat(0,0,1,0)).magnitude() < tolerance);
+    }
+    {
+        // j * i = -k
+        quat a(0,1,0,0),
+             b(1,0,0,0);
+        a.mul(b);
+        assert(a.sub(quat(0,0,-1,0)).magnitude() < tolerance);
+    }
+    {
+        // j * k = i
+        quat a(0,1,0,0),
+             b(0,0,1,0);
+        a.mul(b);
+        assert(a.sub(quat(1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        // k * j = -i
+        quat a(0,0,1,0),
+             b(0,1,0,0);
+        a.mul(b);
+        assert(a.sub(quat(-1,0,0,0)).magnitude() < tolerance);
+    }
+    {
+        // k * i = j
+        quat a(0,0,1,0),
+             b(1,0,0,0);
+        a.mul(b);
+        assert(a.sub(quat(0,1,0,0)).magnitude() < tolerance);
+    }
+    {
+        // i * k = -j
+        quat a(1,0,0,0),
+             b(0,0,1,0);
+        a.mul(b);
+        assert(a.sub(quat(0,-1,0,0)).magnitude() < tolerance);
     }
     //mul(quat, quat)
     {
