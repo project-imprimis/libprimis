@@ -71,28 +71,6 @@ enum TextureLayers
     Tex_Unknown,
 };
 
-inline void VSlot::addvariant(Slot *slot)
-{
-    if(!slot->variants)
-    {
-        slot->variants = this;
-    }
-    else
-    {
-        VSlot *prev = slot->variants;
-        while(prev->next)
-        {
-            prev = prev->next;
-        }
-        prev->next = this;
-    }
-}
-
-inline bool VSlot::isdynamic() const
-{
-    return !scroll.iszero() || slot->shader->isdynamic();
-}
-
 struct MatSlot final : Slot, VSlot
 {
     MatSlot();

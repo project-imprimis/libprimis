@@ -2302,8 +2302,31 @@ void Slot::load()
     loaded = true;
 }
 
-// end of Slot
+// VSlot
 
+void VSlot::addvariant(Slot *slot)
+{
+    if(!slot->variants)
+    {
+        slot->variants = this;
+    }
+    else
+    {
+        VSlot *prev = slot->variants;
+        while(prev->next)
+        {
+            prev = prev->next;
+        }
+        prev->next = this;
+    }
+}
+
+bool VSlot::isdynamic() const
+{
+    return !scroll.iszero() || slot->shader->isdynamic();
+}
+
+// end of Slot/VSlot
 MatSlot &lookupmaterialslot(int index, bool load)
 {
     MatSlot &s = materialslots[index];
