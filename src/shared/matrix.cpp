@@ -1054,11 +1054,6 @@ void matrix4x3::rotate_around_z(const vec2 &sc)
     rotate_around_z(sc.x, sc.y);
 }
 
-vec matrix4x3::transform(const vec &o) const
-{
-    return vec(d).madd(a, o.x).madd(b, o.y).madd(c, o.z);
-}
-
 vec matrix4x3::transposedtransform(const vec &o) const
 {
     vec p = vec(o).sub(d); return vec(a.dot(p), b.dot(p), c.dot(p));
@@ -1072,6 +1067,11 @@ vec matrix4x3::transformnormal(const vec &o) const
 vec matrix4x3::transposedtransformnormal(const vec &o) const
 {
     return vec(a.dot(o), b.dot(o), c.dot(o));
+}
+
+vec matrix4x3::transform(const vec &o) const
+{
+    return vec(d).madd(a, o.x).madd(b, o.y).madd(c, o.z);
 }
 
 vec matrix4x3::transform(const vec2 &o) const
