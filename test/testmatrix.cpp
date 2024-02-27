@@ -302,6 +302,47 @@ void test_matrix4x3_identity()
     assert(m.d == vec(0,0,0));
 }
 
+void test_matrix4x3_transform()
+{
+    std::printf("testing matrix4x3 transform\n");
+
+    //transform(vec)
+    {
+        matrix4x3 m;
+        m.identity();
+        vec v = m.transform(vec(1,1,1));
+        assert(v.sub(vec(1,1,1)).magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m(vec(1,2,3), vec(4,5,6), vec(7,8,9), vec(1,2,3));
+        vec v = m.transform(vec(1,1,1));
+        assert(v.sub(vec(13,17,21)).magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m(vec(1,0,0), vec(0,5,0), vec(0,0,9), vec(1,2,3));
+        vec v = m.transform(vec(1,1,1));
+        assert(v.sub(vec(2,7,12)).magnitude() < tolerance);
+    }
+    //transform(vec2)
+    {
+        matrix4x3 m;
+        m.identity();
+        vec v = m.transform(vec2(1,1));
+        m.transform(v);
+        assert(v.sub(vec(1,1,0)).magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m(vec(1,2,3), vec(4,5,6), vec(7,8,9), vec(1,2,3));
+        vec v = m.transform(vec2(1,1));
+        assert(v.sub(vec(6,9,12)).magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m(vec(1,0,0), vec(0,5,0), vec(0,0,9), vec(1,2,3));
+        vec v = m.transform(vec2(1,1));
+        assert(v.sub(vec(2,7,3)).magnitude() < tolerance);
+    }
+}
+
 void test_matrix4x3_row()
 {
     std::printf("testing matrix4x3 rowx/rowy/rowz\n");
@@ -534,6 +575,7 @@ testing matrices\n\
     test_matrix4x3_scale();
     test_matrix4x3_settranslate();
     test_matrix4x3_identity();
+    test_matrix4x3_transform();
     test_matrix4x3_row();
 
     test_matrix4_ctor();
