@@ -16,7 +16,17 @@ class ragdollskel
         {
             int vert[3];
 
-            //returns true if the the passed triangle has the same vertex indices
+            /**
+             * @brief Determines whether two tris share any vertex indices.
+             *
+             * Returns true if the the passed triangle has any of the same vertex indices,
+             * regardless of order (e.g. if this.vert[0] and t.vert[2] are the same, returns true)
+             *
+             * @param t the tri to compare to
+             *
+             * @return true if any indices from this are the same as any from t
+             * @return false if no vertex indices match
+             */
             bool shareverts(const tri &t) const;
         };
         std::vector<tri> tris;
