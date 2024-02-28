@@ -392,6 +392,38 @@ void test_blendcombo_serialize()
     }
 }
 
+void test_blendcombo_blendbones()
+{
+    std::printf("testing blendcombo serialize\n");
+
+    std::array<skelmodel::blendcombo::BoneData, 4> bd = {{ { 0.4f, 0, 0 },
+                                                           { 0.3f, 0, 1 },
+                                                           { 0.2f, 0, 2 },
+                                                           { 0.1f, 0, 3 }
+                                                        }};
+    std::array<dualquat, 4> dqs = { dualquat({0,0,0,1}), dualquat({1,0,0,0}), dualquat({0,1,0,0}), dualquat({0,0,1,0}) };
+    {
+        //test blending independent vectors
+        skelmodel::blendcombo a;
+        a.bonedata = bd;
+        dualquat d = a.blendbones(dqs.data());
+        assert(d.real.sub(vec4<float>(0.3,0.2,0.1,0.4)).magnitude() < tolerance);
+        assert(d.dual.magnitude() < tolerance);
+    }
+    {
+        //test blending <4 vectors, after normalization
+        skelmodel::blendcombo a;
+        a.bonedata = bd;
+        a.bonedata[0] = {0,0,0};
+        a.bonedata[3] = {0,0,3};
+        a.finalize(4);
+        dualquat d = a.blendbones(dqs.data());
+        std::printf("dualquat r %f %f %f %f d %f %f %f %f\n", d.real.x, d.real.y, d.real.z, d.real.w, d.dual.x, d.dual.y, d.dual.z, d.dual.w);
+        assert(d.real.sub(vec4<float>(0.6,0.4,0,0)).magnitude() < tolerance);
+        assert(d.dual.magnitude() < tolerance);
+    }
+}
+
 void test_skelmesh_assignvert()
 {
     std::printf("testing skelmesh assignvert\n");
@@ -460,6 +492,7 @@ testing skelmodel functionality\n\
     test_blendcombo_size();
     test_blendcombo_finalize();
     test_blendcombo_serialize();
+    test_blendcombo_blendbones();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();

@@ -199,6 +199,19 @@ struct skelmodel : animmodel
              * @param v the vvertgw object to set weight/bone values to
              */
             void serialize(skelmodel::vvertgw &v) const;
+
+            /**
+             * @brief Creates a dual quaternion representation from the bone data of a blendcombo.
+             *
+             * Accumulates the set of dual quaternions pointed to by the bonedata object, scaled
+             * by their respective weights. The resulting dual quaternion should be normalized,
+             * if the blendcombo was normalized (by calling finalize()).
+             *
+             * @param bdata an array of dualquats
+             *
+             * @return a dual quaternion created from the blendcombo object's bone data
+             */
+            dualquat blendbones(const dualquat *bdata) const;
     };
 
     struct animcacheentry
@@ -474,7 +487,6 @@ struct skelmodel : animmodel
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
             int addblendcombo(const blendcombo &c);
             void sortblendcombos();
-            static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
             void cleanup() override final;
             vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);

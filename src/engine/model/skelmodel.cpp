@@ -1375,6 +1375,22 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
     }
 }
 
+dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
+{
+    dualquat d = bdata[bonedata[0].interpbones];
+    d.mul(bonedata[0].weights);
+    d.accumulate(bdata[bonedata[1].interpbones], bonedata[1].weights);
+    if(bonedata[2].weights)
+    {
+        d.accumulate(bdata[bonedata[2].interpbones], bonedata[2].weights);
+        if(bonedata[3].weights)
+        {
+            d.accumulate(bdata[bonedata[3].interpbones], bonedata[3].weights);
+        }
+    }
+    return d;
+}
+
 template<class T>
 T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, int owner)
 {
@@ -1748,21 +1764,6 @@ void skelmodel::skelmeshgroup::sortblendcombos()
     delete[] remap;
 }
 
-void skelmodel::skelmeshgroup::blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c)
-{
-    d = bdata[c.bonedata[0].interpbones];
-    d.mul(c.bonedata[0].weights);
-    d.accumulate(bdata[c.bonedata[1].interpbones], c.bonedata[1].weights);
-    if(c.bonedata[2].weights)
-    {
-        d.accumulate(bdata[c.bonedata[2].interpbones], c.bonedata[2].weights);
-        if(c.bonedata[3].weights)
-        {
-            d.accumulate(bdata[c.bonedata[3].interpbones], c.bonedata[3].weights);
-        }
-    }
-}
-
 void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheentry &bc)
 {
     bc.nextversion();
@@ -1779,7 +1780,7 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
             break;
         }
         dualquat &d = dst[c.interpindex];
-        blendbones(d, sc.bdata, c);
+        d = c.blendbones(sc.bdata);
         if(normalize)
         {
             d.normalize();
