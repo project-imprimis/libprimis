@@ -104,6 +104,13 @@ struct skelmodel : animmodel
         uint vert[3];
     };
 
+    /**
+     * @brief An object representing a set of weights for a vertex.
+     *
+     * A blendcombo object stores a set of weights, which when finalized should total
+     * to a total weight quantity of 1. The weights are stored in descending order,
+     * and should only assume to be normalized once finalize() is called.
+     */
     class blendcombo final
     {
         public:
@@ -156,6 +163,17 @@ struct skelmodel : animmodel
              * @return the resulting number of allocated weights
              */
             int addweight(int sorted, float weight, int bone);
+
+            /**
+             * @brief Normalizes elements in the bonedata array.
+             * Normalizes the elements in the weights part of the bonedata array
+             * (up to `output` number of bones to normalize).
+             *
+             * The normalization critera for the weight data is the condition where
+             * the sum of all the weights (up to the number sorted) adds to 1.
+             *
+             * @param sorted number of elements to normalize (must be <= 4)
+             */
             void finalize(int sorted);
 
             /**
