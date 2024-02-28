@@ -214,7 +214,7 @@ struct skelmodel : animmodel
             dualquat blendbones(const dualquat *bdata) const;
 
             /**
-             * @brief Returns an appropriate interpolation index for this bone
+             * @brief Returns an appropriate interpolation index for this bone.
              *
              * If there is more than one bone, returns the object's interpindex;
              * if there is only one bone, returns that bone's interpindex
@@ -222,6 +222,19 @@ struct skelmodel : animmodel
              * @return an appropriate interpolation index for the blendcombo
              */
             int remapblend() const;
+
+            /**
+             * @brief Sets the interpolation index of the object.
+             *
+             * If there is more than one bone, such that a shared interpolation index
+             * for all bones is necessary, sets this object's interpolation index
+             * (interpindex) to `val`. If there are not multiple bones, sets the
+             * interpolation index to -1.
+             *
+             * @param val the value to optionally set to the object's shared interpindex
+             */
+            void setinterpindex(int val);
+
     };
 
     struct animcacheentry

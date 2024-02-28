@@ -1045,7 +1045,8 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         vweights = 1;
         for(blendcombo &c : blendcombos)
         {
-            c.interpindex = c.bonedata[1].weights ? skel->numgpubones + vblends++ : -1;
+            c.setinterpindex(skel->numgpubones + vblends);
+            vblends++;
         }
 
         vertsize = sizeof(vvert);
@@ -1394,6 +1395,11 @@ dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
 int skelmodel::blendcombo::remapblend() const
 {
     return bonedata[1].weights ? interpindex : bonedata[0].interpbones;
+}
+
+void skelmodel::blendcombo::setinterpindex(int val)
+{
+    interpindex = bonedata[1].weights ? val : -1;
 }
 
 template<class T>
