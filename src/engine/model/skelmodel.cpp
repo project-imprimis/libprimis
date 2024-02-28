@@ -1391,6 +1391,11 @@ dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
     return d;
 }
 
+int skelmodel::blendcombo::remapblend() const
+{
+    return bonedata[1].weights ? interpindex : bonedata[0].interpbones;
+}
+
 template<class T>
 T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, int owner)
 {
@@ -1583,7 +1588,7 @@ int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<
 {
     for(int i = 0; i < numverts; ++i)
     {
-        verts[i].interpindex = remapblend(bcs, verts[i].blend);
+        verts[i].interpindex = bcs[verts[i].blend].remapblend();
     }
 
     voffset = offset;
@@ -1657,12 +1662,6 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     glDrawRangeElements(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_INT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
-}
-
-int skelmodel::skelmesh::remapblend(const std::vector<blendcombo> &bcs, int blend) const
-{
-    const blendcombo &c = bcs[blend];
-    return c.bonedata[1].weights ? c.interpindex : c.bonedata[0].interpbones;
 }
 
 // boneinfo

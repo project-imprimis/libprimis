@@ -207,11 +207,21 @@ struct skelmodel : animmodel
              * by their respective weights. The resulting dual quaternion should be normalized,
              * if the blendcombo was normalized (by calling finalize()).
              *
-             * @param bdata an array of dualquats
+             * @param bdata an array of dualquats, to which the BoneData.interpbones field points to
              *
              * @return a dual quaternion created from the blendcombo object's bone data
              */
             dualquat blendbones(const dualquat *bdata) const;
+
+            /**
+             * @brief Returns an appropriate interpolation index for this bone
+             *
+             * If there is more than one bone, returns the object's interpindex;
+             * if there is only one bone, returns that bone's interpindex
+             *
+             * @return an appropriate interpolation index for the blendcombo
+             */
+            int remapblend() const;
     };
 
     struct animcacheentry
@@ -271,7 +281,6 @@ struct skelmodel : animmodel
         virtual ~skelmesh();
 
         int addblendcombo(const blendcombo &c);
-        int remapblend(const std::vector<blendcombo> &bcs, int blend) const;
 
         void smoothnorms(float limit = 0, bool areaweight = true);
         void buildnorms(bool areaweight = true);

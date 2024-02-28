@@ -418,9 +418,35 @@ void test_blendcombo_blendbones()
         a.bonedata[3] = {0,0,3};
         a.finalize(4);
         dualquat d = a.blendbones(dqs.data());
-        std::printf("dualquat r %f %f %f %f d %f %f %f %f\n", d.real.x, d.real.y, d.real.z, d.real.w, d.dual.x, d.dual.y, d.dual.z, d.dual.w);
         assert(d.real.sub(vec4<float>(0.6,0.4,0,0)).magnitude() < tolerance);
         assert(d.dual.magnitude() < tolerance);
+    }
+}
+
+void test_blendcombo_remapblend()
+{
+    std::printf("testing blendcombo remapblend\n");
+
+    std::array<skelmodel::blendcombo::BoneData, 4> bd = {{ { 0.4f, 0, 0 },
+                                                           { 0.3f, 0, 1 },
+                                                           { 0.2f, 0, 2 },
+                                                           { 0.1f, 0, 3 }
+                                                        }};
+
+    {
+        //test if multiple bonedata, bonedata::interpindex returned
+        skelmodel::blendcombo a;
+        a.bonedata = bd;
+        a.interpindex = 5;
+        assert(a.remapblend() == 5);
+    }
+    {
+        //test if only one bonedata, that bonedata's interpindex returned
+        skelmodel::blendcombo a;
+        a.bonedata.fill({0,0,0});
+        a.bonedata[0] = {0.4f, 0, 1};
+        a.interpindex = 5;
+        assert(a.remapblend() == 1);
     }
 }
 
@@ -493,6 +519,7 @@ testing skelmodel functionality\n\
     test_blendcombo_finalize();
     test_blendcombo_serialize();
     test_blendcombo_blendbones();
+    test_blendcombo_remapblend();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();
