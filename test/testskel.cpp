@@ -394,7 +394,7 @@ void test_blendcombo_serialize()
 
 void test_blendcombo_blendbones()
 {
-    std::printf("testing blendcombo serialize\n");
+    std::printf("testing blendcombo blendbones\n");
 
     std::array<skelmodel::blendcombo::BoneData, 4> bd = {{ { 0.4f, 0, 0 },
                                                            { 0.3f, 0, 1 },
@@ -464,6 +464,18 @@ void test_blendcombo_setinterpindex()
     a.bonedata = bd;
     a.setinterpindex(1);
     assert(a.remapblend() == 1);
+}
+
+void test_blendcombo_getbone()
+{
+    std::printf("testing blendcombo getbone\n");
+
+    skelmodel::blendcombo a;
+    a.addweight(4, 0.5f, 1);
+    assert(a.getbone(0) == 1);
+    a.addweight(4, 0.7f, 2);
+    assert(a.getbone(0) == 2);
+    assert(a.getbone(1) == 1);
 }
 
 void test_skelmesh_assignvert()
@@ -537,6 +549,7 @@ testing skelmodel functionality\n\
     test_blendcombo_blendbones();
     test_blendcombo_remapblend();
     test_blendcombo_setinterpindex();
+    test_blendcombo_getbone();
 
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();

@@ -278,34 +278,28 @@ void skelmodel::skeleton::remapbones()
     numgpubones = 0;
     for(blendcombo &c : owner->blendcombos)
     {
-        for(size_t k = 0; k < c.bonedata.size(); ++k) //loop k
+        for(size_t k = 0; k < c.size(); ++k) //loop k
         {
-            if(!c.bonedata[k].weights)
-            {
-                c.bonedata[k].interpbones = k > 0 ? c.bonedata[k-1].interpbones : 0;
-                continue;
-            }
-            boneinfo &info = bones[c.bonedata[k].bones];
+            boneinfo &info = bones[c.getbone(k)];
             if(info.interpindex < 0)
             {
                 info.interpindex = numgpubones++;
             }
-            c.bonedata[k].interpbones = info.interpindex;
+            if(c.setinterpbones(info.interpindex, k))
+            {
+                continue;
+            }
             if(info.group < 0)
             {
                 continue;
             }
-            for(size_t l = 0; l < c.bonedata.size(); ++l) //note this is a loop l (level 4)
+            for(size_t l = 0; l < c.size(); ++l) //note this is a loop l (level 4)
             {
-                if(!c.bonedata[l].weights)
-                {
-                    break;
-                }
                 if(l == k)
                 {
                     continue;
                 }
-                int parent = c.bonedata[l].bones;
+                int parent = c.getbone(l);
                 if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
                 {
                     info.group = -info.parent;
@@ -315,14 +309,14 @@ void skelmodel::skeleton::remapbones()
                 {
                     continue;
                 }
-                int child = c.bonedata[k].bones;
+                int child = c.getbone(k);
                 while(parent > child)
                 {
                     parent = bones[parent].parent;
                 }
                 if(parent != child)
                 {
-                    info.group = c.bonedata[l].bones;
+                    info.group = c.getbone(l);
                 }
             }
         }
@@ -1400,6 +1394,22 @@ int skelmodel::blendcombo::remapblend() const
 void skelmodel::blendcombo::setinterpindex(int val)
 {
     interpindex = bonedata[1].weights ? val : -1;
+}
+
+bool skelmodel::blendcombo::setinterpbones(int val, size_t i)
+{
+    if(!bonedata[i].weights)
+    {
+        bonedata[i].interpbones = i > 0 ? bonedata[i-1].interpbones : 0;
+        return true;
+    }
+    bonedata[i].interpbones = val;
+    return false;
+}
+
+int skelmodel::blendcombo::getbone(size_t index)
+{
+    return bonedata[index].bones;
 }
 
 template<class T>

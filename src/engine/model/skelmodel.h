@@ -235,6 +235,26 @@ struct skelmodel : animmodel
              */
             void setinterpindex(int val);
 
+            /**
+             * @brief Assigns interpbones values to the specified bonedata.
+             * @param val value to set to the indicated bone
+             * @param i the index of the bonedata to set
+             *
+             * @return true if no weight was present
+             * @return false if a weight was present and overwritten
+             */
+            bool setinterpbones(int val, size_t i);
+
+            /**
+             * @brief Gets the bone stored at index.
+             *
+             * Gets the bone index associated with one of the bonedata's stored
+             * bones. This index represents an index of the skeleton's boneinfo array.
+             *
+             * @param index the index of the bonedata to access
+             */
+            int getbone(size_t index);
+
     };
 
     struct animcacheentry
