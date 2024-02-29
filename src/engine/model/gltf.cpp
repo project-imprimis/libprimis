@@ -95,50 +95,53 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
     {
         GLTFModelInfo mi(filename);
 
-        //get GLTF data from file/binary
-        std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
-        std::vector<std::array<float, 3>> positions = mi.getpositions(meshname);
-        std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
-        std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);
-        std::vector<std::array<uint, 4>> joints = mi.getjoints(meshname);
-        std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
-        std::vector<std::array<uint, 3>> indices = mi.getindices(meshname);
-        //set skelmodel::vert and skelmodel::tris
-        vert *verts;
-        size_t numverts;
-        if(positions.size() == normals.size() && normals.size() == texcoords.size())
+        std::vector<std::string> nodenames = mi.getnodenames(GLTFModelInfo::NodeType_Mesh);
+        for(std::string meshname : nodenames)
         {
-            verts = new vert[positions.size()];
-            numverts = positions.size();
-            for(size_t i = 0; i < positions.size(); ++i)
+            //get GLTF data from file/binary
+            std::vector<std::array<float, 3>> positions = mi.getpositions(meshname);
+            std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
+            std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);
+            std::vector<std::array<uint, 4>> joints = mi.getjoints(meshname);
+            std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
+            std::vector<std::array<uint, 3>> indices = mi.getindices(meshname);
+            //set skelmodel::vert and skelmodel::tris
+            vert *verts;
+            size_t numverts;
+            if(positions.size() == normals.size() && normals.size() == texcoords.size())
             {
-                verts[i].pos = vec(positions[i][0], positions[i][1], positions[i][2]);
-                verts[i].norm = vec(normals[i][0], normals[i][1], normals[i][2]);
-                verts[i].tc = vec2(texcoords[i][0], texcoords[i][1]);
-                blendcombo c;
-                c.addweight(0,0,0);
-                c.finalize(0);
-                verts[i].blend = addblendcombo(c);
+                verts = new vert[positions.size()];
+                numverts = positions.size();
+                for(size_t i = 0; i < positions.size(); ++i)
+                {
+                    verts[i].pos = vec(positions[i][0], positions[i][1], positions[i][2]);
+                    verts[i].norm = vec(normals[i][0], normals[i][1], normals[i][2]);
+                    verts[i].tc = vec2(texcoords[i][0], texcoords[i][1]);
+                    blendcombo c;
+                    c.addweight(0,0,0);
+                    c.finalize(0);
+                    verts[i].blend = addblendcombo(c);
+                }
             }
-        }
-        else
-        {
-            throw std::logic_error("index mismatch: positions/normals/texcoords different sizes");
-        }
-        tri *tris = new tri[indices.size()];
-        size_t numtris = indices.size();
-        for(size_t i = 0; i < indices.size(); ++i)
-        {
-            tris[i].vert[0] = indices[i][0];
-            tris[i].vert[1] = indices[i][1];
-            tris[i].vert[2] = indices[i][2];
-        }
-        //if able to create the verts/tris arrays without throwing, create new gltfmesh
-        gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris);
-        m->group = this;
-        meshes.push_back(m);
-        p.initskins(notexture, notexture, m->group->meshes.size());
+            else
+            {
+                throw std::logic_error("index mismatch: positions/normals/texcoords different sizes");
+            }
+            tri *tris = new tri[indices.size()];
+            size_t numtris = indices.size();
+            for(size_t i = 0; i < indices.size(); ++i)
+            {
+                tris[i].vert[0] = indices[i][0];
+                tris[i].vert[1] = indices[i][1];
+                tris[i].vert[2] = indices[i][2];
+            }
+            //if able to create the verts/tris arrays without throwing, create new gltfmesh
+            gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris);
+            m->group = this;
+            meshes.push_back(m);
+            p.initskins(notexture, notexture, m->group->meshes.size());
 
+        }
         for(uint i = 0; i < meshes.size(); i++)
         {
             gltfmesh &m = *static_cast<gltfmesh *>(meshes[i]);
