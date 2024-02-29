@@ -237,13 +237,11 @@ struct skelmodel : animmodel
 
             /**
              * @brief Assigns interpbones values to the specified bonedata.
+             *
              * @param val value to set to the indicated bone
              * @param i the index of the bonedata to set
-             *
-             * @return true if no weight was present
-             * @return false if a weight was present and overwritten
              */
-            bool setinterpbones(int val, size_t i);
+            void setinterpbones(int val, size_t i);
 
             /**
              * @brief Gets the bone stored at index.

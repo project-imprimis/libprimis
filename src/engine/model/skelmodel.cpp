@@ -280,15 +280,17 @@ void skelmodel::skeleton::remapbones()
     {
         for(size_t k = 0; k < c.size(); ++k) //loop k
         {
+            if(!c.bonedata[k].weights)
+            {
+                c.setinterpbones(k > 0 ? c.bonedata[k-1].interpbones : 0, k);
+                continue;
+            }
             boneinfo &info = bones[c.getbone(k)];
             if(info.interpindex < 0)
             {
                 info.interpindex = numgpubones++;
             }
-            if(c.setinterpbones(info.interpindex, k))
-            {
-                continue;
-            }
+            c.setinterpbones(info.interpindex, k);
             if(info.group < 0)
             {
                 continue;
@@ -1396,15 +1398,9 @@ void skelmodel::blendcombo::setinterpindex(int val)
     interpindex = bonedata[1].weights ? val : -1;
 }
 
-bool skelmodel::blendcombo::setinterpbones(int val, size_t i)
+void skelmodel::blendcombo::setinterpbones(int val, size_t index)
 {
-    if(!bonedata[i].weights)
-    {
-        bonedata[i].interpbones = i > 0 ? bonedata[i-1].interpbones : 0;
-        return true;
-    }
-    bonedata[i].interpbones = val;
-    return false;
+    bonedata[index].interpbones = val;
 }
 
 int skelmodel::blendcombo::getbone(size_t index)
