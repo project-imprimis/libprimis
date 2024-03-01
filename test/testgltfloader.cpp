@@ -435,6 +435,27 @@ void testequals()
     assert((mi == mi2) == false);
 }
 
+void testnodetranslate()
+{
+    std::printf("test GLTF node translate\n");
+    std::string modelname = "gltf/twocube.gltf";
+    GLTFModelInfo mi(modelname);
+    std::vector<std::string> nodenames = mi.getnodenames(GLTFModelInfo::NodeType_Mesh);
+    std::vector<std::array<float, 3>> positions0 = mi.getpositions(nodenames[0]);
+    std::vector<std::array<float, 3>> positions1 = mi.getpositions(nodenames[1]);
+
+    //check that all of node 0 is untranslated
+    for(std::array<float, 3> p : positions0)
+    {
+        assert(p[1] <= 1);
+    }
+    //check that all of node 1 is translated
+    for(std::array<float, 3> p : positions1)
+    {
+        assert(p[1] >= 2);
+    }
+}
+
 void test_gltf()
 {
     std::printf(
@@ -460,4 +481,5 @@ testing GLTF file loader\n\
     testvertexmismatch();
     testmultimesh();
     testequals();
+    testnodetranslate();
 };

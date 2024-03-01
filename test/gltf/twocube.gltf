@@ -196,7 +196,7 @@
 	"buffers":[
 		{
 			"byteLength":1680,
-			"uri":"twocube.bin"
+			"uri":"gltf/twocube.bin"
 		}
 	]
 }

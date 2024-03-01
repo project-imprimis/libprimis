@@ -78,14 +78,15 @@ std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
 }
 
 //getter functions generate vectors of arrays of the appropriate type
-//given the mesh name
+//given the node name
 std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) const
 {
     std::vector<std::array<float, 3>> positions;
-    for(const Mesh &m : meshes)
+    for(const Node &n : nodes)
     {
-        if(m.name == name && m.positions)
+        if(n.name == name && n.mesh)
         {
+            const Mesh &m = meshes[n.mesh.value()];
             if(!m.positions) //bail out if optional is nullopt
             {
                 return positions;
@@ -95,6 +96,15 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) 
             if(a.componenttype == GL_FLOAT)
             {
                 std::vector<float> floatbuf = gettypeblock<float>(bv.buffer, bv.bytelength, bv.byteoffset);
+                if(n.translation)
+                {
+                    for(size_t i = 0; i < floatbuf.size(); i+=3)
+                    {
+                        floatbuf[i] += n.translation.value()[0];
+                        floatbuf[i+1] += n.translation.value()[1];
+                        floatbuf[i+2] += n.translation.value()[2];
+                    }
+                }
                 positions = fillvector<float, float, 3>(floatbuf);
             }
             else
