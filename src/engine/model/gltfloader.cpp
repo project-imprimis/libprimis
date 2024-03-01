@@ -410,7 +410,6 @@ std::vector<std::string> GLTFModelInfo::getblockbyname(std::string_view path, st
         size_t itr = file[i].find(blockname);
         if(maxdepth)
         {
-            std::printf("getting block with bounds %lu %lu\n", itr, maxdepth);
             if(itr <= maxdepth)
             {
                 blockstart = i;
@@ -481,7 +480,6 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
                     std::sscanf( translationblock[k].c_str(), " %f", &translation[k]);
                 }
                 n.translation = translation;
-                std::printf("%f %f %f\n", n.translation.value()[0], n.translation.value()[1], n.translation.value()[2]);
             }
         }
         if(messages)
@@ -490,6 +488,11 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
                 n.name.c_str(),
                 n.mesh ? n.mesh.value() : -1
             );
+            if(n.translation)
+            {
+                std::printf("%f %f %f\n", n.translation.value()[0], n.translation.value()[1], n.translation.value()[2]);
+            }
+
         }
         nodes.push_back(n);
         i += block.size();
