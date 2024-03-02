@@ -434,18 +434,6 @@ matrix4::matrix4(const matrix3 &rot, const vec &trans)
 {
 }
 
-void matrix4::clip(const plane &p, const matrix4 &m)
-{
-    float x = ((p.x<0 ? -1 : (p.x>0 ? 1 : 0)) + m.c.x) / m.a.x,
-          y = ((p.y<0 ? -1 : (p.y>0 ? 1 : 0)) + m.c.y) / m.b.y,
-          w = (1 + m.c.z) / m.d.z,
-        scale = 2 / (x*p.x + y*p.y - p.z + w*p.offset);
-    a = vec4<float>(m.a.x, m.a.y, p.x*scale, m.a.w);
-    b = vec4<float>(m.b.x, m.b.y, p.y*scale, m.b.w);
-    c = vec4<float>(m.c.x, m.c.y, p.z*scale + 1.0f, m.c.w);
-    d = vec4<float>(m.d.x, m.d.y, p.offset*scale, m.d.w);
-}
-
 void matrix4::transposedtransform(const plane &in, plane &out) const
 {
     out.x = in.dist(a);
