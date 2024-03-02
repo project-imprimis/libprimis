@@ -543,6 +543,27 @@ void test_matrix4_transpose()
     assert(m.d == vec4<float>(4,8,12,16));
 }
 
+void test_matrix4_ortho()
+{
+    std::printf("testing matrix4 ortho\n");
+    {
+        matrix4 m;
+        m.ortho(0,1,0,1,1,0);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,2,0,0));
+        assert(m.c == vec4<float>(0,0,2,0));
+        assert(m.d == vec4<float>(-1,-1,1,1));
+    }
+    {
+        matrix4 m;
+        m.ortho(1,2,1,2,2,1);
+        assert(m.a == vec4<float>(2,0,0,0));
+        assert(m.b == vec4<float>(0,2,0,0));
+        assert(m.c == vec4<float>(0,0,2,0));
+        assert(m.d == vec4<float>(-3,-3,3,1));
+    }
+}
+
 void test_matrix4_row()
 {
     std::printf("testing matrix4 rowx/rowy/rowz/roww\n");
@@ -584,5 +605,6 @@ testing matrices\n\
     test_matrix4_setscale();
     test_matrix4_jitter();
     test_matrix4_transpose();
+    test_matrix4_ortho();
     test_matrix4_row();
 }
