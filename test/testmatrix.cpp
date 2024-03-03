@@ -564,6 +564,13 @@ void test_matrix4_ortho()
     }
 }
 
+void test_matrix4_gettranslation()
+{
+    std::printf("testing matrix4 gettranslation\n");
+    matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+    assert(m.gettranslation() == vec(13,14,15));
+}
+
 void test_matrix4_row()
 {
     std::printf("testing matrix4 rowx/rowy/rowz/roww\n");
@@ -625,6 +632,7 @@ testing matrices\n\
     test_matrix4_jitter();
     test_matrix4_transpose();
     test_matrix4_ortho();
+    test_matrix4_gettranslation();
     test_matrix4_row();
     test_matrix4_lineardepthscale();
 }
