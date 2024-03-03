@@ -125,10 +125,6 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string name) co
     {
         if(m.name == name && m.normals)
         {
-            if(!m.normals) //bail out if optional is nullopt
-            {
-                return normals;
-            }
             const Accessor &a = accessors[m.normals.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -154,10 +150,6 @@ std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string name) 
     {
         if(m.name == name && m.texcoords)
         {
-            if(!m.texcoords) //bail out if optional is nullopt
-            {
-                return texcoords;
-            }
             const Accessor &a = accessors[m.texcoords.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -181,12 +173,8 @@ std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string name) cons
     std::vector<std::array<uint, 4>> joints;
     for(const Mesh &m : meshes)
     {
-        if(m.name == name && m.indices)
+        if(m.name == name && m.joints)
         {
-            if(!m.joints) //bail out if optional is nullopt
-            {
-                return joints;
-            }
             const Accessor &a = accessors[m.joints.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_UNSIGNED_BYTE)
@@ -215,12 +203,8 @@ std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string name) co
     std::vector<std::array<float, 4>> weights;
     for(const Mesh &m : meshes)
     {
-        if(m.name == name && m.indices)
+        if(m.name == name && m.weights)
         {
-            if(!m.weights) //bail out if optional is nullopt
-            {
-                return weights;
-            }
             const Accessor &a = accessors[m.weights.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_FLOAT)
@@ -246,10 +230,6 @@ std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) con
     {
         if(m.name == name && m.indices)
         {
-            if(!m.indices) //bail out if optional is nullopt
-            {
-                return indices;
-            }
             const Accessor &a = accessors[m.indices.value()];
             const BufferView &bv = bufferviews[a.bufferview];
             if(a.componenttype == GL_UNSIGNED_SHORT)
