@@ -114,8 +114,9 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
                 numverts = positions.size();
                 for(size_t i = 0; i < positions.size(); ++i)
                 {
-                    verts[i].pos = vec(positions[i][0], positions[i][1], positions[i][2]);
-                    verts[i].norm = vec(normals[i][0], normals[i][1], normals[i][2]);
+                    //pos, normals are transformed (-z->y, y->z, x->x) from GLTF to Cube coord system
+                    verts[i].pos = vec(positions[i][0], -positions[i][2], positions[i][1]);
+                    verts[i].norm = vec(normals[i][0], -normals[i][2], normals[i][1]);
                     verts[i].tc = vec2(texcoords[i][0], texcoords[i][1]);
                     blendcombo c;
                     c.addweight(0,0,0);
