@@ -576,6 +576,25 @@ void test_matrix4_row()
     assert(m.roww() == vec4<float>(0,0,0,1));
 }
 
+void test_matrix4_lineardepthscale()
+{
+    std::printf("testing matrix4 lineardepthscale\n");
+
+    {
+        matrix4 m;
+        m.identity();
+        assert(m.lineardepthscale() == vec2(1,0));
+    }
+    {
+        matrix4 m({0,0,0,0},{0,0,0,0}, {0,0,1,0}, {0,0,0,1});
+        assert(m.lineardepthscale() == vec2(1,0));
+    }
+    {
+        matrix4 m({0,0,0,0},{0,0,0,0}, {0,0,1,1}, {0,0,1,2});
+        assert(m.lineardepthscale() == vec2(2,-1));
+    }
+}
+
 void test_matrix()
 {
     std::printf(
@@ -607,4 +626,5 @@ testing matrices\n\
     test_matrix4_transpose();
     test_matrix4_ortho();
     test_matrix4_row();
+    test_matrix4_lineardepthscale();
 }
