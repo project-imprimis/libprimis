@@ -104,7 +104,7 @@
     "buffers":[
         {
             "byteLength":840,
-            "uri":"gltf/obj_cube.bin"
+            "uri":"obj_cube.bin"
         }
     ]
 }

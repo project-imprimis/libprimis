@@ -674,7 +674,9 @@ uint GLTFModelInfo::findbuffers(std::string_view path)
         {
             continue;
         }
-        Buffer b{0,0,""};
+        std::string dir = path.data();
+        dir = dir.substr(0, dir.find_last_of("/\\") + 1);
+        Buffer b{0,0,dir};
         b.index = buffers.size();
         for(std::string_view j : block)
         {
@@ -687,7 +689,7 @@ uint GLTFModelInfo::findbuffers(std::string_view path)
                 std::array<char, 256> s;
                 s.fill(0);
                 std::sscanf(j.data(), " \"uri\":\"%s", s.data());
-                b.uri = s.data();
+                b.uri.append(s.data());
                 cleanstring(b.uri);
             }
         }

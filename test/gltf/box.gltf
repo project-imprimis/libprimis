@@ -364,7 +364,7 @@
     "buffers" : [
         {
             "byteLength" : 5632,
-            "uri" : "gltf/box.bin"
+            "uri" : "box.bin"
         }
     ]
 }
