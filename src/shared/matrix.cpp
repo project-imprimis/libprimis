@@ -613,30 +613,12 @@ void matrix4::scale(float n)
     scale(n, n, n);
 }
 
-void matrix4::scalexy(float x, float y)
-{
-    a.x *= x;
-    a.y *= y;
-    b.x *= x;
-    b.y *= y;
-    c.x *= x;
-    c.y *= y;
-    d.x *= x;
-    d.y *= y;
-}
-
 void matrix4::scalez(float k)
 {
     a.z *= k;
     b.z *= k;
     c.z *= k;
     d.z *= k;
-}
-
-void matrix4::reflectz(float z)
-{
-    d.add(vec4(c).mul(2*z));
-    c.neg();
 }
 
 void matrix4::jitter(float x, float y)
