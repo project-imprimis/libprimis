@@ -24,6 +24,9 @@ class GLTFModelInfo
         //two models are equal if their getters return the same (slow, requires loading data pointed to by file)
         bool operator==(const GLTFModelInfo &m) const;
 
+
+        //Enum for selecting node types with getnodenames
+        //"All" selects every node name, "Mesh", "Armature", "Bone" selects only those subsets
         enum NodeTypes
         {
             NodeType_All,
