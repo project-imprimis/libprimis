@@ -124,6 +124,27 @@ void test_matrix3_normalize()
     }
 }
 
+void test_matrix3_trace()
+{
+    std::printf("testing matrix3 trace\n");
+    {
+        matrix3 m;
+        assert(m.trace() == 0);
+    }
+    {
+        matrix3 m;
+        m.identity();
+        assert(m.trace() == 3);
+    }
+    {
+        vec a(1,2,3),
+            b(4,5,6),
+            c(7,8,9);
+        matrix3 m(a,b,c);
+        assert(m.trace() == 15);
+    }
+}
+
 void test_matrix3_identity()
 {
     std::printf("testing matrix3 identity\n");
@@ -612,6 +633,7 @@ testing matrices\n\
 
     test_matrix3_ctor();
     test_matrix3_normalize();
+    test_matrix3_trace();
     test_matrix3_identity();
     test_matrix3_transpose();
     test_matrix3_row();
