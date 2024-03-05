@@ -65,13 +65,19 @@ std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
     std::vector<std::string> nodenames;
     for(const Node &n : nodes)
     {
-        if(type == NodeType_All)
+        switch(type)
         {
-            nodenames.push_back(n.name);
-        }
-        if(type == NodeType_Mesh && n.mesh)
-        {
-            nodenames.push_back(n.name);
+            case NodeType_All:
+            {
+                nodenames.push_back(n.name);
+            }
+            case NodeType_Mesh:
+            {
+                if(n.mesh)
+                {
+                    nodenames.push_back(n.name);
+                }
+            }
         }
     }
     return nodenames;
