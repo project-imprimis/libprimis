@@ -124,6 +124,27 @@ void test_matrix3_normalize()
     }
 }
 
+void test_matrix3_setyaw()
+{
+    std::printf("testing matrix3 setyaw\n");
+    {
+        //90 degrees
+        matrix3 m;
+        m.setyaw(M_PI/2);
+        assert(m.a.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(-1,0,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+    }
+    {
+        //180 degrees
+        matrix3 m;
+        m.setyaw(M_PI);
+        assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+    }
+}
+
 void test_matrix3_trace()
 {
     std::printf("testing matrix3 trace\n");
@@ -655,6 +676,7 @@ testing matrices\n\
 
     test_matrix3_ctor();
     test_matrix3_normalize();
+    test_matrix3_setyaw();
     test_matrix3_trace();
     test_matrix3_identity();
     test_matrix3_transpose();
