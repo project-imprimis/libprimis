@@ -585,6 +585,27 @@ void test_matrix4_scale()
     }
 }
 
+void test_matrix4_scalez()
+{
+    std::printf("testing matrix4 scalez\n");
+
+    {
+        matrix4 m;
+        m.identity();
+        m.scalez(2);
+        assert(m.c.z == 2);
+    }
+    {
+        matrix4 m({1,0,1,0}, {0,1,2,0}, {0,0,3,0}, {0,0,4,1});
+        m.scalez(2);
+        assert(m.a.z == 2);
+        assert(m.b.z == 4);
+        assert(m.c.z == 6);
+        assert(m.d.z == 8);
+    }
+
+
+}
 void test_matrix4_jitter()
 {
     std::printf("testing matrix4 jitter\n");
@@ -708,6 +729,7 @@ testing matrices\n\
     test_matrix4_identity();
     test_matrix4_scale();
     test_matrix4_setscale();
+    test_matrix4_scalez();
     test_matrix4_jitter();
     test_matrix4_transpose();
     test_matrix4_ortho();
