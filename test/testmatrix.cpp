@@ -426,17 +426,17 @@ void test_matrix4x3_row()
     assert(m.rowz() == vec4<float>(0,0,1,0));
 }
 
-void test_matrix4x3_settranslate()
+void test_matrix4x3_settranslation()
 {
-    std::printf("testing matrix4x3 settranslate\n");
-    //settranslate(vec)
+    std::printf("testing matrix4x3 settranslation\n");
+    //settranslation(vec)
     {
         matrix4x3 m;
         m.identity();
         m.settranslation(vec(1,2,3));
         assert(m.d == vec(1,2,3));
     }
-    //settranslate(float,float,float)
+    //settranslation(float,float,float)
     {
         matrix4x3 m;
         m.identity();
@@ -719,7 +719,7 @@ testing matrices\n\
     test_matrix4x3_mul();
     test_matrix4x3_setscale();
     test_matrix4x3_scale();
-    test_matrix4x3_settranslate();
+    test_matrix4x3_settranslation();
     test_matrix4x3_identity();
     test_matrix4x3_transformnormal();
     test_matrix4x3_transform();
