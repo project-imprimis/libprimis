@@ -635,9 +635,16 @@ void matrix4::jitter(float x, float y)
 
 void matrix4::transpose()
 {
-    std::swap(a.y, b.x); std::swap(a.z, c.x); std::swap(a.w, d.x);
-    std::swap(b.z, c.y); std::swap(b.w, d.y);
+    //swap upper triangular elements of row 'a'
+    std::swap(a.y, b.x);
+    std::swap(a.z, c.x);
+    std::swap(a.w, d.x);
+    //swap upper triangular elements of row 'b'
+    std::swap(b.z, c.y);
+    std::swap(b.w, d.y);
+    //swap upper triangular element of row 'c'
     std::swap(c.w, d.z);
+    //no upper triangular elements on row 'd'
 }
 
 void matrix4::transpose(const matrix4 &m)
