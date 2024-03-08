@@ -352,6 +352,28 @@ void test_matrix4x3_identity()
     assert(m.d == vec(0,0,0));
 }
 
+void test_matrix4x3_transposedtransformnormal()
+{
+    std::printf("testing matrix4x3 transposedtransformnormal\n");
+
+    {
+        matrix4x3 m;
+        m.identity();
+        assert(m.transposedtransformnormal(vec(1,1,1)) == vec(1,1,1));
+    }
+    {
+        matrix4x3 m;
+        m.identity();
+        assert(m.transposedtransformnormal(vec(1,0,0)) == vec(1,0,0));
+    }
+    {
+        matrix4x3 m;
+        m.identity();
+        m.mul(2);
+        assert(m.transposedtransformnormal(vec(2,0,0)) == vec(4,0,0));
+    }
+}
+
 void test_matrix4x3_transformnormal()
 {
     std::printf("testing matrix4x3 transformnormal\n");
@@ -721,6 +743,7 @@ testing matrices\n\
     test_matrix4x3_scale();
     test_matrix4x3_settranslation();
     test_matrix4x3_identity();
+    test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
     test_matrix4x3_transform();
     test_matrix4x3_row();
