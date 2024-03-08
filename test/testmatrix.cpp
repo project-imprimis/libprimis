@@ -262,6 +262,18 @@ void test_matrix4x3_ctor()
     }
 }
 
+void test_matrix4x3_accumulate()
+{
+    std::printf("testing matrix4x3 accumulate\n");
+    matrix4x3 m;
+    m.identity();
+    m.accumulate(m, 2);
+    assert(m.a == vec(3,0,0));
+    assert(m.b == vec(0,3,0));
+    assert(m.c == vec(0,0,3));
+    assert(m.d == vec(0,0,0));
+}
+
 void test_matrix4x3_mul()
 {
     std::printf("testing matrix4x3 mul\n");
@@ -742,6 +754,7 @@ testing matrices\n\
     test_matrix4x3_setscale();
     test_matrix4x3_scale();
     test_matrix4x3_settranslation();
+    test_matrix4x3_accumulate();
     test_matrix4x3_identity();
     test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
