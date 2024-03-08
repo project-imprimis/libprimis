@@ -583,7 +583,9 @@ void matrix4::translate(const vec &p, float scale)
 
 void matrix4::setscale(float x, float y, float z)
 {
-    a.x = x; b.y = y; c.z = z;
+    a.x = x;
+    b.y = y;
+    c.z = z;
 }
 
 void matrix4::setscale(const vec &v)
