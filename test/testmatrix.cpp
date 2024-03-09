@@ -695,6 +695,74 @@ void test_matrix4_ortho()
     }
 }
 
+void test_matrix4_transformnormal()
+{
+    std::printf("testing matrix4 transformnormal\n");
+
+    //transformnormal(vec,vec)
+    {
+        //trivial identity test
+        matrix4 m;
+        m.identity();
+        vec v1(1,1,1),
+            v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec(1,1,1));
+    }
+    {
+        //test scaling input vec
+        matrix4 m;
+        m.identity();
+        vec v1(2,2,2),
+            v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec(2,2,2));
+    }
+    {
+        //test non identity matrix
+        matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+        vec v1(1,1,1),
+            v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec(15,18,21));
+    }
+    {
+        //test that w elements are irrelevant
+        matrix4 m({1,2,3,0}, {5,6,7,0}, {9,10,11,0}, {13,14,15,0});
+        vec v1(1,1,1),
+            v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec(15,18,21));
+    }
+    //transformnormal(vec,vec4<float>)
+    {
+        //trivial identity test
+        matrix4 m;
+        m.identity();
+        vec v1(1,1,1);
+        vec4<float> v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec4<float>(1,1,1,0));
+    }
+    {
+        //test scaling input vec
+        matrix4 m;
+        m.identity();
+        vec v1(2,2,2);
+        vec4<float> v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec4<float>(2,2,2,0));
+    }
+    {
+        //test non identity matrix
+        matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+        vec v1(1,1,1);
+        vec4<float> v2;
+        m.transformnormal(v1,v2);
+        assert(v2 == vec4<float>(15,18,21,24));
+    }
+}
+
 void test_matrix4_gettranslation()
 {
     std::printf("testing matrix4 gettranslation\n");
@@ -769,6 +837,7 @@ testing matrices\n\
     test_matrix4_jitter();
     test_matrix4_transpose();
     test_matrix4_ortho();
+    test_matrix4_transformnormal();
     test_matrix4_gettranslation();
     test_matrix4_row();
     test_matrix4_lineardepthscale();
