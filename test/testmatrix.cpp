@@ -763,6 +763,35 @@ void test_matrix4_transformnormal()
     }
 }
 
+void test_matrix4_transposedtransformnormal()
+{
+    std::printf("testing matrix4 transposedtransformnormal\n");
+
+    {
+        matrix4 m;
+        m.identity();
+        vec v1(1,1,1),
+            v2;
+        m.transposedtransformnormal(v1, v2);
+        assert(v2 == vec(1,1,1));
+    }
+    {
+        matrix4 m;
+        m.identity();
+        vec v1(2,2,2),
+            v2;
+        m.transposedtransformnormal(v1, v2);
+        assert(v2 == vec(2,2,2));
+    }
+    {
+        matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+        vec v1(1,1,1),
+            v2;
+        m.transposedtransformnormal(v1, v2);
+        assert(v2 == vec(6,18,30));
+    }
+}
+
 void test_matrix4_gettranslation()
 {
     std::printf("testing matrix4 gettranslation\n");
@@ -837,6 +866,7 @@ testing matrices\n\
     test_matrix4_jitter();
     test_matrix4_transpose();
     test_matrix4_ortho();
+    test_matrix4_transposedtransformnormal();
     test_matrix4_transformnormal();
     test_matrix4_gettranslation();
     test_matrix4_row();
