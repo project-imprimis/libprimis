@@ -83,7 +83,7 @@ void cubeworld::resetclipplanes()
 
 // info about collisions
 int collideinside; // whether an internal collision happened
-physent *collideplayer; // whether the collection hit a player
+const physent *collideplayer; // whether the collection hit a player
 vec collidewall; // just the normal vectors.
 
 bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
@@ -198,7 +198,7 @@ static struct dynentcacheentry
 {
     int x, y;
     uint frame;
-    std::vector<physent *> dynents;
+    std::vector<const physent *> dynents;
 } dynentcache[dynentcachesize];
 
 //resets the dynentcache[] array entries
@@ -237,7 +237,7 @@ static int dynenthash(int x, int y)
     return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1));
 }
 
-static const std::vector<physent *> &checkdynentcache(int x, int y)
+static const std::vector<const physent *> &checkdynentcache(int x, int y)
 {
     dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
     if(dec.x == x && dec.y == y && dec.frame == dynentframe)
@@ -344,11 +344,11 @@ bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // col
         return false;
     }
     int lastinside = collideinside;
-    physent *insideplayer = nullptr;
+    const physent *insideplayer = nullptr;
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
-        const std::vector<physent *> &dynents = checkdynentcache(x, y);
-        for(physent* const& o: dynents)
+        const std::vector<const physent *> &dynents = checkdynentcache(x, y);
+        for(const physent* const& o: dynents)
         {
             if(o==d || d->o.reject(o->o, d->radius+o->radius))
             {
