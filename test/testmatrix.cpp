@@ -128,6 +128,18 @@ void test_matrix3_normalize()
     }
 }
 
+void test_matrix3_scale()
+{
+    std::printf("testing matrix3 scale\n");
+
+    matrix3 m;
+    m.identity();
+    m.scale(2);
+    assert(m.a.sub(vec(2,0,0)).magnitude() < tolerance);
+    assert(m.b.sub(vec(0,2,0)).magnitude() < tolerance);
+    assert(m.c.sub(vec(0,0,2)).magnitude() < tolerance);
+}
+
 void test_matrix3_setyaw()
 {
     std::printf("testing matrix3 setyaw\n");
@@ -840,6 +852,7 @@ testing matrices\n\
 
     test_matrix3_ctor();
     test_matrix3_normalize();
+    test_matrix3_scale();
     test_matrix3_setyaw();
     test_matrix3_trace();
     test_matrix3_identity();
