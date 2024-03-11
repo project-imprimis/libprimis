@@ -437,6 +437,52 @@ void test_matrix4x3_identity()
     assert(m.d == vec(0,0,0));
 }
 
+void test_matrix4x3_invert()
+{
+    std::printf("testing matrix4x3 invert\n");
+    //invert()
+    {
+        matrix4x3 m;
+        m.identity();
+        m.invert();
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+        assert(m.d == vec(0,0,0));
+    }
+    {
+        matrix4x3 m({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+        m.invert();
+        vec inv(1.f/3, 1.f/6, 1.f/9);
+        assert(m.a == inv);
+        assert(m.b == inv);
+        assert(m.c == inv);
+        assert(m.d == vec(0,0,0));
+    }
+    //invert(matrix4x3&)
+    {
+        matrix4x3 m,
+                  m2;
+        m.identity();
+        m2.identity();
+        m.invert(m2);
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+        assert(m.d == vec(0,0,0));
+    }
+    {
+        matrix4x3 m({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12}),
+                  m2;
+        m2.identity();
+        m.invert(m2);
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+        assert(m.d == vec(0,0,0));
+    }
+}
+
 void test_matrix4x3_transposedtransformnormal()
 {
     std::printf("testing matrix4x3 transposedtransformnormal\n");
@@ -909,6 +955,7 @@ testing matrices\n\
     test_matrix4x3_settranslation();
     test_matrix4x3_accumulate();
     test_matrix4x3_identity();
+    test_matrix4x3_invert();
     test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
     test_matrix4x3_transform();
