@@ -202,6 +202,48 @@ void test_matrix3_transpose()
     assert(m.c == vec(3,6,9));
 }
 
+void test_matrix3_invert()
+{
+    std::printf("testing matrix3 invert\n");
+    //invert()
+    {
+        matrix3 m;
+        m.identity();
+        m.invert();
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+    }
+    {
+        matrix3 m({1,1,1}, {2,2,2}, {3,3,3});
+        m.invert();
+        vec inv(1.f/3, 1.f/6, 1.f/9);
+        assert(m.a == inv);
+        assert(m.b == inv);
+        assert(m.c == inv);
+    }
+    //invert(matrix3&)
+    {
+        matrix3 m,
+                m2;
+        m.identity();
+        m2.identity();
+        m.invert(m2);
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+    }
+    {
+        matrix3 m({1,2,3}, {4,5,6}, {7,8,9}),
+                m2;
+        m2.identity();
+        m.invert(m2);
+        assert(m.a == vec(1,0,0));
+        assert(m.b == vec(0,1,0));
+        assert(m.c == vec(0,0,1));
+    }
+}
+
 void test_matrix3_row()
 {
     std::printf("testing matrix3 rowx/rowy/rowz\n");
@@ -857,6 +899,7 @@ testing matrices\n\
     test_matrix3_trace();
     test_matrix3_identity();
     test_matrix3_transpose();
+    test_matrix3_invert();
     test_matrix3_row();
 
     test_matrix4x3_ctor();
