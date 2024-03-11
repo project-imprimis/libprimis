@@ -437,6 +437,29 @@ void test_matrix4x3_identity()
     assert(m.d == vec(0,0,0));
 }
 
+void test_matrix4x3_transpose()
+{
+    std::printf("testing matrix4x3 transpose\n");
+    {
+        matrix4x3 m;
+        m.identity();
+        m.transpose();
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12});
+        m.transpose();
+        assert(m.a.sub(vec(1,4,7)).magnitude() < tolerance);
+        assert(m.b.sub(vec(2,5,8)).magnitude() < tolerance);
+        assert(m.c.sub(vec(3,6,9)).magnitude() < tolerance);
+        //                 a*d  b*d  c*d
+        assert(m.d.sub(vec(-68,-167,-266)).magnitude() < tolerance);
+    }
+}
+
 void test_matrix4x3_invert()
 {
     std::printf("testing matrix4x3 invert\n");
@@ -955,6 +978,7 @@ testing matrices\n\
     test_matrix4x3_settranslation();
     test_matrix4x3_accumulate();
     test_matrix4x3_identity();
+    test_matrix4x3_transpose();
     test_matrix4x3_invert();
     test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
