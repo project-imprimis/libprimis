@@ -426,6 +426,28 @@ void test_matrix4x3_settranslation()
     }
 }
 
+void test_matrix4x3_normalize()
+{
+    std::printf("testing matrix4x3 normalize\n");
+    {
+        matrix4x3 m;
+        m.identity();
+        m.normalize();
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.magnitude() < tolerance);
+    }
+    {
+        matrix4x3 m({3,4,0}, {3,0,4}, {4,3,0}, {4,0,3});
+        m.normalize();
+        assert(m.a.sub(vec( 0.6, 0.8,   0)).magnitude() < tolerance);
+        assert(m.b.sub(vec( 0.6,   0, 0.8)).magnitude() < tolerance);
+        assert(m.c.sub(vec( 0.8, 0.6,   0)).magnitude() < tolerance);
+        assert(m.d.sub(vec(   4,   0,   3)).magnitude() < tolerance);
+    }
+}
+
 void test_matrix4x3_identity()
 {
     std::printf("testing matrix4x3 identity\n");
@@ -1001,6 +1023,7 @@ testing matrices\n\
     test_matrix4x3_scale();
     test_matrix4x3_settranslation();
     test_matrix4x3_accumulate();
+    test_matrix4x3_normalize();
     test_matrix4x3_identity();
     test_matrix4x3_transpose();
     test_matrix4x3_invert();
