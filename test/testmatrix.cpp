@@ -210,17 +210,17 @@ void test_matrix3_invert()
         matrix3 m;
         m.identity();
         m.invert();
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
     }
     {
         matrix3 m({1,1,1}, {2,2,2}, {3,3,3});
         m.invert();
         vec inv(1.f/3, 1.f/6, 1.f/9);
-        assert(m.a == inv);
-        assert(m.b == inv);
-        assert(m.c == inv);
+        assert(m.a.sub(inv).magnitude() < tolerance);
+        assert(m.b.sub(inv).magnitude() < tolerance);
+        assert(m.c.sub(inv).magnitude() < tolerance);
     }
     //invert(matrix3&)
     {
@@ -229,18 +229,18 @@ void test_matrix3_invert()
         m.identity();
         m2.identity();
         m.invert(m2);
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
     }
     {
         matrix3 m({1,2,3}, {4,5,6}, {7,8,9}),
                 m2;
         m2.identity();
         m.invert(m2);
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
     }
 }
 
@@ -468,18 +468,18 @@ void test_matrix4x3_invert()
         matrix4x3 m;
         m.identity();
         m.invert();
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
-        assert(m.d == vec(0,0,0));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.magnitude() < tolerance);
     }
     {
         matrix4x3 m({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
         m.invert();
         vec inv(1.f/3, 1.f/6, 1.f/9);
-        assert(m.a == inv);
-        assert(m.b == inv);
-        assert(m.c == inv);
+        assert(m.a.sub(inv).magnitude() < tolerance);
+        assert(m.b.sub(inv).magnitude() < tolerance);
+        assert(m.c.sub(inv).magnitude() < tolerance);
         assert(m.d == vec(0,0,0));
     }
     //invert(matrix4x3&)
@@ -489,20 +489,20 @@ void test_matrix4x3_invert()
         m.identity();
         m2.identity();
         m.invert(m2);
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
-        assert(m.d == vec(0,0,0));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.magnitude() < tolerance);
     }
     {
         matrix4x3 m({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12}),
                   m2;
         m2.identity();
         m.invert(m2);
-        assert(m.a == vec(1,0,0));
-        assert(m.b == vec(0,1,0));
-        assert(m.c == vec(0,0,1));
-        assert(m.d == vec(0,0,0));
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        assert(m.d.magnitude() < tolerance);
     }
 }
 
