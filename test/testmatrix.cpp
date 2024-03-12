@@ -480,7 +480,30 @@ void test_matrix4x3_invert()
         assert(m.a.sub(inv).magnitude() < tolerance);
         assert(m.b.sub(inv).magnitude() < tolerance);
         assert(m.c.sub(inv).magnitude() < tolerance);
-        assert(m.d == vec(0,0,0));
+        assert(m.d.magnitude() < tolerance);
+    }
+    {
+        //show that normalize-invert operations do not commute
+        matrix4x3 m({3,4,0}, {3,0,4}, {4,3,0}, {4,0,3}),
+                  m2(m);
+        //normalize-invert
+        m.normalize();
+        m.invert();
+
+        assert(m.a.sub(vec( 0.6, 0.6, 0.8)).magnitude() < tolerance);
+        assert(m.b.sub(vec( 0.8,   0, 0.6)).magnitude() < tolerance);
+        assert(m.c.sub(vec(   0, 0.8,   0)).magnitude() < tolerance);
+        assert(m.d.sub(vec(-2.4,-4.8,-3.2)).magnitude() < tolerance);
+        //invert-normalize
+        m2.invert();
+        m2.normalize();
+
+        float a = 0.514496,
+              b = 0.685994;
+        assert(m2.a.sub(vec(    a,    a,    b)).magnitude() < tolerance);
+        assert(m2.b.sub(vec(  0.8,    0,  0.6)).magnitude() < tolerance);
+        assert(m2.c.sub(vec(    0,    1,    0)).magnitude() < tolerance);
+        assert(m2.d.sub(vec(-0.48,-0.96,-0.64)).magnitude() < tolerance);
     }
     //invert(matrix4x3&)
     {
@@ -495,6 +518,7 @@ void test_matrix4x3_invert()
         assert(m.d.magnitude() < tolerance);
     }
     {
+        //test that m2 is inverted and not m
         matrix4x3 m({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12}),
                   m2;
         m2.identity();
