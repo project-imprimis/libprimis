@@ -176,7 +176,7 @@ void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
         char *end = std::strchr(&s[cmdlen], ' ');
         if(end)
         {
-            f = completions[stringslice(&s[cmdlen], end), nullptr];
+            f = completions[stringslice(&s[cmdlen], end).str];
         }
     }
     const char *nextcomplete = nullptr;
