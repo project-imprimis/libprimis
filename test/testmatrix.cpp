@@ -777,7 +777,7 @@ void test_matrix4_scale()
     {
         matrix4 m;
         m.identity();
-        m.setscale(2);
+        m.scale(2);
         assert(m.a == vec4<float>(2,0,0,0));
         assert(m.b == vec4<float>(0,2,0,0));
         assert(m.c == vec4<float>(0,0,2,0));
@@ -787,7 +787,7 @@ void test_matrix4_scale()
     {
         matrix4 m;
         m.identity();
-        m.setscale(2,3,4);
+        m.scale(2,3,4);
         assert(m.a == vec4<float>(2,0,0,0));
         assert(m.b == vec4<float>(0,3,0,0));
         assert(m.c == vec4<float>(0,0,4,0));
@@ -797,7 +797,7 @@ void test_matrix4_scale()
     {
         matrix4 m;
         m.identity();
-        m.setscale(vec(2,3,4));
+        m.scale(vec(2,3,4));
         assert(m.a == vec4<float>(2,0,0,0));
         assert(m.b == vec4<float>(0,3,0,0));
         assert(m.c == vec4<float>(0,0,4,0));
