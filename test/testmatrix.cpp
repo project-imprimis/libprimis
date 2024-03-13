@@ -852,12 +852,25 @@ void test_matrix4_jitter()
 void test_matrix4_transpose()
 {
     std::printf("testing matrix4 transpose\n");
-    matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
-    m.transpose();
-    assert(m.a == vec4<float>(1,5,9,13));
-    assert(m.b == vec4<float>(2,6,10,14));
-    assert(m.c == vec4<float>(3,7,11,15));
-    assert(m.d == vec4<float>(4,8,12,16));
+    //transpose()
+    {
+        matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16});
+        m.transpose();
+        assert(m.a == vec4<float>(1,5,9,13));
+        assert(m.b == vec4<float>(2,6,10,14));
+        assert(m.c == vec4<float>(3,7,11,15));
+        assert(m.d == vec4<float>(4,8,12,16));
+    }
+    //transpose(matrix4)
+    {
+        matrix4 m({1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16}),
+                m2;
+        m2.transpose(m);
+        assert(m2.a == vec4<float>(1,5,9,13));
+        assert(m2.b == vec4<float>(2,6,10,14));
+        assert(m2.c == vec4<float>(3,7,11,15));
+        assert(m2.d == vec4<float>(4,8,12,16));
+    }
 }
 
 void test_matrix4_ortho()
