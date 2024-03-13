@@ -721,6 +721,23 @@ void test_matrix4_identity()
     assert(m.d == vec4<float>(0,0,0,1));
 }
 
+void test_matrix4_settranslation()
+{
+    std::printf("testing matrix4 settranslation\n");
+    //settranslation(vec)
+    {
+        matrix4 m;
+        m.settranslation(vec(1,2,3));
+        assert(m.d == vec4<float>(1,2,3,0));
+    }
+    //settranslation(float, float, float)
+    {
+        matrix4 m;
+        m.settranslation(1,2,3);
+        assert(m.d == vec4<float>(1,2,3,0));
+    }
+}
+
 void test_matrix4_setscale()
 {
     //setscale(float)
@@ -1034,6 +1051,7 @@ testing matrices\n\
 
     test_matrix4_ctor();
     test_matrix4_identity();
+    test_matrix4_settranslation();
     test_matrix4_scale();
     test_matrix4_setscale();
     test_matrix4_scalez();
