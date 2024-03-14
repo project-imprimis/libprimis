@@ -1002,12 +1002,14 @@ void test_matrix4_row()
 {
     std::printf("testing matrix4 rowx/rowy/rowz/roww\n");
 
-    matrix4 m;
-    m.identity();
-    assert(m.rowx() == vec4<float>(1,0,0,0));
-    assert(m.rowy() == vec4<float>(0,1,0,0));
-    assert(m.rowz() == vec4<float>(0,0,1,0));
-    assert(m.roww() == vec4<float>(0,0,0,1));
+    matrix4 m({1,2,0,0},
+              {3,1,2,0},
+              {0,3,1,2},
+              {0,0,3,1});
+    assert(m.rowx() == vec4<float>(1,3,0,0));
+    assert(m.rowy() == vec4<float>(2,1,3,0));
+    assert(m.rowz() == vec4<float>(0,2,1,3));
+    assert(m.roww() == vec4<float>(0,0,2,1));
 }
 
 void test_matrix4_invert()
