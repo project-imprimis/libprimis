@@ -1010,6 +1010,32 @@ void test_matrix4_row()
     assert(m.roww() == vec4<float>(0,0,0,1));
 }
 
+void test_matrix4_invert()
+{
+    std::printf("testing matrix4 invert\n");
+    {
+        //test I^-1 == I
+        matrix4 m;
+        m.identity();
+        bool notsingular = m.invert(m);
+        assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec4<float>(0,1,0,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
+        assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        assert(notsingular == true);
+    }
+    {
+        //test trivially singular matrix
+        matrix4 m({1,0,0,0},{1,0,0,0}, {1,0,0,0}, {1,0,0,0});
+        bool notsingular = m.invert(m);
+        assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(m.d.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(notsingular == false);
+    }
+}
+
 void test_matrix4_inverse()
 {
     std::printf("testing matrix4 inverse\n");
@@ -1033,6 +1059,7 @@ void test_matrix4_inverse()
         assert(m.roww() == vec4<float>(0,0,0,0));
     }
 }
+
 void test_matrix4_lineardepthscale()
 {
     std::printf("testing matrix4 lineardepthscale\n");
@@ -1098,6 +1125,7 @@ testing matrices\n\
     test_matrix4_transformnormal();
     test_matrix4_gettranslation();
     test_matrix4_row();
+    test_matrix4_invert();
     test_matrix4_inverse();
     test_matrix4_lineardepthscale();
 }
