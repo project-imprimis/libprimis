@@ -7,6 +7,7 @@
 #include "testshadowatlas.h"
 #include "testprops.h"
 #include "testocta.h"
+#include "testgeom.h"
 #include "testgeomexts.h"
 #include "testgltfloader.h"
 #include "testskel.h"
@@ -24,6 +25,7 @@ int main()
     test_gltf();
     test_md5();
     test_skel();
+    test_geom();
     test_geomexts();
     test_matrix();
     return EXIT_SUCCESS;
