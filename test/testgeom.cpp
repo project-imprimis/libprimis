@@ -6,7 +6,7 @@ constexpr float tolerance = 0.001;
 void test_linecylinderintersect()
 {
     std::printf("testing linecylinderintersect\n");
-    //bool linecylinderintersect(const vec &from, const vec &to, const vec &start, const vec &end, float radius, float &dist)
+    //intersection tests
     {
         //test line from origin to z=10 intersecting cylinder r=1 halfway through
         vec  from(0,0,0),
@@ -32,13 +32,25 @@ void test_linecylinderintersect()
         assert(std::abs(0.9 - dist) < tolerance);
     }
     {
-        //test line from origin to z=10 entirely inside intersecting circle
+        //test line from origin to z=10 entirely inside intersecting cylinder
         vec  from(0,0,0),
                to(0,0,10),
             start(-1,0,5),
               end(1,0,5);
         float radius = 6,
               dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //test line from origin to z=10 entirely inside intersecting cylinder, with dist set
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,0,5),
+              end(1,0,5);
+        float radius = 6,
+              dist = 10;
         bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
         assert(intersected);
         assert(std::abs(dist) < tolerance);
@@ -126,6 +138,55 @@ void test_linecylinderintersect()
         bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
         assert(intersected);
         assert(std::abs(0.5 - dist) < tolerance);
+    }
+    //non-intersection tests
+    {
+        //test line which nearly intersects cylinder along cylinder tangent
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,1,5),
+              end(0,1,5);
+        float radius = 0.99,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected == false);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //test line which nearly intersects cylinder edge
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,1,5),
+              end(-0.01,1,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected == false);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //test line which nearly intersects cylinder opposite edge
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(1,1,5),
+              end(0.01,1,5);
+        float radius = 0.1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected == false);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //test case where dist is already set
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(1,1,5),
+              end(0.01,1,5);
+        float radius = 0.1,
+              dist = 10;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected == false);
+        assert(std::abs(10 - dist) < tolerance);
     }
 }
 
