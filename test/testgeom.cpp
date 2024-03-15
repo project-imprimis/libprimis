@@ -1,6 +1,134 @@
 #include "libprimis.h"
 #include "../src/shared/geomexts.h"
 
+constexpr float tolerance = 0.001;
+
+void test_linecylinderintersect()
+{
+    std::printf("testing linecylinderintersect\n");
+    //bool linecylinderintersect(const vec &from, const vec &to, const vec &start, const vec &end, float radius, float &dist)
+    {
+        //test line from origin to z=10 intersecting cylinder r=1 halfway through
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,0,5),
+              end(1,0,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.4 - dist) < tolerance);
+    }
+    {
+        //test line from origin to z=10 intersecting cylinder centered at z=10 and not leaving
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,0,10),
+              end(1,0,10);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.9 - dist) < tolerance);
+    }
+    {
+        //test line from origin to z=10 entirely inside intersecting circle
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,0,5),
+              end(1,0,5);
+        float radius = 6,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //test line intersecting 0-size cylinder through middle
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,0,5),
+              end(1,0,5);
+        float radius = 0,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.5 - dist) < tolerance);
+    }
+    {
+        //test line intersecting cylinder at tangent point
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,1,5),
+              end(1,1,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.5 - dist) < tolerance);
+    }
+    {
+        //test line intersecting cylinder at tangent point, at endpoint of line
+        vec  from(0,0,0),
+               to(0,0,5),
+            start(-1,1,5),
+              end(1,1,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(1 - dist) < tolerance);
+    }
+    {
+        //test line intersecting cylinder at tangent, at edge
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,1,5),
+              end(0,1,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.5 - dist) < tolerance);
+    }
+    {
+        //test diagonal line intersecting cylinder through edge
+        vec  from(0,0,0),
+               to(10,0,10),
+            start(3,0,5),
+              end(7,0,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.4 - dist) < tolerance);
+    }
+    {
+        //test diagonal line intersecting cylinder through cylinder caps
+        vec  from(0,0,0),
+               to(10,0,10),
+            start(4.5,0,5),
+              end(5.5,0,5);
+        float radius = 1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.45 - dist) < tolerance);
+    }
+    {
+        //test line intersecting cylinder of negative radius
+        vec  from(0,0,0),
+               to(0,0,10),
+            start(-1,1,5),
+              end(1,1,5);
+        float radius = -1,
+              dist = 0;
+        bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+        assert(intersected);
+        assert(std::abs(0.5 - dist) < tolerance);
+    }
+}
+
 void test_ivec_dist()
 {
     std::printf("testing ivec dist\n");
@@ -25,6 +153,7 @@ testing geometry\n\
 ===============================================================\n"
     );
 
+    test_linecylinderintersect();
     test_ivec_dist();
 }
 
