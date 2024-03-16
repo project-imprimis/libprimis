@@ -17,7 +17,6 @@ void test_raysphereintersect()
         float dist = 0;
         bool intersected = raysphereintersect(center, radius, o, ray, dist);
         assert(intersected);
-        std::printf("dist %f\n", dist);
         assert(std::abs(dist) < tolerance);
     }
     {
@@ -29,7 +28,6 @@ void test_raysphereintersect()
         float dist = 0;
         bool intersected = raysphereintersect(center, radius, o, ray, dist);
         assert(intersected);
-        std::printf("dist %f\n", dist);
         assert(std::abs(1 + dist) < tolerance);
     }
     {
@@ -41,7 +39,6 @@ void test_raysphereintersect()
         float dist = 0;
         bool intersected = raysphereintersect(center, radius, o, ray, dist);
         assert(intersected);
-        std::printf("dist %f\n", dist);
         assert(std::abs(dist) < tolerance);
     }
     {
@@ -53,7 +50,6 @@ void test_raysphereintersect()
         float dist = 0;
         bool intersected = raysphereintersect(center, radius, o, ray, dist);
         assert(intersected);
-        std::printf("dist %f\n", dist);
         assert(std::abs(1 - dist) < tolerance);
     }
     //non-intersection tests
@@ -66,7 +62,6 @@ void test_raysphereintersect()
         float dist = 0;
         bool intersected = raysphereintersect(center, radius, o, ray, dist);
         assert(intersected == false);
-        std::printf("dist %f\n", dist);
         assert(std::abs(dist) < tolerance);
     }
 }
