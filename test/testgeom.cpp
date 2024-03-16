@@ -3,6 +3,74 @@
 
 constexpr float tolerance = 0.001;
 
+void test_raysphereintersect()
+{
+    std::printf("testing raysphereintersect\n");
+
+    //intersection tests
+    {
+        //ray to ~infinity
+        vec center(0,0,0);
+        float radius = 1;
+        vec o(0,0,-4),
+            ray(0,0,9999999);
+        float dist = 0;
+        bool intersected = raysphereintersect(center, radius, o, ray, dist);
+        assert(intersected);
+        std::printf("dist %f\n", dist);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //ray starting inside sphere
+        vec center(0,0,0);
+        float radius = 1;
+        vec o(0,0,0),
+            ray(0,0,2);
+        float dist = 0;
+        bool intersected = raysphereintersect(center, radius, o, ray, dist);
+        assert(intersected);
+        std::printf("dist %f\n", dist);
+        assert(std::abs(1 + dist) < tolerance);
+    }
+    {
+        //ray starting at tangent
+        vec center(0,0,0);
+        float radius = 1;
+        vec o(0,1,0),
+            ray(0,0,2);
+        float dist = 0;
+        bool intersected = raysphereintersect(center, radius, o, ray, dist);
+        assert(intersected);
+        std::printf("dist %f\n", dist);
+        assert(std::abs(dist) < tolerance);
+    }
+    {
+        //ray ending at tangent
+        vec center(0,0,0);
+        float radius = 1;
+        vec o(0,-1,-1),
+            ray(0,0,1);
+        float dist = 0;
+        bool intersected = raysphereintersect(center, radius, o, ray, dist);
+        assert(intersected);
+        std::printf("dist %f\n", dist);
+        assert(std::abs(1 - dist) < tolerance);
+    }
+    //non-intersection tests
+    {
+        //ray too far in +y
+        vec center(0,0,0);
+        float radius = 1;
+        vec o(0,2,0),
+            ray(0,0,1);
+        float dist = 0;
+        bool intersected = raysphereintersect(center, radius, o, ray, dist);
+        assert(intersected == false);
+        std::printf("dist %f\n", dist);
+        assert(std::abs(dist) < tolerance);
+    }
+}
+
 void test_linecylinderintersect()
 {
     std::printf("testing linecylinderintersect\n");
@@ -214,6 +282,7 @@ testing geometry\n\
 ===============================================================\n"
     );
 
+    test_raysphereintersect();
     test_linecylinderintersect();
     test_ivec_dist();
 }
