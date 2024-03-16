@@ -253,6 +253,50 @@ void test_linecylinderintersect()
     }
 }
 
+void test_polyclip()
+{
+
+    {
+        //test no directionality
+        std::array<vec, 5> in = {{vec(0,0,0), vec(0,0,1), vec(0,1,1), vec(0,1,0), vec(0,2,0)}};
+        std::array<vec, 5> out;
+        out.fill(vec(0,0,0));
+
+        polyclip(in.data(), 5, vec(0,0,0), 0, 0, out.data());
+        assert(out[0] == vec(0,0,0));
+        assert(out[1] == vec(0,0,1));
+        assert(out[2] == vec(0,1,1));
+        assert(out[3] == vec(0,1,0));
+        assert(out[4] == vec(0,2,0));
+    }
+    {
+        //test clipping +z at 0
+        std::array<vec, 5> in = {{vec(0,0,0), vec(0,0,1), vec(0,1,1), vec(0,1,0), vec(0,2,0)}};
+        std::array<vec, 5> out;
+        out.fill(vec(0,0,0));
+
+        polyclip(in.data(), 5, vec(0,0,1), 0, 0, out.data());
+        assert(out[0] == vec(0,0,0));
+        assert(out[1] == vec(0,1,0));
+        assert(out[2] == vec(0,2,0));
+        assert(out[3] == vec(0,0,0));
+        assert(out[4] == vec(0,0,0));
+    }
+    {
+        //test clipping +z 1..2
+        std::array<vec, 5> in = {{vec(0,0,0), vec(0,0,1), vec(0,1,3), vec(0,1,1), vec(0,2,0)}};
+        std::array<vec, 5> out;
+        out.fill(vec(0,0,0));
+
+        polyclip(in.data(), 5, vec(0,0,1), 1, 2, out.data());
+        assert(out[0] == vec(0,0,1));
+        assert(out[1] == vec(0,0.5,2));
+        assert(out[2] == vec(0,1,2));
+        assert(out[3] == vec(0,1,1));
+        assert(out[4] == vec(0,0,0));
+    }
+}
+
 void test_ivec_dist()
 {
     std::printf("testing ivec dist\n");
@@ -279,6 +323,7 @@ testing geometry\n\
 
     test_raysphereintersect();
     test_linecylinderintersect();
+    test_polyclip();
     test_ivec_dist();
 }
 
