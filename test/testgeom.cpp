@@ -255,7 +255,7 @@ void test_linecylinderintersect()
 
 void test_polyclip()
 {
-
+    std::printf("testing polyclip\n");
     {
         //test no directionality
         std::array<vec, 5> in = {{vec(0,0,0), vec(0,0,1), vec(0,1,1), vec(0,1,0), vec(0,2,0)}};
