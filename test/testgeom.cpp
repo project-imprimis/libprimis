@@ -323,6 +323,40 @@ void test_mod360()
     assert(mod360(900) == 180);
 }
 
+void test_sin360()
+{
+    std::printf("testing sin360\n");
+
+    assert(sin360(0) == 0);
+    assert(sin360(90) == 1);
+    assert(sin360(180) == 0);
+    assert(sin360(270) == -1);
+    assert(sin360(360) == 0);
+
+    assert(std::abs(sin360(90) - std::sin(90/RAD)) < tolerance);
+    assert(std::abs(sin360(60) - std::sin(60/RAD)) < tolerance);
+    assert(std::abs(sin360(52) - std::sin(52/RAD)) < tolerance);
+    assert(std::abs(sin360(700) - std::sin(700/RAD)) < tolerance);
+    assert(std::abs(sin360(720) - std::sin(720/RAD)) < tolerance);
+}
+
+void test_cos360()
+{
+    std::printf("testing cos360\n");
+
+    assert(cos360(0) == 1);
+    assert(cos360(90) == 0);
+    assert(cos360(180) == -1);
+    assert(cos360(270) == 0);
+    assert(cos360(360) == 1);
+
+    assert(std::abs(cos360(95) - std::cos(95/RAD)) < tolerance);
+    assert(std::abs(cos360(69) - std::cos(69/RAD)) < tolerance);
+    assert(std::abs(cos360(52) - std::cos(52/RAD)) < tolerance);
+    assert(std::abs(cos360(700) - std::cos(700/RAD)) < tolerance);
+    assert(std::abs(cos360(720) - std::cos(720/RAD)) < tolerance);
+}
+
 void test_geom()
 {
     std::printf(
@@ -336,5 +370,7 @@ testing geometry\n\
     test_polyclip();
     test_ivec_dist();
     test_mod360();
+    test_sin360();
+    test_cos360();
 }
 
