@@ -313,6 +313,16 @@ void test_ivec_dist()
     }
 }
 
+void test_mod360()
+{
+    std::printf("testing mod360\n");
+    assert(mod360(0) == 0);
+    assert(mod360(360) == 0);
+    assert(mod360(540) == 180);
+    assert(mod360(-180) == 180);
+    assert(mod360(900) == 180);
+}
+
 void test_geom()
 {
     std::printf(
@@ -325,5 +335,6 @@ testing geometry\n\
     test_linecylinderintersect();
     test_polyclip();
     test_ivec_dist();
+    test_mod360();
 }
 
