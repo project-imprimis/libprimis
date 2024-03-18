@@ -3,6 +3,10 @@
 
 constexpr float tolerance = 0.001;
 
+////////////////////////////////////////////////////////////////////////////////
+// float vec tests
+////////////////////////////////////////////////////////////////////////////////
+
 void test_vec_lerp()
 {
     std::printf("testing vec lerp\n");
@@ -50,6 +54,25 @@ void test_vec_lerp()
             v2(1,2,3),
             v3;
         assert(v3.lerp(v1, v2,1.5) == vec(1.5,3,4.5));
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// integer vec tests
+////////////////////////////////////////////////////////////////////////////////
+
+void test_ivec_dist()
+{
+    std::printf("testing ivec dist\n");
+    {
+        plane p(vec(0,0,1), 0);
+        ivec i(1,1,1);
+        assert(i.dist(p) == 1);
+    }
+    {
+        plane p(vec(0,0,1), 0);
+        ivec i(1,1,0);
+        assert(i.dist(p) == 0);
     }
 }
 
@@ -347,22 +370,6 @@ void test_polyclip()
     }
 }
 
-void test_ivec_dist()
-{
-    std::printf("testing ivec dist\n");
-
-    {
-        plane p(vec(0,0,1), 0);
-        ivec i(1,1,1);
-        assert(i.dist(p) == 1);
-    }
-    {
-        plane p(vec(0,0,1), 0);
-        ivec i(1,1,0);
-        assert(i.dist(p) == 0);
-    }
-}
-
 void test_mod360()
 {
     std::printf("testing mod360\n");
@@ -417,10 +424,11 @@ testing geometry\n\
 
     test_vec_lerp();
 
+    test_ivec_dist();
+
     test_raysphereintersect();
     test_linecylinderintersect();
     test_polyclip();
-    test_ivec_dist();
     test_mod360();
     test_sin360();
     test_cos360();
