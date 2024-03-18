@@ -448,6 +448,33 @@ void test_matrix4x3_normalize()
     }
 }
 
+void test_matrix4x3_lerp()
+{
+    std::printf("testing matrix4x3 lerp\n");
+    //lerp(matrix4x3,float)
+    {
+        matrix4x3 m1,
+                  m2({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12});
+        m1.lerp(m2, 0.5);
+        assert(m1.a.sub(vec( 0.5, 1.0, 1.5)).magnitude() < tolerance);
+        assert(m1.b.sub(vec( 2.0, 2.5, 3.0)).magnitude() < tolerance);
+        assert(m1.c.sub(vec( 3.5, 4.0, 4.5)).magnitude() < tolerance);
+        assert(m1.d.sub(vec( 5.0, 5.5, 6.0)).magnitude() < tolerance);
+    }
+    //lerp(matrix4x3,matrix4x3,float)
+    {
+        matrix4x3 m1,
+                  m2({1,2,3}, {4,5,6}, {7,8,9}, {10,11,12}),
+                  m3;
+        m3.lerp(m1, m2, 0.5);
+        assert(m3.a.sub(vec( 0.5, 1.0, 1.5)).magnitude() < tolerance);
+        assert(m3.b.sub(vec( 2.0, 2.5, 3.0)).magnitude() < tolerance);
+        assert(m3.c.sub(vec( 3.5, 4.0, 4.5)).magnitude() < tolerance);
+        assert(m3.d.sub(vec( 5.0, 5.5, 6.0)).magnitude() < tolerance);
+    }
+
+}
+
 void test_matrix4x3_identity()
 {
     std::printf("testing matrix4x3 identity\n");
@@ -1106,6 +1133,7 @@ testing matrices\n\
     test_matrix4x3_settranslation();
     test_matrix4x3_accumulate();
     test_matrix4x3_normalize();
+    test_matrix4x3_lerp();
     test_matrix4x3_identity();
     test_matrix4x3_transpose();
     test_matrix4x3_invert();
