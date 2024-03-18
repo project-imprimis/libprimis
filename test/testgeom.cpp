@@ -3,6 +3,56 @@
 
 constexpr float tolerance = 0.001;
 
+void test_vec_lerp()
+{
+    std::printf("testing vec lerp\n");
+    //lerp(vec,float)
+    {
+        vec v1(0,0,0),
+            v2(1,1,1);
+        assert(v1.lerp(v2,1) == vec(1,1,1));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,1,1);
+        assert(v1.lerp(v2,-1) == vec(-1,-1,-1));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,1,1);
+        assert(v1.lerp(v2,0.5) == vec(0.5,0.5,0.5));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,2,3);
+        assert(v1.lerp(v2,0.5) == vec(0.5,1,1.5));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,2,3);
+        assert(v1.lerp(v2,1.5) == vec(1.5,3,4.5));
+    }
+    //lerp(vec,vec,float)
+    {
+        vec v1(0,0,0),
+            v2(1,1,1),
+            v3;
+        assert(v3.lerp(v1, v2,1) == vec(1,1,1));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,1,1),
+            v3;
+        assert(v3.lerp(v1, v2,-1) == vec(-1,-1,-1));
+    }
+    {
+        vec v1(0,0,0),
+            v2(1,2,3),
+            v3;
+        assert(v3.lerp(v1, v2,1.5) == vec(1.5,3,4.5));
+    }
+}
+
 void test_raysphereintersect()
 {
     std::printf("testing raysphereintersect\n");
@@ -364,6 +414,8 @@ void test_geom()
 testing geometry\n\
 ===============================================================\n"
     );
+
+    test_vec_lerp();
 
     test_raysphereintersect();
     test_linecylinderintersect();
