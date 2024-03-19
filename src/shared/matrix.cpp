@@ -903,6 +903,7 @@ void matrix4x3::mul(const matrix4x3 &m, const matrix4x3 &n)
     c = vec(m.a).mul(n.c.x).madd(m.b, n.c.y).madd(m.c, n.c.z);
     d = vec(m.d).madd(m.a, n.d.x).madd(m.b, n.d.y).madd(m.c, n.d.z);
 }
+
 void matrix4x3::mul(const matrix4x3 &n)
 {
     mul(matrix4x3(*this), n);
@@ -965,6 +966,7 @@ void matrix4x3::invert(const matrix4x3 &o)
     c.mul(unscale);
     d.mul(unscale);
 }
+
 void matrix4x3::invert()
 {
     invert(matrix4x3(*this));
@@ -1023,6 +1025,7 @@ void matrix4x3::rotate_around_z(float ck, float sk)
     a = ra;
     b = rb;
 }
+
 void matrix4x3::rotate_around_z(float angle)
 {
     rotate_around_z(cosf(angle), std::sin(angle));
