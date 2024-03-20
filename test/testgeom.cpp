@@ -111,6 +111,17 @@ void test_vec_lerp()
     }
 }
 
+void test_vec_avg()
+{
+    std::printf("testing vec avg\n");
+
+    vec v1(0,0,0),
+        v2(2,4,6);
+    assert(v1.avg(v1) == vec(0,0,0));
+    assert(v2.avg(v2) == vec(2,4,6));
+    assert(v1.avg(v2) == vec(1,2,3));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -479,6 +490,7 @@ testing geometry\n\
     test_vec2_lerp();
 
     test_vec_lerp();
+    test_vec_avg();
 
     test_ivec_dist();
 
