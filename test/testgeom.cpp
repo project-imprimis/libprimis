@@ -7,6 +7,17 @@ constexpr float tolerance = 0.001;
 // float vec2 tests
 ////////////////////////////////////////////////////////////////////////////////
 
+
+void test_vec2_iszero()
+{
+    std::printf("testing vec2 iszero\n");
+
+    vec2 v1(0,0),
+         v2(1,1);
+    assert(v1.iszero() == true);
+    assert(v2.iszero() == false);
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -60,6 +71,16 @@ void test_vec2_lerp()
 ////////////////////////////////////////////////////////////////////////////////
 // float vec tests
 ////////////////////////////////////////////////////////////////////////////////
+
+void test_vec_iszero()
+{
+    std::printf("testing vec iszero\n");
+
+    vec v1(0,0,0),
+        v2(1,1,1);
+    assert(v1.iszero() == true);
+    assert(v2.iszero() == false);
+}
 
 void test_vec_lerp()
 {
@@ -487,8 +508,10 @@ testing geometry\n\
 ===============================================================\n"
     );
 
+    test_vec2_iszero();
     test_vec2_lerp();
 
+    test_vec_iszero();
     test_vec_lerp();
     test_vec_avg();
 
