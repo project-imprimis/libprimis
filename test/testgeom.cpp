@@ -87,6 +87,17 @@ void test_vec2_lerp()
 // float vec tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_vec_set()
+{
+    std::printf("testing vec set\n");
+
+    vec v(0,0,0);
+    v.set(0, 1);
+    v.set(1, 2);
+    v.set(2, 3);
+    assert(v == vec(1,2,3));
+}
+
 void test_vec_bracket()
 {
     std::printf("testing vec operator[]\n");
@@ -547,6 +558,7 @@ testing geometry\n\
     test_vec2_iszero();
     test_vec2_lerp();
 
+    test_vec_set();
     test_vec_bracket();
     test_vec_iszero();
     test_vec_lerp();
