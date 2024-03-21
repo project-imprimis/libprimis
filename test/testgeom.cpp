@@ -87,6 +87,26 @@ void test_vec2_lerp()
 // float vec tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_vec_bracket()
+{
+    std::printf("testing vec operator[]\n");
+
+    vec v(1,2,3);
+
+    float &f1 = v[0],
+          &f2 = v[1],
+          &f3 = v[2];
+    float f4 = v[0],
+          f5 = v[1],
+          f6 = v[2];
+    assert(f1 == 1);
+    assert(f2 == 2);
+    assert(f3 == 3);
+    assert(f4 == 1);
+    assert(f5 == 2);
+    assert(f6 == 3);
+}
+
 void test_vec_iszero()
 {
     std::printf("testing vec iszero\n");
@@ -527,6 +547,7 @@ testing geometry\n\
     test_vec2_iszero();
     test_vec2_lerp();
 
+    test_vec_bracket();
     test_vec_iszero();
     test_vec_lerp();
     test_vec_avg();
