@@ -193,6 +193,18 @@ void test_vec_avg()
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_ivec_iszero()
+{
+    std::printf("testing ivec iszero\n");
+
+    ivec v1(0,0,0),
+         v2(1,1,1),
+         v3(1,0,0);
+    assert(v1.iszero() == true);
+    assert(v2.iszero() == false);
+    assert(v3.iszero() == false);
+}
+
 void test_ivec_dist()
 {
     std::printf("testing ivec dist\n");
@@ -564,6 +576,7 @@ testing geometry\n\
     test_vec_lerp();
     test_vec_avg();
 
+    test_ivec_iszero();
     test_ivec_dist();
 
     test_raysphereintersect();
