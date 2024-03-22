@@ -246,6 +246,15 @@ void test_ivec_shr()
 
 }
 
+void test_ivec_dot()
+{
+    std::printf("testing ivec dot\n");
+    ivec v1(1,2,3),
+         v2(4,5,6);
+    assert(v1.dot(v2) == 32);
+}
+
+
 void test_ivec_dist()
 {
     std::printf("testing ivec dist\n");
@@ -622,6 +631,7 @@ testing geometry\n\
     test_ivec_iszero();
     test_ivec_shl();
     test_ivec_shr();
+    test_ivec_dot();
     test_ivec_dist();
 
     test_raysphereintersect();
