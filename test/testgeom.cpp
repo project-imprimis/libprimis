@@ -33,6 +33,14 @@ void test_vec2_iszero()
     assert(v2.iszero() == false);
 }
 
+void test_vec2_dot()
+{
+    std::printf("testing vec2 dot\n");
+    vec2 v1(1,2),
+         v2(3,4);
+    assert(v1.dot(v2) == 11);
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -593,6 +601,7 @@ testing geometry\n\
 
     test_vec2_bracket();
     test_vec2_iszero();
+    test_vec2_dot();
     test_vec2_lerp();
 
     test_vec_set();
