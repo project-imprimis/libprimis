@@ -333,6 +333,87 @@ void test_raysphereintersect()
     }
 }
 
+void test_rayboxintersect()
+{
+    std::printf("testing rayboxintersect\n");
+    //intersection tests
+    {
+        vec b(0,0,0),
+            s(1,1,1),
+            o(-1,-1,-1),
+            ray(2,2,2);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected);
+        assert(std::abs(dist - 0.5) < tolerance);
+        assert(orient == 0);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+    {
+        vec b(0,0,0),
+            s(1,1,1),
+            o(-1,-1,-1),
+            ray(1,1,1);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected);
+        assert(std::abs(dist - 1) < tolerance);
+        assert(orient == 0);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+    {
+        vec b(0,0,0),
+            s(2,2,2),
+            o(2,3,2),
+            ray(-2,-2,-2);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected);
+        assert(std::abs(dist - 0.5) < tolerance);
+        assert(orient == 3);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+    {
+        vec b(0,0,0),
+            s(2,2,2),
+            o(2,3,2),
+            ray(-3,-3,-3);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected);
+        assert(std::abs(dist - 0.333) < tolerance);
+        assert(orient == 3);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+    //non-intersection tests
+    {
+        vec b(0,0,0),
+            s(1,1,1),
+            o(0,0,0),
+            ray(0,0,0);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected == false);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+    {
+        vec b(0,0,0),
+            s(-1,-1,-1),
+            o(-2,-2,-2),
+            ray(-3,-3,-3);
+        float dist = 0;
+        int orient = 0;
+        bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
+        assert(intersected == false);
+        std::printf("dist %f %d\n", dist, orient);
+    }
+}
+
 void test_linecylinderintersect()
 {
     std::printf("testing linecylinderintersect\n");
@@ -635,6 +716,7 @@ testing geometry\n\
     test_ivec_dist();
 
     test_raysphereintersect();
+    test_rayboxintersect();
     test_linecylinderintersect();
     test_polyclip();
     test_mod360();
