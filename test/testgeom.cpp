@@ -359,7 +359,6 @@ void test_rayboxintersect()
         assert(intersected);
         assert(std::abs(dist - 0.5) < tolerance);
         assert(orient == 0);
-        std::printf("dist %f %d\n", dist, orient);
     }
     {
         vec b(0,0,0),
@@ -372,7 +371,6 @@ void test_rayboxintersect()
         assert(intersected);
         assert(std::abs(dist - 1) < tolerance);
         assert(orient == 0);
-        std::printf("dist %f %d\n", dist, orient);
     }
     {
         vec b(0,0,0),
@@ -385,7 +383,6 @@ void test_rayboxintersect()
         assert(intersected);
         assert(std::abs(dist - 0.5) < tolerance);
         assert(orient == 3);
-        std::printf("dist %f %d\n", dist, orient);
     }
     {
         vec b(0,0,0),
@@ -398,7 +395,6 @@ void test_rayboxintersect()
         assert(intersected);
         assert(std::abs(dist - 0.333) < tolerance);
         assert(orient == 3);
-        std::printf("dist %f %d\n", dist, orient);
     }
     //non-intersection tests
     {
@@ -410,7 +406,6 @@ void test_rayboxintersect()
         int orient = 0;
         bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
         assert(intersected == false);
-        std::printf("dist %f %d\n", dist, orient);
     }
     {
         vec b(0,0,0),
@@ -421,7 +416,6 @@ void test_rayboxintersect()
         int orient = 0;
         bool intersected = rayboxintersect(b, s, o, ray, dist, orient);
         assert(intersected == false);
-        std::printf("dist %f %d\n", dist, orient);
     }
 }
 
