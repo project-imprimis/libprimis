@@ -138,6 +138,7 @@ void test_vec_iszero()
 
 void test_vec_squaredlen()
 {
+    std::printf("testing vec squaredlen\n");
     vec v1(0,0,0),
         v2(1,1,1),
         v3(1,2,3);
