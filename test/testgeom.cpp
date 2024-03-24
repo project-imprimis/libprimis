@@ -148,6 +148,18 @@ void test_vec_squaredlen()
     assert(v3.squaredlen() == 14);
 }
 
+void test_vec_square()
+{
+    std::printf("testing vec square\n");
+    vec v1(0,0,0),
+        v2(1,1,1),
+        v3(1,2,3);
+
+    assert(v1.square() == vec(0,0,0));
+    assert(v2.square() == vec(1,1,1));
+    assert(v3.square() == vec(1,4,9));
+}
+
 void test_vec_dot()
 {
     std::printf("testing vec dot\n");
@@ -712,6 +724,7 @@ testing geometry\n\
     test_vec_bracket();
     test_vec_iszero();
     test_vec_squaredlen();
+    test_vec_square();
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
