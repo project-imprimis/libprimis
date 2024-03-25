@@ -41,6 +41,18 @@ void test_vec2_dot()
     assert(v1.dot(v2) == 11);
 }
 
+void test_vec2_abs()
+{
+    std::printf("testing vec2 abs\n");
+    vec2 v1(0,0),
+         v2(-1,1),
+         v3(-1,-2);
+
+    assert(v1.abs() == vec2(0,0));
+    assert(v2.abs() == vec2(1,1));
+    assert(v3.abs() == vec2(1,2));
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -764,6 +776,7 @@ testing geometry\n\
     test_vec2_bracket();
     test_vec2_iszero();
     test_vec2_dot();
+    test_vec2_abs();
     test_vec2_lerp();
     test_vec2_avg();
 
