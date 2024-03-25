@@ -91,6 +91,17 @@ void test_vec2_lerp()
     }
 }
 
+void test_vec2_avg()
+{
+    std::printf("testing vec2 avg\n");
+
+    vec2 v1(0,0),
+         v2(2,4);
+    assert(v1.avg(v1) == vec2(0,0));
+    assert(v2.avg(v2) == vec2(2,4));
+    assert(v1.avg(v2) == vec2(1,2));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // float vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -742,6 +753,7 @@ testing geometry\n\
     test_vec2_iszero();
     test_vec2_dot();
     test_vec2_lerp();
+    test_vec2_avg();
 
     test_vec_set();
     test_vec_bracket();
