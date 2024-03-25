@@ -195,6 +195,18 @@ void test_vec_neg()
     assert(v3.neg() == vec(-1,-2,-3));
 }
 
+void test_vec_abs()
+{
+    std::printf("testing vec abs\n");
+    vec v1(0,0,0),
+        v2(-1,1,-1),
+        v3(-1,-2,-3);
+
+    assert(v1.abs() == vec(0,0,0));
+    assert(v2.abs() == vec(1,1,1));
+    assert(v3.abs() == vec(1,2,3));
+}
+
 void test_vec_dot()
 {
     std::printf("testing vec dot\n");
@@ -762,6 +774,7 @@ testing geometry\n\
     test_vec_square();
     test_vec_neg2();
     test_vec_neg();
+    test_vec_abs();
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
