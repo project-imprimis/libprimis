@@ -307,6 +307,16 @@ struct skelmodel : animmodel
         GLuint minvert, maxvert;
 
         skelmesh();
+
+        /**
+         * @brief Constructs a skelmesh object.
+         *
+         * @param name name of the underlying Mesh object
+         * @param verts a heap-allocated array of vertices
+         * @param numverts size of verts array
+         * @param tris a heap-allocated array of tris
+         * @param numtris size of tris array
+         */
         skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
 
         virtual ~skelmesh();
