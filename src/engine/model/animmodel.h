@@ -234,6 +234,27 @@ class animmodel : public model
                     delete[] smooth;
                 }
 
+                /**
+                 * @brief Generates normal data for an array of vert objects.
+                 *
+                 * If there are no verts in the verts array, returns with no changes.
+                 *
+                 * Sets all norm fields in the verts array to the zero vector.
+                 * Accesses three elements in verts using a set of indices saved in the tri object.
+                 *
+                 * Each triangle's normal is the cross product of the three elements' positions, normalized if areaweight == false.
+                 * (If areaweight is true, since the cross product's magnitude encodes its area, we don't want to
+                 * normalize because we want to weight normals by area)
+                 * This normal is added to each of the three vertices accessed (individual vertices can have multiple tris).
+                 *
+                 * Then, all vertices are normalized, creating normalized normals using all triangles sharing each vertex.
+                 *
+                 * @param verts An array of vertices
+                 * @param numverts The size of the vertex array
+                 * @param tris An array of triangles, containing indices in verts
+                 * @param numtris The size of the tris array
+                 * @param areaweight If true, weights normals by area of associated triangle
+                 */
                 template<class T>
                 static void buildnorms(typename T::vert *verts, int numverts, const typename T::tri *tris, int numtris, bool areaweight)
                 {
