@@ -118,7 +118,7 @@ struct skelmodel : animmodel
 
             struct BoneData
             {
-                float weights;
+                float weight;
                 uchar bones;
                 uchar interpbones;
             };

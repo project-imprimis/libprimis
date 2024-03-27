@@ -280,7 +280,7 @@ void skelmodel::skeleton::remapbones()
     {
         for(size_t k = 0; k < c.size(); ++k) //loop k
         {
-            if(!c.bonedata[k].weights)
+            if(!c.bonedata[k].weight)
             {
                 c.setinterpbones(k > 0 ? c.bonedata[k-1].interpbones : 0, k);
                 continue;
@@ -1231,7 +1231,7 @@ bool skelmodel::blendcombo::operator==(const blendcombo &c) const
     for(size_t i = 0; i < bonedata.size(); ++i)
     {
         if((bonedata[i].bones != c.bonedata[i].bones) ||
-           (bonedata[i].weights != c.bonedata[i].weights))
+           (bonedata[i].weight != c.bonedata[i].weight))
         {
             return false;
         }
@@ -1242,7 +1242,7 @@ bool skelmodel::blendcombo::operator==(const blendcombo &c) const
 size_t skelmodel::blendcombo::size() const
 {
     size_t i = 1;
-    while(i < bonedata.size() && bonedata[i].weights)
+    while(i < bonedata.size() && bonedata[i].weight)
     {
         i++;
     }
@@ -1253,14 +1253,14 @@ bool skelmodel::blendcombo::sortcmp(const blendcombo &x, const blendcombo &y)
 {
     for(size_t i = 0; i < x.bonedata.size(); ++i)
     {
-        if(x.bonedata[i].weights)
+        if(x.bonedata[i].weight)
         {
-            if(!y.bonedata[i].weights)
+            if(!y.bonedata[i].weight)
             {
                 return true;
             }
         }
-        else if(y.bonedata[i].weights)
+        else if(y.bonedata[i].weight)
         {
             return false;
         }
@@ -1280,15 +1280,15 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     }
     for(int k = 0; k < sorted; ++k)
     {
-        if(weight > bonedata[k].weights)
+        if(weight > bonedata[k].weight)
         {
             //push weights in bonedata to make room for new larger weights
             for(int l = std::min(sorted-1, 2); l >= k; l--)
             {
-                bonedata[l+1].weights = bonedata[l].weights;
+                bonedata[l+1].weight = bonedata[l].weight;
                 bonedata[l+1].bones = bonedata[l].bones;
             }
-            bonedata[k].weights = weight;
+            bonedata[k].weight = weight;
             bonedata[k].bones = bone;
             return sorted < static_cast<int>(bonedata.size()) ? sorted+1 : sorted;
         }
@@ -1297,7 +1297,7 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     {
         return sorted;
     }
-    bonedata[sorted].weights = weight;
+    bonedata[sorted].weight = weight;
     bonedata[sorted].bones = bone;
     return sorted+1;
 }
@@ -1311,12 +1311,12 @@ void skelmodel::blendcombo::finalize(int sorted)
     float total = 0;
     for(int i = 0; i < sorted; ++i)
     {
-        total += bonedata[i].weights;
+        total += bonedata[i].weight;
     }
     total = 1.0f/total;
     for(int i = 0; i < sorted; ++i)
     {
-        bonedata[i].weights *= total;
+        bonedata[i].weight *= total;
     }
 }
 
@@ -1340,7 +1340,7 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
         int total = 0;
         for(size_t k = 0; k < bonedata.size(); ++k)
         {
-            v.weights[k] = static_cast<uchar>(0.5f + bonedata[k].weights*255);
+            v.weights[k] = static_cast<uchar>(0.5f + bonedata[k].weight*255);
             total += (v.weights[k]);
         }
         while(total > 255)
@@ -1375,14 +1375,14 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
 dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
 {
     dualquat d = bdata[bonedata[0].interpbones];
-    d.mul(bonedata[0].weights);
-    d.accumulate(bdata[bonedata[1].interpbones], bonedata[1].weights);
-    if(bonedata[2].weights)
+    d.mul(bonedata[0].weight);
+    d.accumulate(bdata[bonedata[1].interpbones], bonedata[1].weight);
+    if(bonedata[2].weight)
     {
-        d.accumulate(bdata[bonedata[2].interpbones], bonedata[2].weights);
-        if(bonedata[3].weights)
+        d.accumulate(bdata[bonedata[2].interpbones], bonedata[2].weight);
+        if(bonedata[3].weight)
         {
-            d.accumulate(bdata[bonedata[3].interpbones], bonedata[3].weights);
+            d.accumulate(bdata[bonedata[3].interpbones], bonedata[3].weight);
         }
     }
     return d;
@@ -1390,12 +1390,12 @@ dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
 
 int skelmodel::blendcombo::remapblend() const
 {
-    return bonedata[1].weights ? interpindex : bonedata[0].interpbones;
+    return bonedata[1].weight ? interpindex : bonedata[0].interpbones;
 }
 
 void skelmodel::blendcombo::setinterpindex(int val)
 {
-    interpindex = bonedata[1].weights ? val : -1;
+    interpindex = bonedata[1].weight ? val : -1;
 }
 
 void skelmodel::blendcombo::setinterpbones(int val, size_t index)
