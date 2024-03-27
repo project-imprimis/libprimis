@@ -120,7 +120,7 @@ struct skelmodel : animmodel
             {
                 float weight;
                 uchar bone;
-                uchar interpbones;
+                uchar interpbone;
             };
             std::array<BoneData, 4> bonedata;
 

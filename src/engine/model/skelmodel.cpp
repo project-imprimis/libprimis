@@ -282,7 +282,7 @@ void skelmodel::skeleton::remapbones()
         {
             if(!c.bonedata[k].weight)
             {
-                c.setinterpbones(k > 0 ? c.bonedata[k-1].interpbones : 0, k);
+                c.setinterpbones(k > 0 ? c.bonedata[k-1].interpbone : 0, k);
                 continue;
             }
             boneinfo &info = bones[c.getbone(k)];
@@ -1367,22 +1367,22 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
         }
         for(size_t k = 0; k < bonedata.size(); ++k)
         {
-            v.bones[k] = 2*bonedata[k].interpbones;
+            v.bones[k] = 2*bonedata[k].interpbone;
         }
     }
 }
 
 dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
 {
-    dualquat d = bdata[bonedata[0].interpbones];
+    dualquat d = bdata[bonedata[0].interpbone];
     d.mul(bonedata[0].weight);
-    d.accumulate(bdata[bonedata[1].interpbones], bonedata[1].weight);
+    d.accumulate(bdata[bonedata[1].interpbone], bonedata[1].weight);
     if(bonedata[2].weight)
     {
-        d.accumulate(bdata[bonedata[2].interpbones], bonedata[2].weight);
+        d.accumulate(bdata[bonedata[2].interpbone], bonedata[2].weight);
         if(bonedata[3].weight)
         {
-            d.accumulate(bdata[bonedata[3].interpbones], bonedata[3].weight);
+            d.accumulate(bdata[bonedata[3].interpbone], bonedata[3].weight);
         }
     }
     return d;
@@ -1390,7 +1390,7 @@ dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
 
 int skelmodel::blendcombo::remapblend() const
 {
-    return bonedata[1].weight ? interpindex : bonedata[0].interpbones;
+    return bonedata[1].weight ? interpindex : bonedata[0].interpbone;
 }
 
 void skelmodel::blendcombo::setinterpindex(int val)
@@ -1400,7 +1400,7 @@ void skelmodel::blendcombo::setinterpindex(int val)
 
 void skelmodel::blendcombo::setinterpbones(int val, size_t index)
 {
-    bonedata[index].interpbones = val;
+    bonedata[index].interpbone = val;
 }
 
 int skelmodel::blendcombo::getbone(size_t index)
