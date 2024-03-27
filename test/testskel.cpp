@@ -211,8 +211,8 @@ void test_blendcombo_addweight()
         int sorted = 0;
         sorted = a.addweight(sorted, 0.9e-3, 1);
         assert(sorted == 0);
-        assert(a.bonedata[0].weights == 0.f);
-        assert(a.bonedata[0].bones == 0);
+        assert(a.bonedata[0].weight == 0.f);
+        assert(a.bonedata[0].bone == 0);
     }
     {
         //test adding single value
@@ -220,8 +220,8 @@ void test_blendcombo_addweight()
         int sorted = 0;
         sorted = a.addweight(sorted, 1.f, 1);
         assert(sorted == 1);
-        assert(a.bonedata[0].weights == 1.f);
-        assert(a.bonedata[0].bones == 1);
+        assert(a.bonedata[0].weight == 1.f);
+        assert(a.bonedata[0].bone == 1);
     }
     {
         //test failing to add value, all existing bones larger
@@ -230,8 +230,8 @@ void test_blendcombo_addweight()
         int sorted = 4;
         sorted = a.addweight(sorted, 1.f, 1);
         assert(sorted == 4);
-        assert(a.bonedata[0].weights == 2.f);
-        assert(a.bonedata[0].bones == 1);
+        assert(a.bonedata[0].weight == 2.f);
+        assert(a.bonedata[0].bone == 1);
     }
     {
         //test adding new entry to appropriate spot
@@ -243,8 +243,8 @@ void test_blendcombo_addweight()
         int sorted = 4;
         sorted = a.addweight(sorted, 2.5f, 5);
         assert(sorted == 4);
-        assert(a.bonedata[2].weights == 2.5f);
-        assert(a.bonedata[2].bones == 5);
+        assert(a.bonedata[2].weight == 2.5f);
+        assert(a.bonedata[2].bone == 5);
     }
     {
         //test adding enty with small sorted value
@@ -257,11 +257,11 @@ void test_blendcombo_addweight()
         sorted = a.addweight(sorted, 2.5f, 5);
         assert(sorted == 1);
         //check that weight was added to bonedata[sorted]
-        assert(a.bonedata[sorted-1].weights == 2.5f);
-        assert(a.bonedata[sorted-1].bones == 5);
+        assert(a.bonedata[sorted-1].weight == 2.5f);
+        assert(a.bonedata[sorted-1].bone == 5);
         //check that ordinary position if sorted >2 was not affected
-        assert(a.bonedata[2].weights == 2.f);
-        assert(a.bonedata[2].bones == 2);
+        assert(a.bonedata[2].weight == 2.f);
+        assert(a.bonedata[2].bone == 2);
     }
 }
 
@@ -277,7 +277,7 @@ void test_blendcombo_finalize()
         skelmodel::blendcombo a;
         a.bonedata.fill(b1);
         a.finalize(4);
-        assert(a.bonedata[0].weights == 0.25f);
+        assert(a.bonedata[0].weight == 0.25f);
     }
     {
         //test normalization of single value
@@ -285,21 +285,21 @@ void test_blendcombo_finalize()
         a.bonedata.fill(b2);
         a.bonedata[0] = b1;
         a.finalize(4);
-        assert(a.bonedata[0].weights == 1.f);
+        assert(a.bonedata[0].weight == 1.f);
     }
     {
         //test normalization of finalize with sorted < size of array
         skelmodel::blendcombo a;
         a.bonedata.fill(b1);
         a.finalize(2);
-        assert(a.bonedata[0].weights - 0.5f < tolerance);
+        assert(a.bonedata[0].weight - 0.5f < tolerance);
     }
     {
         //test no effect if sorted = 0
         skelmodel::blendcombo a;
         a.bonedata.fill(b1);
         a.finalize(0);
-        assert(a.bonedata[0].weights - 0.5f < tolerance);
+        assert(a.bonedata[0].weight - 0.5f < tolerance);
     }
 }
 
