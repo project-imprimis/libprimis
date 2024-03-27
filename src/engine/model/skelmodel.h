@@ -128,6 +128,13 @@ struct skelmodel : animmodel
 
             bool operator==(const blendcombo &c) const;
 
+            /**
+             * @brief Returns the number of assigned weights in the blendcomb object.
+             *
+             * Assumes that all weights assigned are in the order created by addweight().
+             *
+             * @return the number of weights assigned in the bonedata
+             */
             size_t size() const;
             static bool sortcmp(const blendcombo &x, const blendcombo &y);
 
