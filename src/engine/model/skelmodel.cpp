@@ -1230,7 +1230,7 @@ bool skelmodel::blendcombo::operator==(const blendcombo &c) const
 {
     for(size_t i = 0; i < bonedata.size(); ++i)
     {
-        if((bonedata[i].bones != c.bonedata[i].bones) ||
+        if((bonedata[i].bone != c.bonedata[i].bone) ||
            (bonedata[i].weight != c.bonedata[i].weight))
         {
             return false;
@@ -1286,10 +1286,10 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
             for(int l = std::min(sorted-1, 2); l >= k; l--)
             {
                 bonedata[l+1].weight = bonedata[l].weight;
-                bonedata[l+1].bones = bonedata[l].bones;
+                bonedata[l+1].bone = bonedata[l].bone;
             }
             bonedata[k].weight = weight;
-            bonedata[k].bones = bone;
+            bonedata[k].bone = bone;
             return sorted < static_cast<int>(bonedata.size()) ? sorted+1 : sorted;
         }
     }
@@ -1298,7 +1298,7 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
         return sorted;
     }
     bonedata[sorted].weight = weight;
-    bonedata[sorted].bones = bone;
+    bonedata[sorted].bone = bone;
     return sorted+1;
 }
 
@@ -1405,7 +1405,7 @@ void skelmodel::blendcombo::setinterpbones(int val, size_t index)
 
 int skelmodel::blendcombo::getbone(size_t index)
 {
-    return bonedata[index].bones;
+    return bonedata[index].bone;
 }
 
 template<class T>
