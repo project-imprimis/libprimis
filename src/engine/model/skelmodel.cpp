@@ -1150,7 +1150,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             LOOP_RENDER_MESHES(skelmesh, m,
             {
                 p->skins[i].bind(m, as, skel->usegpuskel, vweights);
-                m.render(as, p->skins[i], *vbocache);
+                m.render();
             });
         }
         skel->calctags(p);
@@ -1200,7 +1200,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             {
                 skel->setgpubones(sc, bc, vblends);
             }
-            m.render(as, p->skins[i], vc);
+            m.render();
         });
     }
 
@@ -1665,7 +1665,7 @@ void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, in
     }
 }
 
-void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
+void skelmodel::skelmesh::render()
 {
     if(!Shader::lastshader)
     {

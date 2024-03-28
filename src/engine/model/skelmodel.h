@@ -347,7 +347,7 @@ struct skelmodel : animmodel
         void fillverts(vvert *vdata);
         void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
         void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
-        void render(const AnimState *as, skin &s, vbocacheentry &vc);
+        void render();
     };
 
     struct skelanimspec final
