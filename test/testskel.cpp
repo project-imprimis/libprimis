@@ -212,7 +212,7 @@ void test_blendcombo_addweight()
         sorted = a.addweight(sorted, 0.9e-3, 1);
         assert(sorted == 0);
         assert(a.bonedata[0].weight == 0.f);
-        assert(a.bonedata[0].bone == 0);
+        assert(a.getbone(0) == 0);
     }
     {
         //test adding single value
@@ -221,7 +221,7 @@ void test_blendcombo_addweight()
         sorted = a.addweight(sorted, 1.f, 1);
         assert(sorted == 1);
         assert(a.bonedata[0].weight == 1.f);
-        assert(a.bonedata[0].bone == 1);
+        assert(a.getbone(0) == 1);
     }
     {
         //test failing to add value, all existing bones larger
@@ -231,7 +231,7 @@ void test_blendcombo_addweight()
         sorted = a.addweight(sorted, 1.f, 1);
         assert(sorted == 4);
         assert(a.bonedata[0].weight == 2.f);
-        assert(a.bonedata[0].bone == 1);
+        assert(a.getbone(0) == 1);
     }
     {
         //test adding new entry to appropriate spot
@@ -244,7 +244,7 @@ void test_blendcombo_addweight()
         sorted = a.addweight(sorted, 2.5f, 5);
         assert(sorted == 4);
         assert(a.bonedata[2].weight == 2.5f);
-        assert(a.bonedata[2].bone == 5);
+        assert(a.getbone(2) == 5);
     }
     {
         //test adding enty with small sorted value
@@ -261,7 +261,7 @@ void test_blendcombo_addweight()
         assert(a.bonedata[sorted-1].bone == 5);
         //check that ordinary position if sorted >2 was not affected
         assert(a.bonedata[2].weight == 2.f);
-        assert(a.bonedata[2].bone == 2);
+        assert(a.getbone(2) == 2);
     }
 }
 
