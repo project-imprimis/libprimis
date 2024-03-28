@@ -1607,7 +1607,7 @@ int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<
     eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
-        tri &t = tris[i];
+        const tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
             idxs.emplace_back(voffset+t.vert[j]);
