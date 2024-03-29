@@ -244,6 +244,20 @@ void test_vec_abs()
     assert(v3.abs() == vec(1,2,3));
 }
 
+void test_vec_magnitude2()
+{
+    std::printf("testing vec magnitude2\n");
+
+    vec v1(0,0,1),
+        v2(3,4,1),
+        v3(5,12,1);
+
+    assert(v1.magnitude2() == 0);
+    assert(v2.magnitude2() == 5);
+    assert(v3.magnitude2() == 13);
+}
+
+
 void test_vec_dot()
 {
     std::printf("testing vec dot\n");
@@ -815,6 +829,7 @@ testing geometry\n\
     test_vec_neg2();
     test_vec_neg();
     test_vec_abs();
+    test_vec_magnitude2();
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
