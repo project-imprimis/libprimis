@@ -53,6 +53,19 @@ void test_vec2_squaredlen()
     assert(v3.squaredlen() == 5);
 }
 
+void test_vec2_magnitude()
+{
+    std::printf("testing vec2 magnitude\n");
+
+    vec2 v1(0,0),
+         v2(3,4),
+         v3(5,12);
+
+    assert(v1.magnitude() == 0);
+    assert(v2.magnitude() == 5);
+    assert(v3.magnitude() == 13);
+}
+
 void test_vec2_abs()
 {
     std::printf("testing vec2 abs\n");
@@ -789,6 +802,7 @@ testing geometry\n\
     test_vec2_iszero();
     test_vec2_dot();
     test_vec2_squaredlen();
+    test_vec2_magnitude();
     test_vec2_abs();
     test_vec2_lerp();
     test_vec2_avg();
