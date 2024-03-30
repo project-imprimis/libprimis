@@ -270,6 +270,19 @@ void test_vec_magnitude()
     assert(v3.magnitude() == 13);
 }
 
+void test_vec_normalize()
+{
+    std::printf("testing vec normalize\n");
+
+    vec v1(1,0,0),
+        v2(3,4,0),
+        v3(3,4,12);
+
+    assert(std::abs(v1.normalize().magnitude() - 1) < tolerance);
+    assert(std::abs(v2.normalize().magnitude() - 1) < tolerance);
+    assert(std::abs(v3.normalize().magnitude() - 1) < tolerance);
+}
+
 void test_vec_dot()
 {
     std::printf("testing vec dot\n");
@@ -843,6 +856,7 @@ testing geometry\n\
     test_vec_abs();
     test_vec_magnitude2();
     test_vec_magnitude();
+    test_vec_normalize();
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
