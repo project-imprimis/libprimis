@@ -382,6 +382,35 @@ void test_vec_avg()
     assert(v1.avg(v2) == vec(1,2,3));
 }
 
+void test_vec_orthogonal()
+{
+    std::printf("testing vec orthogonal\n");
+
+    vec v1(1,0,0),
+        v2(0,1,0),
+        v3(1,1,0),
+        v4(1,0,1);
+    vec v5,
+        v6,
+        v7,
+        v8;
+
+    v5.orthogonal(v1);
+    assert(v5 == vec(0,1,0));
+    v6.orthogonal(v2);
+    assert(v6 == vec(0,0,1));
+    v7.orthogonal(v3);
+    assert(v7 == vec(-1,1,0));
+    v8.orthogonal(v4);
+    assert(v8 == vec(0,-1,0));
+
+    //test orthogonality condition
+    assert(!v1.dot(v5));
+    assert(!v2.dot(v6));
+    assert(!v3.dot(v7));
+    assert(!v4.dot(v8));
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -892,6 +921,7 @@ testing geometry\n\
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
+    test_vec_orthogonal();
 
     test_ivec_iszero();
     test_ivec_shl();
