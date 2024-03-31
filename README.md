@@ -48,6 +48,7 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * support for Windows and Linux-based operating systems
 * support for realtime geometry modification during gameplay
 * Unicode UTF-8 text support
+* GLTF, MD5, and OBJ model support
 
 For documentation on the engine, see [engine](doc/engine.md).
 
