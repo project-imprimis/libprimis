@@ -244,6 +244,13 @@ void test_vec_abs()
     assert(v3.abs() == vec(1,2,3));
 }
 
+void test_vec_recip()
+{
+    std::printf("testing vec recip\n");
+    vec v1(1,2,-4);
+    assert(v1.recip() == vec(1,0.5,-0.25));
+}
+
 void test_vec_magnitude2()
 {
     std::printf("testing vec magnitude2\n");
@@ -924,6 +931,7 @@ testing geometry\n\
     test_vec_neg2();
     test_vec_neg();
     test_vec_abs();
+    test_vec_recip();
     test_vec_magnitude2();
     test_vec_magnitude();
     test_vec_normalize();
