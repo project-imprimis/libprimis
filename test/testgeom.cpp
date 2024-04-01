@@ -382,6 +382,17 @@ void test_vec_avg()
     assert(v1.avg(v2) == vec(1,2,3));
 }
 
+void test_vec_rescale()
+{
+    std::printf("testing vec rescale\n");
+
+    vec v1(1,0,0),
+        v2(3,4,0);
+    assert(v1.rescale(2) == vec(2,0,0));
+    assert(v1.rescale(0) == vec(0,0,0));
+    assert(v2.rescale(0.5) == vec(0.3,0.4,0));
+}
+
 void test_vec_orthogonal()
 {
     std::printf("testing vec orthogonal\n");
@@ -921,6 +932,7 @@ testing geometry\n\
     test_vec_dot();
     test_vec_lerp();
     test_vec_avg();
+    test_vec_rescale();
     test_vec_orthogonal();
 
     test_ivec_iszero();
