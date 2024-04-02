@@ -444,6 +444,17 @@ void test_ivec_ctor()
         assert(ivec(v1) == ivec(1,1,2));
         assert(ivec(v2) == ivec(-1,-3,-5));
     }
+    //ivec(int, ivec, int)
+    {
+        ivec v1(0,0,0),
+             v2(1,2,3);
+
+        assert(ivec(1,v1,1) == ivec(1,0,0));
+        assert(ivec(2,v1,1) == ivec(0,1,0));
+        assert(ivec(3,v1,1) == ivec(1,1,0));
+        assert(ivec(4,v1,1) == ivec(0,0,1));
+        assert(ivec(3,v2,2) == ivec(3,4,3));
+    }
 }
 void test_ivec_iszero()
 {
