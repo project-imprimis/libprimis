@@ -143,6 +143,34 @@ void test_vec2_avg()
 // float vec tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_vec_ctor()
+{
+    std::printf("testing vec ctor\n");
+
+    //vec(int)
+    {
+        vec v(1);
+        assert(v == vec(1,1,1));
+    }
+    //vec(float)
+    {
+        vec v(1.f);
+        assert(v == vec(1,1,1));
+    }
+    //vec(int*)
+    {
+        std::array<int, 3> arr{1,2,3};
+        vec v(arr.data());
+        assert(v == vec(1,2,3));
+    }
+    //vec(float*)
+    {
+        std::array<float, 3> arr{1.5f,2.5f,3.5f};
+        vec v(arr.data());
+        assert(v == vec(1.5f,2.5f,3.5f));
+    }
+}
+
 void test_vec_set()
 {
     std::printf("testing vec set\n");
@@ -946,6 +974,7 @@ testing geometry\n\
     test_vec2_lerp();
     test_vec2_avg();
 
+    test_vec_ctor();
     test_vec_set();
     test_vec_bracket();
     test_vec_iszero();
