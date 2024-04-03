@@ -7,6 +7,24 @@ constexpr float tolerance = 0.001;
 // float vec2 tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_vec2_ctor()
+{
+    std::printf("testing vec2 ctor\n");
+
+    //vec2(vec)
+    {
+        vec v(1,2,3);
+        vec2 v2(v);
+        assert(v2 == vec2(1,2));
+    }
+    //vec2(vec4<float>)
+    {
+        vec4<float> v(1,2,3,4);
+        vec2 v2(v);
+        assert(v2 == vec2(1,2));
+    }
+}
+
 void test_vec2_bracket()
 {
     std::printf("testing vec2 operator[]\n");
@@ -965,6 +983,7 @@ testing geometry\n\
 ===============================================================\n"
     );
 
+    test_vec2_ctor();
     test_vec2_bracket();
     test_vec2_iszero();
     test_vec2_dot();
