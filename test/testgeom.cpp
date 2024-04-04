@@ -34,17 +34,22 @@ void test_vec2_ctor()
 void test_vec2_bracket()
 {
     std::printf("testing vec2 operator[]\n");
+    {
+        vec2 v(1,2);
 
-    vec2 v(1,2);
+        float &f1 = v[0],
+              &f2 = v[1];
+        assert(f1 == 1);
+        assert(f2 == 2);
+    }
+    {
+        const vec2 v(1,2);
 
-    float &f1 = v[0],
-          &f2 = v[1];
-    float f3 = v[0],
-          f4 = v[1];
-    assert(f1 == 1);
-    assert(f2 == 2);
-    assert(f3 == 1);
-    assert(f4 == 2);
+        float f3 = v[0],
+              f4 = v[1];
+        assert(f3 == 1);
+        assert(f4 == 2);
+    }
 }
 
 void test_vec2_iszero()
