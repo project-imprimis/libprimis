@@ -11,6 +11,12 @@ void test_vec2_ctor()
 {
     std::printf("testing vec2 ctor\n");
 
+    //vec2(float,float)
+    {
+        vec2 v(1,2);
+        assert(v.x == 1);
+        assert(v.y == 2);
+    }
     //vec2(vec)
     {
         vec v(1,2,3);
