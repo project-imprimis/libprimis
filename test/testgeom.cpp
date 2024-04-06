@@ -527,6 +527,23 @@ void test_vec_orthogonal()
     assert(!v4.dot(v8));
 }
 
+void test_vec_insidebb()
+{
+    std::printf("testing vec insidebb\n");
+
+    vec v1(1,2,3);
+    ivec iv1(2,3,4),
+         iv2(5,6,7),
+         iv3(-1,0,1);
+    assert(v1.insidebb(iv1, 1) == false);
+    assert(v1.insidebb(iv1, -1) == false);
+    assert(v1.insidebb(iv2, 1) == false);
+    assert(v1.insidebb(iv3, 1) == false);
+    assert(v1.insidebb(iv3, 2) == true);
+    assert(v1.insidebb(iv3, 3) == true);
+
+}
+
 void test_vec_project_bb()
 {
     std::printf("testing vec project_bb\n");
@@ -1081,6 +1098,7 @@ testing geometry\n\
     test_vec_avg();
     test_vec_rescale();
     test_vec_orthogonal();
+    test_vec_insidebb();
     test_vec_project_bb();
 
     test_ivec_ctor();
