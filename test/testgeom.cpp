@@ -411,6 +411,21 @@ void test_vec_dot()
     assert(v1.dot(v2) == 32);
 }
 
+void test_vec_reject()
+{
+    std::printf("testing vec reject\n");
+
+    vec v1(0,0,0),
+        v2(2,3,0),
+        v3(-2,-3,0);
+
+    assert(v1.reject(v2, 3) == false);
+    assert(v1.reject(v2, 1) == true);
+    assert(v1.reject(v3, 3) == false);
+    assert(v1.reject(v3, 1) == true);
+    assert(v1.reject(v1, 0) == false);
+}
+
 void test_vec_lerp()
 {
     std::printf("testing vec lerp\n");
@@ -1048,6 +1063,7 @@ testing geometry\n\
     test_vec_safenormalize();
     test_vec_dot2();
     test_vec_dot();
+    test_vec_reject();
     test_vec_lerp();
     test_vec_avg();
     test_vec_rescale();
