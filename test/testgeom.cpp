@@ -525,8 +525,21 @@ void test_vec_orthogonal()
     assert(!v2.dot(v6));
     assert(!v3.dot(v7));
     assert(!v4.dot(v8));
-
 }
+
+void test_vec_project_bb()
+{
+    std::printf("testing vec project_bb\n");
+
+    vec v1(-1,1,-1),
+        v2(-1,0,-1);
+    ivec min(1,2,3),
+         max(4,5,6);
+
+    assert(v1.project_bb(min, max) == -4 +2 -6);
+    assert(v2.project_bb(min, max) == -4 +0 -6);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -1068,6 +1081,7 @@ testing geometry\n\
     test_vec_avg();
     test_vec_rescale();
     test_vec_orthogonal();
+    test_vec_project_bb();
 
     test_ivec_ctor();
     test_ivec_iszero();
