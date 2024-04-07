@@ -535,13 +535,25 @@ void test_vec_insidebb()
     ivec iv1(2,3,4),
          iv2(5,6,7),
          iv3(-1,0,1);
-    assert(v1.insidebb(iv1, 1) == false);
-    assert(v1.insidebb(iv1, -1) == false);
-    assert(v1.insidebb(iv2, 1) == false);
-    assert(v1.insidebb(iv3, 1) == false);
-    assert(v1.insidebb(iv3, 2) == true);
-    assert(v1.insidebb(iv3, 3) == true);
-
+    //insidebb(ivec, int)
+    {
+        assert(v1.insidebb(iv1, 1) == false);
+        assert(v1.insidebb(iv1, -1) == false);
+        assert(v1.insidebb(iv2, 1) == false);
+        assert(v1.insidebb(iv3, 1) == false);
+        assert(v1.insidebb(iv3, 2) == true);
+        assert(v1.insidebb(iv3, 3) == true);
+    }
+    //insidebb(ivec,int,int)
+    {
+        assert(v1.insidebb(iv1, 1, 0) == false);
+        assert(v1.insidebb(iv1, 1, 1) == true);
+        assert(v1.insidebb(iv2, 1, 0) == false);
+        assert(v1.insidebb(iv2, 1, 4) == true);
+        assert(v1.insidebb(iv3, 1, 0) == false);
+        assert(v1.insidebb(iv3, 1, 1) == true);
+        assert(v1.insidebb(iv3, 2, 1) == true);
+    }
 }
 
 void test_vec_project_bb()
