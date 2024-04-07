@@ -556,6 +556,20 @@ void test_vec_insidebb()
     }
 }
 
+void test_vec_dist_to_bb()
+{
+    std::printf("testing vec dist_to_bb");
+
+    vec v1(0,0,0),
+        v2(3,4,1);
+    ivec min(0,0,1),
+         max(3,4,12);
+    assert(v1.dist_to_bb(min,max) == 1);  //vec at 0,0,-1 from bb
+    assert(v1.dist_to_bb(max,max) == 13); //bb at point
+    assert(v2.dist_to_bb(min,min) == 5);  //vec +x+y+z from bb
+    assert(v2.dist_to_bb(min,max) == 0);  //position inside bb
+}
+
 void test_vec_project_bb()
 {
     std::printf("testing vec project_bb\n");
@@ -1111,6 +1125,7 @@ testing geometry\n\
     test_vec_rescale();
     test_vec_orthogonal();
     test_vec_insidebb();
+    test_vec_dist_to_bb();
     test_vec_project_bb();
 
     test_ivec_ctor();
