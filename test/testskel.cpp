@@ -592,6 +592,43 @@ void test_skelmesh_buildnorms()
     }
 }
 
+void test_skelmesh_calcbb()
+{
+    std::printf("testing skelmesh calcbb\n");
+
+    skelmodel::vert *verts = new skelmodel::vert[4];
+
+    verts[0].pos = vec(1,0,0);
+    verts[1].pos = vec(0,1,1);
+    verts[2].pos = vec(0,-1,1);
+    verts[3].pos = vec(-1,0,0);
+    skelmodel::skelmesh mesh("test", verts, 4, nullptr, 0);
+
+    {
+        matrix4x3 m;
+        m.identity();
+
+        vec min(0,0,0),
+            max(0,0,0);
+
+        mesh.calcbb(min, max, m);
+
+        assert(min == vec(-1,-1,0));
+        assert(max == vec(1,1,1));
+    }
+    {
+        matrix4x3 m(vec(1,0,0), vec(0,5,0), vec(0,0,9), vec(1,2,3));
+
+        vec min(99,99,99),
+            max(-99,-99,-99);
+
+        mesh.calcbb(min, max, m);
+
+        assert(min == vec(0,-3,3));
+        assert(max == vec(2,7,12));
+    }
+}
+
 void test_skel()
 {
     std::printf(
@@ -616,4 +653,5 @@ testing skelmodel functionality\n\
     test_skelmesh_assignvert();
     test_skelmesh_fillvert();
     test_skelmesh_buildnorms();
+    test_skelmesh_calcbb();
 }
