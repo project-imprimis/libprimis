@@ -1490,7 +1490,7 @@ void skelmodel::skelmesh::calctangents(bool areaweight)
     Mesh::calctangents<skelmodel, skelmodel::vert>(verts, verts, numverts, tris, numtris, areaweight);
 }
 
-void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
 {
     for(int j = 0; j < numverts; ++j)
     {

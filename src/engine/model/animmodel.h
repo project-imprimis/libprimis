@@ -134,7 +134,7 @@ class animmodel : public model
                     delete[] name;
                 }
 
-                virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) = 0;
+                virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const = 0;
 
                 virtual void genBIH(BIH::mesh &m) const = 0;
 

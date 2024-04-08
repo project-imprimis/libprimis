@@ -56,7 +56,7 @@ class vertmodel : public animmodel
             void smoothnorms(float limit = 0, bool areaweight = true);
             void buildnorms(bool areaweight = true);
             void calctangents(bool areaweight = true);
-            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) override final;
+            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
             void genBIH(BIH::mesh &m) const override final;
             void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
 

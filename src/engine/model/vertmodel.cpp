@@ -106,7 +106,7 @@ void vertmodel::vertmesh::calctangents(bool areaweight)
     Mesh::calctangents<vertmodel, vertmodel::tcvert>(verts, tcverts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
 }
 
-void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const
 {
     for(int j = 0; j < numverts; ++j)
     {
