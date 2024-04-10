@@ -134,6 +134,20 @@ void test_vec2_cross()
     assert(v2.cross(v3) == 3);
 }
 
+void test_vec2_squaredist()
+{
+    std::printf("testing vec2 squaredist\n");
+
+    vec2 v1(0,0),
+         v2(-1,1),
+         v3(-1,-2);
+
+    assert(v1.squaredist(v1) == 0);
+    assert(v1.squaredist(v2) == 2);
+    assert(v2.squaredist(v3) == 9);
+}
+
+
 void test_vec2_abs()
 {
     std::printf("testing vec2 abs\n");
@@ -1113,6 +1127,7 @@ testing geometry\n\
     test_vec2_normalize();
     test_vec2_safenormalize();
     test_vec2_cross();
+    test_vec2_squaredist();
     test_vec2_abs();
     test_vec2_lerp();
     test_vec2_avg();
