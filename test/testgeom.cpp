@@ -121,6 +121,19 @@ void test_vec2_safenormalize()
     assert(std::abs(v3.safenormalize().magnitude() - 1) < tolerance);
 }
 
+void test_vec2_cross()
+{
+    std::printf("testing vec2 cross\n");
+
+    vec2 v1(0,0),
+         v2(-1,1),
+         v3(-1,-2);
+
+    assert(v1.cross(v1) == 0);
+    assert(v2.cross(v2) == 0);
+    assert(v2.cross(v3) == 3);
+}
+
 void test_vec2_abs()
 {
     std::printf("testing vec2 abs\n");
@@ -1099,6 +1112,7 @@ testing geometry\n\
     test_vec2_magnitude();
     test_vec2_normalize();
     test_vec2_safenormalize();
+    test_vec2_cross();
     test_vec2_abs();
     test_vec2_lerp();
     test_vec2_avg();
