@@ -172,6 +172,33 @@ void test_vec2_abs()
     assert(v3.abs() == vec2(1,2));
 }
 
+void test_vec2_mul()
+{
+    std::printf("testing vec2 mul\n");
+
+    //mul(float)
+    {
+        vec2 v1(0,0),
+             v2(-1,1);
+        v1.mul(1);
+        v2.mul(-2);
+
+        assert(v1 == vec2(0,0));
+        assert(v2 == vec2(2,-2));
+    }
+    //mul(vec2)
+    {
+        vec2 v1(0,0),
+             v2(-1,1),
+             v3(1,-2);
+        v1.mul(v2);
+        v2.mul(v3);
+
+        assert(v1 == vec2(0,0));
+        assert(v2 == vec2(-1,-2));
+    }
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -1142,6 +1169,7 @@ testing geometry\n\
     test_vec2_squaredist();
     test_vec2_dist();
     test_vec2_abs();
+    test_vec2_mul();
     test_vec2_lerp();
     test_vec2_avg();
 
