@@ -290,6 +290,12 @@ void test_vec_ctor()
         vec v(arr.data());
         assert(v == vec(1.5f,2.5f,3.5f));
     }
+    //vec(vec2, float)
+    {
+        vec2 v2(1,2);
+        vec v(v2, 3);
+        assert(v == vec(1,2,3));
+    }
 }
 
 void test_vec_set()
