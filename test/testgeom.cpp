@@ -452,6 +452,33 @@ void test_vec_safenormalize()
     assert(std::abs(v3.safenormalize().magnitude() - 1) < tolerance);
 }
 
+void test_vec_mul()
+{
+    std::printf("testing vec mul\n");
+
+    //mul(float)
+    {
+        vec v1(0,0,0),
+            v2(-1,1,2);
+        v1.mul(1);
+        v2.mul(-2);
+
+        assert(v1 == vec(0,0,0));
+        assert(v2 == vec(2,-2,-4));
+    }
+    //mul(vec2)
+    {
+        vec v1(0,0,0),
+            v2(-1,1,2),
+            v3(1,-2,3);
+        v1.mul(v2);
+        v2.mul(v3);
+
+        assert(v1 == vec(0,0,0));
+        assert(v2 == vec(-1,-2,6));
+    }
+}
+
 void test_vec_dot2()
 {
     std::printf("testing vec dot2\n");
@@ -1187,6 +1214,7 @@ testing geometry\n\
     test_vec_magnitude();
     test_vec_normalize();
     test_vec_safenormalize();
+    test_vec_mul();
     test_vec_dot2();
     test_vec_dot();
     test_vec_reject();
