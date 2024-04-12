@@ -212,6 +212,19 @@ void test_vec2_square()
     assert(v2 == vec2(1,4));
 }
 
+void test_vec2_clamp()
+{
+    std::printf("testing vec2 clamp\n");
+
+    vec2 v1(0,0),
+         v2(0,2);
+
+    v1.clamp(-2,-1);
+    v2.clamp(-2,1);
+    assert(v1 == vec2(-1,-1));
+    assert(v2 == vec2(0,1));
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -1230,6 +1243,7 @@ testing geometry\n\
     test_vec2_abs();
     test_vec2_mul();
     test_vec2_square();
+    test_vec2_clamp();
     test_vec2_lerp();
     test_vec2_avg();
 
