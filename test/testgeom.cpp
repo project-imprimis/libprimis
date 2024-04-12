@@ -199,6 +199,19 @@ void test_vec2_mul()
     }
 }
 
+void test_vec2_square()
+{
+    std::printf("testing vec2 square\n");
+
+    vec2 v1(0,0),
+         v2(1,-2);
+
+    v1.square();
+    v2.square();
+    assert(v1 == vec2(0,0));
+    assert(v2 == vec2(1,4));
+}
+
 void test_vec2_lerp()
 {
     std::printf("testing vec2 lerp\n");
@@ -1216,6 +1229,7 @@ testing geometry\n\
     test_vec2_dist();
     test_vec2_abs();
     test_vec2_mul();
+    test_vec2_square();
     test_vec2_lerp();
     test_vec2_avg();
 
