@@ -524,6 +524,19 @@ void test_vec_mul2()
     assert(v2 == vec(-2,2,2));
 }
 
+void test_vec_clamp()
+{
+    std::printf("testing vec clamp\n");
+
+    vec v1(0,0,0),
+        v2(0,2,-3);
+
+    v1.clamp(-2,-1);
+    v2.clamp(-2,1);
+    assert(v1 == vec(-1,-1,-1));
+    assert(v2 == vec(0,1,-2));
+}
+
 void test_vec_dot2()
 {
     std::printf("testing vec dot2\n");
@@ -1263,6 +1276,7 @@ testing geometry\n\
     test_vec_safenormalize();
     test_vec_mul();
     test_vec_mul2();
+    test_vec_clamp();
     test_vec_dot2();
     test_vec_dot();
     test_vec_reject();
