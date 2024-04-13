@@ -537,6 +537,19 @@ void test_vec_min()
     assert(v2 == vec(0,1,-3));
 }
 
+void test_vec_max()
+{
+    std::printf("testing vec max\n");
+
+    vec v1(0,0,0),
+        v2(0,2,-3);
+
+    v1.max(1);
+    v2.max(1);
+    assert(v1 == vec(1,1,1));
+    assert(v2 == vec(1,2,1));
+}
+
 void test_vec_clamp()
 {
     std::printf("testing vec clamp\n");
@@ -1290,6 +1303,7 @@ testing geometry\n\
     test_vec_mul();
     test_vec_mul2();
     test_vec_min();
+    test_vec_max();
     test_vec_clamp();
     test_vec_dot2();
     test_vec_dot();
