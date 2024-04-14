@@ -134,6 +134,24 @@ static void tryexecother()
     printf("===============================================================\n");
 }
 
+static void test_clear_command()
+{
+    printf("Testing clearing commands (aliases)\n");
+
+    alias("testcommand", "echo test");
+    execute("testcommand");
+    auto itr = idents.find("testcommand");
+    assert(itr != idents.end());
+
+    assert((*itr).second.name != nullptr);
+    assert((*itr).second.code != nullptr);
+
+    clear_command();
+
+    assert((*itr).second.name == nullptr);
+    assert((*itr).second.code == nullptr);
+}
+
 void testidents()
 {
     loadcscommands();
@@ -142,4 +160,6 @@ void testidents()
     tryexecstringvars();
     tryexeccommands();
     tryexecother();
+
+    test_clear_command();
 }
