@@ -608,6 +608,19 @@ void test_vec_absdot()
     assert(v1.absdot(v2) == 32);
 }
 
+void test_vec_dist2()
+{
+    std::printf("testing vec dist2\n");
+
+    vec v1(0,0,0),
+        v2(3,4,1),
+        v3(6,8,2);
+
+    assert(v1.dist2(v1) == 0);
+    assert(v1.dist2(v2) == 5);
+    assert(v2.dist2(v3) == 5);
+}
+
 void test_vec_reject()
 {
     std::printf("testing vec reject\n");
@@ -1329,6 +1342,7 @@ testing geometry\n\
     test_vec_dot2();
     test_vec_dot();
     test_vec_absdot();
+    test_vec_dist2();
     test_vec_reject();
     test_vec_lerp();
     test_vec_avg();
