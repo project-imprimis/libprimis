@@ -355,6 +355,18 @@ void test_vec_bracket()
     assert(f6 == 3);
 }
 
+void test_vec_nequal()
+{
+    std::printf("testing vec operator!=\n");
+
+    vec v(1,2,3),
+        v2(2,2,3);
+
+    assert( (v != v) == false);
+    assert( v != v2);
+    assert( v2 != v);
+}
+
 void test_vec_iszero()
 {
     std::printf("testing vec iszero\n");
@@ -1297,6 +1309,7 @@ testing geometry\n\
     test_vec_ctor();
     test_vec_set();
     test_vec_bracket();
+    test_vec_nequal();
     test_vec_iszero();
     test_vec_squaredlen();
     test_vec_square();
