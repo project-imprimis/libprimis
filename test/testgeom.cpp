@@ -496,6 +496,21 @@ void test_vec_safenormalize()
     assert(std::abs(v3.safenormalize().magnitude() - 1) < tolerance);
 }
 
+void test_vec_isnormalized()
+{
+    std::printf("testing vec isnormalized\n");
+
+    vec v1(0.6,0.8,0),
+        v2(1,0,0),
+        v3(3,0,0),
+        v4(0,0,0);
+
+    assert(v1.isnormalized() == true);
+    assert(v2.isnormalized() == true);
+    assert(v3.isnormalized() == false);
+    assert(v3.isnormalized() == false);
+}
+
 void test_vec_mul()
 {
     std::printf("testing vec mul\n");
@@ -1378,6 +1393,7 @@ testing geometry\n\
     test_vec_magnitude();
     test_vec_normalize();
     test_vec_safenormalize();
+    test_vec_isnormalized();
     test_vec_mul();
     test_vec_mul2();
     test_vec_min();
