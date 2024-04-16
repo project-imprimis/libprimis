@@ -52,6 +52,18 @@ void test_vec2_bracket()
     }
 }
 
+void test_vec2_nequal()
+{
+    std::printf("testing vec2 operator!=\n");
+
+    vec2 v(1,2),
+         v2(2,2);
+
+    assert( (v != v) == false);
+    assert( v != v2);
+    assert( v2 != v);
+}
+
 void test_vec2_iszero()
 {
     std::printf("testing vec2 iszero\n");
@@ -1362,6 +1374,7 @@ testing geometry\n\
 
     test_vec2_ctor();
     test_vec2_bracket();
+    test_vec2_nequal();
     test_vec2_iszero();
     test_vec2_dot();
     test_vec2_squaredlen();
