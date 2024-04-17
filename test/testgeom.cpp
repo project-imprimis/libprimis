@@ -928,6 +928,14 @@ void test_ivec_shr()
 
 }
 
+void test_ivec_mask()
+{
+    std::printf("testing ivec mask\n");
+
+    ivec v1(1,2,3);
+    assert(v1.mask(1) == ivec(1,0,1));
+}
+
 void test_ivec_neg()
 {
     std::printf("testing ivec neg\n");
@@ -1443,6 +1451,7 @@ testing geometry\n\
     test_ivec_iszero();
     test_ivec_shl();
     test_ivec_shr();
+    test_ivec_mask();
     test_ivec_neg();
     test_ivec_dot();
     test_ivec_dist();
