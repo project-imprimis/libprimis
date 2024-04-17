@@ -928,6 +928,18 @@ void test_ivec_shr()
 
 }
 
+void test_ivec_neg()
+{
+    std::printf("testing ivec neg\n");
+    ivec v1(0,0,0),
+         v2(1,1,1),
+         v3(1,2,3);
+
+    assert(v1.neg() == ivec(0,0,0));
+    assert(v2.neg() == ivec(-1,-1,-1));
+    assert(v3.neg() == ivec(-1,-2,-3));
+}
+
 void test_ivec_dot()
 {
     std::printf("testing ivec dot\n");
@@ -1431,6 +1443,7 @@ testing geometry\n\
     test_ivec_iszero();
     test_ivec_shl();
     test_ivec_shr();
+    test_ivec_neg();
     test_ivec_dot();
     test_ivec_dist();
 
