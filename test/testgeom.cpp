@@ -891,6 +891,7 @@ void test_ivec_ctor()
         assert(ivec(3,v2,2) == ivec(3,4,3));
     }
 }
+
 void test_ivec_iszero()
 {
     std::printf("testing ivec iszero\n");
@@ -982,6 +983,22 @@ void test_ivec_dist()
         ivec i(1,1,0);
         assert(i.dist(p) == 0);
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// integer vec2 tests
+////////////////////////////////////////////////////////////////////////////////
+
+void test_ivec2_iszero()
+{
+    std::printf("testing ivec2 iszero\n");
+
+    ivec2 v1(0,0),
+         v2(1,1),
+         v3(1,0);
+    assert(v1.iszero() == true);
+    assert(v2.iszero() == false);
+    assert(v3.iszero() == false);
 }
 
 void test_raysphereintersect()
@@ -1469,6 +1486,8 @@ testing geometry\n\
     test_ivec_clamp();
     test_ivec_dot();
     test_ivec_dist();
+
+    test_ivec_iszero();
 
     test_raysphereintersect();
     test_rayboxintersect();
