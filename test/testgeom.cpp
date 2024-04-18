@@ -926,7 +926,6 @@ void test_ivec_shr()
     assert(v == ivec(1,2,3));
     v.shr(1);
     assert(v == ivec(0,1,1));
-
 }
 
 void test_ivec_mask()
@@ -1010,6 +1009,19 @@ void test_ivec2_shl()
     assert(v == ivec2(2,4));
     v.shl(0);
     assert(v == ivec2(2,4));
+}
+
+void test_ivec2_shr()
+{
+    std::printf("testing ivec2 shr (shift right)\n");
+
+    ivec2 v(2,4);
+    v.shr(1);
+    assert(v == ivec2(1,2));
+    v.shr(0);
+    assert(v == ivec2(1,2));
+    v.shr(1);
+    assert(v == ivec2(0,1));
 }
 
 void test_raysphereintersect()
@@ -1500,6 +1512,7 @@ testing geometry\n\
 
     test_ivec2_iszero();
     test_ivec2_shl();
+    test_ivec2_shr();
 
     test_raysphereintersect();
     test_rayboxintersect();
