@@ -956,6 +956,18 @@ void test_ivec_dot()
     assert(v1.dot(v2) == 32);
 }
 
+void test_ivec_abs()
+{
+    std::printf("testing ivec abs\n");
+    ivec v1(0,0,0),
+        v2(-1,1,-1),
+        v3(-1,-2,-3);
+
+    assert(v1.abs() == ivec(0,0,0));
+    assert(v2.abs() == ivec(1,1,1));
+    assert(v3.abs() == ivec(1,2,3));
+}
+
 void test_ivec_clamp()
 {
     std::printf("testing ivec clamp\n");
@@ -1550,6 +1562,7 @@ testing geometry\n\
     test_ivec_shr();
     test_ivec_mask();
     test_ivec_neg();
+    test_ivec_abs();
     test_ivec_clamp();
     test_ivec_dot();
     test_ivec_dist();
