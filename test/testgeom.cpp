@@ -892,6 +892,18 @@ void test_ivec_ctor()
     }
 }
 
+void test_ivec_nequal()
+{
+    std::printf("testing ivec operator!=\n");
+
+    ivec v(1,2,3),
+         v2(2,2,3);
+
+    assert( (v != v) == false);
+    assert( v != v2);
+    assert( v2 != v);
+}
+
 void test_ivec_iszero()
 {
     std::printf("testing ivec iszero\n");
@@ -1569,6 +1581,7 @@ testing geometry\n\
     test_vec_project_bb();
 
     test_ivec_ctor();
+    test_ivec_nequal();
     test_ivec_iszero();
     test_ivec_shl();
     test_ivec_shr();
