@@ -1104,6 +1104,16 @@ void test_ivec2_dot()
     assert(v1.dot(v2) == 14);
 }
 
+void test_ivec2_cross()
+{
+    std::printf("testing ivec2 cross\n");
+    ivec2 v1(1,2),
+          v2(4,5),
+          v3(7,8);
+    assert(v1.cross(v2) == -3);
+    assert(v2.cross(v3) == -3);
+}
+
 void test_raysphereintersect()
 {
     std::printf("testing raysphereintersect\n");
@@ -1600,6 +1610,7 @@ testing geometry\n\
     test_ivec2_neg();
     test_ivec2_abs();
     test_ivec2_dot();
+    test_ivec2_cross();
 
     test_raysphereintersect();
     test_rayboxintersect();
