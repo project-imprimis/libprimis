@@ -1000,6 +1000,18 @@ void test_ivec_dist()
 // integer vec2 tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_ivec2_nequal()
+{
+    std::printf("testing ivec2 operator!=\n");
+
+    ivec2 v(1,2),
+          v2(2,2);
+
+    assert( (v != v) == false);
+    assert( v != v2);
+    assert( v2 != v);
+}
+
 void test_ivec2_iszero()
 {
     std::printf("testing ivec2 iszero\n");
@@ -1567,6 +1579,7 @@ testing geometry\n\
     test_ivec_dot();
     test_ivec_dist();
 
+    test_ivec2_nequal();
     test_ivec2_iszero();
     test_ivec2_shl();
     test_ivec2_shr();
