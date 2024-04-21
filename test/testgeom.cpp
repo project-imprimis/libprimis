@@ -582,17 +582,23 @@ void test_vec_min()
     test_min<vec>("vec");
 }
 
-void test_vec_max()
+template<class T>
+void test_max(std::string max)
 {
-    std::printf("testing vec max\n");
+    std::printf("testing %s max\n", max.c_str());
 
-    vec v1(0,0,0),
+    T v1(0,0,0),
         v2(0,2,-3);
 
     v1.max(1);
     v2.max(1);
-    assert(v1 == vec(1,1,1));
-    assert(v2 == vec(1,2,1));
+    assert(v1 == T(1,1,1));
+    assert(v2 == T(1,2,1));
+}
+
+void test_vec_max()
+{
+    test_max<vec>("vec");
 }
 
 void test_vec_clamp()
@@ -969,6 +975,11 @@ void test_ivec_neg()
 void test_ivec_min()
 {
     test_min<ivec>("ivec");
+}
+
+void test_ivec_max()
+{
+    test_max<ivec>("ivec");
 }
 
 void test_ivec_dot()
@@ -1609,6 +1620,7 @@ testing geometry\n\
     test_ivec_mask();
     test_ivec_neg();
     test_ivec_min();
+    test_ivec_max();
     test_ivec_abs();
     test_ivec_clamp();
     test_ivec_dot();
