@@ -587,13 +587,22 @@ void test_max(std::string max)
 {
     std::printf("testing %s max\n", max.c_str());
 
-    T v1(0,0,0),
-        v2(0,2,-3);
+    {
+        T v1(0,0,0),
+          v2(0,2,-3);
 
-    v1.max(1);
-    v2.max(1);
-    assert(v1 == T(1,1,1));
-    assert(v2 == T(1,2,1));
+        v1.max(1);
+        v2.max(1);
+        assert(v1 == T(1,1,1));
+        assert(v2 == T(1,2,1));
+    }
+    {
+        T v1(0,0,0),
+          v2(0,2,-3);
+
+        v1.max(v2);
+        assert(v1 == T(0,2,0));
+    }
 }
 
 void test_vec_max()
