@@ -568,13 +568,22 @@ void test_min(std::string min)
 {
     std::printf("testing %s min\n", min.c_str());
 
-    T v1(0,0,0),
-      v2(0,2,-3);
+    {
+        T v1(0,0,0),
+          v2(0,2,-3);
 
-    v1.min(-1);
-    v2.min(1);
-    assert(v1 == T(-1,-1,-1));
-    assert(v2 == T(0,1,-3));
+        v1.min(-1);
+        v2.min(1);
+        assert(v1 == T(-1,-1,-1));
+        assert(v2 == T(0,1,-3));
+    }
+    {
+        T v1(0,0,0),
+          v2(0,2,-3);
+
+        v1.min(v2);
+        assert(v1 == T(0,0,-3));
+    }
 }
 
 void test_vec_min()
