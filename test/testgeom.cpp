@@ -563,17 +563,23 @@ void test_vec_mul2()
     assert(v2 == vec(-2,2,2));
 }
 
-void test_vec_min()
+template<class T>
+void test_min(std::string min)
 {
-    std::printf("testing vec min\n");
+    std::printf("testing %s min\n", min.c_str());
 
-    vec v1(0,0,0),
-        v2(0,2,-3);
+    T v1(0,0,0),
+      v2(0,2,-3);
 
     v1.min(-1);
     v2.min(1);
-    assert(v1 == vec(-1,-1,-1));
-    assert(v2 == vec(0,1,-3));
+    assert(v1 == T(-1,-1,-1));
+    assert(v2 == T(0,1,-3));
+}
+
+void test_vec_min()
+{
+    test_min<vec>("vec");
 }
 
 void test_vec_max()
@@ -958,6 +964,11 @@ void test_ivec_neg()
     assert(v1.neg() == ivec(0,0,0));
     assert(v2.neg() == ivec(-1,-1,-1));
     assert(v3.neg() == ivec(-1,-2,-3));
+}
+
+void test_ivec_min()
+{
+    test_min<ivec>("ivec");
 }
 
 void test_ivec_dot()
@@ -1597,6 +1608,7 @@ testing geometry\n\
     test_ivec_shr();
     test_ivec_mask();
     test_ivec_neg();
+    test_ivec_min();
     test_ivec_abs();
     test_ivec_clamp();
     test_ivec_dot();
