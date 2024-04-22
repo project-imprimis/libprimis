@@ -655,12 +655,18 @@ void test_vec_dot2()
     }
 }
 
+template<class T>
+void test_dot(std::string type)
+{
+    std::printf("testing %s max\n", type.c_str());
+    T v1(1,2,3),
+      v2(4,5,6);
+    assert(v1.dot(v2) == 32);
+}
+
 void test_vec_dot()
 {
-    std::printf("testing vec dot\n");
-    vec v1(1,2,3),
-        v2(4,5,6);
-    assert(v1.dot(v2) == 32);
+    test_dot<vec>("vec");
 }
 
 void test_vec_absdot()
@@ -1013,10 +1019,7 @@ void test_ivec_max()
 
 void test_ivec_dot()
 {
-    std::printf("testing ivec dot\n");
-    ivec v1(1,2,3),
-         v2(4,5,6);
-    assert(v1.dot(v2) == 32);
+    test_dot<ivec>("ivec");
 }
 
 void test_ivec_abs()
