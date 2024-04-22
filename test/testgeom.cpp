@@ -570,9 +570,9 @@ void test_vec_mul2()
 }
 
 template<class T>
-void test_min(std::string min)
+void test_min(std::string type)
 {
-    std::printf("testing %s min\n", min.c_str());
+    std::printf("testing %s min\n", type.c_str());
 
     {
         T v1(0,0,0),
@@ -598,9 +598,9 @@ void test_vec_min()
 }
 
 template<class T>
-void test_max(std::string max)
+void test_max(std::string type)
 {
-    std::printf("testing %s max\n", max.c_str());
+    std::printf("testing %s max\n", type.c_str());
 
     {
         T v1(0,0,0),
