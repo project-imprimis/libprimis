@@ -523,31 +523,37 @@ void test_vec_isnormalized()
     assert(v3.isnormalized() == false);
 }
 
-void test_vec_mul()
+template<class T>
+void test_mul(std::string type)
 {
-    std::printf("testing vec mul\n");
+    std::printf("testing %s mul\n", type.c_str());
 
     //mul(float)
     {
-        vec v1(0,0,0),
-            v2(-1,1,2);
+        T v1(0,0,0),
+          v2(-1,1,2);
         v1.mul(1);
         v2.mul(-2);
 
-        assert(v1 == vec(0,0,0));
-        assert(v2 == vec(2,-2,-4));
+        assert(v1 == T(0,0,0));
+        assert(v2 == T(2,-2,-4));
     }
     //mul(vec2)
     {
-        vec v1(0,0,0),
-            v2(-1,1,2),
-            v3(1,-2,3);
+        T v1(0,0,0),
+          v2(-1,1,2),
+          v3(1,-2,3);
         v1.mul(v2);
         v2.mul(v3);
 
-        assert(v1 == vec(0,0,0));
-        assert(v2 == vec(-1,-2,6));
+        assert(v1 == T(0,0,0));
+        assert(v2 == T(-1,-2,6));
     }
+}
+
+void test_vec_mul()
+{
+    test_mul<vec>("vec");
 }
 
 void test_vec_mul2()
@@ -968,6 +974,11 @@ void test_ivec_shr()
     assert(v == ivec(1,2,3));
     v.shr(1);
     assert(v == ivec(0,1,1));
+}
+
+void test_ivec_mul()
+{
+    test_mul<ivec>("ivec");
 }
 
 void test_ivec_mask()
@@ -1635,6 +1646,7 @@ testing geometry\n\
     test_ivec_iszero();
     test_ivec_shl();
     test_ivec_shr();
+    test_ivec_mul();
     test_ivec_mask();
     test_ivec_neg();
     test_ivec_min();
