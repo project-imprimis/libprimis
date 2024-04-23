@@ -669,6 +669,14 @@ void test_vec_dot()
     test_dot<vec>("vec");
 }
 
+void test_vec_squaredot()
+{
+    std::printf("testing vec squaredot\n");
+    vec v1(1,1,1),
+        v2(1,2,3);
+    assert(v1.squaredot(v2) == 36);
+}
+
 void test_vec_absdot()
 {
     std::printf("testing vec absdot\n");
@@ -1631,6 +1639,7 @@ testing geometry\n\
     test_vec_clamp();
     test_vec_dot2();
     test_vec_dot();
+    test_vec_squaredot();
     test_vec_absdot();
     test_vec_squaredist();
     test_vec_dist();
