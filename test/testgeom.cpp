@@ -570,6 +570,31 @@ void test_vec_mul2()
 }
 
 template<class T>
+void test_add(std::string_view type)
+{
+    std::printf("testing %s add\n", type.data());
+
+    //T::sub(float)
+    {
+        T v1(0,0,0);
+        v1.add(1);
+        assert(v1 == T(1,1,1));
+    }
+    //T::sub(T)
+    {
+        T v1(1,2,3),
+          v2(-1,2,-3);
+        v1.add(v2);
+        assert(v1 == T(0,4,0));
+    }
+}
+
+void test_vec_add()
+{
+    test_add<vec>("vec");
+}
+
+template<class T>
 void test_sub(std::string_view type)
 {
     std::printf("testing %s sub\n", type.data());
@@ -1018,6 +1043,11 @@ void test_ivec_shr()
 void test_ivec_mul()
 {
     test_mul<ivec>("ivec");
+}
+
+void test_ivec_add()
+{
+    test_add<ivec>("ivec");
 }
 
 void test_ivec_sub()
@@ -1664,6 +1694,7 @@ testing geometry\n\
     test_vec_isnormalized();
     test_vec_mul();
     test_vec_mul2();
+    test_vec_add();
     test_vec_sub();
     test_vec_min();
     test_vec_max();
@@ -1690,6 +1721,7 @@ testing geometry\n\
     test_ivec_shl();
     test_ivec_shr();
     test_ivec_mul();
+    test_ivec_add();
     test_ivec_sub();
     test_ivec_mask();
     test_ivec_neg();
