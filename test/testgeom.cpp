@@ -524,9 +524,9 @@ void test_vec_isnormalized()
 }
 
 template<class T>
-void test_mul(std::string type)
+void test_mul(std::string_view type)
 {
-    std::printf("testing %s mul\n", type.c_str());
+    std::printf("testing %s mul\n", type.data());
 
     //mul(float)
     {
@@ -620,9 +620,9 @@ void test_vec_sub()
 }
 
 template<class T>
-void test_min(std::string type)
+void test_min(std::string_view type)
 {
-    std::printf("testing %s min\n", type.c_str());
+    std::printf("testing %s min\n", type.data());
 
     {
         T v1(0,0,0),
@@ -648,9 +648,9 @@ void test_vec_min()
 }
 
 template<class T>
-void test_max(std::string type)
+void test_max(std::string_view type)
 {
-    std::printf("testing %s max\n", type.c_str());
+    std::printf("testing %s max\n", type.data());
 
     {
         T v1(0,0,0),
@@ -706,9 +706,9 @@ void test_vec_dot2()
 }
 
 template<class T>
-void test_dot(std::string type)
+void test_dot(std::string_view type)
 {
-    std::printf("testing %s max\n", type.c_str());
+    std::printf("testing %s max\n", type.data());
     T v1(1,2,3),
       v2(4,5,6);
     assert(v1.dot(v2) == 32);
