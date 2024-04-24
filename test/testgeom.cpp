@@ -184,31 +184,37 @@ void test_vec2_abs()
     assert(v3.abs() == vec2(1,2));
 }
 
-void test_vec2_mul()
+template<class T>
+void test_2d_mul(std::string_view type)
 {
-    std::printf("testing vec2 mul\n");
+    std::printf("testing %s mul\n", type.data());
 
     //mul(float)
     {
-        vec2 v1(0,0),
-             v2(-1,1);
+        T v1(0,0),
+          v2(-1,1);
         v1.mul(1);
         v2.mul(-2);
 
-        assert(v1 == vec2(0,0));
-        assert(v2 == vec2(2,-2));
+        assert(v1 == T(0,0));
+        assert(v2 == T(2,-2));
     }
     //mul(vec2)
     {
-        vec2 v1(0,0),
-             v2(-1,1),
-             v3(1,-2);
+        T v1(0,0),
+          v2(-1,1),
+          v3(1,-2);
         v1.mul(v2);
         v2.mul(v3);
 
-        assert(v1 == vec2(0,0));
-        assert(v2 == vec2(-1,-2));
+        assert(v1 == T(0,0));
+        assert(v2 == T(-1,-2));
     }
+}
+
+void test_vec2_mul()
+{
+    test_2d_mul<vec2>("vec2");
 }
 
 void test_vec2_square()
@@ -1182,6 +1188,11 @@ void test_ivec2_shr()
     assert(v == ivec2(0,1));
 }
 
+void test_ivec2_mul()
+{
+    test_2d_mul<ivec2>("ivec2");
+}
+
 void test_ivec2_mask()
 {
     std::printf("testing ivec2 mask\n");
@@ -1736,6 +1747,7 @@ testing geometry\n\
     test_ivec2_iszero();
     test_ivec2_shl();
     test_ivec2_shr();
+    test_ivec2_mul();
     test_ivec2_mask();
     test_ivec2_neg();
     test_ivec2_abs();
