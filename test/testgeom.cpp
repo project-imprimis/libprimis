@@ -231,6 +231,39 @@ void test_vec2_square()
 }
 
 template<class T>
+void test_2d_add(std::string_view type)
+{
+    std::printf("testing %s add\n", type.data());
+
+    //T::add(float)
+    {
+        T v1(0,0),
+          v2(-1,1);
+        v1.add(1);
+        v2.add(-2);
+
+        assert(v1 == T(1,1));
+        assert(v2 == T(-3,-1));
+    }
+    //T::add(vec2)
+    {
+        T v1(0,0),
+          v2(-1,1),
+          v3(1,-2);
+        v1.add(v2);
+        v2.add(v3);
+
+        assert(v1 == T(-1,1));
+        assert(v2 == T(0,-1));
+    }
+}
+
+void test_vec2_add()
+{
+    test_2d_add<vec2>("vec2");
+}
+
+template<class T>
 void test_2d_sub(std::string_view type)
 {
     std::printf("testing %s sub\n", type.data());
@@ -1244,6 +1277,11 @@ void test_ivec2_mul()
     test_2d_mul<ivec2>("ivec2");
 }
 
+void test_ivec2_add()
+{
+    test_2d_add<ivec2>("ivec2");
+}
+
 void test_ivec2_sub()
 {
     test_2d_sub<ivec2>("ivec2");
@@ -1732,6 +1770,7 @@ testing geometry\n\
     test_vec2_abs();
     test_vec2_mul();
     test_vec2_square();
+    test_vec2_add();
     test_vec2_sub();
     test_vec2_neg();
     test_vec2_clamp();
@@ -1799,6 +1838,7 @@ testing geometry\n\
     test_ivec2_shl();
     test_ivec2_shr();
     test_ivec2_mul();
+    test_ivec2_add();
     test_ivec2_sub();
     test_ivec2_mask();
     test_ivec2_neg();
