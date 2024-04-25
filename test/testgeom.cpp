@@ -469,14 +469,20 @@ void test_vec_nequal()
     assert( v2 != v);
 }
 
-void test_vec_iszero()
+template<class T>
+void test_3d_iszero(std::string_view type)
 {
-    std::printf("testing vec iszero\n");
+    std::printf("testing %s iszero\n", type.data());
 
-    vec v1(0,0,0),
-        v2(1,1,1);
+    T v1(0,0,0),
+      v2(1,1,1);
     assert(v1.iszero() == true);
     assert(v2.iszero() == false);
+}
+
+void test_vec_iszero()
+{
+    test_3d_iszero<vec>("vec");
 }
 
 void test_vec_squaredlen()
@@ -1067,6 +1073,16 @@ void test_vec_project_bb()
     assert(v2.project_bb(min, max) == -4 +0 -6);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// color vec tests
+////////////////////////////////////////////////////////////////////////////////
+
+void test_bvec_iszero()
+{
+    test_3d_iszero<bvec>("bvec");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -1109,14 +1125,7 @@ void test_ivec_nequal()
 
 void test_ivec_iszero()
 {
-    std::printf("testing ivec iszero\n");
-
-    ivec v1(0,0,0),
-         v2(1,1,1),
-         v3(1,0,0);
-    assert(v1.iszero() == true);
-    assert(v2.iszero() == false);
-    assert(v3.iszero() == false);
+    test_3d_iszero<ivec>("ivec");
 }
 
 void test_ivec_shl()
@@ -1829,6 +1838,8 @@ testing geometry\n\
     test_vec_insidebb();
     test_vec_dist_to_bb();
     test_vec_project_bb();
+
+    test_bvec_iszero();
 
     test_ivec_ctor();
     test_ivec_nequal();
