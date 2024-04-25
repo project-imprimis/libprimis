@@ -1048,7 +1048,7 @@ void test_vec_insidebb()
 
 void test_vec_dist_to_bb()
 {
-    std::printf("testing vec dist_to_bb");
+    std::printf("testing vec dist_to_bb\n");
 
     vec v1(0,0,0),
         v2(3,4,1);
