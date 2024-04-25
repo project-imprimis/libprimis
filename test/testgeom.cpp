@@ -684,6 +684,19 @@ void test_vec_add()
     test_add<vec>("vec");
 }
 
+void test_vec_add2()
+{
+    std::printf("testing vec add2\n");
+
+    vec v1(0,0,0),
+        v2(-1,1,2);
+    v1.add2(2);
+    v2.add2(2);
+
+    assert(v1 == vec(2,2,0));
+    assert(v2 == vec(1,3,2));
+}
+
 template<class T>
 void test_sub(std::string_view type)
 {
@@ -1796,6 +1809,7 @@ testing geometry\n\
     test_vec_mul();
     test_vec_mul2();
     test_vec_add();
+    test_vec_add2();
     test_vec_sub();
     test_vec_min();
     test_vec_max();
