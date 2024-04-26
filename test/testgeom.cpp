@@ -1083,6 +1083,42 @@ void test_bvec_iszero()
     test_3d_iszero<bvec>("bvec");
 }
 
+template<class T>
+void test_3d_shl(std::string_view type)
+{
+    std::printf("testing %s shl (shift left)\n", type.data());
+
+    T v(1,2,3);
+    v.shl(1);
+    assert(v == T(2,4,6));
+    v.shl(0);
+    assert(v == T(2,4,6));
+}
+
+void test_bvec_shl()
+{
+    test_3d_shl<bvec>("bvec");
+}
+
+template<class T>
+void test_3d_shr(std::string_view type)
+{
+    std::printf("testing %s shr (shift right)\n", type.data());
+
+    T v(2,4,6);
+    v.shr(1);
+    assert(v == T(1,2,3));
+    v.shr(0);
+    assert(v == T(1,2,3));
+    v.shr(1);
+    assert(v == T(0,1,1));
+}
+
+void test_bvec_shr()
+{
+    test_3d_shr<bvec>("bvec");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // integer vec tests
 ////////////////////////////////////////////////////////////////////////////////
@@ -1130,26 +1166,12 @@ void test_ivec_iszero()
 
 void test_ivec_shl()
 {
-    std::printf("testing ivec shl (shift left)\n");
-
-    ivec v(1,2,3);
-    v.shl(1);
-    assert(v == ivec(2,4,6));
-    v.shl(0);
-    assert(v == ivec(2,4,6));
+    test_3d_shl<ivec>("ivec");
 }
 
 void test_ivec_shr()
 {
-    std::printf("testing ivec shr (shift right)\n");
-
-    ivec v(2,4,6);
-    v.shr(1);
-    assert(v == ivec(1,2,3));
-    v.shr(0);
-    assert(v == ivec(1,2,3));
-    v.shr(1);
-    assert(v == ivec(0,1,1));
+    test_3d_shr<ivec>("ivec");
 }
 
 void test_ivec_mul()
@@ -1840,6 +1862,8 @@ testing geometry\n\
     test_vec_project_bb();
 
     test_bvec_iszero();
+    test_bvec_shl();
+    test_bvec_shr();
 
     test_ivec_ctor();
     test_ivec_nequal();
