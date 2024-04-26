@@ -916,6 +916,50 @@ void test_vec_reject()
     assert(v1.reject(v1, 0) == false);
 }
 
+template<class T>
+void test_3d_cross(std::string_view type)
+{
+    std::printf("testing %s cross\n", type.data());
+    //test axes
+    {
+        T v1(0,0,1),
+          v2(0,1,0),
+          v3;
+
+        v3.cross(v1, v2);
+        assert(v3 == T(-1,0,0));
+        v3.cross(v2, v1);
+        assert(v3 == T(1,0,0));
+    }
+    //test parallelogram
+    {
+        T v1(0,0,1),
+          v2(0,1,1),
+          v3;
+
+        v3.cross(v1, v2);
+        assert(v3 == T(-1,0,0));
+        v3.cross(v2, v1);
+        assert(v3 == T(1,0,0));
+    }
+    //test colinear
+    {
+        T v1(0,0,1),
+          v2(0,0,2),
+          v3;
+
+        v3.cross(v1, v2);
+        assert(v3 == T(0,0,0));
+        v3.cross(v2, v1);
+        assert(v3 == T(0,0,0));
+    }
+}
+
+void test_vec_cross()
+{
+    test_3d_cross<vec>("vec");
+}
+
 void test_vec_lerp()
 {
     std::printf("testing vec lerp\n");
@@ -1247,6 +1291,11 @@ void test_ivec_clamp()
     v2.clamp(-2,1);
     assert(v1 == ivec(-1,-1,-1));
     assert(v2 == ivec(0,1,-2));
+}
+
+void test_ivec_cross()
+{
+    test_3d_cross<ivec>("ivec");
 }
 
 void test_ivec_dist()
@@ -1853,6 +1902,7 @@ testing geometry\n\
     test_vec_dist();
     test_vec_dist2();
     test_vec_reject();
+    test_vec_cross();
     test_vec_lerp();
     test_vec_avg();
     test_vec_rescale();
@@ -1879,6 +1929,7 @@ testing geometry\n\
     test_ivec_max();
     test_ivec_abs();
     test_ivec_clamp();
+    test_ivec_cross();
     test_ivec_dot();
     test_ivec_dist();
 
