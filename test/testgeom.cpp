@@ -960,6 +960,20 @@ void test_vec_cross()
     test_3d_cross<vec>("vec");
 }
 
+void test_vec_scalartriple()
+{
+    std::printf("testing vec scalartriple\n");
+
+    vec v1(0,0,1),
+        v2(0,1,0),
+        v3(1,0,0);
+
+    float st1 = v3.scalartriple(v1,v2);
+    assert(st1 == -1);
+    float st2 = v2.scalartriple(v1,v2);
+    assert(st2 == 0);
+}
+
 void test_vec_lerp()
 {
     std::printf("testing vec lerp\n");
@@ -1902,6 +1916,7 @@ testing geometry\n\
     test_vec_dist();
     test_vec_dist2();
     test_vec_reject();
+    test_vec_scalartriple();
     test_vec_cross();
     test_vec_lerp();
     test_vec_avg();
