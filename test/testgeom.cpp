@@ -1177,26 +1177,22 @@ void test_bvec_shr()
     test_3d_shr<bvec>("bvec");
 }
 
+void test_bvec_hexcolor()
+{
+    assert(bvec::hexcolor(0xFFFFFF) == bvec(255,255,255));
+    assert(bvec::hexcolor(0x0010FF) == bvec(0,16,255));
+    assert(bvec::hexcolor(0x000000) == bvec(0,0,0));
+    assert(bvec::hexcolor(0x010203) == bvec(1,2,3));
+}
+
 void test_bvec_tohexcolor()
 {
     std::printf("testing bvec tohexcolor\n");
 
-    {
-        bvec b1(255,255,255);
-        assert(b1.tohexcolor() == 0xFFFFFF);
-    }
-    {
-        bvec b1(0,16,255);
-        assert(b1.tohexcolor() == 0x0010FF);
-    }
-    {
-        bvec b1(0,0,0);
-        assert(b1.tohexcolor() == 0x000000);
-    }
-    {
-        bvec b1(1,2,3);
-        assert(b1.tohexcolor() == 0x010203);
-    }
+    assert(bvec(255,255,255).tohexcolor() == 0xFFFFFF);
+    assert(bvec(0,16,255).tohexcolor() == 0x0010FF);
+    assert(bvec(0,0,0).tohexcolor() == 0x000000);
+    assert(bvec(1,2,3).tohexcolor() == 0x010203);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1951,6 +1947,7 @@ testing geometry\n\
     test_bvec_iszero();
     test_bvec_shl();
     test_bvec_shr();
+    test_bvec_hexcolor();
     test_bvec_tohexcolor();
 
     test_ivec_ctor();
