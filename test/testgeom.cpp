@@ -1177,8 +1177,28 @@ void test_bvec_shr()
     test_3d_shr<bvec>("bvec");
 }
 
+void test_bvec_fromcolor()
+{
+    std::printf("testing bvec fromcolor\n");
+
+    assert(bvec::fromcolor(vec(1,1,1)) == bvec(255,255,255));
+    assert(bvec::fromcolor(vec(0.25,0.5,0.75)) == bvec(63,127,191));
+    assert(bvec::fromcolor(vec(0,0,0)) == bvec(0,0,0));
+}
+
+void test_bvec_tocolor()
+{
+    std::printf("testing bvec tocolor\n");
+
+    assert(bvec(255,255,255).tocolor() == vec(1,1,1));
+    assert(bvec(63,127,191).tocolor().sub(vec(0.25,0.5,0.75)).magnitude() < 1.f/255);
+    assert(bvec(0,0,0).tocolor() == vec(0,0,0));
+}
+
 void test_bvec_hexcolor()
 {
+    std::printf("testing bvec hexcolor\n");
+
     assert(bvec::hexcolor(0xFFFFFF) == bvec(255,255,255));
     assert(bvec::hexcolor(0x0010FF) == bvec(0,16,255));
     assert(bvec::hexcolor(0x000000) == bvec(0,0,0));
@@ -1947,6 +1967,8 @@ testing geometry\n\
     test_bvec_iszero();
     test_bvec_shl();
     test_bvec_shr();
+    test_bvec_fromcolor();
+    test_bvec_tocolor();
     test_bvec_hexcolor();
     test_bvec_tohexcolor();
 
