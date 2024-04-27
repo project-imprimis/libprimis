@@ -1141,6 +1141,32 @@ void test_bvec_iszero()
     test_3d_iszero<bvec>("bvec");
 }
 
+void test_bvec_flip()
+{
+    std::printf("testing bvec flip\n");
+
+    {
+        bvec b1(255,255,255);
+        b1.flip();
+        assert(b1 == bvec(127,127,127));
+    }
+    {
+        bvec b1(0,0,0);
+        b1.flip();
+        assert(b1 == bvec(128,128,128));
+    }
+    {
+        bvec b1(1,2,3);
+        b1.flip();
+        assert(b1 == bvec(129,130,131));
+    }
+    {
+        bvec b1(127,128,129);
+        b1.flip();
+        assert(b1 == bvec(255,0,1));
+    }
+}
+
 template<class T>
 void test_3d_shl(std::string_view type)
 {
@@ -1965,6 +1991,7 @@ testing geometry\n\
     test_vec_project_bb();
 
     test_bvec_iszero();
+    test_bvec_flip();
     test_bvec_shl();
     test_bvec_shr();
     test_bvec_fromcolor();
