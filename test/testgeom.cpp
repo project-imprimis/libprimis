@@ -457,16 +457,22 @@ void test_vec_bracket()
     assert(f6 == 3);
 }
 
-void test_vec_nequal()
+template<class T>
+void test_3d_nequal(std::string_view type)
 {
-    std::printf("testing vec operator!=\n");
+    std::printf("testing %s operator!=\n", type.data());
 
-    vec v(1,2,3),
-        v2(2,2,3);
+    T v(1,2,3),
+      v2(2,2,3);
 
     assert( (v != v) == false);
     assert( v != v2);
     assert( v2 != v);
+}
+
+void test_vec_nequal()
+{
+    test_3d_nequal<vec>("vec");
 }
 
 template<class T>
@@ -1136,6 +1142,11 @@ void test_vec_project_bb()
 // color vec tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_bvec_nequal()
+{
+    test_3d_nequal<bvec>("bvec");
+}
+
 void test_bvec_iszero()
 {
     test_3d_iszero<bvec>("bvec");
@@ -1271,14 +1282,7 @@ void test_ivec_ctor()
 
 void test_ivec_nequal()
 {
-    std::printf("testing ivec operator!=\n");
-
-    ivec v(1,2,3),
-         v2(2,2,3);
-
-    assert( (v != v) == false);
-    assert( v != v2);
-    assert( v2 != v);
+    test_3d_nequal<ivec>("ivec");
 }
 
 void test_ivec_iszero()
@@ -1990,6 +1994,7 @@ testing geometry\n\
     test_vec_dist_to_bb();
     test_vec_project_bb();
 
+    test_bvec_nequal();
     test_bvec_iszero();
     test_bvec_flip();
     test_bvec_shl();
