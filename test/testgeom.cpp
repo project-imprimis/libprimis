@@ -1197,6 +1197,27 @@ void test_bvec_flip()
     }
 }
 
+void test_bvec_scale()
+{
+    std::printf("testing bvec scale\n");
+
+    {
+        bvec b1(1,1,1);
+        b1.scale(9,3);
+        assert(b1 == bvec(3,3,3));
+    }
+    {
+        bvec b1(128,64,32);
+        b1.scale(3,1);
+        assert(b1 == bvec(128,192,96));
+    }
+    {
+        bvec b1(128,64,32);
+        b1.scale(1,2);
+        assert(b1 == bvec(64,32,16));
+    }
+}
+
 template<class T>
 void test_3d_shl(std::string_view type)
 {
@@ -2027,6 +2048,7 @@ testing geometry\n\
     test_bvec_nequal();
     test_bvec_iszero();
     test_bvec_flip();
+    test_bvec_scale();
     test_bvec_shl();
     test_bvec_shr();
     test_bvec_fromcolor();
