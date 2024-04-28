@@ -443,19 +443,20 @@ void test_3d_bracket(std::string_view type)
     std::printf("testing %s operator[]\n", type.data());
 
     T v(1,2,3);
+    const T v2(3,4,5);
 
     U &f1 = v[0],
-      &f2 = v[1],
-      &f3 = v[2];
+      &f2 = v[1];
+    const U &f3 = v2[2];
     U f4 = v[0],
-      f5 = v[1],
-      f6 = v[2];
+      f5 = v[1];
+    const U f6 = v2[2];
     assert(f1 == 1);
     assert(f2 == 2);
-    assert(f3 == 3);
+    assert(f3 == 5);
     assert(f4 == 1);
     assert(f5 == 2);
-    assert(f6 == 3);
+    assert(f6 == 5);
 }
 
 void test_vec_bracket()
