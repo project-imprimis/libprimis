@@ -31,25 +31,32 @@ void test_vec2_ctor()
     }
 }
 
-void test_vec2_bracket()
+template<class T, class U>
+void test_2d_bracket(std::string_view type)
 {
-    std::printf("testing vec2 operator[]\n");
-    {
-        vec2 v(1,2);
+    std::printf("testing %s bracket\n", type.data());
 
-        float &f1 = v[0],
-              &f2 = v[1];
+    {
+        T v(1,2);
+
+        U &f1 = v[0],
+          &f2 = v[1];
         assert(f1 == 1);
         assert(f2 == 2);
     }
     {
-        const vec2 v(1,2);
+        const T v(1,2);
 
-        float f3 = v[0],
-              f4 = v[1];
+        U f3 = v[0],
+          f4 = v[1];
         assert(f3 == 1);
         assert(f4 == 2);
     }
+}
+
+void test_vec2_bracket()
+{
+    test_2d_bracket<vec2, float>("vec2");
 }
 
 void test_vec2_nequal()
@@ -1416,6 +1423,11 @@ void test_ivec_dist()
 // integer vec2 tests
 ////////////////////////////////////////////////////////////////////////////////
 
+void test_ivec2_bracket()
+{
+    test_2d_bracket<ivec2, int>("ivec2");
+}
+
 void test_ivec2_nequal()
 {
     std::printf("testing ivec2 operator!=\n");
@@ -2041,6 +2053,7 @@ testing geometry\n\
     test_ivec_dot();
     test_ivec_dist();
 
+    test_ivec2_bracket();
     test_ivec2_nequal();
     test_ivec2_iszero();
     test_ivec2_shl();
