@@ -179,18 +179,6 @@ void test_vec2_dist()
     assert(v2.dist(v3) == 5);
 }
 
-void test_vec2_abs()
-{
-    std::printf("testing vec2 abs\n");
-    vec2 v1(0,0),
-         v2(-1,1),
-         v3(-1,-2);
-
-    assert(v1.abs() == vec2(0,0));
-    assert(v2.abs() == vec2(1,1));
-    assert(v3.abs() == vec2(1,2));
-}
-
 template<class T>
 void test_2d_mul(std::string_view type)
 {
@@ -319,6 +307,24 @@ void test_2d_neg(std::string_view type)
 void test_vec2_neg()
 {
     test_2d_neg<vec2>("vec2");
+}
+
+template<class T>
+void test_2d_abs(std::string_view type)
+{
+    std::printf("testing %s abs\n", type.data());
+    T v1(0,0),
+      v2(-1,1),
+      v3(-1,-2);
+
+    assert(v1.abs() == T(0,0));
+    assert(v2.abs() == T(1,1));
+    assert(v3.abs() == T(1,2));
+}
+
+void test_vec2_abs()
+{
+    test_2d_abs<vec2>("vec2");
 }
 
 void test_vec2_clamp()
@@ -1531,14 +1537,7 @@ void test_ivec2_neg()
 
 void test_ivec2_abs()
 {
-    std::printf("testing ivec2 abs\n");
-    ivec2 v1(0,0),
-         v2(-1,1),
-         v3(-1,-2);
-
-    assert(v1.abs() == ivec2(0,0));
-    assert(v2.abs() == ivec2(1,1));
-    assert(v3.abs() == ivec2(1,2));
+    test_2d_abs<ivec2>("abs");
 }
 
 void test_ivec2_dot()
@@ -1992,12 +1991,12 @@ testing geometry\n\
     test_vec2_cross();
     test_vec2_squaredist();
     test_vec2_dist();
-    test_vec2_abs();
     test_vec2_mul();
     test_vec2_square();
     test_vec2_add();
     test_vec2_sub();
     test_vec2_neg();
+    test_vec2_abs();
     test_vec2_clamp();
     test_vec2_lerp();
     test_vec2_avg();
@@ -2097,4 +2096,3 @@ testing geometry\n\
     test_sin360();
     test_cos360();
 }
-
