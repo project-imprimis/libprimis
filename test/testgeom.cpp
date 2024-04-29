@@ -692,7 +692,7 @@ void test_vec_mul2()
 }
 
 template<class T>
-void test_add(std::string_view type)
+void test_3d_add(std::string_view type)
 {
     std::printf("testing %s add\n", type.data());
 
@@ -713,7 +713,7 @@ void test_add(std::string_view type)
 
 void test_vec_add()
 {
-    test_add<vec>("vec");
+    test_3d_add<vec>("vec");
 }
 
 void test_vec_add2()
@@ -1358,7 +1358,7 @@ void test_ivec_mul()
 
 void test_ivec_add()
 {
-    test_add<ivec>("ivec");
+    test_3d_add<ivec>("ivec");
 }
 
 void test_ivec_sub()
