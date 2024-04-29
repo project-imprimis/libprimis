@@ -702,7 +702,7 @@ void test_matrix4_ctor()
     }
     //matrix4(vec,vec,vec)
     {
-        matrix4 m({1,0,0}, {0,1,0}, {0,0,1});
+        matrix4 m(vec(1,0,0), vec(0,1,0), vec(0,0,1));
         assert(m.a == vec4<float>(1,0,0,0));
         assert(m.b == vec4<float>(0,1,0,0));
         assert(m.c == vec4<float>(0,0,1,0));
