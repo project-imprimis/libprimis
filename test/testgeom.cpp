@@ -1548,7 +1548,7 @@ void test_ivec2_neg()
 
 void test_ivec2_abs()
 {
-    test_2d_abs<ivec2>("abs");
+    test_2d_abs<ivec2>("ivec2");
 }
 
 void test_ivec2_dot()
