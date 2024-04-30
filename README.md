@@ -13,16 +13,16 @@
 
 ## An Open Source Standalone Engine
 
-Libprimis is a game engine, based on Tesseract and the Cube 2 family of programs.
+Libprimis is a 3D game engine, based on Tesseract and the Cube 2 family of programs.
 Unlike the Cube/Cube 2/Tesseract games, which featured tightly integrated rendering
-and game code, however, Libprimis is *just an engine*.
+and game code, however, Libprimis is an engine without accompanying game code,
+providing developers the freedom to develop games without being forced into the
+same design paradigms of the original Cube games.
 
-Libprimis allows game makers to build unique and distinct games by providing an
-API for its octree-based geometry system. While this is not particularly exceptional
-for a game engine (which obviously have to have an API of some sort), Libprimis is
-the first adaptation of the Cube2/Tesseract capable of providing the power of the
-octree without dealing with confusing and poorly defined boundaries between game
-and rendering code.
+Libprimis' world uses octree subdivision to recursively subdivide the world into
+an efficient, sparsely populated tree of cubes. This representation provides numerous
+advantages over "polygon soup" type vertex representations, especially for performance
+in the critical occlusion and physics calculations required for many applications.
 
 With many modern features, including realtime deferred shading, volumetric lighting, and
 tone mapping support, Libprimis' core is fast, capable, and modern, and fully open sourced.
