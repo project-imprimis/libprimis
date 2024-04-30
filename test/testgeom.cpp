@@ -1278,6 +1278,17 @@ void test_bvec_tocolor()
     assert(bvec(0,0,0).tocolor() == vec(0,0,0));
 }
 
+void test_bvec_from565()
+{
+    std::printf("testing bvec from565\n");
+    //                     rrrrrggggggbbbbb
+    assert(bvec::from565(0b0000000000000000) == bvec(0,0,0));
+    assert(bvec::from565(0b1111100000011111) == bvec(255,0,255));
+    assert(bvec::from565(0b1111111111111111) == bvec(255,255,255));
+    assert(bvec::from565(0b1111011111011110) == bvec(247,251,247));
+    assert(bvec::from565(0b1000010000010000) == bvec(131,130,131));
+}
+
 void test_bvec_hexcolor()
 {
     std::printf("testing bvec hexcolor\n");
@@ -2052,6 +2063,7 @@ testing geometry\n\
     test_bvec_shr();
     test_bvec_fromcolor();
     test_bvec_tocolor();
+    test_bvec_from565();
     test_bvec_hexcolor();
     test_bvec_tohexcolor();
 
