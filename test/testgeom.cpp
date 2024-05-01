@@ -692,7 +692,7 @@ void test_vec_isnormalized()
 }
 
 template<class T>
-void test_mul(std::string_view type)
+void test_3d_mul(std::string_view type)
 {
     std::printf("testing %s mul\n", type.data());
 
@@ -721,7 +721,7 @@ void test_mul(std::string_view type)
 
 void test_vec_mul()
 {
-    test_mul<vec>("vec");
+    test_3d_mul<vec>("vec");
 }
 
 void test_vec_mul2()
@@ -776,7 +776,7 @@ void test_vec_add2()
 }
 
 template<class T>
-void test_sub(std::string_view type)
+void test_3d_sub(std::string_view type)
 {
     std::printf("testing %s sub\n", type.data());
 
@@ -797,11 +797,11 @@ void test_sub(std::string_view type)
 
 void test_vec_sub()
 {
-    test_sub<vec>("vec");
+    test_3d_sub<vec>("vec");
 }
 
 template<class T>
-void test_min(std::string_view type)
+void test_3d_min(std::string_view type)
 {
     std::printf("testing %s min\n", type.data());
 
@@ -825,11 +825,11 @@ void test_min(std::string_view type)
 
 void test_vec_min()
 {
-    test_min<vec>("vec");
+    test_3d_min<vec>("vec");
 }
 
 template<class T>
-void test_max(std::string_view type)
+void test_3d_max(std::string_view type)
 {
     std::printf("testing %s max\n", type.data());
 
@@ -853,7 +853,7 @@ void test_max(std::string_view type)
 
 void test_vec_max()
 {
-    test_max<vec>("vec");
+    test_3d_max<vec>("vec");
 }
 
 void test_vec_clamp()
@@ -887,7 +887,7 @@ void test_vec_dot2()
 }
 
 template<class T>
-void test_dot(std::string_view type)
+void test_3d_dot(std::string_view type)
 {
     std::printf("testing %s max\n", type.data());
     T v1(1,2,3),
@@ -897,7 +897,7 @@ void test_dot(std::string_view type)
 
 void test_vec_dot()
 {
-    test_dot<vec>("vec");
+    test_3d_dot<vec>("vec");
 }
 
 void test_vec_squaredot()
@@ -1410,7 +1410,7 @@ void test_ivec_shr()
 
 void test_ivec_mul()
 {
-    test_mul<ivec>("ivec");
+    test_3d_mul<ivec>("ivec");
 }
 
 void test_ivec_add()
@@ -1420,7 +1420,7 @@ void test_ivec_add()
 
 void test_ivec_sub()
 {
-    test_sub<ivec>("ivec");
+    test_3d_sub<ivec>("ivec");
 }
 
 void test_ivec_mask()
@@ -1445,17 +1445,17 @@ void test_ivec_neg()
 
 void test_ivec_min()
 {
-    test_min<ivec>("ivec");
+    test_3d_min<ivec>("ivec");
 }
 
 void test_ivec_max()
 {
-    test_max<ivec>("ivec");
+    test_3d_max<ivec>("ivec");
 }
 
 void test_ivec_dot()
 {
-    test_dot<ivec>("ivec");
+    test_3d_dot<ivec>("ivec");
 }
 
 void test_ivec_abs()
