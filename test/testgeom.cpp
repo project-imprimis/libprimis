@@ -292,6 +292,29 @@ void test_vec2_sub()
 }
 
 template<class T>
+void test_2d_min(std::string_view type)
+{
+    std::printf("testing %s min\n", type.data());
+
+    {
+        T v1(0,0),
+          v2(-1,1);
+        v1.min(v2);
+        assert(v1 == T(-1,0));
+    }
+    {
+        T v1(1,-1);
+        v1.min(0);
+        assert(v1 == T(0,-1));
+    }
+}
+
+void test_vec2_min()
+{
+    test_2d_min<vec2>("vec2");
+}
+
+template<class T>
 void test_2d_neg(std::string_view type)
 {
     std::printf("testing %s neg\n", type.data());
@@ -1546,6 +1569,11 @@ void test_ivec2_neg()
     test_2d_neg<ivec2>("ivec2");
 }
 
+void test_ivec2_min()
+{
+    test_2d_min<ivec2>("ivec2");
+}
+
 void test_ivec2_abs()
 {
     test_2d_abs<ivec2>("ivec2");
@@ -2006,6 +2034,7 @@ testing geometry\n\
     test_vec2_square();
     test_vec2_add();
     test_vec2_sub();
+    test_vec2_min();
     test_vec2_neg();
     test_vec2_abs();
     test_vec2_clamp();
@@ -2096,6 +2125,7 @@ testing geometry\n\
     test_ivec2_sub();
     test_ivec2_mask();
     test_ivec2_neg();
+    test_ivec2_min();
     test_ivec2_abs();
     test_ivec2_dot();
     test_ivec2_cross();
