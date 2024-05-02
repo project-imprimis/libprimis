@@ -60,26 +60,26 @@ std::array<prop::Property<>, PropTestCount> props =
 
 static void try_find_props()
 {
-    printf("===============================================================\n");
-    printf("Testing finding props:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing finding props:\n");
+    std::printf("===============================================================\n");
     for(int i = 0; i < PropTestCount; i++)
     {
-        printf("Finding prop %s...\n", prop_meta[i].get_name().c_str());
+        std::printf("Finding prop %s...\n", prop_meta[i].get_name().c_str());
         prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
         assert(prop);
     }
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
 }
 
 static void try_defaults()
 {
-    printf("===============================================================\n");
-    printf("Testing defaults:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing defaults:\n");
+    std::printf("===============================================================\n");
     for(int i = 0; i < PropTestCount; i++)
     {
-        printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
+        std::printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
         prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
         assert(prop);
         switch(i)
@@ -109,17 +109,17 @@ static void try_defaults()
                 break;
         }
     }
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
 }
 
 static void try_assignment()
 {
-    printf("===============================================================\n");
-    printf("Testing assignment:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing assignment:\n");
+    std::printf("===============================================================\n");
     for(int i = 0; i < PropTestCount; i++)
     {
-        printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
+        std::printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
         prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
         assert(prop);
         switch(i)
@@ -155,17 +155,17 @@ static void try_assignment()
                 break;
         }
     }
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
 }
 
 static void try_assignment_clamp()
 {
-    printf("===============================================================\n");
-    printf("Testing assignment clamping:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing assignment clamping:\n");
+    std::printf("===============================================================\n");
     for(int i = 0; i < PropTestCount; i++)
     {
-        printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
+        std::printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
         prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
         assert(prop);
         switch(i)
@@ -203,7 +203,7 @@ static void try_assignment_clamp()
                 continue;
         }
     }
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
 }
 
 static void try_pack_unpack()
@@ -211,9 +211,9 @@ static void try_pack_unpack()
     std::array<prop::Property<>, PropTestCount> unpacked_props =
         prop::make_props_array<PropTestCount, prop::Property<>>(prop_meta);
 
-    printf("===============================================================\n");
-    printf("Testing prop pack/unpack:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing prop pack/unpack:\n");
+    std::printf("===============================================================\n");
 
     set_prop("prop_test_0", 3,                       props);
     set_prop("prop_test_1", -2.0f,                   props);
@@ -229,7 +229,7 @@ static void try_pack_unpack()
 
     for(int i = 0; i < PropTestCount; i++)
     {
-        printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
+        std::printf("Checking prop %s...\n", prop_meta[i].get_name().c_str());
 
         switch(i)
         {
@@ -273,7 +273,7 @@ static void try_callback()
             -10, 0, 10,
             [&called](std::any argument)
             {
-                printf("Callback called! %s\n", std::any_cast<const char*>(argument));
+                std::printf("Callback called! %s\n", std::any_cast<const char*>(argument));
                 called = true;
             }
         )
@@ -282,9 +282,9 @@ static void try_callback()
     std::array<prop::Property<>, 1> props_with_cb =
         prop::make_props_array<1, prop::Property<>>(prop_meta_with_cb);
 
-    printf("===============================================================\n");
-    printf("Testing prop callback:\n");
-    printf("===============================================================\n");
+    std::printf("===============================================================\n");
+    std::printf("Testing prop callback:\n");
+    std::printf("===============================================================\n");
 
     set_prop("prop_test_cb_0", 3, props_with_cb, "hello world");
     assert(called);
