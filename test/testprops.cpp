@@ -290,6 +290,32 @@ static void try_callback()
     assert(called);
 }
 
+static void try_to_string()
+{
+    std::printf("Testing prop to_string\n");
+
+    set_prop("prop_test_0", 1,                     props);
+    set_prop("prop_test_1", -3.0f,                 props);
+    set_prop("prop_test_2", bvec(1, 2, 4),         props);
+    set_prop("prop_test_3", ivec(4, 2, 1),         props);
+    set_prop("prop_test_4", vec(3.0f, 4.0f, 0.0f), props);
+    set_prop("prop_test_5", "baz",                 props);
+
+    std::array<std::string, 6> propstrings = {
+        "1",
+        "-3.000000",
+        "1 2 4",
+        "4 2 1",
+        "3.000000 4.000000 0.000000",
+        "baz"
+    };
+
+    for(size_t i = 0; i < PropTestCount; ++i)
+    {
+        assert(props[i].to_string() == propstrings[i]);
+    }
+}
+
 void test_props()
 {
     try_find_props();
@@ -298,4 +324,5 @@ void test_props()
     try_assignment_clamp();
     try_pack_unpack();
     try_callback();
+    try_to_string();
 }
