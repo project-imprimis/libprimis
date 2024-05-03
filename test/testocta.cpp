@@ -63,6 +63,16 @@ namespace
         getcubevector(c1, 0, 1, 1, 1, p);
         assert(p == ivec(15, 0, 0));
     }
+
+    void test_octadim()
+    {
+        std::printf("Testing octadim\n");
+
+        assert(octadim(10) == 1024);
+        assert(octadim(5) == 32);
+        assert(octadim(1) == 2);
+        assert(octadim(0) == 1);
+    }
 }
 
 void test_octa()
@@ -70,4 +80,5 @@ void test_octa()
     testoctaboxoverlap();
     testfamilysize();
     testgetcubevector();
+    test_octadim();
 }
