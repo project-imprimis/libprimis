@@ -1,6 +1,7 @@
 #include "libprimis.h"
 
 #include "../src/libprimis-headers/prop.h"
+#include "../src/engine/interface/cs.h"
 #include <type_traits>
 
 enum
@@ -316,6 +317,49 @@ static void try_to_string()
     }
 }
 
+static void try_cmd_result()
+{
+    std::printf("Testing prop cmd_result\n");
+
+    set_prop("prop_test_0", 1,                     props);
+    set_prop("prop_test_1", -3.0f,                 props);
+    set_prop("prop_test_2", bvec(1, 2, 4),         props);
+    set_prop("prop_test_3", ivec(4, 2, 1),         props);
+    set_prop("prop_test_4", vec(3.0f, 4.0f, 0.0f), props);
+    set_prop("prop_test_5", "baz",                 props);
+
+    std::array<std::string, 3> propstrings = {
+        "4 2 1",
+        "3.000000 4.000000 0.000000",
+        "baz"
+    };
+
+    {
+        props[0].cmd_result();
+        assert(commandret->getint() == 1);
+    }
+    {
+        props[1].cmd_result();
+        assert(commandret->getfloat() == -3.0f);
+    }
+    {
+        props[2].cmd_result();
+        assert(commandret->getint() == 0x010204);
+    }
+    {
+        props[3].cmd_result();
+        assert(std::strcmp(commandret->getstr(), propstrings[0].c_str()) == 0);
+    }
+    {
+        props[4].cmd_result();
+        assert(std::strcmp(commandret->getstr(), propstrings[1].c_str()) == 0);
+    }
+    {
+        props[5].cmd_result();
+        assert(std::strcmp(commandret->getstr(), propstrings[2].c_str()) == 0);
+    }
+}
+
 void test_props()
 {
     try_find_props();
@@ -325,4 +369,5 @@ void test_props()
     try_pack_unpack();
     try_callback();
     try_to_string();
+    try_cmd_result();
 }
