@@ -124,6 +124,34 @@ void testescapeid()
     assert(std::strcmp(conout2, "") == 0);
 }
 
+void test_cs_plus()
+{
+    {
+        int val = execute("+ 1");
+        assert(val == 1);
+    }
+    {
+        int val = execute("+ 1 2");
+        assert(val == 3);
+    }
+    {
+        int val = execute("+ 1 2 3");
+        assert(val == 6);
+    }
+    {
+        int val = execute("+f 1");
+        assert(val == 1);
+    }
+    {
+        int val = execute("+f 1 2");
+        assert(val == 3);
+    }
+    {
+        int val = execute("+f 1 2 3");
+        assert(val == 6);
+    }
+}
+
 //run tests
 void testcs()
 {
@@ -133,6 +161,7 @@ void testcs()
     testintformat();
     testparseword();
     testconc();
+    test_cs_plus();
     //command.h
     testescapestring();
     testescapeid();
