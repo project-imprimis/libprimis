@@ -126,6 +126,7 @@ void testescapeid()
 
 void test_cs_plus()
 {
+    std::printf("testing CS + command\n");
     {
         int val = execute("+ 1");
         assert(val == 1);
@@ -152,6 +153,35 @@ void test_cs_plus()
     }
 }
 
+void test_cs_minus()
+{
+    std::printf("testing CS - command\n");
+    {
+        int val = execute("- 1");
+        assert(val == -1);
+    }
+    {
+        int val = execute("- 1 2");
+        assert(val == -1);
+    }
+    {
+        int val = execute("- 1 2 3");
+        assert(val == -4);
+    }
+    {
+        int val = execute("-f 1");
+        assert(val == -1);
+    }
+    {
+        int val = execute("-f 1 2");
+        assert(val == -1);
+    }
+    {
+        int val = execute("-f 1 2 3");
+        assert(val == -4);
+    }
+}
+
 //run tests
 void testcs()
 {
@@ -162,6 +192,7 @@ void testcs()
     testparseword();
     testconc();
     test_cs_plus();
+    test_cs_minus();
     //command.h
     testescapestring();
     testescapeid();
