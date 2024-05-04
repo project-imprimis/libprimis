@@ -153,6 +153,35 @@ void test_cs_plus()
     }
 }
 
+void test_cs_mul()
+{
+    std::printf("testing CS * command\n");
+    {
+        int val = execute("* 1");
+        assert(val == 1);
+    }
+    {
+        int val = execute("* 1 2");
+        assert(val == 2);
+    }
+    {
+        int val = execute("* 1 2 3");
+        assert(val == 6);
+    }
+    {
+        int val = execute("*f 1");
+        assert(val == 1);
+    }
+    {
+        int val = execute("*f 1 2");
+        assert(val == 2);
+    }
+    {
+        int val = execute("*f 1 2 3");
+        assert(val == 6);
+    }
+}
+
 void test_cs_minus()
 {
     std::printf("testing CS - command\n");
@@ -192,6 +221,7 @@ void testcs()
     testparseword();
     testconc();
     test_cs_plus();
+    test_cs_mul();
     test_cs_minus();
     //command.h
     testescapestring();
