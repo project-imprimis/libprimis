@@ -124,91 +124,86 @@ void testescapeid()
     assert(std::strcmp(conout2, "") == 0);
 }
 
+void test_cs_command(const std::vector<std::string> &inputs, const std::vector<int> &vals)
+{
+    assert(inputs.size() == vals.size());
+    for(size_t i = 0; i < inputs.size(); ++i)
+    {
+        int val = execute(inputs[i].c_str());
+        assert(val == vals[i]);
+    }
+}
+
 void test_cs_plus()
 {
     std::printf("testing CS + command\n");
-    {
-        int val = execute("+ 1");
-        assert(val == 1);
-    }
-    {
-        int val = execute("+ 1 2");
-        assert(val == 3);
-    }
-    {
-        int val = execute("+ 1 2 3");
-        assert(val == 6);
-    }
-    {
-        int val = execute("+f 1");
-        assert(val == 1);
-    }
-    {
-        int val = execute("+f 1 2");
-        assert(val == 3);
-    }
-    {
-        int val = execute("+f 1 2 3");
-        assert(val == 6);
-    }
+
+    std::vector<std::string> inputs = {
+        "+ 1",
+        "+ 1 2",
+        "+ 1 2 3",
+        "+f 1",
+        "+f 1 2",
+        "+f 1 2 3"
+    };
+    std::vector<int> vals = {
+        1,
+        3,
+        6,
+        1,
+        3,
+        6
+    };
+
+    test_cs_command(inputs, vals);
 }
 
 void test_cs_mul()
 {
     std::printf("testing CS * command\n");
-    {
-        int val = execute("* 1");
-        assert(val == 1);
-    }
-    {
-        int val = execute("* 1 2");
-        assert(val == 2);
-    }
-    {
-        int val = execute("* 1 2 3");
-        assert(val == 6);
-    }
-    {
-        int val = execute("*f 1");
-        assert(val == 1);
-    }
-    {
-        int val = execute("*f 1 2");
-        assert(val == 2);
-    }
-    {
-        int val = execute("*f 1 2 3");
-        assert(val == 6);
-    }
+
+    std::vector<std::string> inputs = {
+        "* 1",
+        "* 1 2",
+        "* 1 2 3",
+        "*f 1",
+        "*f 1 2",
+        "*f 1 2 3"
+    };
+    std::vector<int> vals = {
+        1,
+        2,
+        6,
+        1,
+        2,
+        6
+    };
+
+    test_cs_command(inputs, vals);
 }
 
 void test_cs_minus()
 {
     std::printf("testing CS - command\n");
-    {
-        int val = execute("- 1");
-        assert(val == -1);
-    }
-    {
-        int val = execute("- 1 2");
-        assert(val == -1);
-    }
-    {
-        int val = execute("- 1 2 3");
-        assert(val == -4);
-    }
-    {
-        int val = execute("-f 1");
-        assert(val == -1);
-    }
-    {
-        int val = execute("-f 1 2");
-        assert(val == -1);
-    }
-    {
-        int val = execute("-f 1 2 3");
-        assert(val == -4);
-    }
+
+    std::vector<std::string> inputs = {
+        "- 1",
+        "- 1 2",
+        "- 1 2 3",
+        "-f 1",
+        "-f 1 2",
+        "-f 1 2 3"
+    };
+    std::vector<int> vals = {
+        -1,
+        -1,
+        -4,
+        -1,
+        -1,
+        -4
+    };
+
+    test_cs_command(inputs, vals);
 }
 
 //run tests
