@@ -278,6 +278,50 @@ void test_cs_nequals()
     test_cs_command(inputs, vals);
 }
 
+void test_cs_lessthan()
+{
+    std::printf("testing CS < command\n");
+
+    std::vector<std::string> inputs = {
+        "< 1",
+        "< 0",
+        "< 1 1",
+        "< 0 1 2",
+        "< 0 1 0",
+        "< 1 0",
+        "<f 1",
+        "<f 0",
+        "<f 1 1",
+        "<f 0 1 2",
+        "<f 0 1 0",
+        "<f 1 0",
+        "<s test, test2",
+        "<s test2 test",
+        "<s test test2 test3",
+        "<s test test test"
+    };
+    std::vector<int> vals = {
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0
+    };
+
+    test_cs_command(inputs, vals);
+}
+
 //run tests
 void testcs()
 {
@@ -292,6 +336,7 @@ void testcs()
     test_cs_minus();
     test_cs_equals();
     test_cs_nequals();
+    test_cs_lessthan();
     //command.h
     testescapestring();
     testescapeid();
