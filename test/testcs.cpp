@@ -221,6 +221,9 @@ void test_cs_equals()
         "=f 1 1",
         "=f 1 1 1",
         "=f 1 0",
+        "=s test test",
+        "=s test test2",
+        "=s test test test test"
 
     };
     std::vector<int> vals = {
@@ -233,7 +236,10 @@ void test_cs_equals()
         1,
         1,
         1,
-        0
+        0,
+        1,
+        0,
+        1
     };
 
     test_cs_command(inputs, vals);
