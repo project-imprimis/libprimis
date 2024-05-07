@@ -124,13 +124,13 @@ void testescapeid()
     assert(std::strcmp(conout2, "") == 0);
 }
 
-void test_cs_command(const std::vector<std::string> &inputs, const std::vector<int> &vals)
+void test_cs_command(const std::vector<std::pair<std::string, int>> &inputs)
 {
-    assert(inputs.size() == vals.size());
-    for(size_t i = 0; i < inputs.size(); ++i)
+    for(const std::pair<std::string, int> &i : inputs)
     {
-        int val = execute(inputs[i].c_str());
-        assert(val == vals[i]);
+        int val = execute(i.first.c_str());
+        std::printf("executing %s\n", i.first.c_str());
+        assert(val == i.second);
     }
 }
 
@@ -138,236 +138,146 @@ void test_cs_plus()
 {
     std::printf("testing CS + command\n");
 
-    std::vector<std::string> inputs = {
-        "+ 1",
-        "+ 1 2",
-        "+ 1 2 3",
-        "+f 1",
-        "+f 1 2",
-        "+f 1 2 3"
-    };
-    std::vector<int> vals = {
-        1,
-        3,
-        6,
-        1,
-        3,
-        6
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"+ 1", 1},
+        {"+ 1 2", 3},
+        {"+ 1 2 3", 6},
+        {"+f 1", 1},
+        {"+f 1 2", 3},
+        {"+f 1 2 3", 6}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_mul()
 {
     std::printf("testing CS * command\n");
 
-    std::vector<std::string> inputs = {
-        "* 1",
-        "* 1 2",
-        "* 1 2 3",
-        "*f 1",
-        "*f 1 2",
-        "*f 1 2 3"
-    };
-    std::vector<int> vals = {
-        1,
-        2,
-        6,
-        1,
-        2,
-        6
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"* 1", 1},
+        {"* 1 2", 2},
+        {"* 1 2 3", 6},
+        {"*f 1", 1},
+        {"*f 1 2", 2},
+        {"*f 1 2 3", 6}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_minus()
 {
     std::printf("testing CS - command\n");
 
-    std::vector<std::string> inputs = {
-        "- 1",
-        "- 1 2",
-        "- 1 2 3",
-        "-f 1",
-        "-f 1 2",
-        "-f 1 2 3"
-    };
-    std::vector<int> vals = {
-        -1,
-        -1,
-        -4,
-        -1,
-        -1,
-        -4
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"- 1", -1},
+        {"- 1 2", -1},
+        {"- 1 2 3", -4},
+        {"-f 1", -1},
+        {"-f 1 2", -1},
+        {"-f 1 2 3", -4}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_equals()
 {
     std::printf("testing CS = command\n");
 
-    std::vector<std::string> inputs = {
-        "= 1",
-        "= 0",
-        "= 1 1",
-        "= 1 1 1",
-        "= 1 0",
-        "=f 1",
-        "=f 0",
-        "=f 1 1",
-        "=f 1 1 1",
-        "=f 1 0",
-        "=s test test",
-        "=s test test2",
-        "=s test test test test"
-    };
-    std::vector<int> vals = {
-        0,
-        1,
-        1,
-        1,
-        0,
-        0,
-        1,
-        1,
-        1,
-        0,
-        1,
-        0,
-        1
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"= 1", 0},
+        {"= 0", 1},
+        {"= 1 1", 1},
+        {"= 1 1 1", 1},
+        {"= 1 0", 0},
+        {"=f 1", 0},
+        {"=f 0", 1},
+        {"=f 1 1", 1},
+        {"=f 1 1 1", 1},
+        {"=f 1 0", 0},
+        {"=s test test", 1},
+        {"=s test test2", 0},
+        {"=s test test test test", 1}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_nequals()
 {
     std::printf("testing CS != command\n");
 
-    std::vector<std::string> inputs = {
-        "!= 1",
-        "!= 0",
-        "!= 1 1",
-        "!= 1 1 1",
-        "!= 1 0",
-        "!=f 1",
-        "!=f 0",
-        "!=f 1 1",
-        "!=f 1 1 1",
-        "!=f 1 0",
-        "!=s test test",
-        "!=s test test2",
-        "!=s test test test test"
-    };
-    std::vector<int> vals = {
-        1,
-        0,
-        0,
-        0,
-        1,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        1,
-        0
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"!= 1", 1},
+        {"!= 0", 0},
+        {"!= 1 1", 0},
+        {"!= 1 1 1", 0},
+        {"!= 1 0", 1},
+        {"!=f 1", 1},
+        {"!=f 0", 0},
+        {"!=f 1 1", 0},
+        {"!=f 1 1 1", 0},
+        {"!=f 1 0", 1},
+        {"!=s test test", 0},
+        {"!=s test test2", 1},
+        {"!=s test test test test", 0}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_lessthan()
 {
     std::printf("testing CS < command\n");
 
-    std::vector<std::string> inputs = {
-        "< 1",
-        "< 0",
-        "< 1 1",
-        "< 0 1 2",
-        "< 0 1 0",
-        "< 1 0",
-        "<f 1",
-        "<f 0",
-        "<f 1 1",
-        "<f 0 1 2",
-        "<f 0 1 0",
-        "<f 1 0",
-        "<s test, test2",
-        "<s test2 test",
-        "<s test test2 test3",
-        "<s test test test"
-    };
-    std::vector<int> vals = {
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        1,
-        0,
-        1,
-        0
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"< 1", 0},
+        {"< 0", 0},
+        {"< 1 1", 0},
+        {"< 0 1 2", 1},
+        {"< 0 1 0", 0},
+        {"< 1 0", 0},
+        {"<f 1", 0},
+        {"<f 0", 0},
+        {"<f 1 1", 0},
+        {"<f 0 1 2", 1},
+        {"<f 0 1 0", 0},
+        {"<f 1 0", 0},
+        {"<s test test2", 1},
+        {"<s test2 test", 0},
+        {"<s test test2 test3", 1},
+        {"<s test test test", 0}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 void test_cs_greaterthan()
 {
     std::printf("testing CS > command\n");
 
-    std::vector<std::string> inputs = {
-        "> 1",
-        "> 0",
-        "> 1 1",
-        "> 2 1 0",
-        "> 0 1 0",
-        "> 0 1",
-        ">f 1",
-        ">f 0",
-        ">f 1 1",
-        ">f 2 1 0",
-        ">f 0 1 0",
-        ">f 0 1",
-        ">s test, test2",
-        ">s test2 test",
-        ">s test3 test2 test",
-        ">s test test test"
-    };
-    std::vector<int> vals = {
-        1,
-        0,
-        0,
-        1,
-        0,
-        0,
-        1,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        1,
-        0
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"> 1", 1},
+        {"> 0", 0},
+        {"> 1 1", 0},
+        {"> 2 1 0", 1},
+        {"> 0 1 0", 0},
+        {"> 0 1", 0},
+        {">f 1", 1},
+        {">f 0", 0},
+        {">f 1 1", 0},
+        {">f 2 1 0", 1},
+        {">f 0 1 0", 0},
+        {">f 0 1", 0},
+        {">s test test2", 0},
+        {">s test2 test", 1},
+        {">s test3 test2 test", 1},
+        {">s test test test", 0}
     };
 
-    test_cs_command(inputs, vals);
+    test_cs_command(inputs);
 }
 
 //run tests
