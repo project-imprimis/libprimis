@@ -280,6 +280,32 @@ void test_cs_greaterthan()
     test_cs_command(inputs);
 }
 
+void test_cs_lessequalthan()
+{
+    std::printf("testing CS <= command\n");
+
+    std::vector<std::pair<std::string, int>> inputs = {
+        {"<= 1", 0},
+        {"<= 0", 1},
+        {"<= 1 1", 1},
+        {"<= 0 1 2", 1},
+        {"<= 0 1 0", 0},
+        {"<= 1 0", 0},
+        {"<=f 1", 0},
+        {"<=f 0", 1},
+        {"<=f 1 1", 1},
+        {"<=f 0 1 2", 1},
+        {"<=f 0 1 0", 0},
+        {"<=f 1 0", 0},
+        {"<=s test test2", 1},
+        {"<=s test2 test", 0},
+        {"<=s test test2 test3", 1},
+        {"<=s test test test", 1}
+    };
+
+    test_cs_command(inputs);
+}
+
 //run tests
 void testcs()
 {
@@ -295,6 +321,7 @@ void testcs()
     test_cs_equals();
     test_cs_nequals();
     test_cs_lessthan();
+    test_cs_lessequalthan();
     test_cs_greaterthan();
     //command.h
     testescapestring();
