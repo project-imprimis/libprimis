@@ -372,6 +372,7 @@ void test_cs_greaterequalthan()
     test_cs_command(inputs);
 }
 
+//trancendental tests
 
 void test_cs_sin()
 {
@@ -418,6 +419,51 @@ void test_cs_tan()
     test_cs_command_float(inputs);
 }
 
+void test_cs_asin()
+{
+    std::printf("testing CS asin command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"asin -1", -90.f},
+        {"asin -0.5", -30.f},
+        {"asin 0", 0},
+        {"asin 0.5", 30.f},
+        {"asin 1", 90.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
+void test_cs_acos()
+{
+    std::printf("testing CS acos command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"acos -1", 180.f},
+        {"acos -0.5", 120.f},
+        {"acos 0", 90.f},
+        {"acos 0.5", 60.f},
+        {"acos 1", 0.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
+void test_cs_atan()
+{
+    std::printf("testing CS atan command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"atan -1", -45.f},
+        {"atan -0.5", -26.565f},
+        {"atan 0", 0.f},
+        {"atan 0.5", 26.565f},
+        {"atan 1", 45.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
 //run tests
 void testcs()
 {
@@ -439,6 +485,9 @@ void testcs()
     test_cs_sin();
     test_cs_cos();
     test_cs_tan();
+    test_cs_asin();
+    test_cs_acos();
+    test_cs_atan();
     //command.h
     testescapestring();
     testescapeid();
