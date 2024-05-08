@@ -4,6 +4,8 @@
 #include "libprimis.h"
 #include "../src/engine/interface/cs.h"
 
+constexpr float tolerance = 0.001;
+
 void testparsefloat()
 {
     const char *s = "3.2 test";
@@ -134,6 +136,44 @@ void test_cs_command(const std::vector<std::pair<std::string, int>> &inputs)
     }
 }
 
+/**
+ * @brief Returns a vector of tagval results from a std::vector of input strings to execute
+ */
+std::vector<tagval> generate_command_tagvals(const std::vector<std::string> &inputs)
+{
+    std::vector<tagval> outputs;
+    for(const std::string_view i : inputs)
+    {
+        tagval t;
+        executeret(i.data(), t);
+        std::printf("executing to return: %s\n", i.data());
+        outputs.push_back(t);
+    }
+    return outputs;
+}
+
+void test_cs_command_float(const std::vector<std::pair<std::string, float>> &inputs)
+{
+    std::vector<std::string> inputstrings;
+    for(const std::pair<std::string, float> &i : inputs)
+    {
+        inputstrings.push_back(i.first);
+    }
+    std::vector<tagval> outputs = generate_command_tagvals(inputstrings);
+    //create vector of tagval generated outputs, expected outputs
+    std::vector<std::pair<tagval, float>> outputcombo;
+    for(size_t i = 0; i < outputs.size(); ++i)
+    {
+        outputcombo.emplace_back(outputs[i], inputs[i].second);
+    }
+
+    for(const std::pair<tagval, float> &i : outputcombo)
+    {
+        float f = i.first.getfloat();
+        std::printf("value %f\n", f);
+        assert(std::abs(f - i.second) < tolerance);
+    }
+}
 void test_cs_plus()
 {
     std::printf("testing CS + command\n");
@@ -332,6 +372,22 @@ void test_cs_greaterequalthan()
     test_cs_command(inputs);
 }
 
+
+void test_cs_sin()
+{
+    std::printf("testing CS sin command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"sin 0", 0},
+        {"sin 90", 1},
+        {"sin 180", 0},
+        {"sin 270", -1},
+        {"sin 360", 0}
+    };
+
+    test_cs_command_float(inputs);
+}
+
 //run tests
 void testcs()
 {
@@ -350,6 +406,7 @@ void testcs()
     test_cs_greaterthan();
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
+    test_cs_sin();
     //command.h
     testescapestring();
     testescapeid();
