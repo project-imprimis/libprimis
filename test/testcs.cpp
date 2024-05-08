@@ -388,6 +388,36 @@ void test_cs_sin()
     test_cs_command_float(inputs);
 }
 
+void test_cs_cos()
+{
+    std::printf("testing CS cos command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"cos 0", 1},
+        {"cos 90", 0},
+        {"cos 180", -1},
+        {"cos 270", 0},
+        {"cos 360", 1}
+    };
+
+    test_cs_command_float(inputs);
+}
+
+void test_cs_tan()
+{
+    std::printf("testing CS tan command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"tan 0", 0},
+        {"tan 80", 5.6713f},
+        {"tan 180", 0},
+        {"tan 260", 5.6713f},
+        {"tan 360", 0}
+    };
+
+    test_cs_command_float(inputs);
+}
+
 //run tests
 void testcs()
 {
@@ -407,6 +437,8 @@ void testcs()
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
     test_cs_sin();
+    test_cs_cos();
+    test_cs_tan();
     //command.h
     testescapestring();
     testescapeid();
