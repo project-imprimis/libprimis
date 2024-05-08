@@ -225,7 +225,24 @@ extern int stridx;
 
 extern tagval *commandret;
 extern void executeret(const uint *code, tagval &result = *commandret);
+
+/**
+ * @brief Executes a given string, returning a tagval by reference parameter
+ *
+ * @param p a string to execute
+ * @param result tagval containing result metadata
+ */
 extern void executeret(const char *p, tagval &result = *commandret);
+
+/**
+ * @brief Executes a given ident, returning a tagval by reference parameter
+ *
+ * @param id the ident to execute
+ * @param args an array of arguments
+ * @param numargs size of args array
+ * @param lookup whether to lookup (dereference) args (?)
+ * @param result tagval containing result metadata
+ */
 extern void executeret(ident *id, tagval *args, int numargs, bool lookup = false, tagval &result = *commandret);
 
 extern void poparg(ident &id);
