@@ -527,6 +527,21 @@ namespace
 
         test_cs_command_float(inputs);
     }
+
+    void test_cs_exp()
+    {
+        std::printf("testing CS exp command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"exp -1", 0.3679f},
+            {"exp 0", 1.f},
+            {"exp 1", 2.7183f},
+            {"exp 2", 7.3891f},
+            {"exp 5", 148.4132f}
+        };
+
+        test_cs_command_float(inputs);
+    }
 }
 
 //run tests
@@ -557,6 +572,7 @@ void testcs()
     test_cs_loge();
     test_cs_log2();
     test_cs_log10();
+    test_cs_exp();
     //command.h
     testescapestring();
     testescapeid();
