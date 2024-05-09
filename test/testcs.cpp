@@ -467,6 +467,21 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_sqrt()
+    {
+        std::printf("testing CS sqrt command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"sqrt 0.25", 0.5f},
+            {"sqrt 1", 1.f},
+            {"sqrt 16", 4.f},
+            {"sqrt 625", 25.f},
+            {"sqrt 2", 1.4142f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     void test_cs_loge()
     {
         std::printf("testing CS loge command\n");
@@ -538,6 +553,7 @@ void testcs()
     test_cs_asin();
     test_cs_acos();
     test_cs_atan();
+    test_cs_sqrt();
     test_cs_loge();
     test_cs_log2();
     test_cs_log10();
