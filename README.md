@@ -11,7 +11,7 @@
   - [Test Coverage](https://project-imprimis.github.io/libprimis/lcov/)
   - [Tesseract Renderer Overview](doc/tesseract-renderer.md)
 
-## An Open Source Standalone Engine
+## An Open Source Engine Library
 
 Libprimis is a 3D game engine, based on Tesseract and the Cube 2 family of programs.
 Unlike the Cube/Cube 2/Tesseract games, which featured tightly integrated rendering
