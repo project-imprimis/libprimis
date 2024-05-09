@@ -464,6 +464,52 @@ void test_cs_atan()
     test_cs_command_float(inputs);
 }
 
+void test_cs_loge()
+{
+    std::printf("testing CS loge command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"loge 0.3679", -1.f},
+        {"loge 1", 0.f},
+        {"loge 2.7183", 1.f},
+        {"loge 7.3891", 2.f},
+        {"loge 20.086", 3.f},
+        {"loge 148.41", 5.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
+void test_cs_log2()
+{
+    std::printf("testing CS log2 command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"log2 0.5", -1.f},
+        {"log2 1", 0.f},
+        {"log2 2", 1.f},
+        {"log2 4", 2.f},
+        {"log2 1024", 10.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
+void test_cs_log10()
+{
+    std::printf("testing CS log10 command\n");
+
+    std::vector<std::pair<std::string, float>> inputs = {
+        {"log10 0.1", -1.f},
+        {"log10 1", 0.f},
+        {"log10 10", 1.f},
+        {"log10 100", 2.f},
+        {"log10 1000", 3.f}
+    };
+
+    test_cs_command_float(inputs);
+}
+
 //run tests
 void testcs()
 {
@@ -488,6 +534,9 @@ void testcs()
     test_cs_asin();
     test_cs_acos();
     test_cs_atan();
+    test_cs_loge();
+    test_cs_log2();
+    test_cs_log10();
     //command.h
     testescapestring();
     testescapeid();
