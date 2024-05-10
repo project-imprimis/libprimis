@@ -149,7 +149,6 @@ namespace
         {
             tagval t;
             executeret(i.data(), t);
-            std::printf("executing to return: %s\n", i.data());
             outputs.push_back(t);
         }
         return outputs;
@@ -173,7 +172,7 @@ namespace
         for(const std::pair<tagval, float> &i : outputcombo)
         {
             float f = i.first.getfloat();
-            std::printf("value %f\n", f);
+            std::printf("float result: %f\n", f);
             assert(std::abs(f - i.second) < tolerance);
         }
     }
