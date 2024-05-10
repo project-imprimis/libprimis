@@ -176,6 +176,30 @@ namespace
             assert(std::abs(f - i.second) < tolerance);
         }
     }
+
+    void test_cs_command_string(const std::vector<std::pair<std::string, std::string>> &inputs)
+    {
+        std::vector<std::string> inputstrings;
+        for(const std::pair<std::string, std::string> &i : inputs)
+        {
+            inputstrings.push_back(i.first);
+        }
+        std::vector<tagval> outputs = generate_command_tagvals(inputstrings);
+        //create vector of tagval generated outputs, expected outputs
+        std::vector<std::pair<tagval, std::string>> outputcombo;
+        for(size_t i = 0; i < outputs.size(); ++i)
+        {
+            outputcombo.emplace_back(outputs[i], inputs[i].second);
+        }
+
+        for(const std::pair<tagval, std::string> &i : outputcombo)
+        {
+            std::string s = i.first.getstr();
+            std::printf("string result: %s\n", s.c_str());
+            assert(s == i.second);
+        }
+    }
+
     void test_cs_plus()
     {
         std::printf("testing CS + command\n");
@@ -571,6 +595,38 @@ namespace
 
         test_cs_command_float(inputs);
     }
+
+    //initstrcmds
+
+    void test_cs_concat()
+    {
+        std::printf("testing CS concat command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"concat test test2", "test test2"},
+            {"concat test", "test"},
+            {"concat test test test test", "test test test test"},
+            {"concat test, test, test, test", "test, test, test, test"},
+            {"concat t t", "t t"}
+        };
+
+        test_cs_command_string(inputs);
+    }
+
+    void test_cs_concatword()
+    {
+        std::printf("testing CS concatword command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"concatword test test2", "testtest2"},
+            {"concatword test", "test"},
+            {"concatword test test test test", "testtesttesttest"},
+            {"concatword test, test, test, test", "test,test,test,test"},
+            {"concatword t t", "tt"}
+        };
+
+        test_cs_command_string(inputs);
+    }
 }
 
 //run tests
@@ -604,6 +660,9 @@ void testcs()
     test_cs_log2();
     test_cs_log10();
     test_cs_exp();
+    //strcmds
+    test_cs_concat();
+    test_cs_concatword();
     //command.h
     testescapestring();
     testescapeid();
