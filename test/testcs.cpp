@@ -375,6 +375,21 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_divf()
+    {
+        std::printf("testing CS divf command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"divf 0 1", 0},
+            {"divf 1 1", 1},
+            {"divf 1 10", 0.1},
+            {"divf 1 3", 0.33333},
+            {"divf 25 100", 0.25}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //trancendental tests
 
     void test_cs_sin()
@@ -577,6 +592,7 @@ void testcs()
     test_cs_greaterthan();
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
+    test_cs_divf();
     test_cs_sin();
     test_cs_cos();
     test_cs_tan();
