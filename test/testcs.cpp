@@ -467,6 +467,21 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_atan2()
+    {
+        std::printf("testing CS atan command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"atan2 -1 1", -45.f},
+            {"atan2 -1 2", -26.565f},
+            {"atan2 0 1", 0.f},
+            {"atan2 2 4", 26.565f},
+            {"atan2 6 6", 45.f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     void test_cs_sqrt()
     {
         std::printf("testing CS sqrt command\n");
@@ -568,6 +583,7 @@ void testcs()
     test_cs_asin();
     test_cs_acos();
     test_cs_atan();
+    test_cs_atan2();
     test_cs_sqrt();
     test_cs_loge();
     test_cs_log2();
