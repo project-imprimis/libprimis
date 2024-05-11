@@ -154,6 +154,13 @@ namespace
         return outputs;
     }
 
+    /**
+     * @brief Checks whether a vector of CS commands and float results match
+     *
+     * If a comparison check fails, an assertion will fail and terminate the tests.
+     *
+     * @param inputs a vector of pairs of inputs and expected results
+     */
     void test_cs_command_float(const std::vector<std::pair<std::string, float>> &inputs)
     {
         std::vector<std::string> inputstrings;
@@ -177,6 +184,13 @@ namespace
         }
     }
 
+    /**
+     * @brief Checks whether a vector of CS commands and string results match
+     *
+     * If a comparison check fails, an assertion will fail and terminate the tests.
+     *
+     * @param inputs a vector of pairs of inputs and expected results
+     */
     void test_cs_command_string(const std::vector<std::pair<std::string, std::string>> &inputs)
     {
         std::vector<std::string> inputstrings;
