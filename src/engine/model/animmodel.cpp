@@ -337,7 +337,6 @@ void animmodel::skin::setshader(Mesh &m, const AnimState *as, bool usegpuskel, i
     m.setshader(loadshader(), usegpuskel, vweights, gbuf.istransparentlayer());
 }
 
-
 void animmodel::skin::bind(Mesh &b, const AnimState *as, bool usegpuskel, int vweights)
 {
     if(cullface > 0)
