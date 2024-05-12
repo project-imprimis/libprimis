@@ -612,6 +612,20 @@ namespace
 
     //initstrcmds
 
+    void test_cs_strlen()
+    {
+        std::printf("testing CS strlen command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"strlen test", 4},
+            {"strlen test test", 9},
+            {"strlen test, test", 10},
+            {"strlen", 0}
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_concat()
     {
         std::printf("testing CS concat command\n");
@@ -675,6 +689,7 @@ void testcs()
     test_cs_log10();
     test_cs_exp();
     //strcmds
+    test_cs_strlen();
     test_cs_concat();
     test_cs_concatword();
     //command.h
