@@ -640,6 +640,21 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_strreplace()
+    {
+        std::printf("testing CS strreplace command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"strreplace teststring test t", "tstring"},
+            {"strreplace teststring t t tt", "testtstring"},
+            {"strreplace ababababab s t", "ababababab"},
+            {"strreplace ababababab a c", "cbcbcbcbcb"},
+            {"strreplace ababababab a c d", "cbdbcbdbcb"},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_concat()
     {
         std::printf("testing CS concat command\n");
@@ -705,6 +720,7 @@ void testcs()
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
+    test_cs_strreplace();
     test_cs_concat();
     test_cs_concatword();
     //command.h
