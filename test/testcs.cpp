@@ -640,6 +640,27 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_strsplice()
+    {
+        std::printf("testing CS strsplice command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"strsplice teststring test 1 1", "ttestststring"},
+            {"strsplice teststring test 2 1", "tetesttstring"},
+            {"strsplice teststring test 0 4", "teststring"},
+            {"strsplice teststring t 0 4", "tstring"},
+            {"strsplice teststring t 0 30", "t"},
+            {"strsplice teststring test 7 3", "teststrtest"},
+            {"strsplice teststring test 7 4", "teststrtest"},
+            {"strsplice teststring test 7 2", "teststrtestg"},
+            {"strsplice teststring test 9 2", "teststrintest"},
+            {"strsplice teststring t", "tteststring"},
+            {"strsplice teststring t", "tteststring"},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_strreplace()
     {
         std::printf("testing CS strreplace command\n");
@@ -720,6 +741,7 @@ void testcs()
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
+    test_cs_strsplice();
     test_cs_strreplace();
     test_cs_concat();
     test_cs_concatword();
