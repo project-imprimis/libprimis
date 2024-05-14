@@ -676,6 +676,19 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_stripcolors()
+    {
+        std::printf("testing CS stripcolors command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"stripcolors teststring", "teststring"},
+            {"stripcolors \f0teststring", "teststring"},
+            {"stripcolors \f2\f4teststring", "teststring"},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_concat()
     {
         std::printf("testing CS concat command\n");
@@ -743,6 +756,7 @@ void testcs()
     test_cs_strlen();
     test_cs_strsplice();
     test_cs_strreplace();
+    test_cs_stripcolors();
     test_cs_concat();
     test_cs_concatword();
     //command.h
