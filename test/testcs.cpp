@@ -718,6 +718,32 @@ namespace
 
         test_cs_command_string(inputs);
     }
+
+    void test_cs_result()
+    {
+        std::printf("testing CS result command\n");
+
+        std::vector<std::pair<std::string, std::string>> stringinputs = {
+            {"test = \"teststring\"; result $test", "teststring"},
+            {"test = \"teststring\"; result test", "test"},
+        };
+
+        test_cs_command_string(stringinputs);
+
+        std::vector<std::pair<std::string, float>> floatinputs = {
+            {"test = 4.0; result $test", 4.f},
+            {"test = 4.0; result test", 0.f},
+        };
+
+        test_cs_command_float(floatinputs);
+
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"test = 4; result $test", 4},
+            {"test = 4; result test", 0},
+        };
+
+        test_cs_command(intinputs);
+    }
 }
 
 //run tests
@@ -759,6 +785,8 @@ void testcs()
     test_cs_stripcolors();
     test_cs_concat();
     test_cs_concatword();
+    //controlcmds
+    test_cs_result();
     //command.h
     testescapestring();
     testescapeid();
