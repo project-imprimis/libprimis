@@ -1210,6 +1210,37 @@ namespace
     // byte vec tests
     ////////////////////////////////////////////////////////////////////////////////
 
+    void test_bvec_ctor()
+    {
+        std::printf("testing bvec ctor\n");
+        //bvec(uchar,uchar,uchar)
+        {
+            bvec b1(255,255,255);
+            assert(b1.x = 255);
+            assert(b1.y = 255);
+            assert(b1.z = 255);
+        }
+        {
+            bvec b1(1,2,3);
+            assert(b1.x = 1);
+            assert(b1.y = 2);
+            assert(b1.z = 3);
+        }
+        //bvec(vec)
+        {
+            bvec b1(vec(1,1,1));
+            assert(b1 == bvec(255,255,255));
+        }
+        {
+            bvec b1(vec(0,0,0));
+            assert(b1 == bvec(127,127,127));
+        }
+        {
+            bvec b1(vec(-1,-1,-1));
+            assert(b1 == bvec(0,0,0));
+        }
+    }
+
     void test_bvec_bracket()
     {
         test_3d_bracket<bvec, uchar>("bvec");
@@ -2115,6 +2146,7 @@ testing geometry\n\
     test_vec_dist_to_bb();
     test_vec_project_bb();
 
+    test_bvec_ctor();
     test_bvec_bracket();
     test_bvec_nequal();
     test_bvec_iszero();
