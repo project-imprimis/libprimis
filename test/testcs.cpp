@@ -610,6 +610,29 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_abs()
+    {
+        std::printf("testing CS abs(f) command\n");
+
+        std::vector<std::pair<std::string, float>> floatinputs = {
+            {"absf -1", 1.f},
+            {"absf 0", 0.f},
+            {"absf 1", 1.f},
+            {"absf 2", 2.f}
+        };
+
+        test_cs_command_float(floatinputs);
+
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"abs -1", 1},
+            {"abs 0", 0},
+            {"abs 1", 1},
+            {"abs 2", 2}
+        };
+
+        test_cs_command(intinputs);
+    }
+
     //initstrcmds
 
     void test_cs_strstr()
@@ -790,6 +813,7 @@ void testcs()
     test_cs_log2();
     test_cs_log10();
     test_cs_exp();
+    test_cs_abs();
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
