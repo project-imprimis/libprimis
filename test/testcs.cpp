@@ -744,6 +744,19 @@ namespace
 
         test_cs_command(intinputs);
     }
+
+    void test_cs_listlen()
+    {
+        std::printf("testing CS listlen command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"listlen test", 1},
+            {"listlen", 0},
+            {"listlen test test test", 3},
+        };
+
+        test_cs_command(inputs);
+    }
 }
 
 //run tests
@@ -787,6 +800,7 @@ void testcs()
     test_cs_concatword();
     //controlcmds
     test_cs_result();
+    test_cs_listlen();
     //command.h
     testescapestring();
     testescapeid();
