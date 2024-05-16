@@ -663,6 +663,27 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_round()
+    {
+        std::printf("testing CS round command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"round -1 1", -1.f},
+            {"round -1.5 0.5", -1.5f},
+            {"round -1.5 1", -2.f},
+            {"round -1.5 0", -2.f},
+            {"round 1.5 0.5", 1.5f},
+            {"round 1.5 1", 2.f},
+            {"round 1.5 0", 2.f},
+            {"round 0 1", 0.f},
+            {"round 1.111 0.1", 1.1f},
+            {"round 3.333 0.3", 3.3f},
+            {"round 2.333 0.3", 2.4f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //initstrcmds
 
     void test_cs_strstr()
@@ -846,6 +867,7 @@ void testcs()
     test_cs_abs();
     test_cs_floor();
     test_cs_ceil();
+    test_cs_round();
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
