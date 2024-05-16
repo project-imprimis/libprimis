@@ -648,6 +648,21 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_ceil()
+    {
+        std::printf("testing CS ceil command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"ceil -1", -1.f},
+            {"ceil -1.5", -1.f},
+            {"ceil 0", 0.f},
+            {"ceil 1.5", 2.f},
+            {"ceil 3", 3.f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //initstrcmds
 
     void test_cs_strstr()
@@ -830,6 +845,7 @@ void testcs()
     test_cs_exp();
     test_cs_abs();
     test_cs_floor();
+    test_cs_ceil();
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
