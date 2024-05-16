@@ -633,6 +633,21 @@ namespace
         test_cs_command(intinputs);
     }
 
+    void test_cs_floor()
+    {
+        std::printf("testing CS floor command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"floor -1", -1.f},
+            {"floor -1.5", -2.f},
+            {"floor 0", 0.f},
+            {"floor 1.5", 1.f},
+            {"floor 3", 3.f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //initstrcmds
 
     void test_cs_strstr()
@@ -814,6 +829,7 @@ void testcs()
     test_cs_log10();
     test_cs_exp();
     test_cs_abs();
+    test_cs_floor();
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
