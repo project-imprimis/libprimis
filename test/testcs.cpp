@@ -650,6 +650,29 @@ namespace
         test_cs_command(intinputs);
     }
 
+    void test_cs_max()
+    {
+        std::printf("testing CS max(f) command\n");
+
+        std::vector<std::pair<std::string, float>> floatinputs = {
+            {"maxf -1", -1.f},
+            {"maxf", 0.f},
+            {"maxf 1 2 3 4", 4.f},
+            {"maxf -1 -1 -1", -1.f}
+        };
+
+        test_cs_command_float(floatinputs);
+
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"max -1 0 ", 0},
+            {"max", 0},
+            {"max 1 2 3 4", 4},
+            {"max -1 -1 -1", -1},
+        };
+
+        test_cs_command(intinputs);
+    }
+
     void test_cs_abs()
     {
         std::printf("testing CS abs(f) command\n");
@@ -906,6 +929,7 @@ void testcs()
     test_cs_log10();
     test_cs_exp();
     test_cs_min();
+    test_cs_max();
     test_cs_abs();
     test_cs_floor();
     test_cs_ceil();
