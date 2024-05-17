@@ -427,6 +427,23 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_modf()
+    {
+        std::printf("testing CS modf command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"modf 0 1", 0.f},
+            {"modf 1 1", 0.f},
+            {"modf 1 10", 1.f},
+            {"modf 1 3", 1.f},
+            {"modf 25 100", 25.f},
+            {"modf 25 100 6", 1.f},
+            {"modf 25 100 18 3", 1.f}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //trancendental tests
 
     void test_cs_sin()
@@ -852,6 +869,7 @@ void testcs()
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
     test_cs_divf();
+    test_cs_modf();
     test_cs_sin();
     test_cs_cos();
     test_cs_tan();
