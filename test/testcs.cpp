@@ -627,6 +627,29 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_min()
+    {
+        std::printf("testing CS min(f) command\n");
+
+        std::vector<std::pair<std::string, float>> floatinputs = {
+            {"minf -1", -1.f},
+            {"minf", 0.f},
+            {"minf 1 2 3 4", 1.f},
+            {"minf -1 -1 -1", -1.f}
+        };
+
+        test_cs_command_float(floatinputs);
+
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"min -1 0 ", -1},
+            {"min", 0},
+            {"min 1 2 3 4", 1},
+            {"min -1 -1 -1", -1},
+        };
+
+        test_cs_command(intinputs);
+    }
+
     void test_cs_abs()
     {
         std::printf("testing CS abs(f) command\n");
@@ -882,6 +905,7 @@ void testcs()
     test_cs_log2();
     test_cs_log10();
     test_cs_exp();
+    test_cs_min();
     test_cs_abs();
     test_cs_floor();
     test_cs_ceil();
