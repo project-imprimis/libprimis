@@ -467,6 +467,22 @@ namespace
         test_cs_command_float(floatinputs);
     }
 
+    void test_cs_pow()
+    {
+        std::printf("testing CS pow command\n");
+
+        std::vector<std::pair<std::string, float>> inputs = {
+            {"pow", 0},
+            {"pow 0", 0},
+            {"pow 1", 1},
+            {"pow 2 2", 4},
+            {"pow 2 2 2", 16},
+            {"pow 2 3 2", 64}
+        };
+
+        test_cs_command_float(inputs);
+    }
+
     //trancendental tests
 
     void test_cs_sin()
@@ -939,6 +955,7 @@ void testcs()
     test_cs_greaterequalthan();
     test_cs_div();
     test_cs_mod();
+    test_cs_pow();
     test_cs_sin();
     test_cs_cos();
     test_cs_tan();
