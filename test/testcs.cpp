@@ -412,19 +412,31 @@ namespace
         test_cs_command(inputs);
     }
 
-    void test_cs_divf()
+    void test_cs_div()
     {
-        std::printf("testing CS divf command\n");
+        std::printf("testing CS div(f) command\n");
 
-        std::vector<std::pair<std::string, float>> inputs = {
-            {"divf 0 1", 0},
-            {"divf 1 1", 1},
-            {"divf 1 10", 0.1},
-            {"divf 1 3", 0.33333},
-            {"divf 25 100", 0.25}
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"div 0 1", 0},
+            {"div 1 1", 1},
+            {"div 1 10", 0.1},
+            {"div 1 3", 0},
+            {"div 25 100", 0},
+            {"div 125 100", 1}
         };
 
-        test_cs_command_float(inputs);
+        test_cs_command(intinputs);
+
+        std::vector<std::pair<std::string, float>> floatinputs = {
+            {"divf 0 1", 0.f},
+            {"divf 1 1", 1.f},
+            {"divf 1 10", 0.1f},
+            {"divf 1 3", 0.33333f},
+            {"divf 25 100", 0.25f},
+            {"divf 125 100", 1.25f}
+        };
+
+        test_cs_command_float(floatinputs);
     }
 
     void test_cs_modf()
@@ -914,7 +926,7 @@ void testcs()
     test_cs_greaterthan();
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
-    test_cs_divf();
+    test_cs_div();
     test_cs_modf();
     test_cs_sin();
     test_cs_cos();
