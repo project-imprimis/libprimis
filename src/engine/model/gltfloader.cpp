@@ -70,6 +70,7 @@ std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
             case NodeType_All:
             {
                 nodenames.push_back(n.name);
+                break;
             }
             case NodeType_Mesh:
             {
@@ -77,6 +78,7 @@ std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
                 {
                     nodenames.push_back(n.name);
                 }
+                break;
             }
         }
     }
