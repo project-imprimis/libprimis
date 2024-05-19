@@ -1216,15 +1216,15 @@ namespace
         //bvec(uchar,uchar,uchar)
         {
             bvec b1(255,255,255);
-            assert(b1.x = 255);
-            assert(b1.y = 255);
-            assert(b1.z = 255);
+            assert(b1.x == 255);
+            assert(b1.y == 255);
+            assert(b1.z == 255);
         }
         {
             bvec b1(1,2,3);
-            assert(b1.x = 1);
-            assert(b1.y = 2);
-            assert(b1.z = 3);
+            assert(b1.x == 1);
+            assert(b1.y == 2);
+            assert(b1.z == 3);
         }
         //bvec(vec)
         {
