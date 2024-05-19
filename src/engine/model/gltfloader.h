@@ -42,6 +42,7 @@ class GLTFModelInfo
             std::optional<std::array<float, 3>> translation;
             std::optional<std::array<float, 4>> rotation;
             std::optional<size_t> mesh;
+            std::vector<size_t> children;
         };
 
         struct Mesh

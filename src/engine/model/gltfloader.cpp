@@ -450,7 +450,7 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
         {
             continue;
         }
-        Node n{"", std::nullopt, std::nullopt, std::nullopt};
+        Node n{"", std::nullopt, std::nullopt, std::nullopt, {}};
         for(size_t j = 0; j < block.size(); ++j)
         {
             if(block[j].find(" \"name\":") != std::string::npos)
@@ -476,6 +476,18 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
                     std::sscanf( translationblock[k].c_str(), " %f", &translation[k]);
                 }
                 n.translation = translation;
+            }
+            else if(block[j].find("\"children\"") != std::string::npos)
+            {
+                std::vector<size_t> children;
+                std::vector<std::string> translationblock = getblock(block, j);
+                for(size_t k = 0; k < translationblock.size(); ++k)
+                {
+                    size_t child = 0;
+                    std::sscanf( translationblock[k].c_str(), " %lu", &child);
+                    children.push_back(child);
+                }
+                n.children = children;
             }
         }
         if(messages)
