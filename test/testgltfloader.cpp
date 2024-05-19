@@ -21,6 +21,11 @@ void testmeshnames()
 
     std::vector<std::string> names = mi.getnodenames(GLTFModelInfo::NodeType_Mesh);
     assert(names[0] == "Cube");
+    names = mi.getnodenames(GLTFModelInfo::NodeType_All);
+    assert(names[0] == "Bone.001");
+    assert(names[1] == "Bone");
+    assert(names[2] == "Cube");
+    assert(names[3] == "Armature");
 }
 
 void testbounds()
