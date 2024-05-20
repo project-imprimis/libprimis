@@ -17,7 +17,7 @@ void testmeshnames()
 {
     std::printf("testing GLTF file mesh names\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
 
     std::vector<std::string> names = mi.getnodenames(GLTFModelInfo::NodeType_Mesh);
     assert(names[0] == "Cube");
