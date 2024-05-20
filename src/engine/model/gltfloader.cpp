@@ -494,13 +494,15 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
         }
         if(messages)
         {
-            std::printf("new node created: %s %lu\n",
+            std::string nomesh = n.mesh ? "" : "(no mesh)";
+            std::printf("new node created: %s %lu %s\n",
                 n.name.c_str(),
-                n.mesh ? n.mesh.value() : -1
+                n.mesh ? n.mesh.value() : 0,
+                nomesh.c_str()
             );
             if(n.translation)
             {
-                std::printf("%f %f %f\n", n.translation.value()[0], n.translation.value()[1], n.translation.value()[2]);
+                std::printf("node translation: %f %f %f\n", n.translation.value()[0], n.translation.value()[1], n.translation.value()[2]);
             }
 
         }
