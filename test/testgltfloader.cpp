@@ -34,7 +34,7 @@ void testbounds()
 
     std::string modelname = "gltf/box.gltf";
 
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
 
     //get GLTF data from file/binary
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
@@ -60,7 +60,7 @@ void testpositions()
 {
     std::printf("testing GLTF file vertex positions loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
 
     //get GLTF data from file/binary
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
@@ -108,7 +108,7 @@ void testnormals()
 {
     std::printf("testing GLTF file vertex normals loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
     std::vector<std::array<float, 3>> normals = mi.getnormals(meshname);
 
@@ -155,7 +155,7 @@ void testtexcoords()
 {
     std::printf("testing GLTF file texture coordinates loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
     std::vector<std::array<float, 2>> texcoords = mi.gettexcoords(meshname);
 
@@ -190,7 +190,7 @@ void testjoints()
 {
     std::printf("testing GLTF file joints data loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
     std::vector<std::array<uint, 4>> joints = mi.getjoints(meshname);
 
@@ -223,7 +223,7 @@ void testweights()
 {
     std::printf("testing GLTF file vertex weights loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
     std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
 
@@ -284,7 +284,7 @@ void testindices()
 {
     std::printf("testing GLTF file vertex index loading\n");
     std::string modelname = "gltf/box.gltf";
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
     std::vector<std::array<uint, 3>> indices = mi.getindices(meshname);
 
@@ -314,7 +314,7 @@ void testmissingskeletal()
     std::printf("testing GLTF file with no skeletal or weights data\n");
     std::string modelname = "gltf/obj_cube.gltf";
 
-    GLTFModelInfo mi(modelname);
+    GLTFModelInfo mi(modelname, true);
     std::string meshname = mi.getnodenames(GLTFModelInfo::NodeType_Mesh)[0];
 
     std::vector<std::array<float, 4>> weights = mi.getweights(meshname);
