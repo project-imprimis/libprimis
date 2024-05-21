@@ -786,6 +786,22 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_tohex()
+    {
+        std::printf("testing CS tohex command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"tohex 1", "0x1"},
+            {"tohex 0", "0x0"},
+            {"tohex 255", "0xFF"},
+            {"tohex 256", "0x100"},
+            {"tohex -1", "0xFFFFFFFF"},
+            {"tohex -255", "0xFFFFFF01"},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     //initstrcmds
 
     void test_cs_strstr()
@@ -974,6 +990,7 @@ void testcs()
     test_cs_floor();
     test_cs_ceil();
     test_cs_round();
+    test_cs_tohex();
     //strcmds
     test_cs_strstr();
     test_cs_strlen();
