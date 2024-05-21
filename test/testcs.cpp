@@ -428,6 +428,21 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_and()
+    {
+        std::printf("testing CS && command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"&&  1 1", 1},
+            {"&& 1", 1},
+            {"&&", 1},
+            {"&& 1 1 1", 1},
+            {"&& 1 1 1 1 1 0", 0}
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_div()
     {
         std::printf("testing CS div(f) command\n");
@@ -986,6 +1001,7 @@ void testcs()
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
     test_cs_not();
+    test_cs_and();
     test_cs_div();
     test_cs_mod();
     test_cs_pow();
