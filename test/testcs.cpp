@@ -760,6 +760,21 @@ namespace
         test_cs_command(intinputs);
     }
 
+    void test_cs_bitscan()
+    {
+        std::printf("testing CS bitscan command\n");
+
+        std::vector<std::pair<std::string, int>> intinputs = {
+            {"bitscan 1 ", 0},
+            {"bitscan 4", 2},
+            {"bitscan 3", 0},
+            {"bitscan -1", 0},
+        };
+
+        test_cs_command(intinputs);
+    }
+
+
     void test_cs_abs()
     {
         std::printf("testing CS abs(f) command\n");
@@ -1037,6 +1052,7 @@ void testcs()
     test_cs_exp();
     test_cs_min();
     test_cs_max();
+    test_cs_bitscan();
     test_cs_abs();
     test_cs_floor();
     test_cs_ceil();
