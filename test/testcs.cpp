@@ -134,7 +134,7 @@ namespace
         for(const std::pair<std::string, int> &i : inputs)
         {
             int val = execute(i.first.c_str());
-            std::printf("executing %s\n", i.first.c_str());
+            std::printf("executing %s -> %d\n", i.first.c_str(), val);
             assert(val == i.second);
         }
     }
