@@ -849,6 +849,23 @@ namespace
         test_cs_command_float(inputs);
     }
 
+    void test_cs_cond()
+    {
+        std::printf("testing CS cond command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"cond", 0},
+            {"cond 1", 0},
+            {"cond 1 1", 1},
+            {"cond 1 1 0", 1},
+            {"cond 0 1 0", 0},
+            {"cond 0 1 1 2 0", 2},
+            {"cond 0 1 0 2 3", 3},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_tohex()
     {
         std::printf("testing CS tohex command\n");
@@ -1057,6 +1074,7 @@ void testcs()
     test_cs_floor();
     test_cs_ceil();
     test_cs_round();
+    test_cs_cond();
     test_cs_tohex();
     //strcmds
     test_cs_strstr();
