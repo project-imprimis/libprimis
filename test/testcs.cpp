@@ -412,6 +412,26 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_shl()
+    {
+        std::printf("testing CS << command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"<< 1 1", 2},
+            {"<< 1 1 1", 4},
+            {"<< 3 2", 12},
+            {"<< 16 -1", 16},
+            {"<< 1 33", 0},
+            {"<< 1 32", 0},
+            {"<< 1 31", -2147483648},
+            {"<< 1 30", 1073741824},
+            {"<< 1", 1},
+            {"<<", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_not()
     {
         std::printf("testing CS ! command\n");
@@ -1049,6 +1069,7 @@ void testcs()
     test_cs_greaterthan();
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
+    test_cs_shl();
     test_cs_not();
     test_cs_and();
     test_cs_or();
