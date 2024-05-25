@@ -577,6 +577,7 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
         }
         if(messages)
         {
+            //note: nullopt is represented by -1 aka 18446744073709551615
             std::printf("new mesh created: %s %u %u %u %u %u %u\n",
                 m.name.c_str(),
                 m.positions ? m.positions.value() : -1,
