@@ -920,6 +920,14 @@ namespace
             {"tohex 256", "0x100"},
             {"tohex -1", "0xFFFFFFFF"},
             {"tohex -255", "0xFFFFFF01"},
+            {"tohex 1 0", "0x1"},
+            {"tohex 1 1", "0x1"},
+            {"tohex 1 2", "0x01"},
+            {"tohex 1 5", "0x00001"},
+            {"tohex 32 5", "0x00020"},
+            {"tohex 32 0", "0x20"},
+            {"tohex 32 1", "0x20"},
+            {"tohex 32 -1", "0x20"},
         };
 
         test_cs_command_string(inputs);
