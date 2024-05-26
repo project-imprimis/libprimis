@@ -429,6 +429,24 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_bitwise_nor()
+    {
+        std::printf("testing CS |~ command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"|~ ", 0},
+            {"|~ 1 1", -1},
+            {"|~ 2 1", -2},
+            {"|~ 2 2 1", -1},
+            {"|~ 4 2 1", -1},
+            {"|~ -1 -2 -4", -1},
+            {"|~ -1 4 2 1", -1},
+            {"|~ -10 4 2 1", -1},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_shl()
     {
         std::printf("testing CS << command\n");
@@ -1118,6 +1136,7 @@ void testcs()
     test_cs_lessequalthan();
     test_cs_greaterequalthan();
     test_cs_bitwise_or();
+    test_cs_bitwise_nor();
     test_cs_shl();
     test_cs_shr();
     test_cs_not();
