@@ -464,6 +464,24 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_bitwise_xnor()
+    {
+        std::printf("testing CS ^~ command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"^~ ", 0},
+            {"^~ 1 1", -1},
+            {"^~ 2 1", -4},
+            {"^~ 2 2 1", 1},
+            {"^~ 4 2 1", 7},
+            {"^~ -1 -2 -4", -3},
+            {"^~ -1 4 2 1", 7},
+            {"^~ -10 4 2 1", 14},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_shl()
     {
         std::printf("testing CS << command\n");
@@ -1155,6 +1173,7 @@ void testcs()
     test_cs_bitwise_or();
     test_cs_bitwise_xor();
     test_cs_bitwise_nor();
+    test_cs_bitwise_xnor();
     test_cs_shl();
     test_cs_shr();
     test_cs_not();
