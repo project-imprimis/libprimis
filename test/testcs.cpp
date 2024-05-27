@@ -412,23 +412,6 @@ namespace
         test_cs_command(inputs);
     }
 
-    void test_cs_bitwise_or()
-    {
-        std::printf("testing CS | command\n");
-
-        std::vector<std::pair<std::string, int>> inputs = {
-            {"| 1 1", 1},
-            {"| 2 1", 3},
-            {"| 2 2 1", 3},
-            {"| 4 2 1", 7},
-            {"| -1 -2 -4", -1},
-            {"| -1 4 2 1", -1},
-            {"| -10 4 2 1", -9},
-        };
-
-        test_cs_command(inputs);
-    }
-
     void test_cs_bitwise_xor()
     {
         std::printf("testing CS ^ command\n");
@@ -446,19 +429,18 @@ namespace
         test_cs_command(inputs);
     }
 
-    void test_cs_bitwise_nor()
+    void test_cs_bitwise_or()
     {
-        std::printf("testing CS |~ command\n");
+        std::printf("testing CS | command\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
-            {"|~ ", 0},
-            {"|~ 1 1", -1},
-            {"|~ 2 1", -2},
-            {"|~ 2 2 1", -1},
-            {"|~ 4 2 1", -1},
-            {"|~ -1 -2 -4", -1},
-            {"|~ -1 4 2 1", -1},
-            {"|~ -10 4 2 1", -1},
+            {"| 1 1", 1},
+            {"| 2 1", 3},
+            {"| 2 2 1", 3},
+            {"| 4 2 1", 7},
+            {"| -1 -2 -4", -1},
+            {"| -1 4 2 1", -1},
+            {"| -10 4 2 1", -9},
         };
 
         test_cs_command(inputs);
@@ -477,6 +459,24 @@ namespace
             {"^~ -1 -2 -4", -3},
             {"^~ -1 4 2 1", 7},
             {"^~ -10 4 2 1", 14},
+        };
+
+        test_cs_command(inputs);
+    }
+
+    void test_cs_bitwise_nor()
+    {
+        std::printf("testing CS |~ command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"|~ ", 0},
+            {"|~ 1 1", -1},
+            {"|~ 2 1", -2},
+            {"|~ 2 2 1", -1},
+            {"|~ 4 2 1", -1},
+            {"|~ -1 -2 -4", -1},
+            {"|~ -1 4 2 1", -1},
+            {"|~ -10 4 2 1", -1},
         };
 
         test_cs_command(inputs);
