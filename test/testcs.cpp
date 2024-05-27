@@ -484,6 +484,26 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_bitwise_nand()
+    {
+        std::printf("testing CS &~ command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"&~", 0},
+            {"&~ 1", 1},
+            {"&~ 1 1", 0},
+            {"&~ 2 1", 2},
+            {"&~ 2 2 1", 0},
+            {"&~ 2 2", 0},
+            {"&~ 4 2 1", 4},
+            {"&~ -1 -2 -4", 1},
+            {"&~ -1 4 2 1", -8},
+            {"&~ -10 4 2 1", -16},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_bitwise_nor()
     {
         std::printf("testing CS |~ command\n");
@@ -1194,6 +1214,7 @@ void testcs()
     test_cs_bitwise_and();
     test_cs_bitwise_xor();
     test_cs_bitwise_nor();
+    test_cs_bitwise_nand();
     test_cs_bitwise_xnor();
     test_cs_shl();
     test_cs_shr();
