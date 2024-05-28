@@ -137,11 +137,19 @@ namespace
         assert(validateblock("]]]") == false);
         assert(validateblock("[[[]]]") == true);
         assert(validateblock("[[[]]]][") == false);
+        assert(validateblock("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\
+                              [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\
+                              ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\
+                              ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]") == false);
 
         assert(validateblock("(((") == false);
         assert(validateblock(")))") == false);
         assert(validateblock("((()))") == true);
         assert(validateblock("((())))(") == false);
+        assert(validateblock("((((((((((((((((((((((((((((((((((((((((((((((((((\
+                              (((((((((((((((((((((((((((((((((((((((((((((((((((\
+                              )))))))))))))))))))))))))))))))))))))))))))))))))))\
+                              ))))))))))))))))))))))))))))))))))))))))))))))))))") == false);
 
         assert(validateblock("\"") == false);
         assert(validateblock("\"\"") == true);
