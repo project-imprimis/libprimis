@@ -129,6 +129,30 @@ namespace
         assert(std::strcmp(conout2, "") == 0);
     }
 
+    void test_validateblock()
+    {
+        std::printf("testing validateblock\n");
+
+        assert(validateblock("[[[") == false);
+        assert(validateblock("]]]") == false);
+        assert(validateblock("[[[]]]") == true);
+        assert(validateblock("[[[]]]][") == false);
+
+        assert(validateblock("(((") == false);
+        assert(validateblock(")))") == false);
+        assert(validateblock("((()))") == true);
+        assert(validateblock("((())))(") == false);
+
+        assert(validateblock("\"") == false);
+        assert(validateblock("\"\"") == true);
+
+        assert(validateblock("@") == false);
+        assert(validateblock("\f") == false);
+        assert(validateblock("/") == true);
+        assert(validateblock("//") == false);
+
+    }
+
     void test_cs_command(const std::vector<std::pair<std::string, int>> &inputs)
     {
         for(const std::pair<std::string, int> &i : inputs)
@@ -1259,4 +1283,5 @@ void testcs()
     //command.h
     testescapestring();
     testescapeid();
+    test_validateblock();
 }
