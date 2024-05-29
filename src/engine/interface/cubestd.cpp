@@ -1301,7 +1301,25 @@ void initmathcmds()
     addcommand("ceil", reinterpret_cast<identfun>(+[] (float *n) { floatret(std::ceil(*n)); }), "f", Id_Command);
     addcommand("round", reinterpret_cast<identfun>(+[] (float *n, float *k) { { double step = *k; double r = *n; if(step > 0) { r += step * (r < 0 ? -0.5 : 0.5); r -= std::fmod(r, step); } else { r = r < 0 ? std::ceil(r - 0.5) : std::floor(r + 0.5); } floatret(static_cast<float>(r)); }; }), "ff", Id_Command);
 
-    addcommand("cond", reinterpret_cast<identfun>(+[] (tagval *args, int numargs) { { for(int i = 0; i < numargs; i += 2) { if(i+1 < numargs) { if(executebool(args[i].code)) { executeret(args[i+1].code, *commandret); break; } } else { executeret(args[i].code, *commandret); break; } } }; }), "ee2V", Id_Command);
+    addcommand("cond", reinterpret_cast<identfun>(+[] (tagval *args, int numargs)
+    {
+        for(int i = 0; i < numargs; i += 2)
+        {
+            if(i+1 < numargs) //if not the last arg
+            {
+                if(executebool(args[i].code))
+                {
+                    executeret(args[i+1].code, *commandret);
+                    break;
+                }
+            }
+            else
+            {
+                executeret(args[i].code, *commandret);
+                break;
+            }
+        }
+    }), "ee2V", Id_Command);
 
     addcommand("case", reinterpret_cast<identfun>(+[] (tagval *args, int numargs) { { int val = args[0].getint(); int i; for(i = 1; i+1 < numargs; i += 2) { if(args[i].type == Value_Null || args[i].getint() == val) { executeret(args[i+1].code, *commandret); return; } } }; }), "i" "te2V", Id_Command);
     addcommand("casef", reinterpret_cast<identfun>(+[] (tagval *args, int numargs) { { float val = args[0].getfloat(); int i; for(i = 1; i+1 < numargs; i += 2) { if(args[i].type == Value_Null || args[i].getfloat() == val) { executeret(args[i+1].code, *commandret); return; } } }; }), "f" "te2V", Id_Command);
