@@ -1085,48 +1085,48 @@ static void findfile_(char *name)
     );
 }
 
-struct SortItem
-{
-    const char *str, *quotestart, *quoteend;
-
-    int quotelength() const
-    {
-        return static_cast<int>(quoteend-quotestart);
-    }
-};
-
-struct SortFunction
-{
-    ident *x, *y;
-    uint *body;
-
-    bool operator()(const SortItem &xval, const SortItem &yval)
-    {
-        if(x->valtype != Value_CString)
-        {
-            x->valtype = Value_CString;
-        }
-        cleancode(*x);
-        x->val.code = reinterpret_cast<const uint *>(xval.str);
-        if(y->valtype != Value_CString)
-        {
-            y->valtype = Value_CString;
-        }
-        cleancode(*y);
-        y->val.code = reinterpret_cast<const uint *>(yval.str);
-        return executebool(body);
-    }
-};
-
 void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
 {
+    struct SortItem
+    {
+        const char *str, *quotestart, *quoteend;
+
+        size_t quotelength() const
+        {
+            return static_cast<size_t>(quoteend-quotestart);
+        }
+    };
+
+    struct SortFunction
+    {
+        ident *x, *y;
+        uint *body;
+
+        bool operator()(const SortItem &xval, const SortItem &yval)
+        {
+            if(x->valtype != Value_CString)
+            {
+                x->valtype = Value_CString;
+            }
+            cleancode(*x);
+            x->val.code = reinterpret_cast<const uint *>(xval.str);
+            if(y->valtype != Value_CString)
+            {
+                y->valtype = Value_CString;
+            }
+            cleancode(*y);
+            y->val.code = reinterpret_cast<const uint *>(yval.str);
+            return executebool(body);
+        }
+    };
+
     if(x == y || x->type != Id_Alias || y->type != Id_Alias)
     {
         return;
     }
     std::vector<SortItem> items;
-    int clen = std::strlen(list),
-        total = 0;
+    size_t clen = std::strlen(list),
+           total = 0;
     char *cstr = newstring(list, clen);
     const char *curlist = list,
                *start, *end, *quotestart, *quoteend;
@@ -1147,8 +1147,8 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     x->flags &= ~Idf_Unknown;
     pusharg(*y, NullVal(), ystack);
     y->flags &= ~Idf_Unknown;
-    int totalunique = total;
-    uint numunique = items.size();
+    size_t totalunique = total,
+           numunique = items.size();
     if(body)
     {
         SortFunction f = { x, y, body };
@@ -1200,7 +1200,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     poparg(*x);
     poparg(*y);
     char *sorted = cstr;
-    int sortedlen = totalunique + std::max(static_cast<int>(numunique - 1), 0);
+    size_t sortedlen = totalunique + std::max(numunique - 1, size_t(0));
     if(clen < sortedlen)
     {
         delete[] cstr;
