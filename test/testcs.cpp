@@ -1237,6 +1237,23 @@ namespace
 
         test_cs_command(inputs);
     }
+
+    void test_cs_loopplus()
+    {
+        std::printf("testing CS loop+ command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"testval = 0; loop+ i 2 10 [testval = (+ $testval 1)]; result $testval", 10},
+            {"testval = 0; loop+ i 2 10 [testval = (+ $testval $i);]; result $testval", 65},
+            {"testval = 0; loop+ i 2 10 [testval = $i]; result $testval", 11},
+            {"testval = 0; loop+ i 5 10 [testval = $i]; result $testval", 14},
+            {"testval = 0; loop+ i 2 10 [testval = (+ $testval $i)]; result $i", 0},
+            {"testval = 0; loop+ i 2 0 [testval = (+ $testval 1)]; result $testval", 0},
+            {"testval = 0; loop+ i 2 'test' [testval = (+ $testval 1)]; result $testval", 0},
+        };
+
+        test_cs_command(inputs);
+    }
 }
 
 //run tests
@@ -1304,6 +1321,7 @@ void testcs()
     test_cs_result();
     test_cs_listlen();
     test_cs_loop();
+    test_cs_loopplus();
     //command.h
     testescapestring();
     testescapeid();
