@@ -1286,6 +1286,22 @@ namespace
 
         test_cs_command(inputs);
     }
+
+    void test_cs_sortlist()
+    {
+        std::printf("testing CS sortlist command\n");
+
+        std::vector<std::pair<std::string, std::string>> stringinputs = {
+            {"testval = \"alpha bravo charlie\"; sortlist $testval a b [<s $a $b]", "alpha bravo charlie"},
+            {"testval = \"alpha bravo charlie\"; sortlist $testval a b [>s $a $b]", "charlie bravo alpha"},
+            {"testval = \"charlie bravo alpha\"; sortlist $testval a b [<s $a $b]", "alpha bravo charlie"},
+            {"testval = \"3 2 1\"; sortlist $testval a b [< $a $b]", "1 2 3"},
+            {"testval = \"3.0 2.0 1.0\"; sortlist $testval a b [<f $a $b]", "1.0 2.0 3.0"},
+            {"sortlist", ""},
+        };
+
+        test_cs_command_string(stringinputs);
+    }
 }
 
 //run tests
@@ -1356,6 +1372,7 @@ void testcs()
     test_cs_listlen();
     test_cs_loop();
     test_cs_loopplus();
+    test_cs_sortlist();
     //command.h
     testescapestring();
     testescapeid();
