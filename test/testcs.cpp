@@ -1184,6 +1184,23 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_if()
+    {
+        std::printf("testing CS if command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"if 1 [result 2] [result 3]", 2},
+            {"if 1 2 3", 2},
+            {"if 0 [result 2] [result 3]", 3},
+            {"if 0 2 3", 3},
+            {"if 1", 0},
+            {"if 0", 0},
+            {"if", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_ternary()
     {
         std::printf("testing CS ? command\n");
@@ -1333,6 +1350,7 @@ void testcs()
     test_cs_concat();
     test_cs_concatword();
     //controlcmds
+    test_cs_if();
     test_cs_ternary();
     test_cs_result();
     test_cs_listlen();
