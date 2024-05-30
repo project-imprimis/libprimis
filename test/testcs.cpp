@@ -1184,6 +1184,21 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_ternary()
+    {
+        std::printf("testing CS ? command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"? 1 2 3", 2},
+            {"? 0 2 3", 3},
+            {"? 1", 0},
+            {"? 0", 0},
+            {"?", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_result()
     {
         std::printf("testing CS result command\n");
@@ -1318,6 +1333,7 @@ void testcs()
     test_cs_concat();
     test_cs_concatword();
     //controlcmds
+    test_cs_ternary();
     test_cs_result();
     test_cs_listlen();
     test_cs_loop();
