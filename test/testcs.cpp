@@ -1302,6 +1302,23 @@ namespace
 
         test_cs_command_string(stringinputs);
     }
+
+    void test_cs_uniquelist()
+    {
+        std::printf("testing CS uniquelist command\n");
+
+        std::vector<std::pair<std::string, std::string>> stringinputs = {
+            {"testval = \"alpha alpha alpha\"; uniquelist $testval a b [=s $a $b]", "alpha"},
+            {"testval = \"alpha bravo charlie\"; uniquelist $testval a b [=s $a $b]", "alpha bravo charlie"},
+            {"testval = \"charlie bravo alpha\"; uniquelist $testval a b [=s $a $b]", "charlie bravo alpha"},
+            {"testval = \"alpha bravo alpha\"; uniquelist $testval a b [=s $a $b]", "alpha bravo"},
+            {"testval = \"1 2 1\"; uniquelist $testval a b [= $a $b]", "1 2"},
+            {"testval = \"1.0 2.0 1.0\"; uniquelist $testval a b [=f $a $b]", "1.0 2.0"},
+            {"uniquelist", ""}
+        };
+
+        test_cs_command_string(stringinputs);
+    }
 }
 
 //run tests
@@ -1373,6 +1390,7 @@ void testcs()
     test_cs_loop();
     test_cs_loopplus();
     test_cs_sortlist();
+    test_cs_uniquelist();
     //command.h
     testescapestring();
     testescapeid();
