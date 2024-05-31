@@ -1297,6 +1297,10 @@ namespace
             {"testval = \"charlie bravo alpha\"; sortlist $testval a b [<s $a $b]", "alpha bravo charlie"},
             {"testval = \"3 2 1\"; sortlist $testval a b [< $a $b]", "1 2 3"},
             {"testval = \"3.0 2.0 1.0\"; sortlist $testval a b [<f $a $b]", "1.0 2.0 3.0"},
+            //test unique sortlist
+            {"testval = \"charlie charlie bravo alpha\"; sortlist $testval a b [<s $a $b] [=s $a $b]", "alpha bravo charlie"},
+            {"testval = \"3 3 2 1\"; sortlist $testval a b [< $a $b] [= $a $b]", "1 2 3"},
+            {"testval = \"3.0 3.0 2.0 1.0\"; sortlist $testval a b [<f $a $b] [=f $a $b]", "1.0 2.0 3.0"},
             {"sortlist", ""},
         };
 
