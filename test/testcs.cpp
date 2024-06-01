@@ -1287,6 +1287,21 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_listintersect()
+    {
+        std::printf("testing CS listintersect command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"listintersect \"alpha\" \"alpha\"", "alpha"},
+            {"listintersect \"alpha bravo\" \"alpha charlie\"", "alpha"},
+            {"listintersect \"alpha bravo charlie\" \"alpha charlie delta\"", "alpha charlie"},
+            {"listintersect \"alpha charlie\" \"charlie alpha\"", "alpha charlie"},
+            {"listintersect", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_sortlist()
     {
         std::printf("testing CS sortlist command\n");
@@ -1393,6 +1408,7 @@ void testcs()
     test_cs_listlen();
     test_cs_loop();
     test_cs_loopplus();
+    test_cs_listintersect();
     test_cs_sortlist();
     test_cs_uniquelist();
     //command.h
