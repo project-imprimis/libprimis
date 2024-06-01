@@ -1302,6 +1302,21 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_listunion()
+    {
+        std::printf("testing CS listunion command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"listunion \"alpha\" \"alpha\"", "alpha"},
+            {"listunion \"alpha bravo\" \"alpha charlie\"", "alpha bravo charlie"},
+            {"listunion \"alpha bravo charlie\" \"charlie alpha delta\"", "alpha bravo charlie delta"},
+            {"listunion \"alpha bravo\" \"bravo alpha\"", "alpha bravo"},
+            {"listunion", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_sortlist()
     {
         std::printf("testing CS sortlist command\n");
@@ -1409,6 +1424,7 @@ void testcs()
     test_cs_loop();
     test_cs_loopplus();
     test_cs_listintersect();
+    test_cs_listunion();
     test_cs_sortlist();
     test_cs_uniquelist();
     //command.h
