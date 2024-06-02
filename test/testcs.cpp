@@ -1287,6 +1287,26 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_indexof()
+    {
+        std::printf("testing CS indexof command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"indexof \"alpha bravo charlie\" alpha", 0},
+            {"indexof \"alpha bravo charlie delta\" delta", 3},
+            {"indexof \"alpha alpha charlie delta\" charlie", 2},
+            {"indexof \"alpha alpha charlie delta\" echo", -1},
+            {"indexof \"1 2 3 4\" 2", 1},
+            {"indexof \"1 1.0 3 4\" 1.0", 1},
+            {"indexof \"1 1.0 3 4\"", -1},
+            {"indexof \"1 0 3 4\"", -1},
+            {"indexof \"1 \"\" 3 4\"", -1},
+            {"indexof", -1},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_listintersect()
     {
         std::printf("testing CS listintersect command\n");
@@ -1444,6 +1464,7 @@ void testcs()
     test_cs_listlen();
     test_cs_loop();
     test_cs_loopplus();
+    test_cs_indexof();
     test_cs_listintersect();
     test_cs_listunion();
     test_cs_listsplice();
