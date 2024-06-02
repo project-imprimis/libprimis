@@ -1287,6 +1287,25 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_prettylist()
+    {
+        std::printf("testing CS prettylist command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"prettylist \"alpha bravo charlie\" and", "alpha, bravo, and charlie"},
+            {"prettylist \"alpha bravo charlie delta echo\" and", "alpha, bravo, charlie, delta, and echo"},
+            {"prettylist \"\" and", ""},
+            {"prettylist \"1 2 3 4 5\" or", "1, 2, 3, 4, or 5"},
+            {"prettylist \"1 2 3 4 5\"", "1, 2, 3, 4, 5"},
+            {"prettylist \"1 2\" or", "1 or 2"},
+            {"prettylist \"1 2\"", "1, 2"},
+            {"prettylist \"1\" or", "1"},
+            {"prettylist", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_indexof()
     {
         std::printf("testing CS indexof command\n");
@@ -1464,6 +1483,7 @@ void testcs()
     test_cs_listlen();
     test_cs_loop();
     test_cs_loopplus();
+    test_cs_prettylist();
     test_cs_indexof();
     test_cs_listintersect();
     test_cs_listunion();
