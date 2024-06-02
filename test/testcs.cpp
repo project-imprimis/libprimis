@@ -1321,6 +1321,23 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_listsplice()
+    {
+        std::printf("testing CS listsplice command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"listsplice \"alpha\" \"bravo\" 1 1", "alpha bravo"},
+            {"listsplice \"alpha\" \"bravo\" 0 0", "bravo alpha"},
+            {"listsplice \"alpha\" \"bravo\" 0 1", "bravo"},
+            {"listsplice \"alpha bravo charlie\" \"delta echo\" 2 1", "alpha bravo delta echo"},
+            {"listsplice \"alpha bravo charlie\" \"delta echo\" 2 0", "alpha bravo delta echo charlie"},
+            {"listsplice \"alpha bravo charlie\" \"delta echo\" 1 2", "alpha delta echo"},
+            {"listsplice", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_sortlist()
     {
         std::printf("testing CS sortlist command\n");
@@ -1429,6 +1446,7 @@ void testcs()
     test_cs_loopplus();
     test_cs_listintersect();
     test_cs_listunion();
+    test_cs_listsplice();
     test_cs_sortlist();
     test_cs_uniquelist();
     //command.h
