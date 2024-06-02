@@ -1293,6 +1293,8 @@ namespace
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listintersect \"alpha\" \"alpha\"", "alpha"},
+            {"listintersect \"alpha alpha\" \"alpha\"", "alpha alpha"},
+            {"listintersect \"alpha\" \"alpha alpha\"", "alpha"},
             {"listintersect \"alpha bravo\" \"alpha charlie\"", "alpha"},
             {"listintersect \"alpha bravo charlie\" \"alpha charlie delta\"", "alpha charlie"},
             {"listintersect \"alpha charlie\" \"charlie alpha\"", "alpha charlie"},
@@ -1308,6 +1310,8 @@ namespace
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listunion \"alpha\" \"alpha\"", "alpha"},
+            {"listunion \"alpha alpha\" \"alpha\"", "alpha alpha"},
+            {"listunion \"alpha bravo\" \"alpha alpha\"", "alpha bravo"},
             {"listunion \"alpha bravo\" \"alpha charlie\"", "alpha bravo charlie"},
             {"listunion \"alpha bravo charlie\" \"charlie alpha delta\"", "alpha bravo charlie delta"},
             {"listunion \"alpha bravo\" \"bravo alpha\"", "alpha bravo"},
