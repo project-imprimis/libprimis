@@ -1326,6 +1326,22 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_listdel()
+    {
+        std::printf("testing CS listdel command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"listdel \"alpha\" \"alpha\"", ""},
+            {"listdel \"alpha alpha\" \"alpha\"", ""},
+            {"listdel \"alpha alpha bravo\" \"bravo\"", "alpha alpha"},
+            {"listdel \"alpha alpha bravo\" \"alpha\"", "bravo"},
+            {"listdel \"alpha bravo charlie alpha\" \"alpha bravo\"", "charlie"},
+            {"listdel", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_listintersect()
     {
         std::printf("testing CS listintersect command\n");
@@ -1485,6 +1501,7 @@ void testcs()
     test_cs_loopplus();
     test_cs_prettylist();
     test_cs_indexof();
+    test_cs_listdel();
     test_cs_listintersect();
     test_cs_listunion();
     test_cs_listsplice();
