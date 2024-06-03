@@ -1287,6 +1287,26 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_listassoceq()
+    {
+        std::printf("testing CS listassoc= command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"listassoc= \"1 2 3\" 1", "2"},
+            {"listassoc= \"1 2 3 4\" 1", "2"},
+            {"listassoc= \"2 3 4\" 1", ""},
+            {"listassoc= \"1 3 4\" 1", "3"},
+            {"listassoc= \"2 3 1 4\" 1", "4"},
+            {"listassoc= \"2 1 2 3 2 4 2 5\" 2", "1"},
+            {"listassoc= \"1 2 1 4\" 1", "2"},
+            {"listassoc= \"0 1 2\" 1", ""},
+            {"listassoc= \"1\" 1", ""},
+            {"listassoc=", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_prettylist()
     {
         std::printf("testing CS prettylist command\n");
@@ -1499,6 +1519,7 @@ void testcs()
     test_cs_listlen();
     test_cs_loop();
     test_cs_loopplus();
+    test_cs_listassoceq();
     test_cs_prettylist();
     test_cs_indexof();
     test_cs_listdel();
