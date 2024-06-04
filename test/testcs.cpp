@@ -1266,6 +1266,8 @@ namespace
             {"listfind i \"alpha bravo charlie bravo\" [=s $i bravo]", 1},
             {"listfind", -1},
             {"listfind i", -1},
+            {"listfind listfind", -1},
+            {"listfind listfind \"test\" [=s $listfind test]", -1},
             {"listfind i \"test test test\" [=s $i test]", 0},
         };
 
