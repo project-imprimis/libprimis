@@ -1255,6 +1255,23 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_listfind()
+    {
+        std::printf("testing CS listfind command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"listfind i \"test\" [=s $i test]", 0},
+            {"listfind i \"test\" [=s $i test2]", -1},
+            {"listfind i \"alpha bravo charlie\" [=s $i bravo]", 1},
+            {"listfind i \"alpha bravo charlie bravo\" [=s $i bravo]", 1},
+            {"listfind", -1},
+            {"listfind i", -1},
+            {"listfind i \"test test test\" [=s $i test]", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_loop()
     {
         std::printf("testing CS loop command\n");
@@ -1517,6 +1534,7 @@ void testcs()
     test_cs_ternary();
     test_cs_result();
     test_cs_listlen();
+    test_cs_listfind();
     test_cs_loop();
     test_cs_loopplus();
     test_cs_listassoceq();
