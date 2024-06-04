@@ -1264,11 +1264,15 @@ namespace
             {"listfind i \"test\" [=s $i test2]", -1},
             {"listfind i \"alpha bravo charlie\" [=s $i bravo]", 1},
             {"listfind i \"alpha bravo charlie bravo\" [=s $i bravo]", 1},
+            {"listfind i \"alpha bravo \0charlie bravo\" [=s $i charlie]", -1},
+            {"listfind i \"alpha bravo [\0charlie] bravo\" [=s $i charlie]", -1},
             {"listfind", -1},
             {"listfind i", -1},
             {"listfind listfind", -1},
             {"listfind listfind \"test\" [=s $listfind test]", -1},
             {"listfind i \"test test test\" [=s $i test]", 0},
+            {"listfind i \"test [test] test\" [=s $i test]", 0},
+            {"listfind i \"(test) [test] test\" [=s $i test]", 0},
         };
 
         test_cs_command(inputs);
