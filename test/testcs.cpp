@@ -27,12 +27,12 @@ namespace
         const char *s = "3.2 test";
         double conout = parsenumber(s);
         std::printf("parsenumber output: %f\n", conout);
-        assert(conout == 3.2d);
+        assert(conout == 3.2);
 
         const char *s2 = "test 3.2";
         double conout2 = parsenumber(s2);
         std::printf("parsenumber output: %f\n", conout2);
-        assert(conout2 == 0.d);
+        assert(conout2 == 0.0);
     }
 
     void testfloatformat()
