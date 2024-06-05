@@ -356,17 +356,6 @@ struct skelmodel : animmodel
         int frame, range;
     };
 
-    struct boneinfo final
-    {
-        const char *name;
-        int parent, children, next, group, scheduled, interpindex, interpparent, ragdollindex, correctindex;
-        float pitchscale, pitchoffset, pitchmin, pitchmax;
-        dualquat base;
-
-        boneinfo();
-        ~boneinfo();
-    };
-
     struct pitchtarget final
     {
         int bone, frame, corrects, deps;
@@ -387,7 +376,6 @@ struct skelmodel : animmodel
     {
         public:
             skelmeshgroup * const owner;
-            boneinfo *bones; //array of boneinfo, size equal to numbones
             int numbones, numinterpbones, numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
             std::vector<skelanimspec> skelanims;
@@ -429,8 +417,42 @@ struct skelmodel : animmodel
             const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
             void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
             bool shouldcleanup() const;
+            /**
+             * @brief Sets the pitch information for the index'th bone in the skeleton's bones
+             *
+             * If no bone exists at `index` returns false; otherwise returns true
+             */
+            bool setbonepitch(size_t index, float scale, float offset, float min, float max);
+
+            //Returns nullopt if index out of bounds
+            std::optional<dualquat> getbonebase(size_t index) const;
+
+            bool setbonebases(const std::vector<dualquat> &bases);
+
+            //Only sets name if no name present (nullptr)
+            bool setbonename(size_t index, std::string_view name);
+
+            //Only sets parent if within boundaries of bone array
+            bool setboneparent(size_t index, size_t parent);
+
+            //creates boneinfo array of size num, also sets numbones to that size
+            void createbones(size_t num);
+
 
         private:
+
+            struct boneinfo final
+            {
+                const char *name;
+                int parent, children, next, group, scheduled, interpindex, interpparent, ragdollindex, correctindex;
+                float pitchscale, pitchoffset, pitchmin, pitchmax;
+                dualquat base;
+
+                boneinfo();
+                ~boneinfo();
+            };
+            boneinfo *bones; //array of boneinfo, size equal to numbones
+
             struct pitchdep
             {
                 int bone, parent;
@@ -648,7 +670,6 @@ struct skelcommands : modelcommands<MDL>
     typedef class  MDL::skeleton skeleton;
     typedef struct MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
-    typedef struct MDL::boneinfo boneinfo;
     typedef struct MDL::skelanimspec animspec;
     typedef struct MDL::pitchtarget pitchtarget;
     typedef struct MDL::pitchcorrect pitchcorrect;
@@ -721,19 +742,19 @@ struct skelcommands : modelcommands<MDL>
             std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
             if(i)
             {
-                boneinfo &b = static_cast<meshgroup *>(mdl.meshes)->skel->bones[*i];
-                b.pitchscale = *pitchscale;
-                b.pitchoffset = *pitchoffset;
+                float newpitchmin = 0.f,
+                      newpitchmax = 0.f;
                 if(*pitchmin || *pitchmax)
                 {
-                    b.pitchmin = *pitchmin;
-                    b.pitchmax = *pitchmax;
+                    newpitchmin = *pitchmin;
+                    newpitchmax = *pitchmax;
                 }
                 else
                 {
-                    b.pitchmin = -360*std::fabs(b.pitchscale) + b.pitchoffset;
-                    b.pitchmax = 360*std::fabs(b.pitchscale) + b.pitchoffset;
+                    newpitchmin = -360*std::fabs(*pitchscale) + *pitchoffset;
+                    newpitchmax = 360*std::fabs(*pitchscale) + *pitchoffset;
                 }
+                static_cast<meshgroup *>(mdl.meshes)->skel->setbonepitch(*i, *pitchscale, *pitchoffset, newpitchmin, newpitchmax);
                 return;
             }
             conoutf("could not find bone %s to pitch", name);

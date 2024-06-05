@@ -275,8 +275,8 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 {
                     adjustments[i].adjust(dq);
                 }
-                const boneinfo &b = skel->bones[i];
-                dq.mul(dualquat(b.base).invert());
+                //assume nullopt cannot happen
+                dq.mul(skel->getbonebase(i).value().invert());
                 dualquat &dst = frame[i];
                 if(h.parent < 0)
                 {
@@ -284,7 +284,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 }
                 else
                 {
-                    dst.mul(skel->bones[h.parent].base, dq);
+                    dst.mul(skel->getbonebase(h.parent).value(), dq);
                 }
                 dst.fixantipodal(skel->framebones[i]);
             }
@@ -331,8 +331,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
             {
                 continue;
             }
-            skel->numbones = tmp;
-            skel->bones = new boneinfo[skel->numbones];
+            skel->createbones(tmp);
         }
         else if(std::sscanf(buf, " numMeshes %d", &tmp)==1)
         {
@@ -385,11 +384,8 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
                     j.orient.z = -j.orient.z;
                     if(static_cast<int>(basejoints.size()) < skel->numbones)
                     {
-                        if(!skel->bones[basejoints.size()].name)
-                        {
-                            skel->bones[basejoints.size()].name = newstring(name);
-                        }
-                        skel->bones[basejoints.size()].parent = parent;
+                        skel->setbonename(basejoints.size(), name);
+                        skel->setboneparent(basejoints.size(), parent);
                     }
                     j.orient.restorew();
                     basejoints.push_back(j);
@@ -425,12 +421,15 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
     }
 
     skel->linkchildren();
-    for(uint i = 0; i < basejoints.size(); i++)
+    //assign basejoints accumulated above
     {
-        boneinfo &b = skel->bones[i];
-        b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
+        std::vector<dualquat> bases;
+        for(uint i = 0; i < basejoints.size(); i++)
+        {
+            bases.emplace_back(basejoints[i].orient, basejoints[i].pos);
+        }
+        skel->setbonebases(bases);
     }
-
     for(uint i = 0; i < meshes.size(); i++)
     {
         md5mesh &m = *static_cast<md5mesh *>(meshes[i]);

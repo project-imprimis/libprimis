@@ -996,6 +996,74 @@ bool skelmodel::skeleton::shouldcleanup() const
     return numframes && (skelcache.empty() || gpuaccelerate()!=usegpuskel);
 }
 
+bool skelmodel::skeleton::setbonepitch(size_t index, float scale, float offset, float min, float max)
+{
+    if(index > numbones)
+    {
+        return false;
+    }
+    boneinfo &b = bones[index];
+    b.pitchscale = scale;
+    b.pitchoffset = offset;
+    b.pitchmin = offset;
+    b.pitchmax = offset;
+    return true;
+}
+
+std::optional<dualquat> skelmodel::skeleton::getbonebase(size_t index) const
+{
+    if(index > numbones)
+    {
+        return std::nullopt;
+    }
+    return bones[index].base;
+}
+
+bool skelmodel::skeleton::setbonebases(const std::vector<dualquat> &bases)
+{
+    if(bases.size() != numbones)
+    {
+        return false;
+    }
+    for(size_t i = 0; i < numbones; ++i)
+    {
+        bones[i].base = bases[i];
+    }
+    return true;
+}
+
+bool skelmodel::skeleton::setbonename(size_t index, std::string_view name)
+{
+    if(index > numbones)
+    {
+        return false;
+    }
+    boneinfo &b = bones[index];
+    if(!b.name)
+    {
+        b.name = newstring(name.data());
+        return true;
+    }
+    return false;
+}
+
+bool skelmodel::skeleton::setboneparent(size_t index, size_t parent)
+{
+    if(index > numbones || parent > numbones)
+    {
+        return false;
+    }
+    boneinfo &b = bones[index];
+    b.parent = parent;
+    return true;
+}
+
+void skelmodel::skeleton::createbones(size_t num)
+{
+    numbones = num;
+    bones = new boneinfo[numbones];
+}
+
 skelmodel::skelmeshgroup::~skelmeshgroup()
 {
     if(skel)
@@ -1678,7 +1746,7 @@ void skelmodel::skelmesh::render()
 
 // boneinfo
 
-skelmodel::boneinfo::boneinfo() :
+skelmodel::skeleton::boneinfo::boneinfo() :
     name(nullptr),
     parent(-1),
     children(-1),
@@ -1696,7 +1764,7 @@ skelmodel::boneinfo::boneinfo() :
 {
 }
 
-skelmodel::boneinfo::~boneinfo()
+skelmodel::skeleton::boneinfo::~boneinfo()
 {
     delete[] name;
 }
