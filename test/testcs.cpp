@@ -1070,6 +1070,7 @@ namespace
             {"tohex 32 0", "0x20"},
             {"tohex 32 1", "0x20"},
             {"tohex 32 -1", "0x20"},
+            {"tohex", "0x0"},
         };
 
         test_cs_command_string(inputs);
@@ -1121,6 +1122,8 @@ namespace
             {"strsplice teststring test 9 2", "teststrintest"},
             {"strsplice teststring t", "tteststring"},
             {"strsplice teststring t", "tteststring"},
+            {"strsplice teststring", "teststring"},
+            {"strsplice", ""},
         };
 
         test_cs_command_string(inputs);
@@ -1136,6 +1139,7 @@ namespace
             {"strreplace ababababab s t", "ababababab"},
             {"strreplace ababababab a c", "cbcbcbcbcb"},
             {"strreplace ababababab a c d", "cbdbcbdbcb"},
+            {"strreplace", ""},
         };
 
         test_cs_command_string(inputs);
@@ -1149,6 +1153,7 @@ namespace
             {"stripcolors teststring", "teststring"},
             {"stripcolors \f0teststring", "teststring"},
             {"stripcolors \f2\f4teststring", "teststring"},
+            {"stripcolors", ""},
         };
 
         test_cs_command_string(inputs);
@@ -1163,7 +1168,8 @@ namespace
             {"concat test", "test"},
             {"concat test test test test", "test test test test"},
             {"concat test, test, test, test", "test, test, test, test"},
-            {"concat t t", "t t"}
+            {"concat t t", "t t"},
+            {"concat", ""}
         };
 
         test_cs_command_string(inputs);
@@ -1178,7 +1184,8 @@ namespace
             {"concatword test", "test"},
             {"concatword test test test test", "testtesttesttest"},
             {"concatword test, test, test, test", "test,test,test,test"},
-            {"concatword t t", "tt"}
+            {"concatword t t", "tt"},
+            {"concatword", ""}
         };
 
         test_cs_command_string(inputs);
