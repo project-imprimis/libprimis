@@ -144,7 +144,6 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
 }
 
 skelmodel::skeleton::skeleton(skelmeshgroup * const group) :
-    owner(group),
     numbones(0),
     numinterpbones(0),
     numgpubones(0),
@@ -152,6 +151,7 @@ skelmodel::skeleton::skeleton(skelmeshgroup * const group) :
     framebones(nullptr),
     ragdoll(nullptr),
     usegpuskel(false),
+    owner(group),
     bones(nullptr)
 {
 }

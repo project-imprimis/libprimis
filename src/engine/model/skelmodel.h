@@ -375,7 +375,6 @@ struct skelmodel : animmodel
     class skeleton
     {
         public:
-            skelmeshgroup * const owner;
             size_t numbones;
             int numinterpbones, numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
@@ -441,6 +440,7 @@ struct skelmodel : animmodel
 
 
         private:
+            skelmeshgroup * const owner;
 
             struct boneinfo final
             {
