@@ -376,7 +376,8 @@ struct skelmodel : animmodel
     {
         public:
             skelmeshgroup * const owner;
-            int numbones, numinterpbones, numgpubones, numframes;
+            size_t numbones;
+            int numinterpbones, numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
             std::vector<skelanimspec> skelanims;
             ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
@@ -1045,7 +1046,7 @@ struct skelcommands : modelcommands<MDL>
         std::sort(bonemask.begin(), bonemask.end());
         bonemask.push_back(Bonemask_End);
 
-        while(static_cast<int>(MDL::hitzones.size()) < m->skel->numbones)
+        while(MDL::hitzones.size() < m->skel->numbones)
         {
             MDL::hitzones.emplace_back(0xFF);
         }
@@ -1132,7 +1133,7 @@ struct skelcommands : modelcommands<MDL>
         const skelmodel *m = static_cast<skelmodel *>(MDL::loading);
         const skelmodel::skelmeshgroup *meshes = static_cast<const skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
         const skelmodel::skeleton *skel = meshes->skel;
-        if(*n < 0 || *n >= skel->numbones)
+        if(*n < 0 || *n >= static_cast<int>(skel->numbones))
         {
             return;
         }

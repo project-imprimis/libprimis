@@ -173,7 +173,7 @@ skelmodel::skeleton::~skeleton()
 
 std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
 {
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         if(bones[i].name && !std::strcmp(bones[i].name, name.c_str()))
         {
@@ -223,9 +223,9 @@ void skelmodel::skeleton::calcantipodes()
 {
     antipodes.clear();
     std::vector<uint> schedule;
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
-        if(bones[i].group >= numbones)
+        if(bones[i].group >= static_cast<int>(numbones))
         {
             bones[i].scheduled = schedule.size();
             schedule.push_back(i);
@@ -239,7 +239,7 @@ void skelmodel::skeleton::calcantipodes()
     {
         uint bone = schedule[i];
         const boneinfo &info = bones[bone];
-        for(int j = 0; j < numbones; ++j)
+        for(size_t j = 0; j < numbones; ++j)
         {
             if(std::abs(bones[j].group) == bone && bones[j].scheduled < 0)
             {
@@ -251,9 +251,9 @@ void skelmodel::skeleton::calcantipodes()
         if(i + 1 == schedule.size())
         {
             std::optional<int> conflict = std::nullopt;
-            for(int j = 0; j < numbones; ++j)
+            for(size_t j = 0; j < numbones; ++j)
             {
-                if(bones[j].group < numbones && bones[j].scheduled < 0)
+                if(bones[j].group < static_cast<int>(numbones) && bones[j].scheduled < 0)
                 {
                     conflict = std::min(conflict.value(), std::abs(bones[j].group));
                 }
@@ -269,7 +269,7 @@ void skelmodel::skeleton::calcantipodes()
 
 void skelmodel::skeleton::remapbones()
 {
-    for(int i = 0; i < numbones; ++i)//loop i
+    for(size_t i = 0; i < numbones; ++i)//loop i
     {
         boneinfo &info = bones[i];
         info.interpindex = -1;
@@ -344,7 +344,7 @@ void skelmodel::skeleton::remapbones()
             info.ragdollindex = i;
         }
     }
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         boneinfo &info = bones[i];
         if(info.interpindex < 0)
@@ -356,7 +356,7 @@ void skelmodel::skeleton::remapbones()
             bones[parent].interpindex = numinterpbones++;
         }
     }
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         boneinfo &info = bones[i];
         if(info.interpindex < 0)
@@ -367,7 +367,7 @@ void skelmodel::skeleton::remapbones()
     }
     if(ragdoll)
     {
-        for(int i = 0; i < numbones; ++i)
+        for(size_t i = 0; i < numbones; ++i)
         {
             boneinfo &info = bones[i];
             if(info.interpindex < 0 || info.ragdollindex >= 0)
@@ -541,7 +541,7 @@ void skelmodel::skeleton::applybonemask(const std::vector<uint> &mask, std::vect
         }
         expandbonemask(expansion, i&Bonemask_Bone, i&Bonemask_Not ? 0 : 1);
     }
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         if(expansion[i])
         {
@@ -553,7 +553,7 @@ void skelmodel::skeleton::applybonemask(const std::vector<uint> &mask, std::vect
 
 void skelmodel::skeleton::linkchildren()
 {
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         boneinfo &b = bones[i];
         b.children = -1;
@@ -697,7 +697,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
         }
     }
     calcpitchcorrects(pitch, axis, forward);
-    for(int i = 0; i < numbones; ++i)
+    for(size_t i = 0; i < numbones; ++i)
     {
         if(bones[i].interpindex>=0)
         {

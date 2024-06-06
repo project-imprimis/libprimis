@@ -133,7 +133,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
         }
         else if(std::sscanf(buf, " numJoints %d", &tmp) == 1)
         {
-            if(tmp != skel->numbones)
+            if(tmp != static_cast<int>(skel->numbones))
             {
                 delete f; //bail out if numbones is not consistent
                 return nullptr;
@@ -193,7 +193,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                     basejoints.push_back(j);
                 }
             }
-            if(static_cast<int>(basejoints.size()) != skel->numbones)
+            if(basejoints.size() != skel->numbones)
             {
                 delete f;
                 if(animdata)
@@ -382,7 +382,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
                     j.pos.y = -j.pos.y;
                     j.orient.x = -j.orient.x;
                     j.orient.z = -j.orient.z;
-                    if(static_cast<int>(basejoints.size()) < skel->numbones)
+                    if(basejoints.size() < skel->numbones)
                     {
                         skel->setbonename(basejoints.size(), name);
                         skel->setboneparent(basejoints.size(), parent);
@@ -391,7 +391,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
                     basejoints.push_back(j);
                 }
             }
-            if(static_cast<int>(basejoints.size()) != skel->numbones)
+            if(basejoints.size() != skel->numbones)
             {
                 delete f;
                 return false;
