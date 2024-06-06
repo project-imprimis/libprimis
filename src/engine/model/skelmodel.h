@@ -385,7 +385,6 @@ struct skelmodel : animmodel
 
             bool usegpuskel;
             std::vector<skelcacheentry> skelcache;
-            std::unordered_map<GLuint, int> blendoffsets;
 
             skeleton(skelmeshgroup * const group);
             ~skeleton();
@@ -476,6 +475,8 @@ struct skelmodel : animmodel
                 matrix4x3 matrix;
             };
             std::vector<tag> tags;
+
+            std::unordered_map<GLuint, int> blendoffsets;
 
             void calcantipodes();
             void remapbones();
