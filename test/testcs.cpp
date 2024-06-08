@@ -1333,6 +1333,24 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_loopplusmul()
+    {
+        std::printf("testing CS loop+* command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"testval = 0; loop+* i 2 2 8 [testval = (+ $testval 1)]; result $testval", 8},
+            {"testval = 0; loop+* i 2 2 6 [testval = (+ $testval $i);]; result $testval", 42},
+            {"testval = 0; loop+* i 2 2 4 [testval = $i]; result $testval", 8},
+            {"testval = 0; loop+* i 2 0 4 [testval = $i]; result $testval", 2},
+            {"testval = 0; loop+* i 0 2 4 [testval = $i]; result $testval", 6},
+            {"testval = 0; loop+* i 2 2 10 [testval = (+ $testval $i)]; result $i", 0},
+            {"testval = 0; loop+* i 2 2 0 [testval = (+ $testval 1)]; result $testval", 0},
+            {"testval = 0; loop+* i 2 2 'test' [testval = (+ $testval 1)]; result $testval", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_loopconcat()
     {
         std::printf("testing CS loopconcat command\n");
@@ -1604,6 +1622,7 @@ void testcs()
     test_cs_loop();
     test_cs_loopplus();
     test_cs_loopmul();
+    test_cs_loopplusmul();
     test_cs_loopconcat();
     test_cs_loopconcatplus();
     test_cs_listassoceq();
