@@ -1316,6 +1316,7 @@ namespace
 
         test_cs_command(inputs);
     }
+
     void test_cs_loopconcat()
     {
         std::printf("testing CS loopconcat command\n");
@@ -1333,6 +1334,26 @@ namespace
 
         test_cs_command_string(strinputs);
     }
+
+    void test_cs_loopconcatplus()
+    {
+        std::printf("testing CS loopconcat+ command\n");
+
+        std::vector<std::pair<std::string, std::string>> strinputs = {
+            {"loopconcat+ i 3 3 [result 1]", "1 1 1"},
+            {"loopconcat+ i 5 5 [result $i]", "5 6 7 8 9"},
+            {"loopconcat+ i 3 10 [loopconcat j 1 [result 1]]", "1 1 1 1 1 1 1 1 1 1"},
+            {"loopconcat+ i 2 3 [format test]", "test test test"},
+            {"loopconcat+ i 5 3 [concatword test test2]", "testtest2 testtest2 testtest2"},
+            {"loopconcat+ i 2 2", " "},
+            {"loopconcat+ i 2", ""},
+            {"loopconcat+ i", ""},
+            {"loopconcat+", ""},
+        };
+
+        test_cs_command_string(strinputs);
+    }
+
     void test_cs_listassoceq()
     {
         std::printf("testing CS listassoc= command\n");
@@ -1567,6 +1588,7 @@ void testcs()
     test_cs_loop();
     test_cs_loopplus();
     test_cs_loopconcat();
+    test_cs_loopconcatplus();
     test_cs_listassoceq();
     test_cs_prettylist();
     test_cs_indexof();
