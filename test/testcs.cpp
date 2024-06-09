@@ -1230,6 +1230,9 @@ namespace
         std::vector<std::pair<std::string, std::string>> stringinputs = {
             {"test = \"teststring\"; result $test", "teststring"},
             {"test = \"teststring\"; result test", "test"},
+            {"result 1", "1"},
+            {"result  ", ""},
+            {"result", ""},
         };
 
         test_cs_command_string(stringinputs);
@@ -1237,12 +1240,14 @@ namespace
         std::vector<std::pair<std::string, float>> floatinputs = {
             {"test = 4.0; result $test", 4.f},
             {"test = 4.0; result test", 0.f},
+            {"result 1.000", 1.f},
         };
 
         test_cs_command_float(floatinputs);
 
         std::vector<std::pair<std::string, int>> intinputs = {
             {"test = 4; result $test", 4},
+            {"result 4", 4},
             {"test = 4; result test", 0},
         };
 
