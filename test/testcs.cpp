@@ -1267,6 +1267,22 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_at()
+    {
+        std::printf("testing CS at command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"at test", "test"},
+            {"at test 0", "test"},
+            {"at [test1 test2 test3] 2", "test3"},
+            {"at \"test1 test2 test3\" 2", "test3"},
+            {"at [test1 test2 test3] -1", "test1"},
+            {"at", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_listcount()
     {
         std::printf("testing CS listcount command\n");
@@ -1640,6 +1656,7 @@ void testcs()
     test_cs_ternary();
     test_cs_result();
     test_cs_listlen();
+    test_cs_at();
     test_cs_listcount();
     test_cs_listfind();
     test_cs_loop();
