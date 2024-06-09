@@ -1389,6 +1389,19 @@ namespace
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+    // vec4 tests
+    ////////////////////////////////////////////////////////////////////////////////
+
+    void test_vec4_equal()
+    {
+        std::printf("testing vec4 equal\n");
+
+        assert(vec4<int>(1,1,1,1) == vec4<float>(1,1,1,1));
+        assert(vec4<bool>(true,true,true,true) == vec4<float>(1,1,1,1));
+        assert(vec4<double>(1,1,1,1) == vec4<float>(1,1,1,1));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -2159,6 +2172,8 @@ testing geometry\n\
     test_bvec_from565();
     test_bvec_hexcolor();
     test_bvec_tohexcolor();
+
+    test_vec4_equal();
 
     test_ivec_ctor();
     test_ivec_bracket();
