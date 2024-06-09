@@ -1283,6 +1283,26 @@ namespace
         test_cs_command_string(inputs);
     }
 
+    void test_cs_sublist()
+    {
+        std::printf("testing CS sublist command\n");
+
+        std::vector<std::pair<std::string, std::string>> inputs = {
+            {"sublist test 0 1", "test"},
+            {"sublist \"test1 test2 test3\" 1 1", "test2"},
+            {"sublist \"test1 test2 test3\" 1 3", "test2 test3"},
+            {"sublist \"test1 test2 test3\" -1 3", "test1 test2 test3"},
+            {"sublist \"test1 [test2 test3] test4\" -1 3", "test1 [test2 test3] test4"},
+            {"sublist \"test1 test2 test3\" 1 0", ""},
+            {"sublist \"test1 test2 test3\" 1 -1", ""},
+            {"sublist \"test1 test2 test3\" 1", "test2 test3"},
+            {"sublist \"test1 test2 test3\"", "test1 test2 test3"},
+            {"sublist", ""},
+        };
+
+        test_cs_command_string(inputs);
+    }
+
     void test_cs_listcount()
     {
         std::printf("testing CS listcount command\n");
@@ -1661,6 +1681,7 @@ void testcs()
     test_cs_result();
     test_cs_listlen();
     test_cs_at();
+    test_cs_sublist();
     test_cs_listcount();
     test_cs_listfind();
     test_cs_loop();
