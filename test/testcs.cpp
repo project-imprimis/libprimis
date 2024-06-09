@@ -1291,6 +1291,7 @@ namespace
             {"listcount i \"test\" [=s $i test]", 1},
             {"listcount i \"test test\" [=s $i test]", 2},
             {"listcount i \"test test test2\" [=s $i test]", 2},
+            {"listcount i [test test test2] [=s $i test]", 2},
             {"listcount i \"test test test2\" [result 1]", 3},
             {"listcount i \"\" [=s $i test]", 0},
             {"listcount i \"\" []", 0},
@@ -1308,6 +1309,7 @@ namespace
             {"listfind i \"test\" [=s $i test]", 0},
             {"listfind i \"test\" [=s $i test2]", -1},
             {"listfind i \"alpha bravo charlie\" [=s $i bravo]", 1},
+            {"listfind i [alpha bravo charlie] [=s $i bravo]", 1},
             {"listfind i \"alpha bravo charlie bravo\" [=s $i bravo]", 1},
             {"listfind i \"alpha bravo \0charlie bravo\" [=s $i charlie]", -1},
             {"listfind i \"alpha bravo [\0charlie] bravo\" [=s $i charlie]", -1},
@@ -1316,7 +1318,7 @@ namespace
             {"listfind listfind", -1},
             {"listfind listfind \"test\" [=s $listfind test]", -1},
             {"listfind i \"test test test\" [=s $i test]", 0},
-            {"listfind i \"test [test] test\" [=s $i test]", 0},
+            {"listfind i [test [test] test] [=s $i test]", 0},
             {"listfind i \"(test) [test] test\" [=s $i test]", 0},
         };
 
@@ -1455,6 +1457,7 @@ namespace
             {"prettylist \"alpha bravo charlie delta echo\" and", "alpha, bravo, charlie, delta, and echo"},
             {"prettylist \"\" and", ""},
             {"prettylist \"1 2 3 4 5\" or", "1, 2, 3, 4, or 5"},
+            {"prettylist [1 2 3 4 5] or", "1, 2, 3, 4, or 5"},
             {"prettylist \"1 2 3 4 5\"", "1, 2, 3, 4, 5"},
             {"prettylist \"1 2\" or", "1 or 2"},
             {"prettylist \"1 2\"", "1, 2"},
@@ -1472,6 +1475,7 @@ namespace
         std::vector<std::pair<std::string, int>> inputs = {
             {"indexof \"alpha bravo charlie\" alpha", 0},
             {"indexof \"alpha bravo charlie delta\" delta", 3},
+            {"indexof [alpha bravo charlie delta] delta", 3},
             {"indexof \"alpha alpha charlie delta\" charlie", 2},
             {"indexof \"alpha alpha charlie delta\" echo", -1},
             {"indexof \"1 2 3 4\" 2", 1},
