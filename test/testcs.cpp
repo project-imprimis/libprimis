@@ -1267,6 +1267,23 @@ namespace
         test_cs_command(inputs);
     }
 
+    void test_cs_listcount()
+    {
+        std::printf("testing CS listcount command\n");
+
+        std::vector<std::pair<std::string, int>> inputs = {
+            {"listcount i \"test\" [=s $i test]", 1},
+            {"listcount i \"test test\" [=s $i test]", 2},
+            {"listcount i \"test test test2\" [=s $i test]", 2},
+            {"listcount i \"test test test2\" [result 1]", 3},
+            {"listcount i \"\" [=s $i test]", 0},
+            {"listcount i \"\" []", 0},
+            {"listcount i", 0},
+        };
+
+        test_cs_command(inputs);
+    }
+
     void test_cs_listfind()
     {
         std::printf("testing CS listfind command\n");
@@ -1623,6 +1640,7 @@ void testcs()
     test_cs_ternary();
     test_cs_result();
     test_cs_listlen();
+    test_cs_listcount();
     test_cs_listfind();
     test_cs_loop();
     test_cs_loopplus();
