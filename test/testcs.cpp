@@ -1241,6 +1241,8 @@ namespace
             {"test = 4.0; result $test", 4.f},
             {"test = 4.0; result test", 0.f},
             {"result 1.000", 1.f},
+            {"result  ", 0.f},
+            {"result", 0.f},
         };
 
         test_cs_command_float(floatinputs);
@@ -1249,6 +1251,8 @@ namespace
             {"test = 4; result $test", 4},
             {"result 4", 4},
             {"test = 4; result test", 0},
+            {"result  ", 0},
+            {"result", 0},
         };
 
         test_cs_command(intinputs);
