@@ -1419,6 +1419,24 @@ namespace
         }
     }
 
+    void test_vec4_dot()
+    {
+        std::printf("testing vec4 dot\n");
+
+        {
+            assert(vec4<int>(1,1,1,1).dot(vec4<int>(1,1,1,1)) == 4);
+            assert(vec4<int>(1,2,3,1).dot(vec4<int>(1,1,1,1)) == 7);
+            assert(vec4<float>(1,1,1,1).dot(vec4<float>(1,1,1,1)) == 4.f);
+            assert(vec4<float>(1,2,3,1).dot(vec4<float>(1,1,1,1)) == 7.f);
+        }
+        {
+            assert(vec4<int>(1,1,1,1).dot(vec(1,1,1)) == 4);
+            assert(vec4<int>(1,2,3,1).dot(vec(1,1,1)) == 7);
+            assert(vec4<float>(1,1,1,1).dot(vec(1,1,1)) == 4.f);
+            assert(vec4<float>(1,2,3,1).dot(vec(1,1,1)) == 7.f);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2193,6 +2211,7 @@ testing geometry\n\
 
     test_vec4_equal();
     test_vec4_dot3();
+    test_vec4_dot();
 
     test_ivec_ctor();
     test_ivec_bracket();
