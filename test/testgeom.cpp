@@ -1449,6 +1449,18 @@ namespace
         }
     }
 
+    void test_vec4_magnitude()
+    {
+        std::printf("testing vec4 magnitude\n");
+
+        {
+            assert(vec4<int>(3,4,0,0).magnitude() == 5);
+            assert(vec4<int>(0,0,5,12).magnitude() == 13);
+            assert(vec4<float>(3,4,0,0).magnitude() == 5.f);
+            assert(vec4<float>(0,0,5,12).magnitude() == 13.f);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2225,6 +2237,7 @@ testing geometry\n\
     test_vec4_dot3();
     test_vec4_dot();
     test_vec4_squaredlen();
+    test_vec4_magnitude();
 
     test_ivec_ctor();
     test_ivec_bracket();
