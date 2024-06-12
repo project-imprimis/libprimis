@@ -1437,6 +1437,18 @@ namespace
         }
     }
 
+    void test_vec4_squaredlen()
+    {
+        std::printf("testing vec4 squared len\n");
+
+        {
+            assert(vec4<int>(1,1,1,1).squaredlen() == 4);
+            assert(vec4<int>(1,2,3,4).squaredlen() == 30);
+            assert(vec4<float>(1,1,1,1).squaredlen() == 4.f);
+            assert(vec4<float>(1,2,3,4).squaredlen() == 30.f);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2212,6 +2224,7 @@ testing geometry\n\
     test_vec4_equal();
     test_vec4_dot3();
     test_vec4_dot();
+    test_vec4_squaredlen();
 
     test_ivec_ctor();
     test_ivec_bracket();
