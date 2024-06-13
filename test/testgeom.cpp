@@ -1494,6 +1494,17 @@ namespace
         }
     }
 
+    void test_vec4_avg()
+    {
+        std::printf("testing vec4 avg\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).avg(vec4<float>(9,12,0,0)) == vec4<float>(6,8,0,0));
+            assert(vec4<float>(2,2,0,0).avg(vec4<float>(0,0,0,0)) == vec4<float>(1,1,0,0));
+            assert(vec4<float>(-2,2,0,0).avg(vec4<float>(2,0,0,0)) == vec4<float>(0,1,0,0));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2274,6 +2285,7 @@ testing geometry\n\
     test_vec4_magnitude3();
     test_vec4_normalize();
     test_vec4_safenormalize();
+    test_vec4_avg();
 
     test_ivec_ctor();
     test_ivec_bracket();
