@@ -1516,6 +1516,17 @@ namespace
         }
     }
 
+    void test_vec4_msub()
+    {
+        std::printf("testing vec4 msub\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).msub(vec4<float>(9,12,0,0), vec4<float>(1,1,1,1)) == vec4<float>(-6,-8,0,0));
+            assert(vec4<float>(3,4,0,0).msub(vec4<float>(9,12,0,0), vec4<float>(-1,1,1,1)) == vec4<float>(12,-8,0,0));
+            assert(vec4<float>(1,2,3,4).msub(vec4<float>(9,12,0,0), vec4<float>(-1,1,1,1)) == vec4<float>(10,-10,3,4));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2298,6 +2309,7 @@ testing geometry\n\
     test_vec4_safenormalize();
     test_vec4_avg();
     test_vec4_madd();
+    test_vec4_msub();
 
     test_ivec_ctor();
     test_ivec_bracket();
