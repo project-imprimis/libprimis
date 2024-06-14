@@ -1505,6 +1505,17 @@ namespace
         }
     }
 
+    void test_vec4_madd()
+    {
+        std::printf("testing vec4 madd\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).madd(vec4<float>(9,12,0,0), vec4<float>(1,1,1,1)) == vec4<float>(12,16,0,0));
+            assert(vec4<float>(3,4,0,0).madd(vec4<float>(9,12,0,0), vec4<float>(-1,1,1,1)) == vec4<float>(-6,16,0,0));
+            assert(vec4<float>(1,2,3,4).madd(vec4<float>(9,12,0,0), vec4<float>(-1,1,1,1)) == vec4<float>(-8,14,3,4));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2286,6 +2297,7 @@ testing geometry\n\
     test_vec4_normalize();
     test_vec4_safenormalize();
     test_vec4_avg();
+    test_vec4_madd();
 
     test_ivec_ctor();
     test_ivec_bracket();
