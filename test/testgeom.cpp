@@ -1527,6 +1527,19 @@ namespace
         }
     }
 
+    void test_vec4_mul3()
+    {
+        std::printf("testing vec4 mul3\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).mul3(0) == vec4<float>(0,0,0,0));
+            assert(vec4<float>(3,4,0,0).mul3(1) == vec4<float>(3,4,0,0));
+            assert(vec4<float>(6,0,8,0).mul3(2) == vec4<float>(12,0,16,0));
+            assert(vec4<float>(1,2,3,4).mul3(3) == vec4<float>(3,6,9,4));
+            assert(vec4<float>(1,2,3,4).mul3(0) == vec4<float>(0,0,0,4));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2310,6 +2323,7 @@ testing geometry\n\
     test_vec4_avg();
     test_vec4_madd();
     test_vec4_msub();
+    test_vec4_mul3();
 
     test_ivec_ctor();
     test_ivec_bracket();
