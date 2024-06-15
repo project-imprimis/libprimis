@@ -1540,6 +1540,17 @@ namespace
         }
     }
 
+    void test_vec4_square()
+    {
+        std::printf("testing vec4 square\n");
+
+        {
+            assert(vec4<float>(0,0,0,0).square() == vec4<float>(0,0,0,0));
+            assert(vec4<float>(-1,-2,-3,-4).square() == vec4<float>(1,4,9,16));
+            assert(vec4<float>(3,4,0,0).square() == vec4<float>(9,16,0,0));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2324,6 +2335,7 @@ testing geometry\n\
     test_vec4_madd();
     test_vec4_msub();
     test_vec4_mul3();
+    test_vec4_square();
 
     test_ivec_ctor();
     test_ivec_bracket();
