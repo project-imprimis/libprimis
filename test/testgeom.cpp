@@ -1540,6 +1540,31 @@ namespace
         }
     }
 
+    void test_vec4_mul()
+    {
+        std::printf("testing vec4 mul\n");
+        //mul(T)
+        {
+            assert(vec4<float>(3,4,0,0).mul(0) == vec4<float>(0,0,0,0));
+            assert(vec4<float>(3,4,0,0).mul(1) == vec4<float>(3,4,0,0));
+            assert(vec4<float>(6,0,8,0).mul(2) == vec4<float>(12,0,16,0));
+            assert(vec4<float>(1,2,3,4).mul(3) == vec4<float>(3,6,9,12));
+            assert(vec4<float>(1,2,3,4).mul(0) == vec4<float>(0,0,0,0));
+        }
+        //mul(vec4)
+        {
+            assert(vec4<float>(-2,2,0,0).mul(vec4<float>(2,0,0,0)) == vec4<float>(-4,0,0,0));
+            assert(vec4<float>(-1,-2,-3,-4).mul(vec4<float>(1,1,1,1)) == vec4<float>(-1,-2,-3,-4));
+        }
+        //mul(vec)
+        {
+            assert(vec4<float>(-2,2,0,0).mul(vec(2,0,0)) == vec4<float>(-4,0,0,0));
+            assert(vec4<float>(1,2,3,4).mul(vec(2,2,2)) == vec4<float>(2,4,6,4));
+            assert(vec4<float>(1,2,3,4).mul(vec(2,-2,2)) == vec4<float>(2,-4,6,4));
+        }
+
+    }
+
     void test_vec4_square()
     {
         std::printf("testing vec4 square\n");
@@ -2335,6 +2360,7 @@ testing geometry\n\
     test_vec4_madd();
     test_vec4_msub();
     test_vec4_mul3();
+    test_vec4_mul();
     test_vec4_square();
 
     test_ivec_ctor();
