@@ -1610,6 +1610,17 @@ namespace
         }
     }
 
+
+    void test_vec4_recip()
+    {
+        std::printf("testing vec4 recip\n");
+
+        {
+            assert(vec4<float>(2,4,0,0).recip() == vec4<float>(0.5,0.25,0,0));
+            assert(vec4<float>(4,8,5,2).recip() == vec4<float>(0.25,0.125,0.2,0.5));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2398,6 +2409,7 @@ testing geometry\n\
     test_vec4_square();
     test_vec4_div3();
     test_vec4_div();
+    test_vec4_recip();
 
     test_ivec_ctor();
     test_ivec_bracket();
