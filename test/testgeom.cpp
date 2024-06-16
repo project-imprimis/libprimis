@@ -1562,7 +1562,6 @@ namespace
             assert(vec4<float>(1,2,3,4).mul(vec(2,2,2)) == vec4<float>(2,4,6,4));
             assert(vec4<float>(1,2,3,4).mul(vec(2,-2,2)) == vec4<float>(2,-4,6,4));
         }
-
     }
 
     void test_vec4_square()
@@ -1585,6 +1584,29 @@ namespace
             assert(vec4<float>(3,6,0,0).div3(3) == vec4<float>(1,2,0,0));
             assert(vec4<float>(6,0,8,0).div3(2) == vec4<float>(3,0,4,0));
             assert(vec4<float>(2,4,6,8).div3(2) == vec4<float>(1,2,3,8));
+        }
+    }
+
+    void test_vec4_div()
+    {
+        std::printf("testing vec4 div\n");
+        //div(T)
+        {
+            assert(vec4<float>(3,4,0,0).div(1) == vec4<float>(3,4,0,0));
+            assert(vec4<float>(3,6,0,0).div(3) == vec4<float>(1,2,0,0));
+            assert(vec4<float>(6,0,8,0).div(2) == vec4<float>(3,0,4,0));
+            assert(vec4<float>(2,4,6,8).div(2) == vec4<float>(1,2,3,4));
+        }
+        //div(vec4)
+        {
+            assert(vec4<float>(-2,2,0,0).div(vec4<float>(2,1,1,1)) == vec4<float>(-1,2,0,0));
+            assert(vec4<float>(-1,-2,-3,-4).div(vec4<float>(1,-1,1,-2)) == vec4<float>(-1,2,-3,2));
+        }
+        //div(vec)
+        {
+            assert(vec4<float>(-2,2,0,0).div(vec(2,1,1)) == vec4<float>(-1,2,0,0));
+            assert(vec4<float>(2,4,6,4).div(vec(2,2,2)) == vec4<float>(1,2,3,4));
+            assert(vec4<float>(2,-4,6,4).div(vec(2,-2,2)) == vec4<float>(1,2,3,4));
         }
     }
 
@@ -2375,6 +2397,7 @@ testing geometry\n\
     test_vec4_mul();
     test_vec4_square();
     test_vec4_div3();
+    test_vec4_div();
 
     test_ivec_ctor();
     test_ivec_bracket();
