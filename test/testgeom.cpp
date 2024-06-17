@@ -1621,6 +1621,29 @@ namespace
         }
     }
 
+    void test_vec4_add()
+    {
+        std::printf("testing vec4 add\n");
+        //add(T)
+        {
+            assert(vec4<float>(3,4,0,0).add(1) == vec4<float>(4,5,1,1));
+            assert(vec4<float>(3,6,0,0).add(3) == vec4<float>(6,9,3,3));
+            assert(vec4<float>(6,0,8,0).add(2) == vec4<float>(8,2,10,2));
+            assert(vec4<float>(2,4,6,8).add(2) == vec4<float>(4,6,8,10));
+        }
+        //add(vec4)
+        {
+            assert(vec4<float>(-2,2,0,0).add(vec4<float>(2,1,1,1)) == vec4<float>(0,3,1,1));
+            assert(vec4<float>(-1,-2,-3,-4).add(vec4<float>(1,-1,1,-2)) == vec4<float>(0,-3,-2,-6));
+        }
+        //add(vec)
+        {
+            assert(vec4<float>(-2,2,0,0).add(vec(2,1,1)) == vec4<float>(0,3,1,0));
+            assert(vec4<float>(2,4,6,4).add(vec(2,2,2)) == vec4<float>(4,6,8,4));
+            assert(vec4<float>(2,-4,6,4).add(vec(2,-2,2)) == vec4<float>(4,-6,8,4));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2410,6 +2433,7 @@ testing geometry\n\
     test_vec4_div3();
     test_vec4_div();
     test_vec4_recip();
+    test_vec4_add();
 
     test_ivec_ctor();
     test_ivec_bracket();
