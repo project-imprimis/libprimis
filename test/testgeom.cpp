@@ -1616,7 +1616,7 @@ namespace
         std::printf("testing vec4 recip\n");
 
         {
-            assert(vec4<float>(2,4,0,0).recip() == vec4<float>(0.5,0.25,0,0));
+            assert(vec4<float>(2,4,1,0.25).recip() == vec4<float>(0.5,0.25,1,4));
             assert(vec4<float>(4,8,5,2).recip() == vec4<float>(0.25,0.125,0.2,0.5));
         }
     }
