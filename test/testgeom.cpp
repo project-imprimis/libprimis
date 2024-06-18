@@ -1668,6 +1668,18 @@ namespace
         }
     }
 
+    void test_vec4_sub3()
+    {
+        std::printf("testing vec4 sub3\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).sub3(1) == vec4<float>(2,3,-1,0));
+            assert(vec4<float>(3,6,0,0).sub3(3) == vec4<float>(0,3,-3,0));
+            assert(vec4<float>(6,0,8,0).sub3(2) == vec4<float>(4,-2,6,0));
+            assert(vec4<float>(2,4,6,8).sub3(2) == vec4<float>(0,2,4,8));
+        }
+    }
+
     void test_vec4_subw()
     {
         std::printf("testing vec4 subw\n");
@@ -2472,6 +2484,7 @@ testing geometry\n\
     test_vec4_add3();
     test_vec4_add();
     test_vec4_addw();
+    test_vec4_sub3();
     test_vec4_subw();
 
     test_ivec_ctor();
