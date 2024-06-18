@@ -1656,6 +1656,18 @@ namespace
         }
     }
 
+    void test_vec4_addw()
+    {
+        std::printf("testing vec4 addw\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).addw(1) == vec4<float>(3,4,0,1));
+            assert(vec4<float>(3,6,0,0).addw(3) == vec4<float>(3,6,0,3));
+            assert(vec4<float>(6,0,8,0).addw(2) == vec4<float>(6,0,8,2));
+            assert(vec4<float>(2,4,6,8).addw(2) == vec4<float>(2,4,6,10));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2447,6 +2459,7 @@ testing geometry\n\
     test_vec4_recip();
     test_vec4_add3();
     test_vec4_add();
+    test_vec4_addw();
 
     test_ivec_ctor();
     test_ivec_bracket();
