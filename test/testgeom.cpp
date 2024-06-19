@@ -1715,6 +1715,18 @@ namespace
         }
     }
 
+    void test_vec4_neg3()
+    {
+        std::printf("testing vec4 neg3\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).neg3() == vec4<float>(-3,-4,0,0));
+            assert(vec4<float>(3,6,0,0).neg3() == vec4<float>(-3,-6,0,0));
+            assert(vec4<float>(6,0,8,0).neg3() == vec4<float>(-6,0,-8,0));
+            assert(vec4<float>(2,4,6,8).neg3() == vec4<float>(-2,-4,-6,8));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2510,6 +2522,7 @@ testing geometry\n\
     test_vec4_sub3();
     test_vec4_sub();
     test_vec4_subw();
+    test_vec4_neg3();
 
     test_ivec_ctor();
     test_ivec_bracket();
