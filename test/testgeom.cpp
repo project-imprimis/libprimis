@@ -1739,6 +1739,18 @@ namespace
         }
     }
 
+    void test_vec4_clamp()
+    {
+        std::printf("testing vec4 clamp\n");
+
+        {
+            assert(vec4<float>(3,4,0,0).clamp(1,4) == vec4<float>(3,4,1,1));
+            assert(vec4<float>(3,6,0,0).clamp(1,4) == vec4<float>(3,4,1,1));
+            assert(vec4<float>(6,0,8,0).clamp(-1, 2) == vec4<float>(2,0,2,0));
+            assert(vec4<float>(2,4,6,8).clamp(0,0) == vec4<float>(0,0,0,0));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2536,6 +2548,7 @@ testing geometry\n\
     test_vec4_subw();
     test_vec4_neg3();
     test_vec4_neg();
+    test_vec4_clamp();
 
     test_ivec_ctor();
     test_ivec_bracket();
