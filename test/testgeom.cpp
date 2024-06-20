@@ -1796,8 +1796,26 @@ namespace
         //operator*(U)
         {
             assert(vec4<float>(1,2,3,4) * 2 == vec4<float>(2,4,6,8));
-            assert(vec4<float>(1,2,3,4) * 0 == vec4<float>(2,4,6,8));
+            assert(vec4<float>(1,2,3,4) * 0 == vec4<float>(0,0,0,0));
             assert(vec4<float>(1,2,3,4) * -1 == vec4<float>(-1,-2,-3,-4));
+        }
+    }
+
+    void test_vec4_slash()
+    {
+        std::printf("testing vec4 operator/\n");
+        //operator*(vec4)
+        {
+            assert(vec4<float>(3,4,0,0) / vec4<float>(1,1,1,1) == vec4<float>(3,4,0,0));
+            assert(vec4<float>(3,6,0,0) / vec4<float>(1,2,3,4) == vec4<float>(3,3,0,0));
+            assert(vec4<float>(6,0,8,0) / vec4<float>(1,1,2,2) == vec4<float>(6,0,4,0));
+            assert(vec4<float>(2,4,6,8) / vec4<float>(-1,-1,-1,-1) == vec4<float>(-2,-4,-6,-8));
+        }
+        //operator*(U)
+        {
+            assert(vec4<float>(2,4,6,8) / 2 == vec4<float>(1,2,3,4));
+            assert(vec4<float>(1,2,3,4) / 1 == vec4<float>(1,2,3,4));
+            assert(vec4<float>(1,2,3,4) / -1 == vec4<float>(-1,-2,-3,-4));
         }
     }
 
@@ -2602,6 +2620,7 @@ testing geometry\n\
     test_vec4_plus();
     test_vec4_minus();
     test_vec4_star();
+    test_vec4_slash();
 
     test_ivec_ctor();
     test_ivec_bracket();
