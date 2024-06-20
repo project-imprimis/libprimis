@@ -1763,6 +1763,18 @@ namespace
         }
     }
 
+    void test_vec4_minus()
+    {
+        std::printf("testing vec4 operator-\n");
+
+        {
+            assert(vec4<float>(3,4,0,0) - vec4<float>(1,1,1,1) == vec4<float>(2,3,-1,-1));
+            assert(vec4<float>(3,6,0,0) - vec4<float>(1,2,3,4) == vec4<float>(2,4,-3,-4));
+            assert(vec4<float>(6,0,8,0) - vec4<float>(1,2,3,4) == vec4<float>(5,-2,5,-4));
+            assert(vec4<float>(2,4,6,8) - vec4<float>(-1,-1,-1,-1) == vec4<float>(3,5,7,9));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2562,6 +2574,7 @@ testing geometry\n\
     test_vec4_neg();
     test_vec4_clamp();
     test_vec4_plus();
+    test_vec4_minus();
 
     test_ivec_ctor();
     test_ivec_bracket();
