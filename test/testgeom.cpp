@@ -1494,6 +1494,56 @@ namespace
         }
     }
 
+    void test_vec4_lerp()
+    {
+        std::printf("testing vec lerp\n");
+        //lerp(vec4,float)
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,1,1,1);
+            assert(v1.lerp(v2,1) == vec4<float>(1,1,1,1));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,1,1,1);
+            assert(v1.lerp(v2,-1) == vec4<float>(-1,-1,-1,-1));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,1,1,1);
+            assert(v1.lerp(v2,0.5) == vec4<float>(0.5,0.5,0.5,0.5));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,2,3,4);
+            assert(v1.lerp(v2,0.5) == vec4<float>(0.5,1,1.5,2));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,2,3,4);
+            assert(v1.lerp(v2,1.5) == vec4<float>(1.5,3,4.5,6));
+        }
+        //lerp(vec4<float>4,vec4<float>4,float)
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,1,1,1),
+                        v3;
+            assert(v3.lerp(v1, v2,1) == vec4<float>(1,1,1,1));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,1,1,1),
+                        v3;
+            assert(v3.lerp(v1, v2,-1) == vec4<float>(-1,-1,-1,-1));
+        }
+        {
+            vec4<float> v1(0,0,0,0),
+                        v2(1,2,3,4),
+                        v3;
+            assert(v3.lerp(v1, v2,1.5) == vec4<float>(1.5,3,4.5,6));
+        }
+    }
+
     void test_vec4_avg()
     {
         std::printf("testing vec4 avg\n");
@@ -2599,6 +2649,7 @@ testing geometry\n\
     test_vec4_magnitude3();
     test_vec4_normalize();
     test_vec4_safenormalize();
+    test_vec4_lerp();
     test_vec4_avg();
     test_vec4_madd();
     test_vec4_msub();
