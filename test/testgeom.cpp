@@ -2053,7 +2053,7 @@ namespace
 
     void test_vec4_rotate_around_z()
     {
-        test_3d_rotate_around_z<float, vec4<float>>("vec");
+        test_3d_rotate_around_z<float, vec4<float>>("vec4");
     }
 
     void test_vec4_rotate_around_x()
