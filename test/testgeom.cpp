@@ -990,48 +990,48 @@ namespace
         assert(v1.reject(v1, 0) == false);
     }
 
-    template<class T>
+    template<class T, class U>
     void test_3d_cross(std::string_view type)
     {
         std::printf("testing %s cross\n", type.data());
         //test axes
         {
             T v1(0,0,1),
-              v2(0,1,0),
-              v3;
+              v2(0,1,0);
+            U v3;
 
             v3.cross(v1, v2);
-            assert(v3 == T(-1,0,0));
+            assert(v3 == U(-1,0,0));
             v3.cross(v2, v1);
-            assert(v3 == T(1,0,0));
+            assert(v3 == U(1,0,0));
         }
         //test parallelogram
         {
             T v1(0,0,1),
-              v2(0,1,1),
-              v3;
+              v2(0,1,1);
+            U v3;
 
             v3.cross(v1, v2);
-            assert(v3 == T(-1,0,0));
+            assert(v3 == U(-1,0,0));
             v3.cross(v2, v1);
-            assert(v3 == T(1,0,0));
+            assert(v3 == U(1,0,0));
         }
         //test colinear
         {
             T v1(0,0,1),
-              v2(0,0,2),
-              v3;
+              v2(0,0,2);
+            U v3;
 
             v3.cross(v1, v2);
-            assert(v3 == T(0,0,0));
+            assert(v3 == U(0,0,0));
             v3.cross(v2, v1);
-            assert(v3 == T(0,0,0));
+            assert(v3 == U(0,0,0));
         }
     }
 
     void test_vec_cross()
     {
-        test_3d_cross<vec>("vec");
+        test_3d_cross<vec, vec>("vec");
     }
 
     void test_vec_scalartriple()
@@ -1869,6 +1869,11 @@ namespace
         }
     }
 
+    void test_vec4_cross()
+    {
+        test_3d_cross<vec, vec4<float>>("vec4");
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -1999,7 +2004,7 @@ namespace
 
     void test_ivec_cross()
     {
-        test_3d_cross<ivec>("ivec");
+        test_3d_cross<ivec, ivec>("ivec");
     }
 
     void test_ivec_dist()
@@ -2672,6 +2677,7 @@ testing geometry\n\
     test_vec4_minus();
     test_vec4_star();
     test_vec4_slash();
+    test_vec4_cross();
 
     test_ivec_ctor();
     test_ivec_bracket();
