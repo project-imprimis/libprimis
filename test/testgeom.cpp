@@ -1874,6 +1874,27 @@ namespace
         test_3d_cross<vec, vec4<float>>("vec4");
     }
 
+    void test_vec4_setxyz()
+    {
+        std::printf("testing vec4 setxyz\n");
+
+        {
+            vec4<float> f = {0,0,0,0};
+            f.setxyz(vec(1,2,3));
+            assert(f == vec4<float>(1,2,3,0));
+        }
+        {
+            vec4<float> f = {2,3,4,0};
+            f.setxyz(vec(1,2,3));
+            assert(f == vec4<float>(1,2,3,0));
+        }
+        {
+            vec4<float> f = {2,3,4,1};
+            f.setxyz(vec(0,0,0));
+            assert(f == vec4<float>(0,0,0,1));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -2678,6 +2699,7 @@ testing geometry\n\
     test_vec4_star();
     test_vec4_slash();
     test_vec4_cross();
+    test_vec4_setxyz();
 
     test_ivec_ctor();
     test_ivec_bracket();
