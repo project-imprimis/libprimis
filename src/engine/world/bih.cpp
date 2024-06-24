@@ -573,8 +573,8 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     if(roll != 0)
     {
         const vec2 &rot = sincosmod360(roll);
-        mo.rotate_around_y(rot);
-        mray.rotate_around_y(rot);
+        mo.rotate_around_y(-rot);
+        mray.rotate_around_y(-rot);
     }
     if(m->bih->traverse(mo, mray, maxdist ? maxdist*scale : 1e16f, dist, mode))
     {
@@ -584,7 +584,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
             //reorientation
             if(roll != 0)
             {
-                hitsurface.rotate_around_y(sincosmod360(-roll));
+                hitsurface.rotate_around_y(sincosmod360(roll));
             }
             if(pitch != 0)
             {

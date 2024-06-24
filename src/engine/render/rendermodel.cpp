@@ -855,7 +855,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     center.mul(size);
     if(roll)
     {
-        center.rotate_around_y(-roll/RAD);
+        center.rotate_around_y(roll/RAD);
     }
     if(pitch && m->pitched())
     {
@@ -935,7 +935,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
     center.mul(size);
     if(roll)
     {
-        center.rotate_around_y(-roll/RAD);
+        center.rotate_around_y(roll/RAD);
     }
     if(pitch && m->pitched())
     {
