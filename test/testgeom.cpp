@@ -1629,7 +1629,7 @@ namespace
 
     void test_vec4_equal()
     {
-        std::printf("testing vec4 equal\n");
+        std::printf("testing vec4 operator==\n");
 
         assert(vec4<int>(1,1,1,1) == vec4<float>(1,1,1,1));
         assert(vec4<bool>(true,true,true,true) == vec4<float>(1,1,1,1));
