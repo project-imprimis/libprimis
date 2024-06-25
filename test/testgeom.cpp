@@ -1636,6 +1636,15 @@ namespace
         assert(vec4<double>(1,1,1,1) == vec4<float>(1,1,1,1));
     }
 
+    void test_vec4_nequal()
+    {
+        std::printf("testing vec4 operator!=\n");
+
+        assert(vec4<int>(1,1,1,1) != vec4<float>(1,1,1,0));
+        assert(vec4<bool>(true,true,true,true) != vec4<float>(0,0,0,0));
+        assert(vec4<double>(1,1,1,2) != vec4<float>(1,1,1,1));
+    }
+
     void test_vec4_dot3()
     {
         std::printf("testing vec4 dot3\n");
@@ -2921,6 +2930,7 @@ testing geometry\n\
     test_bvec_tohexcolor();
 
     test_vec4_equal();
+    test_vec4_nequal();
     test_vec4_dot3();
     test_vec4_dot();
     test_vec4_squaredlen();
