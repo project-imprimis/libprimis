@@ -449,6 +449,85 @@ namespace
         assert(v1.avg(v2) == vec2(1,2));
     }
 
+    //3d test can be narrowed to test 2d case
+    template<class T, class U>
+    void test_3d_rotate_around_z(std::string_view type)
+    {
+        std::printf("testing %s rotation around z\n", type.data());
+
+        //rotate_around_z(T,T)
+        {
+            //rotate 180 degrees
+            T v1 = std::cos(M_PI),
+              v2 = std::sin(M_PI);
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v1, v2);
+            assert(v3.sub(U(vec(0,-1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 360
+            T v1 = std::cos(2*M_PI),
+              v2 = std::sin(2*M_PI);
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v1, v2);
+            assert(v3.sub(U(vec(0,1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 90 (CCW)
+            T v1 = std::cos(M_PI/2),
+              v2 = std::sin(M_PI/2);
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v1, v2);
+            assert(v3.sub(U(vec(-1,0,1))).magnitude() < tolerance);
+        }
+        //rotate_around_z(T)
+        {
+            //rotate 180 degrees
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(M_PI);
+            assert(v3.sub(U(vec(0,-1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 360 degrees
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(2*M_PI);
+            assert(v3.sub(U(vec(0,1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 90 degrees
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(M_PI/2);
+            assert(v3.sub(U(vec(-1,0,1))).magnitude() < tolerance);
+        }
+        //rotate_around_z(vec2)
+        {
+            //rotate 180 degrees
+            vec2 v{std::cos(M_PI), std::sin(M_PI)};
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v);
+            assert(v3.sub(U(vec(0,-1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 360
+            vec2 v{std::cos(2*M_PI), std::sin(2*M_PI)};
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v);
+            assert(v3.sub(U(vec(0,1,1))).magnitude() < tolerance);
+        }
+        {
+            //rotate 90 (CCW)
+            vec2 v{std::cos(M_PI/2), std::sin(M_PI/2)};
+            U v3(vec(0,1,1));
+            v3.rotate_around_z(v);
+            assert(v3.sub(U(vec(-1,0,1))).magnitude() < tolerance);
+        }
+    }
+
+    void test_vec2_rotate_around_z()
+    {
+        test_3d_rotate_around_z<float, vec2>("vec2");
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // float vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -1118,79 +1197,6 @@ namespace
         assert(v1.rescale(2) == vec(2,0,0));
         assert(v1.rescale(0) == vec(0,0,0));
         assert(v2.rescale(0.5) == vec(0.3,0.4,0));
-    }
-
-    template<class T, class U>
-    void test_3d_rotate_around_z(std::string_view type)
-    {
-        std::printf("testing %s rotation around z\n", type.data());
-
-        //rotate_around_z(T,T)
-        {
-            //rotate 180 degrees
-            T v1 = std::cos(M_PI),
-              v2 = std::sin(M_PI);
-            U v3(0,1,1);
-            v3.rotate_around_z(v1, v2);
-            assert(v3.sub(U(0,-1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 360
-            T v1 = std::cos(2*M_PI),
-              v2 = std::sin(2*M_PI);
-            U v3(0,1,1);
-            v3.rotate_around_z(v1, v2);
-            assert(v3.sub(U(0,1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 90 (CCW)
-            T v1 = std::cos(M_PI/2),
-              v2 = std::sin(M_PI/2);
-            U v3(0,1,1);
-            v3.rotate_around_z(v1, v2);
-            assert(v3.sub(U(-1,0,1)).magnitude() < tolerance);
-        }
-        //rotate_around_z(T)
-        {
-            //rotate 180 degrees
-            U v3(0,1,1);
-            v3.rotate_around_z(M_PI);
-            assert(v3.sub(U(0,-1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 360 degrees
-            U v3(0,1,1);
-            v3.rotate_around_z(2*M_PI);
-            assert(v3.sub(U(0,1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 90 degrees
-            U v3(0,1,1);
-            v3.rotate_around_z(M_PI/2);
-            assert(v3.sub(U(-1,0,1)).magnitude() < tolerance);
-        }
-        //rotate_around_z(vec2)
-        {
-            //rotate 180 degrees
-            vec2 v{std::cos(M_PI), std::sin(M_PI)};
-            U v3(0,1,1);
-            v3.rotate_around_z(v);
-            assert(v3.sub(U(0,-1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 360
-            vec2 v{std::cos(2*M_PI), std::sin(2*M_PI)};
-            U v3(0,1,1);
-            v3.rotate_around_z(v);
-            assert(v3.sub(U(0,1,1)).magnitude() < tolerance);
-        }
-        {
-            //rotate 90 (CCW)
-            vec2 v{std::cos(M_PI/2), std::sin(M_PI/2)};
-            U v3(0,1,1);
-            v3.rotate_around_z(v);
-            assert(v3.sub(U(-1,0,1)).magnitude() < tolerance);
-        }
     }
 
     template<class T, class U>
@@ -2869,6 +2875,7 @@ testing geometry\n\
     test_vec2_clamp();
     test_vec2_lerp();
     test_vec2_avg();
+    test_vec2_rotate_around_z();
 
     test_vec_ctor();
     test_vec_set();
