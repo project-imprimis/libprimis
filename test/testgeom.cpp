@@ -1746,7 +1746,7 @@ namespace
 
     void test_vec4_lerp()
     {
-        std::printf("testing vec lerp\n");
+        std::printf("testing vec4 lerp\n");
         //lerp(vec4,float)
         {
             vec4<float> v1(0,0,0,0),
@@ -1773,7 +1773,7 @@ namespace
                         v2(1,2,3,4);
             assert(v1.lerp(v2,1.5) == vec4<float>(1.5,3,4.5,6));
         }
-        //lerp(vec4<float>4,vec4<float>4,float)
+        //lerp(vec4<float>,vec4<float>,float)
         {
             vec4<float> v1(0,0,0,0),
                         v2(1,1,1,1),
