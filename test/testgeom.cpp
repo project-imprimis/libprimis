@@ -481,6 +481,28 @@ namespace
         }
     }
 
+    void test_vec2_star()
+    {
+        std::printf("testing vec2 operator*\n");
+
+        //operator*(T)
+        {
+            vec2 v1(1,1),
+                 v2(2,4);
+            assert(v1*3 == vec2(3,3));
+            assert(v2*2 == vec2(4,8));
+            assert(v1*0 == vec2(0,0));
+        }
+        //operator*(vec2)
+        {
+            vec2 v1(1,1),
+                 v2(2,4);
+            assert(v1*v1 == vec2(1,1));
+            assert(v2*v1 == vec2(2,4));
+            assert(v2*v2 == vec2(4,16));
+        }
+    }
+
     //3d test can be narrowed to test 2d case
     template<class T, class U>
     void test_3d_rotate_around_z(std::string_view type)
@@ -2909,6 +2931,7 @@ testing geometry\n\
     test_vec2_avg();
     test_vec2_plus();
     test_vec2_minus();
+    test_vec2_star();
     test_vec2_rotate_around_z();
 
     test_vec_ctor();
