@@ -367,26 +367,20 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
         }
         else if(wholefile[i] =='{')
         {
-            i++;
-            pushstring(bracketdepth, output, wholefile, lastbreak, i);
+            pushstring(bracketdepth, output, wholefile, lastbreak, i+1);
             bracketdepth++;
-            lastbreak = i;
-            i--;
+            lastbreak = i+1;
         }
         else if(wholefile[i] =='[')
         {
-            i++;
-            pushstring(bracketdepth, output, wholefile, lastbreak, i);
+            pushstring(bracketdepth, output, wholefile, lastbreak, i+1);
             bracketdepth++;
-            lastbreak = i;
-            i--;
+            lastbreak = i+1;
         }
         else if(wholefile[i] ==',')
         {
-            i++;
-            pushstring(bracketdepth, output, wholefile, lastbreak, i);
-            lastbreak = i;
-            i--;
+            pushstring(bracketdepth, output, wholefile, lastbreak, i+1);
+            lastbreak = i+1;
         }
     }
     if(bracketdepth != 0)
