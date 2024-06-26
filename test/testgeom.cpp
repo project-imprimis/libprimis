@@ -449,6 +449,17 @@ namespace
         assert(v1.avg(v2) == vec2(1,2));
     }
 
+    void test_vec2_plus()
+    {
+        std::printf("testing vec2 operator+\n");
+
+        vec2 v1(0,0),
+             v2(2,4);
+        assert(v1 + v1 == vec2(0,0));
+        assert(v2 + v2 == vec2(4,8));
+        assert(v1 + v2 == vec2(2,4));
+    }
+
     //3d test can be narrowed to test 2d case
     template<class T, class U>
     void test_3d_rotate_around_z(std::string_view type)
@@ -2875,6 +2886,7 @@ testing geometry\n\
     test_vec2_clamp();
     test_vec2_lerp();
     test_vec2_avg();
+    test_vec2_plus();
     test_vec2_rotate_around_z();
 
     test_vec_ctor();
