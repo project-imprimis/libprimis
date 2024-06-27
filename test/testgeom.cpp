@@ -465,25 +465,31 @@ namespace
         test_3d_plus<vec2>("vec2");
     }
 
-    void test_vec2_minus()
+    template<class T>
+    void test_3d_minus(std::string_view type)
     {
-        std::printf("testing vec2 operator-\n");
+        std::printf("testing %s operator-\n", type.data());
 
         //operator-(vec2)
         {
-            vec2 v1(1,1),
-                 v2(2,4);
-            assert(v1 - v1 == vec2(0,0));
-            assert(v2 - v1 == vec2(1,3));
-            assert(v1 - v2 == vec2(-1,-3));
+            T v1(vec(1,1,1)),
+              v2(vec(2,4,6));
+            assert(v1 - v1 == T(vec(0,0,0)));
+            assert(v2 - v1 == T(vec(1,3,5)));
+            assert(v1 - v2 == T(vec(-1,-3,-5)));
         }
         //operator-()
         {
-            vec2 v1(1,1),
-                 v2(2,4);
-            assert(-v1 == vec2(-1,-1));
-            assert(-v2 == vec2(-2,-4));
+            T v1(vec(1,1,1)),
+              v2(vec(2,4,6));
+            assert(-v1 == T(vec(-1,-1,-1)));
+            assert(-v2 == T(vec(-2,-4,-6)));
         }
+    }
+
+    void test_vec2_minus()
+    {
+        test_3d_minus<vec2>("vec2");
     }
 
     void test_vec2_star()
@@ -706,6 +712,11 @@ namespace
     void test_vec_plus()
     {
         test_3d_plus<vec>("vec");
+    }
+
+    void test_vec_minus()
+    {
+        test_3d_minus<vec>("vec");
     }
 
     template<class T>
@@ -2971,6 +2982,7 @@ testing geometry\n\
     test_vec_bracket();
     test_vec_nequal();
     test_vec_plus();
+    test_vec_minus();
     test_vec_iszero();
     test_vec_squaredlen();
     test_vec_square();
