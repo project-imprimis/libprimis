@@ -449,15 +449,20 @@ namespace
         assert(v1.avg(v2) == vec2(1,2));
     }
 
+    template<class T>
+    void test_3d_plus(std::string_view type)
+    {
+        std::printf("testing %s operator+\n", type.data());
+        T v1(vec(0,0,0)),
+          v2(vec(2,4,6));
+        assert(v1 + v1 == T(vec(0,0,0)));
+        assert(v2 + v2 == T(vec(4,8,12)));
+        assert(v1 + v2 == T(vec(2,4,6)));
+    }
+
     void test_vec2_plus()
     {
-        std::printf("testing vec2 operator+\n");
-
-        vec2 v1(0,0),
-             v2(2,4);
-        assert(v1 + v1 == vec2(0,0));
-        assert(v2 + v2 == vec2(4,8));
-        assert(v1 + v2 == vec2(2,4));
+        test_3d_plus<vec2>("vec2");
     }
 
     void test_vec2_minus()
@@ -696,6 +701,11 @@ namespace
     void test_vec_nequal()
     {
         test_3d_nequal<vec>("vec");
+    }
+
+    void test_vec_plus()
+    {
+        test_3d_plus<vec>("vec");
     }
 
     template<class T>
@@ -2961,6 +2971,7 @@ testing geometry\n\
     test_vec_set();
     test_vec_bracket();
     test_vec_nequal();
+    test_vec_plus();
     test_vec_iszero();
     test_vec_squaredlen();
     test_vec_square();
