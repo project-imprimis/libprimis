@@ -1386,7 +1386,6 @@ namespace
               v2 = std::sin(M_PI/2);
             U v3(0,1,1);
             v3.rotate_around_y(v1, v2);
-            std::printf("v3 %f %f %f\n", v3.x, v3.y, v3.z);
             assert(v3.sub(U(-1,1,0)).magnitude() < tolerance);
         }
         //rotate_around_y(T)
