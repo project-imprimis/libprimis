@@ -710,7 +710,8 @@ namespace
             {"pow 1", 1},
             {"pow 2 2", 4},
             {"pow 2 2 2", 16},
-            {"pow 2 3 2", 64}
+            {"pow 2 3 2", 64},
+            {"pow 2 2 2 2", 256},
         };
 
         test_cs_command_float(inputs);
@@ -950,6 +951,7 @@ namespace
         std::printf("testing CS bitscan command\n");
 
         std::vector<std::pair<std::string, int>> intinputs = {
+            {"bitscan", -1},
             {"bitscan 1 ", 0},
             {"bitscan 4", 2},
             {"bitscan 3", 0},
@@ -965,6 +967,7 @@ namespace
         std::printf("testing CS abs(f) command\n");
 
         std::vector<std::pair<std::string, float>> floatinputs = {
+            {"absf", 0.f},
             {"absf -1", 1.f},
             {"absf 0", 0.f},
             {"absf 1", 1.f},
@@ -974,6 +977,7 @@ namespace
         test_cs_command_float(floatinputs);
 
         std::vector<std::pair<std::string, int>> intinputs = {
+            {"abs", 0},
             {"abs -1", 1},
             {"abs 0", 0},
             {"abs 1", 1},
@@ -988,6 +992,7 @@ namespace
         std::printf("testing CS floor command\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
+            {"floor", 0.f},
             {"floor -1", -1.f},
             {"floor -1.5", -2.f},
             {"floor 0", 0.f},
@@ -1003,6 +1008,7 @@ namespace
         std::printf("testing CS ceil command\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
+            {"ceil", 0.f},
             {"ceil -1", -1.f},
             {"ceil -1.5", -1.f},
             {"ceil 0", 0.f},
@@ -1018,6 +1024,9 @@ namespace
         std::printf("testing CS round command\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
+            {"round", 0.f},
+            {"round 1", 1.f},
+            {"round -1", -1.f},
             {"round -1 1", -1.f},
             {"round -1.5 0.5", -1.5f},
             {"round -1.5 1", -2.f},
