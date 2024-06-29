@@ -68,9 +68,9 @@ namespace
         vec2 v(1,2),
              v2(2,2);
 
-        assert( (v != v) == false);
-        assert( v != v2);
-        assert( v2 != v);
+        assert((v != v) == false);
+        assert(v != v2);
+        assert(v2 != v);
     }
 
     void test_vec2_iszero()
