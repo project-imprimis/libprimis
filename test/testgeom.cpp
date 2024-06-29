@@ -2437,6 +2437,17 @@ namespace
         }
     }
 
+    void test_ivec_ceil()
+    {
+        std::printf("testing ivec ceil\n");
+        {
+            ivec i = ivec::ceil(vec(1.5,0,2.5)),
+                 i2 = ivec::ceil(vec(-1.5,-1,-0));
+            assert(i == ivec(2,0,3));
+            assert(i2 == ivec(-1,-1,0));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec2 tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -3130,6 +3141,7 @@ testing geometry\n\
     test_ivec_dot();
     test_ivec_dist();
     test_ivec_floor();
+    test_ivec_ceil();
 
     test_ivec2_bracket();
     test_ivec2_nequal();
