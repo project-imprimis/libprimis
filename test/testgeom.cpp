@@ -2426,6 +2426,17 @@ namespace
         }
     }
 
+    void test_ivec_floor()
+    {
+        std::printf("testing ivec floor\n");
+        {
+            ivec i = ivec::floor(vec(1.5,0,2.5)),
+                 i2 = ivec::floor(vec(-1.5,-1,-0));
+            assert(i == ivec(1,0,2));
+            assert(i2 == ivec(-2,-1,0));
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec2 tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -3118,6 +3129,7 @@ testing geometry\n\
     test_ivec_cross();
     test_ivec_dot();
     test_ivec_dist();
+    test_ivec_floor();
 
     test_ivec2_bracket();
     test_ivec2_nequal();
