@@ -1788,6 +1788,28 @@ namespace
         }
     }
 
+    void test_vec4_bracket()
+    {
+        std::printf("testing vec4 operator[]\n");
+
+        //const operator[]
+        {
+            const vec4<int> v(1,2,3,4);
+            assert(v[0] == 1);
+            assert(v[1] == 2);
+            assert(v[2] == 3);
+            assert(v[3] == 4);
+        }
+        //operator[]
+        {
+            vec4<int> v(1,2,3,4);
+            assert(v[0] == 1);
+            assert(v[1] == 2);
+            assert(v[2] == 3);
+            assert(v[3] == 4);
+        }
+    }
+
     void test_vec4_equal()
     {
         std::printf("testing vec4 operator==\n");
@@ -3123,6 +3145,7 @@ testing geometry\n\
     test_bvec_tohexcolor();
 
     test_vec4_ctor();
+    test_vec4_bracket();
     test_vec4_equal();
     test_vec4_nequal();
     test_vec4_dot3();
