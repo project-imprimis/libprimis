@@ -1764,6 +1764,30 @@ namespace
     // vec4 tests
     ////////////////////////////////////////////////////////////////////////////////
 
+    void test_vec4_ctor()
+    {
+        std::printf("testing vec4 constructor\n");
+
+        //vec4(vec, T)
+        {
+            assert(vec4<float>(1,1,1,1) == vec4<float>(vec(1,1,1), 1));
+            assert(vec4<float>(1,1,1,2) == vec4<float>(vec(1), 2));
+        }
+        //vec4(vec2, T, T)
+        {
+            assert(vec4<float>(1,1,1,1) == vec4<float>(vec2(1,1), 1, 1));
+            assert(vec4<float>(1,1,1,2) == vec4<float>(vec2(1,1), 1, 2));
+        }
+        //vec4(bvec, uchar)
+        {
+            assert(vec4<float>(255,255,255,255) == vec4<float>(bvec(255,255,255), 255));
+        }
+        //vec4(bvec)
+        {
+            assert(vec4<float>(255,255,255,0) == vec4<float>(bvec(255,255,255)));
+        }
+    }
+
     void test_vec4_equal()
     {
         std::printf("testing vec4 operator==\n");
@@ -3098,6 +3122,7 @@ testing geometry\n\
     test_bvec_hexcolor();
     test_bvec_tohexcolor();
 
+    test_vec4_ctor();
     test_vec4_equal();
     test_vec4_nequal();
     test_vec4_dot3();
