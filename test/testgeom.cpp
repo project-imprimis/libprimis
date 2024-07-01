@@ -1924,7 +1924,7 @@ namespace
     void test_vec4_lerp()
     {
         std::printf("testing vec4 lerp\n");
-        //lerp(vec4<uchar>, float)
+        //lerp(vec4<uchar>, vec4<uchar>, float)
         {
             vec4<uchar> v1(0,0,0,0),
                         v2(1,1,1,1);
@@ -1935,8 +1935,29 @@ namespace
             vec4<uchar> v1(0,0,0,0),
                         v2(10,10,10,10);
             v1.lerp(v1, v2,2.5f);
-            std::printf("%d %d %d %d\n", v1.x, v1.y, v1.z, v1.w);
             assert(v1 == vec4<uchar>(25,25,25,0));
+        }
+        //lerp(vec4<uchar>, vec4<uchar>, vec4<uchar>, float, float, float)
+        {
+            vec4<uchar> v1(1,1,1,1),
+                        v2(10,10,10,10),
+                        v3(100,100,100,100);
+            v1.lerp(v1, v2, v3, 1, 2, 3);
+            assert(v1 == vec4<uchar>(65,65,65,65));
+        }
+        {
+            vec4<uchar> v1(1,1,1,1),
+                        v2(10,10,10,10),
+                        v3(100,100,100,100);
+            v1.lerp(v1, v2, v3, 3, 2, 1);
+            assert(v1 == vec4<uchar>(123,123,123,123));
+        }
+        {
+            vec4<uchar> v1(1,1,1,1),
+                        v2(10,10,10,10),
+                        v3(100,100,100,100);
+            v1.lerp(v1, v2, v3, 1, 1, 1);
+            assert(v1 == vec4<uchar>(111,111,111,111));
         }
         //lerp(vec4,float)
         {
