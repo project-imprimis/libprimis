@@ -2006,6 +2006,26 @@ namespace
         }
     }
 
+    void test_vec4_flip()
+    {
+        std::printf("testing vec4 flip");
+
+        {
+            vec4<uchar> v1(0,0,0,0);
+            v1.flip();
+            assert(v1 == vec4<uchar>(128,128,128,128));
+            v1.flip();
+            assert(v1 == vec4<uchar>(0,0,0,0));
+        }
+        {
+            vec4<uchar> v1(10,10,10,10);
+            v1.flip();
+            assert(v1 == vec4<uchar>(138,138,138,138));
+            v1.flip();
+            assert(v1 == vec4<uchar>(10,10,10,10));
+        }
+    }
+
     void test_vec4_avg()
     {
         std::printf("testing vec4 avg\n");
@@ -3191,6 +3211,7 @@ testing geometry\n\
     test_vec4_normalize();
     test_vec4_safenormalize();
     test_vec4_lerp();
+    test_vec4_flip();
     test_vec4_avg();
     test_vec4_madd();
     test_vec4_msub();
