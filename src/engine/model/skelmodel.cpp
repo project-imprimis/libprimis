@@ -136,9 +136,8 @@ const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_vie
 
 skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
 {
-    skelanimspec s;
     skelanims.emplace_back();
-    skelanimspec & sa = skelanims.back();
+    skelanimspec &sa = skelanims.back();
     sa.name = name ? newstring(name) : nullptr;
     return skelanims.back();
 }
