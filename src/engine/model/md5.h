@@ -34,12 +34,6 @@ class md5 final : public skelloader<md5>
             uint start, count;
         };
 
-        struct md5hierarchy
-        {
-            string name;
-            int parent, flags, start;
-        };
-
         class md5meshgroup : public skelmeshgroup
         {
             public:
