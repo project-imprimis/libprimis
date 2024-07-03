@@ -85,7 +85,7 @@ bool md5::loaddefaultparts()
     mdl.initskins();
     std::string animname = modelpath;
     animname.append(modelname()).append("/").append(fname).append(".md5anim");
-    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname).c_str());
+    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
     return true;
 }
 
@@ -98,7 +98,7 @@ md5::md5meshgroup::md5meshgroup()
 const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename)
 {
     {
-        const skelanimspec *sa = skel->findskelanim(filename.c_str());
+        const skelanimspec *sa = skel->findskelanim(filename);
         if(sa)
         {
             return sa;
