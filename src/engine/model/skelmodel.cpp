@@ -138,7 +138,7 @@ skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name, int 
 {
     skelanims.emplace_back();
     skelanimspec &sa = skelanims.back();
-    sa.name = name ? newstring(name) : nullptr;
+    sa.name = name ? name : "";
     sa.frame = numframes;
     sa.range = animframes;
     return skelanims.back();
