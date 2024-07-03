@@ -390,7 +390,7 @@ struct skelmodel : animmodel
             ~skeleton();
 
             const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
-            skelanimspec &addskelanim(const char *name, int numframes, int animframes);
+            skelanimspec &addskelanim(const std::string &name, int numframes, int animframes);
             std::optional<int> findbone(const std::string &name) const;
             int findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
