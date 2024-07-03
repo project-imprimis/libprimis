@@ -247,7 +247,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 md5joint j = basejoints[i]; //intentionally getting by value to modify temp copy
                 if(h.start < animdatalen && h.flags)
                 {
-                    float *jdata = &animdata[h.start];
+                    const float *jdata = &animdata[h.start];
                     //bitwise AND against bits 0...5
                     if(h.flags & 1)
                     {
