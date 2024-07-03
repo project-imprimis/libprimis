@@ -216,9 +216,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             skel->framebones = animbones;
             animbones += skel->numframes*skel->numbones;
 
-            sas = &skel->addskelanim(filename);
-            sas->frame = skel->numframes;
-            sas->range = animframes;
+            sas = &skel->addskelanim(filename, skel->numframes, animframes);
 
             skel->numframes += animframes;
         }
