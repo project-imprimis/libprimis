@@ -95,16 +95,16 @@ md5::md5meshgroup::md5meshgroup()
 }
 
 //main anim loading functionality
-const md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
+const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename)
 {
     {
-        const skelanimspec *sa = skel->findskelanim(filename);
+        const skelanimspec *sa = skel->findskelanim(filename.c_str());
         if(sa)
         {
             return sa;
         }
     }
-    stream *f = openfile(filename, "r");
+    stream *f = openfile(filename.c_str(), "r");
     if(!f)
     {
         return nullptr;

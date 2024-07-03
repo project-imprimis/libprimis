@@ -39,7 +39,7 @@ class md5 final : public skelloader<md5>
             public:
                 md5meshgroup();
                 //main anim loading functionality
-                const skelanimspec * loadanim(const char *filename) override final;
+                const skelanimspec * loadanim(const std::string &filename) override final;
 
             private:
                 bool loadmesh(const char *filename, float smooth, part &p);

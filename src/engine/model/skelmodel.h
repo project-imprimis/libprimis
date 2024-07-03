@@ -574,7 +574,7 @@ struct skelmodel : animmodel
             blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
 
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;
-            virtual const skelanimspec *loadanim(const char *filename) = 0;
+            virtual const skelanimspec *loadanim(const std::string &filename) = 0;
         private:
             int vweights;
             std::array<int, 4> numblends;
