@@ -1176,7 +1176,7 @@ void slideagainst(physent *d, vec &dir, const vec &obstacle, bool foundfloor, bo
     recalcdir(d, oldvel, dir);
 }
 
-void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space)
+void avoidcollision(physent *d, const vec &dir, const physent *obstacle, float space)
 {
     float rad = obstacle->radius+d->radius;
     vec bbmin(obstacle->o);
