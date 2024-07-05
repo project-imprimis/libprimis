@@ -427,9 +427,9 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
     //assign basejoints accumulated above
     {
         std::vector<dualquat> bases;
-        for(uint i = 0; i < basejoints.size(); i++)
+        for(const md5joint &m : basejoints)
         {
-            bases.emplace_back(basejoints[i].orient, basejoints[i].pos);
+            bases.emplace_back(m.orient, m.pos);
         }
         skel->setbonebases(bases);
     }
