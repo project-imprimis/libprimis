@@ -72,7 +72,8 @@ class animmodel : public model
         {
             public:
                 const part *owner;
-                Texture *tex, *decal, *masks, *normalmap;
+                Texture *tex, *decal, *masks;
+                const Texture *normalmap;
                 Shader *shader, *rsmshader;
                 int cullface;
 
@@ -609,7 +610,8 @@ class animmodel : public model
         static bool enablecullface, enabledepthoffset;
         static vec4<float> colorscale;
         static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
-        static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
+        static Texture *lasttex, *lastdecal, *lastmasks;
+        static const Texture *lastnormalmap;
 };
 
 /* modelloader

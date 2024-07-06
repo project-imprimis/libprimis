@@ -64,8 +64,9 @@ GLuint animmodel::lastvbuf = 0,
 
 Texture *animmodel::lasttex = nullptr,
         *animmodel::lastdecal = nullptr,
-        *animmodel::lastmasks = nullptr,
-        *animmodel::lastnormalmap = nullptr;
+        *animmodel::lastmasks = nullptr;
+
+const Texture *animmodel::lastnormalmap = nullptr;
 
 std::stack<matrix4> animmodel::matrixstack;
 
@@ -1941,7 +1942,8 @@ void animmodel::startrender() const
     enabletc = enabletangents = enablebones = enabledepthoffset = false;
     enablecullface = true;
     lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
-    lasttex = lastdecal = lastmasks = lastnormalmap = nullptr;
+    lasttex = lastdecal = lastmasks = nullptr;
+    lastnormalmap = nullptr;
     skin::invalidateshaderparams();
 }
 
