@@ -351,8 +351,8 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
             md5joint j;
             while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
             {
-                char *curbuf = buf,
-                     *curname = name;
+                const char *curbuf = buf;
+                      char *curname = name;
                 bool allowspace = false;
                 while(*curbuf && std::isspace(*curbuf))
                 {
