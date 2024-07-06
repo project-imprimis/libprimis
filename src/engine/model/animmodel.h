@@ -610,8 +610,9 @@ class animmodel : public model
         static bool enablecullface, enabledepthoffset;
         static vec4<float> colorscale;
         static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
-        static Texture *lasttex, *lastdecal, *lastmasks;
-        static const Texture *lastnormalmap;
+        static Texture *lasttex, *lastdecal;
+        static const Texture *lastmasks,
+                             *lastnormalmap;
 };
 
 /* modelloader
