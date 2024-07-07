@@ -752,6 +752,17 @@ namespace
         assert(v2.iszero() == false);
     }
 
+    template<class T>
+    void test_3d_to_bool(std::string_view type)
+    {
+        std::printf("testing %s operator bool()\n", type.data());
+
+        T v1(0,0,0),
+          v2(1,1,1);
+        assert(static_cast<bool>(v1) == false);
+        assert(static_cast<bool>(v2) == true);
+    }
+
     void test_vec_iszero()
     {
         test_3d_iszero<vec>("vec");
@@ -2430,9 +2441,9 @@ namespace
         test_3d_nequal<ivec>("ivec");
     }
 
-    void test_ivec_iszero()
+    void test_ivec_to_bool()
     {
-        test_3d_iszero<ivec>("ivec");
+        test_3d_to_bool<ivec>("ivec");
     }
 
     void test_ivec_shl()
@@ -3243,7 +3254,7 @@ testing geometry\n\
     test_ivec_ctor();
     test_ivec_bracket();
     test_ivec_nequal();
-    test_ivec_iszero();
+    test_ivec_to_bool();
     test_ivec_shl();
     test_ivec_shr();
     test_ivec_mul();
