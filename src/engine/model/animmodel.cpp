@@ -62,9 +62,8 @@ GLuint animmodel::lastvbuf = 0,
        animmodel::lastbbuf = 0,
        animmodel::lastebuf = 0;
 
-Texture *animmodel::lasttex = nullptr;
-
-const Texture *animmodel::lastdecal = nullptr,
+const Texture *animmodel::lasttex = nullptr,
+              *animmodel::lastdecal = nullptr,
               *animmodel::lastmasks = nullptr,
               *animmodel::lastnormalmap = nullptr;
 
