@@ -930,14 +930,14 @@ int faceconvexity(const std::array<ivec, 4> &v, int &vis)
     int convex = (e3 = v[0]).sub(v[3]).dot(n);
     if(!convex)
     {
-        if(ivec().cross(e3, e2).iszero())
+        if(!ivec().cross(e3, e2))
         {
-            if(!n.iszero())
+            if(n)
             {
                 vis = 1;
             }
         }
-        else if(n.iszero())
+        else if(!n)
         {
             vis = 2;
         }
@@ -1201,8 +1201,8 @@ static bool collapsedface(const cube &c, int orient)
          v1(e0>>4, e3&0xF, f1),
          v2(e1>>4, e3>>4, f3),
          v3(e1&0xF, e2>>4, f2);
-    return ivec().cross(v1.sub(v0), v2.sub(v0)).iszero() &&
-           ivec().cross(v2, v3.sub(v0)).iszero();
+    return !ivec().cross(v1.sub(v0), v2.sub(v0)) &&
+           !ivec().cross(v2, v3.sub(v0));
 }
 
 static bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
@@ -1485,16 +1485,16 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     int convex = (e3 = v[0]).sub(v[3]).dot(n);
     if(!convex)
     {
-        if(ivec().cross(e3, e2).iszero() || v[1] == v[3])
+        if(!ivec().cross(e3, e2) || v[1] == v[3])
         {
-            if(n.iszero())
+            if(!n)
             {
                 return 0;
             }
             vis = 1;
             touching = 0xF&~(1<<3);
         }
-        else if(n.iszero())
+        else if(!n)
         {
             vis = 2;
             touching = 0xF&~(1<<1);

@@ -469,7 +469,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     ivec e1, e2, e3;
                     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
-                    if(n.iszero())
+                    if(!n)
                     {
                         n.cross(e2, (e3 = v[3]).sub(v[0]));
                     }

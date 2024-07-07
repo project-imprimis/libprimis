@@ -277,7 +277,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
             return false;
         }
         n.cross(ivec(v[1]).sub(v[0]), ivec(v[2]).sub(v[0]));
-        if(n.iszero())
+        if(!n)
         {
             n.cross(ivec(v[2]).sub(v[0]), ivec(v[3]).sub(v[0]));
         }

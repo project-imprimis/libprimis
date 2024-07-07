@@ -485,7 +485,7 @@ void cubeworld::changed(const ivec &bbmin, const ivec &bbmax, bool commit)
 
 void cubeworld::changed(const block3 &sel, bool commit)
 {
-    if(sel.s.iszero())
+    if(!sel.s)
     {
         return;
     }
@@ -1147,7 +1147,7 @@ void makeundo(selinfo &s)
 
 void makeundo()                        // stores state of selected cubes before editing
 {
-    if(lastsel==sel || sel.s.iszero())
+    if(lastsel==sel || !sel.s)
     {
         return;
     }

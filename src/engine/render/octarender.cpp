@@ -163,7 +163,7 @@ namespace
                         e2 = j+1 < numverts ? j+1 : 0;
                     ivec d = pos[e2];
                     d.sub(pos[e1]);
-                    if(d.iszero())
+                    if(!d)
                     {
                         continue;
                     }
