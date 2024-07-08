@@ -72,8 +72,8 @@ class animmodel : public model
         {
             public:
                 const part *owner;
-                Texture *tex, *decal, *masks;
-                const Texture *normalmap;
+                Texture *tex, *decal;
+                const Texture *masks, *normalmap;
                 Shader *shader, *rsmshader;
                 int cullface;
 
