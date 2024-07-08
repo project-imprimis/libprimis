@@ -1453,7 +1453,8 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
 
 void animmodel::render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const
 {
-    vec axis(1, 0, 0), forward(0, 1, 0);
+    vec axis(1, 0, 0),
+        forward(0, 1, 0);
 
     matrixstack = {};
     matrixstack.push(matrix4());
