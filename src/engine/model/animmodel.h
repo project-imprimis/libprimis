@@ -467,7 +467,7 @@ class animmodel : public model
         class part
         {
             public:
-                animmodel *model;
+                const animmodel *model;
                 int index;
                 meshgroup *meshes;
 
