@@ -672,7 +672,7 @@ void animmodel::meshgroup::bindbones(const void *wv, const void *bv, int stride)
 
 //part
 
-animmodel::part::part(animmodel *model, int index) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
+animmodel::part::part(const animmodel *model, int index) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
 {
     for(int i = 0; i < maxanimparts; ++i)
     {

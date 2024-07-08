@@ -486,7 +486,7 @@ class animmodel : public model
                 int numanimparts;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
 
-                part(animmodel *model, int index = 0);
+                part(const animmodel *model, int index = 0);
                 virtual ~part();
                 part(const part& a) = delete;
                 part &operator=(const part &a) = delete;
