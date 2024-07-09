@@ -71,20 +71,19 @@ class animmodel : public model
         class skin final : public shaderparams
         {
             public:
-                const part *owner;
                 Texture *tex, *decal;
                 const Texture *masks, *normalmap;
                 Shader *shader;
                 int cullface;
 
                 skin(const part *owner, Texture *tex, const Texture *masks) :
-                    owner(owner),
                     tex(notexture),
                     decal(nullptr),
                     masks(masks),
                     normalmap(nullptr),
                     shader(nullptr),
                     cullface(1),
+                    owner(owner),
                     rsmshader(nullptr),
                     key(nullptr)
                 {
@@ -99,6 +98,7 @@ class animmodel : public model
                 static void invalidateshaderparams();
 
             private:
+                const part *owner;
                 Shader *rsmshader;
                 class ShaderParamsKey
                 {
