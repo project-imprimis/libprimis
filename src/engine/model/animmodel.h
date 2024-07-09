@@ -74,7 +74,7 @@ class animmodel : public model
                 const part *owner;
                 Texture *tex, *decal;
                 const Texture *masks, *normalmap;
-                Shader *shader, *rsmshader;
+                Shader *shader;
                 int cullface;
 
                 skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
@@ -87,7 +87,9 @@ class animmodel : public model
                 void preloadshader();
                 void bind(Mesh &b, const AnimState *as, bool usegpuskel = false, int vweights = 0);
                 static void invalidateshaderparams();
+
             private:
+                Shader *rsmshader;
                 class ShaderParamsKey
                 {
                     public:
