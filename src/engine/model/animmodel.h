@@ -77,8 +77,18 @@ class animmodel : public model
                 Shader *shader;
                 int cullface;
 
-                skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
-
+                skin(const part *owner, Texture *tex, const Texture *masks) :
+                    owner(owner),
+                    tex(notexture),
+                    decal(nullptr),
+                    masks(masks),
+                    normalmap(nullptr),
+                    shader(nullptr),
+                    cullface(1),
+                    rsmshader(nullptr),
+                    key(nullptr)
+                {
+                }
 
                 bool alphatested() const;
                 void setkey();

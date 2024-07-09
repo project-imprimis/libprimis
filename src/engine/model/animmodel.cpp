@@ -804,11 +804,7 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, uint limit)
     }
     while(skins.size() < limit)
     {
-        skin s;
-        s.owner = this;
-        s.tex = tex;
-        s.masks = masks;
-        skins.push_back(s);
+        skins.emplace_back(this, tex, masks);
     }
 }
 
