@@ -1688,7 +1688,7 @@ int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<
     return numverts;
 }
 
-void skelmodel::skelmesh::fillvert(vvert &vv, vert &v)
+void skelmodel::skelmesh::fillvert(vvert &vv, const vert &v)
 {
     vv.tc = v.tc;
 }
