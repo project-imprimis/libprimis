@@ -651,7 +651,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::deque<poly> &p
     std::deque<const plink *> queue;
     for(uint i = 0; i < polys.size(); i++)
     {
-        poly &p = polys[i];
+        const poly &p = polys[i];
         int prev = p.numverts-1;
         for(int j = 0; j < p.numverts; ++j)
         {
