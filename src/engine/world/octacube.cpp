@@ -483,7 +483,7 @@ bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const p
         {
             index -= q.numverts;
         }
-        pvert &src = q.verts[index++];
+        const pvert &src = q.verts[index++];
         int cx = static_cast<int>(src.x) - static_cast<int>(mergeverts[nummergeverts-1].x),
             cy = static_cast<int>(src.y) - static_cast<int>(mergeverts[nummergeverts-1].y),
             dir = px*cy - py*cx;
