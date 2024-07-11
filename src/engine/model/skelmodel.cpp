@@ -1918,7 +1918,7 @@ void skelmodel::skelmeshgroup::preload()
 
 // skelpart
 
-skelmodel::skelpart::skelpart(animmodel *model, int index   ) : part(model, index)
+skelmodel::skelpart::skelpart(animmodel *model, int index) : part(model, index)
 {
 }
 
