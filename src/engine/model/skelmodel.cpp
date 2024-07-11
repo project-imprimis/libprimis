@@ -1157,7 +1157,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         {
             vertsize = sizeof(vvertgw);//silent parameter to genvbo()
             std::vector<vvertgw> vvertgws;
-            for(auto i : rendermeshes)
+            for(const auto &i : rendermeshes)
             {
                 vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen, vvertgws);
             }
@@ -1183,7 +1183,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             std::memset(htdata, -1, htlen*sizeof(int));
             vertsize = sizeof(vvertg); //silent parameter to genvbo()
             std::vector<vvertg> vvertgs;
-            for(auto i : rendermeshes)
+            for(const auto &i : rendermeshes)
             {
                 vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgs, htdata, htlen);
             }
