@@ -1821,7 +1821,8 @@ int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
     numblends[c.size()-1]++;
     blendcombos.push_back(c);
     blendcombo &a = blendcombos.back();
-    return a.interpindex = blendcombos.size()-1;
+    a.interpindex = blendcombos.size()-1;
+    return a.interpindex;
 }
 
 void skelmodel::skelmeshgroup::sortblendcombos()
