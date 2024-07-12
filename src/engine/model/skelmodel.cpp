@@ -2003,7 +2003,7 @@ skelmodel::skelpart &skelmodel::addpart()
     return *p;
 }
 
-animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
+animmodel::meshgroup * skelmodel::loadmeshes(const std::string &name, float smooth)
 {
     skelmeshgroup *group = newmeshes();
     group->skel = new skeleton(group);
@@ -2020,7 +2020,7 @@ animmodel::meshgroup * skelmodel::sharemeshes(const std::string &name, float smo
 {
     if(meshgroups.find(name) == meshgroups.end())
     {
-        meshgroup *group = loadmeshes(name.c_str(), smooth);
+        meshgroup *group = loadmeshes(name, smooth);
         if(!group)
         {
             return nullptr;

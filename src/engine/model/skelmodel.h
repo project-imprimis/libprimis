@@ -612,7 +612,7 @@ struct skelmodel : animmodel
     //ordinary methods
     skelmodel(std::string name);
     skelpart &addpart();
-    meshgroup *loadmeshes(const char *name, float smooth = 2);
+    meshgroup *loadmeshes(const std::string &name, float smooth = 2);
     meshgroup *sharemeshes(const std::string &name, float smooth = 2);
     //virtual methods
     virtual skelmeshgroup *newmeshes() = 0;
