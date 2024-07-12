@@ -2016,11 +2016,11 @@ animmodel::meshgroup * skelmodel::loadmeshes(const char *name, float smooth)
     return group;
 }
 
-animmodel::meshgroup * skelmodel::sharemeshes(const char *name, float smooth)
+animmodel::meshgroup * skelmodel::sharemeshes(const std::string &name, float smooth)
 {
     if(meshgroups.find(name) == meshgroups.end())
     {
-        meshgroup *group = loadmeshes(name, smooth);
+        meshgroup *group = loadmeshes(name.c_str(), smooth);
         if(!group)
         {
             return nullptr;

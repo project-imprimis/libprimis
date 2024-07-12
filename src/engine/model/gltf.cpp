@@ -74,7 +74,7 @@ bool gltf::loaddefaultparts()
     fname++;
     std::string meshname = std::string(modelpath);
     meshname.append(modelname()).append("/").append(fname).append(".gltfmesh");
-    mdl.meshes = sharemeshes(path(meshname).c_str());
+    mdl.meshes = sharemeshes(path(meshname));
     if(!mdl.meshes)
     {
         return false;

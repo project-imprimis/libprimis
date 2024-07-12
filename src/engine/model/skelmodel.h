@@ -613,7 +613,7 @@ struct skelmodel : animmodel
     skelmodel(std::string name);
     skelpart &addpart();
     meshgroup *loadmeshes(const char *name, float smooth = 2);
-    meshgroup *sharemeshes(const char *name, float smooth = 2);
+    meshgroup *sharemeshes(const std::string &name, float smooth = 2);
     //virtual methods
     virtual skelmeshgroup *newmeshes() = 0;
     //override methods
@@ -687,7 +687,7 @@ struct skelcommands : modelcommands<MDL>
         std::string filename;
         filename.append(MDL::dir).append("/").append(meshfile);
         part &mdl = MDL::loading->addpart();
-        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
         {
             conoutf("could not load %s", filename.c_str());
