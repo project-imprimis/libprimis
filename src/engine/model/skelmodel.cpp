@@ -1414,7 +1414,7 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
         }
         while(total > 255)
         {
-            for(int k = 0; k < 4; ++k)
+            for(size_t k = 0; k < 4; ++k)
             {
                 if(v.weights[k] > 0 && total > 255)
                 {
@@ -1425,7 +1425,7 @@ void skelmodel::blendcombo::serialize(skelmodel::vvertgw &v) const
         }
         while(total < 255)
         {
-            for(int k = 0; k < 4; ++k)
+            for(size_t k = 0; k < 4; ++k)
             {
                 if(v.weights[k] < 255 && total < 255)
                 {
