@@ -503,7 +503,7 @@ std::vector<std::vector<animmodel::Mesh *>::const_iterator> animmodel::meshgroup
     for(std::vector<animmodel::Mesh *>::const_iterator i = meshes.begin(); i != meshes.end(); ++i)
     {
         const animmodel::Mesh &tempmesh = **i;
-        if(!std::strcmp(meshname.data(), "*") || (tempmesh.name && !std::strcmp(tempmesh.name, meshname.data())))
+        if((meshname == "*") || (tempmesh.name.size() && (tempmesh.name == meshname)))
         {
             meshlist.push_back(i);
         }
@@ -517,7 +517,7 @@ std::vector<size_t> animmodel::meshgroup::getskins(std::string_view meshname) co
     for(uint i = 0; i < meshes.size(); i++)
     {
         const animmodel::Mesh &m = *(meshes[i]);
-        if(!std::strcmp(meshname.data(), "*") || (m.name && !std::strcmp(m.name, meshname.data())))
+        if((meshname == "*") || (m.name.size() && (m.name == meshname)))
         {
             skinlist.push_back(i);
         }

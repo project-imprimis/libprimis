@@ -536,7 +536,7 @@ void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p, const st
             {
                 end--;
             }
-            name = newstring(start, end+1-start);
+            name = std::string(start, end+1-start);
         }
         else if(std::strstr(buf, "shader"))
         {

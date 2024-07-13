@@ -139,12 +139,11 @@ class animmodel : public model
         {
             public:
                 meshgroup *group;
-                char *name;
+                std::string name;
                 bool cancollide, canrender, noclip;
 
                 virtual ~Mesh()
                 {
-                    delete[] name;
                 }
 
                 virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const = 0;
@@ -170,11 +169,11 @@ class animmodel : public model
                 }
 
             protected:
-                Mesh() : group(nullptr), name(nullptr), cancollide(true), canrender(true), noclip(false)
+                Mesh() : group(nullptr), cancollide(true), canrender(true), noclip(false)
                 {
                 }
 
-                Mesh(std::string_view name) : group(nullptr), name(newstring(name.data())), cancollide(true), canrender(true), noclip(false)
+                Mesh(std::string_view name) : group(nullptr), name(name), cancollide(true), canrender(true), noclip(false)
                 {
                 }
 
