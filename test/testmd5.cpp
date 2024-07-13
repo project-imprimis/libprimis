@@ -63,6 +63,28 @@ void test_md5_newmeshes()
     assert(m.newmeshes() != nullptr);
 }
 
+void test_md5_loadpart()
+{
+    std::printf("testing md5 loadpart\n");
+
+    md5 m("md5");
+    m.startload();
+    assert(md5::loading == &m);
+
+    skelcommands<md5>::setdir(std::string("md5").data());
+    float smooth = 0;
+    skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+
+    assert(m.modelname() == "md5");
+    assert(m.parts.size() == 1);
+    assert(m.parts[0]->meshes != nullptr);
+    skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m.parts[0]->meshes[0].meshes.at(0));
+    assert(s != nullptr);
+    assert(s->vertcount() == 438);
+    assert(s->tricount() == 462);
+}
+
+
 void test_md5()
 {
     std::printf(
@@ -76,4 +98,5 @@ testing md5 functionality\n\
     test_md5_flipy();
     test_md5_type();
     test_md5_newmeshes();
+    test_md5_loadpart();
 }
