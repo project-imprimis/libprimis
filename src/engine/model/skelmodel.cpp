@@ -1177,7 +1177,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
                 htlen = 128;
             for(auto i : rendermeshes)
             {
-                numverts += static_cast<skelmesh *>(*i)->numverts;
+                numverts += static_cast<skelmesh *>(*i)->vertcount();
             }
             while(htlen < numverts)
             {
@@ -1527,16 +1527,16 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 //skelmesh
 
-skelmodel::skelmesh::skelmesh() : tris(nullptr), numverts(0), numtris(0), maxweights(0), verts(nullptr)
+skelmodel::skelmesh::skelmesh() : tris(nullptr), numtris(0), maxweights(0), verts(nullptr), numverts(0)
 {
 }
 
 skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : Mesh(name),
     tris(tris),
-    numverts(numverts),
     numtris(numtris),
     maxweights(0),
-    verts(verts)
+    verts(verts),
+    numverts(numverts)
 {
 }
 
@@ -1760,6 +1760,11 @@ void skelmodel::skelmesh::remapverts(const std::vector<int> remap)
         vert &v = verts[i];
         v.blend = remap[v.blend];
     }
+}
+
+int skelmodel::skelmesh::vertcount() const
+{
+    return numverts;
 }
 
 // boneinfo

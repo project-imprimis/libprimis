@@ -410,7 +410,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
             std::string modeldir = filename;
             modeldir.resize(modeldir.rfind("/")); //truncate to file's directory
             m->load(f, buf, sizeof(buf), p, modeldir);
-            if(!m->numtris || !m->numverts) //if no content in the mesh
+            if(!m->numtris || !m->vertcount()) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename);
                 //double std::find of the same thing not the most efficient

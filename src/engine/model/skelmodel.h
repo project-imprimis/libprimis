@@ -308,8 +308,7 @@ struct skelmodel : animmodel
     {
         public:
             tri *tris;
-            int numverts, numtris, maxweights;
-
+            int numtris, maxweights;
             int voffset, eoffset, elen;
             GLuint minvert, maxvert;
 
@@ -349,9 +348,16 @@ struct skelmodel : animmodel
             void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
             void render();
             void remapverts(const std::vector<int> remap);
+            /**
+             * @brief Returns the number of verts represented by the object.
+             *
+             * @return the number of vertices represented
+             */
+            int vertcount() const;
 
         protected:
             vert *verts;
+            int numverts;
     };
 
     struct skelanimspec final
