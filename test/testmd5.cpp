@@ -84,6 +84,30 @@ void test_md5_loadpart()
     assert(s->tricount() == 462);
 }
 
+void test_md5_loadanim()
+{
+    std::printf("testing md5 loadanim\n");
+
+    md5 m("md5");
+    m.startload();
+    assert(md5::loading == &m);
+
+    skelcommands<md5>::setdir(std::string("md5").data());
+    float smooth = 0;
+    skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+
+    //anims must be registered in this global first
+    animnames.emplace_back("idle");
+
+    float speed = 30;
+    int priority = 0;
+    int offsets = 0;
+    skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
+    skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m.parts[0]);
+    assert(m.animated() == true);
+    assert(p->animated() == true);
+}
+
 
 void test_md5()
 {
@@ -99,4 +123,5 @@ testing md5 functionality\n\
     test_md5_type();
     test_md5_newmeshes();
     test_md5_loadpart();
+    test_md5_loadanim();
 }
