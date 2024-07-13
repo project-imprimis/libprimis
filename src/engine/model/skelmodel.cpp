@@ -1772,6 +1772,11 @@ int skelmodel::skelmesh::tricount() const
     return numtris;
 }
 
+const skelmodel::vert &skelmodel::skelmesh::getvert(size_t index) const
+{
+    return verts[index];
+}
+
 // boneinfo
 
 skelmodel::skeleton::boneinfo::boneinfo() :

@@ -365,6 +365,18 @@ struct skelmodel : animmodel
              */
             int tricount() const;
 
+            /**
+             * @brief Returns a const reference to a vert object inside this skelmesh
+             *
+             * This function is intended for testing and not to be used in other parts
+             * of the model code.
+             *
+             * @param index the index of the verts array to get
+             *
+             * @return a reference to a skelmodel::vert corresponding to the index
+             */
+            const vert &getvert(size_t index) const;
+
         protected:
             tri *tris;
             int numtris;

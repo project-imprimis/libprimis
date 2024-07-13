@@ -553,14 +553,14 @@ void test_skelmesh_buildnorms()
         tris[1].vert[1] = 2;
         tris[1].vert[2] = 1;
 
-        skelmodel::skelmesh mesh("test", verts, 4, tris, 2);
+        skelmodel::skelmesh mesh("test", verts, 4, tris, 2, nullptr);
 
         mesh.buildnorms(true);
 
-        assert(mesh.verts[0].norm.sub(vec(std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
-        assert(mesh.verts[1].norm.sub(vec(0, 0, 1)).magnitude() < tolerance);
-        assert(mesh.verts[2].norm.sub(vec(0, 0, 1)).magnitude() < tolerance);
-        assert(mesh.verts[3].norm.sub(vec(-std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(0).norm).sub(vec(std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(1).norm).sub(vec(0, 0, 1)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(2).norm).sub(vec(0, 0, 1)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(3).norm).sub(vec(-std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
     }
     //test buildnorms(false), also switch vertex order
     {
@@ -581,14 +581,14 @@ void test_skelmesh_buildnorms()
         tris[1].vert[1] = 2;
         tris[1].vert[2] = 3;
 
-        skelmodel::skelmesh mesh("test", verts, 4, tris, 2);
+        skelmodel::skelmesh mesh("test", verts, 4, tris, 2, nullptr);
 
         mesh.buildnorms(false);
 
-        assert(mesh.verts[0].norm.sub(vec(std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
-        assert(mesh.verts[1].norm.sub(vec(1, 0, 0)).magnitude() < tolerance);
-        assert(mesh.verts[2].norm.sub(vec(1, 0, 0)).magnitude() < tolerance);
-        assert(mesh.verts[3].norm.sub(vec(std::sqrt(2)/2, 0, -sqrt(2)/2)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(0).norm).sub(vec(std::sqrt(2)/2, 0, sqrt(2)/2)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(1).norm).sub(vec(1, 0, 0)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(2).norm).sub(vec(1, 0, 0)).magnitude() < tolerance);
+        assert(vec(mesh.getvert(3).norm).sub(vec(std::sqrt(2)/2, 0, -sqrt(2)/2)).magnitude() < tolerance);
     }
 }
 
@@ -602,7 +602,7 @@ void test_skelmesh_calcbb()
     verts[1].pos = vec(0,1,1);
     verts[2].pos = vec(0,-1,1);
     verts[3].pos = vec(-1,0,0);
-    skelmodel::skelmesh mesh("test", verts, 4, nullptr, 0);
+    skelmodel::skelmesh mesh("test", verts, 4, nullptr, 0, nullptr);
 
     {
         matrix4x3 m;
