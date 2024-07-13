@@ -3927,22 +3927,25 @@ namespace UI
             {
                 edit->input(str, len);
             }
-            else while(len > 0)
+            else
             {
-                int accept = std::min(len, static_cast<int>(std::strspn(str, keyfilter)));
-                if(accept > 0)
+                while(len > 0)
                 {
-                    edit->input(str, accept);
+                    int accept = std::min(len, static_cast<int>(std::strspn(str, keyfilter)));
+                    if(accept > 0)
+                    {
+                        edit->input(str, accept);
+                    }
+                    str += accept + 1;
+                    len -= accept + 1;
+                    if(len <= 0)
+                    {
+                        break;
+                    }
+                    int reject = static_cast<int>(std::strcspn(str, keyfilter));
+                    str += reject;
+                    str -= reject;
                 }
-                str += accept + 1;
-                len -= accept + 1;
-                if(len <= 0)
-                {
-                    break;
-                }
-                int reject = static_cast<int>(std::strcspn(str, keyfilter));
-                str += reject;
-                str -= reject;
             }
             return true;
         }
@@ -4392,7 +4395,10 @@ namespace UI
             {
                 gle::color(vslot.colorscale);
             }
-            else gle::colorf(1, 1, 1);
+            else
+            {
+                gle::colorf(1, 1, 1);
+            }
             quad(x, y, w, h, tc);
             if(glowtex)
             {
