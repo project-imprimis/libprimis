@@ -304,50 +304,54 @@ struct skelmodel : animmodel
 
     struct skelmeshgroup;
 
-    struct skelmesh : Mesh
+    class skelmesh : public Mesh
     {
-        vert *verts;
-        tri *tris;
-        int numverts, numtris, maxweights;
+        public:
+            tri *tris;
+            int numverts, numtris, maxweights;
 
-        int voffset, eoffset, elen;
-        GLuint minvert, maxvert;
+            int voffset, eoffset, elen;
+            GLuint minvert, maxvert;
 
-        skelmesh();
+            skelmesh();
 
-        /**
-         * @brief Constructs a skelmesh object.
-         *
-         * @param name name of the underlying Mesh object
-         * @param verts a heap-allocated array of vertices
-         * @param numverts size of verts array
-         * @param tris a heap-allocated array of tris
-         * @param numtris size of tris array
-         */
-        skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
+            /**
+             * @brief Constructs a skelmesh object.
+             *
+             * @param name name of the underlying Mesh object
+             * @param verts a heap-allocated array of vertices
+             * @param numverts size of verts array
+             * @param tris a heap-allocated array of tris
+             * @param numtris size of tris array
+             */
+            skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
 
-        virtual ~skelmesh();
+            virtual ~skelmesh();
 
-        int addblendcombo(const blendcombo &c);
+            int addblendcombo(const blendcombo &c);
 
-        void smoothnorms(float limit = 0, bool areaweight = true);
-        void buildnorms(bool areaweight = true);
-        void calctangents(bool areaweight = true);
-        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
-        void genBIH(BIH::mesh &m) const override final;
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
-        static void assignvert(vvertg &vv, const vert &v);
-        static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
+            void smoothnorms(float limit = 0, bool areaweight = true);
+            void buildnorms(bool areaweight = true);
+            void calctangents(bool areaweight = true);
+            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
+            void genBIH(BIH::mesh &m) const override final;
+            void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
+            static void assignvert(vvertg &vv, const vert &v);
+            static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
-        int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
-        int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
-        int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset);
+            int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
+            int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
+            int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset);
 
-        static void fillvert(vvert &vv, const vert &v);
-        void fillverts(vvert *vdata);
-        void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
-        void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
-        void render();
+            static void fillvert(vvert &vv, const vert &v);
+            void fillverts(vvert *vdata);
+            void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
+            void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
+            void render();
+            void remapverts(const std::vector<int> remap);
+
+        protected:
+            vert *verts;
     };
 
     struct skelanimspec final
@@ -567,6 +571,7 @@ struct skelmodel : animmodel
             void genvbo(vbocacheentry &vc);
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
             int addblendcombo(const blendcombo &c);
+            //sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
             void sortblendcombos();
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
             void cleanup() override final;

@@ -1527,16 +1527,16 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 //skelmesh
 
-skelmodel::skelmesh::skelmesh() : verts(nullptr), tris(nullptr), numverts(0), numtris(0), maxweights(0)
+skelmodel::skelmesh::skelmesh() : tris(nullptr), numverts(0), numtris(0), maxweights(0), verts(nullptr)
 {
 }
 
 skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : Mesh(name),
-    verts(verts),
     tris(tris),
     numverts(numverts),
     numtris(numtris),
-    maxweights(0)
+    maxweights(0),
+    verts(verts)
 {
 }
 
@@ -1753,6 +1753,15 @@ void skelmodel::skelmesh::render()
     xtravertsva += numverts;
 }
 
+void skelmodel::skelmesh::remapverts(const std::vector<int> remap)
+{
+    for(int i = 0; i < numverts; ++i)
+    {
+        vert &v = verts[i];
+        v.blend = remap[v.blend];
+    }
+}
+
 // boneinfo
 
 skelmodel::skeleton::boneinfo::boneinfo() :
@@ -1836,21 +1845,17 @@ int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
 void skelmodel::skelmeshgroup::sortblendcombos()
 {
     std::sort(blendcombos.begin(), blendcombos.end(), blendcombo::sortcmp);
-    int *remap = new int[blendcombos.size()];
+    std::vector<int> remap;
     for(uint i = 0; i < blendcombos.size(); i++)
     {
-        remap[blendcombos[i].interpindex] = i;
+        remap.push_back(blendcombos[i].interpindex);
     }
     auto rendermeshes = getrendermeshes();
     for(auto i : rendermeshes)
     {
-        for(int j = 0; j < static_cast<skelmesh *>(*i)->numverts; ++j)
-        {
-            vert &v = static_cast<skelmesh *>(*i)->verts[j];
-            v.blend = remap[v.blend];
-        }
+        skelmesh *s = static_cast<skelmesh *>(*i);
+        s->remapverts(remap);
     }
-    delete[] remap;
 }
 
 void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheentry &bc)
