@@ -51,7 +51,7 @@ class md5 final : public skelloader<md5>
         class md5mesh : public skelmesh
         {
             public:
-                md5mesh();
+                md5mesh(std::string_view name, meshgroup *m);
                 ~md5mesh();
                 void cleanup();
                 void buildverts(const std::vector<md5joint> &joints);

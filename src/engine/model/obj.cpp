@@ -149,9 +149,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 if(!curmesh)
                 {
                     //startmesh
-                    vertmesh &m = *new vertmesh;
-                    m.group = this;
-                    m.name = meshname[0] ? std::string(meshname) : nullptr;
+                    vertmesh &m = *new vertmesh(meshname[0] ? std::string(meshname) : "", this);
                     meshes.push_back(&m);
                     curmesh = &m;
                     verthash.clear();

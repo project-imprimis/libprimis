@@ -318,7 +318,7 @@ struct skelmodel : animmodel
              * @param tris a heap-allocated array of tris
              * @param numtris size of tris array
              */
-            skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
+            skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
 
             virtual ~skelmesh();
 

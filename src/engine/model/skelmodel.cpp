@@ -1531,7 +1531,7 @@ skelmodel::skelmesh::skelmesh() : tris(nullptr), numtris(0), verts(nullptr), num
 {
 }
 
-skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : Mesh(name),
+skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) : Mesh(name, m),
     tris(tris),
     numtris(numtris),
     verts(verts),

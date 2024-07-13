@@ -137,10 +137,9 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
                 tris[i].vert[2] = indices[i][2];
             }
             //if able to create the verts/tris arrays without throwing, create new gltfmesh
-            gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris);
-            m->group = this;
+            gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris, this);
             meshes.push_back(m);
-            p.initskins(notexture, notexture, m->group->meshes.size());
+            p.initskins(notexture, notexture, meshes.size());
 
         }
         for(uint i = 0; i < meshes.size(); i++)
@@ -177,7 +176,8 @@ bool gltf::gltfmeshgroup::load(std::string_view meshfile, float smooth, part &p)
     return true;
 }
 
-gltf::gltfmesh::gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : skelmesh(name, verts, numverts, tris, numtris)
+gltf::gltfmesh::gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) :
+    skelmesh(name, verts, numverts, tris, numtris, m)
 {
 }
 

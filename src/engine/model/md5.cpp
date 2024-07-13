@@ -403,8 +403,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
         //load up meshes
         else if(std::strstr(buf, "mesh {"))
         {
-            md5mesh *m = new md5mesh;
-            m->group = this;
+            md5mesh *m = new md5mesh("", this); //we will set its name later
             meshes.push_back(m);
 
             std::string modeldir = filename;
@@ -466,7 +465,11 @@ bool md5::md5meshgroup::load(std::string_view meshfile, float smooth, part &p)
     return true;
 }
 
-md5::md5mesh::md5mesh() : weightinfo(nullptr), numweights(0), vertinfo(nullptr)
+md5::md5mesh::md5mesh(std::string_view name, meshgroup *m) :
+    skelmesh(name, nullptr, 0, nullptr, 0, m),
+    weightinfo(nullptr),
+    numweights(0),
+    vertinfo(nullptr)
 {
 }
 

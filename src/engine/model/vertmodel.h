@@ -51,6 +51,8 @@ class vertmodel : public animmodel
             uint minvert, maxvert;
 
             vertmesh();
+            vertmesh(std::string_view name, meshgroup *m);
+
             virtual ~vertmesh();
 
             void smoothnorms(float limit = 0, bool areaweight = true);

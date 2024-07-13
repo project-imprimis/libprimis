@@ -138,7 +138,6 @@ class animmodel : public model
         class Mesh
         {
             public:
-                meshgroup *group;
                 std::string name;
                 bool cancollide, canrender, noclip;
 
@@ -169,11 +168,18 @@ class animmodel : public model
                 }
 
             protected:
-                Mesh() : group(nullptr), cancollide(true), canrender(true), noclip(false)
+                meshgroup *group;
+
+                Mesh() : cancollide(true), canrender(true), noclip(false), group(nullptr)
                 {
                 }
 
-                Mesh(std::string_view name) : group(nullptr), name(name), cancollide(true), canrender(true), noclip(false)
+                Mesh(std::string_view name, meshgroup *m) :
+                    name(name),
+                    cancollide(true),
+                    canrender(true),
+                    noclip(false),
+                    group(m)
                 {
                 }
 

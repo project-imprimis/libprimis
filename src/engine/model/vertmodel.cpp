@@ -77,6 +77,14 @@ vertmodel::vertmesh::vertmesh() : verts(0), tcverts(0), tris(0)
 {
 }
 
+vertmodel::vertmesh::vertmesh(std::string_view name, meshgroup *m) :
+    Mesh(name, m),
+    verts(0),
+    tcverts(0),
+    tris(0)
+{
+}
+
 vertmodel::vertmesh::~vertmesh()
 {
     delete[] verts;

@@ -57,7 +57,7 @@ class gltf final : public skelloader<gltf>
         class gltfmesh : public skelmesh
         {
             public:
-                gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris);
+                gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
                 ~gltfmesh();
                 void cleanup();
                 void buildverts(const std::vector<gltfjoint> &joints);
