@@ -342,6 +342,14 @@ struct skelmodel : animmodel
             void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
             void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
             void render();
+            /**
+             * @brief Assigns indices from the remap parameter to the object's verts
+             *
+             * Assigns the vector of remap blend indices to the verts array. Assumes
+             * that the vector passed is at least as large as the verts array.
+             *
+             * @param remap a vector of new indices to assign
+             */
             void remapverts(const std::vector<int> remap);
             /**
              * @brief Returns the number of verts represented by the object.
