@@ -296,27 +296,35 @@ void skelmodel::skeleton::remapbones()
             {
                 continue;
             }
+            //for each weight represented, compare with other weights in this blendcombo
             for(size_t l = 0; l < c.size(); ++l) //note this is a loop l (level 4)
             {
                 if(l == k)
                 {
                     continue;
                 }
+                //get the index of the weight at l
                 int parent = c.getbone(l);
+                //if k's parent is this bone, or k's parent exists and k's parent is l's parent
                 if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
                 {
+                    //set k's group to be its parent negated
                     info.group = -info.parent;
                     break;
                 }
+                //if k's group is <= l's index
                 if(info.group <= parent)
                 {
                     continue;
                 }
+                //if k's group is > l's index, then k is a child of l (children are assigned higher numbers than parents)
                 int child = c.getbone(k);
+                //while l's index is greater than k's (implying l is a child of k), change l until l is a parent of k
                 while(parent > child)
                 {
                     parent = bones[parent].parent;
                 }
+                //if l, or one of its parents, is not k, set k's group to the index of the bone at l
                 if(parent != child)
                 {
                     info.group = c.getbone(l);
