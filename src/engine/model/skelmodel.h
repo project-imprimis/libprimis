@@ -307,11 +307,6 @@ struct skelmodel : animmodel
     class skelmesh : public Mesh
     {
         public:
-            tri *tris;
-            int numtris, maxweights;
-            int voffset, eoffset, elen;
-            GLuint minvert, maxvert;
-
             skelmesh();
 
             /**
@@ -355,9 +350,21 @@ struct skelmodel : animmodel
              */
             int vertcount() const;
 
+            /**
+             * @brief Returns the number of tris represented by the object.
+             *
+             * @return the number of triangles represented
+             */
+            int tricount() const;
+
         protected:
+            tri *tris;
+            int numtris;
             vert *verts;
             int numverts;
+            int maxweights;
+            int voffset, eoffset, elen;
+            GLuint minvert, maxvert;
     };
 
     struct skelanimspec final

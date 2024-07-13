@@ -1527,16 +1527,16 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skel
 
 //skelmesh
 
-skelmodel::skelmesh::skelmesh() : tris(nullptr), numtris(0), maxweights(0), verts(nullptr), numverts(0)
+skelmodel::skelmesh::skelmesh() : tris(nullptr), numtris(0), verts(nullptr), numverts(0), maxweights(0)
 {
 }
 
 skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris) : Mesh(name),
     tris(tris),
     numtris(numtris),
-    maxweights(0),
     verts(verts),
-    numverts(numverts)
+    numverts(numverts),
+    maxweights(0)
 {
 }
 
@@ -1765,6 +1765,11 @@ void skelmodel::skelmesh::remapverts(const std::vector<int> remap)
 int skelmodel::skelmesh::vertcount() const
 {
     return numverts;
+}
+
+int skelmodel::skelmesh::tricount() const
+{
+    return numtris;
 }
 
 // boneinfo
