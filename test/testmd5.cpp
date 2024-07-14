@@ -82,6 +82,8 @@ void test_md5_loadpart()
     assert(s != nullptr);
     assert(s->vertcount() == 438);
     assert(s->tricount() == 462);
+
+    m.endload();
 }
 
 void test_md5_loadanim()
@@ -106,6 +108,8 @@ void test_md5_loadanim()
     skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m.parts[0]);
     assert(m.animated() == true);
     assert(p->animated() == true);
+
+    m.endload();
 }
 
 
