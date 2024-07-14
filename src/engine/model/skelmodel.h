@@ -912,9 +912,20 @@ struct skelcommands : modelcommands<MDL>
         skel->pitchcorrects.insert(skel->pitchcorrects.begin() + pos, c);
     }
 
-    //attempts to give a model object an animation by the name of *anim parameter
-    //loaded from *animfile with speed/priority/offsets to determine how fast
-    //and what frames play
+    /**
+     * @param Assigns an animation to the currently loaded model.
+     *
+     * Attempts to give a model object an animation by the name of anim parameter
+     * loaded from animfile with speed/priority/offsets to determine how fast
+     * and what frames play.
+     *
+     * The name of the anim being loaded (anim param) must be in the global animnames vector.
+     *
+     * The MDL::loading static field must be set by calling startload() for the
+     * relevant model object.
+     *
+     * The animation will be applied to the most recent loaded part (with loadpart()).
+     */
     static void setanim(const char *anim, const char *animfile, const float *speed,
                         const int *priority, const int *startoffset, const int *endoffset)
     {
