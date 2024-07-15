@@ -86,6 +86,30 @@ void test_md5_loadpart()
     m.endload();
 }
 
+void test_md5_settag()
+{
+    std::printf("testing md5 settag\n");
+
+    md5 m("md5");
+    m.startload();
+    assert(md5::loading == &m);
+
+    skelcommands<md5>::setdir(std::string("md5").data());
+    float smooth = 0;
+    skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+    float pos = 0;
+
+    skelcommands<md5>::settag("X_pulse_muzzle", "tag_muzzle", &pos, &pos, &pos, &pos, &pos, &pos);
+    skelmodel::skeleton *s = static_cast<skelmodel::skelmeshgroup *>(&(m.parts[0]->meshes[0]))->skel;
+    assert(s->findtag("tag_muzzle") == 0);
+
+    skelcommands<md5>::settag("X_pulse_base", "base", &pos, &pos, &pos, &pos, &pos, &pos);
+    s = static_cast<skelmodel::skelmeshgroup *>(&(m.parts[0]->meshes[0]))->skel;
+    assert(s->findtag("base") == 1);
+
+    m.endload();
+}
+
 void test_md5_loadanim()
 {
     std::printf("testing md5 loadanim\n");
@@ -127,5 +151,6 @@ testing md5 functionality\n\
     test_md5_type();
     test_md5_newmeshes();
     test_md5_loadpart();
+    test_md5_settag();
     test_md5_loadanim();
 }
