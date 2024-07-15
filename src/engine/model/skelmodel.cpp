@@ -1860,10 +1860,10 @@ int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
 void skelmodel::skelmeshgroup::sortblendcombos()
 {
     std::sort(blendcombos.begin(), blendcombos.end(), blendcombo::sortcmp);
-    std::vector<int> remap;
+    std::vector<int> remap(blendcombos.size(), 0);
     for(uint i = 0; i < blendcombos.size(); i++)
     {
-        remap.push_back(blendcombos[i].interpindex);
+        remap[blendcombos[i].interpindex] = i;
     }
     auto rendermeshes = getrendermeshes();
     for(auto i : rendermeshes)
