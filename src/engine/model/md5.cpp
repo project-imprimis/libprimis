@@ -72,7 +72,7 @@ bool md5::loaddefaultparts()
     do
     {
         --fname;
-    } while(fname >= modelname() && *fname!='/' && *fname!='\\');
+    } while(fname >= modelname().c_str() && *fname!='/' && *fname!='\\');
     fname++;
     std::string meshname = modelpath;
     meshname.append(modelname()).append("/").append(fname).append(".md5mesh");
