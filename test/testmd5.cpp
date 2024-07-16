@@ -67,21 +67,30 @@ void test_md5_loaddefaultparts()
 {
     std::printf("testing md5 loaddefaultparts\n");
 
-    md5 m("pulserifle");
-    m.startload();
-    assert(md5::loading == &m);
+    //load model that exists
+    {
+        md5 m("pulserifle");
+        m.startload();
+        assert(md5::loading == &m);
 
-    assert(m.loaddefaultparts() == true);
+        assert(m.loaddefaultparts() == true);
 
-    assert(m.modelname() == "pulserifle");
-    assert(m.parts.size() == 1);
-    assert(m.parts[0]->meshes != nullptr);
-    skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m.parts[0]->meshes[0].meshes.at(0));
-    assert(s != nullptr);
-    assert(s->vertcount() == 438);
-    assert(s->tricount() == 462);
+        assert(m.modelname() == "pulserifle");
+        assert(m.parts.size() == 1);
+        assert(m.parts[0]->meshes != nullptr);
+        skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m.parts[0]->meshes[0].meshes.at(0));
+        assert(s != nullptr);
+        assert(s->vertcount() == 438);
+        assert(s->tricount() == 462);
 
-    m.endload();
+        m.endload();
+    }
+    //(fail) to load nonexistent model
+    {
+        md5 m("pulserifle2");
+
+        assert(m.loaddefaultparts() == false);
+    }
 }
 
 void test_md5_loadpart()
