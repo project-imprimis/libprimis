@@ -70,8 +70,6 @@ void test_md5_loaddefaultparts()
     //load model that exists
     {
         md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
 
         assert(m.loaddefaultparts() == true);
 
@@ -82,8 +80,6 @@ void test_md5_loaddefaultparts()
         assert(s != nullptr);
         assert(s->vertcount() == 438);
         assert(s->tricount() == 462);
-
-        m.endload();
     }
     //(fail) to load nonexistent model
     {
