@@ -89,6 +89,32 @@ void test_md5_loaddefaultparts()
     }
 }
 
+void test_md5_load()
+{
+    std::printf("testing md5 load\n");
+
+    //load model that exists
+    {
+        md5 m("pulserifle");
+
+        assert(m.load() == true);
+
+        assert(m.modelname() == "pulserifle");
+        assert(m.parts.size() == 1);
+        assert(m.parts[0]->meshes != nullptr);
+        skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m.parts[0]->meshes[0].meshes.at(0));
+        assert(s != nullptr);
+        assert(s->vertcount() == 438);
+        assert(s->tricount() == 462);
+    }
+    //(fail) to load nonexistent model
+    {
+        md5 m("pulserifle2");
+
+        assert(m.load() == false);
+    }
+}
+
 void test_md5_loadpart()
 {
     std::printf("testing md5 loadpart\n");
@@ -177,6 +203,7 @@ testing md5 functionality\n\
     test_md5_type();
     test_md5_newmeshes();
     test_md5_loaddefaultparts();
+    test_md5_load();
     test_md5_loadpart();
     test_md5_settag();
     test_md5_loadanim();
