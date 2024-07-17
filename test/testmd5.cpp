@@ -185,6 +185,7 @@ void test_md5_loadanim()
     assert(m.animated() == true);
     assert(p->animated() == true);
 
+    m.loaded();
     m.endload();
 }
 
