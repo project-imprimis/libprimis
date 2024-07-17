@@ -601,21 +601,21 @@ namespace
         //rotate_around_z(vec2)
         {
             //rotate 180 degrees
-            vec2 v{std::cos(M_PI), std::sin(M_PI)};
+            vec2 v(std::cos(M_PI), std::sin(M_PI));
             U v3(vec(0,1,1));
             v3.rotate_around_z(v);
             assert(v3.sub(U(vec(0,-1,1))).magnitude() < tolerance);
         }
         {
             //rotate 360
-            vec2 v{std::cos(2*M_PI), std::sin(2*M_PI)};
+            vec2 v(std::cos(2*M_PI), std::sin(2*M_PI));
             U v3(vec(0,1,1));
             v3.rotate_around_z(v);
             assert(v3.sub(U(vec(0,1,1))).magnitude() < tolerance);
         }
         {
             //rotate 90 (CCW)
-            vec2 v{std::cos(M_PI/2), std::sin(M_PI/2)};
+            vec2 v(std::cos(M_PI/2), std::sin(M_PI/2));
             U v3(vec(0,1,1));
             v3.rotate_around_z(v);
             assert(v3.sub(U(vec(-1,0,1))).magnitude() < tolerance);
@@ -1394,21 +1394,21 @@ namespace
         //rotate_around_x(vec2)
         {
             //rotate 180 degrees
-            vec2 v{std::cos(M_PI), std::sin(M_PI)};
+            vec2 v(std::cos(M_PI), std::sin(M_PI));
             U v3(1,0,1);
             v3.rotate_around_x(v);
             assert(v3.sub(U(1,0,-1)).magnitude() < tolerance);
         }
         {
             //rotate 360
-            vec2 v{std::cos(2*M_PI), std::sin(2*M_PI)};
+            vec2 v(std::cos(2*M_PI), std::sin(2*M_PI));
             U v3(1,0,1);
             v3.rotate_around_x(v);
             assert(v3.sub(U(1,0,1)).magnitude() < tolerance);
         }
         {
             //rotate 90 (CCW)
-            vec2 v{std::cos(M_PI/2), std::sin(M_PI/2)};
+            vec2 v(std::cos(M_PI/2), std::sin(M_PI/2));
             U v3(1,0,1);
             v3.rotate_around_x(v);
             assert(v3.sub(U(1,-1,0)).magnitude() < tolerance);
@@ -1467,21 +1467,21 @@ namespace
         //rotate_around_y(vec2)
         {
             //rotate 180 degrees
-            vec2 v{std::cos(M_PI), std::sin(M_PI)};
+            vec2 v(std::cos(M_PI), std::sin(M_PI));
             U v3(0,1,1);
             v3.rotate_around_y(v);
             assert(v3.sub(U(0,1,-1)).magnitude() < tolerance);
         }
         {
             //rotate 360
-            vec2 v{std::cos(2*M_PI), std::sin(2*M_PI)};
+            vec2 v(std::cos(2*M_PI), std::sin(2*M_PI));
             U v3(0,1,1);
             v3.rotate_around_y(v);
             assert(v3.sub(U(0,1,1)).magnitude() < tolerance);
         }
         {
             //rotate 90 (CCW)
-            vec2 v{std::cos(M_PI/2), std::sin(M_PI/2)};
+            vec2 v(std::cos(M_PI/2), std::sin(M_PI/2));
             U v3(0,1,1);
             v3.rotate_around_y(v);
             assert(v3.sub(U(-1,1,0)).magnitude() < tolerance);
