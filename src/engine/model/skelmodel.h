@@ -741,6 +741,15 @@ struct skelcommands : modelcommands<MDL>
         }
     }
 
+    /**
+     * @brief Adds a tag corresponding to a bone
+     *
+     * @param name the name of the bone in the skeletal model
+     * @param name the new name to assign the associated tag
+     *
+     * @param tx/ty/tz translation parameters
+     * @param rx/ry/rz rotation parameters
+     */
     static void settag(const char *name, const char *tagname,
                        const float *tx, const float *ty, const float *tz,
                        const float *rx, const float *ry, const float *rz)
