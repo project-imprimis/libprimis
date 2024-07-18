@@ -866,6 +866,15 @@ struct skelcommands : modelcommands<MDL>
         skel->pitchtargets.push_back(t);
     }
 
+    /**
+     * @brief Adds a pitch correction to this model's skeleton
+     *
+     * @param name the name of the bone to pitch correct
+     * @param targetname the name of the bone to target
+     * @param scale the scale to apply to the pitchcorrect
+     * @param pitchmin the minimum pitch to apply
+     * @param pitchmax the maximum pitch to apply
+     */
     static void setpitchcorrect(const char *name, const char *targetname,
                                 const float *scale, const float *pitchmin, const float *pitchmax)
     {
