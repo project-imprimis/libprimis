@@ -189,6 +189,35 @@ void test_md5_loadanim()
     m.endload();
 }
 
+void test_md5_setpitchtarget()
+{
+    std::printf("testing md5 setpitchtarget\n");
+
+    md5 m("pulserifle");
+    m.startload();
+    assert(md5::loading == &m);
+
+    skelcommands<md5>::setdir(std::string("pulserifle").data());
+    float smooth = 0;
+    skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+
+    //anims must be registered in this global first
+    animnames.emplace_back("idle");
+
+
+    float speed = 30;
+    int priority = 0,
+        offsets = 0;
+
+    int frameoffset = 1;
+    float pitchmin = 1.f,
+          pitchmax = 2.f;
+    skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
+    skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "idle.md5anim", &frameoffset, &pitchmin, &pitchmax);
+    m.loaded();
+    m.endload();
+}
+
 
 void test_md5()
 {
@@ -208,4 +237,5 @@ testing md5 functionality\n\
     test_md5_loadpart();
     test_md5_settag();
     test_md5_loadanim();
+    test_md5_setpitchtarget();
 }
