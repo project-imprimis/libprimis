@@ -474,6 +474,14 @@ class animmodel : public model
             //no private-able members
         };
 
+        /*
+         * The meshgroups map stores meshgroups which may be shared between different
+         * model instantiations (e.g. skeletal models which have other models attached
+         * as parts).
+         *
+         * The animmodel is comprised of parts which each represent instance-specific
+         * metadata applied to a meshgroup in this map.
+         */
         static std::unordered_map<std::string, meshgroup *> meshgroups;
 
         /* The `part` object is the highest level of organization in a model object.
@@ -486,7 +494,7 @@ class animmodel : public model
             public:
                 const animmodel *model;
                 int index;
-                meshgroup *meshes;
+                meshgroup *meshes; //pointer to a single meshgroup in animmodel::meshgroups
 
                 struct linkedpart
                 {
