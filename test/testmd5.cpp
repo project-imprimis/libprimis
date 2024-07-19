@@ -187,7 +187,7 @@ void test_md5_loadanim()
 
     m.loaded();
     m.endload();
-    animnames.clear()
+    animnames.clear();
 }
 
 void test_md5_setpitchtarget()
