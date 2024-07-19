@@ -187,6 +187,7 @@ void test_md5_loadanim()
 
     m.loaded();
     m.endload();
+    animnames.clear()
 }
 
 void test_md5_setpitchtarget()
@@ -204,7 +205,6 @@ void test_md5_setpitchtarget()
     //anims must be registered in this global first
     animnames.emplace_back("idle");
 
-
     float speed = 30;
     int priority = 0,
         offsets = 0;
@@ -216,6 +216,7 @@ void test_md5_setpitchtarget()
     skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "idle.md5anim", &frameoffset, &pitchmin, &pitchmax);
     m.loaded();
     m.endload();
+    animnames.clear();
 }
 
 
