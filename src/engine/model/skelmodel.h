@@ -1158,7 +1158,7 @@ struct skelcommands : modelcommands<MDL>
         return ragdoll;
     }
 
-    static void rdvert(float *x, float *y, float *z, float *radius)
+    static void rdvert(const float *x, const float *y, const float *z, const float *radius)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1171,7 +1171,7 @@ struct skelcommands : modelcommands<MDL>
     /* ragdoll eye level: sets the ragdoll's eye point to the level passed
      * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
      */
-    static void rdeye(int *v)
+    static void rdeye(const int *v)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1181,7 +1181,7 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->eye = *v;
     }
 
-    static void rdtri(int *v1, int *v2, int *v3)
+    static void rdtri(const int *v1, const int *v2, const int *v3)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1191,7 +1191,7 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->tris.push_back({*v1, *v2, *v3});
     }
 
-    static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
+    static void rdjoint(const int *n, const int *t, const int *v1, const int *v2, const int *v3)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1214,7 +1214,7 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->joints.push_back(j);
     }
 
-    static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
+    static void rdlimitdist(const int *v1, const int *v2, const float *mindist, const float *maxdist)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1224,7 +1224,7 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->distlimits.push_back({*v1, *v2, *mindist, std::max(*maxdist, *mindist)});
     }
 
-    static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
+    static void rdlimitrot(const int *t1, const int *t2, const float *maxangle, const float *qx, const float *qy, const float *qz, const float *qw)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
@@ -1239,7 +1239,7 @@ struct skelcommands : modelcommands<MDL>
                                       matrix3(quat(*qx, *qy, *qz, *qw))});
     }
 
-    static void rdanimjoints(int *on)
+    static void rdanimjoints(const int *on)
     {
         ragdollskel *ragdoll = checkragdoll();
         if(!ragdoll)
