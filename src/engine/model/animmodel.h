@@ -736,7 +736,7 @@ struct modelcommands
         }
     }
 
-    static void mdlcullface(int *cullface)
+    static void mdlcullface(const int *cullface)
     {
         if(!checkmdl())
         {
@@ -745,7 +745,7 @@ struct modelcommands
         MDL::loading->setcullface(*cullface);
     }
 
-    static void mdlcolor(float *r, float *g, float *b)
+    static void mdlcolor(const float *r, const float *g, const float *b)
     {
         if(!checkmdl())
         {
@@ -754,7 +754,7 @@ struct modelcommands
         MDL::loading->setcolor(vec(*r, *g, *b));
     }
 
-    static void mdlcollide(int *collide)
+    static void mdlcollide(const int *collide)
     {
         if(!checkmdl())
         {
@@ -763,7 +763,7 @@ struct modelcommands
         MDL::loading->collide = *collide!=0 ? (MDL::loading->collide ? MDL::loading->collide : Collide_OrientedBoundingBox) : Collide_None;
     }
 
-    static void mdlellipsecollide(int *collide)
+    static void mdlellipsecollide(const int *collide)
     {
         if(!checkmdl())
         {
@@ -772,7 +772,7 @@ struct modelcommands
         MDL::loading->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
     }
 
-    static void mdltricollide(char *collide)
+    static void mdltricollide(const char *collide)
     {
         if(!checkmdl())
         {
@@ -789,7 +789,7 @@ struct modelcommands
         MDL::loading->collide = val ? Collide_TRI : Collide_None;
     }
 
-    static void mdlspec(float *percent)
+    static void mdlspec(const float *percent)
     {
         if(!checkmdl())
         {
@@ -808,7 +808,7 @@ struct modelcommands
         MDL::loading->setgloss(std::clamp(*gloss, 0, 2));
     }
 
-    static void mdlalphatest(float *cutoff)
+    static void mdlalphatest(const float *cutoff)
     {
         if(!checkmdl())
         {
@@ -817,7 +817,7 @@ struct modelcommands
         MDL::loading->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
     }
 
-    static void mdldepthoffset(int *offset)
+    static void mdldepthoffset(const int *offset)
     {
         if(!checkmdl())
         {
@@ -826,7 +826,7 @@ struct modelcommands
         MDL::loading->depthoffset = *offset!=0;
     }
 
-    static void mdlglow(float *percent, float *delta, float *pulse)
+    static void mdlglow(const float *percent, const float *delta, const float *pulse)
     {
         if(!checkmdl())
         {
@@ -839,7 +839,7 @@ struct modelcommands
         MDL::loading->setglow(glow, glowdelta, glowpulse);
     }
 
-    static void mdlfullbright(float *fullbright)
+    static void mdlfullbright(const float *fullbright)
     {
         if(!checkmdl())
         {
@@ -849,7 +849,7 @@ struct modelcommands
     }
 
 
-    static void mdlshader(char *shader)
+    static void mdlshader(const char *shader)
     {
         if(!checkmdl())
         {
@@ -859,7 +859,7 @@ struct modelcommands
     }
 
     //assigns a new spin speed in three euler angles for the model object currently being loaded
-    static void mdlspin(float *yaw, float *pitch, float *roll)
+    static void mdlspin(const float *yaw, const float *pitch, const float *roll)
     {
         if(!checkmdl())
         {
@@ -869,7 +869,7 @@ struct modelcommands
     }
 
     //assigns a new scale factor in % for the model object currently being loaded
-    static void mdlscale(float *percent)
+    static void mdlscale(const float *percent)
     {
         if(!checkmdl())
         {
@@ -880,7 +880,7 @@ struct modelcommands
     }
 
     //assigns translation in x,y,z in cube units for the model object currently being loaded
-    static void mdltrans(float *x, float *y, float *z)
+    static void mdltrans(const float *x, const float *y, const float *z)
     {
         if(!checkmdl())
         {
@@ -890,7 +890,7 @@ struct modelcommands
     }
 
     //assigns angle to the offsetyaw field of the model object currently being loaded
-    static void mdlyaw(float *angle)
+    static void mdlyaw(const float *angle)
     {
         if(!checkmdl())
         {
@@ -901,7 +901,7 @@ struct modelcommands
 
 
     //assigns angle to the offsetpitch field of the model object currently being loaded
-    static void mdlpitch(float *angle)
+    static void mdlpitch(const float *angle)
     {
         if(!checkmdl())
         {
@@ -911,7 +911,7 @@ struct modelcommands
     }
 
     //assigns angle to the offsetroll field of the model object currently being loaded
-    static void mdlroll(float *angle)
+    static void mdlroll(const float *angle)
     {
         if(!checkmdl())
         {
@@ -921,7 +921,7 @@ struct modelcommands
     }
 
     //assigns shadow to the shadow field of the model object currently being loaded
-    static void mdlshadow(int *shadow)
+    static void mdlshadow(const int *shadow)
     {
         if(!checkmdl())
         {
@@ -931,7 +931,7 @@ struct modelcommands
     }
 
     //assigns alphashadow to the alphashadow field of the model object currently being loaded
-    static void mdlalphashadow(int *alphashadow)
+    static void mdlalphashadow(const int *alphashadow)
     {
         if(!checkmdl())
         {
@@ -941,7 +941,7 @@ struct modelcommands
     }
 
     //assigns rad, h, eyeheight to the fields of the model object currently being loaded
-    static void mdlbb(float *rad, float *h, float *eyeheight)
+    static void mdlbb(const float *rad, const float *h, const float *eyeheight)
     {
         if(!checkmdl())
         {
@@ -952,7 +952,7 @@ struct modelcommands
         MDL::loading->eyeheight = *eyeheight;
     }
 
-    static void mdlextendbb(float *x, float *y, float *z)
+    static void mdlextendbb(const float *x, const float *y, const float *z)
     {
         if(!checkmdl())
         {
@@ -974,7 +974,7 @@ struct modelcommands
         result(MDL::loading->modelname().c_str());
     }
 
-    static void setdir(char *name)
+    static void setdir(const char *name)
     {
         if(!MDL::loading)
         {
@@ -1049,7 +1049,7 @@ struct modelcommands
         return skinlist;
     }
 
-    static void setskin(char *meshname, char *tex, char *masks)
+    static void setskin(const char *meshname, const char *tex, const char *masks)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1062,7 +1062,7 @@ struct modelcommands
         }
     }
 
-    static void setspec(char *meshname, float *percent)
+    static void setspec(const char *meshname, const float *percent)
     {
         float spec = *percent > 0 ? *percent/100.0f : 0.0f;
         auto skinlist = getskins(meshname);
@@ -1072,7 +1072,7 @@ struct modelcommands
         }
     }
 
-    static void setgloss(char *meshname, int *gloss)
+    static void setgloss(const char *meshname, const int *gloss)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1081,7 +1081,7 @@ struct modelcommands
         }
     }
 
-    static void setglow(char *meshname, float *percent, float *delta, float *pulse)
+    static void setglow(const char *meshname, const float *percent, const float *delta, const float *pulse)
     {
         float glow = *percent > 0 ? *percent/100.0f : 0.0f,
               glowdelta = *delta/100.0f,
@@ -1096,7 +1096,7 @@ struct modelcommands
         }
     }
 
-    static void setalphatest(char *meshname, float *cutoff)
+    static void setalphatest(const char *meshname, const float *cutoff)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1105,7 +1105,7 @@ struct modelcommands
         }
     }
 
-    static void setcullface(char *meshname, int *cullface)
+    static void setcullface(const char *meshname, const int *cullface)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1114,7 +1114,7 @@ struct modelcommands
         }
     }
 
-    static void setcolor(char *meshname, float *r, float *g, float *b)
+    static void setcolor(const char *meshname, const float *r, const float *g, const float *b)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1123,7 +1123,7 @@ struct modelcommands
         }
     }
 
-    static void setbumpmap(char *meshname, char *normalmapfile)
+    static void setbumpmap(const char *meshname, const char *normalmapfile)
     {
         Texture *normalmaptex = textureload(makerelpath(MDL::dir.c_str(), normalmapfile), 0, true, false);
         auto skinlist = getskins(meshname);
@@ -1133,7 +1133,7 @@ struct modelcommands
         }
     }
 
-    static void setdecal(char *meshname, char *decal)
+    static void setdecal(const char *meshname, const char *decal)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1142,7 +1142,7 @@ struct modelcommands
         }
     }
 
-    static void setfullbright(char *meshname, float *fullbright)
+    static void setfullbright(const char *meshname, const float *fullbright)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1151,7 +1151,7 @@ struct modelcommands
         }
     }
 
-    static void setshader(char *meshname, char *shader)
+    static void setshader(const char *meshname, const char *shader)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1160,7 +1160,7 @@ struct modelcommands
         }
     }
 
-    static void setscroll(char *meshname, float *scrollu, float *scrollv)
+    static void setscroll(const char *meshname, const float *scrollu, const float *scrollv)
     {
         auto skinlist = getskins(meshname);
         for(auto s : skinlist)
@@ -1170,7 +1170,7 @@ struct modelcommands
         }
     }
 
-    static void setnoclip(char *meshname, int *noclip)
+    static void setnoclip(const char *meshname, const int *noclip)
     {
         auto meshlist = getmeshes(std::string(meshname));
         if(meshlist.empty())
@@ -1183,7 +1183,7 @@ struct modelcommands
         }
     }
 
-    static void settricollide(char *meshname)
+    static void settricollide(const char *meshname)
     {
         bool init = true;
         auto meshlist = getmeshes(std::string(meshname));
@@ -1215,7 +1215,7 @@ struct modelcommands
         }
     }
 
-    static void setlink(int *parent, int *child, char *tagname, float *x, float *y, float *z)
+    static void setlink(const int *parent, const int *child, const char *tagname, const float *x, const float *y, const float *z)
     {
         if(!MDL::loading)
         {
