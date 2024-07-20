@@ -972,7 +972,7 @@ struct skelcommands : modelcommands<MDL>
             }
             else
             {
-                for(int i = 0; i < static_cast<int>(anims.size()); i++)
+                for(size_t i = 0; i < anims.size(); i++)
                 {
                     int start = sa->frame,
                         end = sa->range;
