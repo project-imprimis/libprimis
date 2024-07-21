@@ -1286,6 +1286,11 @@ namespace
             assert(std::string(elems[3]) == std::string("string"));
             assert(std::string(elems[4]) == std::string("string2"));
             assert(std::string(elems[5]) == std::string("string3"));
+
+            for(char *i : elems)
+            {
+                delete[] i;
+            }
         }
         {
             const char *s = "string string2 string3";
@@ -1295,6 +1300,11 @@ namespace
             assert(elems.size() == 2);
             assert(std::string(elems[0]) == std::string("string"));
             assert(std::string(elems[1]) == std::string("string2"));
+
+            for(char *i : elems)
+            {
+                delete[] i;
+            }
         }
         {
             const char *s = "string [string2 string3] \"string4 string5\" (string6 string7)";
@@ -1306,6 +1316,11 @@ namespace
             assert(std::string(elems[1]) == std::string("string2 string3"));
             assert(std::string(elems[2]) == std::string("string4 string5"));
             assert(std::string(elems[3]) == std::string("string6 string7"));
+
+            for(char *i : elems)
+            {
+                delete[] i;
+            }
         }
     }
 

@@ -295,11 +295,15 @@ extern void alias(const char *name, const char *action);
  * sets the maximum number of elements in the vector, regardless of whether they
  * were added by this function.
  *
+ * Elements added to this vector are all heap-allocated raw character strings and
+ * therefore must be delete[]'d after they are no longer being used
+ *
  * @param s the list to explode
  * @param elems the vector to fill with elements
  * @param limit maximum size of the elems vector allowed
  */
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
+
 extern void result(tagval &v);
 extern const char *numberstr(double v);
 extern float clampfvar(std::string name, float val, float minval, float maxval);
