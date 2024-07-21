@@ -280,6 +280,25 @@ extern void freecode(uint *p);
 extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
 extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
 extern void alias(const char *name, const char *action);
+
+/**
+ * @brief Converts a list of delimited strings into a vector of elements.
+ *
+ * List elements in the input string are added to the vector of strings passed
+ * as elems.
+ *
+ * The list is parsed according to the CubeScript list formatting.
+ * Tokens in the list are delimited by spaces, unless those tokens are themselves
+ * delimited by [] "" or () characters.
+ *
+ * Existing elements in the elems vector will not be modified. The limit parameter
+ * sets the maximum number of elements in the vector, regardless of whether they
+ * were added by this function.
+ *
+ * @param s the list to explode
+ * @param elems the vector to fill with elements
+ * @param limit maximum size of the elems vector allowed
+ */
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
 extern void result(tagval &v);
 extern const char *numberstr(double v);
