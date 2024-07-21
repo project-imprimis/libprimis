@@ -1267,6 +1267,48 @@ namespace
         test_cs_command(intinputs);
     }
 
+    void test_cs_explodelist()
+    {
+        std::printf("testing CS explodelist utility");
+
+        {
+            const char *s = "string string2 string3";
+            std::vector<char *> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 3);
+            assert(std::string(elems[0]) == std::string("string"));
+            assert(std::string(elems[1]) == std::string("string2"));
+            assert(std::string(elems[2]) == std::string("string3"));
+
+            explodelist(s, elems);
+            assert(elems.size() == 6);
+            assert(std::string(elems[3]) == std::string("string"));
+            assert(std::string(elems[4]) == std::string("string2"));
+            assert(std::string(elems[5]) == std::string("string3"));
+        }
+        {
+            const char *s = "string string2 string3";
+            std::vector<char *> elems;
+            explodelist(s, elems, 2);
+
+            assert(elems.size() == 2);
+            assert(std::string(elems[0]) == std::string("string"));
+            assert(std::string(elems[1]) == std::string("string2"));
+        }
+        {
+            const char *s = "string [string2 string3] \"string4 string5\" (string6 string7)";
+            std::vector<char *> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 4);
+            assert(std::string(elems[0]) == std::string("string"));
+            assert(std::string(elems[1]) == std::string("string2 string3"));
+            assert(std::string(elems[2]) == std::string("string4 string5"));
+            assert(std::string(elems[3]) == std::string("string6 string7"));
+        }
+    }
+
     void test_cs_listlen()
     {
         std::printf("testing CS listlen command\n");
@@ -1692,6 +1734,7 @@ void testcs()
     test_cs_if();
     test_cs_ternary();
     test_cs_result();
+    test_cs_explodelist();
     test_cs_listlen();
     test_cs_at();
     test_cs_sublist();
