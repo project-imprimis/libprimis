@@ -1090,7 +1090,7 @@ struct skelcommands : modelcommands<MDL>
         std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
-            char *bonestr = bonestrs[i];
+            const char *bonestr = bonestrs[i];
             std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : std::nullopt;
             if(!bone)
             {
