@@ -689,6 +689,17 @@ void explodelist(const char *s, std::vector<char *> &elems, int limit)
     }
 }
 
+void explodelist(const char *s, std::vector<std::string> &elems, int limit)
+{
+    const char *start, *end, *qstart;
+    while((limit < 0 || static_cast<int>(elems.size()) < limit) && parselist(s, start, end, qstart))
+    {
+        char *s = listelem(start, end, qstart);
+        elems.push_back(std::string(s));
+        delete[] s;
+    }
+}
+
 static int listlen(const char *s)
 {
     int n = 0;

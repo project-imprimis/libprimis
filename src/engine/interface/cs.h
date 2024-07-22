@@ -303,6 +303,7 @@ extern void alias(const char *name, const char *action);
  * @param limit maximum size of the elems vector allowed
  */
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
+extern void explodelist(const char *s, std::vector<std::string> &elems, int limit = -1);
 
 extern void result(tagval &v);
 extern const char *numberstr(double v);
