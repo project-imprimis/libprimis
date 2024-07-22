@@ -1008,27 +1008,19 @@ struct skelcommands : modelcommands<MDL>
         }
         part *p = static_cast<part *>(MDL::loading->parts.back());
 
-        std::vector<char *> bonestrs;
+        std::vector<std::string> bonestrs;
         explodelist(maskstr, bonestrs);
         std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
-            char *bonestr = bonestrs[i];
-            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : std::nullopt;
+            const std::string &bonestr = bonestrs[i];
+            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr.substr(1) : bonestr) : std::nullopt;
             if(!bone)
             {
-                conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr);
-                for(char* j : bonestrs)
-                {
-                    delete[] j;
-                }
+                conoutf("could not find bone %s for anim part mask [%s]", bonestr.c_str(), maskstr);
                 return;
             }
             bonemask.push_back(*bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
-        }
-        for(char* i : bonestrs)
-        {
-            delete[] i;
         }
         std::sort(bonemask.begin(), bonemask.end());
         if(bonemask.size())
@@ -1085,27 +1077,19 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        std::vector<char *> bonestrs;
+        std::vector<std::string> bonestrs;
         explodelist(maskstr, bonestrs);
         std::vector<uint> bonemask;
         for(uint i = 0; i < bonestrs.size(); i++)
         {
-            const char *bonestr = bonestrs[i];
-            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : std::nullopt;
+            const std::string &bonestr = bonestrs[i];
+            std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr.substr(1) : bonestr) : std::nullopt;
             if(!bone)
             {
-                conoutf("could not find bone %s for hit zone mask [%s]", bonestr, maskstr);
-                for(char* j : bonestrs)
-                {
-                    delete[] j;
-                }
+                conoutf("could not find bone %s for hit zone mask [%s]", bonestr.c_str(), maskstr);
                 return;
             }
             bonemask.push_back(*bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
-        }
-        for(char* i : bonestrs)
-        {
-            delete[] i;
         }
         if(bonemask.empty())
         {
