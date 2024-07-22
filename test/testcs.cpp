@@ -1306,6 +1306,35 @@ namespace
             assert(std::string(elems[2]) == std::string("string4 string5"));
             assert(std::string(elems[3]) == std::string("string6 string7"));
         }
+        {
+            const char *s = "";
+            std::vector<T> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 0);
+        }
+        {
+            const char *s = ")";
+            std::vector<T> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 0);
+        }
+        {
+            const char *s = "//comment";
+            std::vector<T> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 0);
+        }
+        {
+            const char *s = "string //comment";
+            std::vector<T> elems;
+            explodelist(s, elems);
+
+            assert(elems.size() == 1);
+            assert(std::string(elems[0]) == std::string("string"));
+        }
     }
 
     void test_cs_explodelist()
