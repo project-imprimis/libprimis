@@ -110,10 +110,10 @@ namespace
 
     void testescapestring()
     {
-        const char * teststr = "escapestring output: \n \f \t";
+        const char * teststr = "escapestring output: \n \f \t \" ^";
         const char * conout = escapestring(teststr);
         std::printf("%s\n", conout);
-        assert(std::strcmp(conout, "\"escapestring output: ^n ^f ^t\"") == 0);
+        assert(std::strcmp(conout, "\"escapestring output: ^n ^f ^t ^\" ^^\"") == 0);
     }
 
     void testescapeid()
