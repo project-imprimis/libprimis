@@ -26,6 +26,21 @@
 
 namespace
 {
+
+    //helper that creates a new md5 from media/model/pulserifle.md5mesh
+    md5 *generate_md5_model()
+    {
+        md5 *m = new md5("pulserifle");
+        m->startload();
+        assert(md5::loading == m);
+
+        skelcommands<md5>::setdir(std::string("pulserifle").data());
+        float smooth = 0;
+        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+
+        return m;
+    }
+
     void test_md5_ctor()
     {
         std::printf("testing md5 ctor\n");
@@ -121,60 +136,45 @@ namespace
     {
         std::printf("testing md5 loadpart\n");
 
-        md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
+        md5 *m = generate_md5_model();
 
-        skelcommands<md5>::setdir(std::string("pulserifle").data());
-        float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
-
-        assert(m.modelname() == "pulserifle");
-        assert(m.parts.size() == 1);
-        assert(m.parts[0]->meshes != nullptr);
-        skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m.parts[0]->meshes[0].meshes.at(0));
+        assert(m->modelname() == "pulserifle");
+        assert(m->parts.size() == 1);
+        assert(m->parts[0]->meshes != nullptr);
+        skelmodel::skelmesh *s = static_cast<skelmodel::skelmesh *>(m->parts[0]->meshes[0].meshes.at(0));
         assert(s != nullptr);
         assert(s->vertcount() == 438);
         assert(s->tricount() == 462);
 
-        m.endload();
+        m->endload();
+        delete m;
     }
 
     void test_md5_settag()
     {
         std::printf("testing md5 settag\n");
 
-        md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
+        md5 *m = generate_md5_model();
 
-        skelcommands<md5>::setdir(std::string("pulserifle").data());
-        float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
         float pos = 0;
 
         skelcommands<md5>::settag("X_pulse_muzzle", "tag_muzzle", &pos, &pos, &pos, &pos, &pos, &pos);
-        skelmodel::skeleton *s = static_cast<skelmodel::skelmeshgroup *>(&(m.parts[0]->meshes[0]))->skel;
+        skelmodel::skeleton *s = static_cast<skelmodel::skelmeshgroup *>(&(m->parts[0]->meshes[0]))->skel;
         assert(s->findtag("tag_muzzle") == 0);
 
         skelcommands<md5>::settag("X_pulse_base", "base", &pos, &pos, &pos, &pos, &pos, &pos);
-        s = static_cast<skelmodel::skelmeshgroup *>(&(m.parts[0]->meshes[0]))->skel;
+        s = static_cast<skelmodel::skelmeshgroup *>(&(m->parts[0]->meshes[0]))->skel;
         assert(s->findtag("base") == 1);
 
-        m.endload();
+        m->endload();
+        delete m;
     }
 
     void test_md5_loadanim()
     {
         std::printf("testing md5 loadanim\n");
 
-        md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
-
-        skelcommands<md5>::setdir(std::string("pulserifle").data());
-        float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+        md5 *m = generate_md5_model();
 
         //anims must be registered in this global first
         animnames.emplace_back("idle");
@@ -183,26 +183,21 @@ namespace
         int priority = 0;
         int offsets = 0;
         skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
-        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m.parts[0]);
-        assert(m.animated() == true);
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        assert(m->animated() == true);
         assert(p->animated() == true);
 
-        m.loaded();
-        m.endload();
+        m->loaded();
+        m->endload();
         animnames.clear();
+        delete m;
     }
 
     void test_md5_setpitchtarget()
     {
         std::printf("testing md5 setpitchtarget\n");
 
-        md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
-
-        skelcommands<md5>::setdir(std::string("pulserifle").data());
-        float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+        md5 *m = generate_md5_model();
 
         //anims must be registered in this global first
         animnames.emplace_back("idle");
@@ -216,24 +211,19 @@ namespace
               pitchmax = 2.f;
         skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
         skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "idle.md5anim", &frameoffset, &pitchmin, &pitchmax);
-        m.loaded();
-        m.endload();
+        m->loaded();
+        m->endload();
         animnames.clear();
+        delete m;
     }
 
     void test_md5_setanimpart()
     {
         std::printf("testing md5 setanimpart\n");
 
-        md5 m("pulserifle");
-        m.startload();
-        assert(md5::loading == &m);
+        md5 *m = generate_md5_model();
 
-        skelcommands<md5>::setdir(std::string("pulserifle").data());
-        float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
-
-        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m.parts[0]);
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
 
         assert(p->numanimparts == 1);
         assert(p->partmask.size() == 0);
@@ -245,9 +235,10 @@ namespace
         assert(p->numanimparts == 2);
         assert(p->partmask.size() == 0);
 
-        m.load();
+        m->load();
 
         assert(p->partmask.size() == 4);
+        delete m;
     }
 }
 
