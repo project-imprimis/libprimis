@@ -2,6 +2,7 @@
 
 #include "../src/shared/geomexts.h"
 #include "../src/shared/glexts.h"
+#include "../src/shared/stream.h"
 
 #include <optional>
 #include <memory>
@@ -228,8 +229,6 @@ namespace
         assert(p->numanimparts == 1);
         assert(p->partmask.size() == 0);
 
-        std::printf("testing\n");
-
         skelcommands<md5>::setanimpart("X_pulse_base");
 
         assert(p->numanimparts == 2);
@@ -239,6 +238,28 @@ namespace
 
         assert(p->partmask.size() == 4);
         delete m;
+    }
+
+    void test_md5_setskin()
+    {
+        std::printf("testing md5 setskin\n");
+
+        //mock existence of valid opengl context
+        hwcubetexsize = 1024;
+        hwtexsize = 1024;
+
+        md5 *m = generate_md5_model();
+
+        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+
+        m->load();
+
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        assert(p->skins.size() == 1);
+
+        delete m;
+        hwcubetexsize = 0;
+        hwtexsize = 0;
     }
 }
 
@@ -262,4 +283,5 @@ testing md5 functionality\n\
     test_md5_loadanim();
     test_md5_setpitchtarget();
     test_md5_setanimpart();
+    test_md5_setskin();
 }
