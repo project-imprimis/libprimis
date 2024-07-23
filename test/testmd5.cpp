@@ -219,6 +219,34 @@ void test_md5_setpitchtarget()
     animnames.clear();
 }
 
+void test_md5_setanimpart()
+{
+    std::printf("testing md5 setanimpart\n");
+
+    md5 m("pulserifle");
+    m.startload();
+    assert(md5::loading == &m);
+
+    skelcommands<md5>::setdir(std::string("pulserifle").data());
+    float smooth = 0;
+    skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+
+    skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m.parts[0]);
+
+    assert(p->numanimparts == 1);
+    assert(p->partmask.size() == 0);
+
+    std::printf("testing\n");
+
+    skelcommands<md5>::setanimpart("X_pulse_base");
+
+    assert(p->numanimparts == 2);
+    assert(p->partmask.size() == 0);
+
+    m.load();
+
+    assert(p->partmask.size() == 4);
+}
 
 void test_md5()
 {
@@ -239,4 +267,5 @@ testing md5 functionality\n\
     test_md5_settag();
     test_md5_loadanim();
     test_md5_setpitchtarget();
+    test_md5_setanimpart();
 }
