@@ -999,6 +999,16 @@ struct skelcommands : modelcommands<MDL>
         }
     }
 
+    /**
+     * @brief Assigns a subtree of bones to a bone mask.
+     *
+     * This bone mask is used to separate a part into two (and no more than two)
+     * distinct groups of subtrees which can be animated independently.
+     *
+     * These bones which make up subtree(s) under the specified bones are saved
+     * in the partmask vector of the relevant skelpart.
+     *
+     */
     static void setanimpart(const char *maskstr)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
