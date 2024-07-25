@@ -1271,9 +1271,9 @@ struct modelcommands
             modelcommand(mdlname, "name", "");
 
             modelcommand(setskin, "skin", "sss");               //<fmt>skin [meshname] [tex] [masks]
-            modelcommand(setspec, "texspec", "sf");             //<fmt>texspec [tex] [scale]
-            modelcommand(setgloss, "texgloss", "si");           //<fmt>texgloss [tex] [type] type ranges 0..2
-            modelcommand(setglow, "texglow", "sfff");           //<fmt>texglow [tex] [pct] [del] [pulse]
+            modelcommand(setspec, "texspec", "sf");             //<fmt>texspec [mesh] [scale]
+            modelcommand(setgloss, "texgloss", "si");           //<fmt>texgloss [mesh] [type] type ranges 0..2
+            modelcommand(setglow, "texglow", "sfff");           //<fmt>texglow [mesh] [pct] [del] [pulse]
             modelcommand(setalphatest, "meshalphatest", "sf");  //<fmt>meshalphatest [mesh] [cutoff]
             modelcommand(setcullface, "meshcullface", "si");    //<fmt>cullface [mesh] [cullface]
             modelcommand(setcolor, "meshcolor", "sfff");        //<fmt>meshcolor [mesh] [r] [g] [b]
