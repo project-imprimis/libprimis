@@ -261,6 +261,28 @@ namespace
         hwcubetexsize = 0;
         hwtexsize = 0;
     }
+
+    void test_md5_setbumpmap()
+    {
+        std::printf("testing md5 setbumpmap\n");
+
+        //mock existence of valid opengl context
+        hwcubetexsize = 1024;
+        hwtexsize = 1024;
+
+        md5 *m = generate_md5_model();
+
+        skelcommands<md5>::setbumpmap("*", "blank.png");
+
+        m->load();
+
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        assert(p->skins.size() == 1);
+
+        delete m;
+        hwcubetexsize = 0;
+        hwtexsize = 0;
+    }
 }
 
 void test_md5()
@@ -284,4 +306,5 @@ testing md5 functionality\n\
     test_md5_setpitchtarget();
     test_md5_setanimpart();
     test_md5_setskin();
+    test_md5_setbumpmap();
 }
