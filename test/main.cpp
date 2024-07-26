@@ -19,7 +19,7 @@ int main()
 
     testidents();
     testcs();
-    testpacknode();
+    test_shadowatlas();
     test_props();
     test_octa();
     test_gltf();
