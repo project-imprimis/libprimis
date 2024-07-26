@@ -183,7 +183,7 @@ namespace
         float speed = 30;
         int priority = 0;
         int offsets = 0;
-        skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
+        skelcommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         assert(m->animated() == true);
         assert(p->animated() == true);
