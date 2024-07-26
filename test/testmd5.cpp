@@ -178,7 +178,7 @@ namespace
         md5 *m = generate_md5_model();
 
         //anims must be registered in this global first
-        animnames.emplace_back("idle");
+        animnames.emplace_back("pulserifle");
 
         float speed = 30;
         int priority = 0;
