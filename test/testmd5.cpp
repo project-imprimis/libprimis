@@ -249,14 +249,19 @@ namespace
         hwtexsize = 1024;
 
         md5 *m = generate_md5_model();
-
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        p->initskins();
+        std::printf("1\n");
         skelcommands<md5>::setskin("*", "blank.png", "blank.png");
 
-        m->load();
-
-        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         assert(p->skins.size() == 1);
+        auto skinlist = skelcommands<md5>::getskins("*");
+        assert(skinlist.size() == 1);
+        assert((*skinlist[0]).tex != nullptr);
+        assert((*skinlist[0]).masks != nullptr);
 
+        m->load(); //if load called earlier, skinlist is empty
+        m->endload();
         delete m;
         hwcubetexsize = 0;
         hwtexsize = 0;
