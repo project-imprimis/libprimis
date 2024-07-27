@@ -251,7 +251,6 @@ namespace
         md5 *m = generate_md5_model();
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         p->initskins();
-        std::printf("1\n");
         skelcommands<md5>::setskin("*", "blank.png", "blank.png");
 
         assert(p->skins.size() == 1);
