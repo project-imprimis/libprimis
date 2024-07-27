@@ -279,10 +279,12 @@ namespace
 
         skelcommands<md5>::setbumpmap("*", "blank.png");
 
-        m->load();
+        auto skinlist = skelcommands<md5>::getskins("*");
+        assert(skinlist.size() == 1);
+        assert((*skinlist[0]).normalmap != nullptr);
 
-        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
-        assert(p->skins.size() == 1);
+        m->load();
+        m->endload();
 
         delete m;
         hwcubetexsize = 0;
