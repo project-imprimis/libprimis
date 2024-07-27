@@ -201,7 +201,7 @@ namespace
         md5 *m = generate_md5_model();
 
         //anims must be registered in this global first
-        animnames.emplace_back("idle");
+        animnames.emplace_back("pulserifle");
 
         float speed = 30;
         int priority = 0,
@@ -210,8 +210,8 @@ namespace
         int frameoffset = 1;
         float pitchmin = 1.f,
               pitchmax = 2.f;
-        skelcommands<md5>::setanim("idle", "idle.md5anim", &speed, &priority, &offsets, &offsets);
-        skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "idle.md5anim", &frameoffset, &pitchmin, &pitchmax);
+        skelcommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
+        skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "pulserifle.md5anim", &frameoffset, &pitchmin, &pitchmax);
         m->loaded();
         m->endload();
         animnames.clear();
