@@ -289,6 +289,22 @@ namespace
         hwcubetexsize = 0;
         hwtexsize = 0;
     }
+
+    void test_md5_preloadbih()
+    {
+        std::printf("testing md5 preloadbih\n");
+
+        md5 *m = generate_md5_model();
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        p->initskins();
+        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+
+        m->preloadBIH(); //needs a mask texture to run
+
+        assert(m->bih);
+
+        delete m;
+    }
 }
 
 void test_md5()
@@ -313,4 +329,5 @@ testing md5 functionality\n\
     test_md5_setanimpart();
     test_md5_setskin();
     test_md5_setbumpmap();
+    test_md5_preloadbih();
 }
