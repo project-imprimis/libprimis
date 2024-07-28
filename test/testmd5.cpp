@@ -305,6 +305,22 @@ namespace
 
         delete m;
     }
+
+    void test_md5_setbih()
+    {
+        std::printf("testing md5 setbih\n");
+
+        md5 *m = generate_md5_model();
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        p->initskins();
+        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+
+        m->setBIH(); //needs a mask texture to run
+
+        assert(m->bih);
+
+        delete m;
+    }
 }
 
 void test_md5()
@@ -330,4 +346,5 @@ testing md5 functionality\n\
     test_md5_setskin();
     test_md5_setbumpmap();
     test_md5_preloadbih();
+    test_md5_setbih();
 }
