@@ -257,7 +257,11 @@ namespace
         auto skinlist = skelcommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).tex != nullptr);
+        assert((*skinlist[0]).tex->w == 8);
+        assert((*skinlist[0]).tex->h == 8);
         assert((*skinlist[0]).masks != nullptr);
+        assert((*skinlist[0]).masks->w == 8);
+        assert((*skinlist[0]).masks->h == 8);
 
         m->load(); //if load called earlier, skinlist is empty
         m->endload();
