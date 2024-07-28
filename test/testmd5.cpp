@@ -285,6 +285,8 @@ namespace
         auto skinlist = skelcommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).normalmap != nullptr);
+        assert((*skinlist[0]).normalmap->w == 8);
+        assert((*skinlist[0]).normalmap->h == 8);
 
         m->load();
         m->endload();
