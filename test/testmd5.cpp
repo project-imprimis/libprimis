@@ -81,6 +81,16 @@ namespace
         assert(m.newmeshes() != nullptr);
     }
 
+    void test_md5_pitched()
+    {
+        std::printf("testing md5 pitched\n");
+
+        md5 *m = generate_md5_model();
+
+        assert(!m->pitched());
+        delete m;
+    }
+
     void test_md5_loaddefaultparts()
     {
         std::printf("testing md5 loaddefaultparts\n");
@@ -368,6 +378,7 @@ testing md5 functionality\n\
     test_md5_flipy();
     test_md5_type();
     test_md5_newmeshes();
+    test_md5_pitched();
     test_md5_loaddefaultparts();
     test_md5_load();
     test_md5_loadpart();
