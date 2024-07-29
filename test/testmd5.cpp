@@ -296,6 +296,32 @@ namespace
         hwtexsize = 0;
     }
 
+    void test_md5_setdecal()
+    {
+        std::printf("testing md5 setdecal\n");
+
+        //mock existence of valid opengl context
+        hwcubetexsize = 1024;
+        hwtexsize = 1024;
+
+        md5 *m = generate_md5_model();
+
+        skelcommands<md5>::setdecal("*", "blank.png");
+
+        auto skinlist = skelcommands<md5>::getskins("*");
+        assert(skinlist.size() == 1);
+        assert((*skinlist[0]).decal != nullptr);
+        assert((*skinlist[0]).decal->w == 8);
+        assert((*skinlist[0]).decal->h == 8);
+
+        m->load();
+        m->endload();
+
+        delete m;
+        hwcubetexsize = 0;
+        hwtexsize = 0;
+    }
+
     void test_md5_preloadbih()
     {
         std::printf("testing md5 preloadbih\n");
@@ -351,6 +377,7 @@ testing md5 functionality\n\
     test_md5_setanimpart();
     test_md5_setskin();
     test_md5_setbumpmap();
+    test_md5_setdecal();
     test_md5_preloadbih();
     test_md5_setbih();
 }
