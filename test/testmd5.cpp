@@ -224,6 +224,11 @@ namespace
         skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "pulserifle.md5anim", &frameoffset, &pitchmin, &pitchmax);
         m->loaded();
         m->endload();
+
+        skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
+        skelmodel::skeleton *skel = static_cast<skelmodel::skelmeshgroup *>(p->meshes)->skel;
+
+        assert(skel->pitchtargets.size() == 1);
         animnames.clear();
         delete m;
     }
