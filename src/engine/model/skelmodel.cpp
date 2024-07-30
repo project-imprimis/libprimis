@@ -614,7 +614,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
     }
     for(uint j = 0; j < pitchtargets.size(); j++)
     {
-        pitchtarget &t = pitchtargets[j];
+        const pitchtarget &t = pitchtargets[j];
         float tpitch = pitch - t.deviated;
         for(int parent = t.corrects; parent >= 0; parent = pitchcorrects[parent].parent)
         {
