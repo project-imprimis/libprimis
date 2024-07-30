@@ -402,10 +402,11 @@ struct skelmodel : animmodel
 
     struct pitchcorrect final
     {
-        int bone, target, parent;
+        int bone, parent;
+        size_t target;
         float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
-        pitchcorrect(int bone, int target, float pitchscale, float pitchmin, float pitchmax);
+        pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
         pitchcorrect();
     };
 
@@ -899,11 +900,11 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        std::optional<int> targetbone = skel->findbone(targetname),
-                           target = std::nullopt;
+        std::optional<int> targetbone = skel->findbone(targetname);
+        std::optional<size_t> target = std::nullopt;
         if(targetbone)
         {
-            for(uint i = 0; i < skel->pitchtargets.size(); i++)
+            for(size_t i = 0; i < skel->pitchtargets.size(); i++)
             {
                 if(skel->pitchtargets[i].bone == *targetbone)
                 {
@@ -918,8 +919,8 @@ struct skelcommands : modelcommands<MDL>
             return;
         }
         pitchcorrect c(*bone, *target, *pitchmin, *pitchmax, *scale);
-        uint pos = skel->pitchcorrects.size();
-        for(uint i = 0; i < skel->pitchcorrects.size(); i++)
+        size_t pos = skel->pitchcorrects.size();
+        for(size_t i = 0; i < skel->pitchcorrects.size(); i++)
         {
             if(bone <= skel->pitchcorrects[i].bone)
             {
