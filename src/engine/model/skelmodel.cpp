@@ -604,11 +604,11 @@ float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, co
 
 void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const vec &forward)
 {
-    for(pitchtarget& t : pitchtargets)
+    for(pitchtarget &t : pitchtargets)
     {
         t.deviated = calcdeviation(axis, forward, t.pose, pitchdeps[t.deps].pose);
     }
-    for(pitchcorrect& c : pitchcorrects)
+    for(pitchcorrect &c : pitchcorrects)
     {
         c.pitchangle = c.pitchtotal = 0;
     }
