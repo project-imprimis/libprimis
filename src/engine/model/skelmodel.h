@@ -429,7 +429,7 @@ struct skelmodel : animmodel
 
             const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
             skelanimspec &addskelanim(const std::string &name, int numframes, int animframes);
-            std::optional<int> findbone(const std::string &name) const;
+            std::optional<size_t> findbone(const std::string &name) const;
             int findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
             void addpitchdep(int bone, int frame);
@@ -761,7 +761,7 @@ struct skelcommands : modelcommands<MDL>
             return;
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.back());
-        std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
+        std::optional<size_t> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
         if(i)
         {
             float cx = *rx ? std::cos(*rx/(2*RAD)) : 1, sx = *rx ? std::sin(*rx/(2*RAD)) : 0,
@@ -789,7 +789,7 @@ struct skelcommands : modelcommands<MDL>
 
         if(name[0])
         {
-            std::optional<int> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
+            std::optional<size_t> i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : std::nullopt;
             if(i)
             {
                 float newpitchmin = 0.f,
@@ -900,13 +900,13 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        std::optional<int> targetbone = skel->findbone(targetname);
-        std::optional<size_t> target = std::nullopt;
+        std::optional<size_t> targetbone = skel->findbone(targetname),
+                              target = std::nullopt;
         if(targetbone)
         {
             for(size_t i = 0; i < skel->pitchtargets.size(); i++)
             {
-                if(skel->pitchtargets[i].bone == *targetbone)
+                if(skel->pitchtargets[i].bone == static_cast<int>(*targetbone))
                 {
                     target = i;
                     break;

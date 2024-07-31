@@ -172,7 +172,7 @@ skelmodel::skeleton::~skeleton()
     }
 }
 
-std::optional<int> skelmodel::skeleton::findbone(const std::string &name) const
+std::optional<size_t> skelmodel::skeleton::findbone(const std::string &name) const
 {
     for(size_t i = 0; i < numbones; ++i)
     {
