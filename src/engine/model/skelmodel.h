@@ -395,7 +395,8 @@ struct skelmodel : animmodel
 
     struct pitchtarget final
     {
-        int bone, frame, corrects, deps;
+        size_t bone;
+        int frame, corrects, deps;
         float pitchmin, pitchmax, deviated;
         dualquat pose;
     };
@@ -846,7 +847,7 @@ struct skelcommands : modelcommands<MDL>
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
-        std::optional<int> bone = skel ? skel->findbone(name) : std::nullopt;
+        std::optional<size_t> bone = skel ? skel->findbone(name) : std::nullopt;
         if(!bone)
         {
             conoutf("could not find bone %s to pitch target", name);
@@ -906,7 +907,7 @@ struct skelcommands : modelcommands<MDL>
         {
             for(size_t i = 0; i < skel->pitchtargets.size(); i++)
             {
-                if(skel->pitchtargets[i].bone == static_cast<int>(*targetbone))
+                if(skel->pitchtargets[i].bone == *targetbone)
                 {
                     target = i;
                     break;
