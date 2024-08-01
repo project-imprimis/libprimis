@@ -210,7 +210,7 @@ std::optional<size_t> vertmodel::vertmeshgroup::findtag(std::string_view name)
 {
     for(size_t i = 0; i < numtags; ++i)
     {
-        if(tags[i].name == name.data())
+        if(tags[i].name == name)
         {
             return i;
         }
@@ -246,7 +246,7 @@ bool vertmodel::vertmeshgroup::addtag(std::string_view name, const matrix4x3 &ma
                 {
                     std::swap(dst[j].name, src[j].name);
                 }
-                dst[numtags].name = name.data();
+                dst[numtags].name = name;
             }
             for(size_t j = 0; j < numtags; ++j)
             {
