@@ -161,14 +161,10 @@ class vertmodel : public animmodel
 
         struct tag final
         {
-            char *name;
+            std::string name;
             matrix4x3 matrix;
 
             tag() : name(nullptr) {}
-            ~tag()
-            {
-                delete[] name;
-            }
         };
 
         struct vertmeshgroup : meshgroup
