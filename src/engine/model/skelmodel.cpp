@@ -184,28 +184,28 @@ std::optional<size_t> skelmodel::skeleton::findbone(const std::string &name) con
     return std::nullopt;
 }
 
-int skelmodel::skeleton::findtag(std::string_view name) const
+std::optional<size_t> skelmodel::skeleton::findtag(std::string_view name) const
 {
-    for(uint i = 0; i < tags.size(); i++)
+    for(size_t i = 0; i < tags.size(); i++)
     {
         if(!std::strcmp(tags[i].name.c_str(), name.data()))
         {
             return i;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 bool skelmodel::skeleton::addtag(std::string_view name, int bone, const matrix4x3 &matrix)
 {
-    int idx = findtag(name);
-    if(idx >= 0)
+    std::optional<size_t> idx = findtag(name);
+    if(idx)
     {
         if(!testtags)
         {
             return false;
         }
-        tag &t = tags[idx];
+        tag &t = tags[*idx];
         t.bone = bone;
         t.matrix = matrix;
     }
@@ -1800,7 +1800,7 @@ skelmodel::skeleton::boneinfo::~boneinfo()
 
 // skelmeshgroup
 
-int skelmodel::skelmeshgroup::findtag(std::string_view name)
+std::optional<size_t> skelmodel::skelmeshgroup::findtag(std::string_view name)
 {
     return skel->findtag(name);
 }

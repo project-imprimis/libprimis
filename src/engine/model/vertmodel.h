@@ -164,14 +164,14 @@ class vertmodel : public animmodel
             std::string name;
             matrix4x3 matrix;
 
-            tag() : name(nullptr) {}
+            tag() {}
         };
 
         struct vertmeshgroup : meshgroup
         {
             int numframes;
             tag *tags;
-            int numtags;
+            size_t numtags;
 
             static constexpr int maxvbocache = 16;
             vbocacheentry vbocache[maxvbocache];
@@ -185,7 +185,7 @@ class vertmodel : public animmodel
 
             virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
             bool addtag(std::string_view name, const matrix4x3 &matrix);
-            int findtag(std::string_view name) override final;
+            std::optional<size_t> findtag(std::string_view name) override final;
 
             int totalframes() const override final;
             void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;

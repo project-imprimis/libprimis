@@ -749,7 +749,7 @@ void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3
 
 bool animmodel::part::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
 {
-    int i = meshes ? meshes->findtag(tag) : -1;
+    std::optional<size_t> i = meshes ? meshes->findtag(tag) : std::nullopt;
     if(i<0)
     {
         for(const linkedpart &i : links)
@@ -764,7 +764,7 @@ bool animmodel::part::link(part *p, const char *tag, const vec &translate, int a
     links.emplace_back();
     linkedpart &l = links.back();
     l.p = p;
-    l.tag = i;
+    l.tag = *i;
     l.anim = anim;
     l.basetime = basetime;
     l.translate = translate;

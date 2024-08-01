@@ -206,22 +206,22 @@ void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, mat
 {
 }
 
-int vertmodel::vertmeshgroup::findtag(std::string_view name)
+std::optional<size_t> vertmodel::vertmeshgroup::findtag(std::string_view name)
 {
-    for(int i = 0; i < numtags; ++i)
+    for(size_t i = 0; i < numtags; ++i)
     {
         if(tags[i].name == name.data())
         {
             return i;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 bool vertmodel::vertmeshgroup::addtag(std::string_view name, const matrix4x3 &matrix)
 {
-    int idx = findtag(name);
-    if(idx >= 0)
+    std::optional<size_t> idx = findtag(name);
+    if(idx)
     {
         if(!testtags)
         {
@@ -229,7 +229,7 @@ bool vertmodel::vertmeshgroup::addtag(std::string_view name, const matrix4x3 &ma
         }
         for(int i = 0; i < numframes; ++i)
         {
-            tag &t = tags[i*numtags + idx];
+            tag &t = tags[i*numtags + *idx];
             t.matrix = matrix;
         }
     }
@@ -242,13 +242,13 @@ bool vertmodel::vertmeshgroup::addtag(std::string_view name, const matrix4x3 &ma
                 *src = &tags[numtags*i];
             if(!i)
             {
-                for(int j = 0; j < numtags; ++j)
+                for(size_t j = 0; j < numtags; ++j)
                 {
                     std::swap(dst[j].name, src[j].name);
                 }
                 dst[numtags].name = name.data();
             }
-            for(int j = 0; j < numtags; ++j)
+            for(size_t j = 0; j < numtags; ++j)
             {
                 dst[j].matrix = src[j].matrix;
             }
