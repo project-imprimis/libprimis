@@ -378,7 +378,7 @@ void skelmodel::skeleton::remapbones()
     {
         for(size_t i = 0; i < numbones; ++i)
         {
-            boneinfo &info = bones[i];
+            const boneinfo &info = bones[i];
             if(info.interpindex < 0 || info.ragdollindex >= 0)
             {
                 continue;
