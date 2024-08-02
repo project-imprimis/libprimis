@@ -621,8 +621,8 @@ struct skelmodel : animmodel
             int vweights;
             std::array<int, 4> numblends;
 
-            static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
-            static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
+            static constexpr size_t maxblendcache = 16; //number of entries in the blendcache entry array
+            static constexpr size_t maxvbocache = 16;   //number of entries in the vertex buffer object array
 
             blendcacheentry blendcache[maxblendcache];
             vbocacheentry vbocache[maxvbocache];

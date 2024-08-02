@@ -1080,11 +1080,11 @@ skelmodel::skelmeshgroup::~skelmeshgroup()
     {
         glDeleteBuffers(1, &ebuf);
     }
-    for(int i = 0; i < maxblendcache; ++i)
+    for(size_t i = 0; i < maxblendcache; ++i)
     {
         delete[] blendcache[i].bdata;
     }
-    for(int i = 0; i < maxvbocache; ++i)
+    for(size_t i = 0; i < maxvbocache; ++i)
     {
         if(vbocache[i].vbuf)
         {
@@ -1895,14 +1895,14 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
 
 void skelmodel::skelmeshgroup::cleanup()
 {
-    for(int i = 0; i < maxblendcache; ++i)
+    for(size_t i = 0; i < maxblendcache; ++i)
     {
         blendcacheentry &c = blendcache[i];
         delete[] c.bdata;
         c.bdata = nullptr;
         c.owner = -1;
     }
-    for(int i = 0; i < maxvbocache; ++i)
+    for(size_t i = 0; i < maxvbocache; ++i)
     {
         vbocacheentry &c = vbocache[i];
         if(c.vbuf)
