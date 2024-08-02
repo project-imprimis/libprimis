@@ -202,7 +202,7 @@ vertmodel::vertmeshgroup::~vertmeshgroup()
     delete[] vdata;
 }
 
-void vertmodel::vertmeshgroup::concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const
+void vertmodel::vertmeshgroup::concattagtransform(int, const matrix4x3 &, matrix4x3 &) const
 {
 }
 
