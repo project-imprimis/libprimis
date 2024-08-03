@@ -192,7 +192,7 @@ vertmodel::vertmeshgroup::~vertmeshgroup()
     {
         glDeleteBuffers(1, &ebuf);
     }
-    for(int i = 0; i < maxvbocache; ++i)
+    for(size_t i = 0; i < maxvbocache; ++i)
     {
         if(vbocache[i].vbuf)
         {
@@ -372,7 +372,7 @@ void *vertmodel::vertmeshgroup::animkey()
 
 void vertmodel::vertmeshgroup::cleanup()
 {
-    for(int i = 0; i < maxvbocache; ++i)
+    for(size_t i = 0; i < maxvbocache; ++i)
     {
         vbocacheentry &c = vbocache[i];
         if(c.vbuf)
@@ -418,7 +418,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
     }
     else
     {
-        for(int i = 0; i < maxvbocache; ++i)
+        for(size_t i = 0; i < maxvbocache; ++i)
         {
             vbocacheentry &c = vbocache[i];
             if(!c.vbuf)
@@ -433,7 +433,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         }
         if(!vc)
         {
-            for(int i = 0; i < maxvbocache; ++i)
+            for(size_t i = 0; i < maxvbocache; ++i)
             {
                 vc = &vbocache[i];
                 if(!vc->vbuf || vc->millis < lastmillis)

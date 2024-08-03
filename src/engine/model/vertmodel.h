@@ -173,7 +173,7 @@ class vertmodel : public animmodel
             tag *tags;
             size_t numtags;
 
-            static constexpr int maxvbocache = 16;
+            static constexpr size_t maxvbocache = 16;
             vbocacheentry vbocache[maxvbocache];
 
             GLuint ebuf;
