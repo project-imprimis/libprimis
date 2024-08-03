@@ -256,7 +256,7 @@ struct vertcommands : modelcommands<MDL>
     typedef class  MDL::part part;
     typedef class  MDL::skin skin;
 
-    static void loadpart(char *model, float *smooth)
+    static void loadpart(const char *model, const float *smooth)
     {
         if(!MDL::loading)
         {
@@ -280,7 +280,7 @@ struct vertcommands : modelcommands<MDL>
         }
     }
 
-    static void settag(char *tagname, float *tx, float *ty, float *tz, float *rx, float *ry, float *rz)
+    static void settag(const char *tagname, const float *tx, const float *ty, const float *tz, const float *rx, const float *ry, const float *rz)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -304,7 +304,7 @@ struct vertcommands : modelcommands<MDL>
         static_cast<meshgroup *>(mdl.meshes)->addtag(tagname, m);
     }
 
-    static void setpitch(float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
+    static void setpitch(const float *pitchscale, const float *pitchoffset, const float *pitchmin, const float *pitchmax)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
@@ -326,7 +326,7 @@ struct vertcommands : modelcommands<MDL>
         }
     }
 
-    static void setanim(char *anim, int *frame, int *range, float *speed, int *priority)
+    static void setanim(const char *anim, const int *frame, const int *range, const float *speed, const int *priority)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
         {
