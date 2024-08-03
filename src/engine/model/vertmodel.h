@@ -71,12 +71,12 @@ class vertmodel : public animmodel
                 minvert = UINT_MAX;
                 for(int i = 0; i < numtris; ++i)
                 {
-                    tri &t = tris[i];
+                    const tri &t = tris[i];
                     for(int j = 0; j < 3; ++j)
                     {
                         int index = t.vert[j];
-                        vert &v = verts[index];
-                        tcvert &tc = tcverts[index];
+                        const vert &v = verts[index];
+                        const tcvert &tc = tcverts[index];
                         T vv;
                         assignvert(vv, index, tc, v);
                         auto hashfn = std::hash<vec>();
