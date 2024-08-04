@@ -124,6 +124,17 @@ class ragdolldata
         float timestep, scale;
 
         void calctris();
+
+        /**
+         * @brief Calculates the ragdolldata's radius and center position
+         *
+         * Sets the center position to be the average of all the vertices in the ragdoll
+         * Sets the radius to be the distance between the center and the farthest vert
+         *
+         * This is not necessarily the smallest sphere encapsulating all of the points
+         * in the vertex array, since that would be the midpoint of the farthest points in
+         * the vertex array.
+         */
         void calcboundsphere();
         void constrain();
         void constraindist();
