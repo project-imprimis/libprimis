@@ -12,6 +12,7 @@
 #include "testgltfloader.h"
 #include "testskel.h"
 #include "testmd5.h"
+#include "testragdoll.h"
 
 int main()
 {
@@ -24,6 +25,7 @@ int main()
     test_octa();
     test_gltf();
     test_md5();
+    test_ragdoll();
     test_skel();
     test_geom();
     test_geomexts();

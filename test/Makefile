@@ -26,6 +26,7 @@ CLIENT_OBJS= \
 	testmd5.o \
 	testocta.o \
 	testprops.o \
+	testragdoll.o \
 	testskel.o \
 	testshadowatlas.o \
 	testutils.o \
