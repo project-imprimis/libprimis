@@ -121,10 +121,7 @@ void ragdollskel::setup()
 
 void ragdollskel::addreljoint(int bone, int parent)
 {
-    reljoint r;
-    r.bone = bone;
-    r.parent = parent;
-    reljoints.push_back(r);
+    reljoints.emplace_back(reljoint{bone, parent});
 }
 /*                  ragdolldata                   */
 
