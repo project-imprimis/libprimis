@@ -72,7 +72,7 @@ void ragdollskel::setupjoints()
         }
         pos.mul(j.weight);
 
-        tri &t = tris[j.tri];
+        const tri &t = tris[j.tri];
         matrix4x3 &m = j.orient;
         const vec &v1 = verts[t.vert[0]].pos,
                   &v2 = verts[t.vert[1]].pos,
