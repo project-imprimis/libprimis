@@ -81,6 +81,17 @@ class ragdollskel
 
     private:
         void setupjoints();
+
+        /**
+         * @brief Adds indices for rotation frictions.
+         *
+         * For each pair of triangles in the tris vector of this object where one or more
+         * vertices in those two triangles refer to the same vertex, adds a new rotfriction
+         * to the rotfrictions vector with those triangles' indices within the tris vector.
+         *
+         * The rotfrictions vector is cleared before adding these entries; does not append
+         * to existing entries that may be present.
+         */
         void setuprotfrictions();
 };
 
