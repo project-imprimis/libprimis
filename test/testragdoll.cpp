@@ -18,6 +18,19 @@
 #include "../src/engine/model/model.h"
 #include "../src/engine/model/ragdoll.h"
 
+void test_ragdollskel_tri_shareverts()
+{
+    std::printf("testing ragdollskel::tri::shareverts\n");
+
+    ragdollskel::tri t1 = {0,1,2},
+                     t2 = {2,3,4},
+                     t3 = {10,11,12};
+    assert(t1.shareverts(t1));
+    assert(t1.shareverts(t2));
+    assert(t1.shareverts(t3) == false);
+    assert(t2.shareverts(t3) == false);
+}
+
 void test_init()
 {
     std::printf("testing ragdoll init\n");
@@ -47,6 +60,7 @@ testing ragdoll functionality\n\
 ===============================================================\n"
     );
 
+    test_ragdollskel_tri_shareverts();
     test_init();
 }
 
