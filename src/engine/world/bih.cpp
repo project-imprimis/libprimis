@@ -276,7 +276,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
         {
             return false;
         }
-        traversestate &restore = stack[--stacksize];
+        const traversestate &restore = stack[--stacksize];
         curnode = restore.node;
         tmin = restore.tmin;
         tmax = restore.tmax;
