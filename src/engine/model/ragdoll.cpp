@@ -59,9 +59,9 @@ void ragdollskel::setupjoints()
         vec pos(0, 0, 0);
         for(int k = 0; k < 3; ++k)
         {
-            if(j.vert[k]>=0)
+            if(j.vert[k]>=0) //for each valid vertex (not -1) refered to by this joint (up to 3)
             {
-                pos.add(verts[j.vert[k]].pos);
+                pos.add(verts[j.vert[k]].pos); //j.vert[k].pos is the positon of the vertex pointed to by the joint being used
                 j.weight++;
                 verts[j.vert[k]].weight++;
             }
@@ -77,9 +77,32 @@ void ragdollskel::setupjoints()
         const vec &v1 = verts[t.vert[0]].pos,
                   &v2 = verts[t.vert[1]].pos,
                   &v3 = verts[t.vert[2]].pos;
-        m.a = vec(v2).sub(v1).normalize();
-        m.c.cross(m.a, vec(v3).sub(v1)).normalize();
-        m.b.cross(m.c, m.a);
+        /*
+         *               /|
+         *              /
+         *          m.c/
+         *            /
+         *        v1 /   m.a     v2
+         *          *---------->*
+         *          |
+         *          |
+         *          |
+         *       m.b|
+         *          v
+         *
+         *
+         *          *
+         *           v3
+         *
+         *        ----→    ----→
+         *  m.c = v1 v2  x v1 v3
+         *        --→   ----→
+         *  m.b = m.c x v1 v2
+         *
+         */
+        m.a = vec(v2).sub(v1).normalize(); //m.a has magnitude 1 at all times
+        m.c.cross(m.a, vec(v3).sub(v1)).normalize(); //m.c will always have a magnitude <=1
+        m.b.cross(m.c, m.a); //m.b will always have a magnitude <= m.c
         m.d = pos;
         m.transpose();
     }
