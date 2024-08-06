@@ -31,6 +31,24 @@ void test_ragdollskel_tri_shareverts()
     assert(t2.shareverts(t3) == false);
 }
 
+void test_ragdollskel_setup()
+{
+    std::printf("testing ragdollskel::setup\n");
+
+    ragdollskel s;
+    s.tris.push_back({0,1,2});
+    s.tris.push_back({2,3,4});
+
+    s.setup();
+
+    //setuprotfrictions check
+    assert(s.rotfrictions.size() == 1);
+    assert(s.rotfrictions.at(0).tri[0] == 0);
+    assert(s.rotfrictions.at(0).tri[1] == 1);
+
+    assert(s.loaded == true);
+}
+
 void test_init()
 {
     std::printf("testing ragdoll init\n");
@@ -61,6 +79,7 @@ testing ragdoll functionality\n\
     );
 
     test_ragdollskel_tri_shareverts();
+    test_ragdollskel_setup();
     test_init();
 }
 
