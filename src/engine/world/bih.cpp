@@ -349,9 +349,14 @@ void BIH::build(mesh &m, uint *indices, int numindices, const ivec &vmin, const 
             axis = k;
         }
     }
-    ivec leftmin, leftmax, rightmin, rightmax;
-    int splitleft, splitright,
-        left, right;
+    ivec leftmin,
+         leftmax,
+         rightmin,
+         rightmax;
+    int splitleft,
+        splitright,
+        left,
+        right;
     for(int k = 0; k < 3; ++k)
     {
         leftmin = rightmin = ivec(INT_MAX, INT_MAX, INT_MAX);
