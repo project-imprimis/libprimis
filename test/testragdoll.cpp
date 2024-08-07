@@ -18,6 +18,8 @@
 #include "../src/engine/model/model.h"
 #include "../src/engine/model/ragdoll.h"
 
+constexpr float tolerance = 0.001;
+
 void test_ragdollskel_tri_shareverts()
 {
     std::printf("testing ragdollskel::tri::shareverts\n");
@@ -39,7 +41,17 @@ void test_ragdollskel_setup()
     s.tris.push_back({0,1,2});
     s.tris.push_back({2,3,4});
 
+    s.verts.push_back({vec(0,0,0), 0, 0});
+    s.verts.push_back({vec(1,0,0), 0, 0});
+    s.verts.push_back({vec(0,1,0), 0, 0});
+
+    s.joints.push_back({0, 0, {0,1,2}, 0.f, matrix4x3()});
     s.setup();
+    //setupjoints check
+
+    assert(s.joints.at(0).orient.a.sub(vec(1,0,0)).magnitude() < tolerance);
+    assert(s.joints.at(0).orient.b.sub(vec(0,1,0)).magnitude() < tolerance);
+    assert(s.joints.at(0).orient.c.sub(vec(0,0,1)).magnitude() < tolerance);
 
     //setuprotfrictions check
     assert(s.rotfrictions.size() == 1);
