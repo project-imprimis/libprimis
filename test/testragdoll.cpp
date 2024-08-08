@@ -63,6 +63,34 @@ namespace
         assert(s.loaded == true);
     }
 
+    void test_ragdolldata_calcanimjoint()
+    {
+        std::printf("testing ragdolldata::calcanimjoint\n");
+
+        ragdollskel s;
+        s.tris.push_back({0,1,2});
+        s.tris.push_back({2,3,4});
+
+        s.verts.push_back({vec(0,0,0), 0, 0});
+        s.verts.push_back({vec(1,0,0), 0, 0});
+        s.verts.push_back({vec(0,1,0), 0, 0});
+
+        s.joints.push_back({0, 0, {0,1,2}, 0.f, matrix4x3()});
+
+
+
+        ragdolldata r(&s);
+
+        r.calcanimjoint(0, matrix4x3());
+        r.animjoints = new matrix4x3[1];
+
+        assert(r.animjoints[0].a == vec(0,0,0));
+        assert(r.animjoints[0].b == vec(0,0,0));
+        assert(r.animjoints[0].c == vec(0,0,0));
+        assert(r.animjoints[0].d == vec(0,0,0));
+
+    }
+
     void test_init()
     {
         std::printf("testing ragdoll init\n");
@@ -95,6 +123,7 @@ testing ragdoll functionality\n\
 
     test_ragdollskel_tri_shareverts();
     test_ragdollskel_setup();
+    test_ragdolldata_calcanimjoint();
     test_init();
 }
 
