@@ -91,7 +91,7 @@ namespace
 
     }
 
-    void test_init()
+    void test_ragdolldata_init()
     {
         std::printf("testing ragdoll init\n");
         ragdollskel s;
@@ -124,6 +124,6 @@ testing ragdoll functionality\n\
     test_ragdollskel_tri_shareverts();
     test_ragdollskel_setup();
     test_ragdolldata_calcanimjoint();
-    test_init();
+    test_ragdolldata_init();
 }
 
