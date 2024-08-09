@@ -63,6 +63,18 @@ namespace
         assert(s.loaded == true);
     }
 
+    void test_ragdollskel_addreljoint()
+    {
+        std::printf("testing ragdollskel::addreljoint\n");
+
+        ragdollskel s;
+
+        s.addreljoint(1,2);
+        assert(s.reljoints.size() == 1);
+        assert(s.reljoints.at(0).bone == 1);
+        assert(s.reljoints.at(0).parent == 2);
+    }
+
     void test_ragdolldata_calcanimjoint()
     {
         std::printf("testing ragdolldata::calcanimjoint\n");
@@ -123,6 +135,7 @@ testing ragdoll functionality\n\
 
     test_ragdollskel_tri_shareverts();
     test_ragdollskel_setup();
+    test_ragdollskel_addreljoint();
     test_ragdolldata_calcanimjoint();
     test_ragdolldata_init();
 }
