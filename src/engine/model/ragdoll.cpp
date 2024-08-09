@@ -284,8 +284,8 @@ void ragdolldata::constraindist()
         vert &v1 = verts[d.vert[0]],
              &v2 = verts[d.vert[1]];
         vec dir = vec(v2.pos).sub(v1.pos);
-        float dist = dir.magnitude()/scale,
-              cdist;
+        const float dist = dir.magnitude()/scale;
+        float cdist;
         if(dist < d.mindist)
         {
             cdist = d.mindist;
@@ -306,7 +306,7 @@ void ragdolldata::constraindist()
         {
             dir = vec(0, 0, cdist*0.5f*scale);
         }
-        vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
+        const vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
         v1.newpos.add(vec(center).sub(dir));
         v1.weight++;
         v2.newpos.add(vec(center).add(dir));
@@ -323,22 +323,22 @@ void ragdolldata::applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::t
          &v2b = verts[t2.vert[1]],
          &v2c = verts[t2.vert[2]];
     // vec() copy constructor used below to deal with the fact that vec.add/sub() are destructive operations
-    vec m1 = vec(v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
-        m2 = vec(v2a.pos).add(v2b.pos).add(v2c.pos).div(3),
-        q1a, q1b, q1c, q2a, q2b, q2c;
-    float w1 = q1a.cross(axis, vec(v1a.pos).sub(m1)).magnitude() +
-               q1b.cross(axis, vec(v1b.pos).sub(m1)).magnitude() +
-               q1c.cross(axis, vec(v1c.pos).sub(m1)).magnitude(),
-          w2 = q2a.cross(axis, vec(v2a.pos).sub(m2)).magnitude() +
-               q2b.cross(axis, vec(v2b.pos).sub(m2)).magnitude() +
-               q2c.cross(axis, vec(v2c.pos).sub(m2)).magnitude();
+    const vec m1 = vec(v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
+              m2 = vec(v2a.pos).add(v2b.pos).add(v2c.pos).div(3);
+    vec q1a, q1b, q1c, q2a, q2b, q2c;
+    const float w1 = q1a.cross(axis, vec(v1a.pos).sub(m1)).magnitude() +
+                     q1b.cross(axis, vec(v1b.pos).sub(m1)).magnitude() +
+                     q1c.cross(axis, vec(v1c.pos).sub(m1)).magnitude(),
+                w2 = q2a.cross(axis, vec(v2a.pos).sub(m2)).magnitude() +
+                     q2b.cross(axis, vec(v2b.pos).sub(m2)).magnitude() +
+                     q2c.cross(axis, vec(v2c.pos).sub(m2)).magnitude();
     angle /= w1 + w2 + 1e-9f;
-    float a1 = angle*w2,
-          a2 = -angle*w1,
-          s1 = std::sin(a1),
-          s2 = std::sin(a2);
-    vec c1 = vec(axis).mul(1 - std::cos(a1)),
-        c2 = vec(axis).mul(1 - std::cos(a2));
+    const float a1 = angle*w2,
+                a2 = -angle*w1,
+                s1 = std::sin(a1),
+                s2 = std::sin(a2);
+    const vec c1 = vec(axis).mul(1 - std::cos(a1)),
+              c2 = vec(axis).mul(1 - std::cos(a2));
     v1a.newpos.add(vec().cross(c1, q1a).madd(q1a, s1).add(v1a.pos));
     v1a.weight++;
     v1b.newpos.add(vec().cross(c1, q1b).madd(q1b, s1).add(v1b.pos));
@@ -363,8 +363,8 @@ void ragdolldata::constrainrot()
         rot.multranspose(tris[r.tri[1]]);
 
         vec axis;
-        float angle,
-              tr = rot.trace();
+        float angle;
+        const float tr = rot.trace();
         if(tr >= r.maxtrace || !rot.calcangleaxis(tr, angle, axis))
         {
             continue;
@@ -482,7 +482,7 @@ void ragdolldata::constrain()
             if(v.pos != v.undo && collidevert(v.pos, vec(v.pos).sub(v.undo), skel->verts[j].radius))
             {
                 vec dir = vec(v.pos).sub(v.oldpos);
-                float facing = dir.dot(collidewall);
+                const float facing = dir.dot(collidewall);
                 if(facing < 0)
                 {
                     v.oldpos = vec(v.undo).sub(dir.msub(collidewall, 2*facing));
@@ -602,8 +602,8 @@ void moveragdoll(dynent *d)
         const int lastmove = d->ragdoll->lastmove;
         while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= lastmillis)
         {
-            int timestep = std::min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
-            const int material = rootworld.lookupmaterial(vec(d->ragdoll->center.x, d->ragdoll->center.y, d->ragdoll->center.z + d->ragdoll->radius/2));
+            const int timestep = std::min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove),
+                      material = rootworld.lookupmaterial(vec(d->ragdoll->center.x, d->ragdoll->center.y, d->ragdoll->center.z + d->ragdoll->radius/2));
             const bool water = (material&MatFlag_Volume) == Mat_Water;
             d->inwater = water ? material&MatFlag_Volume : Mat_Air;
             d->ragdoll->move(water, timestep/1000.0f);
