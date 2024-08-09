@@ -128,7 +128,7 @@ class ragdolldata
         ragdolldata(ragdollskel *skel, float scale = 1);
         ~ragdolldata();
 
-        void move(dynent *pl, float ts);
+        void move(bool water, float ts);
         void calcanimjoint(int i, const matrix4x3 &anim);
         void init(const dynent *d);
 

@@ -494,7 +494,7 @@ void ragdolldata::constrain()
     }
 }
 
-void ragdolldata::move(dynent *pl, float ts)
+void ragdolldata::move(bool water, float ts)
 {
 
     static FVAR(ragdollbodyfric, 0, 0.95f, 1);
@@ -510,9 +510,6 @@ void ragdolldata::move(dynent *pl, float ts)
     {
         return;
     }
-    const int material = rootworld.lookupmaterial(vec(center.x, center.y, center.z + radius/2));
-    const bool water = (material&MatFlag_Volume) == Mat_Water;
-    pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
     calcrotfriction();
     const float tsfric = timestep ? ts/timestep : 1,
@@ -606,7 +603,10 @@ void moveragdoll(dynent *d)
         while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= lastmillis)
         {
             int timestep = std::min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
-            d->ragdoll->move(d, timestep/1000.0f);
+            const int material = rootworld.lookupmaterial(vec(d->ragdoll->center.x, d->ragdoll->center.y, d->ragdoll->center.z + d->ragdoll->radius/2));
+            const bool water = (material&MatFlag_Volume) == Mat_Water;
+            d->inwater = water ? material&MatFlag_Volume : Mat_Air;
+            d->ragdoll->move(water, timestep/1000.0f);
             d->ragdoll->lastmove += timestep;
         }
     }
