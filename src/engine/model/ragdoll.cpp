@@ -228,42 +228,6 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     animjoints[i].transposemul(m, anim);
 }
 
-/**
- * @brief Sets new values in the tris matrix vector based on ragdollskel tris
- *
- * Const with respect to all values outside of the vector of tris
- *
- * Reads values from the associated ragdollskel, and sets the vecs inside the
- * corresponding matrix in the ragdolldata as follows:
- *
- *               /|
- *              /
- *          m.c/
- *            /
- *        v1 /   m.a     v2
- *          *---------->*
- *          |
- *          |
- *          |
- *       m.b|
- *          v
- *
- *
- *          *
- *           v3
- *
- *        ----→    ----→
- *  m.c = v1 v2  x v1 v3
- *        --→   ----→
- *  m.b = m.c x v1 v2
- *
- * m.a points from v1 to v2
- * m.b points from v1 to v3
- * m.c points along the normal of the triangle v1, v2, v3
- *
- * Prior values that may be in the matrix vector are disregarded and have no
- * effect on the output values.
- */
 void ragdolldata::calctris()
 {
     for(uint i = 0; i < skel->tris.size(); i++)
