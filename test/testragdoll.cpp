@@ -123,6 +123,18 @@ namespace
         assert(r.center == vec(0.5, 0, 0));
         assert(r.radius == 0.5);
     }
+
+    void test_cleanragdoll()
+    {
+        std::printf("testing cleanragdoll\n");
+        dynent d;
+        ragdollskel s;
+        ragdolldata *r = new ragdolldata(&s);
+
+        d.ragdoll = r;
+        cleanragdoll(&d);
+        assert(d.ragdoll == nullptr);
+    }
 }
 
 void test_ragdoll()
@@ -138,5 +150,6 @@ testing ragdoll functionality\n\
     test_ragdollskel_addreljoint();
     test_ragdolldata_calcanimjoint();
     test_ragdolldata_init();
+    test_cleanragdoll();
 }
 
