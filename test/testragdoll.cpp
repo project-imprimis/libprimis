@@ -49,8 +49,8 @@ namespace
 
         s.joints.push_back({0, 0, {0,1,2}, 0.f, matrix4x3()});
         s.setup();
-        //setupjoints check
 
+        //setupjoints check
         assert(s.joints.at(0).orient.a.sub(vec(1,0,0)).magnitude() < tolerance);
         assert(s.joints.at(0).orient.b.sub(vec(0,1,0)).magnitude() < tolerance);
         assert(s.joints.at(0).orient.c.sub(vec(0,0,1)).magnitude() < tolerance);
@@ -89,8 +89,6 @@ namespace
 
         s.joints.push_back({0, 0, {0,1,2}, 0.f, matrix4x3()});
 
-
-
         ragdolldata r(&s);
 
         r.calcanimjoint(0, matrix4x3());
@@ -100,7 +98,6 @@ namespace
         assert(r.animjoints[0].b == vec(0,0,0));
         assert(r.animjoints[0].c == vec(0,0,0));
         assert(r.animjoints[0].d == vec(0,0,0));
-
     }
 
     void test_ragdolldata_init()
