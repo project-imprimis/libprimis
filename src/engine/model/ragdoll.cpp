@@ -581,10 +581,12 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
         }
     } v;
     v.o = pos;
-    if(v.radius != radius)
+    if(v.radius != radius) //(radius param != 1)
     {
         v.radius = v.xradius = v.yradius = v.eyeheight = v.aboveeye = radius;
     }
+    //collide generated vertent (point with sphere bounding of r = radius)
+    //with dir parameter
     return collide(&v, dir, 0, false);
 }
 

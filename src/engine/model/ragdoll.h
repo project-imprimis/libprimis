@@ -193,7 +193,20 @@ class ragdolldata final
         void applyrotfriction(float ts);
         void tryunstick(float speed);
 
-        bool collidevert(const vec &pos, const vec &dir, float radius);
+        /**
+         * @brief Checks collision of `dir` with spherical volume at `pos` with radius `radius`.
+         *
+         * Checks collision of defined sphere with the cubeworld, in direction `dir`.
+         * physics' `collide()` used for collision detection against the cubeworld.
+         *
+         * @param pos positon of sphere center
+         * @param dir direction to check collision against
+         * @param radius radius of sphere center
+         *
+         * @return true if collision occured
+         * @return false if no collision occured
+         */
+        static bool collidevert(const vec &pos, const vec &dir, float radius);
 };
 
 extern void cleanragdoll(dynent *d);
