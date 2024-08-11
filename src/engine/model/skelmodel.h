@@ -1203,13 +1203,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdollskel::joint j;
-        j.bone = *n;
-        j.tri = *t;
-        j.vert[0] = *v1;
-        j.vert[1] = *v2;
-        j.vert[2] = *v3;
-        ragdoll->joints.push_back(j);
+        ragdoll->joints.push_back({*n, *t, {*v1, *v2, *v3}});
     }
 
     static void rdlimitdist(const int *v1, const int *v2, const float *mindist, const float *maxdist)
