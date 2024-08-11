@@ -5,14 +5,14 @@
  * is able to be dynamically modified by physics (rather than by an animation file)
  *
  */
-class ragdollskel
+class ragdollskel final
 {
     public:
         ragdollskel() : loaded(false), animjoints(false), eye(-1) {}
 
         bool loaded, animjoints;
 
-        struct tri
+        struct tri final
         {
             int vert[3];
 
@@ -31,20 +31,20 @@ class ragdollskel
         };
         std::vector<tri> tris;
 
-        struct reljoint
+        struct reljoint final
         {
             int bone, parent;
         };
         std::vector<reljoint> reljoints;
 
-        struct vert
+        struct vert final
         {
             vec pos;
             float radius, weight;
         };
         std::vector<vert> verts;
 
-        struct joint
+        struct joint final
         {
             int bone, tri, vert[3];
             float weight;
@@ -52,7 +52,7 @@ class ragdollskel
         };
         std::vector<joint> joints;
 
-        struct rotlimit
+        struct rotlimit final
         {
             int tri[2];
             float maxangle, maxtrace;
@@ -60,14 +60,14 @@ class ragdollskel
         };
         std::vector<rotlimit> rotlimits;
 
-        struct rotfriction
+        struct rotfriction final
         {
             int tri[2];
             matrix3 middle;
         };
         std::vector<rotfriction> rotfrictions;
 
-        struct distlimit
+        struct distlimit final
         {
             int vert[2];
             float mindist, maxdist;
@@ -95,7 +95,7 @@ class ragdollskel
         void setuprotfrictions();
 };
 
-class ragdolldata
+class ragdolldata final
 {
     public:
         ragdollskel *skel;
@@ -112,7 +112,7 @@ class ragdolldata
         //shadows the elements in skel->reljoints
         dualquat *reljoints;
 
-        struct vert
+        struct vert final
         {
             vec oldpos, pos, newpos, undo;
             float weight;
