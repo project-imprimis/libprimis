@@ -299,7 +299,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     }
 
     std::vector<uint> idxs;
-    auto rendermeshes = getrendermeshes();
+    std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes = getrendermeshes();
     vlen = 0;
     if(numframes>1)
     {
