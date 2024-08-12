@@ -164,10 +164,6 @@ ragdolldata::ragdolldata(ragdollskel *skel, float scale)
       timestep(0),
       scale(scale)
 {
-    for(size_t i = 0; i < verts.size(); ++i)
-    {
-        verts[i] = vert(skel->verts[i]);
-    }
 }
 
 ragdolldata::~ragdolldata()

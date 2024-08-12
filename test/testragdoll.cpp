@@ -104,9 +104,11 @@ namespace
     {
         std::printf("testing ragdoll init\n");
         ragdollskel s;
-        s.verts.push_back({vec(0,0,0), 0, 0});
-        s.verts.push_back({vec(1,0,0), 0, 0});
         ragdolldata r(&s);
+        r.verts.push_back(ragdolldata::vert());
+        r.verts.back().pos = vec(0,0,0);
+        r.verts.push_back(ragdolldata::vert());
+        r.verts.back().pos = vec(1,0,0);
 
         dynent d;
         d.o = vec(0,0,0);

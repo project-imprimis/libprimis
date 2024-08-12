@@ -118,8 +118,6 @@ class ragdolldata final
             float weight;
             bool collided, stuck;
             vert() : oldpos(0, 0, 0), pos(0, 0, 0), newpos(0, 0, 0), undo(0, 0, 0), weight(0), collided(false), stuck(true) {}
-
-            vert(ragdollskel::vert &v) : oldpos(0, 0, 0), pos(v.pos), newpos(0, 0, 0), undo(0, 0, 0), weight(v.weight), collided(false), stuck(true) {}
         };
 
         //shadows the elements in skel->verts, should not be resized after construction
