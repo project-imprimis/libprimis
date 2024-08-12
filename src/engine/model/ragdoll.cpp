@@ -148,7 +148,7 @@ void ragdollskel::addreljoint(int bone, int parent)
 }
 /*                  ragdolldata                   */
 
-ragdolldata::ragdolldata(ragdollskel *skel, float scale)
+ragdolldata::ragdolldata(const ragdollskel *skel, float scale)
     : skel(skel),
       millis(lastmillis),
       collidemillis(0),

@@ -129,7 +129,7 @@ class ragdolldata final
         //shadows the elements in skel->verts, should not be resized after construction
         std::vector<vert> verts;
 
-        ragdolldata(ragdollskel *skel, float scale = 1);
+        ragdolldata(const ragdollskel *skel, float scale = 1);
         ~ragdolldata();
 
         void move(bool water, float ts);
