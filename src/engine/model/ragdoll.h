@@ -4,6 +4,8 @@
 /* ragdollskel defines a skeletal animation object for use by skelmodel, which
  * is able to be dynamically modified by physics (rather than by an animation file)
  *
+ * ragdollskel objects are owned by skelmodel::skeleton objects and therefore there
+ * is exactly one `ragdollskel` no matter how many entities use a particular model
  */
 class ragdollskel final
 {
@@ -95,6 +97,11 @@ class ragdollskel final
         void setuprotfrictions();
 };
 
+/*
+ * ragdolldata defines a class corresponding to a specific instantiation of a ragdoll
+ * in the context of a dynent. Many ragdolldata objects may point to the same ragdollskel
+ * object.
+ */
 class ragdolldata final
 {
     public:
