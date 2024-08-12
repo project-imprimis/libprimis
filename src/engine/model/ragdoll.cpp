@@ -162,7 +162,8 @@ ragdolldata::ragdolldata(ragdollskel *skel, float scale)
       floating(0),
       unsticks(INT_MAX),
       timestep(0),
-      scale(scale)
+      scale(scale),
+      rotfrictions(skel->rotfrictions.size())
 {
 }
 
@@ -372,9 +373,9 @@ void ragdolldata::constrainrot()
 
 void ragdolldata::calcrotfriction()
 {
-    for(ragdollskel::rotfriction &r : skel->rotfrictions)
+    for(size_t i = 0; i < skel->rotfrictions.size(); ++i)
     {
-        r.middle.transposemul(tris[r.tri[0]], tris[r.tri[1]]);
+        rotfrictions[i].transposemul(tris[skel->rotfrictions[i].tri[0]], tris[skel->rotfrictions[i].tri[1]]);
     }
 }
 
@@ -386,11 +387,11 @@ void ragdolldata::applyrotfriction(float ts)
     calctris();
     float stopangle = 2*M_PI*ts*ragdollrotfricstop,
           rotfric = 1.0f - std::pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
-    for(const ragdollskel::rotfriction &r : skel->rotfrictions)
+    for(size_t i = 0; i < skel->rotfrictions.size(); ++i)
     {
         matrix3 rot;
-        rot.mul(tris[r.tri[0]], r.middle);
-        rot.multranspose(tris[r.tri[1]]);
+        rot.mul(tris[ skel->rotfrictions[i].tri[0]], rotfrictions[i]);
+        rot.multranspose(tris[ skel->rotfrictions[i].tri[1]]);
 
         vec axis;
         float angle;
@@ -399,7 +400,7 @@ void ragdolldata::applyrotfriction(float ts)
             continue;
         }
         angle *= -(std::fabs(angle) >= stopangle ? rotfric : 1.0f);
-        applyrotlimit(skel->tris[r.tri[0]], skel->tris[r.tri[1]], angle, axis);
+        applyrotlimit(skel->tris[skel->rotfrictions[i].tri[0]], skel->tris[ skel->rotfrictions[i].tri[1]], angle, axis);
     }
     for(vert &v : verts)
     {

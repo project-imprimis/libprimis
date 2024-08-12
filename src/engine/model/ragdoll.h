@@ -65,7 +65,6 @@ class ragdollskel final
         struct rotfriction final
         {
             int tri[2];
-            matrix3 middle;
         };
         std::vector<rotfriction> rotfrictions;
 
@@ -105,7 +104,7 @@ class ragdollskel final
 class ragdolldata final
 {
     public:
-        ragdollskel *skel;
+        const ragdollskel *skel;
         int millis, collidemillis, lastmove;
         float radius;
         vec offset, center;
@@ -140,6 +139,8 @@ class ragdolldata final
     private:
         int collisions, floating, unsticks;
         float timestep, scale;
+
+        std::vector<matrix3> rotfrictions;
 
         /**
          * @brief Sets new values in the tris matrix vector based on ragdollskel tris
