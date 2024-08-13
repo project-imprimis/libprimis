@@ -414,8 +414,23 @@ void ragdolldata::applyrotfriction(float ts)
     }
 }
 
+/**
+ * @brief Modifies stuck verticies in the vertex array.
+ *
+ * Only affects those vertices which have the `stuck` field set to `true`.
+ *
+ * Moves those `stuck` vertices towards the average position of the unstuck vertices,
+ * with a magnitude equal to the `speed` parameter.
+ *
+ * @param speed the magnitude by which to modify stuck vertices
+ *
+ */
 void ragdolldata::tryunstick(float speed)
 {
+    /* vec `unstuck` is the average position of all vertices with the `stuck` flag
+     * that are not found to collide with the world, as well as all vertices without
+     * the `stuck` flag.
+     */
     vec unstuck(0, 0, 0);
     size_t stuck = 0;
     for(uint i = 0; i < verts.size(); i++)
@@ -437,7 +452,8 @@ void ragdolldata::tryunstick(float speed)
     {
         return;
     }
-    unstuck.div(verts.size() - stuck);
+    unstuck.div(verts.size() - stuck); //get average by dividing by # verts not stuck
+
     for(vert &v : verts)
     {
         if(v.stuck)
