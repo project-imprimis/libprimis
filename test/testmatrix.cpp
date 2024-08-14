@@ -182,6 +182,98 @@ void test_matrix3_trace()
     }
 }
 
+void test_matrix3_calcangleaxis()
+{
+    std::printf("testing matrix3 calcangleaxis\n");
+    //calcangleaxis(float, float&, vec&, float)
+    {
+        //identity
+        matrix3 m;
+        m.identity();
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(angle == 0);
+        assert(axis == vec(0,0,1));
+    }
+    {
+        //simple 1 radian rotation x
+        matrix3 m(1, vec(1,0,0));
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(std::abs(1 - angle) < tolerance);
+        assert(vec(axis).sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        //simple 1 radian rotation y
+        matrix3 m(1, vec(0,1,0));
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(std::abs(1 - angle) < tolerance);
+        assert(vec(axis).sub(vec(0,1,0)).magnitude() < tolerance);
+    }
+    {
+        //simple 1 radian rotation z
+        matrix3 m(1, vec(0,0,1));
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(std::abs(1 - angle) < tolerance);
+        assert(vec(axis).sub(vec(0,0,1)).magnitude() < tolerance);
+    }
+    {
+        //3pi rotation -> pi rotation
+        matrix3 m(M_PI * 3, vec(1,0,0));
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(std::abs(M_PI - angle) < tolerance);
+        assert(vec(axis).sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    {
+        //-pi rotation -> pi rotation
+        matrix3 m(M_PI * -1, vec(1,0,0));
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(m.trace(), angle, axis);
+
+        assert(std::abs(M_PI - angle) < tolerance);
+        assert(vec(axis).sub(vec(1,0,0)).magnitude() < tolerance);
+    }
+    //calcangleaxis(float&, vec&, float)
+    {
+        matrix3 m;
+        m.identity();
+
+        float angle;
+        vec axis;
+
+        m.calcangleaxis(angle, axis);
+
+        assert(angle == 0);
+        assert(axis == vec(0,0,1));
+    }
+}
+
 void test_matrix3_identity()
 {
     std::printf("testing matrix3 identity\n");
@@ -1150,6 +1242,7 @@ testing matrices\n\
     test_matrix3_scale();
     test_matrix3_setyaw();
     test_matrix3_trace();
+    test_matrix3_calcangleaxis();
     test_matrix3_identity();
     test_matrix3_transpose();
     test_matrix3_invert();
