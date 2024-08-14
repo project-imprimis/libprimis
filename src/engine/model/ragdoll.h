@@ -193,6 +193,18 @@ class ragdolldata final
         void calcboundsphere();
         void constrain();
         void constraindist();
+
+        /**
+         * @brief Applies a rotation around a specified axis to a pair of triangles.
+         *
+         * Modifies the vertices pointed to by the two assigned tri objects by rotating them
+         * to the amount indicated by the angle and about the axis specified by axis.
+         *
+         * @param t1 the first triangle to modify
+         * @param t2 the second triangle to modify
+         * @param angle the angle to rotate by
+         * @param axis the axis by which to rotate around
+         */
         void applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis);
         void constrainrot();
         void calcrotfriction();
