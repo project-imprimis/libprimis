@@ -112,7 +112,7 @@ skelmodel::pitchcorrect::pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(
 
 const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_view name, char sep) const
 {
-    int len = sep ? std::strlen(name.data()) : 0;
+    const int len = sep ? std::strlen(name.data()) : 0;
     for(const skelanimspec &i : skelanims)
     {
         if(!i.name.empty())
@@ -234,7 +234,7 @@ void skelmodel::skeleton::calcantipodes()
     }
     for(uint i = 0; i < schedule.size(); i++)
     {
-        uint bone = schedule[i];
+        const uint bone = schedule[i];
         const boneinfo &info = bones[bone];
         for(size_t j = 0; j < numbones; ++j)
         {
