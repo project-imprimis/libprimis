@@ -415,7 +415,7 @@ struct skelmodel : animmodel
     {
         public:
             size_t numbones;
-            int numinterpbones, numgpubones, numframes;
+            int numgpubones, numframes;
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
             std::vector<skelanimspec> skelanims;
             ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
@@ -479,6 +479,7 @@ struct skelmodel : animmodel
 
         private:
             skelmeshgroup * const owner;
+            int numinterpbones;
 
             struct boneinfo final
             {
