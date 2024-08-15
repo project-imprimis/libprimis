@@ -426,7 +426,7 @@ std::optional<size_t> skelmodel::skeleton::findpitchdep(int bone) const
     {
         if(bone <= pitchdeps[i].bone)
         {
-            return bone == pitchdeps[i].bone ? i : std::nullopt;
+            return bone == pitchdeps[i].bone ? std::optional<uint>(i) : std::optional<uint>(std::nullopt);
         }
     }
     return std::nullopt;
