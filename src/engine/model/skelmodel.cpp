@@ -420,16 +420,16 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
     }
 }
 
-int skelmodel::skeleton::findpitchdep(int bone) const
+std::optional<size_t> skelmodel::skeleton::findpitchdep(int bone) const
 {
     for(uint i = 0; i < pitchdeps.size(); i++)
     {
         if(bone <= pitchdeps[i].bone)
         {
-            return bone == pitchdeps[i].bone ? i : -1;
+            return bone == pitchdeps[i].bone ? i : std::nullopt;
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 int skelmodel::skeleton::findpitchcorrect(int bone) const
@@ -461,21 +461,21 @@ void skelmodel::skeleton::initpitchdeps()
         int parent = bones[d.bone].parent;
         if(parent >= 0)
         {
-            int j = findpitchdep(parent);
-            if(j >= 0)
+            std::optional<size_t> j = findpitchdep(parent);
+            if(j)
             {
-                d.parent = j;
-                d.pose.mul(pitchdeps[j].pose, dualquat(d.pose));
+                d.parent = j.value();
+                d.pose.mul(pitchdeps[j.value()].pose, dualquat(d.pose));
             }
         }
     }
     for(pitchtarget &t : pitchtargets)
     {
-        int j = findpitchdep(t.bone);
-        if(j >= 0)
+        std::optional<size_t> j = findpitchdep(t.bone);
+        if(j)
         {
-            t.deps = j;
-            t.pose = pitchdeps[j].pose;
+            t.deps = j.value();
+            t.pose = pitchdeps[j.value()].pose;
         }
         t.corrects = -1;
         for(int parent = t.bone; parent >= 0; parent = bones[parent].parent)
