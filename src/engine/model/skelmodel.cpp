@@ -1812,7 +1812,7 @@ void *skelmodel::skelmeshgroup::animkey()
 
 int skelmodel::skelmeshgroup::totalframes() const
 {
-    return std::max(skel->numframes, 1);
+    return std::max(skel->numframes, size_t(1));
 }
 
 void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc)
