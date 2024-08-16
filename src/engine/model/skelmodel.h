@@ -503,14 +503,30 @@ struct skelmodel : animmodel
             struct boneinfo final
             {
                 const char *name;
-                int parent, children, next, group, scheduled, interpindex, interpparent, ragdollindex, correctindex;
+                int parent, //parent node in boneinfo
+                    children, //first index of child bone list in boneinfo
+                    next, //next adjacent sibling bone in boneinfo, last bone in sibling list has next = 0
+                    group,
+                    scheduled,
+                    interpindex,
+                    interpparent,
+                    ragdollindex,
+                    correctindex;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
                 dualquat base;
 
                 boneinfo();
                 ~boneinfo();
             };
-            boneinfo *bones; //array of boneinfo, size equal to numbones
+            /**
+             * nodes in boneinfo tree, node relations in the tree are indicated
+             * by boneinfo's fields
+             *
+             * n-leaf tree (nodes can have 0...INT_MAX children)
+             *
+             * size equal to numbones
+             */
+            boneinfo *bones;
 
             struct pitchdep
             {
