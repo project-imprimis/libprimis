@@ -432,16 +432,16 @@ std::optional<size_t> skelmodel::skeleton::findpitchdep(int bone) const
     return std::nullopt;
 }
 
-int skelmodel::skeleton::findpitchcorrect(int bone) const
+std::optional<size_t> skelmodel::skeleton::findpitchcorrect(int bone) const
 {
     for(uint i = 0; i < pitchcorrects.size(); i++)
     {
         if(bone <= pitchcorrects[i].bone)
         {
-            return bone == pitchcorrects[i].bone ? i : -1;
+            return bone == pitchcorrects[i].bone ? std::optional<uint>(i) : std::optional<uint>(std::nullopt);
         }
     }
-    return -1;
+    return std::nullopt;
 }
 
 void skelmodel::skeleton::initpitchdeps()
@@ -480,7 +480,8 @@ void skelmodel::skeleton::initpitchdeps()
         t.corrects = -1;
         for(int parent = t.bone; parent >= 0; parent = bones[parent].parent)
         {
-            t.corrects = findpitchcorrect(parent);
+            std::optional<size_t> newpitchcorrect = findpitchcorrect(parent);
+            t.corrects = newpitchcorrect ? newpitchcorrect.value() : -1;
             if(t.corrects >= 0)
             {
                 break;
@@ -499,7 +500,8 @@ void skelmodel::skeleton::initpitchdeps()
             {
                 break;
             }
-            c.parent = findpitchcorrect(parent);
+            std::optional<size_t> newpitchcorrect = findpitchcorrect(parent);
+            c.parent = newpitchcorrect ? newpitchcorrect.value() : -1;
             if(c.parent >= 0)
             {
                 break;

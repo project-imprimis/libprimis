@@ -436,7 +436,7 @@ struct skelmodel : animmodel
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
             void addpitchdep(int bone, int frame);
             std::optional<size_t> findpitchdep(int bone) const;
-            int findpitchcorrect(int bone) const;
+            std::optional<size_t> findpitchcorrect(int bone) const;
             void initpitchdeps();
             void optimize();
             void expandbonemask(uchar *expansion, int bone, int val) const;
