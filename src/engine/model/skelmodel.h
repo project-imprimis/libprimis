@@ -439,6 +439,24 @@ struct skelmodel : animmodel
             std::optional<size_t> findpitchcorrect(int bone) const;
             void initpitchdeps();
             void optimize();
+
+            /**
+             * @brief Recursively applies the specified mask value to the bone mask array passed.
+             *
+             * The expansion array should be equal to the number of bones (which may be greater
+             * than the bone parameter).
+             *
+             * Assigns the value val to the bone'th element in the expansion array, then calls
+             * this function recursively for all children pointed to by the bone's index in
+             * the boneinfo array `bones`.
+             *
+             * Applies the value val to children in boneinfo depth-first. All nodes traversed
+             * will have the same value assigned (in the expansion array).
+             *
+             * @param expansion mask array to assign values to
+             * @param bone the root bone to assign values to
+             * @param val the value to set
+             */
             void expandbonemask(uchar *expansion, int bone, int val) const;
             void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
             void linkchildren();
