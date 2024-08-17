@@ -647,8 +647,6 @@ struct skelmodel : animmodel
             void sortblendcombos();
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
             void cleanup() override final;
-            vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
-            blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
 
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;
             virtual const skelanimspec *loadanim(const std::string &filename) = 0;
@@ -665,6 +663,8 @@ struct skelmodel : animmodel
             int vlen, vertsize, vblends;
             uchar *vdata;
 
+            vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
+            blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
     };
 
     class skelpart : public part
