@@ -434,7 +434,6 @@ struct skelmodel : animmodel
             std::optional<size_t> findbone(const std::string &name) const;
             std::optional<size_t> findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
-            void addpitchdep(int bone, int frame);
             std::optional<size_t> findpitchdep(int bone) const;
             std::optional<size_t> findpitchcorrect(int bone) const;
             void initpitchdeps();
@@ -461,7 +460,6 @@ struct skelmodel : animmodel
             void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
             void linkchildren();
             int availgpubones() const;
-            float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
@@ -567,6 +565,8 @@ struct skelmodel : animmodel
             int getblendoffset(const UniformLoc &u);
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
+            void addpitchdep(int bone, int frame);
+            float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
     };
 
     class skelmeshgroup : public meshgroup
