@@ -341,7 +341,7 @@ struct skelmodel : animmodel
             void fillverts(vvert *vdata);
             void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
             void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
-            void render();
+            void render() const;
             /**
              * @brief Assigns indices from the remap parameter to the object's verts
              *

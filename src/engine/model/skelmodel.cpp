@@ -1740,7 +1740,7 @@ void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, in
     }
 }
 
-void skelmodel::skelmesh::render()
+void skelmodel::skelmesh::render() const
 {
     if(!Shader::lastshader)
     {
