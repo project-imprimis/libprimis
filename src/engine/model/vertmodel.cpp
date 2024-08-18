@@ -165,7 +165,7 @@ int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
     return numverts;
 }
 
-void vertmodel::vertmesh::render()
+void vertmodel::vertmesh::render() const
 {
     if(!Shader::lastshader)
     {

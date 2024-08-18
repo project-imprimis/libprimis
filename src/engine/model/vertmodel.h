@@ -156,7 +156,7 @@ class vertmodel : public animmodel
                 }
             }
 
-            void render();
+            void render() const;
         };
 
         struct tag final
