@@ -1349,7 +1349,8 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
 
 static void genfogshader(std::string &vs, std::string &ps)
 {
-    constexpr int PRAGMA_LEN = std::string_view("//:fog").size() + 1;
+    //unused PRAGMA_LEN
+    //constexpr int PRAGMA_LEN = std::string_view("//:fog").size() + 1;
 
     size_t vspragma = vs.find("//:fog"),
            pspragma = ps.find("//:fog");
