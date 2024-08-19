@@ -640,6 +640,18 @@ struct skelmodel : animmodel
             }
 
             void makeskeleton();
+            /*
+             * generates a vertex buffer object for an associated vbocache entry
+             * the vbocacheentry passed will have its vbuf assigned to a GL buffer,
+             * and if there is no ebuf (element array buffer) the following will
+             * occur (summarized):
+             *
+             * - vweights will be set depending animation presence and gpuskel
+             * - vlen will be set to the sum of all the encapsulated meshes' vertices
+             * - vdata will be deleted and re-allocated as an array of size vlen*sizeof(vert object)
+             * - vdata will be filled with values using fillverts() (which gets data from skelmesh::verts array)
+             * - ebuf will be filled with data from skelmesh::genvbo, with ebuf size being equal to all of the respective meshes' tri counts summed
+             */
             void genvbo(vbocacheentry &vc);
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
             int addblendcombo(const blendcombo &c);
@@ -651,7 +663,6 @@ struct skelmodel : animmodel
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;
             virtual const skelanimspec *loadanim(const std::string &filename) = 0;
         private:
-            int vweights;
             std::array<int, 4> numblends;
 
             static constexpr size_t maxblendcache = 16; //number of entries in the blendcache entry array
@@ -659,9 +670,16 @@ struct skelmodel : animmodel
 
             blendcacheentry blendcache[maxblendcache];
             vbocacheentry vbocache[maxvbocache];
-            GLuint ebuf;
-            int vlen, vertsize, vblends;
-            uchar *vdata;
+            /*
+             * ebuf, vbo variables are all initialized by genvbo(vbocacheentry), if render() has an ebuf
+             * present then vbo variables will not be modified in render()
+             */
+            GLuint ebuf; //GL_ELEMENT_ARRAY_BUFFER gluint handle
+            int vweights, //number of vbo weights, values 0...4
+                vlen, //sum of this skelmeshgroup's renderable meshes' vertex counts
+                vertsize, //sizeof vvert, if skeleton has animation frames & gpuskel; sizeof vvertgw if animation frames and no gpuskel, sizeof vvertg if neither
+                vblends; //number of blendcombos (= number of verts in e.g. md5)
+            uchar *vdata; //vertex data drawn in the render() stage. It is filled by genvbo() and then used as a GL_ARRAY_BUFFER in the render() stage.
 
             vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
             blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
