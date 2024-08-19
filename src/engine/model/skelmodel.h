@@ -333,6 +333,14 @@ struct skelmodel : animmodel
             static void assignvert(vvertg &vv, const vert &v);
             static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
+            /*
+             * these three genvbo() functions are used for three different cases
+             * of skelmodel rendering paths:
+             *
+             * genvbo(const std::vector<blendcombo>&, std::vector<GLuint>&, int, std::vector<vvertgw>) is for skeleton with animation frames, with gpuskel
+             * genvbo(std::vector<GLuint>&, int, std::vector<vvertg>&, int, int) is for no animation frames & gpuskel
+             * genvbo(std::vector<blendcombo>&, std::vector<GLuint>&, int) is for animation frames & no gpuskel
+             */
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
             int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset);
