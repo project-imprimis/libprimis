@@ -585,7 +585,7 @@ struct skelmodel : animmodel
 
             GLuint *edata;
 
-            skelmeshgroup() : skel(nullptr), edata(nullptr), vweights(0), ebuf(0), vlen(0), vertsize(0), vblends(0), vdata(nullptr)
+            skelmeshgroup() : skel(nullptr), edata(nullptr), ebuf(0), vweights(0), vlen(0), vertsize(0), vblends(0), vdata(nullptr)
             {
                 numblends.fill(0);
             }
