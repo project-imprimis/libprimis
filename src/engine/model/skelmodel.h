@@ -79,13 +79,6 @@ struct skelmodel : animmodel
         int blend, interpindex;
     };
 
-    struct vvert final
-    {
-        vec pos;
-        GenericVec2<half> tc;
-        squat tangent;
-    };
-
     struct vvertg
     {
         vec4<half> pos;
@@ -344,7 +337,6 @@ struct skelmodel : animmodel
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
             int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
 
-            void interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s);
             void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
             void render() const;
             /**
@@ -428,7 +420,6 @@ struct skelmodel : animmodel
             std::vector<pitchtarget> pitchtargets;
             std::vector<pitchcorrect> pitchcorrects;
 
-            bool usegpuskel;
             std::vector<skelcacheentry> skelcache;
 
             skeleton(skelmeshgroup * const group);

@@ -150,7 +150,6 @@ skelmodel::skeleton::skeleton(skelmeshgroup * const group) :
     numframes(0),
     framebones(nullptr),
     ragdoll(nullptr),
-    usegpuskel(false),
     owner(group),
     numinterpbones(0),
     bones(nullptr)
@@ -887,18 +886,10 @@ void skelmodel::skeleton::preload()
     {
         return;
     }
-    if(skelcache.empty())
-    {
-        usegpuskel = gpuaccelerate();
-    }
 }
 
 const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
-    if(skelcache.empty())
-    {
-        usegpuskel = gpuaccelerate();
-    }
     const int numanimparts = (reinterpret_cast<const skelpart *>(as->owner))->numanimparts;
     const std::vector<uchar> &partmask = (reinterpret_cast<const skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
@@ -1000,7 +991,7 @@ void skelmodel::skeleton::setgpubones(const skelcacheentry &sc, blendcacheentry 
 
 bool skelmodel::skeleton::shouldcleanup() const
 {
-    return numframes && (skelcache.empty() || gpuaccelerate()!=usegpuskel);
+    return numframes && skelcache.empty();
 }
 
 bool skelmodel::skeleton::setbonepitch(size_t index, float scale, float offset, float min, float max)
@@ -1200,7 +1191,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             bindvbo(as, p, *vbocache);
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                p->skins[i].bind(m, as, skel->usegpuskel, vweights);
+                p->skins[i].bind(m, as, true, vweights);
                 m.render();
             });
         }
@@ -1212,7 +1203,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
-        vbocacheentry &vc = skel->usegpuskel ? *vbocache : checkvbocache(sc, owner);
+        vbocacheentry &vc = *vbocache;
         vc.millis = lastmillis;
         if(!vc.vbuf)
         {
@@ -1230,27 +1221,13 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
                 blendbones(sc, *bc);
             }
         }
-        if(!skel->usegpuskel && vc.owner != owner)
-        {
-            vc.owner = owner;
-            static_cast<animcacheentry &>(vc) = sc;
-            LOOP_RENDER_MESHES(skelmesh, m,
-            {
-                m.interpverts(skel->numgpubones, sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
-            });
-            gle::bindvbo(vc.vbuf);
-            glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
-        }
 
         bindvbo(as, p, vc, &sc);
 
         LOOP_RENDER_MESHES(skelmesh, m,
         {
-            p->skins[i].bind(m, as, skel->usegpuskel, vweights);
-            if(skel->usegpuskel)
-            {
-                skel->setgpubones(sc, bc, vblends);
-            }
+            p->skins[i].bind(m, as, true, vweights);
+            skel->setgpubones(sc, bc, vblends);
             m.render();
         });
     }
@@ -1647,22 +1624,6 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     return vverts.size()-voffset;
 }
 
-void skelmodel::skelmesh::interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s)
-{
-    bdata2 -= numgpubones;
-    vdata += voffset;
-    for(int i = 0; i < numverts; ++i)
-    {
-        const vert &src = verts[i];
-        vvert &dst = vdata[i];
-        const dualquat &b = (src.interpindex < numgpubones ? bdata1 : bdata2)[src.interpindex];
-        dst.pos = b.transform(src.pos);
-        quat q = b.transform(src.tangent);
-        fixqtangent(q, src.tangent.w);
-        dst.tangent = q;
-    }
-}
-
 void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, int row)
 {
     if(row)
@@ -1762,13 +1723,9 @@ void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, const part *p, const
     {
         bindvbo<vvertg>(as, p, vc);
     }
-    else if(skel->usegpuskel)
-    {
-        bindvbo<vvertgw>(as, p, vc);
-    }
     else
     {
-        bindvbo<vvert>(as, p, vc);
+        bindvbo<vvertgw>(as, p, vc);
     }
 }
 
@@ -1818,7 +1775,7 @@ void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheen
         bc.bdata = new dualquat[vblends];
     }
     dualquat *dst = bc.bdata - skel->numgpubones;
-    bool normalize = !skel->usegpuskel || vweights<=1;
+    bool normalize = vweights<=1;
     for(const blendcombo &c : blendcombos)
     {
         if(c.interpindex<0)
