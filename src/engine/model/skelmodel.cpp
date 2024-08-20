@@ -1111,93 +1111,69 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
     vlen = 0;
     vblends = 0;
-    if(skel->numframes && !skel->usegpuskel)
+
+    if(skel->numframes)
     {
-        vweights = 1;
+        vweights = 4;
+        int availbones = skel->availgpubones() - skel->numgpubones;
+        while(vweights > 1 && availbones >= numblends[vweights-1])
+        {
+            availbones -= numblends[--vweights];
+        }
         for(blendcombo &c : blendcombos)
         {
-            c.setinterpindex(skel->numgpubones + vblends);
-            vblends++;
-        }
-
-        vertsize = sizeof(vvert);
-        auto rendermeshes = getrendermeshes();
-        for(auto i : rendermeshes)
-        {
-            vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen);
-        }
-        delete[] vdata;
-        vdata = new uchar[vlen*vertsize];
-        for(auto i : rendermeshes)
-        {
-             static_cast<skelmesh *>(*i)->fillverts(reinterpret_cast<vvert *>(vdata));
+            c.interpindex = static_cast<int>(c.size()) > vweights ? skel->numgpubones + vblends++ : -1;
         }
     }
     else
     {
-        if(skel->numframes)
+        vweights = 0;
+        for(blendcombo &i : blendcombos)
         {
-            vweights = 4;
-            int availbones = skel->availgpubones() - skel->numgpubones;
-            while(vweights > 1 && availbones >= numblends[vweights-1])
-            {
-                availbones -= numblends[--vweights];
-            }
-            for(blendcombo &c : blendcombos)
-            {
-                c.interpindex = static_cast<int>(c.size()) > vweights ? skel->numgpubones + vblends++ : -1;
-            }
+            i.interpindex = -1;
         }
-        else
-        {
-            vweights = 0;
-            for(blendcombo &i : blendcombos)
-            {
-                i.interpindex = -1;
-            }
-        }
-
-        gle::bindvbo(vc.vbuf);
-        auto rendermeshes = getrendermeshes();
-        if(skel->numframes)
-        {
-            vertsize = sizeof(vvertgw);//silent parameter to genvbo()
-            std::vector<vvertgw> vvertgws;
-            for(const auto &i : rendermeshes)
-            {
-                vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen, vvertgws);
-            }
-            glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
-        }
-        else
-        {
-            int numverts = 0,
-                htlen = 128;
-            for(auto i : rendermeshes)
-            {
-                numverts += static_cast<skelmesh *>(*i)->vertcount();
-            }
-            while(htlen < numverts)
-            {
-                htlen *= 2;
-            }
-            if(numverts*4 > htlen*3)
-            {
-                htlen *= 2;
-            }
-            int *htdata = new int[htlen];
-            std::memset(htdata, -1, htlen*sizeof(int));
-            vertsize = sizeof(vvertg); //silent parameter to genvbo()
-            std::vector<vvertg> vvertgs;
-            for(const auto &i : rendermeshes)
-            {
-                vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgs, htdata, htlen);
-            }
-            glBufferData(GL_ARRAY_BUFFER, vvertgs.size()*sizeof(vvertg), vvertgs.data(), GL_STATIC_DRAW);
-            delete[] htdata;
-        }
-        gle::clearvbo();
     }
+
+    gle::bindvbo(vc.vbuf);
+    auto rendermeshes = getrendermeshes();
+    if(skel->numframes)
+    {
+        vertsize = sizeof(vvertgw);//silent parameter to genvbo()
+        std::vector<vvertgw> vvertgws;
+        for(const auto &i : rendermeshes)
+        {
+            vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen, vvertgws);
+        }
+        glBufferData(GL_ARRAY_BUFFER, vvertgws.size()*sizeof(vvertgw), vvertgws.data(), GL_STATIC_DRAW);
+    }
+    else
+    {
+        int numverts = 0,
+            htlen = 128;
+        for(auto i : rendermeshes)
+        {
+            numverts += static_cast<skelmesh *>(*i)->vertcount();
+        }
+        while(htlen < numverts)
+        {
+            htlen *= 2;
+        }
+        if(numverts*4 > htlen*3)
+        {
+            htlen *= 2;
+        }
+        int *htdata = new int[htlen];
+        std::memset(htdata, -1, htlen*sizeof(int));
+        vertsize = sizeof(vvertg); //silent parameter to genvbo()
+        std::vector<vvertg> vvertgs;
+        for(const auto &i : rendermeshes)
+        {
+            vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgs, htdata, htlen);
+        }
+        glBufferData(GL_ARRAY_BUFFER, vvertgs.size()*sizeof(vvertg), vvertgs.data(), GL_STATIC_DRAW);
+        delete[] htdata;
+    }
+    gle::clearvbo();
 
     glGenBuffers(1, &ebuf);
     gle::bindebo(ebuf);
@@ -1669,43 +1645,6 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     minvert = std::min(minvert, static_cast<GLuint>(voffset));
     maxvert = std::max(minvert, static_cast<GLuint>(vverts.size()-1));
     return vverts.size()-voffset;
-}
-
-int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset)
-{
-    for(int i = 0; i < numverts; ++i)
-    {
-        verts[i].interpindex = bcs[verts[i].blend].remapblend();
-    }
-
-    voffset = offset;
-    eoffset = idxs.size();
-    for(int i = 0; i < numtris; ++i)
-    {
-        const tri &t = tris[i];
-        for(int j = 0; j < 3; ++j)
-        {
-            idxs.emplace_back(voffset+t.vert[j]);
-        }
-    }
-    minvert = voffset;
-    maxvert = voffset + numverts-1;
-    elen = idxs.size()-eoffset;
-    return numverts;
-}
-
-void skelmodel::skelmesh::fillvert(vvert &vv, const vert &v)
-{
-    vv.tc = v.tc;
-}
-
-void skelmodel::skelmesh::fillverts(vvert *vdata)
-{
-    vdata += voffset;
-    for(int i = 0; i < numverts; ++i)
-    {
-        fillvert(vdata[i], verts[i]);
-    }
 }
 
 void skelmodel::skelmesh::interpverts(int numgpubones, const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, vvert * RESTRICT vdata, skin &s)
