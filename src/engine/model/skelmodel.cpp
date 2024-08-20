@@ -37,8 +37,6 @@
 #include "animmodel.h"
 #include "skelmodel.h"
 
-VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
-
 VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
 //animcacheentry child classes
@@ -582,7 +580,7 @@ int skelmodel::skeleton::availgpubones() const
 
 bool skelmodel::skeleton::gpuaccelerate() const
 {
-    return numframes && gpuskel && numgpubones<=availgpubones();
+    return numframes;
 }
 
 float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const
