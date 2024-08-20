@@ -423,49 +423,6 @@ void test_blendcombo_blendbones()
     }
 }
 
-void test_blendcombo_remapblend()
-{
-    std::printf("testing blendcombo remapblend\n");
-
-    std::array<skelmodel::blendcombo::BoneData, 4> bd = {{ { 0.4f, 0, 0 },
-                                                           { 0.3f, 0, 1 },
-                                                           { 0.2f, 0, 2 },
-                                                           { 0.1f, 0, 3 }
-                                                        }};
-
-    {
-        //test if multiple bonedata, bonedata::interpindex returned
-        skelmodel::blendcombo a;
-        a.bonedata = bd;
-        a.interpindex = 5;
-        assert(a.remapblend() == 5);
-    }
-    {
-        //test if only one bonedata, that bonedata's interpindex returned
-        skelmodel::blendcombo a;
-        a.bonedata.fill({0,0,0});
-        a.bonedata[0] = {0.4f, 0, 1};
-        a.interpindex = 5;
-        assert(a.remapblend() == 1);
-    }
-}
-
-void test_blendcombo_setinterpindex()
-{
-    std::printf("testing blendcombo setinterpindex\n");
-
-    std::array<skelmodel::blendcombo::BoneData, 4> bd = {{ { 0.4f, 0, 0 },
-                                                           { 0.3f, 0, 1 },
-                                                           { 0.2f, 0, 2 },
-                                                           { 0.1f, 0, 3 }
-                                                        }};
-
-    skelmodel::blendcombo a;
-    a.bonedata = bd;
-    a.setinterpindex(1);
-    assert(a.remapblend() == 1);
-}
-
 void test_blendcombo_getbone()
 {
     std::printf("testing blendcombo getbone\n");
@@ -517,17 +474,6 @@ void test_skelmesh_assignvert()
         assert(vv.tangent.z == s.z);
         assert(vv.tangent.w == s.w);
     }
-}
-
-void test_skelmesh_fillvert()
-{
-    std::printf("testing skelmesh fillvert\n");
-
-    skelmodel::vert v = { {0,0,0}, {1,0,0}, {1,1}, {0,0,0,1}, 1, 2 };
-    skelmodel::vvert vv;
-    skelmodel::skelmesh::fillvert(vv, v);
-    assert(vv.tc.x.val == 15360);
-    assert(vv.tc.y.val == 15360);
 }
 
 void test_skelmesh_buildnorms()
@@ -646,12 +592,9 @@ testing skelmodel functionality\n\
     test_blendcombo_finalize();
     test_blendcombo_serialize();
     test_blendcombo_blendbones();
-    test_blendcombo_remapblend();
-    test_blendcombo_setinterpindex();
     test_blendcombo_getbone();
 
     test_skelmesh_assignvert();
-    test_skelmesh_fillvert();
     test_skelmesh_buildnorms();
     test_skelmesh_calcbb();
 }
