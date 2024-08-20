@@ -1414,16 +1414,6 @@ dualquat skelmodel::blendcombo::blendbones(const dualquat *bdata) const
     return d;
 }
 
-int skelmodel::blendcombo::remapblend() const
-{
-    return bonedata[1].weight ? interpindex : bonedata[0].interpbone;
-}
-
-void skelmodel::blendcombo::setinterpindex(int val)
-{
-    interpindex = bonedata[1].weight ? val : -1;
-}
-
 void skelmodel::blendcombo::setinterpbones(int val, size_t index)
 {
     bonedata[index].interpbone = val;
