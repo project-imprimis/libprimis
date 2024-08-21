@@ -418,7 +418,6 @@ struct skelmodel : animmodel
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
-            void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
             void calctags(part *p, const skelcacheentry *sc = nullptr) const;
             void cleanup(bool full = true);
@@ -540,6 +539,7 @@ struct skelmodel : animmodel
              * @param val the value to set
              */
             void expandbonemask(uchar *expansion, int bone, int val) const;
+            void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p);
     };
 
     class skelmeshgroup : public meshgroup
