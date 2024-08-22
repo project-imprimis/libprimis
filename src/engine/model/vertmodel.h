@@ -42,121 +42,122 @@ class vertmodel : public animmodel
 
         struct vertmesh : Mesh
         {
-            vert *verts;
-            tcvert *tcverts;
-            tri *tris;
-            int numverts, numtris;
+            public:
+                vert *verts;
+                tcvert *tcverts;
+                tri *tris;
+                int numverts, numtris;
 
-            int voffset, elen;
-            uint minvert, maxvert;
+                vertmesh();
+                vertmesh(std::string_view name, meshgroup *m);
 
-            vertmesh();
-            vertmesh(std::string_view name, meshgroup *m);
+                virtual ~vertmesh();
 
-            virtual ~vertmesh();
+                void smoothnorms(float limit = 0, bool areaweight = true);
+                void buildnorms(bool areaweight = true);
+                void calctangents(bool areaweight = true);
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
+                void genBIH(BIH::mesh &m) const override final;
+                void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
 
-            void smoothnorms(float limit = 0, bool areaweight = true);
-            void buildnorms(bool areaweight = true);
-            void calctangents(bool areaweight = true);
-            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
-            void genBIH(BIH::mesh &m) const override final;
-            void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
+                static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
 
-            static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
-
-            template<class T>
-            int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
-            {
-                voffset = offset;
-                minvert = UINT_MAX;
-                for(int i = 0; i < numtris; ++i)
+                template<class T>
+                int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
                 {
-                    const tri &t = tris[i];
-                    for(int j = 0; j < 3; ++j)
+                    voffset = offset;
+                    minvert = UINT_MAX;
+                    for(int i = 0; i < numtris; ++i)
                     {
-                        int index = t.vert[j];
-                        const vert &v = verts[index];
-                        const tcvert &tc = tcverts[index];
-                        T vv;
-                        assignvert(vv, index, tc, v);
-                        auto hashfn = std::hash<vec>();
-                        int htidx = hashfn(v.pos)&(htlen-1);
-                        for(int k = 0; k < htlen; ++k)
+                        const tri &t = tris[i];
+                        for(int j = 0; j < 3; ++j)
                         {
-                            int &vidx = htdata[(htidx+k)&(htlen-1)];
-                            if(vidx < 0)
+                            int index = t.vert[j];
+                            const vert &v = verts[index];
+                            const tcvert &tc = tcverts[index];
+                            T vv;
+                            assignvert(vv, index, tc, v);
+                            auto hashfn = std::hash<vec>();
+                            int htidx = hashfn(v.pos)&(htlen-1);
+                            for(int k = 0; k < htlen; ++k)
                             {
-                                idxs.push_back(vverts.size());
-                                vidx = idxs.back();
-                                vverts.push_back(vv);
-                                break;
-                            }
-                            else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
-                            {
-                                idxs.push_back(static_cast<uint>(vidx));
-                                minvert = std::min(minvert, idxs.back());
-                                break;
+                                int &vidx = htdata[(htidx+k)&(htlen-1)];
+                                if(vidx < 0)
+                                {
+                                    idxs.push_back(vverts.size());
+                                    vidx = idxs.back();
+                                    vverts.push_back(vv);
+                                    break;
+                                }
+                                else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                                {
+                                    idxs.push_back(static_cast<uint>(vidx));
+                                    minvert = std::min(minvert, idxs.back());
+                                    break;
+                                }
                             }
                         }
                     }
+                    minvert = std::min(minvert, static_cast<uint>(voffset));
+                    maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
+                    elen = idxs.size();
+                    return vverts.size()-voffset;
                 }
-                minvert = std::min(minvert, static_cast<uint>(voffset));
-                maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
-                elen = idxs.size();
-                return vverts.size()-voffset;
-            }
 
-            int genvbo(std::vector<uint> &idxs, int offset);
+                int genvbo(std::vector<uint> &idxs, int offset);
 
-            template<class T>
-            static void fillvert(T &vv, tcvert &tc, vert &v)
-            {
-                vv.tc = tc.tc;
-            }
-
-            template<class T>
-            void fillverts(T *vdata)
-            {
-                vdata += voffset;
-                for(int i = 0; i < numverts; ++i)
+                template<class T>
+                static void fillvert(T &vv, tcvert &tc, vert &v)
                 {
-                    fillvert(vdata[i], tcverts[i], verts[i]);
+                    vv.tc = tc.tc;
                 }
-            }
 
-            template<class T>
-            void interpverts(const AnimState &as, T * RESTRICT vdata)
-            {
-                vdata += voffset;
-                const vert * RESTRICT vert1 = &verts[as.cur.fr1 * numverts],
-                           * RESTRICT vert2 = &verts[as.cur.fr2 * numverts],
-                           * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : nullptr,
-                           * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : nullptr;
-                if(as.interp<1)
+                template<class T>
+                void fillverts(T *vdata)
                 {
+                    vdata += voffset;
                     for(int i = 0; i < numverts; ++i)
                     {
-                        T &v = vdata[i];
-                        v.pos.lerp(vec().lerp(pvert1[i].pos, pvert2[i].pos, as.prev.t),
-                                   vec().lerp(vert1[i].pos, vert2[i].pos, as.cur.t),
-                                   as.interp);
-                        v.tangent.lerp(vec4<float>().lerp(pvert1[i].tangent, pvert2[i].tangent, as.prev.t),
-                                       vec4<float>().lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t),
+                        fillvert(vdata[i], tcverts[i], verts[i]);
+                    }
+                }
+
+                template<class T>
+                void interpverts(const AnimState &as, T * RESTRICT vdata)
+                {
+                    vdata += voffset;
+                    const vert * RESTRICT vert1 = &verts[as.cur.fr1 * numverts],
+                               * RESTRICT vert2 = &verts[as.cur.fr2 * numverts],
+                               * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : nullptr,
+                               * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : nullptr;
+                    if(as.interp<1)
+                    {
+                        for(int i = 0; i < numverts; ++i)
+                        {
+                            T &v = vdata[i];
+                            v.pos.lerp(vec().lerp(pvert1[i].pos, pvert2[i].pos, as.prev.t),
+                                       vec().lerp(vert1[i].pos, vert2[i].pos, as.cur.t),
                                        as.interp);
+                            v.tangent.lerp(vec4<float>().lerp(pvert1[i].tangent, pvert2[i].tangent, as.prev.t),
+                                           vec4<float>().lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t),
+                                           as.interp);
+                        }
                     }
-                }
-                else
-                {
-                    for(int i = 0; i < numverts; ++i)
+                    else
                     {
-                        T &v = vdata[i];
-                        v.pos.lerp(vert1[i].pos, vert2[i].pos, as.cur.t);
-                        v.tangent.lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t);
+                        for(int i = 0; i < numverts; ++i)
+                        {
+                            T &v = vdata[i];
+                            v.pos.lerp(vert1[i].pos, vert2[i].pos, as.cur.t);
+                            v.tangent.lerp(vert1[i].tangent, vert2[i].tangent, as.cur.t);
+                        }
                     }
                 }
-            }
 
-            void render() const;
+                void render() const;
+            private:
+                int voffset, elen;
+                uint minvert, maxvert;
         };
 
         struct tag final
