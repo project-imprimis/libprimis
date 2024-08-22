@@ -410,7 +410,6 @@ struct skelmodel : animmodel
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
             std::optional<size_t> findpitchdep(int bone) const;
             std::optional<size_t> findpitchcorrect(int bone) const;
-            void initpitchdeps();
             void optimize();
             void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
             void linkchildren();
@@ -536,6 +535,7 @@ struct skelmodel : animmodel
              * @param bone the root bone to assign values to
              * @param val the value to set
              */
+            void initpitchdeps();
             void expandbonemask(uchar *expansion, int bone, int val) const;
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
