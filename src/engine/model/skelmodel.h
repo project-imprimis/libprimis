@@ -559,6 +559,12 @@ struct skelmodel : animmodel
             virtual ~skelmeshgroup();
 
             std::optional<size_t> findtag(std::string_view) override final;
+
+            /**
+             * @brief Returns the skelmodel::skeleton object this skelmeshgroup points to.
+             *
+             * Returns the pointer to the skeleton object associated with this object.
+             */
             void *animkey() override final;
             int totalframes() const override final;
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
