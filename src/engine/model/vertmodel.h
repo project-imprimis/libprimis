@@ -188,6 +188,11 @@ class vertmodel : public animmodel
             bool addtag(std::string_view name, const matrix4x3 &matrix);
             std::optional<size_t> findtag(std::string_view name) override final;
 
+            /**
+             * @brief Returns the number of frames associated with this model.
+             *
+             * This is the numframes field in the meshgroup object.
+             */
             int totalframes() const override final;
             void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;
 
