@@ -225,6 +225,12 @@ class vertmodel : public animmodel
             }
 
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
+            /**
+             * @brief Returns a pointer to this object.
+             *
+             * There is no appropriate pointer to pass other than itself, since
+             * this is not a skeletal model
+             */
             void *animkey() override final;
             void cleanup() override final;
             void preload() override final;
