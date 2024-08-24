@@ -1001,8 +1001,8 @@ bool skelmodel::skeleton::setbonepitch(size_t index, float scale, float offset, 
     boneinfo &b = bones[index];
     b.pitchscale = scale;
     b.pitchoffset = offset;
-    b.pitchmin = offset;
-    b.pitchmax = offset;
+    b.pitchmin = min;
+    b.pitchmax = max;
     return true;
 }
 
