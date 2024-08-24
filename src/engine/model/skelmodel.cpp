@@ -585,11 +585,11 @@ bool skelmodel::skeleton::gpuaccelerate() const
 
 float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const
 {
-    vec forward1 = pose1.transformnormal(forward).project(axis).normalize(),
-        forward2 = pose2.transformnormal(forward).project(axis).normalize(),
-        daxis = vec().cross(forward1, forward2);
-    float dx = std::clamp(forward1.dot(forward2), -1.0f, 1.0f),
-          dy = std::clamp(daxis.magnitude(), -1.0f, 1.0f);
+    const vec forward1 = pose1.transformnormal(forward).project(axis).normalize(),
+              forward2 = pose2.transformnormal(forward).project(axis).normalize(),
+              daxis = vec().cross(forward1, forward2);
+    const float dx = std::clamp(forward1.dot(forward2), -1.0f, 1.0f);
+    float dy = std::clamp(daxis.magnitude(), -1.0f, 1.0f);
     if(daxis.dot(axis) < 0)
     {
         dy = -dy;
