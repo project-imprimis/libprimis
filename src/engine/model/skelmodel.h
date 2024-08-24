@@ -464,7 +464,6 @@ struct skelmodel : animmodel
                 dualquat base;
 
                 boneinfo();
-                ~boneinfo();
             };
             /**
              * nodes in boneinfo tree, node relations in the tree are indicated

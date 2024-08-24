@@ -1683,10 +1683,6 @@ skelmodel::skeleton::boneinfo::boneinfo() :
 {
 }
 
-skelmodel::skeleton::boneinfo::~boneinfo()
-{
-}
-
 // skelmeshgroup
 
 std::optional<size_t> skelmodel::skelmeshgroup::findtag(std::string_view name)
