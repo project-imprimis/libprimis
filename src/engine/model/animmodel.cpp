@@ -747,7 +747,7 @@ void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3
     }
 }
 
-bool animmodel::part::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
+bool animmodel::part::link(part *p, std::string_view tag, const vec &translate, int anim, int basetime, vec *pos)
 {
     std::optional<size_t> i = meshes ? meshes->findtag(tag) : std::nullopt;
     if(i<0)
