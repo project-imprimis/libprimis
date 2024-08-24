@@ -450,7 +450,7 @@ struct skelmodel : animmodel
 
             struct boneinfo final
             {
-                const char *name;
+                std::string name;
                 int parent, //parent node in boneinfo
                     children, //first index of child bone list in boneinfo
                     next, //next adjacent sibling bone in boneinfo, last bone in sibling list has next = 0

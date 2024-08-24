@@ -173,7 +173,7 @@ std::optional<size_t> skelmodel::skeleton::findbone(const std::string &name) con
 {
     for(size_t i = 0; i < numbones; ++i)
     {
-        if(bones[i].name && !std::strcmp(bones[i].name, name.c_str()))
+        if(bones[i].name.size() && bones[i].name == name)
         {
             return i;
         }
@@ -1035,9 +1035,9 @@ bool skelmodel::skeleton::setbonename(size_t index, std::string_view name)
         return false;
     }
     boneinfo &b = bones[index];
-    if(!b.name)
+    if(!b.name.size())
     {
-        b.name = newstring(name.data());
+        b.name = name;
         return true;
     }
     return false;
@@ -1666,7 +1666,7 @@ const skelmodel::vert &skelmodel::skelmesh::getvert(size_t index) const
 // boneinfo
 
 skelmodel::skeleton::boneinfo::boneinfo() :
-    name(nullptr),
+    name(""),
     parent(-1),
     children(-1),
     next(-1),
@@ -1685,7 +1685,6 @@ skelmodel::skeleton::boneinfo::boneinfo() :
 
 skelmodel::skeleton::boneinfo::~boneinfo()
 {
-    delete[] name;
 }
 
 // skelmeshgroup
