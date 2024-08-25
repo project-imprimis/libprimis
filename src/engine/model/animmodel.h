@@ -562,7 +562,7 @@ class animmodel : public model
         part &addpart();
         void initmatrix(matrix4x3 &m) const;
         void genBIH(std::vector<BIH::mesh> &bih);
-        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
+        bool link(part *p, std::string_view tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
         void loaded();
         bool unlink(const part *p) const;
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
