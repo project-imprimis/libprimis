@@ -860,7 +860,7 @@ void skelmodel::skeleton::cleanup(bool full)
     {
         for(int j = 0; j < maxanimparts; ++j)
         {
-            sc.as[j].cur.fr1 = -1;
+            sc.as[j].cur.fr1 = -1; //skelcache animstate @ j's cur AnimPos fr1 (frame1?)
         }
         delete[] sc.bdata;
         sc.bdata = nullptr;
