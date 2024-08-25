@@ -313,9 +313,9 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
     return sas;
 }
 
-bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
+bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &p)
 {
-    stream *f = openfile(filename, "r");
+    stream *f = openfile(filename.data(), "r");
     if(!f) //immediately bail if no file present
     {
         return false;
@@ -416,12 +416,12 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth, part &p)
             md5mesh *m = new md5mesh("", this); //we will set its name later
             meshes.push_back(m);
 
-            std::string modeldir = filename;
+            std::string modeldir(filename);
             modeldir.resize(modeldir.rfind("/")); //truncate to file's directory
             m->load(f, buf, sizeof(buf), p, modeldir);
             if(!m->tricount() || !m->vertcount()) //if no content in the mesh
             {
-                conoutf("empty mesh in %s", filename);
+                conoutf("empty mesh in %s", filename.data());
                 //double std::find of the same thing not the most efficient
                 if(std::find(meshes.begin(), meshes.end(), m) != meshes.end())
                 {
@@ -468,7 +468,7 @@ bool md5::md5meshgroup::load(std::string_view meshfile, float smooth, part &p)
 {
     name = meshfile;
 
-    if(!loadmesh(meshfile.data(), smooth, p))
+    if(!loadmesh(meshfile, smooth, p))
     {
         return false;
     }

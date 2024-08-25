@@ -42,7 +42,7 @@ class md5 final : public skelloader<md5>
                 const skelanimspec * loadanim(const std::string &filename) override final;
 
             private:
-                bool loadmesh(const char *filename, float smooth, part &p);
+                bool loadmesh(std::string_view filename, float smooth, part &p);
                 bool load(std::string_view meshfile, float smooth, part &p) override final;
         };
 
