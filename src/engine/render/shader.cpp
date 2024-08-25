@@ -1875,7 +1875,7 @@ static void shader_get_includes_fs()
     result(res.c_str());
 }
 
-static void shader_source(char *vs, char *fs)
+static void shader_source(const char *vs, const char *fs)
 {
     if(!adding_shader)
     {
@@ -1886,7 +1886,7 @@ static void shader_source(char *vs, char *fs)
     shader_path_fs = fs;
 }
 
-void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *maxvariants)
+void variantshader(int *type, const char *name, const int *row, char *vs, char *ps, const int *maxvariants)
 {
     if(*row < 0)
     {
@@ -1931,7 +1931,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     }
 }
 
-void variantshader_new(int *type, char *name, int *row, int *maxvariants, uint *code)
+void variantshader_new(int *type, char *name, const int *row, const int *maxvariants, uint *code)
 {
     if(*row < 0)
     {
@@ -1988,7 +1988,7 @@ void variantshader_new(int *type, char *name, int *row, int *maxvariants, uint *
 //==============================================================================
 
 
-void setshader(char *name)
+void setshader(const char *name)
 {
     slotparams.clear();
     auto itr = shaders.find(name);
