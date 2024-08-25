@@ -422,10 +422,10 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
             if(!m->tricount() || !m->vertcount()) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename.data());
-                //double std::find of the same thing not the most efficient
-                if(std::find(meshes.begin(), meshes.end(), m) != meshes.end())
+                auto itr = std::find(meshes.begin(), meshes.end(), m);
+                if(itr != meshes.end())
                 {
-                    meshes.erase(std::find(meshes.begin(), meshes.end(), m));
+                    meshes.erase(itr);
                 }
                 delete m;
             }
