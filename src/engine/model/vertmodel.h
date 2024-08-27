@@ -72,13 +72,13 @@ class vertmodel : public animmodel
                         const tri &t = tris[i];
                         for(int j = 0; j < 3; ++j)
                         {
-                            int index = t.vert[j];
+                            const int index = t.vert[j];
                             const vert &v = verts[index];
                             const tcvert &tc = tcverts[index];
                             T vv;
                             assignvert(vv, index, tc, v);
-                            auto hashfn = std::hash<vec>();
-                            int htidx = hashfn(v.pos)&(htlen-1);
+                            const auto hashfn = std::hash<vec>();
+                            const int htidx = hashfn(v.pos)&(htlen-1);
                             for(int k = 0; k < htlen; ++k)
                             {
                                 int &vidx = htdata[(htidx+k)&(htlen-1)];
