@@ -201,7 +201,7 @@ class vertmodel : public animmodel
             template<class T>
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
             {
-                T *vverts = 0;
+                const T *vverts = 0;
                 bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
                 if(as->cur.anim & Anim_NoSkin)
                 {
