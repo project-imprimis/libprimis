@@ -225,12 +225,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     }
                     else
                     {
-                        tris.emplace_back();
-                        tri &t = tris.back();
-                        t.vert[0] = *index;
-                        t.vert[1] = v1.value();
-                        t.vert[2] = v0.value();
-
+                        tris.push_back({*index, v1.value(), v0.value()});
                         v1 = *index;
                     }
                 }
