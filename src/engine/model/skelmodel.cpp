@@ -134,11 +134,7 @@ const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_vie
 
 skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const std::string &name, int numframes, int animframes)
 {
-    skelanims.emplace_back();
-    skelanimspec &sa = skelanims.back();
-    sa.name = name;
-    sa.frame = numframes;
-    sa.range = animframes;
+    skelanims.push_back({name, numframes, animframes});
     return skelanims.back();
 }
 
