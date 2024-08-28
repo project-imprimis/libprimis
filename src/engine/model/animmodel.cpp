@@ -1318,14 +1318,14 @@ int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, 
     matrixstack.top().identity();
     if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
     {
-        float secs = lastmillis/1000.0f;
+        const float secs = lastmillis/1000.0f;
         yaw += spin.x*secs;
         pitch += spin.y*secs;
         roll += spin.z*secs;
 
         matrixstack.top().settranslation(pos);
         matrixstack.top().rotate_around_z(yaw/RAD);
-        bool usepitch = pitched();
+        const bool usepitch = pitched();
         if(roll && !usepitch)
         {
             matrixstack.top().rotate_around_y(-roll/RAD);
