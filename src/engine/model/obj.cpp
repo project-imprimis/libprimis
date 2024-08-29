@@ -201,12 +201,12 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     {
                         index = &verthash[vkey];
                         *index = verts.size();
-                        verts.emplace_back();
-                        vert &v = verts.back();
+                        vert v;
                         v.pos = vkey.x < 0 ? vec(0, 0, 0) : attrib[0][vkey.x];
                         v.pos = vec(v.pos.z, -v.pos.x, v.pos.y);
                         v.norm = vkey.z < 0 ? vec(0, 0, 0) : attrib[2][vkey.z];
                         v.norm = vec(v.norm.z, -v.norm.x, v.norm.y);
+                        verts.push_back(v);
                         tcverts.push_back({vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y)});
                     }
                     else
