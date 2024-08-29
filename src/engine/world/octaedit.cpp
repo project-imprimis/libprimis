@@ -1023,7 +1023,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     *reinterpret_cast<ushort *>(buf.data()) = static_cast<ushort>(u->numents);
     if(u->numents)
     {
-        undoent *ue = u->ents();
+        const undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
             for(uint i = 0; i < sizeof(ushort); ++i)
@@ -1041,7 +1041,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     }
     else
     {
-        block3 &b = *u->block();
+        const block3 &b = *u->block();
         if(!packblock(b, buf))
         {
             return false;
