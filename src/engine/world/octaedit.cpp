@@ -1071,14 +1071,13 @@ bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
 
 struct prefab : editinfo
 {
-    char *name;
+    std::string name;
     GLuint ebo, vbo;
     int numtris, numverts;
 
-    prefab() : name(nullptr), ebo(0), vbo(0), numtris(0), numverts(0) {}
+    prefab() : name(""), ebo(0), vbo(0), numtris(0), numverts(0) {}
     ~prefab()
     {
-        delete[] name;
         if(copy)
         {
             freeblock(copy);
@@ -1217,7 +1216,7 @@ prefab *loadprefab(const char *name, bool msg = true)
     delete f;
 
     prefab *b = &(*prefabs.insert_or_assign(name, prefab()).first).second;
-    b->name = newstring(name);
+    b->name = name ? name : "";
     b->copy = copy;
 
     return b;
@@ -2102,6 +2101,7 @@ void initoctaeditcmds()
         {
             b = &(*prefabs.insert( { std::string(name), prefab() } ).first).second;
             b->name = newstring(name);
+            b->name = name ? name : "";
         }
         else
         {
