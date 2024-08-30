@@ -900,7 +900,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
-void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4<float> &color)
+void rendermodel(std::string_view mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4<float> &color)
 {
     model *m = loadmodel(mdl);
     if(!m)
