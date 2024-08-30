@@ -54,7 +54,7 @@ model *loadmapmodel(int n)
     if(static_cast<int>(mapmodels.size()) > n)
     {
         model *m = mapmodels[n].m;
-        return m ? m : loadmodel(nullptr, n);
+        return m ? m : loadmodel("", n);
     }
     return nullptr;
 }
@@ -186,7 +186,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         {
             continue;
         }
-        model *m = loadmodel(nullptr, mmindex, msg);
+        model *m = loadmodel("", mmindex, msg);
         if(!m)
         {
             if(msg)
@@ -233,7 +233,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     loadprogress = 0;
 }
 
-model *loadmodel(const char *name, int i, bool msg)
+model *loadmodel(std::string_view name, int i, bool msg)
 {
     model *(__cdecl *md5loader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new md5(filename); };
     model *(__cdecl *objloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new obj(filename); };
@@ -245,7 +245,7 @@ model *loadmodel(const char *name, int i, bool msg)
     loaders.push_back(gltfloader);
     std::unordered_set<std::string> failedmodels;
 
-    if(!name)
+    if(!name.size())
     {
         if(!(static_cast<int>(mapmodels.size()) > i))
         {
@@ -258,15 +258,15 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         name = mmi.name.c_str();
     }
-    auto itr = models.find(name);
+    auto itr = models.find(std::string(name));
     model *m;
     if(itr != models.end())
     {
-        m = (*models.find(name)).second;
+        m = (*itr).second;
     }
     else
     {
-        if(!name[0] || failedmodels.find(name) != failedmodels.end())
+        if(!name[0] || failedmodels.find(std::string(name)) != failedmodels.end())
         {
             return nullptr;
         }
@@ -278,7 +278,7 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         for(model *(__cdecl *i)(const std::string &) : loaders)
         {
-            m = i(name); //call model ctor
+            m = i(std::string(name)); //call model ctor
             if(!m)
             {
                 continue;
@@ -293,7 +293,7 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         if(!m)
         {
-            failedmodels.insert(name);
+            failedmodels.insert(std::string(name));
             return nullptr;
         }
         if(models.find(m->modelname()) == models.end())

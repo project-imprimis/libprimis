@@ -12,7 +12,7 @@ extern std::vector<mapmodelinfo> mapmodels;
 extern std::vector<std::string> animnames; //set by game at runtime
 
 extern void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks);
-extern model *loadmodel(const char *name, int i = -1, bool msg = false);
+extern model *loadmodel(std::string_view, int i = -1, bool msg = false);
 extern void resetmodelbatches();
 extern void rendershadowmodelbatches(bool dynmodel = true);
 extern void shadowmaskbatchedmodels(bool dynshadow = true);

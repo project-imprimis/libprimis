@@ -594,7 +594,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
         model *m = mmi.collide;
         if(!m)
         {
-            if(!mmi.m && !loadmodel(nullptr, e.attr1))
+            if(!mmi.m && !loadmodel("", e.attr1))
             {
                 continue;
             }
