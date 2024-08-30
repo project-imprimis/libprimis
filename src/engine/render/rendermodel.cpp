@@ -463,7 +463,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
     occlusionengine.endquery();
 }
 
-static int cullmodel(const model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
+static int cullmodel(const model *m, const vec &center, float radius, int flags, const dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
