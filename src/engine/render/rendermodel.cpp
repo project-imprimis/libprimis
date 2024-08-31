@@ -1075,7 +1075,7 @@ void abovemodel(vec &o, const char *mdl)
     o.z += m->above();
 }
 
-std::vector<size_t> findanims(const char *pattern)
+std::vector<size_t> findanims(std::string_view pattern)
 {
     std::vector<size_t> anims;
     for(size_t i = 0; i < animnames.size(); ++i)
