@@ -1088,7 +1088,7 @@ std::vector<size_t> findanims(const char *pattern)
     return anims;
 }
 
-void findanimscmd(char *name)
+void findanimscmd(const char *name)
 {
     std::vector<size_t> anims = findanims(name);
     std::vector<char> buf;
