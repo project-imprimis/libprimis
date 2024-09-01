@@ -66,55 +66,58 @@ model *loadmapmodel(int n)
 
 // mapmodels
 
-std::vector<mapmodelinfo> mapmodels;
-static const char * const mmprefix = "mapmodel/";
-static const int mmprefixlen = std::strlen(mmprefix);
-
-void mapmodel(const char *name)
+namespace mapmodel
 {
-    mapmodelinfo mmi;
-    if(name[0])
+    std::vector<mapmodelinfo> mapmodels;
+    static const char * const mmprefix = "mapmodel/";
+    static const int mmprefixlen = std::strlen(mmprefix);
+
+    void open(const char *name)
     {
-        mmi.name = std::string().append(mmprefix).append(name);
+        mapmodelinfo mmi;
+        if(name[0])
+        {
+            mmi.name = std::string().append(mmprefix).append(name);
+        }
+        else
+        {
+            mmi.name.clear();
+        }
+        mmi.m = mmi.collide = nullptr;
+        mapmodels.push_back(mmi);
     }
-    else
+
+    void reset(const int *n)
     {
-        mmi.name.clear();
+        if(!(identflags&Idf_Overridden) && !allowediting)
+        {
+            return;
+        }
+        mapmodels.resize(std::clamp(*n, 0, static_cast<int>(mapmodels.size())));
     }
-    mmi.m = mmi.collide = nullptr;
-    mapmodels.push_back(mmi);
-}
 
-void mapmodelreset(const int *n)
-{
-    if(!(identflags&Idf_Overridden) && !allowediting)
+    const char *name(int i)
     {
-        return;
+        return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name.c_str() : nullptr;
     }
-    mapmodels.resize(std::clamp(*n, 0, static_cast<int>(mapmodels.size())));
-}
 
-const char *mapmodelname(int i)
-{
-    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name.c_str() : nullptr;
-}
-
-void mapmodelnamecmd(const int *index, const int *prefix)
-{
-    if(static_cast<int>(mapmodels.size()) > *index)
+    void namecmd(const int *index, const int *prefix)
     {
-        result(mapmodels[*index].name.empty() ? mapmodels[*index].name.c_str() + (*prefix ? 0 : mmprefixlen) : "");
+        if(static_cast<int>(mapmodels.size()) > *index)
+        {
+            result(mapmodels[*index].name.empty() ? mapmodels[*index].name.c_str() + (*prefix ? 0 : mmprefixlen) : "");
+        }
     }
-}
 
-void mapmodelloaded(const int *index)
-{
-    intret(static_cast<int>(mapmodels.size()) > *index && mapmodels[*index].m ? 1 : 0);
-}
+    void loaded(const int *index)
+    {
+        intret(static_cast<int>(mapmodels.size()) > *index && mapmodels[*index].m ? 1 : 0);
+    }
 
-void nummapmodels()
-{
-    intret(mapmodels.size());
+    void num()
+    {
+        intret(mapmodels.size());
+    }
 }
 
 // model registry
@@ -1182,11 +1185,11 @@ void setbbfrommodel(dynent *d, const char *mdl)
 
 void initrendermodelcmds()
 {
-    addcommand("mapmodelreset", reinterpret_cast<identfun>(mapmodelreset), "i", Id_Command);
-    addcommand("mapmodel", reinterpret_cast<identfun>(mapmodel), "s", Id_Command);
-    addcommand("mapmodelname", reinterpret_cast<identfun>(mapmodelnamecmd), "ii", Id_Command);
-    addcommand("mapmodelloaded", reinterpret_cast<identfun>(mapmodelloaded), "i", Id_Command);
-    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels), "", Id_Command);
+    addcommand("mapmodelreset", reinterpret_cast<identfun>(mapmodel::reset), "i", Id_Command);
+    addcommand("mapmodel", reinterpret_cast<identfun>(mapmodel::open), "s", Id_Command);
+    addcommand("mapmodelname", reinterpret_cast<identfun>(mapmodel::namecmd), "ii", Id_Command);
+    addcommand("mapmodelloaded", reinterpret_cast<identfun>(mapmodel::loaded), "i", Id_Command);
+    addcommand("nummapmodels", reinterpret_cast<identfun>(mapmodel::num), "", Id_Command);
     addcommand("clearmodel", reinterpret_cast<identfun>(clearmodel), "s", Id_Command);
     addcommand("findanims", reinterpret_cast<identfun>(findanimscmd), "s", Id_Command);
 }
