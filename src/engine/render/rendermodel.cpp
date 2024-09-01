@@ -463,6 +463,15 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
     occlusionengine.endquery();
 }
 
+/**
+ * @brief Returns whether the model should be culled.
+ *
+ * Attempts to cull by distance from camera1, then by view frustum from `vfc` view,
+ * then by occlusion query.
+ *
+ * If no reason can be found to occlude the model, returns 0. Otherwise, returns
+ * the Model enum flag for the cull reason.
+ */
 static int cullmodel(const model *m, const vec &center, float radius, int flags, const dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
