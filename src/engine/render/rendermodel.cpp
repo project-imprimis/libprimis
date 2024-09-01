@@ -51,9 +51,9 @@ std::vector<std::string> animnames; //set by game at runtime
 
 model *loadmapmodel(int n)
 {
-    if(static_cast<int>(mapmodels.size()) > n)
+    if(static_cast<int>(mapmodel::mapmodels.size()) > n)
     {
-        model *m = mapmodels[n].m;
+        model *m = mapmodel::mapmodels[n].m;
         return m ? m : loadmodel("", n);
     }
     return nullptr;
@@ -176,7 +176,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
         int mmindex = used[i];
-        if(!(static_cast<int>(mapmodels.size()) > (mmindex)))
+        if(!(static_cast<int>(mapmodel::mapmodels.size()) > (mmindex)))
         {
             if(msg)
             {
@@ -184,7 +184,7 @@ void preloadusedmapmodels(bool msg, bool bih)
             }
             continue;
         }
-        const mapmodelinfo &mmi = mapmodels[mmindex];
+        const mapmodelinfo &mmi = mapmodel::mapmodels[mmindex];
         if(mmi.name.empty())
         {
             continue;
@@ -250,11 +250,11 @@ model *loadmodel(std::string_view name, int i, bool msg)
 
     if(!name.size())
     {
-        if(!(static_cast<int>(mapmodels.size()) > i))
+        if(!(static_cast<int>(mapmodel::mapmodels.size()) > i))
         {
             return nullptr;
         }
-        const mapmodelinfo &mmi = mapmodels[i];
+        const mapmodelinfo &mmi = mapmodel::mapmodels[i];
         if(mmi.m)
         {
             return mmi.m;
@@ -304,9 +304,9 @@ model *loadmodel(std::string_view name, int i, bool msg)
             models[m->modelname()] = m;
         }
     }
-    if((mapmodels.size() > static_cast<uint>(i)) && !mapmodels[i].m)
+    if((mapmodel::mapmodels.size() > static_cast<uint>(i)) && !mapmodel::mapmodels[i].m)
     {
-        mapmodels[i].m = m;
+        mapmodel::mapmodels[i].m = m;
     }
     return m;
 }
@@ -341,7 +341,7 @@ static void clearmodel(const char *name)
         conoutf("model %s is not loaded", name);
         return;
     }
-    for(mapmodelinfo &mmi : mapmodels)
+    for(mapmodelinfo &mmi : mapmodel::mapmodels)
     {
         if(mmi.m == m)
         {
@@ -851,11 +851,11 @@ void clearbatchedmapmodels()
 
 void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, float roll, int flags, int basetime, float size)
 {
-    if(!(static_cast<int>(mapmodels.size()) > idx))
+    if(!(static_cast<int>(mapmodel::mapmodels.size()) > idx))
     {
         return;
     }
-    const mapmodelinfo &mmi = mapmodels[idx];
+    const mapmodelinfo &mmi = mapmodel::mapmodels[idx];
     model *m = mmi.m ? mmi.m : loadmodel(mmi.name.c_str());
     if(!m)
     {

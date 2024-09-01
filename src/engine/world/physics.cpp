@@ -586,11 +586,11 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
     for(const int &i : oc.mapmodels)
     {
         extentity &e = *ents[i];
-        if(e.flags&EntFlag_NoCollide || !(static_cast<int>(mapmodels.size()) > e.attr1))
+        if(e.flags&EntFlag_NoCollide || !(static_cast<int>(mapmodel::mapmodels.size()) > e.attr1))
         {
             continue;
         }
-        mapmodelinfo &mmi = mapmodels[e.attr1];
+        mapmodelinfo &mmi = mapmodel::mapmodels[e.attr1];
         model *m = mmi.collide;
         if(!m)
         {

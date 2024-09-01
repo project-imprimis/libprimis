@@ -8,7 +8,11 @@ struct mapmodelinfo
           *collide;
 };
 
-extern std::vector<mapmodelinfo> mapmodels;
+namespace mapmodel
+{
+    extern std::vector<mapmodelinfo> mapmodels;
+}
+
 extern std::vector<std::string> animnames; //set by game at runtime
 
 extern void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks);
