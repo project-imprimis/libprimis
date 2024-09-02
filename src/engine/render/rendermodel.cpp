@@ -1157,7 +1157,7 @@ void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin,
     }
 }
 
-void setbbfrommodel(dynent *d, const char *mdl)
+void setbbfrommodel(dynent *d, std::string_view mdl)
 {
     model *m = loadmodel(mdl);
     if(!m)
