@@ -69,8 +69,8 @@ model *loadmapmodel(int n)
 namespace mapmodel
 {
     std::vector<mapmodelinfo> mapmodels;
-    static const char * const mmprefix = "mapmodel/";
-    static const int mmprefixlen = std::strlen(mmprefix);
+    static const std::string mmprefix = "mapmodel/";
+    static const size_t mmprefixlen = mmprefix.size();
 
     void open(const char *name)
     {
