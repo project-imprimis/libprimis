@@ -856,7 +856,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
         return;
     }
     const mapmodelinfo &mmi = mapmodel::mapmodels[idx];
-    model *m = mmi.m ? mmi.m : loadmodel(mmi.name.c_str());
+    model *m = mmi.m ? mmi.m : loadmodel(mmi.name);
     if(!m)
     {
         return;

@@ -600,7 +600,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
             }
             if(!mmi.m->collidemodel.empty())
             {
-                m = loadmodel(mmi.m->collidemodel.c_str());
+                m = loadmodel(mmi.m->collidemodel);
             }
             if(!m)
             {
