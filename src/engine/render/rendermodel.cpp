@@ -379,6 +379,8 @@ struct batchedmodel
     };
     dynent *d;
     int next;
+
+    void renderbatchedmodel(const model *m) const;
 };
 struct modelbatch
 {
@@ -420,27 +422,27 @@ foundbatch:
     b->batched = idx;
 }
 
-static void renderbatchedmodel(const model *m, const batchedmodel &b)
+void batchedmodel::renderbatchedmodel(const model *m) const
 {
     modelattach *a = nullptr;
-    if(b.attached>=0)
+    if(attached>=0)
     {
-        a = &modelattached[b.attached];
+        a = &modelattached[attached];
     }
-    int anim = b.anim;
+    int tempanim = anim;
     if(shadowmapping > ShadowMap_Reflect)
     {
-        anim |= Anim_NoSkin;
+        tempanim |= Anim_NoSkin;
     }
     else
     {
-        if(b.flags&Model_FullBright)
+        if(flags&Model_FullBright)
         {
-            anim |= Anim_FullBright;
+            tempanim |= Anim_FullBright;
         }
     }
 
-    m->render(anim, b.basetime, b.basetime2, b.pos, b.orient.x, b.orient.y, b.orient.z, b.d, a, b.sizescale, b.colorscale);
+    m->render(tempanim, basetime, basetime2, pos, orient.x, orient.y, orient.z, d, a, sizescale, colorscale);
 }
 
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
@@ -624,7 +626,7 @@ void rendershadowmodelbatches(bool dynmodel)
                 b.m->startrender();
                 rendered = true;
             }
-            renderbatchedmodel(b.m, bm);
+            bm.renderbatchedmodel(b.m);
         }
         if(rendered)
         {
@@ -647,7 +649,7 @@ void rendermapmodelbatches()
         for(int j = b.batched; j >= 0;)
         {
             const batchedmodel &bm = batchedmodels[j];
-            renderbatchedmodel(b.m, bm);
+            bm.renderbatchedmodel(b.m);
             j = bm.next;
         }
         b.m->endrender();
@@ -704,12 +706,12 @@ void GBuffer::rendermodelbatches()
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
-                    renderbatchedmodel(b.m, bm);
+                    bm.renderbatchedmodel(b.m);
                     occlusionengine.endquery();
                     continue;
                 }
             }
-            renderbatchedmodel(b.m, bm);
+            bm.renderbatchedmodel(b.m);
         }
         if(rendered)
         {
@@ -776,12 +778,12 @@ void rendertransparentmodelbatches(int stencil)
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
-                    renderbatchedmodel(b.m, bm);
+                    bm.renderbatchedmodel(b.m);
                     occlusionengine.endquery();
                     continue;
                 }
             }
-            renderbatchedmodel(b.m, bm);
+            bm.renderbatchedmodel(b.m);
         }
         if(rendered)
         {
@@ -821,7 +823,7 @@ void Occluder::endmodelquery()
         do
         {
             const batchedmodel &bm = batchedmodels[j];
-            renderbatchedmodel(b.m, bm);
+            bm.renderbatchedmodel(b.m);
             j = bm.next;
         } while(j >= modelquerymodels);
         b.batched = j;
