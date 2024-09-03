@@ -331,7 +331,7 @@ void cleanupmodels()
 static void clearmodel(const char *name)
 {
     model *m = nullptr;
-    auto it = models.find(name);
+    const auto it = models.find(name);
     if(it != models.end())
     {
         m = (*it).second;
