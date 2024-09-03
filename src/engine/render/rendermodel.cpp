@@ -381,6 +381,9 @@ struct batchedmodel
     int next;
 
     void renderbatchedmodel(const model *m) const;
+    //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
+    void applybb(vec &bbmin, vec &bbmax) const;
+
 };
 struct modelbatch
 {
@@ -567,6 +570,12 @@ int batcheddynamicmodels()
     return visible;
 }
 
+void batchedmodel::applybb(vec &bbmin, vec &bbmax) const
+{
+    bbmin.min(vec(center).sub(radius));
+    bbmax.max(vec(center).add(radius));
+}
+
 int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 {
     int vis = 0;
@@ -578,8 +587,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
         }
         if(b.visible&mask)
         {
-            bbmin.min(vec(b.center).sub(b.radius));
-            bbmax.max(vec(b.center).add(b.radius));
+            b.applybb(bbmin, bbmax);
             ++vis;
         }
     }
@@ -595,8 +603,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
             j = bm.next;
             if(bm.visible&mask)
             {
-                bbmin.min(vec(bm.center).sub(bm.radius));
-                bbmax.max(vec(bm.center).add(bm.radius));
+                bm.applybb(bbmin, bbmax);
                 ++vis;
             }
         }
