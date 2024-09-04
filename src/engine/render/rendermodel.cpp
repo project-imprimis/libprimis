@@ -383,7 +383,7 @@ struct batchedmodel
     void renderbatchedmodel(const model *m) const;
     //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
     void applybb(vec &bbmin, vec &bbmax) const;
-
+    bool shadowmask(bool dynshadow);
 };
 struct modelbatch
 {
@@ -531,15 +531,24 @@ static int shadowmaskmodel(const vec &center, float radius)
     return 0;
 }
 
+bool batchedmodel::shadowmask(bool dynshadow)
+{
+    if(flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
+    {
+        return false;
+    }
+    visible = dynshadow && (colorscale.a >= 1 || flags&(Model_OnlyShadow | Model_ForceShadow)) ? shadowmaskmodel(center, radius) : 0;
+    return true;
+}
+
 void shadowmaskbatchedmodels(bool dynshadow)
 {
     for(batchedmodel &b : batchedmodels)
     {
-        if(b.flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
+        if(!b.shadowmask(dynshadow))
         {
             break;
         }
-        b.visible = dynshadow && (b.colorscale.a >= 1 || b.flags&(Model_OnlyShadow | Model_ForceShadow)) ? shadowmaskmodel(b.center, b.radius) : 0;
     }
 }
 
