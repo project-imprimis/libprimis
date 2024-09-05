@@ -761,14 +761,7 @@ bool animmodel::part::link(part *p, std::string_view tag, const vec &translate, 
         }
         return false;
     }
-    links.emplace_back();
-    linkedpart &l = links.back();
-    l.p = p;
-    l.tag = *i;
-    l.anim = anim;
-    l.basetime = basetime;
-    l.translate = translate;
-    l.pos = pos;
+    links.emplace_back(p, *i, anim, basetime, translate, pos, matrix4());
     return true;
 }
 
