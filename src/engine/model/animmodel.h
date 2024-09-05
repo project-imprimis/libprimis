@@ -488,6 +488,10 @@ class animmodel : public model
          * Each `part` is a logically separate part of an overall model, containing
          * its own skin(s) (`skin` objects), mesh(es) (`meshgroup` objects), and
          * model rendering parameters.
+         *
+         * Parts may contain a list of linked parts, which are other `part` objects
+         * logically dependent on another `part`. An example is an object being held
+         * in the hand of another model type, which is a separate mesh.
          */
         class part
         {
@@ -496,6 +500,9 @@ class animmodel : public model
                 int index;
                 meshgroup *meshes; //pointer to a single meshgroup in animmodel::meshgroups
 
+                //a pointer to another part object dependent on this part.
+                //pointed part may be modified in case it is necessary to link/unlink
+                //the pointed part to other dependent parts
                 struct linkedpart
                 {
                     part *p;
