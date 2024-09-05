@@ -1005,7 +1005,7 @@ hasboundbox:
 
     if(flags&Model_NoBatch)
     {
-        int culled = cullmodel(m, center, radius, flags, d);
+        const int culled = cullmodel(m, center, radius, flags, d);
         if(culled)
         {
             if(culled&(Model_CullOccluded|Model_CullQuery) && flags&Model_CullQuery)
