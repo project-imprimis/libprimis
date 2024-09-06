@@ -5,7 +5,7 @@ struct vtxarray;
 
 struct occludequery
 {
-    void *owner;
+    const void *owner;
     GLuint id;
     int fragments;
 
