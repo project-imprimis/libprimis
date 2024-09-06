@@ -406,7 +406,7 @@ struct batchedmodel
     void applybb(vec &bbmin, vec &bbmax) const;
     bool shadowmask(bool dynshadow);
 
-    int rendertransparentmodel(modelbatch &b, bool &rendered);
+    int rendertransparentmodel(const modelbatch &b, bool &rendered);
 };
 
 static std::vector<batchedmodel> batchedmodels;
@@ -782,7 +782,7 @@ void GBuffer::rendermodelbatches()
     aamask::disable();
 }
 
-int batchedmodel::rendertransparentmodel(modelbatch &b, bool &rendered)
+int batchedmodel::rendertransparentmodel(const modelbatch &b, bool &rendered)
 {
     int j = next;
     culled = cullmodel(b.m, center, radius, flags, d);
