@@ -365,6 +365,12 @@ static bool modeloccluded(const vec &center, float radius)
     return rootworld.bboccluded(bbmin, bbmax);
 }
 
+struct modelbatch
+{
+    const model *m;
+    int flags, batched;
+};
+
 struct batchedmodel
 {
     //orient = yaw, pitch, roll
@@ -399,12 +405,10 @@ struct batchedmodel
     //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
     void applybb(vec &bbmin, vec &bbmax) const;
     bool shadowmask(bool dynshadow);
+
+    int rendertransparentmodel(modelbatch &b, bool &rendered);
 };
-struct modelbatch
-{
-    const model *m;
-    int flags, batched;
-};
+
 static std::vector<batchedmodel> batchedmodels;
 static std::vector<modelbatch> batches;
 static std::vector<modelattach> modelattached;
@@ -778,6 +782,35 @@ void GBuffer::rendermodelbatches()
     aamask::disable();
 }
 
+int batchedmodel::rendertransparentmodel(modelbatch &b, bool &rendered)
+{
+    int j = next;
+    culled = cullmodel(b.m, center, radius, flags, d);
+    if(culled || !(colorscale.a < 1 || flags&Model_ForceTransparent) || flags&Model_OnlyShadow)
+    {
+        return j;
+    }
+    if(!rendered)
+    {
+        b.m->startrender();
+        rendered = true;
+        aamask::set(true);
+    }
+    if(flags&Model_CullQuery)
+    {
+        d->query = occlusionengine.newquery(d);
+        if(d->query)
+        {
+            d->query->startquery();
+            renderbatchedmodel(b.m);
+            occlusionengine.endquery();
+            return j;
+        }
+    }
+    renderbatchedmodel(b.m);
+    return j;
+}
+
 void rendertransparentmodelbatches(int stencil)
 {
     aamask::enable(stencil);
@@ -791,30 +824,7 @@ void rendertransparentmodelbatches(int stencil)
         for(int j = b.batched; j >= 0;)
         {
             batchedmodel &bm = batchedmodels[j];
-            j = bm.next;
-            bm.culled = cullmodel(b.m, bm.center, bm.radius, bm.flags, bm.d);
-            if(bm.culled || !(bm.colorscale.a < 1 || bm.flags&Model_ForceTransparent) || bm.flags&Model_OnlyShadow)
-            {
-                continue;
-            }
-            if(!rendered)
-            {
-                b.m->startrender();
-                rendered = true;
-                aamask::set(true);
-            }
-            if(bm.flags&Model_CullQuery)
-            {
-                bm.d->query = occlusionengine.newquery(bm.d);
-                if(bm.d->query)
-                {
-                    bm.d->query->startquery();
-                    bm.renderbatchedmodel(b.m);
-                    occlusionengine.endquery();
-                    continue;
-                }
-            }
-            bm.renderbatchedmodel(b.m);
+            bm.rendertransparentmodel(b, rendered);
         }
         if(rendered)
         {
