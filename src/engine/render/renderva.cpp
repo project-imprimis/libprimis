@@ -2463,7 +2463,7 @@ void Occluder::queryframe::flip()
     cur = defer = 0;
 }
 
-occludequery *Occluder::queryframe::newquery(void *owner)
+occludequery *Occluder::queryframe::newquery(const void *owner)
 {
     if(cur >= max)
     {
