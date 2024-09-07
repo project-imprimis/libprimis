@@ -508,7 +508,7 @@ class animmodel : public model
                     part *p;
                     int tag, anim, basetime;
                     vec translate;
-                    vec *pos;
+                    vec *pos; //a pos pointer from a modelattach object, which is set from within game
                     matrix4 matrix;
 
                     linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
