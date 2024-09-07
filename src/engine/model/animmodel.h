@@ -1243,11 +1243,11 @@ struct modelcommands
     }
 
     template<class F>
-    void modelcommand(F *fun, const char *suffix, const char *args)
+    void modelcommand(F *fun, std::string_view suffix, std::string_view args)
     {
         std::string name;
         name.append(MDL::formatname()).append(suffix);
-        addcommand(newstring(name.c_str()), (identfun)fun, args);
+        addcommand(newstring(name.c_str()), (identfun)fun, args.data());
     }
 
     modelcommands()
