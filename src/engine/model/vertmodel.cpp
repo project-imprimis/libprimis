@@ -395,9 +395,9 @@ void vertmodel::vertmeshgroup::preload()
     {
         return;
     }
-    if(!vbocache->vbuf)
+    if(!vbocache[0].vbuf)
     {
-        genvbo(*vbocache);
+        genvbo(vbocache[0]);
     }
 }
 
@@ -414,7 +414,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
     vbocacheentry *vc = nullptr;
     if(numframes<=1)
     {
-        vc = vbocache;
+        vc = vbocache.data();
     }
     else
     {

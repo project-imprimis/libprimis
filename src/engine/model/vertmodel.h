@@ -178,7 +178,7 @@ class vertmodel : public animmodel
             size_t numtags;
 
             static constexpr size_t maxvbocache = 16;
-            vbocacheentry vbocache[maxvbocache];
+            std::array<vbocacheentry, 16> vbocache;
 
             GLuint ebuf;
             int vlen, vertsize;
