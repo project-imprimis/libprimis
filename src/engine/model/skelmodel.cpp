@@ -1178,11 +1178,11 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     {
         if(!(as->cur.anim & Anim_NoRender))
         {
-            if(!vbocache->vbuf)
+            if(!vbocache[0].vbuf)
             {
-                genvbo(*vbocache);
+                genvbo(vbocache[0]);
             }
-            bindvbo(as, p, *vbocache);
+            bindvbo(as, p, vbocache[0]);
             LOOP_RENDER_MESHES(skelmesh, m,
             {
                 p->skins[i].bind(m, as, true, vweights);
@@ -1197,7 +1197,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
-        vbocacheentry &vc = *vbocache;
+        vbocacheentry &vc = vbocache[0];
         vc.millis = lastmillis;
         if(!vc.vbuf)
         {
@@ -1452,7 +1452,7 @@ T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, 
 
 skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(const skelcacheentry &sc, int owner)
 {
-    return searchcache<vbocacheentry>(maxvbocache, vbocache, sc, owner);
+    return searchcache<vbocacheentry>(maxvbocache, vbocache.data(), sc, owner);
 }
 
 skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skelcacheentry &sc, int owner)
@@ -1811,9 +1811,9 @@ void skelmodel::skelmeshgroup::preload()
         skel->cleanup();
     }
     skel->preload();
-    if(!vbocache->vbuf)
+    if(!vbocache[0].vbuf)
     {
-        genvbo(*vbocache);
+        genvbo(vbocache[0]);
     }
 }
 
