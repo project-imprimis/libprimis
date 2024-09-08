@@ -171,6 +171,9 @@ class vertmodel : public animmodel
         struct vertmeshgroup : meshgroup
         {
             int numframes;
+            //size equal to numtags * numframes
+            //tags are ordered beneath frames; tag1frame1, tag2frame1, tag3frame1, tag1frame2, etc
+            //deleted and re-created whenever a new tag is added with addtag();
             tag *tags;
             size_t numtags;
 
