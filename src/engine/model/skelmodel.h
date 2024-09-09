@@ -301,6 +301,7 @@ struct skelmodel : animmodel
             void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
             void genBIH(BIH::mesh &m) const override final;
             void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
+            //assignvert() functions are used externally in test code
             static void assignvert(vvertg &vv, const vert &v);
             static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
