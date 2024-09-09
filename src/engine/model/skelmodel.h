@@ -357,6 +357,8 @@ struct skelmodel : animmodel
             int numtris;
             vert *verts;
             int numverts;
+
+        private:
             int maxweights;
             int voffset, eoffset, elen;
             GLuint minvert, maxvert;
