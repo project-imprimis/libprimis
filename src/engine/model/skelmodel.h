@@ -301,8 +301,6 @@ struct skelmodel : animmodel
             void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
             void genBIH(BIH::mesh &m) const override final;
             void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
-            static void assignvert(vvertg &vv, const vert &v);
-            static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
             /*
              * these three genvbo() functions are used for three different cases
@@ -362,6 +360,9 @@ struct skelmodel : animmodel
             int maxweights;
             int voffset, eoffset, elen;
             GLuint minvert, maxvert;
+
+            static void assignvert(vvertg &vv, const vert &v);
+            static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
     };
 
     struct skelanimspec final
