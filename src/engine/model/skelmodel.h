@@ -647,7 +647,7 @@ struct skelmodel : animmodel
             static constexpr size_t maxblendcache = 16; //number of entries in the blendcache entry array
             static constexpr size_t maxvbocache = 16;   //number of entries in the vertex buffer object array
 
-            blendcacheentry blendcache[maxblendcache];
+            std::array<blendcacheentry, maxblendcache> blendcache;
             std::array<vbocacheentry, maxvbocache> vbocache;
             /*
              * ebuf, vbo variables are all initialized by genvbo(vbocacheentry), if render() has an ebuf

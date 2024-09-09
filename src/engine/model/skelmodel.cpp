@@ -1457,7 +1457,7 @@ skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(const skelcach
 
 skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skelcacheentry &sc, int owner)
 {
-    return searchcache<blendcacheentry>(maxblendcache, blendcache, sc, owner);
+    return searchcache<blendcacheentry>(maxblendcache, blendcache.data(), sc, owner);
 }
 
 //skelmesh
