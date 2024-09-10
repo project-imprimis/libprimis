@@ -330,12 +330,16 @@ struct skelmodel : animmodel
             /**
              * @brief Returns the number of verts represented by the object.
              *
+             * This function is used by the testing code.
+             *
              * @return the number of vertices represented
              */
             int vertcount() const;
 
             /**
              * @brief Returns the number of tris represented by the object.
+             *
+             * This function is used by the testing code.
              *
              * @return the number of triangles represented
              */
