@@ -143,7 +143,7 @@ class Shader
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
         void linkglslprogram(bool msg = true);
-        void uniformtex(const char * name, int tmu);
+        void uniformtex(const char * name, int tmu) const;
         void genattriblocs(const char *vs, const Shader *reusevs);
         void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
 };
