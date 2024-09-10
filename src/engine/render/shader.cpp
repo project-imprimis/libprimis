@@ -527,11 +527,6 @@ void Shader::allocglslactiveuniforms()
     }
 }
 
-void Shader::allocparams()
-{
-    allocglslactiveuniforms();
-}
-
 int GlobalShaderParamState::nextversion = 0;
 
 void GlobalShaderParamState::resetversions()
@@ -715,7 +710,7 @@ void Shader::flushparams()
 {
     if(!used)
     {
-        allocparams();
+        allocglslactiveuniforms();
         used = true;
     }
     for(GlobalShaderParamUse &i : globalparams)

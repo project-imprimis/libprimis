@@ -134,7 +134,6 @@ class Shader
         const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         ushort *variantrows;
         bool used;
-        void allocparams();
         void setslotparams(const Slot &slot);
         void setslotparams(Slot &slot, const VSlot &vslot);
         void bindprograms();
