@@ -847,7 +847,7 @@ void Shader::set()
     lastshader->flushparams();
 }
 
-void Shader::set(Slot &slot)
+void Shader::set(const Slot &slot)
 {
     if(!loaded())
     {
