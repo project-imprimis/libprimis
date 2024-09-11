@@ -876,7 +876,7 @@ void Shader::setslotparams(const Slot &slot)
     setdefaultparams(defaultparams, unimask);
 }
 
-void Shader::setslotparams(Slot &slot, const VSlot &vslot)
+void Shader::setslotparams(const Slot &slot, const VSlot &vslot)
 {
     static bool thrown = false; //only throw error message once (will spam per frame otherwise)
     uint unimask = 0;
@@ -885,7 +885,7 @@ void Shader::setslotparams(Slot &slot, const VSlot &vslot)
         ::setslotparams(vslot.params, unimask, defaultparams);
         for(size_t i = 0; i < slot.params.size(); i++)
         {
-            SlotShaderParam &p = slot.params.at(i);
+            const SlotShaderParam &p = slot.params.at(i);
             if(!(defaultparams.size() > p.loc))
             {
                 continue;

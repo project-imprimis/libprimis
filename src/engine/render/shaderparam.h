@@ -135,7 +135,7 @@ class Shader
         ushort *variantrows;
         bool used;
         void setslotparams(const Slot &slot);
-        void setslotparams(Slot &slot, const VSlot &vslot);
+        void setslotparams(const Slot &slot, const VSlot &vslot);
         void bindprograms();
         void setvariant_(int col, int row);
         void set_();
