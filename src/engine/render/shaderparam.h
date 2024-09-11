@@ -109,7 +109,7 @@ class Shader
         void addvariant(int row, Shader *s);
         void setvariant(int col, int row);
         void setvariant(int col, int row, const Slot &slot);
-        void setvariant(int col, int row, Slot &slot, const VSlot &vslot);
+        void setvariant(int col, int row, const Slot &slot, const VSlot &vslot);
         void set();
         void set(const Slot &slot);
         void set(Slot &slot, const VSlot &vslot);

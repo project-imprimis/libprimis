@@ -818,7 +818,7 @@ void Shader::setvariant(int col, int row, const Slot &slot)
     lastshader->setslotparams(slot);
 }
 
-void Shader::setvariant(int col, int row, Slot &slot, const VSlot &vslot)
+void Shader::setvariant(int col, int row, const Slot &slot, const VSlot &vslot)
 {
     if(!loaded())
     {
