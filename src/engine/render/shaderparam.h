@@ -105,7 +105,6 @@ class Shader
         bool loaded() const;
         bool isdynamic() const;
         int numvariants(int row) const;
-        Shader *getvariant(int col, int row) const;
         void addvariant(int row, Shader *s);
         void setvariant(int col, int row);
         void setvariant(int col, int row, const Slot &slot);
@@ -145,6 +144,7 @@ class Shader
         void uniformtex(const char * name, int tmu) const;
         void genattriblocs(const char *vs, const Shader *reusevs);
         void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
+        const Shader *getvariant(int col, int row) const;
 };
 
 class GlobalShaderParam

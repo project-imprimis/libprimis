@@ -746,7 +746,7 @@ int Shader::numvariants(int row) const
     return variantrows[row+1] - variantrows[row];
 }
 
-Shader *Shader::getvariant(int col, int row) const
+const Shader *Shader::getvariant(int col, int row) const
 {
     if(row < 0 || row >= maxvariantrows || col < 0 || !variantrows)
     {
