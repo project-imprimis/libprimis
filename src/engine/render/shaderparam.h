@@ -112,7 +112,7 @@ class Shader
         void setvariant(int col, int row, const Slot &slot, const VSlot &vslot);
         void set();
         void set(const Slot &slot);
-        void set(Slot &slot, const VSlot &vslot);
+        void set(const Slot &slot, const VSlot &vslot);
         bool compile();
         void cleanup(bool full = false);
         void reusecleanup();
