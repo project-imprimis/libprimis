@@ -1528,7 +1528,7 @@ VAR(defershaders, 0, 1, 1);
 void defershader(const int *type, const char *name, const char *contents)
 {
     auto itr = shaders.find(name);
-    Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
+    const Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
     if(exists && !exists->invalid())
     {
         return;
