@@ -148,6 +148,12 @@ class Shader
          * no effect if no uniform with given name found
          */
         void uniformtex(std::string_view name, int tmu) const;
+
+        /**
+         * For each `//:attrib <string> <int>` found in the passed vertex shader,
+         * adds an AttribLoc to this Shader's attriblocs comprising of a string (also stored in shaderparamnames),
+         * and the location specified in the second parameter
+         */
         void genattriblocs(const char *vs, const Shader *reusevs);
         void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
         const Shader *getvariant(int col, int row) const;
