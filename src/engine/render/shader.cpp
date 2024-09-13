@@ -299,9 +299,9 @@ static void bindglsluniform(const Shader &s, UniformLoc &u)
     }
 }
 
-void Shader::uniformtex(const char * name, int tmu) const
+void Shader::uniformtex(std::string_view name, int tmu) const
 {
-    int loc = glGetUniformLocation(program, name);
+    int loc = glGetUniformLocation(program, name.data());
     if(loc != -1)
     {
         glUniform1i(loc, tmu);

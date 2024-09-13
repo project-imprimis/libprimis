@@ -141,7 +141,13 @@ class Shader
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
         void linkglslprogram(bool msg = true);
-        void uniformtex(const char * name, int tmu) const;
+
+        /**
+         * @brief Sets an OpenGL int uniform
+         * gets the uniform1i with name `name` and sets its value to `tmu`
+         * no effect if no uniform with given name found
+         */
+        void uniformtex(std::string_view name, int tmu) const;
         void genattriblocs(const char *vs, const Shader *reusevs);
         void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
         const Shader *getvariant(int col, int row) const;
