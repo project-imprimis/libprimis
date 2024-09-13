@@ -5,7 +5,7 @@ struct UniformLoc
 {
     const char *name, *blockname;
     int loc, version, binding, stride, offset, size;
-    void *data;
+    const void *data;
     UniformLoc(const char *name = nullptr, const char *blockname = nullptr, int binding = -1, int stride = -1) : name(name), blockname(blockname), loc(-1), version(-1), binding(binding), stride(stride), offset(-1), size(-1), data(nullptr) {}
 };
 
