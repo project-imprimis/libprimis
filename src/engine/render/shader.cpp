@@ -1123,7 +1123,7 @@ void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-void Shader::genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps)
+void Shader::genuniformlocs(const char *vs, const Shader *reusevs, const Shader *reuseps)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
@@ -1220,7 +1220,7 @@ Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader 
     attriblocs.clear();
     uniformlocs.clear();
     genattriblocs(vs, reusevs);
-    genuniformlocs(vs, ps, reusevs, reuseps);
+    genuniformlocs(vs, reusevs, reuseps);
     if(!compile())
     {
         cleanup(true);

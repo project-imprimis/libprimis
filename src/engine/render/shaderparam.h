@@ -155,7 +155,7 @@ class Shader
          * and the location specified in the second parameter
          */
         void genattriblocs(const char *vs, const Shader *reusevs);
-        void genuniformlocs(const char *vs, const char *ps, const Shader *reusevs, const Shader *reuseps);
+        void genuniformlocs(const char *vs, const Shader *reusevs, const Shader *reuseps);
         const Shader *getvariant(int col, int row) const;
 };
 
