@@ -2265,12 +2265,12 @@ void setblurshader(int pass, int size, int radius, const float *weights, const f
     }
     s->set();
     LOCALPARAMV(weights, weights, maxblurradius+1);
-    float scaledoffsets[maxblurradius+1];
+    std::array<float, maxblurradius+1> scaledoffsets;
     for(int k = 0; k < maxblurradius+1; ++k)
     {
         scaledoffsets[k] = offsets[k]/size;
     }
-    LOCALPARAMV(offsets, scaledoffsets, maxblurradius+1);
+    LOCALPARAMV(offsets, scaledoffsets.data(), maxblurradius+1);
 }
 
 void initshadercmds()
