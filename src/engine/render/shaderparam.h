@@ -39,7 +39,8 @@ extern GlobalShaderParamState *getglobalparam(const char *name);
 
 struct ShaderParamBinding
 {
-    int loc, size;
+    GLint loc;
+    GLsizei size;
     GLenum format;
 };
 
