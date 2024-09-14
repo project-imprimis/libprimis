@@ -23,6 +23,16 @@ extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 
 extern Shader *lookupshaderbyname(const char *name);
+
+/** @brief Get a shader by name string.
+ *
+ * The shader is searched for in the `shaders` global map.
+ * If the shader is deferred, force it to be used
+ *
+ * @param name a pointer to a string refering to the name of the shader to use
+ *
+ * @return pointer to a Shader object corresponding to the name passed
+ */
 extern Shader *useshaderbyname(const char *name);
 extern Shader *generateshader(const char *name, const char *cmd, ...);
 extern void resetslotshader();

@@ -1599,15 +1599,6 @@ int Shader::uniformlocversion()
     return version;
 }
 
-/* useshaderbyname: get a shader by name string
- *
- * Parameters:
- *  - const char * name: a pointer to a string refering to the name of the shader to use
- * Returns:
- *  - pointer to a Shader object corresponding to the name passed
- * Effects:
- *  - if the shader is deferred, force it to be used
- */
 Shader *useshaderbyname(const char *name)
 {
     auto itr = shaders.find(name);
