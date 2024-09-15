@@ -386,21 +386,6 @@ struct batchedmodel
     dynent *d;
     int next;
 
-    batchedmodel(vec pos, vec orient, vec center,
-                 float radius, float sizescale, vec4<float> colorscale,
-                 int anim, int basetime, int basetime2,
-                 int flags, int attached, int visible) :
-                 pos(pos), orient(orient), center(center),
-                 radius(radius), sizescale(sizescale), colorscale(colorscale),
-                 anim(anim), basetime(basetime), basetime2(basetime2),
-                 flags(flags), attached(attached), visible(visible)
-    {
-    }
-
-    batchedmodel()
-    {
-    }
-
     void renderbatchedmodel(const model *m) const;
     //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
     void applybb(vec &bbmin, vec &bbmax) const;
@@ -937,9 +922,21 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-    batchedmodels.emplace_back(o, vec(yaw, pitch, roll), center, radius, size, vec4<float>(1,1,1,1),
-                               anim, basetime, 0, flags | Model_Mapmodel, -1, visible);
+    batchedmodels.emplace_back();
     batchedmodel &b = batchedmodels.back();
+    b.pos = o;
+    b.center = center;
+    b.radius = radius;
+    b.anim = anim;
+    b.orient = {yaw, pitch, roll};
+    b.basetime = basetime;
+    b.basetime2 = 0;
+    b.sizescale = size;
+    b.colorscale = vec4<float>(1, 1, 1, 1);
+    b.flags = flags | Model_Mapmodel;
+    b.visible = visible;
+    b.d = nullptr;
+    b.attached = -1;
     addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
@@ -1051,9 +1048,21 @@ hasboundbox:
         return;
     }
 
-    batchedmodels.emplace_back(o, vec(yaw, pitch, roll), center, radius, size, color, anim, basetime,
-                               basetime2, flags, a ? modelattached.size() : -1, 0);
-
+    batchedmodels.emplace_back();
+    batchedmodel &b = batchedmodels.back();
+    b.pos = o;
+    b.center = center;
+    b.radius = radius;
+    b.anim = anim;
+    b.orient = {yaw, pitch, roll};
+    b.basetime = basetime;
+    b.basetime2 = basetime2;
+    b.sizescale = size;
+    b.colorscale = color;
+    b.flags = flags;
+    b.visible = 0;
+    b.d = d;
+    b.attached = a ? modelattached.size() : -1;
     if(a)
     {
         for(int i = 0;; i++)
@@ -1065,8 +1074,6 @@ hasboundbox:
             }
         }
     }
-
-    batchedmodel &b = batchedmodels.back();
     addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
