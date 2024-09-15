@@ -407,7 +407,7 @@ static int addlocalparam(Shader &s, const char *name, GLint loc, GLsizei size, G
     return idx;
 }
 
-static void addglobalparam(Shader &s, const GlobalShaderParamState *param, int loc, int size, GLenum format)
+static void addglobalparam(Shader &s, const GlobalShaderParamState *param, GLint loc, GLsizei size, GLenum format)
 {
     GlobalShaderParamUse g;
     g.param = param;
