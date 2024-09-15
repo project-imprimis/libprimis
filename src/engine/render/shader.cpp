@@ -386,7 +386,7 @@ size_t getlocalparam(const std::string &name)
     return size;
 }
 
-static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
+static int addlocalparam(Shader &s, const char *name, GLint loc, GLsizei size, GLenum format)
 {
     size_t idx = getlocalparam(name);
     if(idx >= s.localparamremap.size())
