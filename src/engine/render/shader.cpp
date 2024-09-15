@@ -418,7 +418,7 @@ static void addglobalparam(Shader &s, const GlobalShaderParamState *param, GLint
     s.globalparams.push_back(g);
 }
 
-void Shader::setglsluniformformat(const char *name, GLenum format, int size)
+void Shader::setglsluniformformat(const char *name, GLenum format, GLsizei size)
 {
     switch(format)
     {
@@ -453,7 +453,7 @@ void Shader::setglsluniformformat(const char *name, GLenum format, int size)
     {
         return;
     }
-    int loc = glGetUniformLocation(program, name);
+    GLint loc = glGetUniformLocation(program, name);
     if(loc < 0)
     {
         return;
