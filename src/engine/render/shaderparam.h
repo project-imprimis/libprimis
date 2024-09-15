@@ -42,6 +42,9 @@ struct ShaderParamBinding
     GLint loc;
     GLsizei size;
     GLenum format;
+
+    ShaderParamBinding(GLint loc, GLsizei size, GLenum format);
+    ShaderParamBinding() {};
 };
 
 struct GlobalShaderParamUse : ShaderParamBinding
@@ -50,12 +53,17 @@ struct GlobalShaderParamUse : ShaderParamBinding
     const GlobalShaderParamState *param;
     int version;
 
+    GlobalShaderParamUse(GLint loc, GLsizei size, GLenum format, const GlobalShaderParamState *param, int version);
     void flush();
 };
 
 struct LocalShaderParamState : ShaderParamBinding
 {
     std::string name;
+
+    LocalShaderParamState() {}
+    LocalShaderParamState(GLint loc, GLsizei size, GLenum format, std::string_view name);
+
 };
 
 struct SlotShaderParamState : LocalShaderParamState
@@ -64,12 +72,9 @@ struct SlotShaderParamState : LocalShaderParamState
     float val[4];
 
     SlotShaderParamState() {}
-    SlotShaderParamState(const SlotShaderParam &p)
+    SlotShaderParamState(const SlotShaderParam &p) : LocalShaderParamState(-1, 1, GL_FLOAT_VEC4, name)
     {
         name = p.name;
-        loc = -1;
-        size = 1;
-        format = GL_FLOAT_VEC4;
         flags = p.flags;
         std::memcpy(val, p.val, sizeof(val));
     }

@@ -409,13 +409,7 @@ static int addlocalparam(Shader &s, const char *name, GLint loc, GLsizei size, G
 
 static void addglobalparam(Shader &s, const GlobalShaderParamState *param, GLint loc, GLsizei size, GLenum format)
 {
-    GlobalShaderParamUse g;
-    g.param = param;
-    g.version = -2;
-    g.loc = loc;
-    g.size = size;
-    g.format = format;
-    s.globalparams.push_back(g);
+    s.globalparams.emplace_back(loc, size, format, param, -2);
 }
 
 void Shader::setglsluniformformat(const char *name, GLenum format, GLsizei size)
@@ -1006,8 +1000,19 @@ void Shader::cleanup(bool full)
         }
     }
 }
+//ShaderParamBinding
+
+ShaderParamBinding::ShaderParamBinding(GLint loc, GLsizei size, GLenum format) :
+    loc(loc), size(size), format(format)
+    {
+    }
 
 // globalshaderparamuse
+
+GlobalShaderParamUse::GlobalShaderParamUse(GLint loc, GLsizei size, GLenum format, const GlobalShaderParamState *param, int version) :
+    ShaderParamBinding(loc, size, format),  param(param), version(version)
+    {
+    }
 
 void GlobalShaderParamUse::flush()
 {
@@ -1099,6 +1104,14 @@ void GlobalShaderParamUse::flush()
     }
     version = param->version;
 }
+
+//localshaderparamstate
+
+LocalShaderParamState::LocalShaderParamState(GLint loc, GLsizei size, GLenum format, std::string_view name) :
+    ShaderParamBinding(loc, size, format), name(name)
+{
+}
+
 
 void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 {
