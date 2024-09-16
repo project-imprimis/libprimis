@@ -62,7 +62,7 @@ struct LocalShaderParamState : ShaderParamBinding
     std::string name;
 
     LocalShaderParamState() {}
-    LocalShaderParamState(GLint loc, GLsizei size, GLenum format, std::string_view name);
+    LocalShaderParamState(GLint loc, GLsizei size, GLenum format);
 
 };
 
@@ -72,7 +72,7 @@ struct SlotShaderParamState : LocalShaderParamState
     float val[4];
 
     SlotShaderParamState() {}
-    SlotShaderParamState(const SlotShaderParam &p) : LocalShaderParamState(-1, 1, GL_FLOAT_VEC4, name)
+    SlotShaderParamState(const SlotShaderParam &p) : LocalShaderParamState(-1, 1, GL_FLOAT_VEC4)
     {
         name = p.name;
         flags = p.flags;

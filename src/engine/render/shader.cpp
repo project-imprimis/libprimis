@@ -1107,8 +1107,8 @@ void GlobalShaderParamUse::flush()
 
 //localshaderparamstate
 
-LocalShaderParamState::LocalShaderParamState(GLint loc, GLsizei size, GLenum format, std::string_view name) :
-    ShaderParamBinding(loc, size, format), name(name)
+LocalShaderParamState::LocalShaderParamState(GLint loc, GLsizei size, GLenum format) :
+    ShaderParamBinding(loc, size, format)
 {
 }
 
