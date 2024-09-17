@@ -94,7 +94,7 @@ class Shader
         std::vector<GlobalShaderParamUse> globalparams;
         std::vector<LocalShaderParamState> localparams;
         std::vector<uchar> localparamremap;
-        Shader *variantshader;
+        const Shader *variantshader;
         std::vector<Shader *> variants;
         bool standard, forced;
         std::vector<UniformLoc> uniformlocs;
