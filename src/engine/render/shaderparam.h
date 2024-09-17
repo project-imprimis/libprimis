@@ -13,9 +13,9 @@ struct GlobalShaderParamState
 {
     union
     {
-        float fval[32];
-        int ival[32];
-        uint uval[32];
+        GLfloat fval[32];
+        GLint ival[32];
+        GLuint uval[32];
         std::array<uchar, 32*sizeof(float)> buf;
     };
     int version;
