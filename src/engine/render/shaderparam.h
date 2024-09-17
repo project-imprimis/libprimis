@@ -86,10 +86,10 @@ class Shader
     public:
         static Shader *lastshader; //the current shader being used by glUseProgram()
 
-        char *name,
-            *defer; //a pointer to a deferred shader
+        char *name, //name of the shader in shaders list
+            *defer; //deferred shader contents
         int type; //type of shader, e.g. world, refractive, deferred, see enum
-        GLuint program;
+        GLuint program; //handle for GL program object
         std::vector<SlotShaderParamState> defaultparams;
         std::vector<GlobalShaderParamUse> globalparams;
         std::vector<LocalShaderParamState> localparams;
@@ -146,6 +146,8 @@ class Shader
         void set_();
         void allocglslactiveuniforms();
         void setglsluniformformat(const char *name, GLenum format, int size);
+
+        //attaches shaders to the Shader::program handle
         void linkglslprogram(bool msg = true);
 
         /**
