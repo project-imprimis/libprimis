@@ -1920,7 +1920,7 @@ void variantshader(int *type, const char *name, const int *row, char *vs, char *
         genfogshader(vs_string, ps_string);
     }
 
-    Shader *v = newshader(*type, varname, vs_string.c_str(), ps_string.c_str(), s, *row);
+    const Shader *v = newshader(*type, varname, vs_string.c_str(), ps_string.c_str(), s, *row);
     if(v)
     {
         if(vs_string.find("//:variant") != std::string::npos || ps_string.find("//:variant") != std::string::npos)
@@ -1972,7 +1972,7 @@ void variantshader_new(int *type, char *name, const int *row, const int *maxvari
         genfogshader(vs, ps);
     }
 
-    Shader *v = newshader(*type, varname, vs.c_str(), ps.c_str(), s, *row);
+    const Shader *v = newshader(*type, varname, vs.c_str(), ps.c_str(), s, *row);
     if(v)
     {
         if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
