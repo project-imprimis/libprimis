@@ -1409,7 +1409,7 @@ static void genfogshader(std::string &vs, std::string &ps)
     }
 }
 
-static void genuniformdefs(std::string &vs, std::string &ps, Shader *variant = nullptr)
+static void genuniformdefs(std::string &vs, std::string &ps, const Shader *variant = nullptr)
 {
     if(variant ? variant->defaultparams.empty() : slotparams.empty())
     {
