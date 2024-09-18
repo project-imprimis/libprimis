@@ -71,14 +71,14 @@ struct LocalShaderParamState : ShaderParamBinding
 struct SlotShaderParamState : LocalShaderParamState
 {
     int flags;
-    float val[4];
+    std::array<float, 4> val;
 
     SlotShaderParamState() {}
     SlotShaderParamState(const SlotShaderParam &p) : LocalShaderParamState(-1, 1, GL_FLOAT_VEC4)
     {
         name = p.name;
         flags = p.flags;
-        std::memcpy(val, p.val, sizeof(val));
+        std::memcpy(val.data(), p.val, sizeof(val));
     }
 };
 

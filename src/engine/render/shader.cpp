@@ -558,14 +558,14 @@ static const float *findslotparam(const Slot &s, const char *name, const float *
     {
         if(name == param.name)
         {
-            return param.val;
+            return &param.val[0];
         }
     }
     for(const SlotShaderParamState &param : s.shader->defaultparams)
     {
         if(name == param.name)
         {
-            return param.val;
+            return &param.val[0];
         }
     }
     return noval;
@@ -577,7 +577,7 @@ static const float *findslotparam(const VSlot &s, const char *name, const float 
     {
         if(name == param.name)
         {
-            return param.val;
+            return &param.val[0];
         }
     }
     return findslotparam(*s.slot, name, noval);
@@ -681,7 +681,7 @@ static void setdefaultparams(const std::vector<SlotShaderParamState>& defaultpar
     for(uint i = 0; i < defaultparams.size(); i++)
     {
         const SlotShaderParamState &l = defaultparams.at(i);
-        setslotparam(l, unimask, i, l.val);
+        setslotparam(l, unimask, i, &l.val[0]);
     }
 }
 
@@ -907,7 +907,7 @@ void Shader::setslotparams(const Slot &slot, const VSlot &vslot)
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             const SlotShaderParamState &l = defaultparams.at(i);
-            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name.c_str(), l.val) : l.val);
+            setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name.c_str(), &l.val[0]) : &l.val[0]);
         }
     }
 }
@@ -2034,7 +2034,7 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Sha
                 const SlotShaderParamState &dparam = sh.defaultparams[j];
                 if(dparam.name==param.name)
                 {
-                    if(std::memcmp(param.val, dparam.val, sizeof(param.val)))
+                    if(std::memcmp(param.val, &dparam.val[0], sizeof(param.val)))
                     {
                         loc = j;
                     }
@@ -2100,7 +2100,7 @@ bool shouldreuseparams(const Slot &s, const VSlot &p)
         if(param.flags & SlotShaderParam::REUSE)
         {
             const float *val = findslotparam(p, param.name.c_str());
-            if(val && std::memcmp(param.val, val, sizeof(param.val)))
+            if(val && std::memcmp(&param.val[0], val, param.val.size()))
             {
                 for(const SlotShaderParam &j : s.params)
                 {
