@@ -1628,7 +1628,7 @@ Shader *useshaderbyname(const char *name)
     return s;
 }
 
-void shader(int *type, const char *name, char *vs, char *ps)
+void shader(const int *type, const char *name, const char *vs, const char *ps)
 {
     if(lookupshaderbyname(name))
     {
@@ -1885,7 +1885,7 @@ static void shader_source(const char *vs, const char *fs)
     shader_path_fs = fs;
 }
 
-void variantshader(int *type, const char *name, const int *row, char *vs, char *ps, const int *maxvariants)
+void variantshader(const int *type, const char *name, const int *row, const char *vs, const char *ps, const int *maxvariants)
 {
     if(*row < 0)
     {
