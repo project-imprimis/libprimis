@@ -1752,7 +1752,7 @@ static void shader_assemble(std::string &vs, std::string &ps)
     }
 }
 
-static void shader_new(int *type, char *name, uint *code)
+static void shader_new(const int *type, const char *name, const uint *code)
 {
     if(lookupshaderbyname(name))
     {
@@ -1930,7 +1930,7 @@ void variantshader(int *type, const char *name, const int *row, char *vs, char *
     }
 }
 
-void variantshader_new(int *type, char *name, const int *row, const int *maxvariants, uint *code)
+void variantshader_new(const int *type, const char *name, const int *row, const int *maxvariants, const uint *code)
 {
     if(*row < 0)
     {
