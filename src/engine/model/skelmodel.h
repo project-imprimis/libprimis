@@ -514,7 +514,8 @@ struct skelmodel : animmodel
 
             struct framedata
             {
-                const dualquat *fr1, *fr2, *pfr1, *pfr2;
+                const dualquat *fr1, *fr2, //frame data
+                               *pfr1, *pfr2; //part frame data
             };
 
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
