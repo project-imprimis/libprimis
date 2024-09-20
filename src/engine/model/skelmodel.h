@@ -377,7 +377,7 @@ struct skelmodel : animmodel
 
     struct pitchtarget final
     {
-        size_t bone;
+        size_t bone; //an index in skeleton::bones
         int frame, corrects, deps;
         float pitchmin, pitchmax, deviated;
         dualquat pose;
@@ -386,7 +386,7 @@ struct skelmodel : animmodel
     struct pitchcorrect final
     {
         int bone, parent;
-        size_t target;
+        size_t target; //an index in skeleton::pitchtargets vector
         float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
         pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
