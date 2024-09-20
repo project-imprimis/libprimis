@@ -375,24 +375,6 @@ struct skelmodel : animmodel
         int frame, range;
     };
 
-    struct pitchtarget final
-    {
-        size_t bone; //an index in skeleton::bones
-        int frame, corrects, deps;
-        float pitchmin, pitchmax, deviated;
-        dualquat pose;
-    };
-
-    struct pitchcorrect final
-    {
-        int bone, parent;
-        size_t target; //an index in skeleton::pitchtargets vector
-        float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
-
-        pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
-        pitchcorrect();
-    };
-
     class skeleton
     {
         public:
@@ -402,7 +384,25 @@ struct skelmodel : animmodel
             dualquat *framebones; //array of quats, size equal to anim frames * bones in model
             std::vector<skelanimspec> skelanims;
             ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
+
+            struct pitchtarget final
+            {
+                size_t bone; //an index in skeleton::bones
+                int frame, corrects, deps;
+                float pitchmin, pitchmax, deviated;
+                dualquat pose;
+            };
             std::vector<pitchtarget> pitchtargets;
+
+            struct pitchcorrect final
+            {
+                int bone, parent;
+                size_t target; //an index in skeleton::pitchtargets vector
+                float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
+
+                pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
+                pitchcorrect();
+            };
             std::vector<pitchcorrect> pitchcorrects;
 
             std::vector<skelcacheentry> skelcache;
@@ -755,8 +755,8 @@ struct skelcommands : modelcommands<MDL>
     typedef struct MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
     typedef struct MDL::skelanimspec animspec;
-    typedef struct MDL::pitchtarget pitchtarget;
-    typedef struct MDL::pitchcorrect pitchcorrect;
+    typedef struct MDL::skeleton::pitchtarget pitchtarget;
+    typedef struct MDL::skeleton::pitchcorrect pitchcorrect;
 
     //unused second param
     static void loadpart(const char *meshfile, const char *, const float *smooth)
