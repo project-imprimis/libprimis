@@ -524,6 +524,10 @@ struct skelmodel : animmodel
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
             void addpitchdep(int bone, int frame);
             float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
+
+            std::optional<size_t> findpitchdep(int bone) const;
+            void initpitchdeps();
+
             /**
              * @brief Recursively applies the specified mask value to the bone mask array passed.
              *
@@ -541,8 +545,6 @@ struct skelmodel : animmodel
              * @param bone the root bone to assign values to
              * @param val the value to set
              */
-            std::optional<size_t> findpitchdep(int bone) const;
-            void initpitchdeps();
             void expandbonemask(uchar *expansion, int bone, int val) const;
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
