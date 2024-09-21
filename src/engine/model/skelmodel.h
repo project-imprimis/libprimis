@@ -525,6 +525,23 @@ struct skelmodel : animmodel
             void addpitchdep(int bone, int frame);
             float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
 
+            /**
+             * @brief Searches for a pitchdep in the pitchdeps field
+             *
+             * Searches the pitchdeps vector field in ascending order. For each pitchdep
+             * in the pitchdeps vector, if the bone stored in that pitchdep is at least as
+             * high of an index (lower on the tree) then searching is stopped and the
+             * function will either return that index (if the pitchdep's bone field exactly
+             * matches) or nullopt if the bone at that pitchdep is lower on the tree.
+             *
+             * If the bone passed is larger than any bone data in any pitchep in the
+             * pitchdeps vector, returns nullopt.
+             *
+             * @param bone the bone to search for
+             *
+             * @return nullopt if no such valid pitchdep exists
+             * @return index of pitchdep if found
+             */
             std::optional<size_t> findpitchdep(int bone) const;
             void initpitchdeps();
 
