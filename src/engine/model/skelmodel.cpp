@@ -969,7 +969,7 @@ void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, 
     u.data = bc.bdata;
 }
 
-void skelmodel::skeleton::setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count)
+void skelmodel::skeleton::setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count)
 {
     if(!Shader::lastshader)
     {

@@ -427,7 +427,7 @@ struct skelmodel : animmodel
             bool canpreload() const;
             void preload();
             const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
-            void setgpubones(const skelcacheentry &sc, blendcacheentry *bc, int count);
+            void setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count);
             bool shouldcleanup() const;
             /**
              * @brief Sets the pitch information for the index'th bone in the skeleton's bones
