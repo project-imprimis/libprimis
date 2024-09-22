@@ -447,7 +447,14 @@ struct skelmodel : animmodel
             //Only sets parent if within boundaries of bone array
             bool setboneparent(size_t index, size_t parent);
 
-            //creates boneinfo array of size num, also sets numbones to that size
+            /**
+             * @brief Creates a boneinfo array and assigns it to skeleton::bones
+             *
+             * Also sets the value of numbones to the size passed.
+             * Will cause a memory leak if skeleton::bones is already heap-allocated.
+             *
+             * @param num the number of array elements in the new array
+             */
             void createbones(size_t num);
 
 
