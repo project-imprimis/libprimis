@@ -412,6 +412,14 @@ struct skelmodel : animmodel
 
             const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
             skelanimspec &addskelanim(const std::string &name, int numframes, int animframes);
+
+            /**
+             * @brief Returns the first bone index in skeleton::bones with matching name field
+             *
+             * @param name the name to search for
+             *
+             * @return the index in skeleton::bones if found, nullopt if not
+             */
             std::optional<size_t> findbone(const std::string &name) const;
             std::optional<size_t> findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
