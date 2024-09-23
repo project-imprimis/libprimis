@@ -420,7 +420,7 @@ struct skelmodel : animmodel
              *
              * @return the index in skeleton::bones if found, nullopt if not
              */
-            std::optional<size_t> findbone(const std::string &name) const;
+            std::optional<size_t> findbone(std::string_view name) const;
 
             /**
              * @brief Returns the first tag index in skeleton::tags with matching name field
