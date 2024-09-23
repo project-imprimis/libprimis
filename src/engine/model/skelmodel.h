@@ -411,7 +411,7 @@ struct skelmodel : animmodel
             ~skeleton();
 
             const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
-            skelanimspec &addskelanim(const std::string &name, int numframes, int animframes);
+            skelanimspec &addskelanim(const std::string_view name, int numframes, int animframes);
 
             /**
              * @brief Returns the first bone index in skeleton::bones with matching name field

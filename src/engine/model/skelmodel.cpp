@@ -132,9 +132,9 @@ const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_vie
     return nullptr;
 }
 
-skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const std::string &name, int numframes, int animframes)
+skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const std::string_view name, int numframes, int animframes)
 {
-    skelanims.push_back({name, numframes, animframes});
+    skelanims.push_back({name.data(), numframes, animframes});
     return skelanims.back();
 }
 
