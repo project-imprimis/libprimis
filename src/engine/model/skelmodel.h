@@ -421,6 +421,14 @@ struct skelmodel : animmodel
              * @return the index in skeleton::bones if found, nullopt if not
              */
             std::optional<size_t> findbone(const std::string &name) const;
+
+            /**
+             * @brief Returns the first tag index in skeleton::tags with matching name field
+             *
+             * @param name the name to search for
+             *
+             * @return the index in skeleton::tags if found, nullopt if not
+             */
             std::optional<size_t> findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
             std::optional<size_t> findpitchcorrect(int bone) const;
