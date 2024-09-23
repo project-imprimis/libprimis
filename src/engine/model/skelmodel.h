@@ -411,6 +411,16 @@ struct skelmodel : animmodel
             ~skeleton();
 
             const skelanimspec *findskelanim(std::string_view name, char sep = '\0') const;
+
+            /**
+             * @brief Adds a skelanimspec to the end of skelanims()
+             *
+             * @param name the name to set in the skelanimspec
+             * @param numframes the number of frames to set in the skelanimspec
+             * @param amimframes the number of animation frames to set in the skelanimspec
+             *
+             * @return a reference to the added skelanimspec
+             */
             skelanimspec &addskelanim(const std::string_view name, int numframes, int animframes);
 
             /**
