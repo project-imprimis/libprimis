@@ -556,7 +556,7 @@ struct skelmodel : animmodel
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
             void addpitchdep(int bone, int frame);
-            float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2) const;
+            static float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
 
             /**
              * @brief Searches for a pitchdep in the pitchdeps field
