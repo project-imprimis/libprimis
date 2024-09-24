@@ -186,7 +186,7 @@ ragdolldata::~ragdolldata()
 */
 
 /**
- * @brief Sets the matrix corresponding to i according to the animation matrix and position
+ * @brief Sets the ragdolldata::animjoints matrix element at index i according to the animation matrix and position
  *
  * Const with respect to all other fields within ragdolldata other than animjoints[i].
  *
