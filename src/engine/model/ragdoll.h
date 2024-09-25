@@ -133,6 +133,18 @@ class ragdolldata final
         ~ragdolldata();
 
         void move(bool water, float ts);
+
+        /**
+         * @brief Sets the ragdolldata::animjoints matrix element at index i according to the animation matrix and position
+         *
+         * Const with respect to all other fields within ragdolldata other than animjoints[i].
+         *
+         * The value set at animjoints[i] is not dependent on the value of animjoints[i]
+         * prior to the calculation.
+         *
+         * @param i the index of the joint to calculate
+         * @param anim the animation matrix to transform the joint with
+         */
         void calcanimjoint(int i, const matrix4x3 &anim);
         void init(const dynent *d);
 
