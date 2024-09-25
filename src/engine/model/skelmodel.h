@@ -455,6 +455,15 @@ struct skelmodel : animmodel
             void linkchildren();
             int availgpubones() const;
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
+            /**
+             * @brief Sets n to the product of m, the i'th bone's base matrix, and the i'th tag's matrix
+             *
+             * The contents of the matrix n have no effect on the resulting value stored in n.
+             *
+             * @param i the tag index in skeleton::tags to use
+             * @param m the matrix to start the transform with
+             * @param n the matrix to set
+             */
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
             void calctags(part *p, const skelcacheentry *sc = nullptr) const;
             void cleanup(bool full = true);
