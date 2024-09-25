@@ -441,6 +441,14 @@ struct skelmodel : animmodel
              */
             std::optional<size_t> findtag(std::string_view name) const;
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
+
+            /**
+             * @brief Returns the first pitchcorrect index in skeleton::pitchcorrects with matching bone
+             *
+             * @param bone the bone to search for
+             *
+             * @return the index in skeleton::pitchcorrects if found, nullopt if not
+             */
             std::optional<size_t> findpitchcorrect(int bone) const;
             void optimize();
             void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
