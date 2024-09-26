@@ -451,6 +451,21 @@ struct skelmodel : animmodel
              */
             std::optional<size_t> findpitchcorrect(int bone) const;
             void optimize();
+
+            /**
+             * @brief Applies bone mask values to the given partmask.
+             *
+             * No effect if mask is empty or starts with end enum value (Bonemask_End).
+             * The partmask will not be changed in size, and is implied to be of size
+             * `numbones`.
+             * Sets `partindex` value to elements in `partmask` according to `expandbonemask()`,
+             * applied to a copy of `mask`.
+             * Partindex will be downcast from int -> unsigned char.
+             *
+             * @param mask vector of mask values to determine setting with, size numbones
+             * @param partmask vector of values to conditionally set
+             * @param partindex value to conditionally set to partmask
+             */
             void applybonemask(const std::vector<uint> &mask, std::vector<uchar> &partmask, int partindex) const;
 
             /**
