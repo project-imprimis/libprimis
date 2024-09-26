@@ -551,17 +551,6 @@ void skelmodel::skeleton::applybonemask(const std::vector<uint> &mask, std::vect
     delete[] expansion;
 }
 
-/**
- * @brief Links this skeleton's children (boneinfo elements)
- *
- * Invalidates each element's child index and then resets it, if another boneinfo
- * read later (later implies position lower on tree) indicates it as a parent. The
- * value previously pointed to as the child in that parent object is set to the child's
- * `next` field.
- *
- * Invalidates the `next` element in the boneinfo's linkedlist if there is no valid parent
- * for a bone (is the top of the tree).
- */
 void skelmodel::skeleton::linkchildren()
 {
     for(size_t i = 0; i < numbones; ++i)
