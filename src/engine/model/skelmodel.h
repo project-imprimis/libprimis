@@ -472,10 +472,20 @@ struct skelmodel : animmodel
             const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
             void setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count);
             bool shouldcleanup() const;
+
             /**
              * @brief Sets the pitch information for the index'th bone in the skeleton's bones
              *
              * If no bone exists at `index` returns false; otherwise returns true
+             * If no bone exists, only effect is to return false.
+             *
+             * @param index the index in `skeleton::bones`
+             * @param scale scale factor to set
+             * @param offset pitch offset value to set
+             * @param min pitch minimum value to set
+             * @param max pitch maximum value to set
+             *
+             * @return true if index within bounds, false if outside
              */
             bool setbonepitch(size_t index, float scale, float offset, float min, float max);
 
