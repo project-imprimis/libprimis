@@ -495,6 +495,14 @@ struct skelmodel : animmodel
              */
             void linkchildren();
 
+            /**
+             * @brief Returns the number of bones available to be accelerated
+             *
+             * Returns the lesser of the `maxvsuniforms` (max vertex shader uniforms)
+             * and `maxskelanimdata` (divided by two).
+             *
+             * @return number of bones that can be accelerated
+             */
             static int availgpubones();
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
             /**
