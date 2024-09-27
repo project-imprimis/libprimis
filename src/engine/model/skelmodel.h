@@ -494,7 +494,8 @@ struct skelmodel : animmodel
              * for a bone (is the top of the tree).
              */
             void linkchildren();
-            int availgpubones() const;
+
+            static int availgpubones();
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
             /**
              * @brief Sets n to the product of m, the i'th bone's base matrix, and the i'th tag's matrix

@@ -569,7 +569,7 @@ void skelmodel::skeleton::linkchildren()
     }
 }
 
-int skelmodel::skeleton::availgpubones() const
+int skelmodel::skeleton::availgpubones()
 {
     return std::min(maxvsuniforms, maxskelanimdata) / 2;
 }
