@@ -165,7 +165,7 @@ skelmodel::skeleton::~skeleton()
     }
 }
 
-std::optional<size_t> skelmodel::skeleton::findbone(const std::string_view name) const
+std::optional<size_t> skelmodel::skeleton::findbone(std::string_view name) const
 {
     for(size_t i = 0; i < numbones; ++i)
     {
