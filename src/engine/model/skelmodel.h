@@ -440,6 +440,20 @@ struct skelmodel : animmodel
              * @return the index in skeleton::tags if found, nullopt if not
              */
             std::optional<size_t> findtag(std::string_view name) const;
+
+            /**
+             * @brief Modifies or sets a tag in the `skeleton::tags`
+             *
+             * If there is a tag in `skeleton::tags` with a matching name to `name`,
+             * sets the value of `bone` and `matrix` in that object.
+             *
+             * If there is no such tag, creates a new one at the end of `skeleton:tags`
+             * with `name`, `bone` and `matrix` set
+             *
+             * @param name name string to search for
+             * @param bone bone value to set
+             * @param matrix matrix value to set
+             */
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
 
             /**
