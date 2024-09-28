@@ -742,7 +742,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
     }
 }
 
-void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p)
+void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p) const
 {
     const dualquat *bdata = sc.bdata;
     for(const ragdollskel::joint &j : ragdoll->joints)
@@ -753,7 +753,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
         {
             if(j.vert[k] >= 0)
             {
-                ragdollskel::vert &v = ragdoll->verts[j.vert[k]];
+                const ragdollskel::vert &v = ragdoll->verts[j.vert[k]];
                 ragdolldata::vert &dv = d.verts[j.vert[k]];
                 dv.pos.add(q.transform(v.pos).mul(v.weight));
             }

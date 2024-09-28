@@ -504,7 +504,7 @@ struct skelmodel : animmodel
              * @return number of bones that can be accelerated
              */
             static int availgpubones();
-            void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p);
+            void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p) const;
             /**
              * @brief Sets n to the product of m, the i'th bone's base matrix, and the i'th tag's matrix
              *
