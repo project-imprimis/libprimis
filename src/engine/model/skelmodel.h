@@ -517,9 +517,9 @@ struct skelmodel : animmodel
              *
              * @param d the ragdolldata to set up
              * @param sc the location of the dualquat transformations to apply
-             * @param p the part object to get scale from
+             * @param scale scale factor for the vertex coordinates
              */
-            void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p) const;
+            void initragdoll(ragdolldata &d, const skelcacheentry &sc, float scale) const;
 
             /**
              * @brief Sets n to the product of m, the i'th bone's base matrix, and the i'th tag's matrix

@@ -742,7 +742,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
     }
 }
 
-void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p) const
+void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, float scale) const
 {
     const dualquat *bdata = sc.bdata;
     for(const ragdollskel::joint &j : ragdoll->joints)
@@ -772,7 +772,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     for(uint i = 0; i < ragdoll->verts.size(); i++)
     {
         ragdolldata::vert &dv = d.verts[i];
-        matrixstack.top().transform(vec(dv.pos).mul(p->model->locationsize().w), dv.pos);
+        matrixstack.top().transform(vec(dv.pos).mul(scale), dv.pos);
     }
     for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {
@@ -1231,7 +1231,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     if(as->cur.anim & Anim_Ragdoll && skel->ragdoll && !d->ragdoll)
     {
         d->ragdoll = new ragdolldata(skel->ragdoll, p->model->locationsize().w);
-        skel->initragdoll(*d->ragdoll, sc, p);
+        skel->initragdoll(*d->ragdoll, sc, p->model->locationsize().w);
         d->ragdoll->init(d);
     }
 }
