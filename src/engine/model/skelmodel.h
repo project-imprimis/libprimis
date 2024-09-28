@@ -504,7 +504,23 @@ struct skelmodel : animmodel
              * @return number of bones that can be accelerated
              */
             static int availgpubones();
+
+            /**
+             * @brief Sets up the ragdolldata passed using the metadata of this skeleton.
+             *
+             * The ragdolldata, which is an object that acts as an instatiation of the ragdollskel
+             * contained in skeleton->ragdoll, has its joints, animjoints, verts, and reljoints
+             * set up by the ragdollskel associated with this model's skeleton.
+             *
+             * These values are modified by the array of dualquat transformations stored in the
+             * skelcacheentry pointed to by `sc`.
+             *
+             * @param d the ragdolldata to set up
+             * @param sc the location of the dualquat transformations to apply
+             * @param p the part object to get scale from
+             */
             void initragdoll(ragdolldata &d, const skelcacheentry &sc, const part * const p) const;
+
             /**
              * @brief Sets n to the product of m, the i'th bone's base matrix, and the i'th tag's matrix
              *
