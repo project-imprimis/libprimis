@@ -783,7 +783,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     }
 }
 
-void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p)
+void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p) const
 {
     if(!sc.bdata)
     {
