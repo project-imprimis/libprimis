@@ -783,15 +783,14 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     }
 }
 
-void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p) const
+void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &sc, const vec &translate, float scale) const
 {
     if(!sc.bdata)
     {
         sc.bdata = new dualquat[numinterpbones];
     }
     sc.nextversion();
-    const vec pmodeltranslate = vec(p->model->locationsize().x, p->model->locationsize().y, p->model->locationsize().z);
-    const vec trans = vec(d.center).div(p->model->locationsize().w).add(pmodeltranslate);
+    const vec trans = vec(d.center).div(scale).add(translate);
     for(uint i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
@@ -804,7 +803,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
                 pos.add(d.verts[j.vert[k]].pos);
             }
         }
-        pos.mul(j.weight/p->model->locationsize().w).sub(trans);
+        pos.mul(j.weight/scale).sub(trans);
         matrix4x3 m;
         m.mul(d.tris[j.tri], pos, d.animjoints ? d.animjoints[i] : j.orient);
         sc.bdata[b.interpindex] = dualquat(m);
@@ -927,7 +926,8 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
         sc->ragdoll = rdata;
         if(rdata)
         {
-            genragdollbones(*rdata, *sc, p);
+            const vec ploc = vec(p->model->locationsize().x, p->model->locationsize().y, p->model->locationsize().z);
+            genragdollbones(*rdata, *sc, ploc, p->model->locationsize().w);
         }
         else
         {

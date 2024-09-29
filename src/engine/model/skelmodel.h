@@ -691,7 +691,8 @@ struct skelmodel : animmodel
             void expandbonemask(uchar *expansion, int bone, int val) const;
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
-            void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const part * const p) const;
+            void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const vec &translate, float scale) const;
+
     };
 
     class skelmeshgroup : public meshgroup
