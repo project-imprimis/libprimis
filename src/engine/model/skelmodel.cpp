@@ -881,7 +881,7 @@ void skelmodel::skeleton::preload()
     }
 }
 
-const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
+const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const vec &pos, float scale,  const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
     const int numanimparts = (reinterpret_cast<const skelpart *>(as->owner))->numanimparts;
     const std::vector<uchar> &partmask = (reinterpret_cast<const skelpart *>(as->owner))->partmask;
@@ -926,8 +926,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const part 
         sc->ragdoll = rdata;
         if(rdata)
         {
-            const vec ploc = vec(p->model->locationsize().x, p->model->locationsize().y, p->model->locationsize().z);
-            genragdollbones(*rdata, *sc, ploc, p->model->locationsize().w);
+            genragdollbones(*rdata, *sc, pos, scale);
         }
         else
         {
@@ -1193,7 +1192,9 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         return;
     }
 
-    const skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
+    const vec ploc = vec(p->model->locationsize().x, p->model->locationsize().y, p->model->locationsize().z);
+
+    const skelcacheentry &sc = skel->checkskelcache(ploc, p->model->locationsize().w, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];

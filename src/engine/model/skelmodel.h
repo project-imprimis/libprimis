@@ -535,7 +535,7 @@ struct skelmodel : animmodel
             void cleanup(bool full = true);
             bool canpreload() const;
             void preload();
-            const skelcacheentry &checkskelcache(const part * const p, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
+            const skelcacheentry &checkskelcache(const vec &pos, float scale, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
             void setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count);
             bool shouldcleanup() const;
 
