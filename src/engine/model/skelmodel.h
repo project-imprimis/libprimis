@@ -691,6 +691,20 @@ struct skelmodel : animmodel
             void expandbonemask(uchar *expansion, int bone, int val) const;
             void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
             void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
+
+            /**
+             * @brief Sets up a skelcacheentry's bone transformations.
+             *
+             * Uses the model data at `d` and the translation/positon information passed
+             * to set up the dual quaternion transformation array in the passed skelcacheentry.
+             * Creates a new array of size `skeleton::numinterpbones` if no array exists, allocated
+             * on the heap.
+             *
+             * @param d the ragdolldata to use vertex/tri information from
+             * @param sc the skelcacheentry to set up
+             * @param translate the position of the model
+             * @param scale the scale factor of the model's vertices
+             */
             void genragdollbones(const ragdolldata &d, skelcacheentry &sc, const vec &translate, float scale) const;
 
     };
