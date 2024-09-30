@@ -633,7 +633,7 @@ struct skelmodel : animmodel
             };
             std::vector<tag> tags;
 
-            std::unordered_map<GLuint, int> blendoffsets;
+            std::unordered_map<GLuint, GLint> blendoffsets;
 
             void calcantipodes();
             void remapbones();
@@ -644,8 +644,10 @@ struct skelmodel : animmodel
                                *pfr1, *pfr2; //part frame data
             };
 
+            GLint getblendoffset(const UniformLoc &u);
+
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
-            int getblendoffset(const UniformLoc &u);
+
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask) const;
             void addpitchdep(int bone, int frame);

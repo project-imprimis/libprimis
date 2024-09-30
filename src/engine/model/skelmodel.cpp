@@ -937,7 +937,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const vec &
     return *sc;
 }
 
-int skelmodel::skeleton::getblendoffset(const UniformLoc &u)
+GLint skelmodel::skeleton::getblendoffset(const UniformLoc &u)
 {
     auto itr = blendoffsets.find(Shader::lastshader->program);
     if(itr == blendoffsets.end())
@@ -958,7 +958,7 @@ void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, 
     glUniform4fv(u.loc, 2*numgpubones, sc.bdata[0].real.v);
     if(count > 0)
     {
-        int offset = getblendoffset(u);
+        GLint offset = getblendoffset(u);
         if(offset >= 0)
         {
             glUniform4fv(offset, 2*count, bc.bdata[0].real.v);
