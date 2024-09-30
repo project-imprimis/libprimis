@@ -650,7 +650,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
 }
 
 //private helper function for interpbones
-dualquat skelmodel::skeleton::interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask)
+dualquat skelmodel::skeleton::interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask) const
 {
     const AnimState &s = as[partmask[bone]];
     const framedata &f = partframes[partmask[bone]];

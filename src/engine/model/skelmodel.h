@@ -647,7 +647,7 @@ struct skelmodel : animmodel
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
             int getblendoffset(const UniformLoc &u);
             bool gpuaccelerate() const;
-            dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask);
+            dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask) const;
             void addpitchdep(int bone, int frame);
             static float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
 
