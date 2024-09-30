@@ -873,7 +873,7 @@ bool skelmodel::skeleton::canpreload() const
     return !numframes || gpuaccelerate();
 }
 
-void skelmodel::skeleton::preload()
+void skelmodel::skeleton::preload() const
 {
     if(!numframes)
     {
