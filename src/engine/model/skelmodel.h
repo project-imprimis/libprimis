@@ -633,6 +633,9 @@ struct skelmodel : animmodel
             };
             std::vector<tag> tags;
 
+            /**
+             * @brief Cache used by skeleton::getblendoffset() to cache glGetUniformLocation queries
+             */
             std::unordered_map<GLuint, GLint> blendoffsets;
 
             void calcantipodes();
@@ -644,6 +647,25 @@ struct skelmodel : animmodel
                                *pfr1, *pfr2; //part frame data
             };
 
+            /**
+             * @brief Gets the location of the uniform specified
+             *
+             * Helper function for setglslbones().
+             *
+             * Gets the uniform location of the uniform in `u`, at index
+             * 2*`skeleton::numgpubones`. Adds the shader program in `shader::lastshader`
+             * to `blendoffsets` if it is not already there.
+             *
+             * Once a shader program has been added to the `skeleton::blendoffsets`
+             * map, further calls of this function while that shader program is
+             * assigned to `shader::lastshader` will return the first uniformloc
+             * location query value associated with that program, and the parameter
+             * will be ignored.
+             *
+             * @param u the uniformloc to query
+             *
+             * @return the GLint location of the uniform
+             */
             GLint getblendoffset(const UniformLoc &u);
 
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
