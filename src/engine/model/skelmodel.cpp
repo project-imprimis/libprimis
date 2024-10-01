@@ -574,11 +574,6 @@ int skelmodel::skeleton::availgpubones()
     return std::min(maxvsuniforms, maxskelanimdata) / 2;
 }
 
-bool skelmodel::skeleton::gpuaccelerate() const
-{
-    return numframes;
-}
-
 float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2)
 {
     const vec forward1 = pose1.transformnormal(forward).project(axis).normalize(),
@@ -870,7 +865,7 @@ void skelmodel::skeleton::cleanup(bool full)
 
 bool skelmodel::skeleton::canpreload() const
 {
-    return !numframes || gpuaccelerate();
+    return true;
 }
 
 void skelmodel::skeleton::preload() const
