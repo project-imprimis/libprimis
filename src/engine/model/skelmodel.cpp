@@ -863,11 +863,6 @@ void skelmodel::skeleton::cleanup(bool full)
     }
 }
 
-bool skelmodel::skeleton::canpreload() const
-{
-    return true;
-}
-
 void skelmodel::skeleton::preload() const
 {
     if(!numframes)
@@ -1798,10 +1793,6 @@ void skelmodel::skelmeshgroup::cleanup()
 
 void skelmodel::skelmeshgroup::preload()
 {
-    if(!skel->canpreload())
-    {
-        return;
-    }
     if(skel->shouldcleanup())
     {
         skel->cleanup();
