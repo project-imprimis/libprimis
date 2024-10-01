@@ -258,8 +258,8 @@ struct skelmodel : animmodel
 
     struct skelcacheentry : animcacheentry
     {
-        dualquat *bdata;
-        int version;
+        dualquat *bdata; //array of size numinterpbones
+        int version; //caching version
 
         skelcacheentry();
         void nextversion();
@@ -392,7 +392,7 @@ struct skelmodel : animmodel
                 float pitchmin, pitchmax, deviated;
                 dualquat pose;
             };
-            std::vector<pitchtarget> pitchtargets;
+            std::vector<pitchtarget> pitchtargets; //vector of pitch target objects, added to models via pitchtarget command
 
             struct pitchcorrect final
             {
@@ -403,7 +403,7 @@ struct skelmodel : animmodel
                 pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
                 pitchcorrect();
             };
-            std::vector<pitchcorrect> pitchcorrects;
+            std::vector<pitchcorrect> pitchcorrects; //vector pitch correct objects, added to models via pitchcorrect command
 
             std::vector<skelcacheentry> skelcache;
 
