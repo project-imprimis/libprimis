@@ -568,6 +568,15 @@ struct skelmodel : animmodel
             //Returns nullopt if index out of bounds
             std::optional<dualquat> getbonebase(size_t index) const;
 
+            /**
+             * @brief Assigns the vector of dual quaternion bases to skeleton:bones
+             *
+             * Assigns the vector of dual quaternion bases to the skeleton::bones
+             * field. If skeleton::bones and bases are not the same length, returns
+             * false and performs no operation; returns true otherwise.
+             *
+             * @param bases the vector of bases to assign
+             */
             bool setbonebases(const std::vector<dualquat> &bases);
 
             //Only sets name if no name present (nullptr)
