@@ -114,7 +114,7 @@ const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_vie
     {
         if(!i.name.empty())
         {
-            if(!std::strcmp(name.data(), i.name.c_str()))
+            if(name == i.name)
             {
                 return &i;
             }
