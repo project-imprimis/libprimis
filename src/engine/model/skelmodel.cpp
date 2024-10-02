@@ -108,21 +108,12 @@ skelmodel::skeleton::pitchcorrect::pitchcorrect() : parent(-1), pitchangle(0), p
 
 //skeleton
 
-const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_view name, char sep) const
+const skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(std::string_view name) const
 {
-    const int len = sep ? std::strlen(name.data()) : 0;
     for(const skelanimspec &i : skelanims)
     {
         if(!i.name.empty())
         {
-            if(sep)
-            {
-                const char *end = std::strchr(i.name.c_str(), ':');
-                if(end && end - i.name.c_str() == len && !std::memcmp(name.data(), i.name.c_str(), len))
-                {
-                    return &i;
-                }
-            }
             if(!std::strcmp(name.data(), i.name.c_str()))
             {
                 return &i;
