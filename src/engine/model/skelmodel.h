@@ -410,6 +410,17 @@ struct skelmodel : animmodel
             skeleton(skelmeshgroup * const group);
             ~skeleton();
 
+            /**
+             * @brief Finds a skelanimspec in skeleton::skelanims
+             *
+             * Searches for the first skelanimspec in skeleton::skelanims with a
+             * nonnull name field equalling the name passed. The first such entry
+             * is returned by const pointer (or nullptr if none is found)
+             *
+             * @param name the skelanimspec::name to query
+             *
+             * @return pointer to element of skeleton::skelanims
+             */
             const skelanimspec *findskelanim(std::string_view name) const;
 
             /**
