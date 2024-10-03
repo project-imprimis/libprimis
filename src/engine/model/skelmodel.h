@@ -565,7 +565,16 @@ struct skelmodel : animmodel
              */
             bool setbonepitch(size_t index, float scale, float offset, float min, float max);
 
-            //Returns nullopt if index out of bounds
+            /**
+             * @brief Returns the dualquaternion base transform from the specified bone
+             *
+             * Returns the dualquat base field from skeleton::bones; if index is out
+             * of bounds, returns nullopt.
+             *
+             * @param index index in skeleton::bones
+             *
+             * @return value of bone's dualquat base
+             */
             std::optional<dualquat> getbonebase(size_t index) const;
 
             /**
