@@ -854,14 +854,6 @@ void skelmodel::skeleton::cleanup(bool full)
     }
 }
 
-void skelmodel::skeleton::preload() const
-{
-    if(!numframes)
-    {
-        return;
-    }
-}
-
 const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const vec &pos, float scale,  const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
     const int numanimparts = (reinterpret_cast<const skelpart *>(as->owner))->numanimparts;
@@ -1788,7 +1780,6 @@ void skelmodel::skelmeshgroup::preload()
     {
         skel->cleanup();
     }
-    skel->preload();
     if(!vbocache[0].vbuf)
     {
         genvbo(vbocache[0]);

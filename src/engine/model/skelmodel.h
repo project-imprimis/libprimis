@@ -544,7 +544,6 @@ struct skelmodel : animmodel
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
             void calctags(part *p, const skelcacheentry *sc = nullptr) const;
             void cleanup(bool full = true);
-            void preload() const;
             const skelcacheentry &checkskelcache(const vec &pos, float scale, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
             void setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count);
             bool shouldcleanup() const;
