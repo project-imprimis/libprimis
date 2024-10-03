@@ -689,12 +689,33 @@ struct skelmodel : animmodel
              * location query value associated with that program, and the parameter
              * will be ignored.
              *
+             * Returns the array element at 2*skeleton::numgpubones, skipping
+             * the values used in `setglslbones()` to set the `sc` skelcacheentry values.
+             *
              * @param u the uniformloc to query
              *
-             * @return the GLint location of the uniform
+             * @return a GLint location of the uniform array at a position skipping the "sc" elements
              */
             GLint getblendoffset(const UniformLoc &u);
 
+            /**
+             * @brief Sets uniform values from skelcacheentries to the uniform at the specified UniformLoc
+             *
+             * Uses glUniform4fv to copy 4 dimensional quaternion values from the specified
+             * skelcacheentries into the GL uniform array pointed to by the UniformLoc u.
+             * The number of values copied from sc will be skeleton::numgpubones*2, and
+             * the number of values copied from bc will be `count`. Only the real component
+             * of the dual quaternions are copied.
+             *
+             * Sets the version and data values of the UniformLoc to that of the bc parameter,
+             * to cache this operation only to occur when there is a mismatch between those
+             * two objects.
+             *
+             * @param u the uniform location object to modify corresponding uniforms of
+             * @param sc the skelcacheentry from which to set
+             * @param bc the skelcacheentry from which to set the trailing values from
+             * @param count the number of entries from bc to place in
+             */
             void setglslbones(UniformLoc &u, const skelcacheentry &sc, const skelcacheentry &bc, int count);
             dualquat interpbone(int bone, const std::array<framedata, maxanimparts> &partframes, const AnimState *as, const uchar *partmask) const;
             void addpitchdep(int bone, int frame);
