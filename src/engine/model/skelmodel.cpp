@@ -856,7 +856,7 @@ void skelmodel::skeleton::cleanup(bool full)
 
 const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const vec &pos, float scale,  const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata)
 {
-    const int numanimparts = (reinterpret_cast<const skelpart *>(as->owner))->numanimparts;
+    const int numanimparts = as->owner->numanimparts;
     const std::vector<uchar> &partmask = (reinterpret_cast<const skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
     bool match = false;
