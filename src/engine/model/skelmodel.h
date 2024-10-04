@@ -1420,11 +1420,7 @@ struct skelcommands : modelcommands<MDL>
             return nullptr;
         }
         skelmodel::skeleton *skel = meshes->skel;
-        if(!skel->ragdoll)
-        {
-            skel->ragdoll = new ragdollskel;
-        }
-        ragdollskel *ragdoll = skel->ragdoll;
+        ragdollskel *ragdoll = skel->trycreateragdoll();
         if(ragdoll->loaded)
         {
             return nullptr;
