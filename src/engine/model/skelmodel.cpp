@@ -1028,6 +1028,15 @@ void skelmodel::skeleton::createbones(size_t num)
     bones = new boneinfo[numbones];
 }
 
+ragdollskel *skelmodel::skeleton::trycreateragdoll()
+{
+    if(!ragdoll)
+    {
+        ragdoll = new ragdollskel;
+    }
+    return ragdoll;
+}
+
 skelmodel::skelmeshgroup::~skelmeshgroup()
 {
     if(skel)

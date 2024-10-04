@@ -603,6 +603,12 @@ struct skelmodel : animmodel
              */
             void createbones(size_t num);
 
+            /**
+             * @brief Creates a ragdoll if none is defined; returns the skeleton's ragdoll
+             *
+             * @return a pointer to this model's ragdoll
+             */
+            ragdollskel *trycreateragdoll();
 
         private:
             skelmeshgroup * const owner;
