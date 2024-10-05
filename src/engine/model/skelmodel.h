@@ -1428,6 +1428,14 @@ struct skelcommands : modelcommands<MDL>
         return ragdoll;
     }
 
+    /**
+     * @brief Adds a vertex to the working ragdoll vert list
+     *
+     * @param x the x position of the new vert
+     * @param y the y position of the new vert
+     * @param z the z position of the new vert
+     * @param radius the effect radius of the ragdoll vert
+     */
     static void rdvert(const float *x, const float *y, const float *z, const float *radius)
     {
         ragdollskel *ragdoll = checkragdoll();
@@ -1441,7 +1449,7 @@ struct skelcommands : modelcommands<MDL>
     /**
      *  @brief sets the ragdoll eye level
      *
-     * Sts the ragdoll's eye point to the level passed
+     * Sets the ragdoll's eye point to the level passed
      * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
      *
      * @param v the level to set the eye at
