@@ -1438,8 +1438,13 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->verts.push_back({vec(*x, *y, *z), *radius > 0 ? *radius : 1});
     }
 
-    /* ragdoll eye level: sets the ragdoll's eye point to the level passed
+    /**
+     *  @brief sets the ragdoll eye level
+     *
+     * Sts the ragdoll's eye point to the level passed
      * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
+     *
+     * @param v the level to set the eye at
      */
     static void rdeye(const int *v)
     {
