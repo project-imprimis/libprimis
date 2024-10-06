@@ -639,7 +639,7 @@ size_t GLTFModelInfo::findaccessors(std::string_view path)
 }
 
 //clears buffer views vector, assigns to it buffers found in file, returns number of buffer views
-uint GLTFModelInfo::findbufferviews(std::string_view path)
+size_t GLTFModelInfo::findbufferviews(std::string_view path)
 {
     bufferviews.clear();
     std::vector<std::string> bufferviewblock = getblockbyname(path, "\"bufferViews\"");
@@ -679,7 +679,7 @@ uint GLTFModelInfo::findbufferviews(std::string_view path)
     return numbufferviews;
 }
 
-uint GLTFModelInfo::findbuffers(std::string_view path)
+size_t GLTFModelInfo::findbuffers(std::string_view path)
 {
     buffers.clear();
     std::vector<std::string> bufferblock = getblockbyname(path, "\"buffers\"");
@@ -726,7 +726,7 @@ uint GLTFModelInfo::findbuffers(std::string_view path)
 }
 
 //clears buffer views vector, assigns to it buffers found in file, returns number of buffer views
-uint GLTFModelInfo::findanimations(std::string_view path)
+size_t GLTFModelInfo::findanimations(std::string_view path)
 {
     animations.clear();
     std::vector<std::string> animationsblock = getblockbyname(path, "\"animations\""); //all of the animations section
