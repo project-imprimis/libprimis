@@ -544,6 +544,24 @@ struct skelmodel : animmodel
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const;
             void calctags(part *p, const skelcacheentry *sc = nullptr) const;
             void cleanup(bool full = true);
+
+            /**
+             * @brief Gets a skelcacheentry from skeleton::skelcache
+             *
+             * Returns the first skelcacheentry matching the specified pitch, partmask (from `as` parent part),
+             * ragdolldata. If no such element exists, creates one and adds it to the back of the skelcache,
+             * modifying the ragdollbones and calling interpbones() to update the model's bones
+             *
+             * @param pos position to set in interpbones() if entry added
+             * @param scale scale to add to new skelcache entry if added
+             * @param as array of animstates, size numanimparts, from which metadata is queried
+             * @param pitch pitch value to check against and conditionally set
+             * @param axis value to pass to interpbones() if new entry added
+             * @param forward value to pass to interpbones() if new entry added
+             * @param rdata ragdoll data to check against and conditionally set
+             *
+             * @return the skelcache entry which was either found or added
+             */
             const skelcacheentry &checkskelcache(const vec &pos, float scale, const AnimState *as, float pitch, const vec &axis, const vec &forward, const ragdolldata * const rdata);
             void setgpubones(const skelcacheentry &sc, const blendcacheentry *bc, int count);
             bool shouldcleanup() const;
