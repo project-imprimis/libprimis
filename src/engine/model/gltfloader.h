@@ -14,12 +14,12 @@ class GLTFModelInfo
         std::vector<std::string> getnodenames(int type) const;
         //getter functions generate vectors of arrays of the appropriate type
         //given the node name
-        std::vector<std::array<float, 3>> getpositions(std::string name) const;
-        std::vector<std::array<float, 3>> getnormals(std::string name) const;
-        std::vector<std::array<float, 2>> gettexcoords(std::string name) const;
-        std::vector<std::array<uint, 4>> getjoints(std::string name) const;
-        std::vector<std::array<float, 4>> getweights(std::string name) const;
-        std::vector<std::array<uint, 3>> getindices(std::string name) const;
+        std::vector<std::array<float, 3>> getpositions(std::string_view name) const;
+        std::vector<std::array<float, 3>> getnormals(std::string_view name) const;
+        std::vector<std::array<float, 2>> gettexcoords(std::string_view name) const;
+        std::vector<std::array<uint, 4>> getjoints(std::string_view name) const;
+        std::vector<std::array<float, 4>> getweights(std::string_view name) const;
+        std::vector<std::array<uint, 3>> getindices(std::string_view name) const;
 
         //two models are equal if their getters return the same (slow, requires loading data pointed to by file)
         bool operator==(const GLTFModelInfo &m) const;

@@ -87,7 +87,7 @@ std::vector<std::string> GLTFModelInfo::getnodenames(int type) const
 
 //getter functions generate vectors of arrays of the appropriate type
 //given the node name
-std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) const
+std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string_view name) const
 {
     std::vector<std::array<float, 3>> positions;
     for(const Node &n : nodes)
@@ -126,7 +126,7 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getpositions(std::string name) 
     return positions; //empty fallback
 }
 
-std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string name) const
+std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string_view name) const
 {
     std::vector<std::array<float, 3>> normals;
     for(const Mesh &m : meshes)
@@ -151,7 +151,7 @@ std::vector<std::array<float, 3>> GLTFModelInfo::getnormals(std::string name) co
     return normals; //empty fallback
 }
 
-std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string name) const
+std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string_view name) const
 {
     std::vector<std::array<float, 2>> texcoords;
     for(const Mesh &m : meshes)
@@ -176,7 +176,7 @@ std::vector<std::array<float, 2>> GLTFModelInfo::gettexcoords(std::string name) 
     return texcoords; //empty fallback
 }
 
-std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string name) const
+std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string_view name) const
 {
     std::vector<std::array<uint, 4>> joints;
     for(const Mesh &m : meshes)
@@ -206,7 +206,7 @@ std::vector<std::array<uint, 4>> GLTFModelInfo::getjoints(std::string name) cons
     return joints; //empty fallback
 }
 
-std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string name) const
+std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string_view name) const
 {
     std::vector<std::array<float, 4>> weights;
     for(const Mesh &m : meshes)
@@ -231,7 +231,7 @@ std::vector<std::array<float, 4>> GLTFModelInfo::getweights(std::string name) co
     return weights; //empty fallback
 }
 
-std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string name) const
+std::vector<std::array<uint, 3>> GLTFModelInfo::getindices(std::string_view name) const
 {
     std::vector<std::array<uint, 3>> indices;
     for(const Mesh &m : meshes)
