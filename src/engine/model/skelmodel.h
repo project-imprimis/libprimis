@@ -618,7 +618,17 @@ struct skelmodel : animmodel
              */
             bool setbonename(size_t index, std::string_view name);
 
-            //Only sets parent if within boundaries of bone array
+            /**
+             * @brief Sets a boneinfo's parent in skeleton::bones
+             *
+             * Does not apply any effect if the index or parent is out of bounds
+             * (if either value is larger than numbones)
+             *
+             * @param index the element of skeleton::bones to modify
+             * @param name the new name to set
+             *
+             * @return true if the name was set, false if either value was an invalid index
+             */
             bool setboneparent(size_t index, size_t parent);
 
             /**
