@@ -605,7 +605,17 @@ struct skelmodel : animmodel
              */
             bool setbonebases(const std::vector<dualquat> &bases);
 
-            //Only sets name if no name present (nullptr)
+            /**
+             * @brief Sets a boneinfo's name in skeleton::bones
+             *
+             * Only sets name if no name is present (null string). Does not apply
+             * any effect if the index is out of bounds.
+             *
+             * @param index the element of skeleton::bones to modify
+             * @param name the new name to set
+             *
+             * @return true if the name was set, false if a name already existed or invalid index
+             */
             bool setbonename(size_t index, std::string_view name);
 
             //Only sets parent if within boundaries of bone array
