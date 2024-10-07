@@ -689,6 +689,17 @@ struct skelmodel : animmodel
              */
             std::unordered_map<GLuint, GLint> blendoffsets;
 
+            /**
+             * @brief Creates a new antipode array
+             *
+             * Clears the existing skeleton::antipode vector and adds new bones
+             * corresponding to boneinfo objects from the skeleton::bones array.
+             *
+             * The number of antipodes in the created array is no larger than the
+             * number of values in the skeleton::bones array (skeleton::numbones)
+             * multiplied by the number of bones with their group field set to
+             * a value larger than numbones.
+             */
             void calcantipodes();
             void remapbones();
 
