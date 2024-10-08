@@ -129,6 +129,19 @@ struct skelmodel : animmodel
              * @return the number of weights assigned in the bonedata
              */
             size_t size() const;
+
+            /**
+             * @brief Returns whether the first blendcombo has more weights than the second
+             *
+             * Returns true if `x` has a weight set at an index which `y` does not (reading from
+             * left to right). Does not compare the actual values of the weights.
+             * If both blendcombos have the same number of weights, returns false
+             *
+             * @param x the first blendcombo to compare
+             * @param y the second blendcombo to compare
+             *
+             * @return true if x has more weights than y set, false if equal or less weights
+             */
             static bool sortcmp(const blendcombo &x, const blendcombo &y);
 
             /**
