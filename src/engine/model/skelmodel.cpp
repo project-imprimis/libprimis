@@ -59,11 +59,6 @@ skelmodel::skelcacheentry::skelcacheentry() : bdata(nullptr), version(-1)
 {
 }
 
-bool skelmodel::blendcacheentry::check() const
-{
-    return false;
-}
-
 skelmodel::blendcacheentry::blendcacheentry() : owner(-1)
 {
 }
@@ -1425,7 +1420,7 @@ T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, 
     for(size_t i = 0; i < cachesize-1; ++i)
     {
         T &c = cache[i];
-        if(c.check() || c.owner < 0 || c.millis < lastmillis)
+        if(c.owner < 0 || c.millis < lastmillis)
         {
             return c;
         }

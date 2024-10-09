@@ -315,7 +315,6 @@ struct skelmodel : animmodel
         int owner;
 
         blendcacheentry();
-        bool check() const;
     };
 
     struct skelmeshgroup;
