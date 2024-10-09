@@ -281,6 +281,14 @@ struct skelmodel : animmodel
          * @return true if the animcacheentries compare equal
          */
         bool operator==(const animcacheentry &c) const;
+
+        /**
+         * @brief Returns the opposite of animcacheentry::operator==
+         *
+         * @param c the animcacheentry to compare
+         *
+         * @return true if the animcacheentries compare unequal
+         */
         bool operator!=(const animcacheentry &c) const;
     };
 
