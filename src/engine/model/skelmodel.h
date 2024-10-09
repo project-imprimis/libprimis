@@ -119,6 +119,17 @@ struct skelmodel : animmodel
 
             blendcombo();
 
+            /**
+             * @brief Compares two blendcombos' weights and bones.
+             *
+             * Returns true if all bone indices and weight values in the Bone Data
+             * array match. Checks no other values in the BoneData or other fields in
+             * the blendcombo object
+             *
+             * @param c the blendcombo to compare
+             *
+             * @return true if the bones and weights match, false otherwise
+             */
             bool operator==(const blendcombo &c) const;
 
             /**
