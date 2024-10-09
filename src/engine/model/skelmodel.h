@@ -267,6 +267,19 @@ struct skelmodel : animmodel
 
         animcacheentry();
 
+        /**
+         * @brief Returns whether two animcacheentries compare equal
+         *
+         * Checks that all AnimStates in the animcacheentry::as field compare equal, as
+         * well as the pitch, partmask, and ragdoll fields.
+         *
+         * If there are ragdolls in both objects, checks that neither
+         * object's timestamp is less than this object's lastmove timestamp
+         *
+         * @param c the animcacheentry to compare
+         *
+         * @return true if the animcacheentries compare equal
+         */
         bool operator==(const animcacheentry &c) const;
         bool operator!=(const animcacheentry &c) const;
     };
