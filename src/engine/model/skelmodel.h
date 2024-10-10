@@ -997,7 +997,6 @@ struct skelmodel : animmodel
                 vblends; //number of blendcombos (= number of verts in e.g. md5)
             uchar *vdata; //vertex data drawn in the render() stage. It is filled by genvbo() and then used as a GL_ARRAY_BUFFER in the render() stage.
 
-            vbocacheentry &checkvbocache(const skelcacheentry &sc, int owner);
             blendcacheentry &checkblendcache(const skelcacheentry &sc, int owner);
     };
 

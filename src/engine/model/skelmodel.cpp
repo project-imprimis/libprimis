@@ -1428,11 +1428,6 @@ T &searchcache(size_t cachesize, T *cache, const skelmodel::skelcacheentry &sc, 
     return cache[cachesize-1];
 }
 
-skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(const skelcacheentry &sc, int owner)
-{
-    return searchcache<vbocacheentry>(maxvbocache, vbocache.data(), sc, owner);
-}
-
 skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(const skelcacheentry &sc, int owner)
 {
     return searchcache<blendcacheentry>(maxblendcache, blendcache.data(), sc, owner);
