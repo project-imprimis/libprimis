@@ -73,6 +73,26 @@ namespace
         assert(octadim(1) == 2);
         assert(octadim(0) == 1);
     }
+
+    void test_selinfo_size()
+    {
+        std::printf("Testing selinfo::size\n");
+        {
+            selinfo sel;
+            sel.s = ivec(1,2,3);
+            assert(sel.size() == 6);
+        }
+        {
+            selinfo sel;
+            sel.s = ivec(1,1,1);
+            assert(sel.size() == 1);
+        }
+        {
+            selinfo sel;
+            sel.s = ivec(0,1,1);
+            assert(sel.size() == 0);
+        }
+    }
 }
 
 void test_octa()
@@ -81,4 +101,5 @@ void test_octa()
     testfamilysize();
     testgetcubevector();
     test_octadim();
+    test_selinfo_size();
 }
