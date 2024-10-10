@@ -27,6 +27,13 @@ namespace
         s.index = 123;
         assert(s.name() == std::string("slot 123"));
     }
+
+    void test_decalslot_type()
+    {
+        std::printf("testing decalslot::type\n");
+        DecalSlot s;
+        assert(s.type() == Slot::SlotType_Decal);
+    }
 }
 
 void test_slot()
@@ -39,4 +46,5 @@ testing slot functionality\n\
     test_slot_type();
     test_slot_texturedir();
     test_slot_name();
+    test_decalslot_type();
 }
