@@ -10,6 +10,16 @@ namespace
         Slot s;
         assert(s.texturedir() == std::string("media/texture"));
     }
+
+    void test_slot_name()
+    {
+        std::printf("testing slot::name\n");
+        Slot s;
+        s.index = 1;
+        assert(s.name() == std::string("slot 1"));
+        s.index = 123;
+        assert(s.name() == std::string("slot 123"));
+    }
 }
 
 void test_slot()
@@ -20,4 +30,5 @@ testing slot functionality\n\
 ===============================================================\n"
     );
     test_slot_texturedir();
+    test_slot_name();
 }
