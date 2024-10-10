@@ -93,6 +93,22 @@ namespace
             assert(sel.size() == 0);
         }
     }
+
+    void test_selinfo_us()
+    {
+        std::printf("Testing selinfo::us\n");
+
+        selinfo sel;
+        sel.s = ivec(1,2,3);
+        sel.grid = 2;
+        assert(sel.us(0) == 2);
+        assert(sel.us(1) == 4);
+        assert(sel.us(2) == 6);
+        sel.grid = 5;
+        assert(sel.us(0) == 5);
+        assert(sel.us(1) == 10);
+        assert(sel.us(2) == 15);
+    }
 }
 
 void test_octa()
@@ -102,4 +118,5 @@ void test_octa()
     testgetcubevector();
     test_octadim();
     test_selinfo_size();
+    test_selinfo_us();
 }
