@@ -109,6 +109,26 @@ namespace
         assert(sel.us(1) == 10);
         assert(sel.us(2) == 15);
     }
+
+    void test_block3_size()
+    {
+        std::printf("Testing block3::size\n");
+        {
+            block3 block;
+            block.s = ivec(1,2,3);
+            assert(block.size() == 6);
+        }
+        {
+            block3 block;
+            block.s = ivec(1,1,1);
+            assert(block.size() == 1);
+        }
+        {
+            block3 block;
+            block.s = ivec(0,1,1);
+            assert(block.size() == 0);
+        }
+    }
 }
 
 void test_octa()
@@ -119,4 +139,5 @@ void test_octa()
     test_octadim();
     test_selinfo_size();
     test_selinfo_us();
+    test_block3_size();
 }
