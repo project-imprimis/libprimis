@@ -4,6 +4,13 @@
 
 namespace
 {
+    void test_slot_type()
+    {
+        std::printf("testing slot::type\n");
+        Slot s;
+        assert(s.type() == Slot::SlotType_Octa);
+    }
+
     void test_slot_texturedir()
     {
         std::printf("testing slot::texturedir\n");
@@ -29,6 +36,7 @@ void test_slot()
 testing slot functionality\n\
 ===============================================================\n"
     );
+    test_slot_type();
     test_slot_texturedir();
     test_slot_name();
 }
