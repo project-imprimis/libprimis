@@ -29,6 +29,7 @@ CLIENT_OBJS= \
 	testragdoll.o \
 	testskel.o \
 	testshadowatlas.o \
+	testslot.o \
 	testutils.o \
 
 #default: compiles the test executable and places it in the same directory as this file

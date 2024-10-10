@@ -11,6 +11,7 @@
 #include "testgeomexts.h"
 #include "testgltfloader.h"
 #include "testskel.h"
+#include "testslot.h"
 #include "testmd5.h"
 #include "testragdoll.h"
 
@@ -27,6 +28,7 @@ int main()
     test_md5();
     test_ragdoll();
     test_skel();
+    test_slot();
     test_geom();
     test_geomexts();
     test_matrix();
