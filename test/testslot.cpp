@@ -38,6 +38,14 @@ namespace
         assert(s.thumbnail == nullptr);
     }
 
+    void test_vslot_cleanup()
+    {
+        std::printf("testing vslot::cleanup\n");
+        VSlot s;
+        s.cleanup();
+        assert(s.linked == false);
+    }
+
     void test_decalslot_type()
     {
         std::printf("testing decalslot::type\n");
@@ -74,6 +82,7 @@ testing slot functionality\n\
     test_slot_name();
     test_slot_texturedir();
     test_slot_cleanup();
+    test_vslot_cleanup();
     test_decalslot_type();
     test_decalslot_name();
     test_decalslot_texturedir();
