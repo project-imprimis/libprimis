@@ -28,6 +28,16 @@ namespace
         assert(s.texturedir() == std::string("media/texture"));
     }
 
+    void test_slot_cleanup()
+    {
+        std::printf("testing slot::cleanup\n");
+        Slot s;
+        s.cleanup();
+        assert(s.loaded == false);
+        assert(s.grasstex == nullptr);
+        assert(s.thumbnail == nullptr);
+    }
+
     void test_decalslot_type()
     {
         std::printf("testing decalslot::type\n");
@@ -63,6 +73,7 @@ testing slot functionality\n\
     test_slot_type();
     test_slot_name();
     test_slot_texturedir();
+    test_slot_cleanup();
     test_decalslot_type();
     test_decalslot_name();
     test_decalslot_texturedir();
