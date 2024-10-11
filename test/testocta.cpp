@@ -133,6 +133,11 @@ namespace
 
 void test_octa()
 {
+    std::printf(
+"===============================================================\n\
+testing octa functionality\n\
+===============================================================\n"
+    );
     testoctaboxoverlap();
     testfamilysize();
     testgetcubevector();
