@@ -74,6 +74,19 @@ namespace
         assert(octadim(0) == 1);
     }
 
+    void test_cube_isempty()
+    {
+        std::printf("Testing cube::isempty\n");
+
+        cube c;
+        c.faces[0] = 0;
+        c.faces[1] = 0;
+        c.faces[2] = 0;
+        assert(c.isempty());
+        c.faces[0] = 1;
+        assert(!c.isempty());
+    }
+
     void test_selinfo_size()
     {
         std::printf("Testing selinfo::size\n");
@@ -142,6 +155,7 @@ testing octa functionality\n\
     testfamilysize();
     testgetcubevector();
     test_octadim();
+    test_cube_isempty();
     test_selinfo_size();
     test_selinfo_us();
     test_block3_size();
