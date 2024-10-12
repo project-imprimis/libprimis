@@ -87,6 +87,18 @@ namespace
         assert(!c.isempty());
     }
 
+    void test_cube_issolid()
+    {
+        std::printf("Testing cube::issolid\n");
+        cube c;
+        c.faces[0] = facesolid;
+        c.faces[1] = facesolid;
+        c.faces[2] = facesolid;
+        assert(c.issolid());
+        c.faces[0] = 1;
+        assert(!c.issolid());
+    }
+
     void test_selinfo_size()
     {
         std::printf("Testing selinfo::size\n");
@@ -156,6 +168,7 @@ testing octa functionality\n\
     testgetcubevector();
     test_octadim();
     test_cube_isempty();
+    test_cube_issolid();
     test_selinfo_size();
     test_selinfo_us();
     test_block3_size();
