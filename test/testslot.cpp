@@ -38,6 +38,15 @@ namespace
         assert(s.thumbnail == nullptr);
     }
 
+    void test_slot_shouldpremul()
+    {
+        std::printf("testing slot::shouldpremul\n");
+        Slot s;
+        assert(s.shouldpremul(0) == false);
+        assert(s.shouldpremul(1) == false);
+        assert(s.shouldpremul(99) == false);
+    }
+
     void test_vslot_cleanup()
     {
         std::printf("testing vslot::cleanup\n");
@@ -93,6 +102,7 @@ testing slot functionality\n\
     test_slot_name();
     test_slot_texturedir();
     test_slot_cleanup();
+    test_slot_shouldpremul();
     test_vslot_cleanup();
     test_decalslot_type();
     test_decalslot_name();
