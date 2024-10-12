@@ -32,10 +32,13 @@ namespace
     {
         std::printf("testing slot::cleanup\n");
         Slot s;
+        s.sts.emplace_back();
         s.cleanup();
         assert(s.loaded == false);
         assert(s.grasstex == nullptr);
         assert(s.thumbnail == nullptr);
+        assert(s.sts[0].t == nullptr);
+        assert(s.sts[0].combined == -1);
     }
 
     void test_slot_shouldpremul()
