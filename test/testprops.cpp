@@ -61,6 +61,9 @@ namespace
     std::array<prop::Property<>, PropTestCount> props =
         prop::make_props_array<PropTestCount, prop::Property<>>(prop_meta);
 
+    std::array<prop::Property<>, PropTestCount> cprops =
+        prop::make_props_array<PropTestCount, prop::Property<>>(prop_meta);
+
     void try_find_props()
     {
         std::printf("===============================================================\n");
@@ -71,7 +74,7 @@ namespace
             std::printf("Finding prop %s...\n", prop_meta[i].get_name().c_str());
             prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
             assert(prop);
-            const prop::Property<>* cprop = find_prop(prop_meta[i].get_name(), props);
+            const prop::Property<>* cprop = find_prop(prop_meta[i].get_name(), cprops);
             assert(cprop);
         }
         std::printf("===============================================================\n");
