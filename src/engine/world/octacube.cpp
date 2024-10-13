@@ -765,7 +765,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
     --neighbordepth;
 }
 
-void cube::calcmerges(cube * root)
+void cube::calcmerges()
 {
-    genmerges(root);
+    genmerges(this);
 }

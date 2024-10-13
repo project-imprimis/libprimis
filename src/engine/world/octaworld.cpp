@@ -791,7 +791,7 @@ void cubeworld::remip()
         ivec o(i, ivec(0, 0, 0), mapsize()>>1);
         ::remip((*worldroot)[i], o, mapsize()>>2);
     }
-    (*worldroot)[0].calcmerges(&(*worldroot)[0]); //created as result of calcmerges being cube member
+    (*worldroot)[0].calcmerges(); //created as result of calcmerges being cube member
 }
 
 const ivec cubecoords[8] =
