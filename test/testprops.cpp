@@ -71,6 +71,8 @@ namespace
             std::printf("Finding prop %s...\n", prop_meta[i].get_name().c_str());
             prop::Property<>* prop = find_prop(prop_meta[i].get_name(), props);
             assert(prop);
+            const prop::Property<>* cprop = find_prop(prop_meta[i].get_name(), props);
+            assert(cprop);
         }
         std::printf("===============================================================\n");
     }
