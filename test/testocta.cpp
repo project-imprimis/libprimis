@@ -99,6 +99,17 @@ namespace
         assert(!c.issolid());
     }
 
+    void test_cube_calcmerges()
+    {
+        std::printf("Testing cube::calcmerges\n");
+        std::array<cube,8> c = newcubes(facesolid, 0)[0];
+        c[0].children = newcubes(facesolid, 0);
+        c[0].calcmerges();
+        assert(c[0].faces[0] == facesolid);
+        assert(c[0].faces[1] == facesolid);
+        assert(c[0].faces[2] == facesolid);
+    }
+
     void test_selinfo_size()
     {
         std::printf("Testing selinfo::size\n");
@@ -169,6 +180,7 @@ testing octa functionality\n\
     test_octadim();
     test_cube_isempty();
     test_cube_issolid();
+    test_cube_calcmerges();
     test_selinfo_size();
     test_selinfo_us();
     test_block3_size();
