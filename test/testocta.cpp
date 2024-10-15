@@ -102,12 +102,22 @@ namespace
     void test_cube_calcmerges()
     {
         std::printf("Testing cube::calcmerges\n");
-        std::array<cube,8> c = newcubes(facesolid, 0)[0];
-        c[0].children = newcubes(facesolid, 0);
-        c[0].calcmerges();
-        assert(c[0].faces[0] == facesolid);
-        assert(c[0].faces[1] == facesolid);
-        assert(c[0].faces[2] == facesolid);
+        {
+            std::array<cube,8> c = newcubes(facesolid, 0)[0];
+            c[0].children = newcubes(facesolid, 0);
+            c[0].calcmerges();
+            assert(c[0].faces[0] == facesolid);
+            assert(c[0].faces[1] == facesolid);
+            assert(c[0].faces[2] == facesolid);
+        }
+        {
+            std::array<cube,8> c = newcubes(faceempty, 0)[0];
+            c[0].children = newcubes(faceempty, 0);
+            c[0].calcmerges();
+            assert(c[0].faces[0] == faceempty);
+            assert(c[0].faces[1] == faceempty);
+            assert(c[0].faces[2] == faceempty);
+        }
     }
 
     void test_selinfo_size()
