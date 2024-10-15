@@ -165,6 +165,13 @@ namespace
             assert(block.size() == 0);
         }
     }
+
+    void test_editinfo_ctor()
+    {
+        std::printf("Testing editinfo ctor\n");
+        editinfo e;
+        assert(e.copy == nullptr);
+    }
 }
 
 void test_octa()
@@ -184,4 +191,5 @@ testing octa functionality\n\
     test_selinfo_size();
     test_selinfo_us();
     test_block3_size();
+    test_editinfo_ctor();
 }
