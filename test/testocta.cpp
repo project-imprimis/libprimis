@@ -146,6 +146,22 @@ namespace
         assert(sel.us(2) == 15);
     }
 
+    void test_selinfo_equals()
+    {
+        std::printf("Testing selinfo::operator==\n");
+        selinfo s;
+        s.o = ivec(1,1,1);
+        s.s = s.o;
+        s.grid = 1;
+        s.orient = 1;
+        selinfo s2 = s;
+        selinfo s3;
+        s3.o = ivec(0,0,0);
+
+        assert(s == s2);
+        assert(!(s3 == s2));
+    }
+
     void test_block3_size()
     {
         std::printf("Testing block3::size\n");
@@ -190,6 +206,7 @@ testing octa functionality\n\
     test_cube_calcmerges();
     test_selinfo_size();
     test_selinfo_us();
+    test_selinfo_equals();
     test_block3_size();
     test_editinfo_ctor();
 }
