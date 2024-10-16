@@ -255,6 +255,12 @@ namespace
 
 void testutils()
 {
+    std::printf(
+"===============================================================\n\
+testing tools functionality\n\
+===============================================================\n"
+    );
+
     testpath();
     testcpath();
     testcopystring();
