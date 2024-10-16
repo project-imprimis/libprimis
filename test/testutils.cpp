@@ -1,7 +1,7 @@
 #include "libprimis.h"
 #include "../shared/stream.h"
 
-namespace header_tools
+namespace
 {
     void testpath()
     {
@@ -242,10 +242,10 @@ namespace header_tools
 
 void testutils()
 {
-    header_tools::testpath();
-    header_tools::testcpath();
-    header_tools::testcopystring();
-    header_tools::testconcatstring();
-    header_tools::testparentdir();
-    header_tools::testfixpackagedir();
+    testpath();
+    testcpath();
+    testcopystring();
+    testconcatstring();
+    testparentdir();
+    testfixpackagedir();
 }
