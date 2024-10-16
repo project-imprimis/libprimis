@@ -238,6 +238,19 @@ namespace
         std::printf("test string length: %lu\n" , std::strlen(s));
         assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
+
+    void test_vector_putint()
+    {
+        std::printf("Testing putint/getint (std::vector)\n");
+
+        std::vector<uchar> v;
+        putint(v, 3);
+        assert(getint(v) == 3);
+        assert(v.size() == 0);
+        putint(v, -999);
+        assert(getint(v) == -999);
+        assert(v.size() == 0);
+    }
 }
 
 void testutils()
@@ -248,4 +261,5 @@ void testutils()
     testconcatstring();
     testparentdir();
     testfixpackagedir();
+    test_vector_putint();
 }
