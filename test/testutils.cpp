@@ -251,6 +251,19 @@ namespace
         assert(getint(v) == -999);
         assert(v.size() == 0);
     }
+
+    void test_vector_putfloat()
+    {
+        std::printf("Testing putfloat/getfloat (std::vector)\n");
+
+        std::vector<uchar> v;
+        putfloat(v, 3.3f);
+        assert(getfloat(v) == 3.3f);
+        assert(v.size() == 0);
+        putfloat(v, -999.99f);
+        assert(getfloat(v) == -999.99f);
+        assert(v.size() == 0);
+    }
 }
 
 void testutils()
@@ -268,4 +281,5 @@ testing tools functionality\n\
     testparentdir();
     testfixpackagedir();
     test_vector_putint();
+    test_vector_putfloat();
 }
