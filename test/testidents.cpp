@@ -26,11 +26,13 @@ static void loadcscommands()
     initrenderwindowcmds();
     initshadercmds();
     inittexturecmds();
+    initnormalcmds();
     inithudcmds();
     initheightmapcmds();
     initmenuscmds();
     inittextcmds();
     initzipcmds();
+    initworldiocmds();
 
     execute("font test test 1 1 1");
     setfont("test");
