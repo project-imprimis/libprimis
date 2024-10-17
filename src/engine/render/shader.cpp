@@ -2307,4 +2307,6 @@ void initshadercmds()
     addcommand("shader_get_defines", reinterpret_cast<identfun>(shader_get_defines), "", Id_Command);
     addcommand("shader_get_includes_vs", reinterpret_cast<identfun>(shader_get_includes_vs), "", Id_Command);
     addcommand("shader_get_includes_fs", reinterpret_cast<identfun>(shader_get_includes_fs), "", Id_Command);
+
+    initpostfxcmds();
 }
