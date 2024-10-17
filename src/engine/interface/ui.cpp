@@ -290,7 +290,7 @@ namespace UI
                 } \
             } while(0)
 
-            Object() :  x(), y(), w(), h(), adjust(0), state(0), childstate(0), parent() {}
+            Object() :  x(), y(), w(), h(), children(), adjust(0), state(0), childstate(0), parent() {}
             virtual ~Object()
             {
                 clearchildren();
@@ -1083,7 +1083,15 @@ namespace UI
 
         bool hide(Window *w)
         {
-            if(std::find(children.begin(), children.end(), w) != children.end())
+            if(!w) //check that a window was passed
+            {
+                return false;
+            }
+            if(!children.size()) //check that there are children
+            {
+                return false;
+            }
+            else if(std::find(children.begin(), children.end(), w) != children.end())
             {
                 hide(w, std::distance(children.begin(), std::find(children.begin(), children.end(), w)));
                 return true;
@@ -4485,12 +4493,20 @@ namespace UI
 
     bool showui(const char *name)
     {
+        if(!world)
+        {
+            return false;
+        }
         auto itr = windows.find(name);
         return (itr != windows.end()) && world->show((*itr).second);
     }
 
     bool hideui(const char *name)
     {
+        if(!world)
+        {
+            return false;
+        }
         if(!name)
         {
             return world->hideall() > 0;
@@ -4511,6 +4527,10 @@ namespace UI
 
     void holdui(const char *name, bool on)
     {
+        if(!world)
+        {
+            return;
+        }
         if(on)
         {
             showui(name);
@@ -4626,26 +4646,47 @@ namespace UI
 
         static auto showuicmd = [] (char * name)
         {
+            if(!world)
+            {
+                intret(-1);
+                return;
+            }
             intret(showui(name) ? 1 : 0);
         };
 
         static auto hideuicmd = [] (char * name)
         {
+            if(!world)
+            {
+                intret(-1);
+                return;
+            }
             intret(hideui(name) ? 1 : 0);
         };
 
         static auto hidetopuicmd = [] ()
         {
+            if(!world)
+            {
+                intret(-1);
+                return;
+            }
             intret(world->hidetop() ? 1 : 0);
         };
 
         static auto hidealluicmd = [] ()
         {
+            if(!world)
+            {
+                intret(-1);
+                return;
+            }
             intret(world->hideall());
         };
 
         static auto toggleuicmd = [] (char * name)
         {
+
             intret(toggleui(name) ? 1 : 0);
         };
 
