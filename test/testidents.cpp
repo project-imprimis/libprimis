@@ -9,7 +9,7 @@
 static void loadcscommands()
 {
     initidents();
-
+    initaacmds();
     initcscmds();
     initmathcmds();
     initcontrolcmds();
@@ -29,6 +29,7 @@ static void loadcscommands()
     inithudcmds();
     initheightmapcmds();
     initmenuscmds();
+    inittextcmds();
     initzipcmds();
 
     execute("font test test 1 1 1");
