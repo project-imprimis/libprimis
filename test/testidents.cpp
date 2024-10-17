@@ -31,6 +31,10 @@ static void loadcscommands()
     initmenuscmds();
     initzipcmds();
 
+    execute("font test test 1 1 1");
+    setfont("test");
+    UI::inituicmds();
+
     alias("testalias", " ");
 
     printf("Adding idents: %lu present\n", idents.size());
