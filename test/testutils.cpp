@@ -274,6 +274,17 @@ namespace
         assert(getfloat(v) == -999.99f);
         assert(v.size() == 0);
     }
+
+    void test_databuf_put()
+    {
+        std::printf("Testing databuf<>::put\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+
+        d.put(3);
+        assert(d.length() == 1);
+        assert(d.buf[0] == 3);
+    }
 }
 
 void testutils()
@@ -293,4 +304,5 @@ testing tools functionality\n\
     testfixpackagedir();
     test_vector_putint();
     test_vector_putfloat();
+    test_databuf_put();
 }
