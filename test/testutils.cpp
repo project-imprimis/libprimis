@@ -239,6 +239,16 @@ namespace
         assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
 
+    void test_matchstring()
+    {
+        std::printf("Testing match string\n");
+        std::string a("test1");
+        std::string b("test2");
+        assert(matchstring(a,5,a));
+        assert(matchstring(a,5,b) == false);
+        assert(matchstring(a,1,a) == false);
+    }
+
     void test_vector_putint()
     {
         std::printf("Testing putint/getint (std::vector)\n");
@@ -278,6 +288,7 @@ testing tools functionality\n\
     testcpath();
     testcopystring();
     testconcatstring();
+    test_matchstring();
     testparentdir();
     testfixpackagedir();
     test_vector_putint();
