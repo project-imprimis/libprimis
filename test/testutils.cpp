@@ -288,14 +288,11 @@ namespace
 
     void test_databuf_get()
     {
-        std::printf("Testing databuf<>::put\n");
-        std::array<int, 4> buf;
+        std::printf("Testing databuf<>::get\n");
+        std::array<int, 4> buf{1,2,3,4};
         databuf<int> d(buf.data(),4);
-
-        d.put(3);
         int out = d.get();
-        assert(d.length() == 0);
-        assert(out == 3);
+        assert(out == 1);
     }
 }
 
