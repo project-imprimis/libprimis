@@ -294,6 +294,19 @@ namespace
         int out = d.get();
         assert(out == 1);
     }
+
+    void test_databuf_reset()
+    {
+        std::printf("Testing databuf<>::reset\n");
+        std::array<int, 4> buf;
+        buf.fill(0);
+        databuf<int> d(buf.data(),4);
+
+        d.put(3);
+        assert(d.length() == 1);
+        d.reset();
+        assert(d.length() == 0);
+    }
 }
 
 void testutils()
@@ -315,4 +328,5 @@ testing tools functionality\n\
     test_vector_putfloat();
     test_databuf_put();
     test_databuf_get();
+    test_databuf_reset();
 }
