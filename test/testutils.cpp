@@ -285,6 +285,18 @@ namespace
         assert(d.length() == 1);
         assert(d.buf[0] == 3);
     }
+
+    void test_databuf_get()
+    {
+        std::printf("Testing databuf<>::put\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+
+        d.put(3);
+        int out = d.get();
+        assert(d.length() == 0);
+        assert(out == 3);
+    }
 }
 
 void testutils()
@@ -305,4 +317,5 @@ testing tools functionality\n\
     test_vector_putint();
     test_vector_putfloat();
     test_databuf_put();
+    test_databuf_get();
 }
