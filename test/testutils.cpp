@@ -317,6 +317,16 @@ namespace
         d.put(3);
         assert(d.empty() == false);
     }
+
+    void test_databuf_remaining()
+    {
+        std::printf("Testing databuf<>::remaining\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+        assert(d.remaining() == 4);
+        d.put(3);
+        assert(d.remaining() == 3);
+    }
 }
 
 void testutils()
@@ -340,4 +350,5 @@ testing tools functionality\n\
     test_databuf_get();
     test_databuf_reset();
     test_databuf_empty();
+    test_databuf_remaining();
 }
