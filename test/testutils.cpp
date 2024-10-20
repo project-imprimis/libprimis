@@ -308,6 +308,15 @@ namespace
         assert(d.length() == 0);
     }
 
+    void test_databuf_getbuf()
+    {
+        std::printf("Testing databuf<>::getbuf\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+        int *dbuf = d.getbuf();
+        assert(dbuf == buf.data());
+    }
+
     void test_databuf_empty()
     {
         std::printf("Testing databuf<>::empty\n");
@@ -361,6 +370,7 @@ testing tools functionality\n\
     test_databuf_put();
     test_databuf_get();
     test_databuf_reset();
+    test_databuf_getbuf();
     test_databuf_empty();
     test_databuf_remaining();
     test_databuf_check();
