@@ -327,6 +327,18 @@ namespace
         d.put(3);
         assert(d.remaining() == 3);
     }
+
+    void test_databuf_check()
+    {
+        std::printf("Testing databuf<>::check\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+        assert(d.check(4) == true);
+        assert(d.check(5) == false);
+        d.put(3);
+        assert(d.check(4) == false);
+        assert(d.check(3) == true);
+    }
 }
 
 void testutils()
@@ -351,4 +363,5 @@ testing tools functionality\n\
     test_databuf_reset();
     test_databuf_empty();
     test_databuf_remaining();
+    test_databuf_check();
 }
