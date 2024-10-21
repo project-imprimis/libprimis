@@ -275,6 +275,17 @@ namespace
         assert(v.size() == 0);
     }
 
+    void test_databuf_pad()
+    {
+        std::printf("Testing databuf<>::pad\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+        d.pad(1);
+        assert(d.length() == 1);
+        d.pad(2);
+        assert(d.length() == 3);
+    }
+
     void test_databuf_put()
     {
         std::printf("Testing databuf<>::put\n");
@@ -367,6 +378,7 @@ testing tools functionality\n\
     testfixpackagedir();
     test_vector_putint();
     test_vector_putfloat();
+    test_databuf_pad();
     test_databuf_put();
     test_databuf_get();
     test_databuf_reset();
