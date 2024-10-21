@@ -294,7 +294,7 @@ struct skelmodel : animmodel
 
     struct vbocacheentry final : animcacheentry
     {
-        GLuint vbuf;
+        GLuint vbuf; //GL_ARRAY_BUFFER (gle::bindvbo)
         int owner;
 
         bool check() const;
@@ -350,8 +350,7 @@ struct skelmodel : animmodel
             static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
 
             /*
-             *
-             * these two genvbo() functions are used for cases
+             * these two genvbo() functions are used for different cases
              * of skelmodel rendering paths:
              *
              * genvbo(const std::vector<blendcombo>&, std::vector<GLuint>&, int, std::vector<vvertgw>) is for skeleton with animation frames
