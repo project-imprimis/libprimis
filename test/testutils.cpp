@@ -289,12 +289,23 @@ namespace
     void test_databuf_put()
     {
         std::printf("Testing databuf<>::put\n");
-        std::array<int, 4> buf;
-        databuf<int> d(buf.data(),4);
+        {
+            std::array<int, 4> buf;
+            databuf<int> d(buf.data(), 4);
 
-        d.put(3);
-        assert(d.length() == 1);
-        assert(d.buf[0] == 3);
+            d.put(3);
+            assert(d.length() == 1);
+            assert(d.buf[0] == 3);
+        }
+        {
+            std::array<int, 4> buf;
+            databuf<int> d(buf.data(), 4);
+            std::array<int, 2> buf2{1,2};
+            d.put(buf2.data(),2);
+            assert(d.length() == 2);
+            assert(d.buf[0] == 1);
+            assert(d.buf[1] == 2);
+        }
     }
 
     void test_databuf_get()
