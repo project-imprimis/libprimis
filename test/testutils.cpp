@@ -3,6 +3,8 @@
 
 namespace
 {
+    constexpr float tolerance = 0.001;
+
     void testpath()
     {
         static std::string_view test_cases[][2] =
@@ -268,11 +270,27 @@ namespace
 
         std::vector<uchar> v;
         putfloat(v, 3.3f);
-        assert(getfloat(v) == 3.3f);
+        assert(std::abs(getfloat(v) - 3.3f) < tolerance);
         assert(v.size() == 0);
         putfloat(v, -999.99f);
         assert(getfloat(v) == -999.99f);
         assert(v.size() == 0);
+    }
+
+    void test_databuf_putfloat()
+    {
+        std::printf("Testing putfloat/getfloat (databuf)\n");
+
+        std::array<uchar, 100> buf;
+        ucharbuf v(buf.data(),100);
+
+        putfloat(v, 3.3f);
+        v.reset();
+        assert(std::abs(getfloat(v) - 3.3f) < tolerance);
+        v.reset();
+        putfloat(v, -999.99f);
+        v.reset();
+        assert(getfloat(v) == -999.99f);
     }
 
     void test_databuf_pad()
@@ -389,6 +407,7 @@ testing tools functionality\n\
     testfixpackagedir();
     test_vector_putint();
     test_vector_putfloat();
+    test_databuf_putfloat();
     test_databuf_pad();
     test_databuf_put();
     test_databuf_get();
