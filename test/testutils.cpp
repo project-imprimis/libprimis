@@ -280,6 +280,30 @@ namespace
         assert(getint(v) == -999);
     }
 
+    void test_databuf_putuint()
+    {
+        std::printf("Testing putuint/getuint (databuf)\n");
+
+        std::array<uchar, 100> buf;
+        ucharbuf v(buf.data(),100);
+
+        putuint(v, 3);
+        v.reset();
+        assert(getuint(v) == 3);
+        v.reset();
+        putuint(v, -1);
+        v.reset();
+        assert(getuint(v) == -1);
+        v.reset();
+        putuint(v, 999);
+        v.reset();
+        assert(getuint(v) == 999);
+        v.reset();
+        putuint(v, 65636);
+        v.reset();
+        assert(getuint(v) == 65636);
+    }
+
     void test_vector_putfloat()
     {
         std::printf("Testing putfloat/getfloat (std::vector)\n");
@@ -423,6 +447,7 @@ testing tools functionality\n\
     testfixpackagedir();
     test_vector_putint();
     test_databuf_putint();
+    test_databuf_putuint();
     test_vector_putfloat();
     test_databuf_putfloat();
     test_databuf_pad();
