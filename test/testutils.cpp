@@ -266,7 +266,7 @@ namespace
 
     void test_databuf_putint()
     {
-        std::printf("Testing putfloat/getint (databuf)\n");
+        std::printf("Testing putint/getint (databuf)\n");
 
         std::array<uchar, 100> buf;
         ucharbuf v(buf.data(),100);
