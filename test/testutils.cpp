@@ -264,6 +264,22 @@ namespace
         assert(v.size() == 0);
     }
 
+    void test_databuf_putint()
+    {
+        std::printf("Testing putfloat/getint (databuf)\n");
+
+        std::array<uchar, 100> buf;
+        ucharbuf v(buf.data(),100);
+
+        putint(v, 3);
+        v.reset();
+        assert(getint(v) == 3);
+        v.reset();
+        putint(v, -999);
+        v.reset();
+        assert(getint(v) == -999);
+    }
+
     void test_vector_putfloat()
     {
         std::printf("Testing putfloat/getfloat (std::vector)\n");
@@ -406,6 +422,7 @@ testing tools functionality\n\
     testparentdir();
     testfixpackagedir();
     test_vector_putint();
+    test_databuf_putint();
     test_vector_putfloat();
     test_databuf_putfloat();
     test_databuf_pad();
