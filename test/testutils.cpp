@@ -337,6 +337,20 @@ namespace
         assert(getfloat(v) == -999.99f);
     }
 
+    void test_databuf_sendstring()
+    {
+        std::printf("Testing sendstring/getstring (databuf)\n");
+
+        std::array<uchar, 100> buf;
+        ucharbuf v(buf.data(),100);
+
+        sendstring("test", v);
+        v.reset();
+        std::array<char, 100> buf2;
+        getstring(buf2.data(), v, 5);
+        assert(std::string(buf2.data()) == std::string("test"));
+    }
+
     void test_databuf_pad()
     {
         std::printf("Testing databuf<>::pad\n");
@@ -454,6 +468,7 @@ testing tools functionality\n\
     test_databuf_putuint();
     test_vector_putfloat();
     test_databuf_putfloat();
+    test_databuf_sendstring();
     test_databuf_pad();
     test_databuf_put();
     test_databuf_get();
