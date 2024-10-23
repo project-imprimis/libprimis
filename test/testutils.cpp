@@ -446,6 +446,30 @@ namespace
         assert(d.check(4) == false);
         assert(d.check(3) == true);
     }
+
+    void test_stream_overloadable()
+    {
+        std::printf("Testing virtual overloadable std::stream methods:\ntell\nrawtell\nseek\nread\nwrite\nflush\ngetcrc\n");
+        struct basic_stream : stream
+        {
+            void close() override
+            {
+            }
+            bool end() override
+            {
+                return false;
+            }
+        };
+        basic_stream s;
+
+        assert(s.tell() == -1);
+        assert(s.rawtell() == -1);
+        assert(s.seek(0,0) == false);
+        assert(s.read(nullptr, 0) == 0);
+        assert(s.write(nullptr, 0) == 0);
+        assert(s.flush() == true);
+        assert(s.getcrc() == 0);
+    }
 }
 
 void testutils()
@@ -477,4 +501,5 @@ testing tools functionality\n\
     test_databuf_empty();
     test_databuf_remaining();
     test_databuf_check();
+    test_stream_overloadable();
 }
