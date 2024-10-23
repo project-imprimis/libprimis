@@ -278,6 +278,10 @@ namespace
         putint(v, -999);
         v.reset();
         assert(getint(v) == -999);
+        v.reset();
+        putint(v, 32769);
+        v.reset();
+        assert(getint(v) == 32769);
     }
 
     void test_databuf_putuint()
