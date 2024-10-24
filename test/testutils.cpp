@@ -5,6 +5,15 @@ namespace
 {
     constexpr float tolerance = 0.001;
 
+    void test_detrnd()
+    {
+        std::printf("Testing detrnd\n");
+
+        assert(std::abs(detrnd(0, 8) - 6) < tolerance);
+        assert(std::abs(detrnd(1, 8) - 6) < tolerance);
+        assert(std::abs(detrnd(2, 8) - 4) < tolerance);
+    }
+
     void testpath()
     {
         static std::string_view test_cases[][2] =
@@ -523,6 +532,7 @@ testing tools functionality\n\
 ===============================================================\n"
     );
 
+    test_detrnd();
     testpath();
     testcpath();
     testcopystring();
