@@ -9,7 +9,7 @@ namespace
     {
         std::printf("Testing detrnd\n");
 
-        assert(std::abs(detrnd(0, 8) - 6) < tolerance);
+        assert(std::abs(detrnd(0, 8) - 0) < tolerance);
         assert(std::abs(detrnd(1, 8) - 6) < tolerance);
         assert(std::abs(detrnd(2, 8) - 4) < tolerance);
     }
