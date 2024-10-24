@@ -241,6 +241,37 @@ namespace
         assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
 
+    void test_endianswap()
+    {
+        std::printf("Testing endianswap\n");
+        //int
+        {
+            int i = -1;
+            assert(endianswap(i) == -1);
+        }
+        {
+            int i = 0;
+            assert(endianswap(i) == 0);
+        }
+        {
+            int i = 32768;
+            assert(endianswap(i) == 8388608);
+        }
+        //uint
+        {
+            uint i = 1;
+            assert(endianswap(i) == 16777216);
+        }
+        {
+            uint i = 0;
+            assert(endianswap(i) == 0);
+        }
+        {
+            uint i = 32768;
+            assert(endianswap(i) == 8388608);
+        }
+    }
+
     void test_matchstring()
     {
         std::printf("Testing match string\n");
@@ -487,6 +518,7 @@ testing tools functionality\n\
     test_matchstring();
     testparentdir();
     testfixpackagedir();
+    test_endianswap();
     test_vector_putint();
     test_databuf_putint();
     test_databuf_putuint();
