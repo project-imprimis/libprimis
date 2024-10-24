@@ -427,14 +427,26 @@ namespace
     void test_databuf_reset()
     {
         std::printf("Testing databuf<>::reset\n");
-        std::array<int, 4> buf;
-        buf.fill(0);
-        databuf<int> d(buf.data(),4);
+        {
+            std::array<int, 4> buf;
+            buf.fill(0);
+            databuf<int> d(buf.data(),4);
 
-        d.put(3);
-        assert(d.length() == 1);
-        d.reset();
-        assert(d.length() == 0);
+            d.put(3);
+            assert(d.length() == 1);
+            d.reset();
+            assert(d.length() == 0);
+        }
+        {
+            std::array<int, 4> buf;
+            buf.fill(0);
+            databuf<int> d(buf.data(),4);
+            std::array<int, 3> buf2;
+            assert(d.buf == buf.data());
+            d.reset(buf2.data(), 3);
+            assert(d.buf == buf2.data());
+            assert(d.maxlen == 3);
+        }
     }
 
     void test_databuf_getbuf()
