@@ -381,14 +381,26 @@ namespace
     {
         std::printf("Testing sendstring/getstring (databuf)\n");
 
-        std::array<uchar, 100> buf;
-        ucharbuf v(buf.data(),100);
+        {
+            std::array<uchar, 100> buf;
+            ucharbuf v(buf.data(),100);
 
-        sendstring("test", v);
-        v.reset();
-        std::array<char, 100> buf2;
-        getstring(buf2.data(), v, 5);
-        assert(std::string(buf2.data()) == std::string("test"));
+            sendstring("test", v);
+            v.reset();
+            std::array<char, 100> buf2;
+            getstring(buf2.data(), v, 5);
+            assert(std::string(buf2.data()) == std::string("test"));
+        }
+        {
+            std::array<uchar, 100> buf;
+            ucharbuf v(buf.data(),100);
+
+            sendstring("test", v);
+            v.reset();
+            char buf2[5];
+            getstring(buf2, v);
+            assert(std::string(buf2) == std::string("test"));
+        }
     }
 
     void test_databuf_pad()
