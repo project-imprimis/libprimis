@@ -443,6 +443,7 @@ namespace
         databuf<int> d(buf.data(),4);
         int out = d.get();
         assert(out == 1);
+        assert(d.overread() == false);
     }
 
     void test_databuf_reset()
@@ -477,6 +478,7 @@ namespace
         databuf<int> d(buf.data(),4);
         int *dbuf = d.getbuf();
         assert(dbuf == buf.data());
+        assert(d.overread() == false);
     }
 
     void test_databuf_empty()
@@ -487,6 +489,7 @@ namespace
         assert(d.empty());
         d.put(3);
         assert(d.empty() == false);
+        assert(d.overread() == false);
     }
 
     void test_databuf_remaining()
