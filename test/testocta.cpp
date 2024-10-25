@@ -172,6 +172,13 @@ namespace
         assert(!(s3 == s2));
     }
 
+    void test_block3_c()
+    {
+        block3 block;
+        std::printf("testing block3::c \n");
+        assert(std::distance(&block, reinterpret_cast<block3 *>(block.c())) == 1);
+    }
+
     void test_block3_size()
     {
         std::printf("Testing block3::size\n");
@@ -217,6 +224,7 @@ testing octa functionality\n\
     test_selinfo_size();
     test_selinfo_us();
     test_selinfo_equals();
+    test_block3_c();
     test_block3_size();
     test_editinfo_ctor();
 }
