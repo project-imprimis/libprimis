@@ -172,6 +172,13 @@ namespace
         assert(!(s3 == s2));
     }
 
+    void test_block3_getcube()
+    {
+        block3 block;
+        std::printf("testing block3::getcube\n");
+        assert(std::distance(const_cast<const block3 *>(&block), reinterpret_cast<const block3 *>(block.getcube())) == 1);
+    }
+
     void test_block3_c()
     {
         block3 block;
@@ -224,6 +231,7 @@ testing octa functionality\n\
     test_selinfo_size();
     test_selinfo_us();
     test_selinfo_equals();
+    test_block3_getcube();
     test_block3_c();
     test_block3_size();
     test_editinfo_ctor();
