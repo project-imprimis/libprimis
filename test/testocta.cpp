@@ -219,6 +219,13 @@ namespace
         std::printf("testing undoblock::block\n");
         assert(std::distance(&block, reinterpret_cast<undoblock *>(block.block())) == 1);
     }
+
+    void test_undoblock_ents()
+    {
+        undoblock block;
+        std::printf("testing undoblock::block\n");
+        assert(std::distance(&block, reinterpret_cast<undoblock *>(block.ents())) == 1);
+    }
 }
 
 void test_octa()
@@ -243,4 +250,5 @@ testing octa functionality\n\
     test_block3_size();
     test_editinfo_ctor();
     test_undoblock_block();
+    test_undoblock_ents();
 }
