@@ -212,6 +212,13 @@ namespace
         editinfo e;
         assert(e.copy == nullptr);
     }
+
+    void test_undoblock_block()
+    {
+        undoblock block;
+        std::printf("testing undoblock::block\n");
+        assert(std::distance(&block, reinterpret_cast<undoblock *>(block.block())) == 1);
+    }
 }
 
 void test_octa()
@@ -235,4 +242,5 @@ testing octa functionality\n\
     test_block3_c();
     test_block3_size();
     test_editinfo_ctor();
+    test_undoblock_block();
 }
