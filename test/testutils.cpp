@@ -466,6 +466,16 @@ namespace
         }
     }
 
+    void test_databuf_offset()
+    {
+        std::printf("Testing databuf<>::offset\n");
+        std::array<int, 4> buf{1,2,3,4};
+        databuf<int> d(buf.data(),4);
+        d.offset(1);
+        int out = d.get();
+        assert(out == 2);
+    }
+
     void test_databuf_reset()
     {
         std::printf("Testing databuf<>::reset\n");
@@ -585,6 +595,7 @@ testing tools functionality\n\
     test_databuf_pad();
     test_databuf_put();
     test_databuf_get();
+    test_databuf_offset();
     test_databuf_reset();
     test_databuf_getbuf();
     test_databuf_empty();
