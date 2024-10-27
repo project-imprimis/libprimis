@@ -448,11 +448,22 @@ namespace
     void test_databuf_get()
     {
         std::printf("Testing databuf<>::get\n");
-        std::array<int, 4> buf{1,2,3,4};
-        databuf<int> d(buf.data(),4);
-        int out = d.get();
-        assert(out == 1);
-        assert(d.overread() == false);
+        {
+            std::array<int, 4> buf{1,2,3,4};
+            databuf<int> d(buf.data(),4);
+            int out = d.get();
+            assert(out == 1);
+            assert(d.overread() == false);
+        }
+        {
+            std::array<int, 1> buf{1};
+            databuf<int> d(buf.data(),1);
+            int out = d.get();
+            assert(out == 1);
+            assert(d.overread() == false);
+            out = d.get();
+            assert(d.overread() == true);
+        }
     }
 
     void test_databuf_reset()
