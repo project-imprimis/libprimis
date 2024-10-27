@@ -426,6 +426,15 @@ namespace
             assert(d.buf[0] == 3);
         }
         {
+            std::array<int, 1> buf;
+            databuf<int> d(buf.data(), 1);
+
+            d.put(3);
+            d.put(3);
+            assert(d.length() == 1);
+            assert(d.overwrote());
+        }
+        {
             std::array<int, 4> buf;
             databuf<int> d(buf.data(), 4);
             std::array<int, 2> buf2{1,2};
