@@ -82,6 +82,13 @@ namespace
         assert(s.texturedir() == std::string("media/decal"));
     }
 
+    void test_decalslot_emptyvslot()
+    {
+        std::printf("testing decalslot::emptyvslot\n");
+        DecalSlot s;
+        assert(&s.emptyvslot() == &s);
+    }
+
     void test_decalslot_cleanup()
     {
         std::printf("testing decalslot::cleanup\n");
@@ -110,5 +117,6 @@ testing slot functionality\n\
     test_decalslot_type();
     test_decalslot_name();
     test_decalslot_texturedir();
+    test_decalslot_emptyvslot();
     test_decalslot_cleanup();
 }
