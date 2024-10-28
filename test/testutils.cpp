@@ -443,6 +443,16 @@ namespace
             assert(d.buf[0] == 1);
             assert(d.buf[1] == 2);
         }
+        {
+            std::array<int, 2> buf;
+            databuf<int> d(buf.data(), 2);
+            std::array<int, 4> buf2{1,2,3,4};
+            d.put(buf2.data(),4);
+            assert(d.overwrote() == true);
+            assert(d.length() == 2);
+            assert(d.buf[0] == 1);
+            assert(d.buf[1] == 2);
+        }
     }
 
     void test_databuf_get()
