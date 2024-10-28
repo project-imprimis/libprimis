@@ -89,6 +89,15 @@ namespace
         assert(&s.emptyvslot() == &s);
     }
 
+    void test_decalslot_reset()
+    {
+        std::printf("testing decalslot::reset\n");
+        DecalSlot s;
+        s.reset();
+        assert(s.depth == 1);
+        assert(s.fade == 0.5f);
+    }
+
     void test_decalslot_cleanup()
     {
         std::printf("testing decalslot::cleanup\n");
@@ -118,5 +127,6 @@ testing slot functionality\n\
     test_decalslot_name();
     test_decalslot_texturedir();
     test_decalslot_emptyvslot();
+    test_decalslot_reset();
     test_decalslot_cleanup();
 }
