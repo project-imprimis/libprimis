@@ -250,6 +250,16 @@ namespace
         assert(std::strlen(s) == std::strlen(s1) + std::strlen(s2));
     }
 
+    void test_newconcatstring()
+    {
+        std::printf("Testing new concat string\n");
+        const char *s1 = "test string";
+        const char *s2 = "second test string";
+        char *c = newconcatstring(s1, s2);
+        assert(std::string(c) == "test stringsecond test string");
+        delete[] c;
+    }
+
     void test_endianswap()
     {
         std::printf("Testing endianswap\n");
@@ -592,6 +602,7 @@ testing tools functionality\n\
     testcpath();
     testcopystring();
     testconcatstring();
+    test_newconcatstring();
     test_matchstring();
     testparentdir();
     testfixpackagedir();
