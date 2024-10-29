@@ -413,6 +413,18 @@ namespace
         }
     }
 
+    void test_databuf_subbuf()
+    {
+        std::printf("Testing databuf<>::subbuf\n");
+
+        std::array<int, 4> buf{1,2,3,4};
+        databuf<int> d(buf.data(),4);
+        databuf<int> d2 = d.subbuf(2);
+        assert(d2.remaining() == 2);
+        assert(d2.getbuf()[0] == 1);
+        assert(d2.getbuf()[1] == 2);
+    }
+
     void test_databuf_pad()
     {
         std::printf("Testing databuf<>::pad\n");
@@ -613,6 +625,7 @@ testing tools functionality\n\
     test_vector_putfloat();
     test_databuf_putfloat();
     test_databuf_sendstring();
+    test_databuf_subbuf();
     test_databuf_pad();
     test_databuf_put();
     test_databuf_get();
