@@ -172,6 +172,21 @@ namespace
         assert(!(s3 == s2));
     }
 
+    void test_block3_ctor()
+    {
+        std::printf("testing block3::blcok3\n");
+        selinfo s;
+        s.o = ivec(1,1,1);
+        s.s = s.o;
+        s.grid = 1;
+        s.orient = 1;
+        block3 b(s);
+        assert(b.o == ivec(1,1,1));
+        assert(b.s == ivec(1,1,1));
+        assert(b.grid == 1);
+        assert(b.orient == 1);
+    }
+
     void test_block3_getcube()
     {
         block3 block;
@@ -245,6 +260,7 @@ testing octa functionality\n\
     test_selinfo_size();
     test_selinfo_us();
     test_selinfo_equals();
+    test_block3_ctor();
     test_block3_getcube();
     test_block3_c();
     test_block3_size();
