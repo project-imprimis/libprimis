@@ -5,6 +5,15 @@ namespace
 {
     constexpr float tolerance = 0.001;
 
+    void test_bitscan()
+    {
+        std::printf("Testing bitscan\n");
+
+        assert(BITSCAN(0) == -1);
+        assert(BITSCAN(1) == 0);
+        assert(BITSCAN(128) == 7);
+    }
+
     void test_detrnd()
     {
         std::printf("Testing detrnd\n");
@@ -609,6 +618,7 @@ testing tools functionality\n\
 ===============================================================\n"
     );
 
+    test_bitscan();
     test_detrnd();
     testpath();
     testcpath();
