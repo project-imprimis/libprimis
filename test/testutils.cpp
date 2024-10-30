@@ -18,9 +18,9 @@ namespace
     {
         std::printf("Testing max\n");
 
-        assert(min(1,2,3) == 3);
-        assert(min(1,1,1) == 1);
-        assert(min(1.f,2.f,3.f) == 3.f);
+        assert(max(1,2,3) == 3);
+        assert(max(1,1,1) == 1);
+        assert(max(1.f,2.f,3.f) == 3.f);
     }
 
     void test_bitscan()
