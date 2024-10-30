@@ -316,6 +316,15 @@ namespace
             uint i = 32768;
             assert(endianswap(i) == 8388608);
         }
+        //endianswap<T>
+        {
+            float i = 1;
+            assert(endianswap(i) == 0);
+        }
+        {
+            float i = 16;
+            assert(endianswap(i) == 0);
+        }
     }
 
     void test_matchstring()
