@@ -14,6 +14,15 @@ namespace
         assert(min(1.f,2.f,3.f) == 1.f);
     }
 
+    void test_max()
+    {
+        std::printf("Testing max\n");
+
+        assert(min(1,2,3) == 3);
+        assert(min(1,1,1) == 1);
+        assert(min(1.f,2.f,3.f) == 3.f);
+    }
+
     void test_bitscan()
     {
         std::printf("Testing bitscan\n");
@@ -627,6 +636,7 @@ testing tools functionality\n\
 ===============================================================\n"
     );
 
+    test_max();
     test_min();
     test_bitscan();
     test_detrnd();
