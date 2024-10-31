@@ -612,6 +612,15 @@ namespace
         assert(d.check(3) == true);
     }
 
+    void test_databuf_forceoverread()
+    {
+        std::printf("Testing databuf<>::overwrote\n");
+        std::array<int, 4> buf;
+        databuf<int> d(buf.data(),4);
+        d.forceoverread();
+        assert(d.overread() == true);
+    }
+
     void test_stream_overloadable()
     {
         std::printf("Testing virtual overloadable std::stream methods:\ntell\nrawtell\nseek\nread\nwrite\nflush\ngetcrc\n");
@@ -674,5 +683,6 @@ testing tools functionality\n\
     test_databuf_empty();
     test_databuf_remaining();
     test_databuf_check();
+    test_databuf_forceoverread();
     test_stream_overloadable();
 }
