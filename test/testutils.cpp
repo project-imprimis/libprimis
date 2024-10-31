@@ -40,6 +40,14 @@ namespace
         assert(i == 0 || i == 1 || i == 2);
     }
 
+    void test_randomfloat()
+    {
+        std::printf("Testing randomfloat\n");
+
+        int i = randomfloat(3);
+        assert(i < 3);
+    }
+
     void test_detrnd()
     {
         std::printf("Testing detrnd\n");
@@ -666,6 +674,7 @@ testing tools functionality\n\
     test_min();
     test_bitscan();
     test_randomint();
+    test_randomfloat();
     test_detrnd();
     testpath();
     testcpath();
