@@ -32,6 +32,14 @@ namespace
         assert(BITSCAN(128) == 7);
     }
 
+    void test_randomint()
+    {
+        std::printf("Testing randomint\n");
+
+        int i = randomint(3);
+        assert(i == 0 || i == 1 || i == 2);
+    }
+
     void test_detrnd()
     {
         std::printf("Testing detrnd\n");
@@ -657,6 +665,7 @@ testing tools functionality\n\
     test_max();
     test_min();
     test_bitscan();
+    test_randomint();
     test_detrnd();
     testpath();
     testcpath();
