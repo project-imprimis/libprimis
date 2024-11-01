@@ -57,7 +57,7 @@ namespace
         assert(std::abs(detrnd(2, 8) - 4) < tolerance);
     }
 
-    void testpath()
+    void test_path()
     {
         static std::string_view test_cases[][2] =
         {
@@ -122,7 +122,7 @@ namespace
         }
     }
 
-    void testcpath()
+    void test_cpath()
     {
         //note: <command> tests do not behave the same way as std::string path
         static const char * test_cases[][2] =
@@ -190,7 +190,7 @@ namespace
         }
     }
 
-    void testparentdir()
+    void test_parentdir()
     {
         static const char * test_cases[][2] =
         {
@@ -231,7 +231,7 @@ namespace
         }
     }
 
-    void testfixpackagedir()
+    void test_fixpackagedir()
     {
         static const char * test_cases[][2] =
         {
@@ -272,7 +272,7 @@ namespace
         assert(std::string(s) == "test test2");
     }
 
-    void testcopystring()
+    void test_copystring()
     {
         //test copy with enough chars
         std::printf("Testing string copy\n");
@@ -290,7 +290,7 @@ namespace
         assert(std::strcmp(s2, std::string(s3).substr(0, len-1).c_str()) == 0);
     }
 
-    void testconcatstring()
+    void test_concatstring()
     {
         std::printf("Testing concat string\n");
         char s[260];
@@ -693,15 +693,15 @@ testing tools functionality\n\
     test_randomint();
     test_randomfloat();
     test_detrnd();
-    testpath();
-    testcpath();
+    test_path();
+    test_cpath();
     test_concformatstring();
-    testcopystring();
-    testconcatstring();
+    test_copystring();
+    test_concatstring();
     test_newconcatstring();
     test_matchstring();
-    testparentdir();
-    testfixpackagedir();
+    test_parentdir();
+    test_fixpackagedir();
     test_endianswap();
     test_vector_putint();
     test_databuf_putint();
