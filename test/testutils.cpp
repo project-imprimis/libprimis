@@ -668,6 +668,10 @@ namespace
         assert(s.read(nullptr, 0) == 0);
         assert(s.write(nullptr, 0) == 0);
         assert(s.flush() == true);
+        assert(s.getchar() == -1);
+        assert(s.putchar(0) == false);
+        assert(s.putstring("a") == false);
+        assert(s.putline("a") == false);
         assert(s.getcrc() == 0);
     }
 }
