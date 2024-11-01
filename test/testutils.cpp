@@ -262,6 +262,16 @@ namespace
         }
     }
 
+    void test_concformatstring()
+    {
+        std::printf("Testing concformatstring\n");
+        char s[260];
+        std::memset(s, 0, sizeof s);
+        const char *fmt = "test %s";
+        concformatstring(s, fmt, "test2");
+        assert(std::string(s) == "test test2");
+    }
+
     void testcopystring()
     {
         //test copy with enough chars
@@ -678,6 +688,7 @@ testing tools functionality\n\
     test_detrnd();
     testpath();
     testcpath();
+    test_concformatstring();
     testcopystring();
     testconcatstring();
     test_newconcatstring();
