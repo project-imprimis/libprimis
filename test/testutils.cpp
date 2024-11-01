@@ -673,6 +673,9 @@ namespace
         assert(s.putstring("a") == false);
         assert(s.putline("a") == false);
         assert(s.getcrc() == 0);
+        //templates
+        assert(s.put<int>(0) == false);
+        assert(s.get<int>() == 0);
     }
 }
 
