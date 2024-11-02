@@ -677,6 +677,7 @@ namespace
         std::array<int, 2> d;
         assert(s.put<int>(d.data(), 2) == false);
         assert(s.put<int>(0) == false);
+        assert(s.get<int>(d.data(), 2) == false);
         assert(s.get<int>() == 0);
     }
 }
