@@ -675,6 +675,7 @@ namespace
         assert(s.putstring("a") == false);
         assert(s.putline("a") == false);
         assert(s.getcrc() == 0);
+        assert(s.rwops() != nullptr);
         //templates
         std::array<int, 2> d;
         assert(s.put<int>(d.data(), 2) == false);
