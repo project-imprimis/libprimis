@@ -665,6 +665,7 @@ namespace
         assert(s.tell() == -1);
         assert(s.rawtell() == -1);
         assert(s.seek(0,0) == false);
+        assert(s.size() == -1);
         assert(s.read(nullptr, 0) == 0);
         assert(s.write(nullptr, 0) == 0);
         assert(s.flush() == true);
