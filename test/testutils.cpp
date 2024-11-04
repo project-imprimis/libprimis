@@ -674,6 +674,8 @@ namespace
         assert(s.putchar(0) == false);
         assert(s.putstring("a") == false);
         assert(s.putline("a") == false);
+        std::array<char, 2> c;
+        assert(s.getline(c.data(), 0) == true);
         assert(s.printf("a") == 0);
         assert(s.getcrc() == 0);
         assert(s.rwops() != nullptr);
