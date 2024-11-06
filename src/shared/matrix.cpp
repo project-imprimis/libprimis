@@ -267,6 +267,7 @@ void matrix3::rotate_around_x(float ck, float sk)
     b = rb;
     c = rc;
 }
+
 void matrix3::rotate_around_x(float angle)
 {
     rotate_around_x(cosf(angle), std::sin(angle));
