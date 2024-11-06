@@ -377,6 +377,35 @@ void test_matrix3_calcangleaxis()
     }
 }
 
+void test_matrix3_transform()
+{
+    std::printf("testing matrix3 transform\n");
+    {
+        matrix3 m;
+        m.identity();
+        vec v(1,0,0);
+        assert(m.transform(v) == vec(1,0,0));
+    }
+    {
+        matrix3 m;
+        m.identity();
+        vec v(1,2,3);
+        assert(m.transform(v) == vec(1,2,3));
+    }
+    {
+        matrix3 m({0,1,0}, {1,0,0}, {0,0,1});
+        m.identity();
+        vec v(1,0,0);
+        assert(m.transform(v) == vec(1,0,0));
+    }
+    {
+        matrix3 m({0,1,0}, {1,0,0}, {0,0,0});
+        m.identity();
+        vec v(0,0,1);
+        assert(m.transform(v) == vec(0,0,1));
+    }
+}
+
 void test_matrix3_identity()
 {
     std::printf("testing matrix3 identity\n");
@@ -1349,6 +1378,7 @@ testing matrices\n\
     test_matrix3_setyaw();
     test_matrix3_trace();
     test_matrix3_calcangleaxis();
+    test_matrix3_transform();
     test_matrix3_identity();
     test_matrix3_transpose();
     test_matrix3_invert();
