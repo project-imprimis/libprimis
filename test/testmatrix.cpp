@@ -179,6 +179,33 @@ void test_matrix3_multranspose()
     }
 }
 
+void test_matrix3_transposemul()
+{
+    std::printf("testing matrix3 transposemul\n");
+    //multranspose(const matrix3&);
+    {
+        matrix3 a,b;
+        a.identity();
+        b.identity();
+        a.transposemul(b);
+        assert(a.a == vec(1,0,0));
+        assert(a.b == vec(0,1,0));
+        assert(a.c == vec(0,0,1));
+    }
+    {
+        matrix3 a;
+        vec e1(1,2,3),
+            e2(4,5,6),
+            e3(7,8,9);
+        matrix3 b(e1,e2,e3);
+        a.identity();
+        a.transposemul(b);
+        assert(a.a == vec(1,2,3));
+        assert(a.b == vec(4,5,6));
+        assert(a.c == vec(7,8,9));
+    }
+}
+
 void test_matrix3_normalize()
 {
     std::printf("testing matrix3 normalize\n");
@@ -1316,6 +1343,7 @@ testing matrices\n\
     test_matrix3_ctor();
     test_matrix3_mul();
     test_matrix3_multranspose();
+    test_matrix3_transposemul();
     test_matrix3_normalize();
     test_matrix3_scale();
     test_matrix3_setyaw();
