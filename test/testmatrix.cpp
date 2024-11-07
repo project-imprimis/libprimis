@@ -1196,6 +1196,14 @@ namespace
             assert(m.c == vec4<float>(0,0,2,0));
             assert(m.d == vec4<float>(-3,-3,3,1));
         }
+        {
+            matrix4 m;
+            m.ortho(-1,1,-1,1,-1,1);
+            assert(m.a == vec4(1,0,0,0));
+            assert(m.b == vec4(0,1,0,0));
+            assert(m.c == vec4(0,0,-1,0));
+            assert(m.d == vec4(0,0,0,1));
+        }
     }
 
     void test_matrix4_transformnormal()
