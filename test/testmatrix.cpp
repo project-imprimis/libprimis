@@ -1155,6 +1155,17 @@ namespace
         }
     }
 
+    void test_matrix4_frustum()
+    {
+        std::printf("testing matrix4 frustum\n");
+        matrix4 m;
+        m.frustum(-1,1,-1,1,-1,1);
+        assert(m.a == vec4(-1,0,0,0));
+        assert(m.b == vec4(0,-1,0,0));
+        assert(m.c == vec4(0,0,0,-1));
+        assert(m.d == vec4(0,0,1,0));
+    }
+
     void test_matrix4_ortho()
     {
         std::printf("testing matrix4 ortho\n");
@@ -1441,6 +1452,7 @@ testing matrices\n\
     test_matrix4_scalez();
     test_matrix4_jitter();
     test_matrix4_transpose();
+    test_matrix4_frustum();
     test_matrix4_ortho();
     test_matrix4_transposedtransformnormal();
     test_matrix4_transposedtransform();

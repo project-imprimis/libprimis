@@ -663,10 +663,10 @@ void matrix4::frustum(float left, float right, float bottom, float top, float zn
     float width = right - left,
           height = top - bottom,
           zrange = znear - zfar;
-    a = vec4<float>(2*znear/width, 0, 0, 0);
-    b = vec4<float>(0, 2*znear/height, 0, 0);
-    c = vec4<float>((right + left)/width, (top + bottom)/height, (zfar + znear)/zrange, -1);
-    d = vec4<float>(0, 0, 2*znear*zfar/zrange, 0);
+    a = vec4<float>(2*znear/width, 0, 0, 0); //depth to width ratio
+    b = vec4<float>(0, 2*znear/height, 0, 0); //depth to height ratio
+    c = vec4<float>((right + left)/width, (top + bottom)/height, (zfar + znear)/zrange, -1); //offset from centered
+    d = vec4<float>(0, 0, 2*znear*zfar/zrange, 0); //depth scale
 }
 
 void matrix4::perspective(float fovy, float aspect, float znear, float zfar)
