@@ -672,7 +672,7 @@ class zipstream final : public stream
         }
     private:
         ziparchive *arch;
-        zipfile *info;
+        const zipfile *info;
         z_stream zfile;
         uchar *buf;
         uint reading;
