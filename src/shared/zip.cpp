@@ -535,7 +535,7 @@ class zipstream final : public stream
                         return false;
                     }
                 }
-                pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
+                pos = std::clamp(pos, static_cast<offset>(info->offset), static_cast<offset>(info->offset + info->size));
                 arch->owner = nullptr;
                 if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
                 {
@@ -567,7 +567,7 @@ class zipstream final : public stream
                     return false;
                 }
             }
-            if(pos >= (offset)info->size)
+            if(pos >= static_cast<offset>(info->size))
             {
                 reading = info->offset + info->compressedsize;
                 zfile.next_in += zfile.avail_in;
@@ -582,7 +582,7 @@ class zipstream final : public stream
             {
                 return false;
             }
-            if(pos >= (offset)zfile.total_out)
+            if(pos >= static_cast<offset>(zfile.total_out))
             {
                 pos -= zfile.total_out;
             }
