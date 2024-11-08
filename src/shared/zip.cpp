@@ -265,9 +265,8 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
     size_t striplen = stripdir ? std::strlen(stripdir) : 0;
     if(!mountdir && !stripdir)
     {
-        for(uint i = 0; i < files.size(); i++)
+        for(zipfile &f : files)
         {
-            zipfile &f = files[i];
             const char *foundpackages = std::strstr(f.name, packagesdir);
             if(foundpackages)
             {
@@ -311,9 +310,8 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
             mdir[0] = '\0';
         }
     }
-    for(uint i = 0; i < files.size(); i++)
+    for(zipfile &f : files)
     {
-        zipfile &f = files[i];
         formatstring(fname, "%s%s", mdir, striplen && !std::strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
         if(arch.files.find(fname) != arch.files.end())
         {
