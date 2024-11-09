@@ -712,7 +712,7 @@ bool findzipfile(const char *name)
 {
     for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
-        ziparchive *arch = archives[i];
+        const ziparchive *arch = archives[i];
         if(arch->files.find(name) != arch->files.end())
         {
             return true;
