@@ -728,7 +728,7 @@ int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files)
     int dirs = 0;
     for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
-        ziparchive *arch = archives[i];
+        const ziparchive *arch = archives[i];
         uint oldsize = files.size();
         for(const auto& [k, f] : arch->files)
         {
