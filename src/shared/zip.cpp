@@ -605,7 +605,7 @@ class zipstream final : public stream
             uchar skip[512];
             while(pos > 0)
             {
-                size_t skipped = static_cast<size_t>(std::min(pos, (offset)sizeof(skip)));
+                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
                 if(read(skip, skipped) != skipped)
                 {
                     return false;
