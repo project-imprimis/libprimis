@@ -334,7 +334,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     {
         concatstring(pname, ".zip");
     }
-    ziparchive *exists = findzip(pname);
+    const ziparchive *exists = findzip(pname);
     if(exists)
     {
         conoutf(Console_Error, "already added zip %s", pname);
@@ -374,7 +374,7 @@ bool removezip(const char *name)
     {
         concatstring(pname, ".zip");
     }
-    ziparchive *exists = findzip(pname);
+    const ziparchive *exists = findzip(pname);
     if(!exists)
     {
         conoutf(Console_Error, "zip %s is not loaded", pname);
