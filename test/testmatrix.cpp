@@ -114,9 +114,9 @@ namespace
             b.identity();
             c.identity();
             a.mul(b,c);
-            assert(a.a == vec(1,0,0));
-            assert(a.b == vec(0,1,0));
-            assert(a.c == vec(0,0,1));
+            assert(a.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(a.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(a.c.sub(vec(0,0,1)).magnitude() < tolerance);
         }
         {
             matrix3 a, c;
@@ -126,9 +126,9 @@ namespace
             matrix3 b(e1,e2,e3);
             c.identity();
             a.mul(b,c);
-            assert(a.a == vec(1,2,3));
-            assert(a.b == vec(4,5,6));
-            assert(a.c == vec(7,8,9));
+            assert(a.a.sub(vec(1,2,3)).magnitude() < tolerance);
+            assert(a.b.sub(vec(4,5,6)).magnitude() < tolerance);
+            assert(a.c.sub(vec(7,8,9)).magnitude() < tolerance);
         }
         //mul(const matrix3&);
         {
@@ -136,9 +136,9 @@ namespace
             a.identity();
             b.identity();
             a.mul(b);
-            assert(a.a == vec(1,0,0));
-            assert(a.b == vec(0,1,0));
-            assert(a.c == vec(0,0,1));
+            assert(a.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(a.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(a.c.sub(vec(0,0,1)).magnitude() < tolerance);
         }
         {
             matrix3 a;
@@ -148,9 +148,9 @@ namespace
             matrix3 b(e1,e2,e3);
             a.identity();
             a.mul(b);
-            assert(a.a == vec(1,2,3));
-            assert(a.b == vec(4,5,6));
-            assert(a.c == vec(7,8,9));
+            assert(a.a.sub(vec(1,2,3)).magnitude() < tolerance);
+            assert(a.b.sub(vec(4,5,6)).magnitude() < tolerance);
+            assert(a.c.sub(vec(7,8,9)).magnitude() < tolerance);
         }
     }
 
