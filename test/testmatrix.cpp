@@ -469,6 +469,17 @@ namespace
         assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
     }
 
+    void test_matrix3_rotate_around_z()
+    {
+        std::printf("testing matrix3 rotate_around_z\n");
+        matrix3 m;
+        m.identity();
+        m.rotate_around_z(M_PI);
+        assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+    }
+
     void test_matrix3_transpose()
     {
         std::printf("testing matrix3 transpose\n");
@@ -1467,6 +1478,7 @@ testing matrices\n\
     test_matrix3_identity();
     test_matrix3_rotate_around_x();
     test_matrix3_rotate_around_y();
+    test_matrix3_rotate_around_z();
     test_matrix3_transpose();
     test_matrix3_invert();
     test_matrix3_row();
