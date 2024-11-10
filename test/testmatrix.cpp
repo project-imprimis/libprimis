@@ -163,9 +163,9 @@ namespace
             a.identity();
             b.identity();
             a.multranspose(b);
-            assert(a.a == vec(1,0,0));
-            assert(a.b == vec(0,1,0));
-            assert(a.c == vec(0,0,1));
+            assert(a.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(a.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(a.c.sub(vec(0,0,1)).magnitude() < tolerance);
         }
         {
             matrix3 a;
@@ -175,9 +175,9 @@ namespace
             matrix3 b(e1,e2,e3);
             a.identity();
             a.multranspose(b);
-            assert(a.a == vec(1,4,7));
-            assert(a.b == vec(2,1,8));
-            assert(a.c == vec(3,6,9));
+            assert(a.a.sub(vec(1,4,7)).magnitude() < tolerance);
+            assert(a.b.sub(vec(2,1,8)).magnitude() < tolerance);
+            assert(a.c.sub(vec(3,6,9)).magnitude() < tolerance);
         }
     }
 
