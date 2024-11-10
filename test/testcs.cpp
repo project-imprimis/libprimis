@@ -241,14 +241,14 @@ namespace
         for(const std::pair<tagval, std::string> &i : outputcombo)
         {
             std::string s = i.first.getstr();
-            std::printf("string result: %s\n", s.c_str());
+            std::printf("str result: %s\n", s.c_str());
             assert(s == i.second);
         }
     }
 
     void test_cs_plus()
     {
-        std::printf("testing CS + command\n");
+        std::printf("testing CS + cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"+ 1", 1},
@@ -264,7 +264,7 @@ namespace
 
     void test_cs_mul()
     {
-        std::printf("testing CS * command\n");
+        std::printf("testing CS * cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"* 1", 1},
@@ -280,7 +280,7 @@ namespace
 
     void test_cs_minus()
     {
-        std::printf("testing CS - command\n");
+        std::printf("testing CS - cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"- 1", -1},
@@ -296,7 +296,7 @@ namespace
 
     void test_cs_equals()
     {
-        std::printf("testing CS = command\n");
+        std::printf("testing CS = cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"= 1", 0},
@@ -319,7 +319,7 @@ namespace
 
     void test_cs_nequals()
     {
-        std::printf("testing CS != command\n");
+        std::printf("testing CS != cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"!= 1", 1},
@@ -342,7 +342,7 @@ namespace
 
     void test_cs_lessthan()
     {
-        std::printf("testing CS < command\n");
+        std::printf("testing CS < cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"< 1", 0},
@@ -368,7 +368,7 @@ namespace
 
     void test_cs_greaterthan()
     {
-        std::printf("testing CS > command\n");
+        std::printf("testing CS > cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"> 1", 1},
@@ -394,7 +394,7 @@ namespace
 
     void test_cs_lessequalthan()
     {
-        std::printf("testing CS <= command\n");
+        std::printf("testing CS <= cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"<= 1", 0},
@@ -420,7 +420,7 @@ namespace
 
     void test_cs_greaterequalthan()
     {
-        std::printf("testing CS >= command\n");
+        std::printf("testing CS >= cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {">= 1", 1},
@@ -446,7 +446,7 @@ namespace
 
     void test_cs_bitwise_xor()
     {
-        std::printf("testing CS ^ command\n");
+        std::printf("testing CS ^ cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"^ 1 1", 0},
@@ -463,7 +463,7 @@ namespace
 
     void test_cs_bitwise_and()
     {
-        std::printf("testing CS & command\n");
+        std::printf("testing CS & cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"&", 0},
@@ -483,7 +483,7 @@ namespace
 
     void test_cs_bitwise_or()
     {
-        std::printf("testing CS | command\n");
+        std::printf("testing CS | cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"| 1 1", 1},
@@ -500,7 +500,7 @@ namespace
 
     void test_cs_bitwise_xnor()
     {
-        std::printf("testing CS ^~ command\n");
+        std::printf("testing CS ^~ cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"^~ ", 0},
@@ -518,7 +518,7 @@ namespace
 
     void test_cs_bitwise_nand()
     {
-        std::printf("testing CS &~ command\n");
+        std::printf("testing CS &~ cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"&~", 0},
@@ -538,7 +538,7 @@ namespace
 
     void test_cs_bitwise_nor()
     {
-        std::printf("testing CS |~ command\n");
+        std::printf("testing CS |~ cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"|~ ", 0},
@@ -556,7 +556,7 @@ namespace
 
     void test_cs_shl()
     {
-        std::printf("testing CS << command\n");
+        std::printf("testing CS << cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"<< 1 1", 2},
@@ -576,7 +576,7 @@ namespace
 
     void test_cs_shr()
     {
-        std::printf("testing CS >> command\n");
+        std::printf("testing CS >> cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {">> 1 1", 0},
@@ -599,7 +599,7 @@ namespace
 
     void test_cs_not()
     {
-        std::printf("testing CS ! command\n");
+        std::printf("testing CS ! cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"! 1", 0},
@@ -615,7 +615,7 @@ namespace
 
     void test_cs_and()
     {
-        std::printf("testing CS && command\n");
+        std::printf("testing CS && cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"&&  1 1", 1},
@@ -630,7 +630,7 @@ namespace
 
     void test_cs_or()
     {
-        std::printf("testing CS || command\n");
+        std::printf("testing CS || cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"||  1 1", 1},
@@ -647,7 +647,7 @@ namespace
 
     void test_cs_div()
     {
-        std::printf("testing CS div(f) command\n");
+        std::printf("testing CS div(f) cmd\n");
 
         std::vector<std::pair<std::string, int>> intinputs = {
             {"div 0 1", 0},
@@ -674,7 +674,7 @@ namespace
 
     void test_cs_mod()
     {
-        std::printf("testing CS mod(f) command\n");
+        std::printf("testing CS mod(f) cmd\n");
 
         std::vector<std::pair<std::string, int>> intinputs = {
             {"mod 0 1", 0},
@@ -702,7 +702,7 @@ namespace
 
     void test_cs_pow()
     {
-        std::printf("testing CS pow command\n");
+        std::printf("testing CS pow cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"pow", 0},
@@ -721,7 +721,7 @@ namespace
 
     void test_cs_sin()
     {
-        std::printf("testing CS sin command\n");
+        std::printf("testing CS sin cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"sin 0", 0},
@@ -736,7 +736,7 @@ namespace
 
     void test_cs_cos()
     {
-        std::printf("testing CS cos command\n");
+        std::printf("testing CS cos cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"cos 0", 1},
@@ -751,7 +751,7 @@ namespace
 
     void test_cs_tan()
     {
-        std::printf("testing CS tan command\n");
+        std::printf("testing CS tan cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"tan 0", 0},
@@ -766,7 +766,7 @@ namespace
 
     void test_cs_asin()
     {
-        std::printf("testing CS asin command\n");
+        std::printf("testing CS asin cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"asin -1", -90.f},
@@ -781,7 +781,7 @@ namespace
 
     void test_cs_acos()
     {
-        std::printf("testing CS acos command\n");
+        std::printf("testing CS acos cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"acos -1", 180.f},
@@ -796,7 +796,7 @@ namespace
 
     void test_cs_atan()
     {
-        std::printf("testing CS atan command\n");
+        std::printf("testing CS atan cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"atan -1", -45.f},
@@ -811,7 +811,7 @@ namespace
 
     void test_cs_atan2()
     {
-        std::printf("testing CS atan command\n");
+        std::printf("testing CS atan cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"atan2 -1 1", -45.f},
@@ -826,7 +826,7 @@ namespace
 
     void test_cs_sqrt()
     {
-        std::printf("testing CS sqrt command\n");
+        std::printf("testing CS sqrt cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"sqrt 0.25", 0.5f},
@@ -841,7 +841,7 @@ namespace
 
     void test_cs_loge()
     {
-        std::printf("testing CS loge command\n");
+        std::printf("testing CS loge cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"loge 0.3679", -1.f},
@@ -857,7 +857,7 @@ namespace
 
     void test_cs_log2()
     {
-        std::printf("testing CS log2 command\n");
+        std::printf("testing CS log2 cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"log2 0.5", -1.f},
@@ -872,7 +872,7 @@ namespace
 
     void test_cs_log10()
     {
-        std::printf("testing CS log10 command\n");
+        std::printf("testing CS log10 cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"log10 0.1", -1.f},
@@ -887,7 +887,7 @@ namespace
 
     void test_cs_exp()
     {
-        std::printf("testing CS exp command\n");
+        std::printf("testing CS exp cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"exp -1", 0.3679f},
@@ -902,7 +902,7 @@ namespace
 
     void test_cs_min()
     {
-        std::printf("testing CS min(f) command\n");
+        std::printf("testing CS min(f) cmd\n");
 
         std::vector<std::pair<std::string, float>> floatinputs = {
             {"minf -1", -1.f},
@@ -925,7 +925,7 @@ namespace
 
     void test_cs_max()
     {
-        std::printf("testing CS max(f) command\n");
+        std::printf("testing CS max(f) cmd\n");
 
         std::vector<std::pair<std::string, float>> floatinputs = {
             {"maxf -1", -1.f},
@@ -948,7 +948,7 @@ namespace
 
     void test_cs_bitscan()
     {
-        std::printf("testing CS bitscan command\n");
+        std::printf("testing CS bitscan cmd\n");
 
         std::vector<std::pair<std::string, int>> intinputs = {
             {"bitscan", -1},
@@ -964,7 +964,7 @@ namespace
 
     void test_cs_abs()
     {
-        std::printf("testing CS abs(f) command\n");
+        std::printf("testing CS abs(f) cmd\n");
 
         std::vector<std::pair<std::string, float>> floatinputs = {
             {"absf", 0.f},
@@ -989,7 +989,7 @@ namespace
 
     void test_cs_floor()
     {
-        std::printf("testing CS floor command\n");
+        std::printf("testing CS floor cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"floor", 0.f},
@@ -1005,7 +1005,7 @@ namespace
 
     void test_cs_ceil()
     {
-        std::printf("testing CS ceil command\n");
+        std::printf("testing CS ceil cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"ceil", 0.f},
@@ -1021,7 +1021,7 @@ namespace
 
     void test_cs_round()
     {
-        std::printf("testing CS round command\n");
+        std::printf("testing CS round cmd\n");
 
         std::vector<std::pair<std::string, float>> inputs = {
             {"round", 0.f},
@@ -1045,7 +1045,7 @@ namespace
 
     void test_cs_cond()
     {
-        std::printf("testing CS cond command\n");
+        std::printf("testing CS cond cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"cond", 0},
@@ -1062,7 +1062,7 @@ namespace
 
     void test_cs_tohex()
     {
-        std::printf("testing CS tohex command\n");
+        std::printf("testing CS tohex cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"tohex 1", "0x1"},
@@ -1089,7 +1089,7 @@ namespace
 
     void test_cs_strstr()
     {
-        std::printf("testing CS strstr command\n");
+        std::printf("testing CS strstr cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"strstr test e", 1},
@@ -1103,7 +1103,7 @@ namespace
 
     void test_cs_strlen()
     {
-        std::printf("testing CS strlen command\n");
+        std::printf("testing CS strlen cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"strlen test", 4},
@@ -1117,7 +1117,7 @@ namespace
 
     void test_cs_strsplice()
     {
-        std::printf("testing CS strsplice command\n");
+        std::printf("testing CS strsplice cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"strsplice teststring test 1 1", "ttestststring"},
@@ -1140,7 +1140,7 @@ namespace
 
     void test_cs_strreplace()
     {
-        std::printf("testing CS strreplace command\n");
+        std::printf("testing CS strreplace cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"strreplace teststring test t", "tstring"},
@@ -1156,7 +1156,7 @@ namespace
 
     void test_cs_stripcolors()
     {
-        std::printf("testing CS stripcolors command\n");
+        std::printf("testing CS stripcolors cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"stripcolors teststring", "teststring"},
@@ -1170,7 +1170,7 @@ namespace
 
     void test_cs_concat()
     {
-        std::printf("testing CS concat command\n");
+        std::printf("testing CS concat cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"concat test test2", "test test2"},
@@ -1186,7 +1186,7 @@ namespace
 
     void test_cs_concatword()
     {
-        std::printf("testing CS concatword command\n");
+        std::printf("testing CS concatword cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"concatword test test2", "testtest2"},
@@ -1202,7 +1202,7 @@ namespace
 
     void test_cs_if()
     {
-        std::printf("testing CS if command\n");
+        std::printf("testing CS if cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"if 1 [result 2] [result 3]", 2},
@@ -1219,7 +1219,7 @@ namespace
 
     void test_cs_ternary()
     {
-        std::printf("testing CS ? command\n");
+        std::printf("testing CS ? cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"? 1 2 3", 2},
@@ -1234,7 +1234,7 @@ namespace
 
     void test_cs_result()
     {
-        std::printf("testing CS result command\n");
+        std::printf("testing CS result cmd\n");
 
         std::vector<std::pair<std::string, std::string>> stringinputs = {
             {"test = \"teststring\"; result $test", "teststring"},
@@ -1346,7 +1346,7 @@ namespace
 
     void test_cs_listlen()
     {
-        std::printf("testing CS listlen command\n");
+        std::printf("testing CS listlen cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"listlen test", 1},
@@ -1359,7 +1359,7 @@ namespace
 
     void test_cs_at()
     {
-        std::printf("testing CS at command\n");
+        std::printf("testing CS at cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"at test", "test"},
@@ -1375,7 +1375,7 @@ namespace
 
     void test_cs_sublist()
     {
-        std::printf("testing CS sublist command\n");
+        std::printf("testing CS sublist cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"sublist test 0 1", "test"},
@@ -1395,7 +1395,7 @@ namespace
 
     void test_cs_listcount()
     {
-        std::printf("testing CS listcount command\n");
+        std::printf("testing CS listcount cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"listcount i \"test\" [=s $i test]", 1},
@@ -1413,7 +1413,7 @@ namespace
 
     void test_cs_listfind()
     {
-        std::printf("testing CS listfind command\n");
+        std::printf("testing CS listfind cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"listfind i \"test\" [=s $i test]", 0},
@@ -1437,7 +1437,7 @@ namespace
 
     void test_cs_loop()
     {
-        std::printf("testing CS loop command\n");
+        std::printf("testing CS loop cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"testval = 0; loop i 10 [testval = (+ $testval 1)]; result $testval", 10},
@@ -1452,7 +1452,7 @@ namespace
 
     void test_cs_loopplus()
     {
-        std::printf("testing CS loop+ command\n");
+        std::printf("testing CS loop+ cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"testval = 0; loop+ i 2 10 [testval = (+ $testval 1)]; result $testval", 10},
@@ -1469,7 +1469,7 @@ namespace
 
     void test_cs_loopmul()
     {
-        std::printf("testing CS loop* command\n");
+        std::printf("testing CS loop* cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"testval = 0; loop* i 2 8 [testval = (+ $testval 1)]; result $testval", 8},
@@ -1485,7 +1485,7 @@ namespace
 
     void test_cs_loopplusmul()
     {
-        std::printf("testing CS loop+* command\n");
+        std::printf("testing CS loop+* cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"testval = 0; loop+* i 2 2 8 [testval = (+ $testval 1)]; result $testval", 8},
@@ -1503,7 +1503,7 @@ namespace
 
     void test_cs_loopconcat()
     {
-        std::printf("testing CS loopconcat command\n");
+        std::printf("testing CS loopconcat cmd\n");
 
         std::vector<std::pair<std::string, std::string>> strinputs = {
             {"loopconcat i 3 [result 1]", "1 1 1"},
@@ -1521,7 +1521,7 @@ namespace
 
     void test_cs_loopconcatplus()
     {
-        std::printf("testing CS loopconcat+ command\n");
+        std::printf("testing CS loopconcat+ cmd\n");
 
         std::vector<std::pair<std::string, std::string>> strinputs = {
             {"loopconcat+ i 3 3 [result 1]", "1 1 1"},
@@ -1540,7 +1540,7 @@ namespace
 
     void test_cs_listassoceq()
     {
-        std::printf("testing CS listassoc= command\n");
+        std::printf("testing CS listassoc= cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listassoc= \"1 2 3\" 1", "2"},
@@ -1560,7 +1560,7 @@ namespace
 
     void test_cs_prettylist()
     {
-        std::printf("testing CS prettylist command\n");
+        std::printf("testing CS prettylist cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"prettylist \"alpha bravo charlie\" and", "alpha, bravo, and charlie"},
@@ -1580,7 +1580,7 @@ namespace
 
     void test_cs_indexof()
     {
-        std::printf("testing CS indexof command\n");
+        std::printf("testing CS indexof cmd\n");
 
         std::vector<std::pair<std::string, int>> inputs = {
             {"indexof \"alpha bravo charlie\" alpha", 0},
@@ -1601,7 +1601,7 @@ namespace
 
     void test_cs_listdel()
     {
-        std::printf("testing CS listdel command\n");
+        std::printf("testing CS listdel cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listdel \"alpha\" \"alpha\"", ""},
@@ -1617,7 +1617,7 @@ namespace
 
     void test_cs_listintersect()
     {
-        std::printf("testing CS listintersect command\n");
+        std::printf("testing CS listintersect cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listintersect \"alpha\" \"alpha\"", "alpha"},
@@ -1634,7 +1634,7 @@ namespace
 
     void test_cs_listunion()
     {
-        std::printf("testing CS listunion command\n");
+        std::printf("testing CS listunion cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listunion \"alpha\" \"alpha\"", "alpha"},
@@ -1651,7 +1651,7 @@ namespace
 
     void test_cs_listsplice()
     {
-        std::printf("testing CS listsplice command\n");
+        std::printf("testing CS listsplice cmd\n");
 
         std::vector<std::pair<std::string, std::string>> inputs = {
             {"listsplice \"alpha\" \"bravo\" 1 1", "alpha bravo"},
@@ -1668,7 +1668,7 @@ namespace
 
     void test_cs_sortlist()
     {
-        std::printf("testing CS sortlist command\n");
+        std::printf("testing CS sortlist cmd\n");
 
         std::vector<std::pair<std::string, std::string>> stringinputs = {
             {"testval = \"alpha bravo charlie\"; sortlist $testval a b [<s $a $b]", "alpha bravo charlie"},
@@ -1688,7 +1688,7 @@ namespace
 
     void test_cs_uniquelist()
     {
-        std::printf("testing CS uniquelist command\n");
+        std::printf("testing CS uniquelist cmd\n");
 
         std::vector<std::pair<std::string, std::string>> stringinputs = {
             {"testval = \"alpha alpha alpha\"; uniquelist $testval a b [=s $a $b]", "alpha"},
