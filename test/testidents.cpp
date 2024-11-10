@@ -131,12 +131,12 @@ static void tryexecother()
     {
         if(val.type > Id_Command)
         {
-            printf("$ %s\n", key.c_str());
+            printf("%s, ", key.c_str());
             execute(val.name);
             count++;
         }
     }
-    printf("===============================================================\n");
+    printf("\n===============================================================\n");
     printf("%u idents executed\n", count);
     printf("===============================================================\n");
 }
