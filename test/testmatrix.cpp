@@ -1204,10 +1204,11 @@ namespace
         std::printf("testing matrix4 perspective\n");
         matrix4 m;
         m.perspective(90,1,-1,1);
-        assert(m.a == vec4(1,0,0,0));
-        assert(m.b == vec4(0,1,0,0));
-        assert(m.c == vec4(0,0,0,-1));
-        assert(m.d == vec4(0,0,1,0));
+        assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec4<float>(0,1,0,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec4<float>(0,0,0,-1)).magnitude() < tolerance);
+        assert(m.d.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
+
     }
 
     void test_matrix4_ortho()
