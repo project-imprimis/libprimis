@@ -1049,6 +1049,18 @@ namespace
         assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
     }
 
+    void test_matrix4_rotate_around_z()
+    {
+        std::printf("testing matrix4 rotate_around_y\n");
+        matrix4 m;
+        m.identity();
+        m.rotate_around_z(M_PI);
+        assert(m.a.sub(vec4<float>(-1,0,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec4<float>(0,-1,0,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
+        assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+    }
+
     void test_matrix4_identity()
     {
         std::printf("testing matrix4 identity\n");
@@ -1526,6 +1538,7 @@ testing matrices\n\
     test_matrix4_ctor();
     test_matrix4_rotate_around_x();
     test_matrix4_rotate_around_y();
+    test_matrix4_rotate_around_z();
     test_matrix4_identity();
     test_matrix4_settranslation();
     test_matrix4_scale();
