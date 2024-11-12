@@ -1217,26 +1217,26 @@ namespace
         {
             matrix4 m;
             m.ortho(0,1,0,1,1,0);
-            assert(m.a == vec4<float>(2,0,0,0));
-            assert(m.b == vec4<float>(0,2,0,0));
-            assert(m.c == vec4<float>(0,0,2,0));
-            assert(m.d == vec4<float>(-1,-1,1,1));
+            assert(m.a.sub(vec4<float>(2,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,2,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,2,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(-1,-1,1,1)).magnitude() < tolerance);
         }
         {
             matrix4 m;
             m.ortho(1,2,1,2,2,1);
-            assert(m.a == vec4<float>(2,0,0,0));
-            assert(m.b == vec4<float>(0,2,0,0));
-            assert(m.c == vec4<float>(0,0,2,0));
-            assert(m.d == vec4<float>(-3,-3,3,1));
+            assert(m.a.sub(vec4<float>(2,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,2,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,2,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(-3,-3,3,1)).magnitude() < tolerance);
         }
         {
             matrix4 m;
             m.ortho(-1,1,-1,1,-1,1);
-            assert(m.a == vec4(1,0,0,0));
-            assert(m.b == vec4(0,1,0,0));
-            assert(m.c == vec4(0,0,-1,0));
-            assert(m.d == vec4(0,0,0,1));
+            assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,-1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
         }
     }
 
