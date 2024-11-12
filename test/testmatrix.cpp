@@ -1152,9 +1152,8 @@ namespace
             assert(m.c.z == 6);
             assert(m.d.z == 8);
         }
-
-
     }
+
     void test_matrix4_jitter()
     {
         std::printf("testing matrix4 jitter\n");
