@@ -867,6 +867,18 @@ namespace
         }
     }
 
+    void test_matrix4x3_rotate_around_x()
+    {
+        std::printf("testing matrix4x3 rotate_around_x\n");
+        matrix4x3 m;
+        m.identity();
+        m.rotate_around_x(M_PI);
+        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+        assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+        assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+    }
+
     void test_matrix4x3_transposedtransformnormal()
     {
         std::printf("testing matrix4x3 transposedtransformnormal\n");
@@ -1530,6 +1542,7 @@ testing matrices\n\
     test_matrix4x3_identity();
     test_matrix4x3_transpose();
     test_matrix4x3_invert();
+    test_matrix4x3_rotate_around_x();
     test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
     test_matrix4x3_transform();
