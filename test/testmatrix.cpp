@@ -508,34 +508,64 @@ namespace
     void test_matrix3_rotate_around_x()
     {
         std::printf("testing matrix3 rotate_around_x\n");
-        matrix3 m;
-        m.identity();
-        m.rotate_around_x(M_PI);
-        assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
-        assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
-        assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_x(M_PI);
+            assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        }
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_x(vec2(-1, 0));
+            assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix3_rotate_around_y()
     {
         std::printf("testing matrix3 rotate_around_y\n");
-        matrix3 m;
-        m.identity();
-        m.rotate_around_y(M_PI);
-        assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
-        assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
-        assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_y(M_PI);
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        }
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_y(vec2(-1, 0));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix3_rotate_around_z()
     {
         std::printf("testing matrix3 rotate_around_z\n");
-        matrix3 m;
-        m.identity();
-        m.rotate_around_z(M_PI);
-        assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
-        assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
-        assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_z(M_PI);
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        }
+        {
+            matrix3 m;
+            m.identity();
+            m.rotate_around_z(vec2(-1, 0));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix3_transpose()
