@@ -466,6 +466,35 @@ namespace
         }
     }
 
+    void test_matrix3_abstransposedtransform()
+    {
+        std::printf("testing matrix3 abstransposedtransform\n");
+        {
+            matrix3 m;
+            m.identity();
+            vec v(1,0,0);
+            assert(m.abstransposedtransform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m;
+            m.identity();
+            vec v(1,2,3);
+            assert(m.abstransposedtransform(v) == vec(1,2,3));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,1});
+            m.identity();
+            vec v(1,0,0);
+            assert(m.abstransposedtransform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,0});
+            m.identity();
+            vec v(0,0,1);
+            assert(m.abstransposedtransform(v) == vec(0,0,1));
+        }
+    }
+
     void test_matrix3_identity()
     {
         std::printf("testing matrix3 identity\n");
@@ -1577,6 +1606,7 @@ testing matrices\n\
     test_matrix3_transform();
     test_matrix3_transposedtransform();
     test_matrix3_abstransform();
+    test_matrix3_abstransposedtransform();
     test_matrix3_identity();
     test_matrix3_rotate_around_x();
     test_matrix3_rotate_around_y();
