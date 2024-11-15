@@ -955,6 +955,38 @@ namespace
         }
     }
 
+    void test_matrix4x3_rotate()
+    {
+        std::printf("testing matrix4x3 rotate\n");
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(-1, 0, vec(1,0,0));
+            assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(-1, 0, vec(0,1,0));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(-1, 0, vec(0,0,1));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+    }
+
     void test_matrix4x3_rotate_around_x()
     {
         std::printf("testing matrix4x3 rotate_around_x\n");
@@ -1722,6 +1754,7 @@ testing matrices\n\
     test_matrix4x3_identity();
     test_matrix4x3_transpose();
     test_matrix4x3_invert();
+    test_matrix4x3_rotate();
     test_matrix4x3_rotate_around_x();
     test_matrix4x3_rotate_around_y();
     test_matrix4x3_rotate_around_z();
