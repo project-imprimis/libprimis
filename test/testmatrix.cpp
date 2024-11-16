@@ -958,6 +958,35 @@ namespace
     void test_matrix4x3_rotate()
     {
         std::printf("testing matrix4x3 rotate\n");
+        //rotate(float, vec)
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(M_PI, vec(1,0,0));
+            assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(M_PI, vec(0,1,0));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            m.rotate(M_PI, vec(0,0,1));
+            assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+            assert(m.d.sub(vec(0,0,0)).magnitude() < tolerance);
+        }
+        //rotate(float, float, vec)
         {
             matrix4x3 m;
             m.identity();
