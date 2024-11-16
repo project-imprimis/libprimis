@@ -1002,7 +1002,7 @@ namespace
         {
             matrix4x3 m;
             m.identity();
-            m.rotate_around_x(-1, 0);
+            m.rotate_around_x(vec2(-1, 0));
             assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
             assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
             assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
@@ -1025,7 +1025,7 @@ namespace
         {
             matrix4x3 m;
             m.identity();
-            m.rotate_around_y(-1, 0);
+            m.rotate_around_y(vec2(-1, 0));
             assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
             assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
             assert(m.c.sub(vec(0,0,-1)).magnitude() < tolerance);
@@ -1048,7 +1048,7 @@ namespace
         {
             matrix4x3 m;
             m.identity();
-            m.rotate_around_z(-1, 0);
+            m.rotate_around_z(vec2(-1, 0));
             assert(m.a.sub(vec(-1,0,0)).magnitude() < tolerance);
             assert(m.b.sub(vec(0,-1,0)).magnitude() < tolerance);
             assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
