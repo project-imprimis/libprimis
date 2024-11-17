@@ -1243,6 +1243,38 @@ namespace
         }
     }
 
+    void test_matrix4_rotate()
+    {
+        std::printf("testing matrix4 rotate\n");
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(M_PI, vec(1,0,0));
+            assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,-1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,-1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(M_PI, vec(0,1,0));
+            assert(m.a.sub(vec4<float>(-1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,-1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(M_PI, vec(0,0,1));
+            assert(m.a.sub(vec4<float>(-1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,-1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
+    }
+
     void test_matrix4_rotate_around_x()
     {
         std::printf("testing matrix4 rotate_around_x\n");
@@ -1793,6 +1825,7 @@ testing matrices\n\
     test_matrix4x3_row();
 
     test_matrix4_ctor();
+    test_matrix4_rotate();
     test_matrix4_rotate_around_x();
     test_matrix4_rotate_around_y();
     test_matrix4_rotate_around_z();
