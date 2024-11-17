@@ -1302,6 +1302,34 @@ namespace
             assert(m.c.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
             assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
         }
+        //rotate(vec2, vec)
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(vec2(-1, 0), vec(1,0,0));
+            assert(m.a.sub(vec4<float>(1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,-1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,-1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(vec2(-1, 0), vec(0,1,0));
+            assert(m.a.sub(vec4<float>(-1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,-1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
+        {
+            matrix4 m;
+            m.identity();
+            m.rotate(vec2(-1, 0), vec(0,0,1));
+            assert(m.a.sub(vec4<float>(-1,0,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec4<float>(0,-1,0,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec4<float>(0,0,1,0)).magnitude() < tolerance);
+            assert(m.d.sub(vec4<float>(0,0,0,1)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4_rotate_around_x()
