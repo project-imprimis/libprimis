@@ -1085,6 +1085,28 @@ namespace
         }
     }
 
+    void test_matrix4x3_transposedtransform()
+    {
+        std::printf("testing matrix4x3 transposedtransformnormal\n");
+
+        {
+            matrix4x3 m;
+            m.identity();
+            assert(m.transposedtransform(vec(1,1,1)) == vec(1,1,1));
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            assert(m.transposedtransform(vec(1,0,0)) == vec(1,0,0));
+        }
+        {
+            matrix4x3 m;
+            m.identity();
+            m.mul(2);
+            assert(m.transposedtransform(vec(2,0,0)) == vec(4,0,0));
+        }
+    }
+
     void test_matrix4x3_transposedtransformnormal()
     {
         std::printf("testing matrix4x3 transposedtransformnormal\n");
@@ -1876,6 +1898,7 @@ testing matrices\n\
     test_matrix4x3_rotate_around_x();
     test_matrix4x3_rotate_around_y();
     test_matrix4x3_rotate_around_z();
+    test_matrix4x3_transposedtransform();
     test_matrix4x3_transposedtransformnormal();
     test_matrix4x3_transformnormal();
     test_matrix4x3_transform();
