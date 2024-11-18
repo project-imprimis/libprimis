@@ -802,6 +802,15 @@ namespace
         }
     }
 
+    void test_matrix4x3_translate()
+    {
+        std::printf("testing matrix4x3 translate\n");
+        matrix4x3 m;
+        m.identity();
+        m.translate(1,1,1);
+        assert(m.d.sub(vec(1,1,1)).magnitude() < tolerance);
+    }
+
     void test_matrix4x3_normalize()
     {
         std::printf("testing matrix4x3 normalize\n");
@@ -1889,6 +1898,7 @@ testing matrices\n\
     test_matrix4x3_scale();
     test_matrix4x3_settranslation();
     test_matrix4x3_accumulate();
+    test_matrix4x3_translate();
     test_matrix4x3_normalize();
     test_matrix4x3_lerp();
     test_matrix4x3_identity();
