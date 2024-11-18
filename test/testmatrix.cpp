@@ -805,10 +805,19 @@ namespace
     void test_matrix4x3_translate()
     {
         std::printf("testing matrix4x3 translate\n");
-        matrix4x3 m;
-        m.identity();
-        m.translate(1,1,1);
-        assert(m.d.sub(vec(1,1,1)).magnitude() < tolerance);
+        {
+            matrix4x3 m;
+            m.identity();
+            m.translate(1,1,1);
+            assert(m.d.sub(vec(1,1,1)).magnitude() < tolerance);
+        }
+        //translate(vec, float)
+        {
+            matrix4x3 m;
+            m.identity();
+            m.translate(vec(1,1,1),2);
+            assert(m.d.sub(vec(2,2,2)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4x3_normalize()
