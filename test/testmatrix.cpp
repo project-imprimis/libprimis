@@ -382,6 +382,7 @@ namespace
     void test_matrix3_transform()
     {
         std::printf("testing matrix3 transform\n");
+        //transform(vec)
         {
             matrix3 m;
             m.identity();
@@ -406,8 +407,32 @@ namespace
             vec v(0,0,1);
             assert(m.transform(v) == vec(0,0,1));
         }
+        //transform(vec2)
+        {
+            matrix3 m;
+            m.identity();
+            vec v(1,0,0);
+            assert(m.transform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m;
+            m.identity();
+            vec2 v(1,2);
+            assert(m.transform(v) == vec(1,2,0));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,1});
+            m.identity();
+            vec2 v(1,0);
+            assert(m.transform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,0});
+            m.identity();
+            vec2 v(0,0);
+            assert(m.transform(v) == vec(0,0,0));
+        }
     }
-
     void test_matrix3_transposedtransform()
     {
         std::printf("testing matrix3 transposedtransform\n");
