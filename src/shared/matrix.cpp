@@ -314,7 +314,7 @@ void matrix3::rotate_around_z(const vec2 &sc)
     rotate_around_z(sc.x, sc.y);
 }
 
-vec matrix3::transform(const vec2 &o)
+vec matrix3::transform(const vec2 &o) const
 {
     return vec(a).mul(o.x).madd(b, o.y);
 }
