@@ -468,12 +468,12 @@ void matrix4::mul(const matrix4 &y)
 
 void matrix4::muld(const matrix4 &x, const matrix4 &y)
 {
-    mult<vec4<float>>(x, y);
+    mult<vec4<double>>(x, y);
 }
 
 void matrix4::muld(const matrix4 &y)
 {
-    mult<vec4<float>>(matrix4(*this), y);
+    mult<vec4<double>>(matrix4(*this), y);
 }
 
 void matrix4::rotate_around_x(float ck, float sk)
