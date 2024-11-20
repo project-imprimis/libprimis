@@ -433,9 +433,11 @@ namespace
             assert(m.transform(v) == vec(0,0,0));
         }
     }
+
     void test_matrix3_transposedtransform()
     {
         std::printf("testing matrix3 transposedtransform\n");
+        //transposedtransform(vec)
         {
             matrix3 m;
             m.identity();
@@ -459,6 +461,31 @@ namespace
             m.identity();
             vec v(0,0,1);
             assert(m.transposedtransform(v) == vec(0,0,1));
+        }
+        //transposedtransform(vec2)
+        {
+            matrix3 m;
+            m.identity();
+            vec v(1,0,0);
+            assert(m.transposedtransform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m;
+            m.identity();
+            vec2 v(1,2);
+            assert(m.transposedtransform(v) == vec(1,2,0));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,1});
+            m.identity();
+            vec2 v(1,0);
+            assert(m.transposedtransform(v) == vec(1,0,0));
+        }
+        {
+            matrix3 m({0,1,0}, {1,0,0}, {0,0,0});
+            m.identity();
+            vec2 v(0,0);
+            assert(m.transposedtransform(v) == vec(0,0,0));
         }
     }
 
