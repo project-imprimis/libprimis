@@ -768,6 +768,18 @@ namespace
             assert(m.c == vec(0,0,2));
             assert(m.d == vec(0,0,0));
         }
+        //mul(matrix4x3, matrix4x3);
+        {
+            matrix4x3 m1({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+            matrix4x3 m2({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+            matrix4x3 m;
+            m.mul(m1,m2);
+            matrix4x3 sol({6,6,6}, {12,12,12}, {18,18,18}, {0,0,0});
+            assert(m.a.sub(sol.a).magnitude() < tolerance);
+            assert(m.b.sub(sol.b).magnitude() < tolerance);
+            assert(m.c.sub(sol.c).magnitude() < tolerance);
+            assert(m.d.sub(sol.d).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4x3_setscale()
