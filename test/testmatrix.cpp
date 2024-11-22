@@ -1385,6 +1385,17 @@ namespace
             assert(m.c.sub(sol.c).magnitude() < tolerance);
             assert(m.d.sub(sol.d).magnitude() < tolerance);
         }
+        //mul(matrix4);
+        {
+            matrix4 m1({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m2({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            m1.mul(m2);
+            matrix4 sol({10,10,10,10}, {20,20,20, 20}, {30,30,30,30}, {40,40,40,40});
+            assert(m1.a.sub(sol.a).magnitude() < tolerance);
+            assert(m1.b.sub(sol.b).magnitude() < tolerance);
+            assert(m1.c.sub(sol.c).magnitude() < tolerance);
+            assert(m1.d.sub(sol.d).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4_rotate()
