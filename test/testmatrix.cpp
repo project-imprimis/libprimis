@@ -1398,6 +1398,34 @@ namespace
         }
     }
 
+    void test_matrix4_muld()
+    {
+        std::printf("testing matrix4 muld\n");
+        //mul(matrix4, matrix4);
+        {
+            matrix4 m1({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m2({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m;
+            m.muld(m1,m2);
+            matrix4 sol({10,10,10,10}, {20,20,20, 20}, {30,30,30,30}, {40,40,40,40});
+            assert(m.a.sub(sol.a).magnitude() < tolerance);
+            assert(m.b.sub(sol.b).magnitude() < tolerance);
+            assert(m.c.sub(sol.c).magnitude() < tolerance);
+            assert(m.d.sub(sol.d).magnitude() < tolerance);
+        }
+        //mul(matrix4);
+        {
+            matrix4 m1({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m2({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            m1.muld(m2);
+            matrix4 sol({10,10,10,10}, {20,20,20, 20}, {30,30,30,30}, {40,40,40,40});
+            assert(m1.a.sub(sol.a).magnitude() < tolerance);
+            assert(m1.b.sub(sol.b).magnitude() < tolerance);
+            assert(m1.c.sub(sol.c).magnitude() < tolerance);
+            assert(m1.d.sub(sol.d).magnitude() < tolerance);
+        }
+    }
+
     void test_matrix4_rotate()
     {
         std::printf("testing matrix4 rotate\n");
@@ -2040,6 +2068,7 @@ testing matrices\n\
 
     test_matrix4_ctor();
     test_matrix4_mul();
+    test_matrix4_muld();
     test_matrix4_rotate();
     test_matrix4_rotate_around_x();
     test_matrix4_rotate_around_y();
