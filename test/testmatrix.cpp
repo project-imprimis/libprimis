@@ -1370,6 +1370,23 @@ namespace
         }
     }
 
+    void test_matrix4_mul()
+    {
+        std::printf("testing matrix4 mul\n");
+        //mul(matrix4, matrix4);
+        {
+            matrix4 m1({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m2({1,1,1,1}, {2,2,2,2}, {3,3,3,3}, {4,4,4,4});
+            matrix4 m;
+            m.mul(m1,m2);
+            matrix4 sol({10,10,10,10}, {20,20,20, 20}, {30,30,30,30}, {40,40,40,40});
+            assert(m.a.sub(sol.a).magnitude() < tolerance);
+            assert(m.b.sub(sol.b).magnitude() < tolerance);
+            assert(m.c.sub(sol.c).magnitude() < tolerance);
+            assert(m.d.sub(sol.d).magnitude() < tolerance);
+        }
+    }
+
     void test_matrix4_rotate()
     {
         std::printf("testing matrix4 rotate\n");
@@ -2011,6 +2028,7 @@ testing matrices\n\
     test_matrix4x3_row();
 
     test_matrix4_ctor();
+    test_matrix4_mul();
     test_matrix4_rotate();
     test_matrix4_rotate_around_x();
     test_matrix4_rotate_around_y();
