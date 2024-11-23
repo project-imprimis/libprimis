@@ -1006,6 +1006,22 @@ namespace
         }
     }
 
+    void test_matrix4x3_multranspose()
+    {
+        std::printf("testing matrix4x3 multranspose\n");
+        {
+            matrix4x3 m1({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+            matrix4x3 m2({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+            matrix4x3 m;
+            m.multranspose(m1,m2);
+            matrix4x3 sol({14,14,14}, {14,14,14}, {14,14,14}, {0,0,0});
+            assert(m.a.sub(sol.a).magnitude() < tolerance);
+            assert(m.b.sub(sol.b).magnitude() < tolerance);
+            assert(m.c.sub(sol.c).magnitude() < tolerance);
+            assert(m.d.sub(sol.d).magnitude() < tolerance);
+        }
+    }
+
     void test_matrix4x3_invert()
     {
         std::printf("testing matrix4x3 invert\n");
@@ -2072,6 +2088,7 @@ testing matrices\n\
     test_matrix4x3_identity();
     test_matrix4x3_transpose();
     test_matrix4x3_transposemul();
+    test_matrix4x3_multranspose();
     test_matrix4x3_invert();
     test_matrix4x3_rotate();
     test_matrix4x3_rotate_around_x();
