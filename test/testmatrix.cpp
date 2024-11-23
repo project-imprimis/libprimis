@@ -1830,6 +1830,17 @@ namespace
         }
     }
 
+    void test_matrix4_transform()
+    {
+        std::printf("testing matrix4 transform\n");
+        vec test = vec(1,2,3);
+        vec testout;
+        matrix4 m;
+        m.identity();
+        m.transform(test, testout);
+        assert(testout.sub(vec(1,2,3)).magnitude() < tolerance);
+    }
+
     void test_matrix4_transformnormal()
     {
         std::printf("testing matrix4 transformnormal\n");
@@ -2117,6 +2128,7 @@ testing matrices\n\
     test_matrix4_frustum();
     test_matrix4_perspective();
     test_matrix4_ortho();
+    test_matrix4_transform();
     test_matrix4_transposedtransformnormal();
     test_matrix4_transposedtransform();
     test_matrix4_transformnormal();
