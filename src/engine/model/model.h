@@ -86,9 +86,15 @@ class model
         virtual bool load() = 0;
         virtual int type() const = 0;
         virtual bool setBIH() = 0;
+
+        //true if the derived model type supports skeletal animation, false otherwise
         virtual bool skeletal() const = 0;
+        //true if the model will move itself in any way (including translation/rotation)
+        //dynamic models require different rendering handling
         virtual bool animated() const = 0;
+        //true if any of the model's parts have a pitchscale set
         virtual bool pitched() const = 0;
+        //true if any of the model's skin textures are alpha (see-through)
         virtual bool alphatested() const = 0;
 
         virtual void setshader(Shader *) = 0;
