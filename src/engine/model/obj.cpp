@@ -139,7 +139,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 copystring(meshname, name, std::min(namelen+1, sizeof(meshname)));
                 if(curmesh)
                 {
-                    flushmesh(curmesh, verts, tcverts, tris, attrib[2], smooth);
+                    flushmesh(*curmesh, verts, tcverts, tris, attrib[2], smooth);
                 }
                 curmesh = nullptr;
                 break;
@@ -233,7 +233,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     }
     if(curmesh)
     {
-        flushmesh(curmesh, verts, tcverts, tris, attrib[2], smooth);
+        flushmesh(*curmesh, verts, tcverts, tris, attrib[2], smooth);
     }
     delete file;
     return true;
@@ -261,39 +261,39 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(vertmesh *curmesh,
+void obj::objmeshgroup::flushmesh(vertmesh &curmesh,
                                   const std::vector<vert> &verts,
                                   const std::vector<tcvert> &tcverts,
                                   const std::vector<tri> &tris,
                                   const std::vector<vec> &attrib,
                                   float smooth)
 {
-    curmesh->numverts = verts.size();
+    curmesh.numverts = verts.size();
     if(verts.size())
     {
-        curmesh->verts = new vert[verts.size()];
-        std::memcpy(curmesh->verts, verts.data(), verts.size()*sizeof(vert));
-        curmesh->tcverts = new tcvert[verts.size()];
-        std::memcpy(curmesh->tcverts, tcverts.data(), tcverts.size()*sizeof(tcvert));
+        curmesh.verts = new vert[verts.size()];
+        std::memcpy(curmesh.verts, verts.data(), verts.size()*sizeof(vert));
+        curmesh.tcverts = new tcvert[verts.size()];
+        std::memcpy(curmesh.tcverts, tcverts.data(), tcverts.size()*sizeof(tcvert));
     }
-    curmesh->numtris = tris.size();
+    curmesh.numtris = tris.size();
     if(tris.size())
     {
-        curmesh->tris = new tri[tris.size()];
-        std::memcpy(curmesh->tris, tris.data(), tris.size()*sizeof(tri));
+        curmesh.tris = new tri[tris.size()];
+        std::memcpy(curmesh.tris, tris.data(), tris.size()*sizeof(tri));
     }
     if(attrib.empty())
     {
         if(smooth <= 1)
         {
-            curmesh->smoothnorms(smooth);
+            curmesh.smoothnorms(smooth);
         }
         else
         {
-            curmesh->buildnorms();
+            curmesh.buildnorms();
         }
     }
-    curmesh->calctangents();
+    curmesh.calctangents();
 }
 
 bool obj::loaddefaultparts()
