@@ -1538,8 +1538,9 @@ animmodel::part &animmodel::addpart()
     return *p;
 }
 
-void animmodel::initmatrix(matrix4x3 &m) const
+matrix4x3 animmodel::initmatrix() const
 {
+    matrix4x3 m;
     m.identity();
     if(orientation.x)
     {
@@ -1554,6 +1555,7 @@ void animmodel::initmatrix(matrix4x3 &m) const
         m.rotate_around_y(-orientation.z/RAD);
     }
     m.translate(translate, scale);
+    return m;
 }
 
 void animmodel::genBIH(std::vector<BIH::mesh> &bih)
@@ -1562,8 +1564,7 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     {
         return;
     }
-    matrix4x3 m;
-    initmatrix(m);
+    matrix4x3 m = initmatrix();
     for(const skin &s : parts[0]->skins)
     {
         s.tex->loadalphamask();
@@ -1618,8 +1619,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
     {
         return;
     }
-    matrix4x3 m;
-    initmatrix(m);
+    matrix4x3 m = initmatrix();
     m.mul(orient, matrix4x3(m));
     parts[0]->genshadowmesh(tris, m, scale);
     for(uint i = 1; i < parts.size(); i++)
@@ -1900,8 +1900,7 @@ void animmodel::calcbb(vec &center, vec &radius) const
     }
     vec bbmin(1e16f, 1e16f, 1e16f),
         bbmax(-1e16f, -1e16f, -1e16f);
-    matrix4x3 m;
-    initmatrix(m);
+    matrix4x3 m = initmatrix();
     parts[0]->calcbb(bbmin, bbmax, m, scale);
     for(const part *p : parts)
     {
@@ -1923,7 +1922,7 @@ void animmodel::calcbb(vec &center, vec &radius) const
 
 void animmodel::calctransform(matrix4x3 &m) const
 {
-    initmatrix(m);
+    m = initmatrix();
     m.scale(scale);
 }
 
