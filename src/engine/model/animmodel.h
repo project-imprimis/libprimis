@@ -569,6 +569,11 @@ class animmodel : public model
         animmodel &operator=(const animmodel &a) = delete;
 
         part &addpart();
+        /**
+         * @brief Sets up a transformation matrix based on this model's rotation, translation, and scale
+         *
+         * @return a transformation matrix corresponding to the model's transformations
+         */
         matrix4x3 initmatrix() const;
         void genBIH(std::vector<BIH::mesh> &bih);
         bool link(part *p, std::string_view tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
