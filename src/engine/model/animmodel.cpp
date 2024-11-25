@@ -1920,12 +1920,6 @@ void animmodel::calcbb(vec &center, vec &radius) const
     center.add(radius);
 }
 
-void animmodel::calctransform(matrix4x3 &m) const
-{
-    m = initmatrix();
-    m.scale(scale);
-}
-
 void animmodel::startrender() const
 {
     enabletc = enabletangents = enablebones = enabledepthoffset = false;

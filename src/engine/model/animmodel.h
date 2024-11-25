@@ -614,7 +614,6 @@ class animmodel : public model
                                const std::optional<float> size) override final;
         vec4<float> locationsize() const override final;
         void calcbb(vec &center, vec &radius) const override final;
-        void calctransform(matrix4x3 &m) const override final;
         void startrender() const override final;
         void endrender() const override final;
         void boundbox(vec &center, vec &radius) override final;
