@@ -591,7 +591,7 @@ class animmodel : public model
         //model object overrides
         void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override final;
         void cleanup() override final;
-        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) override final;
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) const override final;
         void preloadBIH() override final;
         bool setBIH() override final;
         bool animated() const override final;

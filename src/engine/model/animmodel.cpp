@@ -1613,7 +1613,7 @@ bool animmodel::unlink(const part *p) const
     return parts[0]->unlink(p);
 }
 
-void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient)
+void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) const
 {
     if(parts.empty())
     {
