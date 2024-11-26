@@ -616,6 +616,13 @@ class animmodel : public model
         void calcbb(vec &center, vec &radius) const override final;
         void startrender() const override final;
         void endrender() const override final;
+
+        /**
+         * @brief Recalculates the bounding box parameters and returns them to the parameters passed
+         *
+         * @param center returns the value of this model's bounding box
+         * @param radius returns the radius of this model's bounding box
+         */
         void boundbox(vec &center, vec &radius) override final;
         float collisionbox(vec &center, vec &radius) override final;
         float above() override final;
