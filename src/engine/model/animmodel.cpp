@@ -1977,13 +1977,6 @@ float animmodel::collisionbox(vec &center, vec &radius)
     return rejectradius;
 }
 
-float animmodel::above()
-{
-    vec center, radius;
-    boundbox(center, radius);
-    return center.z+radius.z;
-}
-
 const std::string &animmodel::modelname() const
 {
     return name;

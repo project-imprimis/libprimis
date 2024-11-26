@@ -1112,7 +1112,9 @@ void abovemodel(vec &o, const char *mdl)
     {
         return;
     }
-    o.z += m->above();
+    vec center, radius;
+    m->calcbb(center, radius);
+    o.z += center.z + radius.z;
 }
 
 std::vector<size_t> findanims(std::string_view pattern)

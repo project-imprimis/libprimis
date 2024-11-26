@@ -625,7 +625,6 @@ class animmodel : public model
          */
         void boundbox(vec &center, vec &radius) override final;
         float collisionbox(vec &center, vec &radius) override final;
-        float above() override final;
         const std::string &modelname() const override final;
         //static methods
         static void disablebones();
