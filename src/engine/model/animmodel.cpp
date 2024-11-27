@@ -1644,7 +1644,7 @@ void animmodel::preloadBIH()
     }
     if(bih)
     {
-        for(const part* i : parts)
+        for(const part *i : parts)
         {
             i->preloadBIH();
         }
@@ -1669,7 +1669,7 @@ bool animmodel::animated() const
     {
         return true;
     }
-    for(const part* i : parts)
+    for(const part *i : parts)
     {
         if(i->animated())
         {
@@ -1686,7 +1686,7 @@ bool animmodel::pitched() const
 
 bool animmodel::alphatested() const
 {
-    for(const part* i : parts)
+    for(const part *i : parts)
     {
         if(i->alphatested())
         {
@@ -1727,7 +1727,7 @@ bool animmodel::load()
 
 void animmodel::preloadshaders()
 {
-    for(part* i : parts)
+    for(part *i : parts)
     {
         i->preloadshaders();
     }
@@ -1735,7 +1735,7 @@ void animmodel::preloadshaders()
 
 void animmodel::preloadmeshes()
 {
-    for(part* i : parts)
+    for(part *i : parts)
     {
         i->preloadmeshes();
     }
@@ -1747,9 +1747,9 @@ void animmodel::setshader(Shader *shader)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.shader = shader;
         }
@@ -1762,9 +1762,9 @@ void animmodel::setspec(float spec)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.spec = spec;
         }
@@ -1777,9 +1777,9 @@ void animmodel::setgloss(int gloss)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.gloss = gloss;
         }
@@ -1792,7 +1792,7 @@ void animmodel::setglow(float glow, float delta, float pulse)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
         for(skin &s : i->skins)
         {
@@ -1809,9 +1809,9 @@ void animmodel::setalphatest(float alphatest)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.alphatest = alphatest;
         }
@@ -1824,9 +1824,9 @@ void animmodel::setfullbright(float fullbright)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.fullbright = fullbright;
         }
@@ -1839,9 +1839,9 @@ void animmodel::setcullface(int cullface)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.cullface = cullface;
         }
@@ -1854,9 +1854,9 @@ void animmodel::setcolor(const vec &color)
     {
         loaddefaultparts();
     }
-    for(part* i : parts)
+    for(part *i : parts)
     {
-        for(skin& j : i->skins)
+        for(skin &j : i->skins)
         {
             j.color = color;
         }
