@@ -1652,16 +1652,15 @@ void animmodel::preloadBIH()
 }
 
 //always will return true (note that this overloads model::setBIH())
-bool animmodel::setBIH()
+void animmodel::setBIH()
 {
     if(bih)
     {
-        return true;
+        return;
     }
     std::vector<BIH::mesh> meshes;
     genBIH(meshes);
     bih = std::make_unique<BIH>(meshes);
-    return true;
 }
 
 bool animmodel::animated() const

@@ -626,10 +626,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
             roll  = e.attr4;
         if(mcol == Collide_TRI || testtricol)
         {
-            if(!m->bih && !m->setBIH())
-            {
-                continue;
-            }
+            m->setBIH();
             switch(testtricol ? testtricol : d->collidetype)
             {
                 case Collide_Ellipse:

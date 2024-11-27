@@ -876,7 +876,8 @@ class stainrenderer
                 {
                     continue;
                 }
-                if(m->animated() || (!m->bih && !m->setBIH()))
+                m->setBIH();
+                if(m->animated())
                 {
                     continue;
                 }

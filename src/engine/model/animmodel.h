@@ -593,7 +593,7 @@ class animmodel : public model
         void cleanup() override final;
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) const override final;
         void preloadBIH() override final;
-        bool setBIH() override final;
+        void setBIH() override final;
         bool animated() const override final;
         bool pitched() const override final;
         bool alphatested() const override final;

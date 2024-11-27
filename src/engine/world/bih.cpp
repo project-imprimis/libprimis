@@ -547,10 +547,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     {
         return false;
     }
-    if(!m->bih && !m->setBIH())
-    {
-        return false;
-    }
+    m->setBIH();
     float scale = e.attr5 ? 100.0f/e.attr5 : 1.0f;
     vec mo = static_cast<vec>(o).sub(e.o).mul(scale), mray(ray);
     float v = mo.dot(mray),
