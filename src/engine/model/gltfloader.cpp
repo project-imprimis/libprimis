@@ -393,7 +393,7 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
 }
 
 //helper for find<object> functions
-std::vector<std::string> GLTFModelInfo::getblockbyname(std::string_view path, std::string blockname, size_t maxdepth)
+std::vector<std::string> GLTFModelInfo::getblockbyname(std::string_view path, std::string_view blockname, size_t maxdepth)
 {
     std::vector<std::string> file = loadjsonfile(path);
     size_t blockstart = 0;

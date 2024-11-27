@@ -158,7 +158,7 @@ class GLTFModelInfo
          *  - std::vector<std::string> of file
          */
         std::vector<std::string> loadjsonfile(std::string_view name);
-        std::vector<std::string> getblockbyname(std::string_view path, std::string blockname, size_t maxdepth = 0);
+        std::vector<std::string> getblockbyname(std::string_view path, std::string_view blockname, size_t maxdepth = 0);
         static void cleanstring(std::string &s);
         size_t findnodes(std::string_view path);
         size_t findmeshes(std::string_view path);
