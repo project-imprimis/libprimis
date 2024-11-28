@@ -87,7 +87,7 @@ void SoundEngine::SoundChannel::setloc(const vec& newloc)
     loc = newloc;
 }
 
-void SoundEngine::SoundChannel::setupchannel(int newn, soundslot *newslot, const vec *newloc, extentity *newent, int newflags, int newradius)
+void SoundEngine::SoundChannel::setupchannel(int newn, const soundslot *newslot, const vec *newloc, extentity *newent, int newflags, int newradius)
 {
     reset();
     inuse = true;
@@ -102,7 +102,7 @@ void SoundEngine::SoundChannel::setupchannel(int newn, soundslot *newslot, const
 }
 
 //creates a new SoundChannel object with passed properties
-SoundEngine::SoundChannel& SoundEngine::newchannel(int n, soundslot *slot, const vec *loc, extentity *ent, int flags, int radius)
+SoundEngine::SoundChannel& SoundEngine::newchannel(int n, const soundslot *slot, const vec *loc, extentity *ent, int flags, int radius)
 {
     if(ent)
     {
