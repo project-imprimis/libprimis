@@ -653,6 +653,10 @@ class animmodel : public model
         int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist) const override final;
 
         static bool enabletc, enablebones, enabletangents;
+
+        /**
+         * @brief A stack of transformation matrices used for model intersection math
+         */
         static std::stack<matrix4> matrixstack;
         static float sizescale;
 
