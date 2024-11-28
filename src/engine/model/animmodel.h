@@ -604,6 +604,14 @@ class animmodel : public model
         void setspec(float spec) override final;
         void setgloss(int gloss) override final;
         void setglow(float glow, float delta, float pulse) override final;
+        /**
+         * @brief Sets the alphatest value for each skin in each part of this model
+         *
+         * alphatest is one of the shader parameters for the skin shader. Each skin
+         * in this model will recieve the same alphatest value.
+         *
+         * @param alphatest the alphatest value to set
+         */
         void setalphatest(float alphatest) override final;
         void setfullbright(float fullbright) override final;
         void setcullface(int cullface) override final;
