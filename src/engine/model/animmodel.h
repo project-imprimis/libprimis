@@ -582,6 +582,15 @@ class animmodel : public model
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a) const;
 
         //virtual methods
+        /**
+         * @brief Returns whether this model type requires a flipped Y axis
+         *
+         * This function will return true if the model type needs its coordinate
+         * system transformed to properly render in the engine. GLTF and MD5 do not,
+         * while OBJ does.
+         *
+         * @return true if the model format requires transformation, false otherwise
+         */
         virtual bool flipy() const = 0;
         virtual bool loadconfig(const std::string &mdlname) = 0;
         virtual bool loaddefaultparts() = 0;
