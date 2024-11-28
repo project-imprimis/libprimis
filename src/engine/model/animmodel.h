@@ -629,6 +629,12 @@ class animmodel : public model
                                const std::optional<vec> rotate,
                                const std::optional<vec> orient,
                                const std::optional<float> size) override final;
+
+        /**
+         * @brief Returns a 4-vector consisting of the translation and scale of the model.
+         *
+         * @return translation coordinates in x,y,z; scale factor in w
+         */
         vec4<float> locationsize() const override final;
         void calcbb(vec &center, vec &radius) const override final;
         void startrender() const override final;
