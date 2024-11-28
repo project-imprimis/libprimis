@@ -641,6 +641,14 @@ class animmodel : public model
 
         animmodel(std::string name);
 
+        /**
+         * @brief Returns the linkage type of the specified model part.
+         *
+         * For animmodels, always returns Link_Tag (see above anim).
+         * Skeletal models may return Link_Reuse if the passed part shares the same mesh as this part.
+         *
+         * @return the linkage type of this part
+         */
         virtual int linktype(const animmodel *, const part *) const;
         int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist) const override final;
 
