@@ -17,6 +17,7 @@ endif
 #list of source code files to be compiled
 CLIENT_OBJS= \
 	main.o \
+	testanimmodel.o \
 	testcs.o \
 	testgeom.o \
 	testgeomexts.o \

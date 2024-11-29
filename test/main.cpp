@@ -10,6 +10,7 @@
 #include "testgeom.h"
 #include "testgeomexts.h"
 #include "testgltfloader.h"
+#include "testanimmodel.h"
 #include "testskel.h"
 #include "testslot.h"
 #include "testmd5.h"
@@ -27,6 +28,7 @@ int main()
     test_gltf();
     test_md5();
     test_ragdoll();
+    test_animmodel();
     test_skel();
     test_slot();
     test_geom();
