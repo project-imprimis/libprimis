@@ -609,6 +609,16 @@ class animmodel : public model
         bool load() override final;
         void preloadshaders() override final;
         void preloadmeshes() override final;
+
+        /**
+         * @brief Sets the shader to be used by the model
+         *
+         * Clears any pre-existing slot parameters related to an existing shader.
+         *
+         * If no such shader was found, prints an error message to the console.
+         *
+         * @param shader the shader to set
+         */
         void setshader(Shader *shader) override final;
         void setspec(float spec) override final;
         void setgloss(int gloss) override final;
