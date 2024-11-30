@@ -608,6 +608,12 @@ class animmodel : public model
         bool alphatested() const override final;
         bool load() override final;
         void preloadshaders() override final;
+
+        /**
+         * @brief Preloades every entry in the part::meshes array.
+         *
+         * No effect if there are no meshes to be loaded.
+         */
         void preloadmeshes() override final;
 
         /**
