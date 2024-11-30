@@ -431,6 +431,17 @@ class animmodel : public model
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) const;
                 void genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t) const;
+
+                /**
+                 * @brief Returns true if i is a valid index in the list of frames this meshgroup contains
+                 *
+                 * That is, returns true if the index i is at least 0 and is no larger than the last index
+                 * in the frame list for this meshgroup
+                 *
+                 * @param index to query
+                 *
+                 * @return true if the passed index is a valid index
+                 */
                 bool hasframe(int i) const;
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
