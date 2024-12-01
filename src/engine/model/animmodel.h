@@ -443,6 +443,18 @@ class animmodel : public model
                  * @return true if the passed index is a valid index
                  */
                 bool hasframe(int i) const;
+
+                /**
+                 * @brief Returns true if the range i...n is a valid index of frames this meshgroup contains
+                 *
+                 * Returns true if the indices i through n begins with i at 0 or greater and i+n no larger
+                 * than the last index in the frame list for this meshgroup
+                 *
+                 * @param i the first index to query
+                 * @param n the number of indices thereafter to query
+                 *
+                 * @return true if the passed index range are all valid
+                 */
                 bool hasframes(int i, int n) const;
                 int clipframes(int i, int n) const;
                 const std::string &groupname() const;
