@@ -456,6 +456,18 @@ class animmodel : public model
                  * @return true if the passed index range are all valid
                  */
                 bool hasframes(int i, int n) const;
+
+                /**
+                 * @brief Returns the lesser of n and the number of remaining frames between i and n
+                 *
+                 * Returns n if there are existing frames between i and i+n, and returns the largest
+                 * value that would satisfy this condition if not.
+                 *
+                 * @param i the first index to query
+                 * @param n the number of indices thereafter to query
+                 *
+                 * @return n, or the maximum number of entries after i if n is too large
+                 */
                 int clipframes(int i, int n) const;
                 const std::string &groupname() const;
 
