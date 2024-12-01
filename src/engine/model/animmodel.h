@@ -469,6 +469,14 @@ class animmodel : public model
                  * @return n, or the maximum number of entries after i if n is too large
                  */
                 int clipframes(int i, int n) const;
+
+                /**
+                 * @brief Returns the name of this meshgroup
+                 *
+                 * This is created by the constructor for the object.
+                 *
+                 * @return the name of the meshgroup
+                 */
                 const std::string &groupname() const;
 
                 /**
