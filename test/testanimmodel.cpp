@@ -46,6 +46,17 @@ namespace
         assert(s2 != s1);
         assert(s1 != s2);
     }
+
+    void test_animpos_equals()
+    {
+        std::printf("testing animpos operator==\n");
+        animmodel::AnimPos p1{1,1,1,1.f};
+        animmodel::AnimPos p2{1,1,1,1.f};
+        animmodel::AnimPos p3{1,2,3,4.f};
+        assert(p1 == p1);
+        assert(p1 == p2);
+        assert(!(p1 == p3));
+    }
 }
 
 void test_animmodel()
@@ -57,4 +68,5 @@ testing animmodel functionality\n\
     );
     test_animstate_equals();
     test_animstate_nequals();
+    test_animpos_equals();
 };
