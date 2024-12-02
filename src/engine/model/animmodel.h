@@ -511,6 +511,16 @@ class animmodel : public model
                 void bindpos(GLuint ebuf, GLuint vbuf, const void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, const vec *v, int stride);
                 void bindpos(GLuint ebuf, GLuint vbuf, const vec4<half> *v, int stride);
+
+                /**
+                 * @brief Binds to TexCoord0 the provided data with a specified stridelength
+                 *
+                 * Binds (via glVertexAttribPointer) the provided array pointed to by v
+                 * with a stride length (offset between attributes) of `stride`.
+                 *
+                 * @param v the array of texture coordinate data to bind
+                 * @param stride the offset between coodinates within the array
+                 */
                 void bindtc(const void *v, int stride);
                 void bindtangents(const void *v, int stride);
                 void bindbones(const void *wv, const void *bv, int stride);
