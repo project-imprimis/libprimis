@@ -599,9 +599,6 @@ class animmodel : public model
                 bool animated() const;
                 virtual void loaded();
 
-            protected:
-                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
-
             private:
                 struct animspec
                 {
@@ -613,6 +610,7 @@ class animmodel : public model
                 std::vector<animspec> *anims[maxanimparts]; //pointer to array of std::vector<animspec>
 
                 virtual void getdefaultanim(animinfo &info) const;
+                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
         };
 
         std::vector<part *> parts;
