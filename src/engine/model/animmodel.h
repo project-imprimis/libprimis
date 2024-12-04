@@ -589,6 +589,14 @@ class animmodel : public model
                 bool alphatested() const;
                 void preloadBIH() const;
                 void preloadshaders();
+
+                /**
+                 * @brief Causes the attached meshgroup to run its preload routine
+                 *
+                 * The (single) meshgroup pointed to by this object will preload itself.
+                 * This process includes generating the vertex buffer objects required
+                 * for rendering the meshes.
+                 */
                 void preloadmeshes();
 
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
