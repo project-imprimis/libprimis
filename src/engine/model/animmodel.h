@@ -578,6 +578,13 @@ class animmodel : public model
                 part(const part& a) = delete;
                 part &operator=(const part &a) = delete;
 
+                /**
+                 * @brief Cleans up the meshgroup and attached skins.
+                 *
+                 * Cleans up the single meshgroup at part::meshes, and cleans up
+                 * every skin in the skin vector. Does not delete the skins nor
+                 * the meshgroup but merely leaves them in a cleaned up state
+                 */
                 void cleanup();
                 void disablepitch();
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
