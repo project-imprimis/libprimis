@@ -586,6 +586,14 @@ class animmodel : public model
                  * the meshgroup but merely leaves them in a cleaned up state
                  */
                 void cleanup();
+
+                /**
+                 * @brief Zeros out the pitch fields in this part.
+                 *
+                 * Sets part::pitchscale, part::pitchoffset, part::pitchmin, and part::pitchmax
+                 * to zero. This means that the part after this is called will have zero pitch
+                 * component (rotation).
+                 */
                 void disablepitch();
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
