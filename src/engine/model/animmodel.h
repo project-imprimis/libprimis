@@ -644,13 +644,20 @@ class animmodel : public model
                 bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime) const;
         };
 
-        std::vector<part *> parts;
+        std::vector<part *> parts; //vector of part objects heap-allocated by skelmodel::addpart or part::addpart
 
         //ordinary methods
         ~animmodel();
         animmodel(const animmodel& a) = delete;
         animmodel &operator=(const animmodel &a) = delete;
 
+        /**
+         * @brief Creates a heap-allocated part object.
+         *
+         * This must be `delete`'d or it will cause a memory leak.
+         *
+         * @return a reference to the newly created part
+         */
         part &addpart();
         /**
          * @brief Sets up a transformation matrix based on this model's rotation, translation, and scale
