@@ -651,6 +651,16 @@ class animmodel : public model
                 void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
                 void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
                 void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
+
+                /**
+                 * @brief Returns true of all animparts for this part are set
+                 *
+                 * Checks that all animspec vectors in part::anims exist and have
+                 * been instantiated. No values must be in the vectors for this to return true;
+                 * they only need to exist.
+                 *
+                 * @return true if all animparts are set, false otherwise
+                 */
                 bool animated() const;
                 virtual void loaded();
 
