@@ -595,6 +595,18 @@ class animmodel : public model
                  * component (rotation).
                  */
                 void disablepitch();
+
+                /**
+                 * @brief Returns to bbmin and bbmax the bounding area of this model
+                 *
+                 * Returns the rectangular bounding box of the model, given its scale
+                 * and transformation.
+                 *
+                 * @param bbmin the -x-y-z corner of the rectangular bounding box
+                 * @param bbmax the +x+y+z cornder of the rectangular bounding box
+                 * @param m the transformation matrix of the model
+                 * @param modelscale the scale factor for the model
+                 */
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const;
