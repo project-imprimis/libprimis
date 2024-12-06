@@ -608,6 +608,18 @@ class animmodel : public model
                  * @param modelscale the scale factor for the model
                  */
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m, float modelscale) const;
+
+                /**
+                 * @brief Generates a new BIH for this model and appends it to the back of the passed vector.
+                 *
+                 * Creates a new BIH at the end of the passed vector of BIH meshes and
+                 * sets its parameters to that of this model part with the specified scale
+                 * factor and scale.
+                 *
+                 * @param bih the bounded interval hierarchy for the model
+                 * @param m the transformation matrix of this model
+                 * @param modelscale the scale factor for the model
+                 */
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const;
                 bool link(part *p, std::string_view tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
