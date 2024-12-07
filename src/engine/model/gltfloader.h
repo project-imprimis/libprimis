@@ -143,7 +143,7 @@ class GLTFModelInfo
                 }
                 T *outdata = reinterpret_cast<T*>(data);
                 outbuf.push_back(*outdata);
-                delete[] data;
+                delete[] data; //this is safe because the vector pushes back values and not pointers
             }
             return outbuf;
         }
