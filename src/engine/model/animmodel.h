@@ -411,6 +411,12 @@ class animmodel : public model
 
                 virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const = 0;
                 virtual std::optional<size_t> findtag(std::string_view name) = 0;
+
+                /**
+                 * @brief Returns the number of animation frames this meshgroup contains
+                 *
+                 * For skelmodels, always returns at least 1. May be 0 or greater for vertmodels.
+                 */
                 virtual int totalframes() const = 0;
                 virtual void *animkey() = 0;
                 virtual void cleanup() = 0;
