@@ -360,6 +360,14 @@ void ragdolldata::constrainrot()
     }
 }
 
+/**
+ * @brief Sets the shadowing elements in rotfrictions according to their respective values in the pointed ragdollskel.
+ *
+ * For each member of ragdolldata::rotfrictions, sets its value to the transposed multiplication of
+ * the data pointed to by the indices of the first two vertices in the ragdollskel::rotfrictions tri data.
+ *
+ * Previous values in ragdolldata::rotfrictions are ignored and overwritten.
+ */
 void ragdolldata::calcrotfriction()
 {
     for(size_t i = 0; i < skel->rotfrictions.size(); ++i)
