@@ -151,12 +151,12 @@ static void test_clear_command()
     assert(itr != idents.end());
 
     assert((*itr).second.name != nullptr);
-    assert((*itr).second.code != nullptr);
+    assert((*itr).second.alias.code != nullptr);
 
     clear_command();
 
     assert((*itr).second.name == nullptr);
-    assert((*itr).second.code == nullptr);
+    assert((*itr).second.alias.code == nullptr);
 }
 
 void testidents()
