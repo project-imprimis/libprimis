@@ -5046,7 +5046,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_LookupU|Ret_Integer:
             {
                 LOOKUPU(arg.setint(id->getint()),
-                        arg.setint(static_cast<int>(strtoul(*id->val.storage.s, nullptr, 0))),
+                        arg.setint(static_cast<int>(std::strtoul(*id->val.storage.s, nullptr, 0))),
                         arg.setint(*id->val.storage.i),
                         arg.setint(static_cast<int>(*id->val.storage.f)),
                         arg.setint(0));
@@ -5104,7 +5104,7 @@ static const uint *runcode(const uint *code, tagval &result)
             }
             case Code_StrVar|Ret_Integer:
             {
-                args[numargs++].setint(static_cast<int>(strtoul((*identmap[op>>8]->val.storage.s), nullptr, 0)));
+                args[numargs++].setint(static_cast<int>(std::strtoul((*identmap[op>>8]->val.storage.s), nullptr, 0)));
                 continue;
             }
             case Code_StrVar|Ret_Float:
