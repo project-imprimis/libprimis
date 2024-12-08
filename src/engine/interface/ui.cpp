@@ -3355,17 +3355,17 @@ namespace UI
         {
             case Id_Var:
             {
-                val = *id->storage.i;
+                val = *id->val.storage.i;
                 break;
             }
             case Id_FloatVar:
             {
-                val = *id->storage.f;
+                val = *id->val.storage.f;
                 break;
             }
             case Id_StringVar:
             {
-                val = parsenumber(*id->storage.s);
+                val = parsenumber(*id->val.storage.s);
                 break;
             }
             case Id_Alias:
@@ -3440,14 +3440,14 @@ namespace UI
                 {
                     case Id_Var:
                     {
-                        vmin_ = id_->minval;
-                        vmax_ = id_->maxval;
+                        vmin_ = id_->val.i.min;
+                        vmax_ = id_->val.i.max;
                         break;
                     }
                     case Id_FloatVar:
                     {
-                        vmin_ = id_->minvalf;
-                        vmax_ = id_->maxvalf;
+                        vmin_ = id_->val.f.min;
+                        vmax_ = id_->val.f.max;
                         break;
                     }
                 }
@@ -3967,17 +3967,17 @@ namespace UI
         {
             case Id_Var:
             {
-                val = intstr(*id->storage.i);
+                val = intstr(*id->val.storage.i);
                 break;
             }
             case Id_FloatVar:
             {
-                val = floatstr(*id->storage.f);
+                val = floatstr(*id->val.storage.f);
                 break;
             }
             case Id_StringVar:
             {
-                val = *id->storage.s;
+                val = *id->val.storage.s;
                 break;
             }
             case Id_Alias:

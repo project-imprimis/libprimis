@@ -895,26 +895,26 @@ bool cubeworld::save_world(const char *mname, const char *gameident)
             case Id_Var:
                 if(debugvars)
                 {
-                    conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
+                    conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.val.storage.i);
                 }
-                f->put<int>(*id.storage.i);
+                f->put<int>(*id.val.storage.i);
                 break;
 
             case Id_FloatVar:
                 if(debugvars)
                 {
-                    conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
+                    conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.val.storage.f);
                 }
-                f->put<float>(*id.storage.f);
+                f->put<float>(*id.val.storage.f);
                 break;
 
             case Id_StringVar:
                 if(debugvars)
                 {
-                    conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
+                    conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.val.storage.s);
                 }
-                f->put<ushort>(std::strlen(*id.storage.s));
-                f->write(*id.storage.s, std::strlen(*id.storage.s));
+                f->put<ushort>(std::strlen(*id.val.storage.s));
+                f->write(*id.val.storage.s, std::strlen(*id.val.storage.s));
                 break;
         }
     }
@@ -1042,7 +1042,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
                 case Id_Var:
                 {
                     int i = val.getint();
-                    if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
+                    if(id->val.i.min <= id->val.i.max && i >= id->val.i.min && i <= id->val.i.max)
                     {
                         setvar(name, i);
                         if(debugvars)
@@ -1055,7 +1055,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
                 case Id_FloatVar:
                 {
                     float f = val.getfloat();
-                    if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
+                    if(id->val.f.min <= id->val.f.max && f >= id->val.f.min && f <= id->val.f.max)
                     {
                         setfvar(name, f);
                         if(debugvars)

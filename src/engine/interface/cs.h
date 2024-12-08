@@ -167,7 +167,7 @@ inline const char *tagval::getstr() const
 
 inline const char *ident::getstr() const
 {
-    return ::getstr(val, valtype);
+    return ::getstr(alias.val, valtype);
 }
 
 inline void getval(const identval &v, int type, tagval &r)

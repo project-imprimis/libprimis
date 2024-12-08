@@ -233,17 +233,17 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
             {
                 case Id_Var:
                 {
-                    f << escapeid(id) << " " << *id.storage.i << std::endl;
+                    f << escapeid(id) << " " << *id.val.storage.i << std::endl;
                     break;
                 }
                 case Id_FloatVar:
                 {
-                    f << escapeid(id) << " " << floatstr(*id.storage.f) << std::endl;
+                    f << escapeid(id) << " " << floatstr(*id.val.storage.f) << std::endl;
                     break;
                 }
                 case Id_StringVar:
                 {
-                    f << escapeid(id) << " " << escapestring(*id.storage.s) << std::endl;
+                    f << escapeid(id) << " " << escapestring(*id.val.storage.s) << std::endl;
                     break;
                 }
             }
@@ -258,13 +258,13 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
             {
                 case Value_String:
                 {
-                    if(!id->val.s[0])
+                    if(!id->alias.val.s[0])
                     {
                         break;
                     }
-                    if(!validateblock(id->val.s))
+                    if(!validateblock(id->alias.val.s))
                     {
-                        f << escapeid(*id) << " = " << escapestring(id->val.s) << std::endl;
+                        f << escapeid(*id) << " = " << escapestring(id->alias.val.s) << std::endl;
                         break;
                     }
                 }
@@ -348,7 +348,7 @@ const char *numberstr(double v)
 
 void loopiter(ident &id, identstack &stack, const tagval &v)
 {
-    if(id.stack != &stack)
+    if(id.alias.stack != &stack)
     {
         pusharg(id, v, stack);
         id.flags &= ~Idf_Unknown;
@@ -357,7 +357,7 @@ void loopiter(ident &id, identstack &stack, const tagval &v)
     {
         if(id.valtype == Value_String)
         {
-            delete[] id.val.s;
+            delete[] id.alias.val.s;
         }
         cleancode(id);
         id.setval(v);
@@ -373,7 +373,7 @@ void loopiter(ident *id, identstack &stack, int i)
 
 void loopend(ident *id, identstack &stack)
 {
-    if(id->stack == &stack)
+    if(id->alias.stack == &stack)
     {
         poparg(*id);
     }
@@ -381,18 +381,18 @@ void loopend(ident *id, identstack &stack)
 
 static void setiter(ident &id, int i, identstack &stack)
 {
-    if(id.stack == &stack)
+    if(id.alias.stack == &stack)
     {
         if(id.valtype != Value_Integer)
         {
             if(id.valtype == Value_String)
             {
-                delete[] id.val.s;
+                delete[] id.alias.val.s;
             }
             cleancode(id);
             id.valtype = Value_Integer;
         }
-        id.val.i = i;
+        id.alias.val.i = i;
     }
     else
     {
@@ -778,18 +778,18 @@ static void sublist(const char *s, const int *skip, const int *count, const int 
 
 static void setiter(ident &id, char *val, identstack &stack)
 {
-    if(id.stack == &stack)
+    if(id.alias.stack == &stack)
     {
         if(id.valtype == Value_String)
         {
-            delete[] id.val.s;
+            delete[] id.alias.val.s;
         }
         else
         {
             id.valtype = Value_String;
         }
         cleancode(id);
-        id.val.s = val;
+        id.alias.val.s = val;
     }
     else
     {
@@ -1120,13 +1120,13 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
                 x->valtype = Value_CString;
             }
             cleancode(*x);
-            x->val.code = reinterpret_cast<const uint *>(xval.str);
+            x->alias.val.code = reinterpret_cast<const uint *>(xval.str);
             if(y->valtype != Value_CString)
             {
                 y->valtype = Value_CString;
             }
             cleancode(*y);
-            y->val.code = reinterpret_cast<const uint *>(yval.str);
+            y->alias.val.code = reinterpret_cast<const uint *>(yval.str);
             return executebool(body);
         }
     };

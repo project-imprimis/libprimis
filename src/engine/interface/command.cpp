@@ -47,7 +47,7 @@ static int _numargs = variable("numargs", Max_Args, 0, 0, &_numargs, nullptr, 0)
 
 void ident::getval(tagval &r) const
 {
-    ::getval(val, valtype, r);
+    ::getval(alias.val, valtype, r);
 }
 
 void ident::getcstr(tagval &v) const
@@ -56,23 +56,23 @@ void ident::getcstr(tagval &v) const
     {
         case Value_Macro:
         {
-            v.setmacro(val.code);
+            v.setmacro(alias.val.code);
             break;
         }
         case Value_String:
         case Value_CString:
         {
-            v.setcstr(val.s);
+            v.setcstr(alias.val.s);
             break;
         }
         case Value_Integer:
         {
-            v.setstr(newstring(intstr(val.i)));
+            v.setstr(newstring(intstr(alias.val.i)));
             break;
         }
         case Value_Float:
         {
-            v.setstr(newstring(floatstr(val.f)));
+            v.setstr(newstring(floatstr(alias.val.f)));
             break;
         }
         default:
@@ -89,23 +89,23 @@ void ident::getcval(tagval &v) const
     {
         case Value_Macro:
         {
-            v.setmacro(val.code);
+            v.setmacro(alias.val.code);
             break;
         }
         case Value_String:
         case Value_CString:
         {
-            v.setcstr(val.s);
+            v.setcstr(alias.val.s);
             break;
         }
         case Value_Integer:
         {
-            v.setint(val.i);
+            v.setint(alias.val.i);
             break;
         }
         case Value_Float:
         {
-            v.setfloat(val.f);
+            v.setfloat(alias.val.f);
             break;
         }
         default:
@@ -214,7 +214,7 @@ int tagval::getint() const
 
 int ident::getint() const
 {
-    return ::getint(val, valtype);
+    return ::getint(alias.val, valtype);
 }
 
 float getfloat(const identval &v, int type)
@@ -249,7 +249,7 @@ float tagval::getfloat() const
 
 float ident::getfloat() const
 {
-    return ::getfloat(val, valtype);
+    return ::getfloat(alias.val, valtype);
 }
 
 static double getnumber(const identval &v, int type)
@@ -284,7 +284,7 @@ double tagval::getnumber() const
 
 double ident::getnumber() const
 {
-    return ::getnumber(val, valtype);
+    return ::getnumber(alias.val, valtype);
 }
 
 void freearg(tagval &v)
@@ -453,14 +453,14 @@ static void freeargs(tagval *args, int &oldnum, int newnum)
 
 void cleancode(ident &id)
 {
-    if(id.code)
+    if(id.alias.code)
     {
-        id.code[0] -= 0x100;
-        if(static_cast<int>(id.code[0]) < 0x100)
+        id.alias.code[0] -= 0x100;
+        if(static_cast<int>(id.alias.code[0]) < 0x100)
         {
-            delete[] id.code;
+            delete[] id.alias.code;
         }
-        id.code = nullptr;
+        id.alias.code = nullptr;
     }
 }
 
@@ -479,8 +479,8 @@ void clear_command()
 
             i.forcenull();
 
-            delete[] i.code;
-            i.code = nullptr;
+            delete[] i.alias.code;
+            i.alias.code = nullptr;
         }
     }
 }
@@ -497,33 +497,33 @@ void clearoverride(ident &i)
         {
             if(i.valtype==Value_String)
             {
-                if(!i.val.s[0])
+                if(!i.alias.val.s[0])
                 {
                     break;
                 }
-                delete[] i.val.s;
+                delete[] i.alias.val.s;
             }
             cleancode(i);
             i.valtype = Value_String;
-            i.val.s = newstring("");
+            i.alias.val.s = newstring("");
             break;
         }
         case Id_Var:
         {
-            *i.storage.i = i.overrideval.i;
+            *i.val.storage.i = i.val.overrideval.i;
             i.changed();
             break;
         }
         case Id_FloatVar:
         {
-            *i.storage.f = i.overrideval.f;
+            *i.val.storage.f = i.val.overrideval.f;
             i.changed();
             break;
         }
         case Id_StringVar:
         {
-            delete[] *i.storage.s;
-            *i.storage.s = i.overrideval.s;
+            delete[] *i.val.storage.s;
+            *i.val.storage.s = i.val.overrideval.s;
             i.changed();
             break;
         }
@@ -694,37 +694,37 @@ static void debugcodeline(const char *p, const char *fmt, ...)
 
 void pusharg(ident &id, const tagval &v, identstack &stack)
 {
-    stack.val = id.val;
+    stack.val = id.alias.val;
     stack.valtype = id.valtype;
-    stack.next = id.stack;
-    id.stack = &stack;
+    stack.next = id.alias.stack;
+    id.alias.stack = &stack;
     id.setval(v);
     cleancode(id);
 }
 
 void poparg(ident &id)
 {
-    if(!id.stack)
+    if(!id.alias.stack)
     {
         return;
     }
-    identstack *stack = id.stack;
+    identstack *stack = id.alias.stack;
     if(id.valtype == Value_String)
     {
-        delete[] id.val.s;
+        delete[] id.alias.val.s;
     }
     id.setval(*stack);
     cleancode(id);
-    id.stack = stack->next;
+    id.alias.stack = stack->next;
 }
 
 void undoarg(ident &id, identstack &stack)
 {
-    identstack *prev = id.stack;
-    stack.val = id.val;
+    identstack *prev = id.alias.stack;
+    stack.val = id.alias.val;
     stack.valtype = id.valtype;
     stack.next = prev;
-    id.stack = prev->next;
+    id.alias.stack = prev->next;
     id.setval(*prev);
     cleancode(id);
 }
@@ -732,9 +732,9 @@ void undoarg(ident &id, identstack &stack)
 void redoarg(ident &id, const identstack &stack)
 {
     identstack *prev = stack.next;
-    prev->val = id.val;
+    prev->val = id.alias.val;
     prev->valtype = id.valtype;
-    id.stack = prev;
+    id.alias.stack = prev;
     id.setval(stack);
     cleancode(id);
 }
@@ -882,7 +882,7 @@ void setarg(ident &id, tagval &v)
     {
         if(id.valtype == Value_String)
         {
-            delete[] id.val.s;
+            delete[] id.alias.val.s;
         }
         id.setval(v);
         cleancode(id);
@@ -898,7 +898,7 @@ void setalias(ident &id, tagval &v)
 {
     if(id.valtype == Value_String)
     {
-        delete[] id.val.s;
+        delete[] id.alias.val.s;
     }
     id.setval(v);
     cleancode(id);
@@ -1005,7 +1005,7 @@ struct DefVar : identval
 
     static void changed(ident *id)
     {
-        DefVar *v = static_cast<DefVar *>(id->storage.p);
+        DefVar *v = static_cast<DefVar *>(id->val.storage.p);
         if(v->onchange)
         {
             execute(v->onchange);
@@ -1117,14 +1117,14 @@ void setvar(const char *name, int i, bool dofunc, bool doclamp)
         return;
     }
 
-    storeval(id, id->overrideval.i, id->storage.i);
+    storeval(id, id->val.overrideval.i, id->val.storage.i);
     if(doclamp)
     {
-        *id->storage.i = std::clamp(i, id->minval, id->maxval);
+        *id->val.storage.i = std::clamp(i, id->val.i.min, id->val.i.max);
     }
     else
     {
-        *id->storage.i = i;
+        *id->val.storage.i = i;
     }
     if(dofunc)
     {
@@ -1139,14 +1139,14 @@ void setfvar(const char *name, float f, bool dofunc, bool doclamp)
         return;
     }
 
-    storeval(id, id->overrideval.f, id->storage.f);
+    storeval(id, id->val.overrideval.f, id->val.storage.f);
     if(doclamp)
     {
-        *id->storage.f = std::clamp(f, id->minvalf, id->maxvalf);
+        *id->val.storage.f = std::clamp(f, id->val.f.min, id->val.f.max);
     }
     else
     {
-        *id->storage.f = f;
+        *id->val.storage.f = f;
     }
     if(dofunc)
     {
@@ -1161,8 +1161,8 @@ void setsvar(const char *name, const char *str, bool dofunc)
         return;
     }
 
-    storevalarray(id, id->overrideval.s, id->storage.s);
-    *id->storage.s = newstring(str);
+    storevalarray(id, id->val.overrideval.s, id->val.storage.s);
+    *id->val.storage.s = newstring(str);
     if(dofunc)
     {
         id->changed();
@@ -1175,7 +1175,7 @@ int getvar(const char *name)
     {
         return 0;
     }
-    return *id->storage.i;
+    return *id->val.storage.i;
 }
 int getvarmin(const char *name)
 {
@@ -1184,7 +1184,7 @@ int getvarmin(const char *name)
     {
         return 0;
     }
-    return id->minval;
+    return id->val.i.min;
 }
 int getvarmax(const char *name)
 {
@@ -1193,7 +1193,7 @@ int getvarmax(const char *name)
     {
         return 0;
     }
-    return id->maxval;
+    return id->val.i.max;
 }
 float getfvarmin(const char *name)
 {
@@ -1202,7 +1202,7 @@ float getfvarmin(const char *name)
     {
         return 0;
     }
-    return id->minvalf;
+    return id->val.f.min;
 }
 float getfvarmax(const char *name)
 {
@@ -1211,7 +1211,7 @@ float getfvarmax(const char *name)
     {
         return 0;
     }
-    return id->maxvalf;
+    return id->val.f.max;
 }
 
 bool identexists(const char *name)
@@ -1297,12 +1297,12 @@ void setvarchecked(ident *id, int val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        storeval(id, id->overrideval.i, id->storage.i);
-        if(val < id->minval || val > id->maxval)
+        storeval(id, id->val.overrideval.i, id->val.storage.i);
+        if(val < id->val.i.min || val > id->val.i.max)
         {
-            val = clampvar(id->flags&Idf_Hex, std::string(id->name), val, id->minval, id->maxval);
+            val = clampvar(id->flags&Idf_Hex, std::string(id->name), val, id->val.i.min, id->val.i.max);
         }
-        *id->storage.i = val;
+        *id->val.storage.i = val;
         id->changed();                                             // call trigger function if available
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
@@ -1351,12 +1351,12 @@ void setfvarchecked(ident *id, float val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        storeval(id, id->overrideval.f, id->storage.f);
-        if(val < id->minvalf || val > id->maxvalf)
+        storeval(id, id->val.overrideval.f, id->val.storage.f);
+        if(val < id->val.f.min || val > id->val.f.max)
         {
-            val = clampfvar(id->name, val, id->minvalf, id->maxvalf);
+            val = clampfvar(id->name, val, id->val.f.min, id->val.f.max);
         }
-        *id->storage.f = val;
+        *id->val.storage.f = val;
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
@@ -1373,8 +1373,8 @@ void setsvarchecked(ident *id, const char *val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        storevalarray(id, id->overrideval.s, id->storage.s);
-        *id->storage.s = newstring(val);
+        storevalarray(id, id->val.overrideval.s, id->val.storage.s);
+        *id->val.storage.s = newstring(val);
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
@@ -2387,7 +2387,7 @@ static void compilelookup(std::vector<uint> &code, const char *&p, int ltype, in
                         {
                             code.push_back(Code_Enter);
                         }
-                        for(const char *fmt = id->args; *fmt; fmt++)
+                        for(const char *fmt = id->cmd.args; *fmt; fmt++)
                         {
                             switch(*fmt)
                             {
@@ -3282,7 +3282,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
                         int comtype = Code_Com,
                             fakeargs = 0;
                         bool rep = false;
-                        for(const char *fmt = id->args; *fmt; fmt++)
+                        for(const char *fmt = id->cmd.args; *fmt; fmt++)
                         {
                             switch(*fmt)
                             {
@@ -3907,7 +3907,7 @@ void printvar(const ident *id, int i)
     {
         conoutf("%s = %d", id->name, i);
     }
-    else if(id->flags&Idf_Hex && id->maxval==0xFFFFFF)
+    else if(id->flags&Idf_Hex && id->val.i.max==0xFFFFFF)
     {
         conoutf("%s = 0x%.6X (%d, %d, %d)", id->name, i, (i>>16)&0xFF, (i>>8)&0xFF, i&0xFF);
     }
@@ -3933,17 +3933,17 @@ void printvar(const ident *id)
     {
         case Id_Var:
         {
-            printvar(id, *id->storage.i);
+            printvar(id, *id->val.storage.i);
             break;
         }
         case Id_FloatVar:
         {
-            printfvar(id, *id->storage.f);
+            printfvar(id, *id->val.storage.f);
             break;
         }
         case Id_StringVar:
         {
-            printsvar(id, *id->storage.s);
+            printsvar(id, *id->val.storage.s);
             break;
         }
     }
@@ -4091,7 +4091,7 @@ static void addreleaseaction(ident *id, tagval *args, int numargs)
  */
 void* arg(const ident *id, tagval args[], int n, int offset = 0)
 {
-    if(id->argmask&(1<<n))
+    if(id->cmd.argmask&(1<<n))
     {
         return reinterpret_cast<void *>(args[n + offset].s);
     }
@@ -4147,7 +4147,7 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
     int i = -1,
         fakeargs = 0;
     bool rep = false;
-    for(const char *fmt = id->args; *fmt; fmt++)
+    for(const char *fmt = id->cmd.args; *fmt; fmt++)
     {
         switch(*fmt)
         {
@@ -5016,9 +5016,9 @@ static const uint *runcode(const uint *code, tagval &result)
                     continue; \
                 }
                 LOOKUPU(arg.setstr(newstring(id->getstr())),
-                        arg.setstr(newstring(*id->storage.s)),
-                        arg.setstr(newstring(intstr(*id->storage.i))),
-                        arg.setstr(newstring(floatstr(*id->storage.f))),
+                        arg.setstr(newstring(*id->val.storage.s)),
+                        arg.setstr(newstring(intstr(*id->val.storage.i))),
+                        arg.setstr(newstring(floatstr(*id->val.storage.f))),
                         arg.setstr(newstring("")));
             case Code_Lookup|Ret_String:
                 #define LOOKUP(aval) { \
@@ -5046,9 +5046,9 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_LookupU|Ret_Integer:
             {
                 LOOKUPU(arg.setint(id->getint()),
-                        arg.setint(static_cast<int>(strtoul(*id->storage.s, nullptr, 0))),
-                        arg.setint(*id->storage.i),
-                        arg.setint(static_cast<int>(*id->storage.f)),
+                        arg.setint(static_cast<int>(strtoul(*id->val.storage.s, nullptr, 0))),
+                        arg.setint(*id->val.storage.i),
+                        arg.setint(static_cast<int>(*id->val.storage.f)),
                         arg.setint(0));
             }
             case Code_Lookup|Ret_Integer:
@@ -5057,9 +5057,9 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUPARG(args[numargs++].setint(id->getint()), args[numargs++].setint(0));
             case Code_LookupU|Ret_Float:
                 LOOKUPU(arg.setfloat(id->getfloat()),
-                        arg.setfloat(parsefloat(*id->storage.s)),
-                        arg.setfloat(static_cast<float>(*id->storage.i)),
-                        arg.setfloat(*id->storage.f),
+                        arg.setfloat(parsefloat(*id->val.storage.s)),
+                        arg.setfloat(static_cast<float>(*id->val.storage.i)),
+                        arg.setfloat(*id->val.storage.f),
                         arg.setfloat(0.0f));
             case Code_Lookup|Ret_Float:
                 LOOKUP(args[numargs++].setfloat(id->getfloat()));
@@ -5067,9 +5067,9 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUPARG(args[numargs++].setfloat(id->getfloat()), args[numargs++].setfloat(0.0f));
             case Code_LookupU|Ret_Null:
                 LOOKUPU(id->getval(arg),
-                        arg.setstr(newstring(*id->storage.s)),
-                        arg.setint(*id->storage.i),
-                        arg.setfloat(*id->storage.f),
+                        arg.setstr(newstring(*id->val.storage.s)),
+                        arg.setint(*id->val.storage.i),
+                        arg.setfloat(*id->val.storage.f),
                         arg.setnull());
             case Code_Lookup|Ret_Null:
                 LOOKUP(id->getval(args[numargs++]));
@@ -5077,9 +5077,9 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUPARG(id->getval(args[numargs++]), args[numargs++].setnull());
             case Code_LookupMU|Ret_String:
                 LOOKUPU(id->getcstr(arg),
-                        arg.setcstr(*id->storage.s),
-                        arg.setstr(newstring(intstr(*id->storage.i))),
-                        arg.setstr(newstring(floatstr(*id->storage.f))),
+                        arg.setcstr(*id->val.storage.s),
+                        arg.setstr(newstring(intstr(*id->val.storage.i))),
+                        arg.setstr(newstring(floatstr(*id->val.storage.f))),
                         arg.setcstr(""));
             case Code_LookupM|Ret_String:
                 LOOKUP(id->getcstr(args[numargs++]));
@@ -5087,9 +5087,9 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUPARG(id->getcstr(args[numargs++]), args[numargs++].setcstr(""));
             case Code_LookupMU|Ret_Null:
                 LOOKUPU(id->getcval(arg),
-                        arg.setcstr(*id->storage.s),
-                        arg.setint(*id->storage.i),
-                        arg.setfloat(*id->storage.f),
+                        arg.setcstr(*id->val.storage.s),
+                        arg.setint(*id->val.storage.i),
+                        arg.setfloat(*id->val.storage.f),
                         arg.setnull());
             case Code_LookupM|Ret_Null:
                 LOOKUP(id->getcval(args[numargs++]));
@@ -5099,22 +5099,22 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_StrVar|Ret_String:
             case Code_StrVar|Ret_Null:
             {
-                args[numargs++].setstr(newstring(*identmap[op>>8]->storage.s));
+                args[numargs++].setstr(newstring(*identmap[op>>8]->val.storage.s));
                 continue;
             }
             case Code_StrVar|Ret_Integer:
             {
-                args[numargs++].setint(static_cast<int>(strtoul((*identmap[op>>8]->storage.s), nullptr, 0)));
+                args[numargs++].setint(static_cast<int>(strtoul((*identmap[op>>8]->val.storage.s), nullptr, 0)));
                 continue;
             }
             case Code_StrVar|Ret_Float:
             {
-                args[numargs++].setfloat(parsefloat(*identmap[op>>8]->storage.s));
+                args[numargs++].setfloat(parsefloat(*identmap[op>>8]->val.storage.s));
                 continue;
             }
             case Code_StrVarM:
             {
-                args[numargs++].setcstr(*identmap[op>>8]->storage.s);
+                args[numargs++].setcstr(*identmap[op>>8]->val.storage.s);
                 continue;
             }
             case Code_StrVar1:
@@ -5125,17 +5125,17 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_IntVar|Ret_Integer:
             case Code_IntVar|Ret_Null:
             {
-                args[numargs++].setint(*identmap[op>>8]->storage.i);
+                args[numargs++].setint(*identmap[op>>8]->val.storage.i);
                 continue;
             }
             case Code_IntVar|Ret_String:
             {
-                args[numargs++].setstr(newstring(intstr(*identmap[op>>8]->storage.i)));
+                args[numargs++].setstr(newstring(intstr(*identmap[op>>8]->val.storage.i)));
                 continue;
             }
             case Code_IntVar|Ret_Float:
             {
-                args[numargs++].setfloat(static_cast<float>(*identmap[op>>8]->storage.i));
+                args[numargs++].setfloat(static_cast<float>(*identmap[op>>8]->val.storage.i));
                 continue;
             }
             case Code_IntVar1:
@@ -5158,17 +5158,17 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_FloatVar|Ret_Float:
             case Code_FloatVar|Ret_Null:
             {
-                args[numargs++].setfloat(*identmap[op>>8]->storage.f);
+                args[numargs++].setfloat(*identmap[op>>8]->val.storage.f);
                 continue;
             }
             case Code_FloatVar|Ret_String:
             {
-                args[numargs++].setstr(newstring(floatstr(*identmap[op>>8]->storage.f)));
+                args[numargs++].setstr(newstring(floatstr(*identmap[op>>8]->val.storage.f)));
                 continue;
             }
             case Code_FloatVar|Ret_Integer:
             {
-                args[numargs++].setint(static_cast<int>(*identmap[op>>8]->storage.f));
+                args[numargs++].setint(static_cast<int>(*identmap[op>>8]->val.storage.f));
                 continue;
             }
             case Code_FloatVar1:
@@ -5306,11 +5306,11 @@ static const uint *runcode(const uint *code, tagval &result)
                     identflags |= id->flags&Idf_Overridden; \
                     IdentLink aliaslink = { id, aliasstack, (1<<callargs)-1, argstack }; \
                     aliasstack = &aliaslink; \
-                    if(!id->code) \
+                    if(!id->alias.code) \
                     { \
-                        id->code = compilecode(id->getstr()); \
+                        id->alias.code = compilecode(id->getstr()); \
                     } \
-                    uint *code = id->code; \
+                    uint *code = id->alias.code; \
                     code[0] += 0x100; \
                     runcode(code+1, result); \
                     code[0] -= 0x100; \
