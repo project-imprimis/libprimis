@@ -179,7 +179,7 @@ void viewrsm()
         h = (w*hudh())/hudw(),
         x = hudw()-w,
         y = hudh()-h;
-    SETSHADER(hudrect);
+    SETSHADER(hudrect,);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, debugrsm == 2 ? rsmnormaltex : rsmcolortex);
     debugquad(x, y, w, h, 0, 0, rsmsize, rsmsize);
@@ -343,7 +343,7 @@ void viewrh()
     gle::colorf(1, 1, 1);
     if(debugrh < 0 && rhrect)
     {
-        SETSHADER(hudrect);
+        SETSHADER(hudrect,);
         glBindTexture(GL_TEXTURE_RECTANGLE, rhtex[5]);
         float tw = (rhgrid+2*rhborder)*(rhgrid+2*rhborder),
               th = (rhgrid+2*rhborder)*rhsplits;
@@ -358,7 +358,7 @@ void viewrh()
     }
     else
     {
-        SETSHADER(hud3d);
+        SETSHADER(hud3d,);
         glBindTexture(GL_TEXTURE_3D, rhtex[1]);
         float z = (std::max(debugrh, 1)-1+0.5f)/static_cast<float>((rhgrid+2*rhborder)*rhsplits);
         gle::defvertex(2);
@@ -705,7 +705,7 @@ void radiancehints::renderslices()
                 {
                     glClear(GL_COLOR_BUFFER_BIT);
                 }
-                SETSHADER(radiancehintsborder);
+                SETSHADER(radiancehintsborder,);
                 rhquad(bvx1, bvy1, bvx2, bvy2, btx1, bty1, btx2, bty2, bz);
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
@@ -799,7 +799,7 @@ void radiancehints::renderslices()
                                   dz = (z + split.center.z - split.cached.z)*split.scale.z + split.offset.z;
                             if(dx1 != px1 || dx2 != px2 || dy1 != py1 || dy2 != py2)
                             {
-                                SETSHADER(radiancehintscached);
+                                SETSHADER(radiancehintscached,);
                                 rhquad(dvx1, dvy1, dvx2, dvy2, dtx1, dty1, dtx2, dty2, dz,
                                        pvx1, pvy1, pvx2, pvy2, ptx1, pty1, ptx2, pty2, pz);
                             }
@@ -808,7 +808,7 @@ void radiancehints::renderslices()
                             goto maskslice;
                         }
                     }
-                    SETSHADER(radiancehintscached);
+                    SETSHADER(radiancehintscached,);
                     rhquad(pvx1, pvy1, pvx2, pvy2, ptx1, pty1, ptx2, pty2, pz);
                     goto maskslice;
                 }
@@ -824,7 +824,7 @@ void radiancehints::renderslices()
             {
                 continue;
             }
-            SETSHADER(radiancehintsdisable);
+            SETSHADER(radiancehintsdisable,);
             if(rhborder)
             {
                 glScissor(sx + rhborder, sy + rhborder, sw - 2*rhborder, sh - 2*rhborder);
