@@ -579,8 +579,8 @@ void vacollect::setupdata(vtxarray *va)
             const sortval &t = indices[k];
             elementset &e = va->texelems[i];
             e.texture = k.tex;
-            e.orient = k.orient;
-            e.layer = k.layer;
+            e.attrs.orient = k.orient;
+            e.attrs.layer = k.layer;
             ushort *startbuf = curbuf;
             e.minvert = USHRT_MAX;
             e.maxvert = 0;

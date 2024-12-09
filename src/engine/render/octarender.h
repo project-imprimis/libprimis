@@ -28,7 +28,7 @@ struct elementset
         struct
         {
             uchar orient, layer;
-        };
+        } attrs;
         ushort reuse;
     };
     ushort length, minvert, maxvert;

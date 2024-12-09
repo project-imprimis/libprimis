@@ -561,9 +561,9 @@ namespace
             {
                 return 1;
             }
-            if(es.layer&BlendLayer_Bottom)
+            if(es.attrs.layer&BlendLayer_Bottom)
             {
-                if(!(b.es.layer&BlendLayer_Bottom))
+                if(!(b.es.attrs.layer&BlendLayer_Bottom))
                 {
                     return 1;
                 }
@@ -588,7 +588,7 @@ namespace
                     return 1;
                 }
             }
-            else if(b.es.layer&BlendLayer_Bottom)
+            else if(b.es.attrs.layer&BlendLayer_Bottom)
             {
                 return -1;
             }
@@ -616,11 +616,11 @@ namespace
             {
                 return 1;
             }
-            if(es.orient < b.es.orient)
+            if(es.attrs.orient < b.es.attrs.orient)
             {
                 return -1;
             }
-            if(es.orient > b.es.orient)
+            if(es.attrs.orient > b.es.attrs.orient)
             {
                 return 1;
             }
@@ -1049,7 +1049,7 @@ namespace
         Slot &slot = *vslot.slot;
         if(pass == RenderPass_ReflectiveShadowMap)
         {
-            if(b.es.layer&BlendLayer_Bottom)
+            if(b.es.attrs.layer&BlendLayer_Bottom)
             {
                 rsmworldshader->setvariant(0, 0, slot, vslot);
             }
@@ -1062,7 +1062,7 @@ namespace
         {
             slot.shader->setvariant(alphaing > 1 && vslot.refractscale > 0 ? 1 : 0, 1, slot, vslot);
         }
-        else if(b.es.layer&BlendLayer_Bottom)
+        else if(b.es.attrs.layer&BlendLayer_Bottom)
         {
             slot.shader->setvariant(0, 0, slot, vslot);
         }
@@ -1152,17 +1152,17 @@ namespace
             if(vslot != &b.vslot)
             {
                 changeslottmus(pass, *b.vslot.slot, b.vslot);
-                if(texgenorient != b.es.orient || (texgenorient < Orient_Any && texgenvslot != &b.vslot))
+                if(texgenorient != b.es.attrs.orient || (texgenorient < Orient_Any && texgenvslot != &b.vslot))
                 {
-                    changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
+                    changetexgen(b.es.attrs.orient, *b.vslot.slot, b.vslot);
                 }
                 changeshader(pass, b);
             }
             else
             {
-                if(texgenorient != b.es.orient)
+                if(texgenorient != b.es.attrs.orient)
                 {
-                    changetexgen(b.es.orient, *b.vslot.slot, b.vslot);
+                    changetexgen(b.es.attrs.orient, *b.vslot.slot, b.vslot);
                 }
                 updateshader(*this);
             }
