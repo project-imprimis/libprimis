@@ -453,7 +453,7 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
             {
                 std::array<char, 256> s;
                 s.fill(0);
-                std::sscanf(block[j].c_str(), " \"name\":\%s", s.data());
+                std::sscanf(block[j].c_str(), " \"name\":%s", s.data());
                 n.name = s.data();
                 cleanstring(n.name);
             }
@@ -528,7 +528,7 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
             {
                 std::array<char, 256> s;
                 s.fill(0);
-                std::sscanf(j.data(), " \"name\":\%s", s.data());
+                std::sscanf(j.data(), " \"name\":%s", s.data());
                 m.name = s.data();
                 cleanstring(m.name);
             }
