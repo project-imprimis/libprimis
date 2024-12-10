@@ -41,9 +41,9 @@ bool BIH::node::isleaf(int which) const
 
 bool BIH::mesh::tribb::outside(const ivec &bo, const ivec &br) const
 {
-    return std::abs(bo.x - center.x) > br.x + radius.x ||
-           std::abs(bo.y - center.y) > br.y + radius.y ||
-           std::abs(bo.z - center.z) > br.z + radius.z;
+    return std::abs(bo.x - center.coord.x) > br.x + radius.coord.x ||
+           std::abs(bo.y - center.coord.y) > br.y + radius.coord.y ||
+           std::abs(bo.z - center.coord.z) > br.z + radius.coord.z;
 }
 
 BIH::mesh::mesh() : numnodes(0), numtris(0), tex(nullptr), flags(0) {}
