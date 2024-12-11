@@ -1447,7 +1447,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     pm.mul(camprojmatrix, m);
     GLOBALPARAM(prefabmatrix, pm);
     GLOBALPARAM(prefabworld, w);
-    SETSHADER(prefab);
+    SETSHADER(prefab,);
     gle::color(vec(color).mul(ldrscale));
     glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
 
@@ -1456,7 +1456,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
 
     pm.mul(camprojmatrix, m);
     GLOBALPARAM(prefabmatrix, pm);
-    SETSHADER(prefab);
+    SETSHADER(prefab,);
     gle::color((outlinecolor).tocolor().mul(ldrscale));
     glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
 
@@ -1788,7 +1788,7 @@ void rendertexturepanel(int w, int h)
         pushhudmatrix();
         hudmatrix.scale(h/1800.0f, h/1800.0f, 1);
         flushhudmatrix(false);
-        SETSHADER(hudrgb);
+        SETSHADER(hudrgb,);
         int y = 50,
         gap = 10;
         gle::defvertex(2);
