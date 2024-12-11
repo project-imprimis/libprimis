@@ -1565,8 +1565,8 @@ void vacollect::calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, ve
           xs = r.flipx ? -tex->xs : tex->xs,
           ys = r.flipy ? -tex->ys : tex->ys,
           sk = k/xs, tk = k/ys,
-          soff = -(r.swapxy ? vslot.offset.y : vslot.offset.x)/xs,
-          toff = -(r.swapxy ? vslot.offset.x : vslot.offset.y)/ys;
+          soff = -(r.swapxy ? vslot.offset.y() : vslot.offset.x())/xs,
+          toff = -(r.swapxy ? vslot.offset.x() : vslot.offset.y())/ys;
     sgen = vec4<float>(0, 0, 0, soff);
     tgen = vec4<float>(0, 0, 0, toff);
     if(r.swapxy)

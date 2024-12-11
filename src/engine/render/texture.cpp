@@ -1383,15 +1383,15 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
         {
             std::swap(xs, ys);
         }
-        dst.offset.x %= xs;
-        if(dst.offset.x < 0)
+        dst.offset.x() %= xs;
+        if(dst.offset.x() < 0)
         {
-            dst.offset.x += xs;
+            dst.offset.x() += xs;
         }
-        dst.offset.y %= ys;
-        if(dst.offset.y < 0)
+        dst.offset.y() %= ys;
+        if(dst.offset.y() < 0)
         {
-            dst.offset.y += ys;
+            dst.offset.y() += ys;
         }
     }
     else
@@ -1631,8 +1631,8 @@ void packvslot(std::vector<uchar> &buf, const VSlot &src)
     if(src.changed & (1 << VSlot_Offset))
     {
         buf.push_back(VSlot_Offset);
-        putint(buf, src.offset.x);
-        putint(buf, src.offset.y);
+        putint(buf, src.offset.x());
+        putint(buf, src.offset.y());
     }
     if(src.changed & (1 << VSlot_Scroll))
     {
@@ -1745,8 +1745,8 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             }
             case VSlot_Offset:
             {
-                dst.offset.x = getint(buf);
-                dst.offset.y = getint(buf);
+                dst.offset.x() = getint(buf);
+                dst.offset.y() = getint(buf);
                 if(!delta)
                 {
                     dst.offset.max(0);

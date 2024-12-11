@@ -102,8 +102,8 @@ void TTFRenderer::ttfbounds(const char *str, float &width, float &height, int pt
 {
     fontsize(pts);
     ivec2 size = ttfsize(str);
-    width = size.x;
-    height = size.y;
+    width = size.x();
+    height = size.y();
 }
 
 ivec2 TTFRenderer::ttfsize(const char* message)
@@ -113,9 +113,9 @@ ivec2 TTFRenderer::ttfsize(const char* message)
         return ivec2(0,0);
     }
     std::string msg = trimstring(std::string(message));
-    ivec2 size;
-    TTF_SizeUTF8(f, msg.c_str(), &size.x, &size.y);
-    return size;
+    int x, y;
+    TTF_SizeUTF8(f, msg.c_str(), &x, &y);
+    return ivec2(x,y);
 }
 
 TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color col, int x, int y, uint wrap) const

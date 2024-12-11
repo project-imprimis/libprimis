@@ -1010,7 +1010,7 @@ static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bo
                 z ((zv)<<3); \
                 i++; \
             }
-            GENFACEVERTS(pos.x, pos.x+size, pos.y, pos.y+size, pos.z, pos.z+size, f.x = , f.x = , f.y = , f.y = , (void), (void))
+            GENFACEVERTS(pos.x, pos.x+size, pos.y, pos.y+size, pos.z, pos.z+size, f.x() = , f.x() = , f.y() = , f.y() = , (void), (void))
         #undef GENFACEVERT
         }
         return 4;
@@ -1059,47 +1059,47 @@ static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bo
 
 static int clipfacevecy(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
 {
-    if(dir.x >= 0)
+    if(dir.x() >= 0)
     {
-        if(cx <= o.x || cx >= o.x+dir.x)
+        if(cx <= o.x() || cx >= o.x()+dir.x())
         {
             return 0;
         }
     }
-    else if(cx <= o.x+dir.x || cx >= o.x)
+    else if(cx <= o.x()+dir.x() || cx >= o.x())
     {
         return 0;
     }
-    int t = (o.y-cy) + (cx-o.x)*dir.y/dir.x;
+    int t = (o.y()-cy) + (cx-o.x())*dir.y()/dir.x();
     if(t <= 0 || t >= size)
     {
         return 0;
     }
-    r.x = cx;
-    r.y = cy + t;
+    r.x() = cx;
+    r.y() = cy + t;
     return 1;
 }
 
 static int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
 {
-    if(dir.y >= 0)
+    if(dir.y() >= 0)
     {
-        if(cy <= o.y || cy >= o.y+dir.y)
+        if(cy <= o.y() || cy >= o.y()+dir.y())
         {
             return 0;
         }
     }
-    else if(cy <= o.y+dir.y || cy >= o.y)
+    else if(cy <= o.y()+dir.y() || cy >= o.y())
     {
         return 0;
     }
-    int t = (o.x-cx) + (cy-o.y)*dir.x/dir.y;
+    int t = (o.x()-cx) + (cy-o.y())*dir.x()/dir.y();
     if(t <= 0 || t >= size)
     {
         return 0;
     }
-    r.x = cx + t;
-    r.y = cy;
+    r.x() = cx + t;
+    r.y() = cy;
     return 1;
 }
 
@@ -1107,9 +1107,9 @@ static int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy, int si
 static int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 *rvecs)
 {
     int r = 0;
-    if(o.x >= cx && o.x <= cx+size &&
-       o.y >= cy && o.y <= cy+size &&
-       ((o.x != cx && o.x != cx+size) || (o.y != cy && o.y != cy+size)))
+    if(o.x() >= cx && o.x() <= cx+size &&
+       o.y() >= cy && o.y() <= cy+size &&
+       ((o.x() != cx && o.x() != cx+size) || (o.y() != cy && o.y() != cy+size)))
     {
         rvecs[0] = o;
         r++;
