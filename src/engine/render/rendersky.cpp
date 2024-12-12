@@ -293,7 +293,7 @@ namespace
 
     void drawatmosphere()
     {
-        SETSHADER(atmosphere);
+        SETSHADER(atmosphere,);
 
         matrix4 sunmatrix = cammatrix.inverse();
         sunmatrix.settranslation(0, 0, 0);
@@ -391,12 +391,12 @@ void drawskybox(bool clear)
     {
         if(ldrscale < 1 && (skyboxoverbrightmin != 1 || (skyboxoverbright > 1 && skyboxoverbrightthreshold < 1)))
         {
-            SETSHADER(skyboxoverbright);
+            SETSHADER(skyboxoverbright,);
             LOCALPARAMF(overbrightparams, skyboxoverbrightmin, std::max(skyboxoverbright, skyboxoverbrightmin), skyboxoverbrightthreshold);
         }
         else
         {
-            SETSHADER(skybox);
+            SETSHADER(skybox,);
         }
         gle::color(skyboxcolor);
 
@@ -426,7 +426,7 @@ void drawskybox(bool clear)
     }
     if(cloudlayer[0] && cloudheight)
     {
-        SETSHADER(skybox);
+        SETSHADER(skybox,);
 
         glDisable(GL_CULL_FACE);
 
