@@ -579,6 +579,14 @@ class animmodel : public model
                 int numanimparts;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
 
+                /**
+                 * @brief Creates a part object pointing to the given animmodel
+                 *
+                 * Sets this part's animation interpolation index to the value passed.
+                 *
+                 * @param model pointer to a single animmodel
+                 * @param index animation interpolation index to assign
+                 */
                 part(const animmodel *model, int index = 0);
                 virtual ~part();
                 part(const part& a) = delete;
