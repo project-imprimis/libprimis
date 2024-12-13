@@ -121,7 +121,7 @@ void GBuffer::rendertransparent()
             glDisable(GL_SCISSOR_TEST);
         }
         GLOBALPARAMF(refractdepth, 1.0f/refractdepth);
-        SETSHADER(refractmask);
+        SETSHADER(refractmask,);
         if(hasalphavas&4)
         {
             renderrefractmask();
