@@ -344,7 +344,7 @@ struct plane : vec
             throw std::invalid_argument("cannot specify plane index outside 0..2");
         }
         x = y = z = 0.0f;
-        v[d] = 1.0f;
+        (*this)[d] = 1.0f;
         offset = -off;
     }
     plane(float a, float b, float c, float d) : vec(a, b, c), offset(d)

@@ -460,7 +460,7 @@ namespace gle
 
     void color(const vec &v)
     {
-        glVertexAttrib3fv(Attribute_Color, v.v);
+        glVertexAttrib3fv(Attribute_Color, v.data());
     }
 
     void color(const vec &v, float w)

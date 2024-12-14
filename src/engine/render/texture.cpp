@@ -1649,17 +1649,17 @@ void packvslot(std::vector<uchar> &buf, const VSlot &src)
     if(src.changed & (1 << VSlot_Color))
     {
         buf.push_back(VSlot_Color);
-        putfloat(buf, src.colorscale.r);
-        putfloat(buf, src.colorscale.g);
-        putfloat(buf, src.colorscale.b);
+        putfloat(buf, src.colorscale.r());
+        putfloat(buf, src.colorscale.g());
+        putfloat(buf, src.colorscale.b());
     }
     if(src.changed & (1 << VSlot_Refract))
     {
         buf.push_back(VSlot_Refract);
         putfloat(buf, src.refractscale);
-        putfloat(buf, src.refractcolor.r);
-        putfloat(buf, src.refractcolor.g);
-        putfloat(buf, src.refractcolor.b);
+        putfloat(buf, src.refractcolor.r());
+        putfloat(buf, src.refractcolor.g());
+        putfloat(buf, src.refractcolor.b());
     }
     buf.push_back(0xFF);
 }
@@ -1767,17 +1767,17 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             }
             case VSlot_Color:
             {
-                dst.colorscale.r = std::clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.g = std::clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.b = std::clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.r() = std::clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.g() = std::clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.b() = std::clamp(getfloat(buf), 0.0f, 2.0f);
                 break;
             }
             case VSlot_Refract:
             {
                 dst.refractscale = std::clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.r = std::clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.g = std::clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.b = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.r() = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.g() = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.b() = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 break;
             }
             default:

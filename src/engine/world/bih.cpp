@@ -797,28 +797,28 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
                                const vec &ab, const vec &bc, const vec &ca,
                                uint axis, const vec &radius)
     {
-        if(a.v[axis] < b.v[axis])
+        if(a[axis] < b[axis])
         {
-            if(b.v[axis] < c.v[axis])
+            if(b[axis] < c[axis])
             {
-                if(c.v[axis] < -radius.v[axis] || a.v[axis] > radius.v[axis])
+                if(c[axis] < -radius[axis] || a[axis] > radius[axis])
                 {
                     return false;
                 }
             }
-            else if(b.v[axis] < -radius.v[axis] || std::min(a.v[axis], c.v[axis]) > radius.v[axis])
+            else if(b[axis] < -radius[axis] || std::min(a[axis], c[axis]) > radius[axis])
             {
                 return false;
             }
         }
-        else if(a.v[axis] < c.v[axis])
+        else if(a[axis] < c[axis])
         {
-            if(c.v[axis] < -radius.v[axis] || b.v[axis] > radius.v[axis])
+            if(c[axis] < -radius[axis] || b[axis] > radius[axis])
             {
                 return false;
             }
         }
-        else if(a.v[axis] < -radius.v[axis] || std::min(b.v[axis], c.v[axis]) > radius.v[axis])
+        else if(a[axis] < -radius[axis] || std::min(b[axis], c[axis]) > radius[axis])
         {
             return false;
         }

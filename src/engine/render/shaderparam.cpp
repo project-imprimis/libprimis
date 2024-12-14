@@ -72,7 +72,7 @@ void GlobalShaderParam::set(const vec2 &v, float z, float w)
 
 void GlobalShaderParam::set(const matrix3 &m)
 {
-    std::memcpy(resolve().fval, m.a.v, sizeof(m));
+    std::memcpy(resolve().fval, m.a.data(), sizeof(m));
 }
 
 void GlobalShaderParam::set(const matrix4 &m)
@@ -209,7 +209,7 @@ void LocalShaderParam::setv(const vec *v, int n) const
     const ShaderParamBinding *b = resolve();
     if(b)
     {
-        glUniform3fv(b->loc, n, v->v);
+        glUniform3fv(b->loc, n, v->data());
     }
 }
 
@@ -236,7 +236,7 @@ void LocalShaderParam::setv(const matrix3 *m, int n) const
     const ShaderParamBinding *b = resolve();
     if(b)
     {
-        glUniformMatrix3fv(b->loc, n, GL_FALSE, m->a.v);
+        glUniformMatrix3fv(b->loc, n, GL_FALSE, m->a.data());
     }
 }
 

@@ -1440,7 +1440,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     gle::enablevertex();
     gle::enablenormal();
     prefabmesh::vertex *v = (prefabmesh::vertex *)0;
-    gle::vertexpointer(sizeof(prefabmesh::vertex), v->pos.v);
+    gle::vertexpointer(sizeof(prefabmesh::vertex), v->pos.data());
     gle::normalpointer(sizeof(prefabmesh::vertex), v->norm.v, GL_BYTE);
 
     matrix4 pm;

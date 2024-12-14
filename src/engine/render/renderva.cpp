@@ -890,12 +890,13 @@ namespace
         cur.vbuf = va.vbuf;
 
         vertex *vdata = nullptr;
-        gle::vertexpointer(sizeof(vertex), vdata->pos.v);
+        gle::vertexpointer(sizeof(vertex), vdata->pos.data());
+        gle::vertexpointer(sizeof(vertex), vdata->pos.data());
 
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
         {
             gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE);
-            gle::texcoord0pointer(sizeof(vertex), vdata->tc.v);
+            gle::texcoord0pointer(sizeof(vertex), vdata->tc.data());
             gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
         }
     }
@@ -1538,9 +1539,9 @@ namespace
         cur.vbuf = va.vbuf;
         vertex *vdata = nullptr;
         //note inane bikeshedding: use of offset from dereferenced null ptr (aka 0)
-        gle::vertexpointer(sizeof(vertex), vdata->pos.v);
+        gle::vertexpointer(sizeof(vertex), vdata->pos.data());
         gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
-        gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
+        gle::texcoord0pointer(sizeof(vertex), vdata->tc.data(), GL_FLOAT, 3);
         gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
     }
 
@@ -2605,7 +2606,7 @@ void renderoutline()
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->ebuf);
                 const vertex *ptr = 0;
-                gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                gle::vertexpointer(sizeof(vertex), ptr->pos.data());
             }
             if(va->texs && va->occluded < Occlude_Geom)
             {
@@ -2667,7 +2668,7 @@ bool renderexplicitsky(bool outline)
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->skybuf);
                 const vertex *ptr = 0;
-                gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                gle::vertexpointer(sizeof(vertex), ptr->pos.data());
             }
             drawvaskytris(*va);
             xtraverts += va->sky;
@@ -2783,7 +2784,7 @@ void renderrefractmask()
             gle::bindvbo(va->vbuf);
             gle::bindebo(va->ebuf);
             const vertex *ptr = 0;
-            gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+            gle::vertexpointer(sizeof(vertex), ptr->pos.data());
         }
         drawvatris(*va, 3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
         xtravertsva += 3*va->refracttris;
@@ -3440,7 +3441,7 @@ void renderrsmgeom(bool dyntex)
                     gle::bindvbo(va->vbuf);
                     gle::bindebo(va->skybuf);
                     const vertex *ptr = nullptr; //note: offset of nullptr is technically UB
-                    gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                    gle::vertexpointer(sizeof(vertex), ptr->pos.data());
                 }
                 drawvaskytris(*va);
                 xtravertsva += va->sky/3;
@@ -3546,7 +3547,7 @@ void rendershadowmapworld()
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->ebuf);
                 const vertex *ptr = 0;
-                gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                gle::vertexpointer(sizeof(vertex), ptr->pos.data());
             }
             if(!smnodraw)
             {
@@ -3568,7 +3569,7 @@ void rendershadowmapworld()
                     gle::bindvbo(va->vbuf);
                     gle::bindebo(va->skybuf);
                     const vertex *ptr = 0;
-                    gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                    gle::vertexpointer(sizeof(vertex), ptr->pos.data()); //note offset from nullptr
                 }
                 if(!smnodraw)
                 {

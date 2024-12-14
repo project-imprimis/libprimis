@@ -327,14 +327,14 @@ float vec::dist_to_bb(const ivec &min, const ivec &max) const
     float sqrdist = 0;
     for(int i = 0; i < 3; ++i)
     {
-        if (v[i] < min[i])
+        if((*this)[i] < min[i])
         {
-            float delta = v[i]-min[i];
+            float delta = (*this)[i]-min[i];
             sqrdist += delta*delta;
         }
-        else if(v[i] > max[i])
+        else if((*this)[i] > max[i])
         {
-            float delta = max[i]-v[i];
+            float delta = max[i]-(*this)[i];
             sqrdist += delta*delta;
         }
     }
