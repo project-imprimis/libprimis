@@ -900,18 +900,18 @@ struct varenderer final : partrenderer
 
             if(parttype()&PT_MOD)
             {
-                setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs);
+                setcolor((p->color.r()*blend)>>8, (p->color.g()*blend)>>8, (p->color.b()*blend)>>8, 255, vs);
             }
             else
             {
-                setcolor(p->color.r, p->color.g, p->color.b, blend, vs);
+                setcolor(p->color.r(), p->color.g(), p->color.b(), blend, vs);
             }
 
         }
         else if(parttype()&PT_MOD)
         {
             //note: same call as `if(type&PT_MOD)` above
-            setcolor((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255, vs);
+            setcolor((p->color.r()*blend)>>8, (p->color.g()*blend)>>8, (p->color.b()*blend)>>8, 255, vs);
         }
         else
         {

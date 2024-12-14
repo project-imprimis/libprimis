@@ -1235,7 +1235,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
             float deepfade = std::clamp(below/std::max(wdeep, wfog), 0.0f, 1.0f);
-            vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
+            vec color = vec(wcol.r(), wcol.g(), wcol.b()).lerp(vec(wdeepcol.r(), wdeepcol.g(), wdeepcol.b()), deepfade);
             overlay.add(color.div(std::min(32.0f + std::max(color.r, std::max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
         }
@@ -1347,7 +1347,11 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
         {
             glGenTextures(1, &minimaptex);
         }
-        createtexture(minimaptex, 1, 1, nominimapcolor.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
+        uchar v[3];
+        v[0] = nominimapcolor.r();
+        v[1] = nominimapcolor.g();
+        v[2] = nominimapcolor.b();
+        createtexture(minimaptex, 1, 1, v, 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
 
