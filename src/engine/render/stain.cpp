@@ -608,7 +608,7 @@ class stainrenderer
                     //this allows passing the location of the fields' position in the object to opengl
                     const stainvert *ptr = 0;
                     gle::vertexpointer(sizeof(stainvert), ptr->pos.data());
-                    gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
+                    gle::texcoord0pointer(sizeof(stainvert), ptr->tc.data());
                     gle::colorpointer(sizeof(stainvert), ptr->color.v);
 
                     glDrawArrays(GL_TRIANGLES, 0, count);

@@ -403,7 +403,7 @@ void rendergrass()
     const grassvert *ptr = nullptr;
     gle::vertexpointer(sizeof(grassvert), ptr->pos.data());
     gle::colorpointer(sizeof(grassvert), ptr->color.v);
-    gle::texcoord0pointer(sizeof(grassvert), ptr->tc.v);
+    gle::texcoord0pointer(sizeof(grassvert), ptr->tc.data());
     gle::enablevertex();
     gle::enablecolor();
     gle::enabletexcoord0();

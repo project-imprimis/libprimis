@@ -983,7 +983,7 @@ struct varenderer final : partrenderer
         gle::bindvbo(vbo);
         const partvert *ptr = 0;
         gle::vertexpointer(sizeof(partvert), ptr->pos.data());
-        gle::texcoord0pointer(sizeof(partvert), ptr->tc.v);
+        gle::texcoord0pointer(sizeof(partvert), ptr->tc.data());
         gle::colorpointer(sizeof(partvert), ptr->color.v);
         gle::enablevertex();
         gle::enabletexcoord0();

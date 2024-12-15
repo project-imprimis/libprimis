@@ -218,7 +218,7 @@ void LocalShaderParam::setv(const vec2 *v, int n) const
     const ShaderParamBinding *b = resolve();
     if(b)
     {
-        glUniform2fv(b->loc, n, v->v);
+        glUniform2fv(b->loc, n, v->data());
     }
 }
 
