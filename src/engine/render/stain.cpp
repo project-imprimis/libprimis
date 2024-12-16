@@ -310,13 +310,13 @@ class stainrenderer
                     colorscale *= 2;
                 }
                 alphascale = 0;
-                SETSHADER(foggedstain);
+                SETSHADER(foggedstain,);
             }
             else if(flags&StainFlag_InvMod)
             {
                 glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
                 alphascale = 0;
-                SETSHADER(foggedstain);
+                SETSHADER(foggedstain,);
             }
             else
             {
