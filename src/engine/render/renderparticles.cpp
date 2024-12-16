@@ -190,7 +190,7 @@ struct particle
         {
             uchar color2[3];   //color of bar
             uchar progress;    //bar fill %
-        };
+        } meter;
     };
 };
 
@@ -529,7 +529,7 @@ class meterrenderer final : public listrenderer
             int basetype = parttype()&0xFF;
             float scale  = FONTH*p.size/80.0f,
                   right  = 8,
-                  left   = p.progress/100.0f*right;
+                  left   = p.meter.progress/100.0f*right;
             matrix4x3 m(camright(), camup().neg(), camdir().neg(), o);
             m.scale(scale);
             m.translate(-right/2.0f, 0, 0);
@@ -550,7 +550,7 @@ class meterrenderer final : public listrenderer
             }
             if(basetype==PT_METERVS)
             {
-                gle::colorub(p.color2[0], p.color2[1], p.color2[2]);
+                gle::colorub(p.meter.color2[0], p.meter.color2[1], p.meter.color2[2]);
             }
             else
             {
@@ -1573,10 +1573,10 @@ void particle_meter(const vec &s, float val, int type, int fade, int color, int 
         return;
     }
     particle *p = newparticle(s, vec(0, 0, 1), fade, type, color, size);
-    p->color2[0] = color2>>16;
-    p->color2[1] = (color2>>8)&0xFF;
-    p->color2[2] = color2&0xFF;
-    p->progress = std::clamp(static_cast<int>(val*100), 0, 100);
+    p->meter.color2[0] = color2>>16;
+    p->meter.color2[1] = (color2>>8)&0xFF;
+    p->meter.color2[2] = color2&0xFF;
+    p->meter.progress = std::clamp(static_cast<int>(val*100), 0, 100);
 }
 
 void particle_flare(const vec &p, const vec &dest, int fade, int type, int color, float size, physent *owner)
@@ -1835,10 +1835,10 @@ void cubeworld::makeparticles(const entity &e)
         {
             particle *p = newparticle(e.o, vec(0, 0, 1), 1, e.attr1==5 ? Part_Meter : Part_MeterVS, colorfromattr(e.attr3), 2.0f);
             int color2 = colorfromattr(e.attr4);
-            p->color2[0] = color2>>16;
-            p->color2[1] = (color2>>8)&0xFF;
-            p->color2[2] = color2&0xFF;
-            p->progress = std::clamp(static_cast<int>(e.attr2), 0, 100);
+            p->meter.color2[0] = color2>>16;
+            p->meter.color2[1] = (color2>>8)&0xFF;
+            p->meter.color2[2] = color2&0xFF;
+            p->meter.progress = std::clamp(static_cast<int>(e.attr2), 0, 100);
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size
