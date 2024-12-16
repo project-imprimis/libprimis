@@ -923,13 +923,13 @@ void skelmodel::skeleton::setglslbones(UniformLoc &u, const skelcacheentry &sc, 
     {
         return;
     }
-    glUniform4fv(u.loc, 2*numgpubones, sc.bdata[0].real.v);
+    glUniform4fv(u.loc, 2*numgpubones, sc.bdata[0].real.data());
     if(count > 0)
     {
         GLint offset = getblendoffset(u);
         if(offset >= 0)
         {
-            glUniform4fv(offset, 2*count, bc.bdata[0].real.v);
+            glUniform4fv(offset, 2*count, bc.bdata[0].real.data());
         }
     }
     u.version = bc.version;

@@ -233,7 +233,7 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
     }
     else
     {
-        LOCALPARAMF(colorscale, color.r(), color.g(), color.b(), colorscale.a);
+        LOCALPARAMF(colorscale, color.r(), color.g(), color.b(), colorscale.a());
     }
     if(fullbright)
     {

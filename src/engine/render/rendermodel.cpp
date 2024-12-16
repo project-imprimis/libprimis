@@ -541,7 +541,7 @@ bool batchedmodel::shadowmask(bool dynshadow)
     {
         return false;
     }
-    visible = dynshadow && (colorscale.a >= 1 || flags&(Model_OnlyShadow | Model_ForceShadow)) ? shadowmaskmodel(center, radius) : 0;
+    visible = dynshadow && (colorscale.a() >= 1 || flags&(Model_OnlyShadow | Model_ForceShadow)) ? shadowmaskmodel(center, radius) : 0;
     return true;
 }
 
@@ -700,7 +700,7 @@ void GBuffer::rendermodelbatches()
             {
                 continue;
             }
-            if(bm.colorscale.a < 1 || bm.flags&Model_ForceTransparent)
+            if(bm.colorscale.a() < 1 || bm.flags&Model_ForceTransparent)
             {
                 float sx1, sy1, sx2, sy2;
                 ivec bbmin(vec(bm.center).sub(bm.radius)), bbmax(vec(bm.center).add(bm.radius+1));
@@ -771,7 +771,7 @@ int batchedmodel::rendertransparentmodel(const modelbatch &b, bool &rendered)
 {
     int j = next;
     culled = cullmodel(b.m, center, radius, flags, d);
-    if(culled || !(colorscale.a < 1 || flags&Model_ForceTransparent) || flags&Model_OnlyShadow)
+    if(culled || !(colorscale.a() < 1 || flags&Model_ForceTransparent) || flags&Model_OnlyShadow)
     {
         return j;
     }

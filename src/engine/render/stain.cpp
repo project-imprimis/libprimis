@@ -551,7 +551,7 @@ class stainrenderer
 
                 bool faded(const staininfo &d) const
                 {
-                    return verts[d.startvert].color.a < 255;
+                    return verts[d.startvert].color.a() < 255;
                 }
 
                 void fadestain(const staininfo &d, const vec4<uchar> &color)
@@ -609,7 +609,7 @@ class stainrenderer
                     const stainvert *ptr = 0;
                     gle::vertexpointer(sizeof(stainvert), ptr->pos.data());
                     gle::texcoord0pointer(sizeof(stainvert), ptr->tc.data());
-                    gle::colorpointer(sizeof(stainvert), ptr->color.v);
+                    gle::colorpointer(sizeof(stainvert), ptr->color.data());
 
                     glDrawArrays(GL_TRIANGLES, 0, count);
                     xtravertsva += count;

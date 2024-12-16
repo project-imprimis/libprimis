@@ -895,9 +895,9 @@ namespace
 
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
         {
-            gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE);
+            gle::normalpointer(sizeof(vertex), vdata->norm.data(), GL_BYTE);
             gle::texcoord0pointer(sizeof(vertex), vdata->tc.data());
-            gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
+            gle::tangentpointer(sizeof(vertex), vdata->tangent.data(), GL_BYTE);
         }
     }
 
@@ -1540,9 +1540,9 @@ namespace
         vertex *vdata = nullptr;
         //note inane bikeshedding: use of offset from dereferenced null ptr (aka 0)
         gle::vertexpointer(sizeof(vertex), vdata->pos.data());
-        gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
+        gle::normalpointer(sizeof(vertex), vdata->norm.data(), GL_BYTE, 4);
         gle::texcoord0pointer(sizeof(vertex), vdata->tc.data(), GL_FLOAT, 3);
-        gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
+        gle::tangentpointer(sizeof(vertex), vdata->tangent.data(), GL_BYTE);
     }
 
     void decalrenderer::changebatchtmus()

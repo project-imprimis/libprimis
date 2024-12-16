@@ -917,7 +917,7 @@ struct varenderer final : partrenderer
         {
             for(int i = 0; i < 4; ++i)
             {
-                vs[i].color.a = blend;
+                vs[i].color.a() = blend;
             }
         }
         if(parttype()&PT_ROT)
@@ -984,7 +984,7 @@ struct varenderer final : partrenderer
         const partvert *ptr = 0;
         gle::vertexpointer(sizeof(partvert), ptr->pos.data());
         gle::texcoord0pointer(sizeof(partvert), ptr->tc.data());
-        gle::colorpointer(sizeof(partvert), ptr->color.v);
+        gle::colorpointer(sizeof(partvert), ptr->color.data());
         gle::enablevertex();
         gle::enabletexcoord0();
         gle::enablecolor();
