@@ -1835,6 +1835,13 @@ namespace
         }
     }
 
+    void test_vec4_data()
+    {
+        std::printf("testing vec2 data\n");
+        vec4<float> v1;
+        assert(reinterpret_cast<const vec4<float> *>(v1.data()) == const_cast<const vec4<float> *>(&v1));
+    }
+
     void test_vec4_equal()
     {
         std::printf("testing vec4 operator==\n");
@@ -3228,6 +3235,7 @@ testing geometry\n\
 
     test_vec4_ctor();
     test_vec4_bracket();
+    test_vec4_data();
     test_vec4_equal();
     test_vec4_nequal();
     test_vec4_dot3();
