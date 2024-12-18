@@ -73,6 +73,13 @@ namespace
         assert(v2 != v);
     }
 
+    void test_vec2_data()
+    {
+        std::printf("testing vec2 data\n");
+        vec2 v1;
+        assert(reinterpret_cast<const vec2 *>(v1.data()) == const_cast<const vec2 *>(&v1));
+    }
+
     void test_vec2_iszero()
     {
         std::printf("testing vec2 iszero\n");
@@ -3120,6 +3127,7 @@ testing geometry\n\
     test_vec2_ctor();
     test_vec2_bracket();
     test_vec2_nequal();
+    test_vec2_data();
     test_vec2_iszero();
     test_vec2_dot();
     test_vec2_squaredlen();
