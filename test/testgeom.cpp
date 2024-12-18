@@ -748,6 +748,13 @@ namespace
         test_3d_star<vec>("vec");
     }
 
+    void test_vec_data()
+    {
+        std::printf("testing vec2 data\n");
+        vec v1;
+        assert(reinterpret_cast<const vec *>(v1.data()) == const_cast<const vec *>(&v1));
+    }
+
     template<class T>
     void test_3d_iszero(std::string_view type)
     {
@@ -3162,6 +3169,7 @@ testing geometry\n\
     test_vec_minus();
     test_vec_star();
     test_vec_slash();
+    test_vec_data();
     test_vec_iszero();
     test_vec_squaredlen();
     test_vec_square();
