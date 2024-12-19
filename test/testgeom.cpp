@@ -748,6 +748,21 @@ namespace
         test_3d_star<vec>("vec");
     }
 
+    void test_vec_rgb()
+    {
+        std::printf("testing vec r() g() b()\n");
+        vec v(1,2,3);
+        assert(v.r() == 1);
+        assert(v.g() == 2);
+        assert(v.b() == 3);
+        v.r() = 4;
+        v.g() = 3;
+        v.b() = 2;
+        assert(v.r() == 4);
+        assert(v.g() == 3);
+        assert(v.b() == 2);
+    }
+
     void test_vec_data()
     {
         std::printf("testing vec data\n");
@@ -3194,6 +3209,7 @@ testing geometry\n\
     test_vec_minus();
     test_vec_star();
     test_vec_slash();
+    test_vec_rgb();
     test_vec_data();
     test_vec_iszero();
     test_vec_squaredlen();
