@@ -1842,6 +1842,24 @@ namespace
         assert(reinterpret_cast<const vec4<float> *>(v1.data()) == const_cast<const vec4<float> *>(&v1));
     }
 
+    void test_vec4_rgba()
+    {
+        std::printf("testing vec4 r() g() b() a()\n");
+        vec4<int> v(1,2,3,4);
+        assert(v.r() == 1);
+        assert(v.g() == 2);
+        assert(v.b() == 3);
+        assert(v.a() == 4);
+        v.r() = 4;
+        v.g() = 3;
+        v.b() = 2;
+        v.a() = 1;
+        assert(v.r() == 4);
+        assert(v.g() == 3);
+        assert(v.b() == 2);
+        assert(v.a() == 1);
+    }
+
     void test_vec4_equal()
     {
         std::printf("testing vec4 operator==\n");
@@ -3236,6 +3254,7 @@ testing geometry\n\
     test_vec4_ctor();
     test_vec4_bracket();
     test_vec4_data();
+    test_vec4_rgba();
     test_vec4_equal();
     test_vec4_nequal();
     test_vec4_dot3();
