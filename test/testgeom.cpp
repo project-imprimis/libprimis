@@ -750,7 +750,7 @@ namespace
 
     void test_vec_data()
     {
-        std::printf("testing vec2 data\n");
+        std::printf("testing vec data\n");
         vec v1;
         assert(reinterpret_cast<const vec *>(v1.data()) == const_cast<const vec *>(&v1));
     }
@@ -1837,7 +1837,7 @@ namespace
 
     void test_vec4_data()
     {
-        std::printf("testing vec2 data\n");
+        std::printf("testing vec4 data\n");
         vec4<float> v1;
         assert(reinterpret_cast<const vec4<float> *>(v1.data()) == const_cast<const vec4<float> *>(&v1));
     }
