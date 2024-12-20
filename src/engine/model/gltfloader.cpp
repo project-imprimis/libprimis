@@ -359,7 +359,7 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
         {
             if(bracketdepth == 0)
             {
-                throw std::logic_error("GLTF loader error: too many closing } or ]");
+                throw std::logic_error("GLTF loader error: too many trailing } or ]");
             }
             pushstring(bracketdepth, output, wholefile, lastbreak, i);
             bracketdepth--;
@@ -385,7 +385,7 @@ std::vector<std::string> GLTFModelInfo::loadjsonfile(std::string_view name)
     }
     if(bracketdepth != 0)
     {
-        throw std::logic_error("GLTF loader error: too few } or ]");
+        throw std::logic_error("GLTF loader error: too few trailing } or ]");
     }
 
     infile.close();
@@ -521,7 +521,7 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
         {
             continue;
         }
-        Mesh m{"",std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt};
+        Mesh m{"", std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt};
         for(std::string_view j : block)
         {
             if(j.find(" \"name\":") != std::string_view::npos)
