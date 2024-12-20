@@ -500,7 +500,7 @@ size_t GLTFModelInfo::findnodes(std::string_view path)
             }
 
         }
-        nodes.push_back(n);
+        nodes.push_back(n); //no benefit to std::move fundamental types
         i += block.size();
         numnodes++;
     }
@@ -582,7 +582,7 @@ size_t GLTFModelInfo::findmeshes(std::string_view path)
                 m.indices ? m.indices.value() : -1
             );
         }
-        meshes.push_back(m);
+        meshes.push_back(std::move(m));
         i += block.size();
         nummeshes++;
     }
@@ -631,7 +631,7 @@ size_t GLTFModelInfo::findaccessors(std::string_view path)
         {
             std::printf("new accessor created: %lu %u %u %u %s\n", a.index, a.bufferview, a.componenttype, a.count, a.type.c_str());
         }
-        accessors.push_back(a);
+        accessors.push_back(std::move(a));
         i += block.size();
         numaccessors++;
     }
@@ -672,7 +672,7 @@ size_t GLTFModelInfo::findbufferviews(std::string_view path)
         {
             std::printf("new bufferview created: %lu %u %u %u\n", b.index, b.buffer, b.bytelength, b.byteoffset);
         }
-        bufferviews.push_back(b);
+        bufferviews.push_back(b); //no benefit from std::move of fundamental types
         i += block.size();
         numbufferviews++;
     }
@@ -717,7 +717,7 @@ size_t GLTFModelInfo::findbuffers(std::string_view path)
         {
             std::printf("new buffer created: %lu %u %s %lu\n", b.index, b.bytelength, b.uri.c_str(), buffer.size());
         }
-        buffers.push_back(b);
+        buffers.push_back(std::move(b));
         i += block.size();
         numbuffers++;
         binary.close();
@@ -783,7 +783,7 @@ size_t GLTFModelInfo::findanimations(std::string_view path)
                     {
                         std::printf("new channel (animation %lu) added: %lu %lu %s\n", animations.size(), c.sampler, c.targetnode, c.targetpath.c_str());
                     }
-                    a.channels.push_back(c);
+                    a.channels.push_back(std::move(c));
                     k += channeldata.size();
                 }
             }
@@ -821,7 +821,7 @@ size_t GLTFModelInfo::findanimations(std::string_view path)
                     {
                         std::printf("new sampler (animation %lu) added: %lu %lu %s %lu\n", animations.size(), s.index, s.input, s.interpolation.c_str(), s.output);
                     }
-                    a.samplers.push_back(s);
+                    a.samplers.push_back(std::move(s));
                     k += channeldata.size();
                 }
             }
@@ -830,7 +830,7 @@ size_t GLTFModelInfo::findanimations(std::string_view path)
         {
             std::printf("new animation (index %lu) created: %s\n", animations.size(), a.name.c_str());
         }
-        animations.push_back(a);
+        animations.push_back(std::move(a));
         i += animationsblock.size();
         numanimations++;
     }
