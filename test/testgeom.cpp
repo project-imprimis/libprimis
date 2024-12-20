@@ -2648,6 +2648,18 @@ namespace
         assert( v2 != v);
     }
 
+    void test_ivec2_xy()
+    {
+        std::printf("testing ivec2 x() y()\n");
+        ivec2 v(1,2);
+        assert(v.x() == 1);
+        assert(v.y() == 2);
+        v.x() = 2;
+        v.y() = 1;
+        assert(v.x() == 2);
+        assert(v.y() == 1);
+    }
+
     void test_ivec2_iszero()
     {
         std::printf("testing ivec2 iszero\n");
@@ -3333,6 +3345,7 @@ testing geometry\n\
 
     test_ivec2_bracket();
     test_ivec2_nequal();
+    test_ivec2_xy();
     test_ivec2_iszero();
     test_ivec2_shl();
     test_ivec2_shr();
