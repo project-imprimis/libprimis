@@ -130,6 +130,11 @@ class model
         vec bbcenter, bbradius, collidecenter, collideradius;
         float rejectradius;
 
+        /**
+         * @brief Constructs a new model object.
+         *
+         * The string passed will be consumed by the constructor.
+         */
         model(std::string name) : orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),
@@ -144,7 +149,7 @@ class model
                                   translate(0, 0, 0),
                                   spin(0, 0, 0),
                                   scale(1.0f),
-                                  name(name),
+                                  name(std::move(name)),
                                   bbcenter(0, 0, 0),
                                   bbradius(-1, -1, -1),
                                   collidecenter(0, 0, 0),
