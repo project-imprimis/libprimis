@@ -60,7 +60,7 @@ namespace
     }
 
     //returns if there are pending changes or not enqueued
-    void pendingchanges(int *idx)
+    void pendingchanges(const int *idx)
     {
         if(idx)
         {
