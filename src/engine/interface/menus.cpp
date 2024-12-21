@@ -97,7 +97,7 @@ void addchange(const char *desc, int type)
             return;
         }
     }
-    needsapply.push_back(Change(type, desc));
+    needsapply.emplace_back(type, desc);
     if(showchanges)
     {
         UI::showui("changes");
