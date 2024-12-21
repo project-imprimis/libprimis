@@ -189,7 +189,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
                 md5hierarchy h;
                 if(std::sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
                 {
-                    hierarchy.push_back(h);
+                    hierarchy.push_back(std::move(h));
                 }
             }
         }
@@ -205,7 +205,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
                     j.orient.x = -j.orient.x;
                     j.orient.z = -j.orient.z;
                     j.orient.restorew();
-                    basejoints.push_back(j);
+                    basejoints.push_back(j); //no value to std::move POD of fundamental types
                 }
             }
             if(basejoints.size() != skel->numbones)
@@ -401,7 +401,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
                         skel->setboneparent(basejoints.size(), parent);
                     }
                     j.orient.restorew();
-                    basejoints.push_back(j);
+                    basejoints.push_back(j); //no value to std::move POD of fundamental types
                 }
             }
             if(basejoints.size() != skel->numbones)
