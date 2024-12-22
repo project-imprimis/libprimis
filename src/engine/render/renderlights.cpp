@@ -1382,14 +1382,11 @@ enum
     BatchFlag_NoSun     = 1<<2
 };
 
-struct lightbatchkey
+struct lightbatch
 {
     uchar flags, numlights;
     ushort lights[LightTile_MaxBatch];
-};
 
-struct lightbatch : lightbatchkey
-{
     std::vector<lightrect> rects;
 
     void reset()
