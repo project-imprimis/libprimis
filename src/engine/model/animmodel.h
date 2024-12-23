@@ -1007,7 +1007,7 @@ struct modelcommands
         MDL::loading->setspec(spec);
     }
 
-    static void mdlgloss(int *gloss)
+    static void mdlgloss(const int *gloss)
     {
         if(!checkmdl())
         {
