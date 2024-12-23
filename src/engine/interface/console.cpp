@@ -56,8 +56,8 @@ class CompletionFinder
         };
 
         void resetcomplete();
-        void addfilecomplete(char *command, char *dir, char *ext);
-        void addlistcomplete(char *command, char *list);
+        void addfilecomplete(const char *command, char *dir, char *ext);
+        void addlistcomplete(const char *command, char *list);
 
         void complete(char *s, size_t maxlen, const char *cmdprefix);
 
@@ -91,7 +91,7 @@ class CompletionFinder
         int completesize = 0;
         char *lastcomplete = nullptr;
 
-        void addcomplete(char *command, int type, char *dir, char *ext);
+        void addcomplete(const char *command, int type, char *dir, char *ext);
 
         char *prependstring(char *d, const char *s, size_t len) const;
 };
@@ -139,12 +139,12 @@ void CompletionFinder::resetcomplete()
     completesize = 0;
 }
 
-void CompletionFinder::addfilecomplete(char *command, char *dir, char *ext)
+void CompletionFinder::addfilecomplete(const char *command, char *dir, char *ext)
 {
     addcomplete(command, Files_Directory, dir, ext);
 }
 
-void CompletionFinder::addlistcomplete(char *command, char *list)
+void CompletionFinder::addlistcomplete(const char *command, char *list)
 {
     addcomplete(command, Files_List, list, nullptr);
 }
@@ -261,7 +261,7 @@ void CompletionFinder::writecompletions(std::fstream& f)
     }
 }
 
-void CompletionFinder::addcomplete(char *command, int type, char *dir, char *ext)
+void CompletionFinder::addcomplete(const char *command, int type, char *dir, char *ext)
 {
     if(identflags&Idf_Overridden)
     {
