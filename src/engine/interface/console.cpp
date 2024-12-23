@@ -62,7 +62,7 @@ class CompletionFinder
         void complete(char *s, size_t maxlen, const char *cmdprefix);
 
         //print to a stream f the listcompletions in the completions filesval
-        void writecompletions(std::fstream& f);
+        void writecompletions(std::fstream& f) const;
 
     private:
 
@@ -224,7 +224,7 @@ void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
 }
 
 //print to a stream f the listcompletions in the completions filesval
-void CompletionFinder::writecompletions(std::fstream& f)
+void CompletionFinder::writecompletions(std::fstream& f) const
 {
     std::vector<std::string> cmds;
     for(auto &[k, v] : completions)
@@ -237,12 +237,13 @@ void CompletionFinder::writecompletions(std::fstream& f)
     std::sort(cmds.begin(), cmds.end());
     for(std::string &k : cmds)
     {
-        FilesVal *v = completions[k.c_str()];
-        if(!v)
+        auto itr = completions.find(k.c_str());
+        if(itr == completions.end())
         {
             conoutf("could not write completion");
             return;
         }
+        const FilesVal *v = (*itr).second;
         if(v->type==Files_List)
         {
             if(validateblock(v->dir.c_str()))
