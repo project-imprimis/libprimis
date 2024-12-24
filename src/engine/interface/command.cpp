@@ -708,7 +708,7 @@ void poparg(ident &id)
     {
         return;
     }
-    identstack *stack = id.alias.stack;
+    const identstack *stack = id.alias.stack;
     if(id.valtype == Value_String)
     {
         delete[] id.alias.val.s;
