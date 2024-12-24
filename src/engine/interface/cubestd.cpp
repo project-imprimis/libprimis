@@ -1473,7 +1473,7 @@ void checksleep(int millis)
         sleepcmd &s = sleepcmds[i];
         if(millis - s.millis >= s.delay)
         {
-            char *cmd = s.command; // execute might create more sleep commands
+            const char *cmd = s.command; // execute might create more sleep commands
             s.command = nullptr;
             int oldflags = identflags;
             identflags = s.flags;
