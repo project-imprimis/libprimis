@@ -403,7 +403,7 @@ static void setiter(ident &id, int i, identstack &stack)
     }
 }
 
-static void doloop(ident &id, int offset, int n, int step, uint *body)
+static void doloop(ident &id, int offset, int n, int step, const uint *body)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -418,7 +418,7 @@ static void doloop(ident &id, int offset, int n, int step, uint *body)
     poparg(id);
 }
 
-static void loopconc(ident &id, int offset, int n, uint *body, bool space)
+static void loopconc(ident &id, int offset, int n, const uint *body, bool space)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -458,7 +458,7 @@ void concatword(tagval *v, int n)
     commandret->setstr(conc(v, n, false));
 }
 
-void append(ident *id, tagval *v, bool space)
+void append(ident *id, const tagval *v, bool space)
 {
     if(id->type != Id_Alias || v->type == Value_Null)
     {
@@ -1096,7 +1096,7 @@ static void findfile_(char *name)
     );
 }
 
-void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
+void sortlist(char *list, ident *x, ident *y, const uint *body, const uint *unique)
 {
     struct SortItem
     {
@@ -1111,7 +1111,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     struct SortFunction
     {
         ident *x, *y;
-        uint *body;
+        const uint *body;
 
         bool operator()(const SortItem &xval, const SortItem &yval)
         {
