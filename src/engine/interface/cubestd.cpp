@@ -1463,7 +1463,7 @@ void addsleep(int *msec, char *cmd)
     s.millis = lastmillis;
     s.command = std::string(cmd);
     s.flags = identflags;
-    sleepcmds.push_back(s);
+    sleepcmds.push_back(std::move(s));
 }
 
 void checksleep(int millis)
