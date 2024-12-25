@@ -1452,7 +1452,7 @@ void initstrcmds()
 struct sleepcmd
 {
     int delay, millis, flags;
-    char *command;
+    std::string command;
 };
 std::vector<sleepcmd> sleepcmds;
 
@@ -1461,7 +1461,7 @@ void addsleep(int *msec, char *cmd)
     sleepcmd s;
     s.delay = std::max(*msec, 1);
     s.millis = lastmillis;
-    s.command = newstring(cmd);
+    s.command = std::string(cmd);
     s.flags = identflags;
     sleepcmds.push_back(s);
 }
@@ -1473,14 +1473,13 @@ void checksleep(int millis)
         sleepcmd &s = sleepcmds[i];
         if(millis - s.millis >= s.delay)
         {
-            const char *cmd = s.command; // execute might create more sleep commands
-            s.command = nullptr;
+            std::string cmd = s.command; // execute might create more sleep commands
+            s.command.clear();
             int oldflags = identflags;
             identflags = s.flags;
-            execute(cmd);
+            execute(cmd.c_str());
             identflags = oldflags;
-            delete[] cmd;
-            if(sleepcmds.size() > i && !sleepcmds[i].command)
+            if(sleepcmds.size() > i && sleepcmds[i].command.empty())
             {
                 sleepcmds.erase(sleepcmds.begin() + i);
                 i--;
@@ -1494,15 +1493,11 @@ void clearsleep(bool clearoverrides)
     int len = 0;
     for(sleepcmd &i : sleepcmds)
     {
-        if(i.command)
+        if(i.command.size())
         {
             if(clearoverrides && !(i.flags&Idf_Overridden))
             {
                 sleepcmds[len++] = i;
-            }
-            else
-            {
-                delete[] i.command;
             }
         }
     }
