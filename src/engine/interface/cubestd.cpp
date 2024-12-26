@@ -1389,15 +1389,15 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
 //external api function, for loading the string manip functions into the global hashtable
 void initstrcmds()
 {
-    addcommand("echo", reinterpret_cast<identfun>(+[] (char *s) { conoutf("^f1%s", s); }), "C", Id_Command);
-    addcommand("error", reinterpret_cast<identfun>(+[] (char *s) { conoutf(Console_Error, "%s", s); }), "C", Id_Command);
-    addcommand("strstr", reinterpret_cast<identfun>(+[] (char *a, char *b) { { char *s = std::strstr(a, b); intret(s ? s-a : -1); }; }), "ss", Id_Command);
-    addcommand("strlen", reinterpret_cast<identfun>(+[] (char *s) { intret(std::strlen(s)); }), "s", Id_Command);
+    addcommand("echo", reinterpret_cast<identfun>(+[] (const char *s) { conoutf("^f1%s", s); }), "C", Id_Command);
+    addcommand("error", reinterpret_cast<identfun>(+[] (const char *s) { conoutf(Console_Error, "%s", s); }), "C", Id_Command);
+    addcommand("strstr", reinterpret_cast<identfun>(+[] (const char *a, const char *b) { { const char *s = std::strstr(a, b); intret(s ? s-a : -1); }; }), "ss", Id_Command);
+    addcommand("strlen", reinterpret_cast<identfun>(+[] (const char *s) { intret(std::strlen(s)); }), "s", Id_Command);
 
-    addcommand("strlower", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
-    addcommand("strupper", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
+    addcommand("strlower", reinterpret_cast<identfun>(+[] (const char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
+    addcommand("strupper", reinterpret_cast<identfun>(+[] (const char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
 
-    static auto strsplice = [] (const char *s, const char *vals, int *skip, int *count)
+    static auto strsplice = [] (const char *s, const char *vals, const int *skip, const int *count)
     {
         int slen   = std::strlen(s),
             vlen   = std::strlen(vals),
@@ -1420,7 +1420,7 @@ void initstrcmds()
         commandret->setstr(p);
     };
     addcommand("strsplice", reinterpret_cast<identfun>(+strsplice), "ssii", Id_Command);
-    addcommand("strreplace", reinterpret_cast<identfun>(+[] (char *s, char *o, char *n, char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
+    addcommand("strreplace", reinterpret_cast<identfun>(+[] (const char *s, const char *o, const char *n, const char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
 
     static auto substr = [] (char *s, int *start, int *count, int *numargs)
     {
@@ -1438,7 +1438,7 @@ void initstrcmds()
         stringret(d);
     };
     addcommand("stripcolors", reinterpret_cast<identfun>(+stripcolors), "s", Id_Command);
-    addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
+    addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, const tagval *v) { append(id, v, false); }), "rt", Id_Command);
 
     static auto concat = [] (tagval *v, int n)
     {
