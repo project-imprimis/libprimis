@@ -1456,7 +1456,7 @@ struct sleepcmd
 };
 std::vector<sleepcmd> sleepcmds;
 
-void addsleep(int *msec, char *cmd)
+void addsleep(const int *msec, const char *cmd)
 {
     sleepcmd s;
     s.delay = std::max(*msec, 1);
