@@ -1504,7 +1504,7 @@ void clearsleep(bool clearoverrides)
     sleepcmds.resize(len);
 }
 
-void clearsleep_(int *clearoverrides)
+void clearsleep_(const int *clearoverrides)
 {
     clearsleep(*clearoverrides!=0 || identflags&Idf_Overridden);
 }
