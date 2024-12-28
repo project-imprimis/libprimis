@@ -1312,7 +1312,7 @@ void initmathcmds()
     addcommand("ceil", reinterpret_cast<identfun>(+[] (const float *n) { floatret(std::ceil(*n)); }), "f", Id_Command);
     addcommand("round", reinterpret_cast<identfun>(+[] (const float *n, const float *k) { { double step = *k; double r = *n; if(step > 0) { r += step * (r < 0 ? -0.5 : 0.5); r -= std::fmod(r, step); } else { r = r < 0 ? std::ceil(r - 0.5) : std::floor(r + 0.5); } floatret(static_cast<float>(r)); }; }), "ff", Id_Command);
 
-    addcommand("cond", reinterpret_cast<identfun>(+[] (tagval *args, int numargs)
+    addcommand("cond", reinterpret_cast<identfun>(+[] (const tagval *args, int numargs)
     {
         for(int i = 0; i < numargs; i += 2)
         {
