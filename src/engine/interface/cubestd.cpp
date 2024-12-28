@@ -1422,7 +1422,7 @@ void initstrcmds()
     addcommand("strsplice", reinterpret_cast<identfun>(+strsplice), "ssii", Id_Command);
     addcommand("strreplace", reinterpret_cast<identfun>(+[] (const char *s, const char *o, const char *n, const char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
 
-    static auto substr = [] (char *s, int *start, int *count, int *numargs)
+    static auto substr = [] (const char *s, const int *start, const int *count, const int *numargs)
     {
         int len = std::strlen(s),
             offset = std::clamp(*start, 0, len);
@@ -1430,7 +1430,7 @@ void initstrcmds()
     };
     addcommand("substr", reinterpret_cast<identfun>(+substr), "siiN", Id_Command);
 
-    static auto stripcolors = [] (char *s)
+    static auto stripcolors = [] (const char *s)
     {
         int len = std::strlen(s);
         char *d = newstring(len);
@@ -1440,7 +1440,7 @@ void initstrcmds()
     addcommand("stripcolors", reinterpret_cast<identfun>(+stripcolors), "s", Id_Command);
     addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, const tagval *v) { append(id, v, false); }), "rt", Id_Command);
 
-    static auto concat = [] (tagval *v, int n)
+    static auto concat = [] (const tagval *v, int n)
     {
         commandret->setstr(conc(v, n, true));
     };
