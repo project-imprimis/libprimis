@@ -800,7 +800,7 @@ static void setiter(ident &id, char *val, identstack &stack)
     }
 }
 
-void listfind(ident *id, const char *list, const uint *body)
+static void listfind(ident *id, const char *list, const uint *body)
 {
     if(id->type!=Id_Alias)
     {
@@ -828,7 +828,7 @@ found: //if element is found in list
 }
 
 //note: the goto here is the opposite of listfind above: goto triggers when elem not found
-void listfindeq(char *list, int *val, int *skip)
+static void listfindeq(const char *list, const int *val, const int *skip)
 {
     int n = 0;
     for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
@@ -851,7 +851,7 @@ notfound:
     intret(-1);
 }
 
-void listassoceq(char *list, int *val)
+static void listassoceq(const char *list, const int *val)
 {
     for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);)
     {
@@ -870,7 +870,7 @@ void listassoceq(char *list, int *val)
     }
 }
 
-void looplistconc(ident *id, const char *list, const uint *body, bool space)
+static void looplistconc(ident *id, const char *list, const uint *body, bool space)
 {
     if(id->type!=Id_Alias)
     {
@@ -907,7 +907,7 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
     commandret->setstr(arr);
 }
 
-void listcount(ident *id, const char *list, const uint *body)
+static void listcount(ident *id, const char *list, const uint *body)
 {
     if(id->type!=Id_Alias)
     {
@@ -932,7 +932,7 @@ void listcount(ident *id, const char *list, const uint *body)
     intret(r);
 }
 
-void prettylist(const char *s, const char *conj)
+static void prettylist(const char *s, const char *conj)
 {
     std::vector<char> p;
     const char *start, *end, *qstart;
@@ -980,7 +980,7 @@ void prettylist(const char *s, const char *conj)
 }
 
 //returns the int position of the needle inside the passed list
-int listincludes(const char *list, const char *needle, int needlelen)
+static int listincludes(const char *list, const char *needle, int needlelen)
 {
     int offset = 0;
     for(const char *s = list, *start, *end; parselist(s, start, end);)
@@ -995,7 +995,7 @@ int listincludes(const char *list, const char *needle, int needlelen)
     return -1;
 }
 
-void listsplice(const char *s, const char *vals, int *skip, int *count)
+static void listsplice(const char *s, const char *vals, const int *skip, const int *count)
 {
     int offset = std::max(*skip, 0),
         len = std::max(*count, 0);
@@ -1064,7 +1064,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
 }
 
 //executes the body for each file in the given path, using ident passed
-void loopfiles(ident *id, char *dir, char *ext, uint *body)
+static void loopfiles(ident *id, const char *dir, const char *ext, const uint *body)
 {
     if(id->type!=Id_Alias)
     {
@@ -1096,7 +1096,7 @@ static void findfile_(char *name)
     );
 }
 
-void sortlist(char *list, ident *x, ident *y, const uint *body, const uint *unique)
+static void sortlist(const char *list, ident *x, ident *y, const uint *body, const uint *unique)
 {
     struct SortItem
     {
