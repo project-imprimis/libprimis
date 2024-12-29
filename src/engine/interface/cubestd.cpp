@@ -282,7 +282,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     f.close();
 }
 
-void changedvars()
+static void changedvars()
 {
     std::vector<const ident *> ids;
     for(const auto& [k, id] : idents)
@@ -346,7 +346,7 @@ const char *numberstr(double v)
     return retbuf[retidx];
 }
 
-void loopiter(ident &id, identstack &stack, const tagval &v)
+static void loopiter(ident &id, identstack &stack, const tagval &v)
 {
     if(id.alias.stack != &stack)
     {
@@ -453,12 +453,12 @@ static void loopconc(ident &id, int offset, int n, const uint *body, bool space)
     commandret->setstr(arr);
 }
 
-void concatword(tagval *v, int n)
+static void concatword(tagval *v, int n)
 {
     commandret->setstr(conc(v, n, false));
 }
 
-void append(ident *id, const tagval *v, bool space)
+static void append(ident *id, const tagval *v, bool space)
 {
     if(id->type != Id_Alias || v->type == Value_Null)
     {
@@ -501,7 +501,7 @@ void result(const char *s)
     commandret->setstr(newstring(s));
 }
 
-void format(tagval *args, int numargs)
+static void format(tagval *args, int numargs)
 {
     std::vector<char> s;
     if(!args)
