@@ -972,7 +972,7 @@ struct skelmodel : animmodel
             int addblendcombo(const blendcombo &c);
             //sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
             void sortblendcombos();
-            void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
+            void blendbones(const skelcacheentry &sc, blendcacheentry &bc) const;
             void cleanup() override final;
 
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;

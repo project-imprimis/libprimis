@@ -1719,7 +1719,7 @@ void skelmodel::skelmeshgroup::sortblendcombos()
     }
 }
 
-void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheentry &bc)
+void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheentry &bc) const
 {
     bc.nextversion();
     if(!bc.bdata)
