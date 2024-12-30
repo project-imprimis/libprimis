@@ -322,7 +322,7 @@ class animmodel : public model
                 static void fixqtangent(quat &q, float bt);
 
                 template<class T, class TC>
-                void calctangents(typename T::vert *verts, TC *tcverts, int numverts, typename T::tri *tris, int numtris, bool areaweight)
+                void calctangents(typename T::vert *verts, const TC *tcverts, int numverts, const typename T::tri *tris, int numtris, bool areaweight)
                 {
                     vec *tangent = new vec[2*numverts],
                         *bitangent = tangent+numverts;
@@ -381,7 +381,7 @@ class animmodel : public model
                 }
 
                 template<class T, class TC>
-                void calctangents(typename T::vert *verts, TC *tcverts, int numverts, typename T::tri *tris, int numtris, bool areaweight, int numframes)
+                void calctangents(typename T::vert *verts, const TC *tcverts, int numverts, const typename T::tri *tris, int numtris, bool areaweight, int numframes)
                 {
                     for(int i = 0; i < numframes; ++i)
                     {
