@@ -266,7 +266,7 @@ void obj::objmeshgroup::flushmesh(vertmesh &curmesh,
                                   const std::vector<tcvert> &tcverts,
                                   const std::vector<tri> &tris,
                                   const std::vector<vec> &attrib,
-                                  float smooth)
+                                  float smooth) const
 {
     curmesh.numverts = verts.size();
     if(verts.size())

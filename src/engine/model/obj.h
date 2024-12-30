@@ -25,7 +25,7 @@ struct obj final : vertloader<obj>
                            const std::vector<tcvert> &tcverts,
                            const std::vector<tri> &tris,
                            const std::vector<vec> &attrib,
-                           float smooth);
+                           float smooth) const;
     };
 
     vertmeshgroup *newmeshes() override final
