@@ -241,7 +241,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
 
 void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
 {
-    out.emplace_back(vec(0, 0, 0));
+    out.emplace_back(0, 0, 0);
     vec &v = out.back();
     while(std::isalpha(*s))
     {
