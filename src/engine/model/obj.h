@@ -19,7 +19,7 @@ struct obj final : vertloader<obj>
             bool load(const char *filename, float smooth) override final;
 
         private:
-            void parsevert(char *s, std::vector<vec> &out);
+            static void parsevert(char *s, std::vector<vec> &out);
             void flushmesh(vertmesh &curmesh,
                            const std::vector<vert> &verts,
                            const std::vector<tcvert> &tcverts,
