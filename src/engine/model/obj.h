@@ -20,12 +20,12 @@ struct obj final : vertloader<obj>
 
         private:
             static void parsevert(char *s, std::vector<vec> &out);
-            void flushmesh(vertmesh &curmesh,
+            static void flushmesh(vertmesh &curmesh,
                            const std::vector<vert> &verts,
                            const std::vector<tcvert> &tcverts,
                            const std::vector<tri> &tris,
                            const std::vector<vec> &attrib,
-                           float smooth) const;
+                           float smooth);
     };
 
     vertmeshgroup *newmeshes() override final
