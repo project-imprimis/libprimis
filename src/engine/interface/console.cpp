@@ -841,7 +841,7 @@ namespace
             }
         }
     };
-    std::vector<HLine> history;
+    std::vector<HLine *> history;
     int histpos = 0;
 
     VARP(maxhistory, 0, 1000, 10000);
@@ -852,7 +852,7 @@ namespace
         if(!inhistory && static_cast<int>(history.size()) > *n)
         {
             inhistory = true;
-            history[history.size()-*n-1].run();
+            history[history.size()-*n-1]->run();
             inhistory = false;
         }
     }
@@ -1056,7 +1056,7 @@ namespace
                     }
                     if(histpos > 0)
                     {
-                        history[--histpos].restore();
+                        history[--histpos]->restore();
                     }
                     break;
                 }
@@ -1064,7 +1064,7 @@ namespace
                 {
                     if(histpos + 1 < static_cast<int>(history.size()))
                     {
-                        history[++histpos].restore();
+                        history[++histpos]->restore();
                     }
                     break;
                 }
@@ -1097,17 +1097,21 @@ namespace
                 HLine *h = nullptr;
                 if(commandbuf[0])
                 {
-                    if(history.empty() || history.back().shouldsave())
+                    if(history.empty() || history.back()->shouldsave())
                     {
                         if(maxhistory && static_cast<int>(history.size()) >= maxhistory)
                         {
+                            for(uint i = 0; i < (history.size()-maxhistory+1); ++i)
+                            {
+                                delete history[i];
+                            }
                             history.erase(history.begin(), history.begin() + history.size()-maxhistory+1);
                         }
-                        history.emplace_back().save();
+                        history.emplace_back(h = new HLine)->save();
                     }
                     else
                     {
-                        h = &(history.back());
+                        h = history.back();
                     }
                 }
                 histpos = history.size();
