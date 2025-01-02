@@ -78,9 +78,9 @@ void loadshaders()
     loadedshaders = true;
 }
 
-Shader *lookupshaderbyname(const char *name)
+Shader *lookupshaderbyname(std::string_view name)
 {
-    auto itr = shaders.find(name);
+    auto itr = shaders.find(name.data());
     if(itr != shaders.end())
     {
         return (*itr).second.loaded() ? &(*itr).second : nullptr;

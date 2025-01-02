@@ -22,7 +22,7 @@ extern size_t getlocalparam(const std::string &name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 
-extern Shader *lookupshaderbyname(const char *name);
+extern Shader *lookupshaderbyname(std::string_view name);
 
 /** @brief Get a shader by name string.
  *
