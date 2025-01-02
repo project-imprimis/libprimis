@@ -263,8 +263,8 @@ namespace //internal functionality not seen by other files
                 gv.pos = p##n; \
                 gv.color = color; \
                 gv.tc = vec2(tc##n, tcv); \
-                grassverts.push_back(gv); \
                 modify; \
+                grassverts.push_back(std::move(gv)); \
             }
 
             GRASSVERT(2, 0, { gv.pos.z += height; gv.tc.x += animoffset; });
