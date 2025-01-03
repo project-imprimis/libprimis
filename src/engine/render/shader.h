@@ -34,7 +34,7 @@ extern Shader *lookupshaderbyname(std::string_view name);
  * @return pointer to a Shader object corresponding to the name passed
  */
 extern Shader *useshaderbyname(const char *name);
-extern Shader *generateshader(const char *name, const char *cmd, ...);
+extern Shader *generateshader(std::string_view name, const char *cmd, ...);
 extern void resetslotshader();
 extern void setslotshader(Slot &s);
 extern void linkslotshader(Slot &s, bool load = true);

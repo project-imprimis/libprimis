@@ -88,13 +88,13 @@ Shader *lookupshaderbyname(std::string_view name)
     return nullptr;
 }
 
-Shader *generateshader(const char *name, const char *fmt, ...)
+Shader *generateshader(std::string_view name, const char *fmt, ...)
 {
     if(!loadedshaders)
     {
         return nullptr;
     }
-    Shader *s = name ? lookupshaderbyname(name) : nullptr;
+    Shader *s = name.size() ? lookupshaderbyname(name) : nullptr;
     if(!s)
     {
         DEFV_FORMAT_STRING(cmd, fmt, fmt);
@@ -102,7 +102,7 @@ Shader *generateshader(const char *name, const char *fmt, ...)
         standardshaders = true;
         execute(cmd);
         standardshaders = wasstandard;
-        s = name ? lookupshaderbyname(name) : nullptr;
+        s = name.size() ? lookupshaderbyname(name) : nullptr;
         if(!s)
         {
             s = nullshader;
