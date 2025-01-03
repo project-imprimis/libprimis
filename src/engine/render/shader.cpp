@@ -1612,9 +1612,9 @@ int Shader::uniformlocversion()
     return version;
 }
 
-Shader *useshaderbyname(const char *name)
+Shader *useshaderbyname(std::string_view name)
 {
-    auto itr = shaders.find(name);
+    auto itr = shaders.find(name.data());
     if(itr == shaders.end())
     {
         return nullptr;

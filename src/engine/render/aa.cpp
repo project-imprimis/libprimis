@@ -552,7 +552,7 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        generateshader(nullptr, "smaashaders %d \"%s\"", props[SMAAProp::Quality].get_int(), opts.c_str());
+        generateshader("", "smaashaders %d \"%s\"", props[SMAAProp::Quality].get_int(), opts.c_str());
         smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
         if(!smaalumaedgeshader)
         {

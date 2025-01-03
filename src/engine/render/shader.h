@@ -29,11 +29,11 @@ extern Shader *lookupshaderbyname(std::string_view name);
  * The shader is searched for in the `shaders` global map.
  * If the shader is deferred, force it to be used
  *
- * @param name a pointer to a string refering to the name of the shader to use
+ * @param name a string refering to the name of the shader to use
  *
  * @return pointer to a Shader object corresponding to the name passed
  */
-extern Shader *useshaderbyname(const char *name);
+extern Shader *useshaderbyname(std::string_view name);
 extern Shader *generateshader(std::string_view name, const char *cmd, ...);
 extern void resetslotshader();
 extern void setslotshader(Slot &s);
