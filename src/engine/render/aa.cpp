@@ -543,32 +543,32 @@ namespace //internal functions incl. AA implementations
         std::string coloredgename = std::string("SMAAColorEdgeDetection").append(props[SMAAProp::Quality].to_string()).append(opts);
         std::string blendweightname = std::string("SMAABlendingWeightCalculation").append(props[SMAAProp::Quality].to_string()).append(opts);
         std::string neighborhoodname = std::string("SMAANeighborhoodBlending").append(props[SMAAProp::Quality].to_string()).append(opts);
-        smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
-        smaacoloredgeshader = lookupshaderbyname(coloredgename.c_str());
-        smaablendweightshader = lookupshaderbyname(blendweightname.c_str());
-        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname.c_str());
+        smaalumaedgeshader = lookupshaderbyname(lumaedgename);
+        smaacoloredgeshader = lookupshaderbyname(coloredgename);
+        smaablendweightshader = lookupshaderbyname(blendweightname);
+        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname);
 
         if(smaalumaedgeshader && smaacoloredgeshader && smaablendweightshader && smaaneighborhoodshader)
         {
             return;
         }
         generateshader("", "smaashaders %d \"%s\"", props[SMAAProp::Quality].get_int(), opts.c_str());
-        smaalumaedgeshader = lookupshaderbyname(lumaedgename.c_str());
+        smaalumaedgeshader = lookupshaderbyname(lumaedgename);
         if(!smaalumaedgeshader)
         {
             smaalumaedgeshader = nullshader;
         }
-        smaacoloredgeshader = lookupshaderbyname(coloredgename.c_str());
+        smaacoloredgeshader = lookupshaderbyname(coloredgename);
         if(!smaacoloredgeshader)
         {
             smaacoloredgeshader = nullshader;
         }
-        smaablendweightshader = lookupshaderbyname(blendweightname.c_str());
+        smaablendweightshader = lookupshaderbyname(blendweightname);
         if(!smaablendweightshader)
         {
             smaablendweightshader = nullshader;
         }
-        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname.c_str());
+        smaaneighborhoodshader = lookupshaderbyname(neighborhoodname);
         if(!smaaneighborhoodshader)
         {
             smaaneighborhoodshader = nullshader;
