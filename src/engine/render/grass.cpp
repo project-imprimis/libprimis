@@ -322,7 +322,7 @@ namespace //internal functionality not seen by other files
     Shader *loadgrassshader()
     {
         std::string name = "grass";
-        return generateshader(name.c_str(), "grassshader ");
+        return generateshader(name, "grassshader ");
 
     }
 }

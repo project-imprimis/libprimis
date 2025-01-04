@@ -216,7 +216,7 @@ namespace //internal functions incl. AA implementations
             opts.push_back('g');
         }
         std::string fxaaname = std::string("fxaa").append(std::to_string(fxaaquality)).append(opts);
-        fxaashader = generateshader(fxaaname.c_str(), "fxaashaders %d \"%s\"", fxaaquality, opts.c_str());
+        fxaashader = generateshader(fxaaname, "fxaashaders %d \"%s\"", fxaaquality, opts.c_str());
     }
 
     void fxaa::clearfxaashaders()
