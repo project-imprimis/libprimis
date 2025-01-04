@@ -2289,7 +2289,7 @@ void setblurshader(int pass, int size, int radius, const float *weights, const f
 void initshadercmds()
 {
     addcommand("defershader", reinterpret_cast<identfun>(defershader), "iss", Id_Command);
-    addcommand("forceshader", reinterpret_cast<identfun>(useshaderbyname), "s", Id_Command);
+    addcommand("forceshader", reinterpret_cast<identfun>(+[](const char *name){useshaderbyname(name);}), "s", Id_Command);
     addcommand("shader", reinterpret_cast<identfun>(shader), "isss", Id_Command);
     addcommand("variantshader", reinterpret_cast<identfun>(variantshader), "isissi", Id_Command);
     addcommand("setshader", reinterpret_cast<identfun>(setshader), "s", Id_Command);
