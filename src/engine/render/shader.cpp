@@ -2293,7 +2293,7 @@ void initshadercmds()
     addcommand("shader", reinterpret_cast<identfun>(shader), "isss", Id_Command);
     addcommand("variantshader", reinterpret_cast<identfun>(variantshader), "isissi", Id_Command);
     addcommand("setshader", reinterpret_cast<identfun>(setshader), "s", Id_Command);
-    addcommand("isshaderdefined", reinterpret_cast<identfun>(+[](const char* name){intret(lookupshaderbyname(name) ? 1 : 0);}), "s", Id_Command);
+    addcommand("isshaderdefined", reinterpret_cast<identfun>(+[](const char *name){intret(lookupshaderbyname(name) ? 1 : 0);}), "s", Id_Command);
     addcommand("setshaderparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w);}), "sfFFf", Id_Command);
     addcommand("reuseuniformparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);}), "sfFFf", Id_Command);
     addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders), "", Id_Command);
