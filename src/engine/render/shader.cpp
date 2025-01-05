@@ -1794,7 +1794,7 @@ static void shader_new(const int *type, const char *name, const uint *code)
     adding_shader = false;
 }
 
-static void shader_define(char *name, char *value)
+static void shader_define(const char *name, const char *value)
 {
     if(!adding_shader)
     {
