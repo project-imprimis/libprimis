@@ -1821,7 +1821,7 @@ static void shader_get_defines()
     result(res.c_str());
 }
 
-static void shader_include_vs(char *path)
+static void shader_include_vs(const char *path)
 {
     if(!adding_shader)
     {
@@ -1848,7 +1848,7 @@ static void shader_get_includes_vs()
     result(res.c_str());
 }
 
-static void shader_include_fs(char *path)
+static void shader_include_fs(const char *path)
 {
     if(!adding_shader)
     {
