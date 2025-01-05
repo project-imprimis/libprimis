@@ -1685,7 +1685,8 @@ static void shader_clear_defines()
     shader_path_fs.clear();
 }
 
-static void shader_assemble(std::string &vs, std::string &ps)
+//loads the vertex and pixel shaders at the indicated paths and returns them to vs, ps
+static void shader_assemble(std::string vs_path, std::string fs_path, std::string &vs, std::string &ps)
 {
     std::string defines;
 
@@ -1693,10 +1694,10 @@ static void shader_assemble(std::string &vs, std::string &ps)
 
     if(!shader_path_vs.empty())
     {
-        char *vs_file = loadfile(path(shader_path_vs).c_str(), nullptr);
+        const char *vs_file = loadfile(path(vs_path).c_str(), nullptr);
         if(!vs_file)
         {
-            conoutf(Console_Error, "could not load vertex shader %s", shader_path_vs.c_str());
+            conoutf(Console_Error, "could not load vertex shader %s", vs_path.c_str());
             adding_shader = false;
             return;
         }
@@ -1706,7 +1707,7 @@ static void shader_assemble(std::string &vs, std::string &ps)
         std::string includes;
         for(const std::string &include : shader_includes_vs)
         {
-            char *vs_include = loadfile(path(include).c_str(), nullptr);
+            const char *vs_include = loadfile(path(include).c_str(), nullptr);
 
             if(!vs_include)
             {
@@ -1721,12 +1722,12 @@ static void shader_assemble(std::string &vs, std::string &ps)
         vs = defines + includes + vs;
     }
 
-    if(!shader_path_fs.empty())
+    if(!fs_path.empty())
     {
-        char *ps_file = loadfile(path(shader_path_fs).c_str(), nullptr);
+        char *ps_file = loadfile(path(fs_path).c_str(), nullptr);
         if(!ps_file)
         {
-            conoutf(Console_Error, "could not load fragment shader %s", shader_path_fs.c_str());
+            conoutf(Console_Error, "could not load fragment shader %s", fs_path.c_str());
             adding_shader = false;
             return;
         }
@@ -1765,7 +1766,7 @@ static void shader_new(const int *type, const char *name, const uint *code)
     execute(code);
 
     std::string vs, ps;
-    shader_assemble(vs, ps);
+    shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
 
     DEF_FORMAT_STRING(info, "shader %s", name);
     renderprogress(loadprogress, info);
@@ -1953,7 +1954,7 @@ void variantshader_new(const int *type, const char *name, const int *row, const 
     execute(code);
 
     std::string vs, ps;
-    shader_assemble(vs, ps);
+    shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
 
     DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
     if(*maxvariants > 0)
