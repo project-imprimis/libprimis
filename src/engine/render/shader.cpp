@@ -1250,7 +1250,7 @@ Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader 
     return this;
 }
 
-static size_t findglslmain(std::string s)
+static size_t findglslmain(const std::string &s)
 {
     size_t main = s.find("main");
     if(main == std::string::npos)
