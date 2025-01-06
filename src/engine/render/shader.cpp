@@ -1250,6 +1250,17 @@ Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader 
     return this;
 }
 
+/**
+ * @brief Returns the location of the start of the line containing "main"
+ *
+ * Returns std::string::npos if no `main` is defined for the glsl code passed.
+ *
+ * Returns the beginning of the `main` call and all following lines until the closing '}'
+ *
+ * @param s the string to parse
+ *
+ * @return std::string::npos if no main() found, or the index preceeding 'main'
+ */
 static size_t findglslmain(const std::string &s)
 {
     size_t main = s.find("main");
