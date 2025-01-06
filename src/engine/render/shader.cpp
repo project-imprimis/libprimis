@@ -1163,21 +1163,21 @@ void Shader::genuniformlocs(const char *vs, const Shader *reusevs, const Shader 
     }
 }
 
-static Shader *newshader(int type, const char *name, const char *vs, const char *ps, Shader *variant = nullptr, int row = 0)
+static Shader *newshader(int type, std::string_view name, std::string_view vs, std::string_view ps, Shader *variant = nullptr, int row = 0)
 {
     if(Shader::lastshader)
     {
         glUseProgram(0);
         Shader::lastshader = nullptr;
     }
-    auto itr = shaders.find(name);
+    auto itr = shaders.find(name.data());
     Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
-    char *rname = exists ? exists->name : newstring(name);
+    char *rname = exists ? exists->name : newstring(name.data());
     if(!exists)
     {
         itr = shaders.insert( { rname, Shader() } ).first;
     }
-    Shader *retval = (*itr).second.setupshader(rname, ps, vs, variant, row);
+    Shader *retval = (*itr).second.setupshader(rname, ps.data(), vs.data(), variant, row);
     return retval; //can be nullptr or s
 }
 
