@@ -847,7 +847,8 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
     return false;
 }
 
-static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
+//cwall -> collide wall
+static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, vec &cwall) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, *d);
 
@@ -856,16 +857,16 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
     {
         return false;
     }
-    collidewall = vec(0, 0, 0);
+    cwall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = forceclipplanes(c, co, size, p);
 
-    if(!( checkside(*d, Orient_Left, dir, visible, cutoff,   p.o.x - p.r.x - (d->o.x + d->radius),   -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Right, dir, visible, cutoff,  d->o.x - d->radius - (p.o.x + p.r.x),    dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Back, dir, visible, cutoff,   p.o.y - p.r.y - (d->o.y + d->radius),   -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Front, dir, visible, cutoff,  d->o.y - d->radius - (p.o.y + p.r.y),    dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Bottom, dir, visible, cutoff, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
-       && checkside(*d, Orient_Top, dir, visible, cutoff,    d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff,   p.o.x - p.r.x - (d->o.x + d->radius),   -dir.x, -d->radius, vec(-1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff,  d->o.x - d->radius - (p.o.x + p.r.x),    dir.x, -d->radius, vec(1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff,   p.o.y - p.r.y - (d->o.y + d->radius),   -dir.y, -d->radius, vec(0, -1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff,  d->o.y - d->radius - (p.o.y + p.r.y),    dir.y, -d->radius, vec(0, 1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), cwall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff,    d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), cwall, bestdist))
        )
     {
         return false;
@@ -912,9 +913,9 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
 
     if(bestplane >= 0)
     {
-        collidewall = p.p[bestplane];
+        cwall = p.p[bestplane];
     }
-    else if(collidewall.iszero())
+    else if(cwall.iszero())
     {
         collideinside++;
         return false;
@@ -1058,7 +1059,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
             }
             else
             {
-                return fuzzycollideplanes(d, dir, cutoff, c, co, size);
+                return fuzzycollideplanes(d, dir, cutoff, c, co, size, cwall);
             }
         }
         default:
