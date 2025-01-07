@@ -921,7 +921,8 @@ static bool fuzzycollideplanes(const physent *d, const vec &dir, float cutoff, c
     return true;
 }
 
-static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
+//cwall -> collide wall
+static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, vec &cwall) // collide with solid cube geometry
 {
     int crad = size/2;
     if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
@@ -935,22 +936,22 @@ static bool cubecollidesolid(const physent *d, const vec &dir, float cutoff, con
     {
         return false;
     }
-    collidewall = vec(0, 0, 0);
+    cwall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==physent::PhysEnt_Player ? c.visible : 0xFF;
 
-    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Front, dir, visible, cutoff, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
-       && checkside(*d, Orient_Top, dir, visible, cutoff, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), cwall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), cwall, bestdist))
       )
     {
         return false;
     }
 
-    if(collidewall.iszero())
+    if(cwall.iszero())
     {
         collideinside++;
         return false;
@@ -1033,13 +1034,14 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
 
 static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
+    vec cwall; //throwaway output parameter
     switch(d->collidetype)
     {
         case Collide_OrientedBoundingBox:
         {
             if(c.issolid() || solid)
             {
-                return cubecollidesolid(d, dir, cutoff, c, co, size);
+                return cubecollidesolid(d, dir, cutoff, c, co, size, cwall);
             }
             else
             {
