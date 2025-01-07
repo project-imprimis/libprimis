@@ -776,7 +776,8 @@ static bool checkside(const physent &d, int side, const vec &dir, const int visi
     return true;
 }
 
-static bool fuzzycollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
+//cwall -> collide wall
+static bool fuzzycollidesolid(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, vec &cwall) // collide with solid cube geometry
 {
     int crad = size/2;
     if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
@@ -784,22 +785,22 @@ static bool fuzzycollidesolid(const physent *d, const vec &dir, float cutoff, co
     {
         return false;
     }
-    collidewall = vec(0, 0, 0);
+    cwall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==physent::PhysEnt_Player ? c.visible : 0xFF;
 
     //if any of these checks are false (NAND of all of these checks)
-    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Right, dir, visible, cutoff, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Front, dir, visible, cutoff, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
-       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
-       && checkside(*d, Orient_Top, dir, visible, cutoff, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), cwall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), cwall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), cwall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), cwall, bestdist))
        )
     {
         return false;
     }
-    if(collidewall.iszero())
+    if(cwall.iszero())
     {
         collideinside++;
         return false;
@@ -1053,7 +1054,7 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
         {
             if(c.issolid() || solid)
             {
-                return fuzzycollidesolid(d, dir, cutoff, c, co, size);
+                return fuzzycollidesolid(d, dir, cutoff, c, co, size, cwall);
             }
             else
             {
