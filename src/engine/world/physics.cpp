@@ -1027,7 +1027,7 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
     {
         cwall = p.p[bestplane];
     }
-    else if(collidewall.iszero())
+    else if(cwall.iszero())
     {
         collideinside++;
         return false;
