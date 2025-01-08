@@ -432,7 +432,8 @@ static bool mmcollide(const physent *d, const vec &dir, const extentity &e, cons
     return false;
 }
 
-static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+//cwall -> collide wall
+static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll, vec &cwall)
 {
     mpr::ModelOBB mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
@@ -442,7 +443,7 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
         return false;
     }
     mpr::EntCapsule entvol(d);
-    collidewall = vec(0, 0, 0);
+    cwall = vec(0, 0, 0);
     float bestdist = -1e10f;
     for(int i = 0; i < 6; ++i)
     {
@@ -498,7 +499,7 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
         {
             continue;
         }
-        collidewall = vec(0, 0, 0);
+        cwall = vec(0, 0, 0);
         bestdist = dist;
         if(!dir.iszero())
         {
@@ -515,9 +516,9 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
                 continue;
             }
         }
-        collidewall = w;
+        cwall = w;
     }
-    if(collidewall.iszero())
+    if(cwall.iszero())
     {
         collideinside++;
         return false;
@@ -710,7 +711,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     }
                     else if(pitch || roll)
                     {
-                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll))
+                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, collidewall))
                         {
                             return true;
                         }
