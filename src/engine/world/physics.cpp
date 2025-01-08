@@ -526,8 +526,9 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
     return true;
 }
 
+//cwall -> collide wall
 template<class E>
-static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll, vec &cwall)
 {
     mpr::ModelEllipse mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
@@ -540,7 +541,7 @@ static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, 
         return false;
     }
     E entvol(d);
-    collidewall = vec(0, 0, 0);
+    cwall = vec(0, 0, 0);
     float bestdist = -1e10f;
     for(int i = 0; i < 3; ++i)
     {
@@ -585,7 +586,7 @@ static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, 
         {
             continue;
         }
-        collidewall = vec(0, 0, 0);
+        cwall = vec(0, 0, 0);
         bestdist = dist;
         if(!dir.iszero())
         {
@@ -601,9 +602,9 @@ static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, 
                 continue;
             }
         }
-        collidewall = w;
+        cwall = w;
     }
-    if(collidewall.iszero())
+    if(cwall.iszero())
     {
         collideinside++;
         return false;
@@ -699,7 +700,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     {
                         if(pitch || roll)
                         {
-                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll))
+                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, collidewall))
                             {
                                 return true;
                             }
