@@ -413,11 +413,12 @@ bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // col
 #undef LOOPDYNENTCACHE
 //==============================================================================
 
+//orient consists of {yaw, pitch, roll}
 template<class M>
-static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, const ivec &orient)
 {
     mpr::EntOBB entvol(d);
-    M mdlvol(e.o, center, radius, yaw, pitch, roll);
+    M mdlvol(e.o, center, radius, orient.x, orient.y, orient.z);
     vec cp;
     if(mpr::collide(entvol, mdlvol, nullptr, nullptr, &cp))
     {
@@ -727,12 +728,12 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                 {
                     if(mcol == Collide_Ellipse)
                     {
-                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, yaw, pitch, roll))
+                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, {yaw, pitch, roll}))
                         {
                             return true;
                         }
                     }
-                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, yaw, pitch, roll))
+                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, {yaw, pitch, roll}))
                     {
                         return true;
                     }
