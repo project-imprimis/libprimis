@@ -414,8 +414,9 @@ bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // col
 //==============================================================================
 
 //orient consists of {yaw, pitch, roll}
+//cwall -> collide wall
 template<class M>
-static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, const ivec &orient)
+static bool mmcollide(const physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, const ivec &orient, vec &cwall)
 {
     mpr::EntOBB entvol(d);
     M mdlvol(e.o, center, radius, orient.x, orient.y, orient.z);
@@ -423,8 +424,8 @@ static bool mmcollide(const physent *d, const vec &dir, const extentity &e, cons
     if(mpr::collide(entvol, mdlvol, nullptr, nullptr, &cp))
     {
         vec wn = cp.sub(mdlvol.center());
-        collidewall = mdlvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
-        if(!collidewall.iszero())
+        cwall = mdlvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
+        if(!cwall.iszero())
         {
             return true;
         }
@@ -728,12 +729,12 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                 {
                     if(mcol == Collide_Ellipse)
                     {
-                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, {yaw, pitch, roll}))
+                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, {yaw, pitch, roll}, collidewall))
                         {
                             return true;
                         }
                     }
-                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, {yaw, pitch, roll}))
+                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, {yaw, pitch, roll}, collidewall))
                     {
                         return true;
                     }
