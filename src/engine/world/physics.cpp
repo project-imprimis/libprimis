@@ -528,11 +528,12 @@ static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, cons
     return true;
 }
 
+//orient consists of {yaw, pitch, roll}
 //cwall -> collide wall
 template<class E>
-static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll, vec &cwall)
+static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, const ivec &orient, vec &cwall)
 {
-    mpr::ModelEllipse mdlvol(o, center, radius, yaw, pitch, roll);
+    mpr::ModelEllipse mdlvol(o, center, radius, orient.x, orient.y, orient.z);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
 
     if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius ||
@@ -702,7 +703,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     {
                         if(pitch || roll)
                         {
-                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, collidewall))
+                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, {yaw, pitch, roll}, collidewall))
                             {
                                 return true;
                             }
