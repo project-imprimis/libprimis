@@ -1040,7 +1040,7 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
     return true;
 }
 
-static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
+static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid, vec &cwall)
 {
     switch(d->collidetype)
     {
@@ -1048,22 +1048,22 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
         {
             if(c.issolid() || solid)
             {
-                return cubecollidesolid(d, dir, cutoff, c, co, size, collidewall);
+                return cubecollidesolid(d, dir, cutoff, c, co, size, cwall);
             }
             else
             {
-                return cubecollideplanes(d, dir, cutoff, c, co, size, collidewall);
+                return cubecollideplanes(d, dir, cutoff, c, co, size, cwall);
             }
         }
         case Collide_Ellipse:
         {
             if(c.issolid() || solid)
             {
-                return fuzzycollidesolid(d, dir, cutoff, c, co, size, collidewall);
+                return fuzzycollidesolid(d, dir, cutoff, c, co, size, cwall);
             }
             else
             {
-                return fuzzycollideplanes(d, dir, cutoff, c, co, size, collidewall);
+                return fuzzycollideplanes(d, dir, cutoff, c, co, size, cwall);
             }
         }
         default:
@@ -1114,7 +1114,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
             {
                 continue;
             }
-            if(cubecollide(d, dir, cutoff, c[i], o, size, solid))
+            if(cubecollide(d, dir, cutoff, c[i], o, size, solid, collidewall))
             {
                 return true;
             }
@@ -1172,7 +1172,7 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
     }
     int csize = 2<<scale,
         cmask = ~(csize-1);
-    return cubecollide(d, dir, cutoff, *c, ivec(bo).mask(cmask), csize, solid);
+    return cubecollide(d, dir, cutoff, *c, ivec(bo).mask(cmask), csize, solid, collidewall);
 }
 
 // all collision happens here
