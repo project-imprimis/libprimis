@@ -322,7 +322,7 @@ void updatedynentcache(physent *d)
 }
 
 template<class O>
-static bool plcollide(const physent *d, const vec &dir, const physent *o)
+static bool plcollide(const physent *d, const vec &dir, const physent *o, vec &cwall)
 {
     mpr::EntOBB entvol(d);
     O obvol(o);
@@ -330,8 +330,8 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
     if(mpr::collide(entvol, obvol, nullptr, nullptr, &cp))
     {
         vec wn = cp.sub(obvol.center());
-        collidewall = obvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
-        if(!collidewall.iszero())
+        cwall = obvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
+        if(!cwall.iszero())
         {
             return true;
         }
@@ -359,11 +359,11 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
         {
             if(o->collidetype == Collide_Ellipse)
             {
-                return plcollide<mpr::EntCylinder>(d, dir, o);
+                return plcollide<mpr::EntCylinder>(d, dir, o, collidewall);
             }
             else
             {
-                return plcollide<mpr::EntOBB>(d, dir, o);
+                return plcollide<mpr::EntOBB>(d, dir, o, collidewall);
             }
         }
         default:
