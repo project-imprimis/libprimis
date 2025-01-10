@@ -1042,29 +1042,28 @@ static bool cubecollideplanes(const physent *d, const vec &dir, float cutoff, co
 
 static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
-    vec cwall; //throwaway output parameter
     switch(d->collidetype)
     {
         case Collide_OrientedBoundingBox:
         {
             if(c.issolid() || solid)
             {
-                return cubecollidesolid(d, dir, cutoff, c, co, size, cwall);
+                return cubecollidesolid(d, dir, cutoff, c, co, size, collidewall);
             }
             else
             {
-                return cubecollideplanes(d, dir, cutoff, c, co, size, cwall);
+                return cubecollideplanes(d, dir, cutoff, c, co, size, collidewall);
             }
         }
         case Collide_Ellipse:
         {
             if(c.issolid() || solid)
             {
-                return fuzzycollidesolid(d, dir, cutoff, c, co, size, cwall);
+                return fuzzycollidesolid(d, dir, cutoff, c, co, size, collidewall);
             }
             else
             {
-                return fuzzycollideplanes(d, dir, cutoff, c, co, size, cwall);
+                return fuzzycollideplanes(d, dir, cutoff, c, co, size, collidewall);
             }
         }
         default:
