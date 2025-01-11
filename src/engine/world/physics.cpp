@@ -621,7 +621,7 @@ static bool fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, 
 // 2: Collide_OrientedBoundingBox
 VAR(testtricol, 0, 0, 2);
 
-static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octaentities &oc) // collide with a mapmodel
+static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octaentities &oc, vec &cwall) // collide with a mapmodel
 {
     const std::vector<extentity *> &ents = entities::getents();
     for(const int &i : oc.mapmodels)
@@ -703,7 +703,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     {
                         if(pitch || roll)
                         {
-                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, {yaw, pitch, roll}, collidewall))
+                            if(fuzzycollideellipse<mpr::EntCapsule>(d, dir, cutoff, e.o, center, radius, {yaw, pitch, roll}, cwall))
                             {
                                 return true;
                             }
@@ -715,7 +715,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     }
                     else if(pitch || roll)
                     {
-                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, collidewall))
+                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, cwall))
                         {
                             return true;
                         }
@@ -730,12 +730,12 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                 {
                     if(mcol == Collide_Ellipse)
                     {
-                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, {yaw, pitch, roll}, collidewall))
+                        if(mmcollide<mpr::ModelEllipse>(d, dir, e, center, radius, {yaw, pitch, roll}, cwall))
                         {
                             return true;
                         }
                     }
-                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, {yaw, pitch, roll}, collidewall))
+                    else if(mmcollide<mpr::ModelOBB>(d, dir, e, center, radius, {yaw, pitch, roll}, cwall))
                     {
                         return true;
                     }
@@ -1079,7 +1079,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     {
         if(c[i].ext && c[i].ext->ents)
         {
-            if(mmcollide(d, dir, cutoff, *c[i].ext->ents))
+            if(mmcollide(d, dir, cutoff, *c[i].ext->ents, collidewall))
             {
                 return true;
             }
@@ -1132,7 +1132,7 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
        return ::octacollide(d, dir, cutoff, bo, bs, *worldroot, ivec(0, 0, 0), mapsize()>>1);
     }
     const cube *c = &((*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
-    if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
+    if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, collidewall))
     {
         return true;
     }
@@ -1140,7 +1140,7 @@ bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, cons
     while(c->children && !(diff&(1<<scale)))
     {
         c = &((*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
-        if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
+        if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, collidewall))
         {
             return true;
         }
