@@ -180,7 +180,7 @@ bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, cons
     return false;
 }
 
-bool ellipsecollide(const physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipsecollide(const physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo, vec &cwall)
 {
     float below = (o.z+center.z-lo) - (d->o.z+d->aboveeye),
           above = (d->o.z-d->eyeheight) - (o.z+center.z+hi);
@@ -205,20 +205,20 @@ bool ellipsecollide(const physent *d, const vec &dir, const vec &o, const vec &c
     {
         if(dist > (d->o.z < yo.z ? below : above) && (dir.iszero() || x*dir.x + y*dir.y > 0))
         {
-            collidewall = vec(-x, -y, 0).rescale(1);
+            cwall = vec(-x, -y, 0).rescale(1);
             return true;
         }
         if(d->o.z < yo.z)
         {
             if(dir.iszero() || (dir.z > 0 && (d->type!=physent::PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
-                collidewall = vec(0, 0, -1);
+                cwall = vec(0, 0, -1);
                 return true;
             }
         }
         else if(dir.iszero() || (dir.z < 0 && (d->type!=physent::PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
-            collidewall = vec(0, 0, 1);
+            cwall = vec(0, 0, 1);
             return true;
         }
         collideinside++;
@@ -348,7 +348,7 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
         {
             if(o->collidetype == Collide_Ellipse)
             {
-                return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
+                return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, collidewall);
             }
             else
             {
@@ -709,7 +709,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                                 return true;
                             }
                         }
-                        else if(ellipsecollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z))
+                        else if(ellipsecollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z, collidewall))
                         {
                             return true;
                         }
