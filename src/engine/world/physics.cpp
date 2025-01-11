@@ -435,9 +435,10 @@ static bool mmcollide(const physent *d, const vec &dir, const extentity &e, cons
 }
 
 //cwall -> collide wall
-static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, int yaw, int pitch, int roll, vec &cwall)
+//orient {yaw, pitch, roll}
+static bool fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, const ivec &orient, vec &cwall)
 {
-    mpr::ModelOBB mdlvol(o, center, radius, yaw, pitch, roll);
+    mpr::ModelOBB mdlvol(o, center, radius, orient.x, orient.y, orient.z);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
     if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
        d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
@@ -715,7 +716,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                     }
                     else if(pitch || roll)
                     {
-                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, yaw, pitch, roll, cwall))
+                        if(fuzzycollidebox(d, dir, cutoff, e.o, center, radius, {yaw, pitch, roll}, cwall))
                         {
                             return true;
                         }
