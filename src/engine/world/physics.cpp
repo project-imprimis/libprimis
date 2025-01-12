@@ -122,7 +122,7 @@ const physent *collideplayer; // whether the collection hit a player
  */
 vec collidewall; // just the normal vectors.
 
-bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo, vec &cwall)
 {
     float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),
           above = (d->o.z-d->eyeheight) - (origin.z+center.z+hi);
@@ -150,15 +150,15 @@ bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, cons
             {
                 if(dir.iszero() || sx*ydir.x < -1e-6f)
                 {
-                    collidewall = vec(sx, 0, 0);
-                    collidewall.rotate_around_z(yaw/RAD);
+                    cwall = vec(sx, 0, 0);
+                    cwall.rotate_around_z(yaw/RAD);
                     return true;
                 }
             }
             else if(dir.iszero() || sy*ydir.y < -1e-6f)
             {
-                collidewall = vec(0, sy, 0);
-                collidewall.rotate_around_z(yaw/RAD);
+                cwall = vec(0, sy, 0);
+                cwall.rotate_around_z(yaw/RAD);
                 return true;
             }
         }
@@ -166,13 +166,13 @@ bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, cons
         {
             if(dir.iszero() || (dir.z > 0 && (d->type!=physent::PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
-                collidewall = vec(0, 0, -1);
+                cwall = vec(0, 0, -1);
                 return true;
             }
         }
         else if(dir.iszero() || (dir.z < 0 && (d->type!=physent::PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
-            collidewall = vec(0, 0, 1);
+            cwall = vec(0, 0, 1);
             return true;
         }
         collideinside++;
@@ -352,7 +352,7 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
             }
             else
             {
-                return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
+                return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, collidewall);
             }
         }
         case Collide_OrientedBoundingBox:
@@ -721,7 +721,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                             return true;
                         }
                     }
-                    else if(ellipseboxcollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z))
+                    else if(ellipseboxcollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z, cwall))
                     {
                         return true;
                     }
