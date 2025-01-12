@@ -709,7 +709,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                                 return true;
                             }
                         }
-                        else if(ellipsecollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z, collidewall))
+                        else if(ellipsecollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z, cwall))
                         {
                             return true;
                         }
