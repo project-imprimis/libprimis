@@ -340,7 +340,7 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o, vec &c
     return false;
 }
 
-static bool plcollide(const physent *d, const vec &dir, const physent *o)
+static bool plcollide(const physent *d, const vec &dir, const physent *o, vec &cwall)
 {
     switch(d->collidetype)
     {
@@ -348,22 +348,22 @@ static bool plcollide(const physent *d, const vec &dir, const physent *o)
         {
             if(o->collidetype == Collide_Ellipse)
             {
-                return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, collidewall);
+                return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, cwall);
             }
             else
             {
-                return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, collidewall);
+                return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight, cwall);
             }
         }
         case Collide_OrientedBoundingBox:
         {
             if(o->collidetype == Collide_Ellipse)
             {
-                return plcollide<mpr::EntCylinder>(d, dir, o, collidewall);
+                return plcollide<mpr::EntCylinder>(d, dir, o, cwall);
             }
             else
             {
-                return plcollide<mpr::EntOBB>(d, dir, o, collidewall);
+                return plcollide<mpr::EntOBB>(d, dir, o, cwall);
             }
         }
         default:
@@ -390,7 +390,7 @@ bool plcollide(const physent *d, const vec &dir, bool insideplayercol)    // col
             {
                 continue;
             }
-            if(plcollide(d, dir, o))
+            if(plcollide(d, dir, o, collidewall))
             {
                 collideplayer = o;
                 return true;
