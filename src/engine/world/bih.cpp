@@ -958,7 +958,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
 }
 
 template<int C>
-void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br) const
+void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br, vec &cwall) const
 {
     node *stack[128];
     int stacksize = 0;
@@ -983,13 +983,13 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, cwall);
                 }
             }
         }
         else if(curnode->isleaf(nearidx))
         {
-            tricollide<C>(m, curnode->childindex(nearidx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
+            tricollide<C>(m, curnode->childindex(nearidx), d, dir, cutoff, center, radius, orient, dist, bo, br, cwall);
             if(farsplit <= 0)
             {
                 if(!curnode->isleaf(faridx))
@@ -999,7 +999,7 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, cwall);
                 }
             }
         }
@@ -1015,14 +1015,14 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                     }
                     else
                     {
-                        collide<C>(m, d, dir, cutoff, center, radius, orient, dist, &nodes[curnode->childindex(nearidx)], bo, br);
+                        collide<C>(m, d, dir, cutoff, center, radius, orient, dist, &nodes[curnode->childindex(nearidx)], bo, br, cwall);
                         curnode += curnode->childindex(faridx);
                         continue;
                     }
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, cwall);
                 }
             }
             curnode += curnode->childindex(nearidx);
@@ -1086,7 +1086,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
         }
         matrix4x3 morient;
         morient.mul(orient, m.xform);
-        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius, collidewall);
     }
     return dist > maxcollidedistance;
 }
@@ -1145,7 +1145,7 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
         }
         matrix4x3 morient;
         morient.mul(dorient, dcenter, m.xform);
-        collide<Collide_OrientedBoundingBox>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_OrientedBoundingBox>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius, cwall);
     }
     if(dist > maxcollidedistance)
     {
