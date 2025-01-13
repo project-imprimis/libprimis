@@ -86,7 +86,7 @@ class BIH
         template<int C>
         void collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br) const;
         template<int C>
-        void tricollide(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const;
+        void tricollide(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br, vec &cwall) const;
 
         void build(mesh &m, uint *indices, int numindices, const ivec &vmin, const ivec &vmax) const;
         bool traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax) const;

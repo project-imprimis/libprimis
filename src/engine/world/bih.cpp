@@ -873,7 +873,7 @@ bool BIH::playercollidecheck(const physent *d, float pdist, vec dir, vec n, vec 
 }
 
 template<>
-void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const
+void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br, vec &cwall) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -910,11 +910,11 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
         }
     }
     dist = pdist;
-    collidewall = n;
+    cwall = n;
 }
 
 template<>
-void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br) const
+void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br, vec &cwall) const
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -954,7 +954,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
         }
     }
     dist = pdist;
-    collidewall = n;
+    cwall = n;
 }
 
 template<int C>
@@ -983,13 +983,13 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
                 }
             }
         }
         else if(curnode->isleaf(nearidx))
         {
-            tricollide<C>(m, curnode->childindex(nearidx), d, dir, cutoff, center, radius, orient, dist, bo, br);
+            tricollide<C>(m, curnode->childindex(nearidx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
             if(farsplit <= 0)
             {
                 if(!curnode->isleaf(faridx))
@@ -999,7 +999,7 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
                 }
             }
         }
@@ -1022,7 +1022,7 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
                 }
                 else
                 {
-                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br);
+                    tricollide<C>(m, curnode->childindex(faridx), d, dir, cutoff, center, radius, orient, dist, bo, br, collidewall);
                 }
             }
             curnode += curnode->childindex(nearidx);
