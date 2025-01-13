@@ -681,7 +681,7 @@ static bool mmcollide(const physent *d, const vec &dir, float cutoff, const octa
                 }
                 case Collide_OrientedBoundingBox:
                 {
-                    if(m->bih->boxcollide(d, dir, cutoff, e.o, yaw, pitch, roll, scale))
+                    if(m->bih->boxcollide(d, dir, cutoff, e.o, yaw, pitch, roll, cwall, scale))
                     {
                         return true;
                     }

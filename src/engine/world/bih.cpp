@@ -1091,7 +1091,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
     return dist > maxcollidedistance;
 }
 
-bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
+bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale) const
 {
     if(!numnodes)
     {
@@ -1149,7 +1149,7 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
     }
     if(dist > maxcollidedistance)
     {
-        collidewall = drot.transposedtransform(collidewall);
+        cwall = drot.transposedtransform(cwall);
         return true;
     }
     return false;
