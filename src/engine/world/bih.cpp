@@ -1036,7 +1036,7 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
     }
 }
 
-bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
+bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale) const
 {
     if(!numnodes)
     {
@@ -1086,7 +1086,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
         }
         matrix4x3 morient;
         morient.mul(orient, m.xform);
-        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius, collidewall);
+        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius, cwall);
     }
     return dist > maxcollidedistance;
 }
