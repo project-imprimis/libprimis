@@ -1124,15 +1124,24 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     return false;
 }
 
-bool cubeworld::octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs) const
+/**
+ * @brief Returns whether the entity passed has collided with this octaworld.
+ *
+ * @param d the physent to check
+ * @param dir the direction at which to check for a collision
+ * @param cutoff the model cutoff factor
+ * @param bo the vector for the minimum position of the model
+ * @param bs the vector for the maximum position of the model
+ */
+static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cubeworld &cw)
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
-        scale = worldscale-1;
-    if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(mapsize()))
+        scale = cw.mapscale()-1;
+    if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(cw.mapsize()))
     {
-       return ::octacollide(d, dir, cutoff, bo, bs, *worldroot, ivec(0, 0, 0), mapsize()>>1);
+       return octacollide(d, dir, cutoff, bo, bs, *cw.worldroot, ivec(0, 0, 0), cw.mapsize()>>1);
     }
-    const cube *c = &((*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
+    const cube *c = &((*cw.worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
     if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, collidewall))
     {
         return true;
@@ -1186,7 +1195,7 @@ bool collide(const physent *d, const vec &dir, float cutoff, bool playercol, boo
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
     bo.sub(1);
     bs.add(1);  // guard space for rounding errors
-    return rootworld.octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol, collidewall)); // collide with world
+    return octacollide(d, dir, cutoff, bo, bs, rootworld) || (playercol && plcollide(d, dir, insideplayercol, collidewall)); // collide with world
 }
 
 void recalcdir(const physent *d, const vec &oldvel, vec &dir)
