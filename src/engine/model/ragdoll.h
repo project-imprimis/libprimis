@@ -203,7 +203,7 @@ class ragdolldata final
          * the vertex array.
          */
         void calcboundsphere();
-        void constrain(const vec &cwall);
+        void constrain(vec &cwall);
         void constraindist();
 
         /**
@@ -233,7 +233,7 @@ class ragdolldata final
          * @param speed the magnitude by which to modify stuck vertices
          *
          */
-        void tryunstick(float speed);
+        void tryunstick(float speed, vec &cwall);
 
         /**
          * @brief Checks collision of `dir` with spherical volume at `pos` with radius `radius`.
@@ -244,11 +244,12 @@ class ragdolldata final
          * @param pos positon of sphere center
          * @param dir direction to check collision against
          * @param radius radius of sphere center
+         * @param [out] cwall collision wall data found by the collision check
          *
          * @return true if collision occured
          * @return false if no collision occured
          */
-        static bool collidevert(const vec &pos, const vec &dir, float radius);
+        static bool collidevert(const vec &pos, const vec &dir, float radius, vec &cwall);
 };
 
 extern void cleanragdoll(dynent *d);

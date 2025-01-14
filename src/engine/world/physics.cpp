@@ -1188,16 +1188,25 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
 }
 
 // all collision happens here
-bool collide(const physent *d, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
+//
+bool collide(const physent *d, vec *cwall, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
 {
     collideinside = 0;
     collideplayer = nullptr;
-    collidewall = vec(0, 0, 0);
     ivec bo(static_cast<int>(d->o.x-d->radius), static_cast<int>(d->o.y-d->radius), static_cast<int>(d->o.z-d->eyeheight)),
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
     bo.sub(1);
     bs.add(1);  // guard space for rounding errors
-    return octacollide(d, dir, cutoff, bo, bs, rootworld, collidewall) || (playercol && plcollide(d, dir, insideplayercol, collidewall)); // collide with world
+    if(cwall)
+    {
+        *cwall = vec(0, 0, 0);
+        return octacollide(d, dir, cutoff, bo, bs, rootworld, *cwall) || (playercol && plcollide(d, dir, insideplayercol, *cwall)); // collide with world
+    }
+    else
+    {
+        vec dummy_cwall = vec(0, 0, 0);
+        return octacollide(d, dir, cutoff, bo, bs, rootworld, dummy_cwall) || (playercol && plcollide(d, dir, insideplayercol, dummy_cwall)); // collide with world
+    }
 }
 
 void recalcdir(const physent *d, const vec &oldvel, vec &dir)
@@ -1280,7 +1289,7 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
     {
         vec oldpos(pl->o);
         pl->o.add(d);
-        if(collide(pl, vec(0, 0, 0), 0, false))
+        if(collide(pl, nullptr, vec(0, 0, 0), 0, false))
         {
             pl->o = oldpos;
             return false;

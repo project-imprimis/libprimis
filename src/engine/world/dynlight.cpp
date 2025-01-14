@@ -211,7 +211,7 @@ size_t finddynlights()
         }
         e.o = d.o;
         e.radius = e.xradius = e.yradius = e.eyeheight = e.aboveeye = d.curradius;
-        if(!collide(&e, vec(0, 0, 0), 0, false))
+        if(!collide(&e, nullptr, vec(0, 0, 0), 0, false))
         {
             continue;
         }

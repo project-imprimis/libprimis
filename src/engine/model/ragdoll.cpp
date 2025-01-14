@@ -411,7 +411,7 @@ void ragdolldata::applyrotfriction(float ts)
     }
 }
 
-void ragdolldata::tryunstick(float speed)
+void ragdolldata::tryunstick(float speed, vec &cwall)
 {
     /* vec `unstuck` is the average position of all vertices with the `stuck` flag
      * that are not found to collide with the world, as well as all vertices without
@@ -424,7 +424,7 @@ void ragdolldata::tryunstick(float speed)
         vert &v = verts[i];
         if(v.stuck)
         {
-            if(collidevert(v.pos, vec(0, 0, 0), skel->verts[i].radius))
+            if(collidevert(v.pos, vec(0, 0, 0), skel->verts[i].radius, cwall))
             {
                 stuck++;
                 continue;
@@ -450,7 +450,7 @@ void ragdolldata::tryunstick(float speed)
     }
 }
 
-void ragdolldata::constrain(const vec &cwall)
+void ragdolldata::constrain(vec &cwall)
 {
     static VAR(ragdollconstrain, 1, 7, 100); //number of iterations to run ragdolldata::constrain() for
     //note: this for loop does not use the loop variable `i` anywhere
@@ -478,7 +478,7 @@ void ragdolldata::constrain(const vec &cwall)
                 v.newpos = vec(0, 0, 0);
                 v.weight = 0;
             }
-            if(v.pos != v.undo && collidevert(v.pos, vec(v.pos).sub(v.undo), skel->verts[j].radius))
+            if(v.pos != v.undo && collidevert(v.pos, vec(v.pos).sub(v.undo), skel->verts[j].radius, cwall))
             {
                 vec dir = vec(v.pos).sub(v.oldpos);
                 const float facing = dir.dot(cwall);
@@ -539,7 +539,7 @@ void ragdolldata::move(bool water, float ts)
             collisions++;
         }
         vec dir = vec(v.pos).sub(v.oldpos);
-        v.collided = collidevert(v.pos, dir, skel->verts[i].radius);
+        v.collided = collidevert(v.pos, dir, skel->verts[i].radius, collidewall);
         if(v.collided)
         {
             v.pos = v.oldpos;
@@ -549,7 +549,7 @@ void ragdolldata::move(bool water, float ts)
     }
     if(unsticks && ragdollunstick)
     {
-        tryunstick(ts*ragdollunstick);
+        tryunstick(ts*ragdollunstick, collidewall);
     }
     timestep = ts;
     if(collisions)
@@ -569,7 +569,7 @@ void ragdolldata::move(bool water, float ts)
     calcboundsphere();
 }
 
-bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
+bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius, vec &cwall)
 {
     static struct vertent : physent
     {
@@ -586,7 +586,7 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
     }
     //collide generated vertent (point with sphere bounding of r = radius)
     //with dir parameter
-    return collide(&v, dir, 0, false);
+    return collide(&v, &cwall, dir, 0, false);
 }
 
 //used in iengine
