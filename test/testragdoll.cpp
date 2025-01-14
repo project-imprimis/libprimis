@@ -119,8 +119,8 @@ namespace
 
         r.init(&d);
 
-        assert(r.center == vec(0.5, 0, 0));
-        assert(r.radius == 0.5);
+        assert(r.center.sub(vec(0.5,0,0)).magnitude() < tolerance);
+        assert(std::abs(r.radius - 0.5) < tolerance);
     }
 
     void test_cleanragdoll()
