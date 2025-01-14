@@ -85,43 +85,6 @@ void cubeworld::resetclipplanes()
 int collideinside; // whether an internal collision happened
 const physent *collideplayer; // whether the collection hit a player
 
-/*
- * Graph of collidewall functions:
- *  - collide
- *  - cubecollideplanes
- *  - cubecollidesolid
- *  - ellipseboxcollide
- *  - ellipsecollide
- *  - fuzzycollidebox
- *  - fuzzycollideellipse<EntCapsule>
- *  - fuzzycollideplanes
- *  - fuzzycollidesolid
- *  - mmcollide<>
- *  - plcollide<>
-
-                                                           /-*cubecollideplanes()
-                                                           |
-                                                           |-*cubecollidesolid()
-                                                           |
-                                                           |-*fuzzycollideplanes()
-                                                           |
-                                                           |-*fuzzycollidesolid()
-                             ________________cubecollide()/
- cubeworld::octacollide()___/                  /            __*fuzzycollidebox()
-                       \    \                 /            /
-                        \    \               /            /---*fuzzycollideellipse<>()
-                         \  octacollide()___/            /
-                          \                 \           /      *mmcollide<>()
-                          -------------------*mmcollide()_____/
-        *collide()----plcollide()_                            \
-                                  \                ____________\-*ellipseboxcollide()
-                                   \              /            \-*ellipsecollide()
-                                   plcollide()___/
-                                                 \
-                                                  plcollide<>()
- */
-vec collidewall; // just the normal vectors.
-
 bool ellipseboxcollide(const physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo, vec &cwall)
 {
     float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),

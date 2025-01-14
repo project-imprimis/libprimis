@@ -514,6 +514,8 @@ void ragdolldata::move(bool water, float ts)
     const float tsfric = timestep ? ts/timestep : 1,
                 airfric = ragdollairfric + std::min((ragdollbodyfricscale*collisions)/verts.size(), 1.0f)*(ragdollbodyfric - ragdollairfric);
     collisions = 0;
+    vec collidewall(0,0,0);
+
     for(uint i = 0; i < verts.size(); i++)
     {
         vert &v = verts[i];
