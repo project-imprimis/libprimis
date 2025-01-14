@@ -895,7 +895,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, const physent *d,
     {
         return;
     }
-    collideinside = true;
+    collideinside = 1;
     n = orient.transformnormal(n).div(m.scale());
     if(!dir.iszero())
     {
@@ -941,7 +941,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
     {
         return;
     }
-    collideinside = true;
+    collideinside = 1;
     if(!dir.iszero())
     {
         if(n.dot(dir) >= -cutoff*dir.magnitude())
