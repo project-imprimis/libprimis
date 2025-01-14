@@ -203,7 +203,7 @@ class ragdolldata final
          * the vertex array.
          */
         void calcboundsphere();
-        void constrain();
+        void constrain(const vec &cwall);
         void constraindist();
 
         /**

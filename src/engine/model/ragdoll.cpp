@@ -450,7 +450,7 @@ void ragdolldata::tryunstick(float speed)
     }
 }
 
-void ragdolldata::constrain()
+void ragdolldata::constrain(const vec &cwall)
 {
     static VAR(ragdollconstrain, 1, 7, 100); //number of iterations to run ragdolldata::constrain() for
     //note: this for loop does not use the loop variable `i` anywhere
@@ -481,10 +481,10 @@ void ragdolldata::constrain()
             if(v.pos != v.undo && collidevert(v.pos, vec(v.pos).sub(v.undo), skel->verts[j].radius))
             {
                 vec dir = vec(v.pos).sub(v.oldpos);
-                const float facing = dir.dot(collidewall);
+                const float facing = dir.dot(cwall);
                 if(facing < 0)
                 {
-                    v.oldpos = vec(v.undo).sub(dir.msub(collidewall, 2*facing));
+                    v.oldpos = vec(v.undo).sub(dir.msub(cwall, 2*facing));
                 }
                 v.pos = v.undo;
                 v.collided = true;
@@ -564,7 +564,7 @@ void ragdolldata::move(bool water, float ts)
     {
         collidemillis = 0;
     }
-    constrain();
+    constrain(collidewall);
     calctris();
     calcboundsphere();
 }
