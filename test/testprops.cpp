@@ -77,7 +77,6 @@ namespace
             const prop::Property<>* cprop = find_prop(prop_meta[i].get_name(), cprops);
             assert(cprop);
         }
-        std::printf("===============================================================\n");
     }
 
     void try_defaults()
@@ -117,7 +116,6 @@ namespace
                     break;
             }
         }
-        std::printf("===============================================================\n");
     }
 
     void try_assignment()
@@ -163,7 +161,6 @@ namespace
                     break;
             }
         }
-        std::printf("===============================================================\n");
     }
 
     void try_assignment_clamp()
@@ -211,7 +208,6 @@ namespace
                     continue;
             }
         }
-        std::printf("===============================================================\n");
     }
 
     void try_pack_unpack()
@@ -296,6 +292,7 @@ namespace
 
         set_prop("prop_test_cb_0", 3, props_with_cb, "hello world");
         assert(called);
+        std::printf("===============================================================\n");
     }
 
     void try_to_string()
