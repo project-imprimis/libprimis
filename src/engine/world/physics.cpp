@@ -1074,13 +1074,13 @@ static bool cubecollide(const physent *d, const vec &dir, float cutoff, const cu
     }
 }
 
-static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const std::array<cube, 8> &c, const ivec &cor, int size) // collide with octants
+static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const std::array<cube, 8> &c, const ivec &cor, int size, vec &cwall) // collide with octants
 {
     LOOP_OCTA_BOX(cor, size, bo, bs)
     {
         if(c[i].ext && c[i].ext->ents)
         {
-            if(mmcollide(d, dir, cutoff, *c[i].ext->ents, collidewall))
+            if(mmcollide(d, dir, cutoff, *c[i].ext->ents, cwall))
             {
                 return true;
             }
@@ -1088,7 +1088,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
         ivec o(i, cor, size);
         if(c[i].children)
         {
-            if(octacollide(d, dir, cutoff, bo, bs, *(c[i].children), o, size>>1))
+            if(octacollide(d, dir, cutoff, bo, bs, *(c[i].children), o, size>>1, cwall))
             {
                 return true;
             }
@@ -1115,7 +1115,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
             {
                 continue;
             }
-            if(cubecollide(d, dir, cutoff, c[i], o, size, solid, collidewall))
+            if(cubecollide(d, dir, cutoff, c[i], o, size, solid, cwall))
             {
                 return true;
             }
@@ -1132,17 +1132,19 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
  * @param cutoff the model cutoff factor
  * @param bo the vector for the minimum position of the model
  * @param bs the vector for the maximum position of the model
+ * @param cw the cube octree world to check collision against
+ * @param [out] cwall collision wall information of the collision (if found)
  */
-static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cubeworld &cw)
+static bool octacollide(const physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cubeworld &cw, vec &cwall)
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = cw.mapscale()-1;
     if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(cw.mapsize()))
     {
-       return octacollide(d, dir, cutoff, bo, bs, *cw.worldroot, ivec(0, 0, 0), cw.mapsize()>>1);
+       return octacollide(d, dir, cutoff, bo, bs, *cw.worldroot, ivec(0, 0, 0), cw.mapsize()>>1, cwall);
     }
     const cube *c = &((*cw.worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
-    if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, collidewall))
+    if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, cwall))
     {
         return true;
     }
@@ -1150,7 +1152,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     while(c->children && !(diff&(1<<scale)))
     {
         c = &((*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)]);
-        if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, collidewall))
+        if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents, cwall))
         {
             return true;
         }
@@ -1158,7 +1160,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     }
     if(c->children)
     {
-        return ::octacollide(d, dir, cutoff, bo, bs, *c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::octacollide(d, dir, cutoff, bo, bs, *c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale, cwall);
     }
     bool solid = false;
     switch(c->material&MatFlag_Clip)
@@ -1182,7 +1184,7 @@ static bool octacollide(const physent *d, const vec &dir, float cutoff, const iv
     }
     int csize = 2<<scale,
         cmask = ~(csize-1);
-    return cubecollide(d, dir, cutoff, *c, ivec(bo).mask(cmask), csize, solid, collidewall);
+    return cubecollide(d, dir, cutoff, *c, ivec(bo).mask(cmask), csize, solid, cwall);
 }
 
 // all collision happens here
@@ -1195,7 +1197,7 @@ bool collide(const physent *d, const vec &dir, float cutoff, bool playercol, boo
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
     bo.sub(1);
     bs.add(1);  // guard space for rounding errors
-    return octacollide(d, dir, cutoff, bo, bs, rootworld) || (playercol && plcollide(d, dir, insideplayercol, collidewall)); // collide with world
+    return octacollide(d, dir, cutoff, bo, bs, rootworld, collidewall) || (playercol && plcollide(d, dir, insideplayercol, collidewall)); // collide with world
 }
 
 void recalcdir(const physent *d, const vec &oldvel, vec &dir)
