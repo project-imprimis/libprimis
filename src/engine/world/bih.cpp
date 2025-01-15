@@ -1036,11 +1036,11 @@ void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff,
     }
 }
 
-bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale) const
+CollisionInfo BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
-        return false;
+        return {false, vec(0,0,0)};
     }
     vec center(d->o.x, d->o.y, d->o.z + 0.5f*(d->aboveeye - d->eyeheight)),
         radius(d->radius, d->radius, 0.5f*(d->eyeheight + d->aboveeye));
@@ -1070,7 +1070,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
     if(bo.x + br.x < bbmin.x || bo.y + br.y < bbmin.y || bo.z + br.z < bbmin.z ||
        bo.x - br.x > bbmax.x || bo.y - br.y > bbmax.y || bo.z - br.z > bbmax.z)
     {
-        return false;
+        return {false, vec(0,0,0)};
     }
     ivec imin = ivec::floor(vec(bo).sub(br)),
          imax = ivec::ceil(vec(bo).add(br)),
@@ -1078,6 +1078,7 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
          iradius = imax.sub(imin).add(1).div(2);
 
     float dist = -1e10f;
+    vec cwall(0,0,0);
     for(const mesh &m : meshes)
     {
         if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
@@ -1088,14 +1089,14 @@ bool BIH::ellipsecollide(const physent *d, const vec &dir, float cutoff, const v
         morient.mul(orient, m.xform);
         collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform().transform(bo), radius, morient, dist, m.nodes, icenter, iradius, cwall);
     }
-    return dist > maxcollidedistance;
+    return {dist > maxcollidedistance, cwall};
 }
 
-bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale) const
+CollisionInfo BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale) const
 {
     if(!numnodes)
     {
-        return false;
+        return {false, vec(0,0,0)};
     }
     vec center(d->o.x, d->o.y, d->o.z + 0.5f*(d->aboveeye - d->eyeheight)),
         radius(d->xradius, d->yradius, 0.5f*(d->eyeheight + d->aboveeye));
@@ -1125,7 +1126,7 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
     if(bo.x + br.x < bbmin.x || bo.y + br.y < bbmin.y || bo.z + br.z < bbmin.z ||
        bo.x - br.x > bbmax.x || bo.y - br.y > bbmax.y || bo.z - br.z > bbmax.z)
     {
-        return false;
+        return {false, vec(0,0,0)};
     }
     ivec imin = ivec::floor(vec(bo).sub(br)),
          imax = ivec::ceil(vec(bo).add(br)),
@@ -1137,6 +1138,7 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
         dcenter = drot.transform(center).neg();
     dorient.mul(drot, orient);
     float dist = -1e10f;
+    vec cwall;
     for(const mesh &m : meshes)
     {
         if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
@@ -1150,9 +1152,9 @@ bool BIH::boxcollide(const physent *d, const vec &dir, float cutoff, const vec &
     if(dist > maxcollidedistance)
     {
         cwall = drot.transposedtransform(cwall);
-        return true;
+        return {true, cwall};
     }
-    return false;
+    return {false, cwall};
 }
 
 void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br) const

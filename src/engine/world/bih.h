@@ -1,3 +1,5 @@
+struct CollisionInfo;
+
 class BIH
 {
     public:
@@ -70,8 +72,8 @@ class BIH
 
         bool traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode) const;
         bool triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode) const;
-        bool boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale = 1) const;
-        bool ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, vec &cwall, float scale = 1) const;
+        CollisionInfo boxcollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1) const;
+        CollisionInfo ellipsecollide(const physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale = 1) const;
         void genstaintris(std::vector<std::array<vec, 3>> &tris, const vec &staincenter, float stainradius, const vec &o, int yaw, int pitch, int roll, float scale = 1) const;
         float getentradius() const;
     private:
