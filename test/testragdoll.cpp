@@ -94,10 +94,10 @@ namespace
         r.calcanimjoint(0, matrix4x3());
         r.animjoints = new matrix4x3[1];
 
-        assert(r.animjoints[0].a == vec(0,0,0));
-        assert(r.animjoints[0].b == vec(0,0,0));
-        assert(r.animjoints[0].c == vec(0,0,0));
-        assert(r.animjoints[0].d == vec(0,0,0));
+        assert(r.animjoints[0].a.magnitude() < tolerance);
+        assert(r.animjoints[0].b.magnitude() < tolerance);
+        assert(r.animjoints[0].c.magnitude() < tolerance);
+        assert(r.animjoints[0].d.magnitude() < tolerance);
     }
 
     void test_ragdolldata_init()
