@@ -18,6 +18,8 @@
 
 int main()
 {
+    std::setbuf(stdout, nullptr); //disable buffering to ensure full printout
+
     testutils();
 
     testidents();
