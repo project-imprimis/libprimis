@@ -28,4 +28,4 @@ jobs:
       run: cd test && make
 
     - name: Run tests
-      run: cd test && gdb --batch libprimis_testsuite -ex run
+      run: cd test && gdb --batch -ex run -ex "bt full" libprimis_testsuite
