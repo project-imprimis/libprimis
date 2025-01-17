@@ -912,7 +912,7 @@ template<class MDL, class BASE>
 MDL *modelloader<MDL, BASE>::loading = nullptr;
 
 template<class MDL, class BASE>
-std::string modelloader<MDL, BASE>::dir = {""}; // crashes clang if "" is used here
+std::string modelloader<MDL, BASE>::dir = "";
 
 /* modelcommands
  *
