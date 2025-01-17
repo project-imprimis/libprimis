@@ -27,5 +27,8 @@ jobs:
     - name: Build test code
       run: cd test && make
 
-    - name: Run tests
+    - name: Run tests with GDB
       run: cd test && gdb --batch -ex run -ex "bt full" libprimis_testsuite
+
+    - name: Run tests
+      run: cd test && ./libprimis_testsuite
