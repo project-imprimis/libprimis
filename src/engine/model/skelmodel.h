@@ -1094,7 +1094,7 @@ struct skelcommands : modelcommands<MDL>
             return;
         }
         std::string filename;
-        filename.append(MDL::dir).append("/").append(meshfile);
+        filename.append(MDL::dir).append("/").append(meshfile ? meshfile : "");
         part &mdl = MDL::loading->addpart();
         mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
