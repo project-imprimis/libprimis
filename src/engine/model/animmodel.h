@@ -1190,7 +1190,7 @@ struct modelcommands
             return;
         }
         MDL::dir.clear();
-        MDL::dir.append(modelpath).append(name);
+        MDL::dir.append(modelpath).append(name ? name : "");
     }
 
     /**
