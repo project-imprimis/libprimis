@@ -85,7 +85,7 @@ int animmodel::skin::ShaderParamsKey::firstversion = 0,
 
 //animmodel
 
-animmodel::animmodel(std::string name) : model(std::move(name))
+animmodel::animmodel(std::string name) : model(name)
 {
 }
 

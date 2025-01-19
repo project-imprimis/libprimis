@@ -149,7 +149,7 @@ class model
                                   translate(0, 0, 0),
                                   spin(0, 0, 0),
                                   scale(1.0f),
-                                  name(std::move(name)),
+                                  name(name),
                                   bbcenter(0, 0, 0),
                                   bbradius(-1, -1, -1),
                                   collidecenter(0, 0, 0),
