@@ -35,7 +35,7 @@ namespace
         m->startload();
         assert(md5::loading == m);
 
-        skelcommands<md5>::setdir(std::string("pulserifle").c_str());
+        skelcommands<md5>::setdir("pulserifle");
         float smooth = 0;
         skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
 
