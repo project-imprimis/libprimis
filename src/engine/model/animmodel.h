@@ -1189,8 +1189,7 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        MDL::dir.clear();
-        MDL::dir.append(modelpath).append(name ? name : "");
+        MDL::dir = std::string(modelpath).append(name ? name : "");
     }
 
     /**
