@@ -34,7 +34,7 @@ namespace
         md5 *m = new md5("pulserifle");
         m->startload();
         assert(md5::loading == m);
-
+        std::printf("model dir: %s\n", md5::dir.c_str());
         skelcommands<md5>::setdir("pulserifle");
         float smooth = 0;
         skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
@@ -86,6 +86,8 @@ namespace
         std::printf("testing md5 pitched\n");
 
         md5 *m = generate_md5_model();
+
+        std::printf("model name %s\n", m->modelname().c_str());
 
         assert(!m->pitched());
         delete m;
