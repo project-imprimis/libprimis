@@ -1249,7 +1249,7 @@ namespace
         {
             T v1(0,0,1),
               v2(0,1,0);
-            U v3;
+            U v3(0,0,0);
 
             v3.cross(v1, v2);
             assert(v3 == U(-1,0,0));
