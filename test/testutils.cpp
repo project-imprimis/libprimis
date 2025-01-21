@@ -344,12 +344,12 @@ namespace
         }
         //endianswap<T>
         {
-            float i = 1;
-            assert(endianswap(i) == 0);
+            uint32_t i = 1;
+            assert(endianswap(i) == 16777216);
         }
         {
-            float i = 16;
-            assert(endianswap(i) == 0);
+            uint32_t i = 16;
+            assert(endianswap(i) == 268435456);
         }
     }
 
