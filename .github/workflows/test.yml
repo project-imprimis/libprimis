@@ -16,7 +16,7 @@ jobs:
       run: sudo apt-get update
 
     - name: Install dependencies
-      run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev gdb
+      run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev gdb valgrind
 
     - name: Build
       run: make CPP_20=1 -Csrc -j4
@@ -29,6 +29,9 @@ jobs:
 
     - name: Run tests with GDB
       run: cd test && gdb --batch -ex run -ex "bt full" libprimis_testsuite
+
+    - name: Run tests with Valgrind
+      run: cd test && valgrind --leak-check=full --track-origins=yes ./libprimis_testsuite
 
     - name: Run tests
       run: cd test && ./libprimis_testsuite
