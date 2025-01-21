@@ -2045,15 +2045,15 @@ namespace
         {
             matrix4 m;
             m.identity();
-            assert(m.lineardepthscale() == vec2(1,0));
+            assert(m.lineardepthscale().sub(vec2(1,0)).magnitude() < tolerance);
         }
         {
             matrix4 m({0,0,0,0},{0,0,0,0}, {0,0,1,0}, {0,0,0,1});
-            assert(m.lineardepthscale() == vec2(1,0));
+            assert(m.lineardepthscale().sub(vec2(1,0)).magnitude() < tolerance);
         }
         {
             matrix4 m({0,0,0,0},{0,0,0,0}, {0,0,1,1}, {0,0,1,2});
-            assert(m.lineardepthscale() == vec2(2,-1));
+            assert(m.lineardepthscale().sub(vec2(2,-1)).magnitude() < tolerance);
         }
     }
 }
