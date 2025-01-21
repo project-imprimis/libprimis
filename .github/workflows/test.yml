@@ -28,7 +28,7 @@ jobs:
       run: cd test && make
 
     - name: Run tests with GDB
-      run: cd test && gdb --batch -ex run -ex "bt full" libprimis_testsuite
+      run: cd test && gdb --batch -ex "run" -ex "bt full" -ex "quit 0" libprimis_testsuite
 
     - name: Run tests with Valgrind
       run: cd test && valgrind --leak-check=full --track-origins=yes ./libprimis_testsuite
