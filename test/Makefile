@@ -7,11 +7,24 @@ CXXFLAGS= -O0 -ffast-math -Wall -fsigned-char -ftest-coverage -fprofile-arcs -fn
 CLIENT_INCLUDES=-I../src/shared -I../src/engine `sdl2-config --cflags` -Igame -Ienet/include
 CLIENT_LIBS=`sdl2-config --cflags` -lprimis `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lz -lGL -lGLEW -lgcov
 
-# if you want to compile with c++20, use `make CPP_20=1`, else c++17
-ifeq (1,$(CPP_20))
-	CXXFLAGS += -std=c++20
-else
+#BUILD_TYPE 2 for gdb
+ifeq (2,$(BUILD_TYPE))
+	CXXFLAGS += -ggdb3
+endif
+
+CPP_VERSION ?= 17
+
+# if you want to compile with c++20, use `make -Csrc CPP_VERSION=20`, CPP_VERSION=23 for c++23
+ifeq (17,$(CPP_VERSION))
 	CXXFLAGS += -std=c++17
+endif
+
+ifeq (20,$(CPP_VERSION))
+	CXXFLAGS += -std=c++20
+endif
+
+ifeq (23,$(CPP_VERSION))
+	CXXFLAGS += -std=c++23
 endif
 
 #list of source code files to be compiled

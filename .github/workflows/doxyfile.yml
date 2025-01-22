@@ -78,7 +78,7 @@ jobs:
         run: sudo cp src/libprimis.so /usr/lib/libprimis.so
 
       - name: Build test code
-        run: cd test && make
+        run: cd test && make CPP_VERSION=20
 
       - name: Run tests
         run: cd test && ./libprimis_testsuite
