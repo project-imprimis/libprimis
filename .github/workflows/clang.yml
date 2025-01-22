@@ -19,7 +19,7 @@ jobs:
       run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev clang
 
     - name: Build
-      run: make CXX=clang CPP_20=1 -C src -j4
+      run: make CXX=clang CPP_VERSION=20 -C src -j4
 
     - name: Upload libprimis.so artifact
       uses: actions/upload-artifact@v4

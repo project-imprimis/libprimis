@@ -16,26 +16,42 @@ CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
 #-Ishared
 CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
 
-COVERAGE_BUILD ?= 0
+BUILD_TYPE ?= 0
 
-CPP_20 ?= 0
+CPP_VERSION ?= 17
 
 PREFIX ?= /usr/local
 
-# if you want to compile with coverage flags, use `make -Csrc COVERAGE_BUILD=1`
+# if you want to compile with coverage flags, use `make -Csrc BUILD_TYPE=1`
+# if you want to compile with gdb symbols, use `make -Csrc BUILD_TYPE=2`
 
-ifeq (1,$(COVERAGE_BUILD))
-	CXXFLAGS += -O0 -fno-inline -fno-inline-small-functions -fno-default-inline -fprofile-arcs -ftest-coverage
-else
+ifeq (0,$(BUILD_TYPE))
 	CXXFLAGS += -O3
 endif
 
-# if you want to compile with c++20, use `make -Csrc CPP_20=1`, else c++17
-ifeq (1,$(CPP_20))
-	CXXFLAGS += -std=c++20
-else
+#BUILD_TYPE 1 for lcov
+ifeq (1,$(BUILD_TYPE))
+	CXXFLAGS += -O0 -fno-inline -fno-inline-small-functions -fno-default-inline -fprofile-arcs -ftest-coverage
+endif
+#BUILD_TYPE 1 for gdb
+ifeq (2,$(BUILD_TYPE))
+	CXXFLAGS += -O0 -fno-inline -fno-inline-small-functions -fno-default-inline -ggdb3
+endif
+
+
+# if you want to compile with c++20, use `make -Csrc CPP_VERSION=20`, CPP_VERSION=23 for c++23
+ifeq (17,$(CPP_VERSION))
 	CXXFLAGS += -std=c++17
 endif
+
+ifeq (20,$(CPP_VERSION))
+	CXXFLAGS += -std=c++20
+endif
+
+ifeq (23,$(CPP_VERSION))
+	CXXFLAGS += -std=c++23
+endif
+
 
 #list of source code files to be compiled
 CLIENT_OBJS= \

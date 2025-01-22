@@ -72,7 +72,7 @@ jobs:
         run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev lcov
 
       - name: Build
-        run: make CPP_20=1 -Csrc -j4 COVERAGE_BUILD=1
+        run: make CPP_VERSION=20 -Csrc -j4 BUILD_TYPE=1
 
       - name: Move library to ld path
         run: sudo cp src/libprimis.so /usr/lib/libprimis.so
