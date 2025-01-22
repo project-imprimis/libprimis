@@ -137,7 +137,7 @@ $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
 
 #change whether -lgcov is included depending on whether the build is intended
 #for gcc coverage checking
-ifeq (1,$(COVERAGE_BUILD))
+ifeq (1,$(BUILD_TYPE))
 client: $(CLIENT_OBJS)
 	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS) --coverage
 else
