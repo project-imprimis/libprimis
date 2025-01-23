@@ -1007,7 +1007,7 @@ class fireballrenderer final : public listrenderer
 {
     public:
         fireballrenderer(const char *texname)
-            : listrenderer(texname, 0, PT_FIREBALL|PT_SHADER)
+            : listrenderer(texname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
         {}
 
         static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
@@ -1240,24 +1240,25 @@ static fireballrenderer fireballs("media/particle/explosion.png"), pulsebursts("
 
 static partrenderer *parts[] =
 {
-    new varenderer<PT_PART>("<grey>media/particle/blood.png", PT_PART|PT_FLIP|PT_MOD|PT_RND4|PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
-    new varenderer<PT_TRAIL>("media/particle/base.png", PT_TRAIL|PT_LERP),                                  // water, entity
-    new varenderer<PT_PART>("<grey>media/particle/smoke.png", PT_PART|PT_FLIP|PT_LERP),                     // smoke
-    new varenderer<PT_PART>("<grey>media/particle/steam.png", PT_PART|PT_FLIP),                             // steam
-    new varenderer<PT_PART>("<grey>media/particle/flames.png", PT_PART|PT_HFLIP|PT_RND4|PT_BRIGHT),         // flame
-    new varenderer<PT_TAPE>("media/particle/flare.png", PT_TAPE|PT_BRIGHT),                                 // streak
-    new varenderer<PT_TAPE>("media/particle/rail_trail.png", PT_TAPE|PT_FEW|PT_BRIGHT),                     // rail trail
-    new varenderer<PT_TAPE>("media/particle/pulse_side.png", PT_TAPE|PT_FEW|PT_BRIGHT),                     // pulse side
-    new varenderer<PT_PART>("media/particle/pulse_front.png", PT_PART|PT_FLIP|PT_FEW|PT_BRIGHT),            // pulse front
+    //unary pluses to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
+    new varenderer<+PT_PART>("<grey>media/particle/blood.png", +PT_PART|+PT_FLIP|+PT_MOD|+PT_RND4|+PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
+    new varenderer<+PT_TRAIL>("media/particle/base.png", +PT_TRAIL|+PT_LERP),                                  // water, entity
+    new varenderer<+PT_PART>("<grey>media/particle/smoke.png", +PT_PART|+PT_FLIP|+PT_LERP),                     // smoke
+    new varenderer<+PT_PART>("<grey>media/particle/steam.png", +PT_PART|+PT_FLIP),                             // steam
+    new varenderer<+PT_PART>("<grey>media/particle/flames.png", +PT_PART|+PT_HFLIP|+PT_RND4|+PT_BRIGHT),         // flame
+    new varenderer<+PT_TAPE>("media/particle/flare.png", +PT_TAPE|+PT_BRIGHT),                                 // streak
+    new varenderer<+PT_TAPE>("media/particle/rail_trail.png", +PT_TAPE|+PT_FEW|+PT_BRIGHT),                     // rail trail
+    new varenderer<+PT_TAPE>("media/particle/pulse_side.png", +PT_TAPE|+PT_FEW|+PT_BRIGHT),                     // pulse side
+    new varenderer<+PT_PART>("media/particle/pulse_front.png", +PT_PART|+PT_FLIP|+PT_FEW|+PT_BRIGHT),            // pulse front
     &fireballs,                                                                                             // explosion fireball
     &pulsebursts,                                                                                           // pulse burst
-    new varenderer<PT_PART>("media/particle/spark.png", PT_PART|PT_FLIP|PT_BRIGHT),                         // sparks
-    new varenderer<PT_PART>("media/particle/base.png",  PT_PART|PT_FLIP|PT_BRIGHT),                         // edit mode entities
-    new varenderer<PT_PART>("media/particle/snow.png", PT_PART|PT_FLIP|PT_RND4|PT_COLLIDE),                 // colliding snow
-    new varenderer<PT_PART>("media/particle/rail_muzzle.png", PT_PART|PT_FEW|PT_FLIP|PT_BRIGHT|PT_TRACK),   // rail muzzle flash
-    new varenderer<PT_PART>("media/particle/pulse_muzzle.png", PT_PART|PT_FEW|PT_FLIP|PT_BRIGHT|PT_TRACK),  // pulse muzzle flash
-    new varenderer<PT_PART>("media/interface/hud/items.png", PT_PART|PT_FEW|PT_ICON),                       // hud icon
-    new varenderer<PT_PART>("<colorify:1/1/1>media/interface/hud/items.png", PT_PART|PT_FEW|PT_ICON),       // grey hud icon
+    new varenderer<+PT_PART>("media/particle/spark.png", +PT_PART|+PT_FLIP|+PT_BRIGHT),                         // sparks
+    new varenderer<+PT_PART>("media/particle/base.png",  +PT_PART|+PT_FLIP|+PT_BRIGHT),                         // edit mode entities
+    new varenderer<+PT_PART>("media/particle/snow.png", +PT_PART|+PT_FLIP|+PT_RND4|+PT_COLLIDE),                 // colliding snow
+    new varenderer<+PT_PART>("media/particle/rail_muzzle.png", +PT_PART|+PT_FEW|+PT_FLIP|+PT_BRIGHT|+PT_TRACK),   // rail muzzle flash
+    new varenderer<+PT_PART>("media/particle/pulse_muzzle.png", +PT_PART|+PT_FEW|+PT_FLIP|+PT_BRIGHT|+PT_TRACK),  // pulse muzzle flash
+    new varenderer<+PT_PART>("media/interface/hud/items.png", +PT_PART|+PT_FEW|+PT_ICON),                       // hud icon
+    new varenderer<+PT_PART>("<colorify:1/1/1>media/interface/hud/items.png", +PT_PART|+PT_FEW|+PT_ICON),       // grey hud icon
     &meters,                                                                                                // meter
     &metervs,                                                                                               // meter vs.
 };
