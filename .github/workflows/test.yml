@@ -1,4 +1,4 @@
-name: Makefile CI Tests (C++20)
+name: Makefile Tests
 
 on: [push]
 
