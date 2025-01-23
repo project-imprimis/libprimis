@@ -29,10 +29,6 @@ class hmap
         void hmapselect()
         {
             const cube &c = rootworld.lookupcube(cur);
-            if(!c.texture)
-            {
-                return;
-            }
             int t = c.texture[orient],
                 i = std::distance(textures.begin(), std::find(textures.begin(), textures.end(), t));
             if(i == std::distance(textures.begin(), textures.end()))
