@@ -23,10 +23,6 @@ SoundEngine::SoundSample::SoundSample(SoundEngine& p) : parent(&p), name(""), ch
 {
 }
 
-SoundEngine::SoundSample::~SoundSample()
-{
-}
-
 void SoundEngine::SoundSample::cleanup()
 {
     if(chunk)
