@@ -151,9 +151,7 @@ class animmodel : public model
 
                 void genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t);
 
-                virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const
-                {
-                }
+                virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const = 0;
 
                 virtual void setshader(Shader *s, bool, int, int row = 0)
                 {
