@@ -16,9 +16,6 @@ struct font
     float bordermin, bordermax, outlinemin, outlinemax;
 
     font() {}
-    ~font()
-    {
-    }
 };
 
 #define FONTH (curfont->scale)
