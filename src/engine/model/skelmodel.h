@@ -317,7 +317,7 @@ struct skelmodel : animmodel
         blendcacheentry();
     };
 
-    struct skelmeshgroup;
+    class skelmeshgroup;
 
     class skelmesh : public Mesh
     {
