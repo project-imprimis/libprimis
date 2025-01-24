@@ -620,7 +620,11 @@ namespace UI
 
             void clearchildren()
             {
-                children.erase(children.begin(), children.end());
+                for(Object *o : children)
+                {
+                    delete o;
+                }
+                children.clear();
             }
 
             void adjustchildrento(float px, float py, float pw, float ph)
