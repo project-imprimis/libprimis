@@ -968,7 +968,7 @@ struct skelmodel : animmodel
              * - ebuf will be filled with data from skelmesh::genvbo, with ebuf size being equal to all of the respective meshes' tri counts summed
              */
             void genvbo(vbocacheentry &vc);
-            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc, const skelcacheentry *sc = nullptr);
+            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
             int addblendcombo(const blendcombo &c);
             //sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
             void sortblendcombos();
