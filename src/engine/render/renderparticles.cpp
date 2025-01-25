@@ -218,19 +218,16 @@ class partrenderer
         {
         }
 
-        virtual void init(int n) { }
+        virtual void init(int n) = 0;
         virtual void reset() = 0;
-        virtual void resettracked(const physent *owner) { }
+        virtual void resettracked(const physent *owner) = 0;
         virtual particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity = 0) = 0;
-        virtual void update() { }
         virtual void render() = 0;
         virtual bool haswork() const = 0;
         virtual int count() const = 0; //for debug
         virtual void cleanup() {}
 
-        virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
-        {
-        }
+        virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) = 0;
 
         virtual void preload()
         {
@@ -512,6 +509,15 @@ class meterrenderer final : public listrenderer
             : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
         {
         }
+
+        void init(int) override final
+        {
+        }
+
+        void seedemitter(particleemitter &, const vec &, const vec &, int, float, int) override final
+        {
+        }
+
     private:
         void startrender() override final
         {
@@ -1106,6 +1112,11 @@ class fireballrenderer final : public listrenderer
                 }
             }
         }
+
+        void init(int) override final
+        {
+        }
+
     private:
         class sphererenderer
         {
@@ -1900,10 +1911,6 @@ void cubeworld::updateparticles()
     else
     {
         canemit = false;
-    }
-    for(size_t i = 0; i < numparts(); ++i)
-    {
-        parts[i]->update();
     }
     if(!editmode || showparticles)
     {
