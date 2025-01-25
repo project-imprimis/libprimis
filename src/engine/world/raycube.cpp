@@ -204,7 +204,7 @@ namespace
     #undef ENT_INTERSECT
     #undef ENT_SEL_INTERSECT
     //======================================
-    float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, const extentity *t)
+    float disttooutsideent(const vec &o, const vec &ray, float radius, const extentity *t)
     {
         vec eo, es;
         int orient;
@@ -539,7 +539,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     float dist = rootworld.raycube(o, ray, radius, mode, size);
     if((mode&Ray_Ents) == Ray_Ents)
     {
-        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, nullptr);
+        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, nullptr);
         if(dent < 1e15f && (dist < 0 || dent < dist))
         {
             dist = dent;
