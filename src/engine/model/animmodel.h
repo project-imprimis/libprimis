@@ -77,7 +77,7 @@ class animmodel : public model
                 int cullface;
 
                 skin(const part *owner, Texture *tex, const Texture *masks) :
-                    tex(notexture),
+                    tex(tex),
                     decal(nullptr),
                     masks(masks),
                     normalmap(nullptr),
