@@ -4312,6 +4312,7 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
                     }
                     args[i].setident(dummyident);
                     fakeargs++;
+                    break;
                 }
                 else
                 {
