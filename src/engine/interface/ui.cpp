@@ -3903,6 +3903,7 @@ namespace UI
                     {
                         break;
                     }
+                    [[fallthrough]];
                 }
                 case SDLK_KP_ENTER:
                 {
@@ -4636,6 +4637,7 @@ namespace UI
                     BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
                     break;
                 }
+                [[fallthrough]];
             }
             default:
             {
