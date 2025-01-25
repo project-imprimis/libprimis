@@ -354,9 +354,6 @@ class listrenderer : public partrenderer
         }
 
     private:
-        virtual void killpart(listparticle *p)
-        {
-        }
 
         virtual void startrender() = 0;
         virtual void endrender() = 0;
@@ -399,7 +396,6 @@ class listrenderer : public partrenderer
                     { // remove
                         *prev = p->next;
                         p->next = parempty;
-                        killpart(p);
                         parempty = p;
                     }
                 }
@@ -422,7 +418,6 @@ class listrenderer : public partrenderer
             listparticle *p = list;
             for(;;)
             {
-                killpart(p);
                 if(p->next)
                 {
                     p = p->next;
