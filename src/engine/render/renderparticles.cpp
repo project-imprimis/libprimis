@@ -603,13 +603,13 @@ class meterrenderer final : public listrenderer
 static meterrenderer meters(PT_METER), metervs(PT_METERVS);
 
 template<int T>
-static void modifyblend(const vec &o, int &blend)
+static void modifyblend(int &blend)
 {
     blend = std::min(blend<<2, 255);
 }
 
 template<int T>
-static void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
+static void genpos(const vec &o, const vec &, float size, int, int, partvert *vs)
 {
     vec udir = camup().sub(camright()).mul(size),
         vdir = camup().add(camright()).mul(size);
@@ -620,7 +620,7 @@ static void genpos(const vec &o, const vec &d, float size, int grav, int ts, par
 }
 
 template<>
-void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
+void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int, int, partvert *vs)
 {
     vec dir1 = vec(d).sub(o),
         dir2 = vec(d).sub(camera1->o), c;
@@ -644,7 +644,7 @@ void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int grav, 
 }
 
 template<int T>
-void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
+void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int)
 {
     genpos<T>(o, d, size, grav, ts, vs);
 }
@@ -667,7 +667,7 @@ static const vec2 rotcoeffs[32][4] =
 //==============================================================================
 
 template<>
-void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
+void genrotpos<PT_PART>(const vec &o, const vec &, float size, int, int, partvert *vs, int rot)
 {
     const vec2 *coeffs = rotcoeffs[rot];
     vs[0].pos = vec(o).madd(camright(), coeffs[0].x*size).madd(camup(), coeffs[0].y*size);
@@ -853,7 +853,7 @@ struct varenderer final : partrenderer
         {
             p->fade = -1; //mark to remove on next pass (i.e. after render)
         }
-        modifyblend<T>(o, blend);
+        modifyblend<T>(blend);
         if(regen)
         {
             p->flags &= ~0x80;
