@@ -110,7 +110,7 @@ namespace
         return true;
     }
 
-    bool raycubeintersect(const clipplanes &p, const cube &c, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
+    bool raycubeintersect(const clipplanes &p, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
     {
         int entry   = -1,
             bbentry = -1;
@@ -448,7 +448,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
-            if(raycubeintersect(p, c, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
+            if(raycubeintersect(p, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
             {
                 return std::min(dent, dist+f);
             }
