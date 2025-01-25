@@ -651,7 +651,7 @@ size_t GLTFModelInfo::findbufferviews(std::string_view path)
         {
             continue;
         }
-        BufferView b{0,0,0};
+        BufferView b{0,0,0,0};
         b.index = bufferviews.size();
         for(std::string_view j : block)
         {
@@ -693,7 +693,7 @@ size_t GLTFModelInfo::findbuffers(std::string_view path)
         }
         std::string dir = path.data();
         dir = dir.substr(0, dir.find_last_of("/\\") + 1);
-        Buffer b{0,0,dir};
+        Buffer b{0, 0, dir, {}};
         b.index = buffers.size();
         for(std::string_view j : block)
         {
