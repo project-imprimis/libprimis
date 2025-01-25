@@ -357,7 +357,7 @@ class listrenderer : public partrenderer
 
         virtual void startrender() = 0;
         virtual void endrender() = 0;
-        virtual void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) = 0;
+        virtual void renderpart(const listparticle &p, const vec &o, int blend, int ts) = 0;
 
         bool haswork() const override final
         {
@@ -373,7 +373,7 @@ class listrenderer : public partrenderer
             {
                 return false;
             }
-            renderpart(*p, o, d, blend, ts);
+            renderpart(*p, o, blend, ts);
             return p->fade > 5;
         }
 
@@ -525,7 +525,7 @@ class meterrenderer final : public listrenderer
             glEnable(GL_BLEND);
         }
 
-        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) override final
+        void renderpart(const listparticle &p, const vec &o, int, int) override final
         {
             int basetype = parttype()&0xFF;
             float scale  = FONTH*p.size/80.0f,
@@ -690,7 +690,7 @@ void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float si
 }
 
 template<>
-void seedpos<PT_TAPE>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos<PT_TAPE>(particleemitter &pe, const vec &, const vec &d, int, float size, int)
 {
     pe.extendbb(d, size);
 }
@@ -1036,13 +1036,13 @@ class fireballrenderer final : public listrenderer
             sr.cleanup();
         }
 
-        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) override final
+        void seedemitter(particleemitter &pe, const vec &o, const vec &, int fade, float size, int) override final
         {
             pe.maxfade = std::max(pe.maxfade, fade);
             pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
         }
 
-        void renderpart(const listparticle &p, const vec &o, const vec &d, int blend, int ts) override final
+        void renderpart(const listparticle &p, const vec &o, int blend, int ts) override final
         {
             float pmax = p.val,
                   size = p.fade ? static_cast<float>(ts)/p.fade : 1,
