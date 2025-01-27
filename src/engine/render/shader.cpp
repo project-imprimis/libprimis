@@ -1268,7 +1268,7 @@ static size_t findglslmain(const std::string &s)
     {
         return std::string::npos;
     }
-    for(; main >= 0; main--) //note reverse iteration
+    for(;main != static_cast<size_t>(-1); main--) //note reverse iteration
     {
         switch(s[main])
         {
