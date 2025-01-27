@@ -1443,7 +1443,7 @@ struct modelcommands
     {
         std::string name;
         name.append(MDL::formatname()).append(suffix);
-        addcommand(newstring(name.c_str()), (identfun)fun, args.data());
+        addcommand(newstring(name.c_str()), reinterpret_cast<identfun>(fun), args.data());
     }
 
     modelcommands()

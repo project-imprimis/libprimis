@@ -119,9 +119,9 @@ void ragdollskel::setupjoints()
 void ragdollskel::setuprotfrictions()
 {
     rotfrictions.clear();
-    for(uint i = 0; i < tris.size(); i++)
+    for(size_t i = 0; i < tris.size(); i++)
     {
-        for(uint j = i+1; j < tris.size(); j++)
+        for(size_t j = i+1; j < tris.size(); j++)
         {
             if(tris[i].shareverts(tris[j]))
             {
@@ -216,7 +216,7 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
 
 void ragdolldata::calctris()
 {
-    for(uint i = 0; i < skel->tris.size(); i++)
+    for(size_t i = 0; i < skel->tris.size(); i++)
     {
         const ragdollskel::tri &t = skel->tris[i];
         matrix3 &m = tris[i];
@@ -419,7 +419,7 @@ void ragdolldata::tryunstick(float speed, vec &cwall)
      */
     vec unstuck(0, 0, 0);
     size_t stuck = 0;
-    for(uint i = 0; i < verts.size(); i++)
+    for(size_t i = 0; i < verts.size(); i++)
     {
         vert &v = verts[i];
         if(v.stuck)
@@ -469,7 +469,7 @@ void ragdolldata::constrain(vec &cwall)
         }
 
         constrainrot();
-        for(uint j = 0; j < verts.size(); j++)
+        for(size_t j = 0; j < verts.size(); j++)
         {
             vert &v = verts[j];
             if(v.weight)
@@ -516,7 +516,7 @@ void ragdolldata::move(bool water, float ts)
     collisions = 0;
     vec collidewall(0,0,0);
 
-    for(uint i = 0; i < verts.size(); i++)
+    for(size_t i = 0; i < verts.size(); i++)
     {
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
@@ -531,7 +531,7 @@ void ragdolldata::move(bool water, float ts)
         v.pos.add(dpos);
     }
     applyrotfriction(ts);
-    for(uint i = 0; i < verts.size(); i++)
+    for(size_t i = 0; i < verts.size(); i++)
     {
         vert &v = verts[i];
         if(v.pos.z < 0)
