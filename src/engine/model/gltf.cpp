@@ -89,7 +89,7 @@ gltf::gltfmeshgroup::gltfmeshgroup()
 {
 }
 
-bool gltf::gltfmeshgroup::loadmesh(const char *filename, float smooth, part &p)
+bool gltf::gltfmeshgroup::loadmesh(const char *filename, float, part &p)
 {
     try
     {
