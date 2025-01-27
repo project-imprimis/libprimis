@@ -291,6 +291,8 @@ namespace UI
             } while(0)
 
             Object() :  x(), y(), w(), h(), children(), adjust(0), state(0), childstate(0), parent() {}
+
+            Object(const Object &o) = delete;
             virtual ~Object()
             {
                 clearchildren();
