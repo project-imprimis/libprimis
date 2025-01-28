@@ -98,7 +98,7 @@ namespace gle
             }
             count = maxquads - offset;
         }
-        glDrawRangeElements(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, (ushort *)0 + offset*6);
+        glDrawRangeElements(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, static_cast<ushort *>(nullptr) + offset*6);
     }
 
     static void defattrib(int type, int size, int format)
@@ -608,7 +608,7 @@ namespace gle
     {
         if(attribbuf.check(2*sizeof(T)))
         {
-            T *buf = (T *)attribbuf.pad(2*sizeof(T));
+            T *buf = reinterpret_cast<T *>(attribbuf.pad(2*sizeof(T)));
             buf[0] = x;
             buf[1] = y;
         }
@@ -619,7 +619,7 @@ namespace gle
     {
         if(attribbuf.check(3*sizeof(T)))
         {
-            T *buf = (T *)attribbuf.pad(3*sizeof(T));
+            T *buf = reinterpret_cast<T *>(attribbuf.pad(3*sizeof(T)));
             buf[0] = x;
             buf[1] = y;
             buf[2] = z;
@@ -631,7 +631,7 @@ namespace gle
     {
         if(attribbuf.check(4*sizeof(T)))
         {
-            T *buf = (T *)attribbuf.pad(4*sizeof(T));
+            T *buf = reinterpret_cast<T *>(attribbuf.pad(4*sizeof(T)));
             buf[0] = x;
             buf[1] = y;
             buf[2] = z;
