@@ -105,7 +105,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
         uchar *search = &buf[next-1];
         for(; search >= buf; search--)
         {
-            if(*(uint *)search == signature)
+            if(*reinterpret_cast<uint *>(search) == signature)
             {
                 break;
             }
@@ -120,14 +120,14 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         return false;
     }
-    hdr.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
-    hdr.disknumber = *(ushort *)src; src += 2;
-    hdr.directorydisk = *(ushort *)src; src += 2;
-    hdr.diskentries = *(ushort *)src; src += 2;
-    hdr.entries = *(ushort *)src; src += 2;
-    hdr.size = *(uint *)src; src += 4;
-    hdr.offset = *(uint *)src; src += 4;
-    hdr.commentlength = *(ushort *)src; src += 2;
+    hdr.signature = *reinterpret_cast<uint *>(src); src += 4; //src is incremented by the size of the field (int is 4 bytes)
+    hdr.disknumber = *reinterpret_cast<ushort *>(src); src += 2;
+    hdr.directorydisk = *reinterpret_cast<ushort *>(src); src += 2;
+    hdr.diskentries = *reinterpret_cast<ushort *>(src); src += 2;
+    hdr.entries = *reinterpret_cast<ushort *>(src); src += 2;
+    hdr.size = *reinterpret_cast<uint *>(src); src += 4;
+    hdr.offset = *reinterpret_cast<uint *>(src); src += 4;
+    hdr.commentlength = *reinterpret_cast<ushort *>(src); src += 2;
     if(hdr.signature != Zip_DirectorySignature || hdr.disknumber != hdr.directorydisk || hdr.diskentries != hdr.entries)
     {
         return false;
@@ -153,23 +153,23 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
             break;
         }
         zipfileheader hdr;
-        hdr.signature   = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
-        hdr.version     = *(ushort *)src; src += 2;
-        hdr.needversion = *(ushort *)src; src += 2;
-        hdr.flags       = *(ushort *)src; src += 2;
-        hdr.compression = *(ushort *)src; src += 2;
-        hdr.modtime     = *(ushort *)src; src += 2;
-        hdr.moddate     = *(ushort *)src; src += 2;
-        hdr.crc32            = *(uint *)src; src += 4;
-        hdr.compressedsize   = *(uint *)src; src += 4;
-        hdr.uncompressedsize = *(uint *)src; src += 4;
-        hdr.namelength       = *(ushort *)src; src += 2;
-        hdr.extralength      = *(ushort *)src; src += 2;
-        hdr.commentlength    = *(ushort *)src; src += 2;
-        hdr.disknumber       = *(ushort *)src; src += 2;
-        hdr.internalattribs  = *(ushort *)src; src += 2;
-        hdr.externalattribs  = *(uint *)src; src += 4;
-        hdr.offset           = *(uint *)src; src += 4;
+        hdr.signature   = *reinterpret_cast<uint *>(src); src += 4; //src is incremented by the size of the field (int is 4 bytes)
+        hdr.version     = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.needversion = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.flags       = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.compression = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.modtime     = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.moddate     = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.crc32            = *reinterpret_cast<uint *>(src); src += 4;
+        hdr.compressedsize   = *reinterpret_cast<uint *>(src); src += 4;
+        hdr.uncompressedsize = *reinterpret_cast<uint *>(src); src += 4;
+        hdr.namelength       = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.extralength      = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.commentlength    = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.disknumber       = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.internalattribs  = *reinterpret_cast<ushort *>(src); src += 2;
+        hdr.externalattribs  = *reinterpret_cast<uint *>(src); src += 4;
+        hdr.offset           = *reinterpret_cast<uint *>(src); src += 4;
         if(hdr.signature != Zip_FileSignature)
         {
             break;
@@ -213,17 +213,17 @@ static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
         return false;
     }
     uchar *src = buf;
-    h.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes e.g)
-    h.version = *(ushort *)src; src += 2;
-    h.flags = *(ushort *)src; src += 2;
-    h.compression = *(ushort *)src; src += 2;
-    h.modtime = *(ushort *)src; src += 2;
-    h.moddate = *(ushort *)src; src += 2;
-    h.crc32 = *(uint *)src; src += 4;
-    h.compressedsize = *(uint *)src; src += 4;
-    h.uncompressedsize = *(uint *)src; src += 4;
-    h.namelength = *(ushort *)src; src += 2;
-    h.extralength = *(ushort *)src; src += 2;
+    h.signature = *reinterpret_cast<uint *>(src); src += 4; //src is incremented by the size of the field (int is 4 bytes e.g)
+    h.version = *reinterpret_cast<ushort *>(src); src += 2;
+    h.flags = *reinterpret_cast<ushort *>(src); src += 2;
+    h.compression = *reinterpret_cast<ushort *>(src); src += 2;
+    h.modtime = *reinterpret_cast<ushort *>(src); src += 2;
+    h.moddate = *reinterpret_cast<ushort *>(src); src += 2;
+    h.crc32 = *reinterpret_cast<uint *>(src); src += 4;
+    h.compressedsize = *reinterpret_cast<uint *>(src); src += 4;
+    h.uncompressedsize = *reinterpret_cast<uint *>(src); src += 4;
+    h.namelength = *reinterpret_cast<ushort *>(src); src += 2;
+    h.extralength = *reinterpret_cast<ushort *>(src); src += 2;
     if(h.signature != Zip_LocalFileSignature)
     {
         return false;
@@ -369,7 +369,7 @@ bool removezip(const char *name)
     string pname;
     copystring(pname, name);
     path(pname);
-    int plen = (int)std::strlen(pname);
+    int plen = static_cast<int>(std::strlen(pname));
     if(plen < 4 || !std::strchr(&pname[plen-4], '.'))
     {
         concatstring(pname, ".zip");
@@ -414,7 +414,7 @@ class zipstream final : public stream
         {
             if(!zfile.avail_in)
             {
-                zfile.next_in = (Bytef *)buf;
+                zfile.next_in = static_cast<Bytef *>(buf);
             }
             size = std::min(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
             if(arch->owner != this)
@@ -642,7 +642,7 @@ class zipstream final : public stream
                 }
                 return n;
             }
-            zfile.next_out = (Bytef *)buf;
+            zfile.next_out = static_cast<Bytef *>(buf);
             zfile.avail_out = len;
             while(zfile.avail_out > 0)
             {
