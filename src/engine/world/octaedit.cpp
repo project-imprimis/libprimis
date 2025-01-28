@@ -1449,7 +1449,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     GLOBALPARAM(prefabworld, w);
     SETSHADER(prefab,);
     gle::color(vec(color).mul(ldrscale));
-    glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
+    glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, nullptr);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
@@ -1458,7 +1458,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     GLOBALPARAM(prefabmatrix, pm);
     SETSHADER(prefab,);
     gle::color((outlinecolor).tocolor().mul(ldrscale));
-    glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
+    glDrawRangeElements(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, nullptr);
 
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

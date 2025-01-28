@@ -75,12 +75,12 @@ namespace
 
     void drawvatris(const vtxarray &va, GLsizei numindices, int offset)
     {
-        drawtris(numindices, (ushort *)0 + va.eoffset + offset, va.minvert, va.maxvert);
+        drawtris(numindices, static_cast<ushort *>(nullptr) + va.eoffset + offset, va.minvert, va.maxvert);
     }
 
     void drawvaskytris(const vtxarray &va)
     {
-        drawtris(va.sky, (ushort *)0 + va.skyoffset, va.minvert, va.maxvert);
+        drawtris(va.sky, static_cast<ushort *>(nullptr) + va.skyoffset, va.minvert, va.maxvert);
     }
 
     ///////// view frustrum culling ///////////////////////
@@ -1096,7 +1096,7 @@ namespace
             ushort len = curbatch->es.length;
             if(len)
             {
-                drawtris(len, (ushort *)0 + curbatch->va->eoffset + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert);
+                drawtris(len, static_cast<ushort *>(nullptr) + curbatch->va->eoffset + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert);
                 vtris += len/3;
             }
             if(curbatch->batch < 0)
@@ -2349,7 +2349,7 @@ void startbb(bool mask)
     setupbb();
     gle::bindvbo(bbvbo);
     gle::bindebo(bbebo);
-    gle::vertexpointer(sizeof(vec), (const vec *)0);
+    gle::vertexpointer(sizeof(vec), nullptr);
     gle::enablevertex();
     SETSHADER(bbquery,);
     if(mask)
@@ -2375,7 +2375,7 @@ void drawbb(const ivec &bo, const ivec &br)
 {
     LOCALPARAMF(bborigin, bo.x, bo.y, bo.z);
     LOCALPARAMF(bbsize, br.x, br.y, br.z);
-    glDrawRangeElements(GL_TRIANGLES, 0, 8-1, 3*2*6, GL_UNSIGNED_SHORT, (ushort *)0);
+    glDrawRangeElements(GL_TRIANGLES, 0, 8-1, 3*2*6, GL_UNSIGNED_SHORT, nullptr);
     xtraverts += 8;
 }
 
@@ -3214,7 +3214,7 @@ void rendershadowmesh(const shadowmesh *m)
             gle::bindvbo(d.vbuf);
             vbuf = d.vbuf; gle::vertexpointer(sizeof(vec), 0);
         }
-        drawtris(3*d.tris, (ushort *)0 + d.offset, d.minvert, d.maxvert);
+        drawtris(3*d.tris, static_cast<ushort *>(nullptr) + d.offset, d.minvert, d.maxvert);
         xtravertsva += 3*d.tris;
         draw = d.next;
     }
