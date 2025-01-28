@@ -235,7 +235,7 @@ static void compileglslshader(const Shader &s, GLenum type, GLuint &obj, const c
     parts[numparts++] = modsource ? modsource : source;
     //end glsl 1.4
     obj = glCreateShader(type);
-    glShaderSource(obj, numparts, (const GLchar **)parts, nullptr);
+    glShaderSource(obj, numparts, static_cast<const GLchar **>(parts), nullptr);
     glCompileShader(obj);
     GLint success;
     glGetShaderiv(obj, GL_COMPILE_STATUS, &success);
