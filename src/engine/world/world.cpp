@@ -494,17 +494,17 @@ bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
     }
     if(!insideworld(e.o))
     {
-        uint idx = std::distance(outsideents.begin(), std::find(outsideents.begin(), outsideents.end(), id));
+        std::vector<int>::iterator itr = std::find(outsideents.begin(), outsideents.end(), id);
         if(flags&ModOctaEnt_Add)
         {
-            if(idx < outsideents.size())
+            if(itr != outsideents.end())
             {
                 outsideents.push_back(id);
             }
         }
-        else if(idx >= 0)
+        else if(itr != outsideents.end())
         {
-            outsideents.erase(outsideents.begin() + idx);
+            outsideents.erase(itr);
         }
     }
     else
