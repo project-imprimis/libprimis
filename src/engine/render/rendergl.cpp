@@ -315,10 +315,10 @@ void gl_checkextensions()
             conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
     }
-    glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
+    glRenderbufferStorageMultisample_ = reinterpret_cast<PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC>(getprocaddress("glRenderbufferStorageMultisample"));
 
     //OpenGL 3.2
-    glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
+    glTexImage2DMultisample_ = reinterpret_cast<PFNGLTEXIMAGE2DMULTISAMPLEPROC>(getprocaddress("glTexImage2DMultisample"));
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
@@ -344,7 +344,7 @@ void gl_checkextensions()
     }
     if(hasext("GL_EXT_depth_bounds_test"))
     {
-        glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
+        glDepthBounds_ = reinterpret_cast<PFNGLDEPTHBOUNDSEXTPROC>(getprocaddress("glDepthBoundsEXT"));
         hasDBT = true;
         if(debugexts)
         {
@@ -367,7 +367,7 @@ void gl_checkextensions()
 
     if(glversion >= 430 || hasext("GL_ARB_copy_image"))
     {
-        glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubData");
+        glCopyImageSubData_ = reinterpret_cast<PFNGLCOPYIMAGESUBDATAPROC>(getprocaddress("glCopyImageSubData"));
 
         hasCI = true;
         if(glversion < 430 && debugexts)
@@ -377,7 +377,7 @@ void gl_checkextensions()
     }
     else if(hasext("GL_NV_copy_image"))
     {
-        glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubDataNV");
+        glCopyImageSubData_ = reinterpret_cast<PFNGLCOPYIMAGESUBDATAPROC>(getprocaddress("glCopyImageSubDataNV"));
 
         hasCI = true;
         if(debugexts)
