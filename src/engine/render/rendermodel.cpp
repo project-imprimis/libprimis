@@ -1102,7 +1102,7 @@ int intersectmodel(std::string_view mdl, int anim, const vec &pos, float yaw, fl
             }
         }
     }
-    return m->intersect(anim, basetime, basetime2, pos, yaw, pitch, roll, d, a, size, o, ray, dist);
+    return m->intersect(anim, basetime, basetime2, pos, yaw, pitch, roll, d, a, size, o, ray);
 }
 
 void abovemodel(vec &o, const char *mdl)

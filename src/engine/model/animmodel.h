@@ -825,7 +825,7 @@ class animmodel : public model
          * @return the linkage type of this part
          */
         virtual int linktype(const animmodel *, const part *) const;
-        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist) const override final;
+        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray) const override final;
 
         static bool enabletc, enablebones, enabletangents;
 

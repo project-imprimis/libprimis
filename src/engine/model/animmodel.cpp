@@ -1303,7 +1303,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
     }
 }
 
-int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist) const
+int animmodel::intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray) const
 {
     vec axis(1, 0, 0),
         forward(0, 1, 0);
