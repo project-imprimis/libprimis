@@ -1177,11 +1177,11 @@ static Shader *newshader(int type, std::string_view name, std::string_view vs, s
     {
         itr = shaders.insert( { rname, Shader() } ).first;
     }
-    Shader *retval = (*itr).second.setupshader(rname, ps.data(), vs.data(), variant, row);
+    Shader *retval = (*itr).second.setupshader(type, rname, ps.data(), vs.data(), variant, row);
     return retval; //can be nullptr or s
 }
 
-Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row)
+Shader *Shader::setupshader(int newtype, char *rname, const char *ps, const char *vs, Shader *variant, int row)
 {
     name = rname;
     vsstr = newstring(vs);
@@ -1190,7 +1190,7 @@ Shader *Shader::setupshader(char *rname, const char *ps, const char *vs, Shader 
     delete[] defer;
     defer = nullptr;
 
-    type = type & ~(Shader_Invalid | Shader_Deferred);
+    type = newtype & ~(Shader_Invalid | Shader_Deferred);
     variantshader = variant;
     standard = standardshaders;
     if(forceshaders)

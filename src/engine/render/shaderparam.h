@@ -125,7 +125,7 @@ class Shader
         void reusecleanup();
 
         static int uniformlocversion();
-        Shader *setupshader(char *rname, const char *ps, const char *vs, Shader *variant, int row);
+        Shader *setupshader(int newtype, char *rname, const char *ps, const char *vs, Shader *variant, int row);
 
     private:
         char *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
