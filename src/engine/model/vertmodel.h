@@ -107,7 +107,7 @@ class vertmodel : public animmodel
                 int genvbo(std::vector<uint> &idxs, int offset);
 
                 template<class T>
-                static void fillvert(T &vv, tcvert &tc, vert &v)
+                static void fillvert(T &vv, tcvert &tc)
                 {
                     vv.tc = tc.tc;
                 }
@@ -118,7 +118,7 @@ class vertmodel : public animmodel
                     vdata += voffset;
                     for(int i = 0; i < numverts; ++i)
                     {
-                        fillvert(vdata[i], tcverts[i], verts[i]);
+                        fillvert(vdata[i], tcverts[i]);
                     }
                 }
 
