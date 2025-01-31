@@ -259,7 +259,7 @@ class stainrenderer
             gle::enablecolor();
         }
 
-        static void cleanuprenderstate(int sbuf, bool gbuf, int layer)
+        static void cleanuprenderstate(int sbuf, bool gbuf)
         {
             gle::clearvbo();
 
@@ -1129,7 +1129,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
     {
         return false;
     }
-    stainrenderer::cleanuprenderstate(sbuf, gbuf, layer);
+    stainrenderer::cleanuprenderstate(sbuf, gbuf);
     return true;
 }
 
