@@ -236,7 +236,7 @@ static std::vector<ziparchive *> archives;
 
 ziparchive *findzip(const char *name)
 {
-    for(uint i = 0; i < archives.size(); i++)
+    for(size_t i = 0; i < archives.size(); i++)
     {
         if(!std::strcmp(name, archives[i]->name))
         {
@@ -248,9 +248,9 @@ ziparchive *findzip(const char *name)
 
 static bool checkprefix(std::vector<zipfile> &files, const char *prefix, int prefixlen)
 {
-    for(uint i = 0; i < files.size(); i++)
+    for(const zipfile &z : files)
     {
-        if(!std::strncmp(files[i].name, prefix, prefixlen))
+        if(!std::strncmp(z.name, prefix, prefixlen))
         {
             return false;
         }
