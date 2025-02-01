@@ -1,9 +1,9 @@
 # cpp Makefile for libprimis
-# intended for g++/clang c++17 on linux builds only, use vcpp project for Windows builds
+# intended for g++/clang c++17/c++20/c++23 on linux builds only, use vcpp project for Windows builds
 
 # -o3: slowest compile times, but fastest code
 # -ffast-math: force less accurate but faster floating point calcs
-# -std=c++17: compile to c++17 standard, needed for some std library functions
+# -std=c++20: compile to c++20 standard, needed for some std library functions
 # -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
 # -Wall: show "all" level of compiler warnings (which is not actually all possible warnings)
 
@@ -18,7 +18,7 @@ CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
 
 BUILD_TYPE ?= 0
 
-CPP_VERSION ?= 17
+CPP_VERSION ?= 20
 
 PREFIX ?= /usr/local
 
