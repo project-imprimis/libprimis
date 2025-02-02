@@ -83,7 +83,7 @@ void SoundEngine::SoundChannel::setloc(const vec& newloc)
     loc = newloc;
 }
 
-void SoundEngine::SoundChannel::setupchannel(int newn, const soundslot *newslot, const vec *newloc, extentity *newent, int newflags, int newradius)
+void SoundEngine::SoundChannel::setupchannel(const soundslot *newslot, const vec *newloc, extentity *newent, int newradius)
 {
     reset();
     inuse = true;
@@ -98,7 +98,7 @@ void SoundEngine::SoundChannel::setupchannel(int newn, const soundslot *newslot,
 }
 
 //creates a new SoundChannel object with passed properties
-SoundEngine::SoundChannel& SoundEngine::newchannel(int n, const soundslot *slot, const vec *loc, extentity *ent, int flags, int radius)
+SoundEngine::SoundChannel& SoundEngine::newchannel(int n, const soundslot *slot, const vec *loc, extentity *ent, int radius)
 {
     if(ent)
     {
@@ -110,7 +110,7 @@ SoundEngine::SoundChannel& SoundEngine::newchannel(int n, const soundslot *slot,
         channels.emplace_back(channels.size(), *this);
     }
     SoundChannel &chan = channels[n];
-    chan.setupchannel(n, slot, loc, ent, flags, radius);
+    chan.setupchannel(slot, loc, ent, radius);
     return chan;
 }
 
@@ -922,7 +922,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     {
         return -1;
     }
-    SoundChannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
+    SoundChannel &chan = newchannel(chanid, &slot, loc, ent, radius);
     chan.updatechannel();
     int playing = -1;
     //some ugly ternary assignments
