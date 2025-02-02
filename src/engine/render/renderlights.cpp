@@ -1400,7 +1400,7 @@ struct lightbatch
         {
             return true;
         }
-        for(uint i = 0; i < rects.size(); i++)
+        for(size_t i = 0; i < rects.size(); i++)
         {
             if(rects[i].overlaps(tx1, ty1, tx2, ty2, tilemask))
             {
@@ -2215,7 +2215,7 @@ void GBuffer::renderlightsnobatch(Shader *s, int stencilref, bool transparent, f
             setavatarstencil(stencilref, true);
         }
 
-        for(uint i = 0; i < lightorder.size(); i++)
+        for(size_t i = 0; i < lightorder.size(); i++)
         {
             const lightinfo &l = lights[lightorder[i]];
             float sx1 = std::max(bsx1, l.sx1),
@@ -2290,7 +2290,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
     static lightparaminfo li;
-    for(uint i = 0; i < lightbatches.size(); i++)
+    for(size_t i = 0; i < lightbatches.size(); i++)
     {
         const lightbatch &batch = lightbatches[i];
         if(!batch.overlaps(btx1, bty1, btx2, bty2, tilemask))
@@ -2352,7 +2352,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
             glDepthBounds_(sz1*0.5f + 0.5f, std::min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         }
         gle::begin(GL_TRIANGLES);
-        for(uint j = 0; j < batch.rects.size(); j++)
+        for(size_t j = 0; j < batch.rects.size(); j++)
         {
             const lightrect &r = batch.rects[j];
             int x1 = std::max(static_cast<int>(r.x1), btx1),
@@ -2622,7 +2622,7 @@ void GBuffer::rendervolumetric()
           bsy1 =  1,
           bsx2 = -1,
           bsy2 = -1;
-    for(uint i = 0; i < lightorder.size(); i++)
+    for(size_t i = 0; i < lightorder.size(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery())
@@ -2682,7 +2682,7 @@ void GBuffer::rendervolumetric()
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
-    for(uint i = 0; i < lightorder.size(); i++)
+    for(size_t i = 0; i < lightorder.size(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery())
@@ -2880,13 +2880,13 @@ void viewlightscissor()
 {
     std::vector<extentity *> &ents = entities::getents();
     gle::defvertex(2);
-    for(uint i = 0; i < entgroup.size(); i++)
+    for(size_t i = 0; i < entgroup.size(); i++)
     {
         int idx = entgroup[i];
         if((static_cast<long>(ents.size()) > idx) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
-            for(uint j = 0; j < lights.size(); j++)
+            for(size_t j = 0; j < lights.size(); j++)
             {
                 if(lights[j].o == e.o)
                 {
@@ -2923,7 +2923,7 @@ void collectlights()
     const std::vector<extentity *> &ents = entities::getents();
     if(!editmode || !fullbright)
     {
-        for(uint i = 0; i < ents.size(); i++)
+        for(size_t i = 0; i < ents.size(); i++)
         {
             const extentity *e = ents[i];
             if(e->type != EngineEnt_Light || e->attr1 <= 0)
@@ -2970,7 +2970,7 @@ void collectlights()
     bool queried = false;
     if(!drawtex && smquery && oqfrags && oqlights)
     {
-        for(uint i = 0; i < lightorder.size(); i++)
+        for(size_t i = 0; i < lightorder.size(); i++)
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
@@ -3011,7 +3011,7 @@ void collectlights()
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
-            for(uint i = 0; i < lightorder.size(); i++)
+            for(size_t i = 0; i < lightorder.size(); i++)
             {
                 int idx = lightorder[i];
                 lightinfo &l = lights[idx];
@@ -3249,7 +3249,7 @@ void GBuffer::packlights()
     lightpassesused = 0;
     std::vector<batchrect> batchrects;
 
-    for(uint i = 0; i < lightorder.size(); i++)
+    for(size_t i = 0; i < lightorder.size(); i++)
     {
         int idx = lightorder[i];
         lightinfo &l = lights[idx];
@@ -3465,7 +3465,7 @@ void GBuffer::rendershadowmaps(int offset) const
     glEnable(GL_SCISSOR_TEST);
 
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = offset; i < shadowmaps.size(); i++)
+    for(size_t i = offset; i < shadowmaps.size(); i++)
     {
         shadowmapinfo &sm = shadowmaps[i];
         if(sm.light < 0)
