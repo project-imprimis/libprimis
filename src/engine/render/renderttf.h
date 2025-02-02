@@ -39,7 +39,7 @@ class TTFRenderer
         TTF_Font* f;                         //the current working font
         std::map<int, TTF_Font *> fontcache; //different sizes of the font are cached in a map which maps them to their size in pt
         const char * path;                   //the path which the font was originally found, so it can load other font sizes if needed
-        TTFSurface renderttfgl(const char* message, SDL_Color col, int x, int y, uint wrap = 0) const;
+        TTFSurface renderttfgl(const char* message, SDL_Color col, uint wrap = 0) const;
         std::string trimstring(std::string msg) const; //trims color codes out of a string
 };
 
