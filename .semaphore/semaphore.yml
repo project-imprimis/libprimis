@@ -11,7 +11,7 @@ blocks:
         - name: Clean and production build
           commands:
             - checkout
-            - sem-version cpp 9
+            - sem-version cpp 10
             - sudo apt-get update
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
             - git submodule update --init --remote src/libprimis-headers
@@ -25,7 +25,7 @@ blocks:
         - name: main
           commands:
             - checkout
-            - sem-version cpp 9
+            - sem-version cpp 10
             - sudo apt-get update
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev bc
             - git submodule update --init --remote src/libprimis-headers
