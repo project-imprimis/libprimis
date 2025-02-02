@@ -1534,7 +1534,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdoll->verts.push_back({vec(*x, *y, *z), *radius > 0 ? *radius : 1});
+        ragdoll->verts.push_back({vec(*x, *y, *z), *radius > 0 ? *radius : 1, 0.f});
     }
 
     /**
@@ -1579,7 +1579,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        ragdoll->joints.push_back({*n, *t, {*v1, *v2, *v3}});
+        ragdoll->joints.push_back({*n, *t, {*v1, *v2, *v3}, 0.f, matrix4x3()});
     }
 
     static void rdlimitdist(const int *v1, const int *v2, const float *mindist, const float *maxdist)
