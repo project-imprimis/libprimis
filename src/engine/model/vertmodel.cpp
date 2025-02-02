@@ -141,7 +141,7 @@ void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void vertmodel::vertmesh::assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v)
+void vertmodel::vertmesh::assignvert(vvertg &vv, const tcvert &tc, const vert &v)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = tc.tc;

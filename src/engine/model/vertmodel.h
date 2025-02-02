@@ -60,7 +60,7 @@ class vertmodel : public animmodel
                 void genBIH(BIH::mesh &m) const override final;
                 void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
 
-                static void assignvert(vvertg &vv, int j, const tcvert &tc, const vert &v);
+                static void assignvert(vvertg &vv, const tcvert &tc, const vert &v);
 
                 template<class T>
                 int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
@@ -76,7 +76,7 @@ class vertmodel : public animmodel
                             const vert &v = verts[index];
                             const tcvert &tc = tcverts[index];
                             T vv;
-                            assignvert(vv, index, tc, v);
+                            assignvert(vv, tc, v);
                             const auto hashfn = std::hash<vec>();
                             const int htidx = hashfn(v.pos)&(htlen-1);
                             for(int k = 0; k < htlen; ++k)
