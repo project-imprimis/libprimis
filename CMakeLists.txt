@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(primis VERSION 0.0.1 DESCRIPTION "libprimis")
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules")
 
 find_package(SDL2 REQUIRED)
