@@ -455,7 +455,7 @@ void batchedmodel::renderbatchedmodel(const model *m) const
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
-static void rendercullmodelquery(const model *m, dynent *d, const vec &center, float radius)
+static void rendercullmodelquery(dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
        std::fabs(camera1->o.y-center.y) < radius+1 &&
@@ -484,7 +484,7 @@ static void rendercullmodelquery(const model *m, dynent *d, const vec &center, f
  * If no reason can be found to occlude the model, returns 0. Otherwise, returns
  * the Model enum flag for the cull reason.
  */
-static int cullmodel(const model *m, const vec &center, float radius, int flags, const dynent *d = nullptr)
+static int cullmodel(const vec &center, float radius, int flags, const dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
@@ -695,7 +695,7 @@ void GBuffer::rendermodelbatches()
         {
             batchedmodel &bm = batchedmodels[j];
             j = bm.next;
-            bm.culled = cullmodel(b.m, bm.center, bm.radius, bm.flags, bm.d);
+            bm.culled = cullmodel(bm.center, bm.radius, bm.flags, bm.d);
             if(bm.culled || bm.flags&Model_OnlyShadow)
             {
                 continue;
@@ -755,7 +755,7 @@ void GBuffer::rendermodelbatches()
                         startbb();
                         queried = true;
                     }
-                    rendercullmodelquery(b.m, bm.d, bm.center, bm.radius);
+                    rendercullmodelquery(bm.d, bm.center, bm.radius);
                 }
             }
             if(queried)
@@ -770,7 +770,7 @@ void GBuffer::rendermodelbatches()
 int batchedmodel::rendertransparentmodel(const modelbatch &b, bool &rendered)
 {
     int j = next;
-    culled = cullmodel(b.m, center, radius, flags, d);
+    culled = cullmodel(center, radius, flags, d);
     if(culled || !(colorscale.a() < 1 || flags&Model_ForceTransparent) || flags&Model_OnlyShadow)
     {
         return j;
@@ -918,7 +918,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
             return;
         }
     }
-    else if(flags&(Model_CullVFC|Model_CullDist|Model_CullOccluded) && cullmodel(m, center, radius, flags))
+    else if(flags&(Model_CullVFC|Model_CullDist|Model_CullOccluded) && cullmodel(center, radius, flags))
     {
         return;
     }
@@ -1012,13 +1012,13 @@ hasboundbox:
 
     if(flags&Model_NoBatch)
     {
-        const int culled = cullmodel(m, center, radius, flags, d);
+        const int culled = cullmodel(center, radius, flags, d);
         if(culled)
         {
             if(culled&(Model_CullOccluded|Model_CullQuery) && flags&Model_CullQuery)
             {
                 startbb();
-                rendercullmodelquery(m, d, center, radius);
+                rendercullmodelquery(d, center, radius);
                 endbb();
             }
             return;
@@ -1077,7 +1077,7 @@ hasboundbox:
     addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
-int intersectmodel(std::string_view mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode, dynent *d, modelattach *a, int basetime, int basetime2, float size)
+int intersectmodel(std::string_view mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, dynent *d, modelattach *a, int basetime, int basetime2, float size)
 {
     const model *m = loadmodel(mdl);
     if(!m)
