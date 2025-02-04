@@ -204,7 +204,7 @@ void animmodel::skin::setkey()
     key = &ShaderParamsKey::keys[*this];
 }
 
-void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned)
+void animmodel::skin::setshaderparams(const AnimState *as, bool skinned)
 {
     if(!Shader::lastshader)
     {
@@ -332,7 +332,7 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(Mesh &m, const AnimState *as, bool usegpuskel, int vweights)
+void animmodel::skin::setshader(Mesh &m, bool usegpuskel, int vweights)
 {
     m.setshader(loadshader(), usegpuskel, vweights, gbuf.istransparentlayer());
 }
@@ -368,7 +368,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as, bool usegpuskel, int vw
                 alphashadowmodelshader = useshaderbyname("alphashadowmodel");
             }
             b.setshader(alphashadowmodelshader, usegpuskel, vweights);
-            setshaderparams(b, as, false);
+            setshaderparams(as, false);
         }
         else
         {
@@ -412,8 +412,8 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as, bool usegpuskel, int vw
     {
         glActiveTexture(GL_TEXTURE0);
     }
-    setshader(b, as, usegpuskel, vweights);
-    setshaderparams(b, as);
+    setshader(b, usegpuskel, vweights);
+    setshaderparams(as);
 }
 
 void animmodel::skin::invalidateshaderparams()

@@ -123,9 +123,9 @@ class animmodel : public model
                 bool masked() const;
                 bool bumpmapped() const;
                 bool decaled() const;
-                void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
+                void setshaderparams(const AnimState *as, bool skinned = true);
                 Shader *loadshader();
-                void setshader(Mesh &m, const AnimState *as, bool usegpuskel, int vweights);
+                void setshader(Mesh &m, bool usegpuskel, int vweights);
 
         };
 
