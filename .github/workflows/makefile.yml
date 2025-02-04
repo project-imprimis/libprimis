@@ -1,4 +1,4 @@
-name: Makefile CI (GCC C++17)
+name: Makefile | g++
 
 on: [push]
 
@@ -6,6 +6,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        cpp_version: [17,20,23]
 
     steps:
     - uses: actions/checkout@v4
@@ -19,7 +23,7 @@ jobs:
       run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
 
     - name: Build
-      run: make -C src -j4
+      run: make -C src CPP_VERSION=${{ matrix.cpp_version }} -j4
 
     - name: Upload libprimis.so artifact
       uses: actions/upload-artifact@v4
