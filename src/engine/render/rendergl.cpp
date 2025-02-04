@@ -1138,7 +1138,7 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
         int mat = c.material&MatFlag_Volume;
         if(mat != fogmat)
         {
-            abovemat = IS_LIQUID(mat) ? c.material : Mat_Air;
+            abovemat = IS_LIQUID(mat) ? c.material : +Mat_Air;
             return o.z;
         }
         o.z = co.z + csize;
