@@ -848,7 +848,7 @@ void Editor::hit(int hitx, int hity, bool dragged)
     }
 }
 
-void Editor::draw(int x, int y, int color, bool hit)
+void Editor::draw(int x, int y, int color)
 {
     int maxwidth = linewrap?pixelwidth:-1,
         sx, sy, ex, ey;

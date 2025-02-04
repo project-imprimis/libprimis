@@ -3819,7 +3819,7 @@ namespace UI
             float k = drawscale();
             pushhudtranslate(sx, sy, k);
 
-            edit->draw(fontwidth()/2, 0, 0xFFFFFF, isfocus());
+            edit->draw(fontwidth()/2, 0, 0xFFFFFF);
 
             pophudmatrix();
 

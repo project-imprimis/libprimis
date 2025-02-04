@@ -90,7 +90,7 @@ class Editor
         void key(int code);
         void input(const char *str, int len);
         void hit(int hitx, int hity, bool dragged);
-        void draw(int x, int y, int color, bool hit);
+        void draw(int x, int y, int color);
     private:
         int cx, cy; // cursor position - ensured to be valid after a region() or currentline()
         int mx, my; // selection mark, mx=-1 if following cursor - avoid direct access, instead use region()
