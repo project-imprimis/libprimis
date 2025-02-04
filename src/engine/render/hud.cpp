@@ -339,7 +339,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                 }
                 roffset += FONTH;
             }
-            printtimers(conw, conh, framemillis);
+            printtimers(conw, framemillis);
             if(wallclock)
             {
                 if(!walltime)
