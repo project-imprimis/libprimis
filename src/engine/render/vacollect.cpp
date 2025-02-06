@@ -939,7 +939,7 @@ int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
             mf.numverts = surf.numverts;
             mf.verts = c.ext->verts() + surf.verts;
             mf.tjoints = -1;
-            const int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
+            const int level = calcmergedsize(co, size, mf.verts, mf.numverts&Face_MaxVerts);
             if(level > minlevel)
             {
                 maxlevel = std::max(maxlevel, level);

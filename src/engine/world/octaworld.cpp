@@ -1817,7 +1817,7 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
     cf.v2 = std::max(cf.v2, vc2);
 }
 
-int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts)
+int calcmergedsize(const ivec &co, int size, const vertinfo *verts, int numverts)
 {
     ushort x1 = verts[0].x,
            y1 = verts[0].y,

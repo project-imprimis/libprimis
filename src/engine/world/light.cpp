@@ -464,7 +464,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             }
             if(c.merged&(1<<i))
             {
-                msz = 1<<calcmergedsize(i, mo, size, verts, numverts);
+                msz = 1<<calcmergedsize(mo, size, verts, numverts);
                 mo.mask(~(msz-1));
                 if(!(surf.numverts&Face_MaxVerts))
                 {
