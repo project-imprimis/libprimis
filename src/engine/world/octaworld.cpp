@@ -1704,7 +1704,7 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     else if(c.visible&0x80)
     {
         const ushort nmat = noclip ? Mat_NoClip : Mat_Alpha,
-                     matmask = noclip ? static_cast<ushort>(MatFlag_Clip) : Mat_Alpha; //cast to avoid enum mismatch warning
+                     matmask = noclip ? +MatFlag_Clip : +Mat_Alpha; //cast to avoid enum mismatch warning
         int vis;
         for(int i = 0; i < 6; ++i)
         {
