@@ -174,7 +174,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     }
 }
 
-static void compileglslshader(const Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
+static void compileglslshader(GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
 {
     if(!glslversion)
     {
@@ -663,7 +663,7 @@ static void setslotparam(const SlotShaderParamState& l, uint& mask, uint i, cons
     }
 }
 
-static void setslotparams(const std::vector<SlotShaderParam>& p, uint& unimask, const std::vector<SlotShaderParamState>& defaultparams)
+static void setslotparams(uint& unimask, const std::vector<SlotShaderParamState>& defaultparams)
 {
     for(const SlotShaderParam &p : slotparams)
     {
@@ -801,7 +801,7 @@ void Shader::setvariant(int col, int row)
     lastshader->flushparams();
 }
 
-void Shader::setvariant(int col, int row, const Slot &slot)
+void Shader::setvariantandslot(int col, int row)
 {
     if(!loaded())
     {
@@ -809,7 +809,7 @@ void Shader::setvariant(int col, int row, const Slot &slot)
     }
     setvariant_(col, row);
     lastshader->flushparams();
-    lastshader->setslotparams(slot);
+    lastshader->setslotparams();
 }
 
 void Shader::setvariant(int col, int row, const Slot &slot, const VSlot &vslot)
@@ -841,7 +841,7 @@ void Shader::set()
     lastshader->flushparams();
 }
 
-void Shader::set(const Slot &slot)
+void Shader::setslot()
 {
     if(!loaded())
     {
@@ -849,7 +849,7 @@ void Shader::set(const Slot &slot)
     }
     set_();
     lastshader->flushparams();
-    lastshader->setslotparams(slot);
+    lastshader->setslotparams();
 }
 
 void Shader::set(const Slot &slot, const VSlot &vslot)
@@ -863,10 +863,10 @@ void Shader::set(const Slot &slot, const VSlot &vslot)
     lastshader->setslotparams(slot, vslot);
 }
 
-void Shader::setslotparams(const Slot &slot)
+void Shader::setslotparams()
 {
     uint unimask = 0;
-    ::setslotparams(slot.params, unimask, defaultparams);
+    ::setslotparams(unimask, defaultparams);
     setdefaultparams(defaultparams, unimask);
 }
 
@@ -876,7 +876,7 @@ void Shader::setslotparams(const Slot &slot, const VSlot &vslot)
     uint unimask = 0;
     if(vslot.slot == &slot)
     {
-        ::setslotparams(vslot.params, unimask, defaultparams);
+        ::setslotparams(unimask, defaultparams);
         for(size_t i = 0; i < slot.params.size(); i++)
         {
             const SlotShaderParam &p = slot.params.at(i);
@@ -903,7 +903,7 @@ void Shader::setslotparams(const Slot &slot, const VSlot &vslot)
     }
     else
     {
-        ::setslotparams(slot.params, unimask, defaultparams);
+        ::setslotparams(unimask, defaultparams);
         for(uint i = 0; i < defaultparams.size(); i++)
         {
             const SlotShaderParamState &l = defaultparams.at(i);
@@ -930,7 +930,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
+        compileglslshader(GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
     }
     if(!psstr)
     {
@@ -938,7 +938,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
+        compileglslshader(GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
     linkglslprogram(!variantshader);
     return program!=0;
@@ -1136,7 +1136,7 @@ void Shader::genattriblocs(const char *vs, const Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-void Shader::genuniformlocs(const char *vs, const Shader *reusevs, const Shader *reuseps)
+void Shader::genuniformlocs(const char *vs, const Shader *reusevs)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
@@ -1233,7 +1233,7 @@ Shader *Shader::setupshader(int newtype, char *rname, const char *ps, const char
     attriblocs.clear();
     uniformlocs.clear();
     genattriblocs(vs, reusevs);
-    genuniformlocs(vs, reusevs, reuseps);
+    genuniformlocs(vs, reusevs);
     if(!compile())
     {
         cleanup(true);

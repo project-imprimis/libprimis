@@ -115,10 +115,10 @@ class Shader
         int numvariants(int row) const;
         void addvariant(int row, Shader *s);
         void setvariant(int col, int row);
-        void setvariant(int col, int row, const Slot &slot);
+        void setvariantandslot(int col, int row);
         void setvariant(int col, int row, const Slot &slot, const VSlot &vslot);
         void set();
-        void set(const Slot &slot);
+        void setslot();
         void set(const Slot &slot, const VSlot &vslot);
         bool compile();
         void cleanup(bool full = false);
@@ -141,7 +141,7 @@ class Shader
         const Shader *reusevs, *reuseps; //may be equal to variantshader, or its getvariant()
         ushort *variantrows;
         bool used;
-        void setslotparams(const Slot &slot);
+        void setslotparams();
         void setslotparams(const Slot &slot, const VSlot &vslot);
         void bindprograms();
         void setvariant_(int col, int row);
@@ -165,7 +165,7 @@ class Shader
          * and the location specified in the second parameter
          */
         void genattriblocs(const char *vs, const Shader *reusevs);
-        void genuniformlocs(const char *vs, const Shader *reusevs, const Shader *reuseps);
+        void genuniformlocs(const char *vs, const Shader *reusevs);
         const Shader *getvariant(int col, int row) const;
 };
 

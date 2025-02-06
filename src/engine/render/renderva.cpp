@@ -1622,11 +1622,11 @@ namespace
         }
         else if(pass)
         {
-            slot.shader->setvariant(0, 0, slot);
+            slot.shader->setvariantandslot(0, 0);
         }
         else
         {
-            slot.shader->set(slot);
+            slot.shader->setslot();
         }
         globals = GlobalShaderParamState::nextversion;
     }
