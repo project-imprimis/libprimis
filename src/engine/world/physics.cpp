@@ -1163,7 +1163,7 @@ static CollisionInfo octacollide(const physent *d, const vec &dir, float cutoff,
 
 // all collision happens here
 //
-bool collide(const physent *d, vec *cwall, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
+bool collide(const physent *d, vec *cwall, const vec &dir, float cutoff, bool insideplayercol)
 {
     collideinside = 0;
     collideplayer = nullptr;

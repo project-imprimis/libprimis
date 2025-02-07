@@ -9,6 +9,6 @@ struct CollisionInfo
     vec collidewall;
 };
 
-extern bool collide(const physent *d, vec *cwall = nullptr, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
+extern bool collide(const physent *d, vec *cwall = nullptr, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool insideplayercol = false);
 
 #endif

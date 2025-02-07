@@ -588,7 +588,7 @@ bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius, vec 
     }
     //collide generated vertent (point with sphere bounding of r = radius)
     //with dir parameter
-    return collide(&v, &cwall, dir, 0, false);
+    return collide(&v, &cwall, dir, 0);
 }
 
 //used in iengine
