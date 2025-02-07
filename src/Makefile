@@ -6,12 +6,16 @@
 # -std=c++20: compile to c++20 standard, needed for some std library functions
 # -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
 # -Wall: show "all" level of compiler warnings (which is not actually all possible warnings)
+# -Wextra: show "extra" level of compiler warnings (more than just -Wall)
+# -Wsuggest-override: warn if base classes are missing required virtuals
+# -Wpedantic: enforce ISO C++ standard (no compiler extensions)
+# -Wno-cast-function-type: disables -Wextra warning for function casts (mainly in cubescript)
 
 # -fsigned-char: have the `char` type be signed (as opposed to `uchar`)
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
 
-CXXFLAGS ?= -ffast-math -Wall -Wsuggest-override -Wpedantic
+CXXFLAGS ?= -ffast-math -Wall -Wextra -Wsuggest-override -Wpedantic -Wno-cast-function-type -Wold-style-cast
 CXXFLAGS += -march=x86-64 -fsigned-char -fno-rtti -fpic
 #-Ishared
 CLIENT_INCLUDES=  -Iengine $(INCLUDES) `sdl2-config --cflags`
