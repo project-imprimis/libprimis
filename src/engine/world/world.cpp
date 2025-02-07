@@ -43,7 +43,7 @@ namespace entities
         return ents;
     }
 
-    const char *entmodel(const entity &e)
+    const char *entmodel()
     {
         return nullptr;
     }
@@ -596,7 +596,7 @@ void cubeworld::entitiesinoctanodes()
 void entselectionbox(const entity &e, vec &eo, vec &es)
 {
     model *m = nullptr;
-    const char *mname = entities::entmodel(e);
+    const char *mname = entities::entmodel();
     if(mname && (m = loadmodel(mname)))
     {
         m->collisionbox(eo, es);
@@ -712,7 +712,7 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
  *
  * this moves the worldroot cube to the new parent cube of the old map
  */
-bool cubeworld::enlargemap(bool force)
+bool cubeworld::enlargemap()
 {
     worldscale++;
     std::array<cube, 8> *c = newcubes(faceempty);
