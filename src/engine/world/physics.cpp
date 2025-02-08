@@ -399,14 +399,37 @@ static CollisionInfo mmcollide(const physent *d, const vec &dir, const extentity
     return {false, vec(0,0,0)};
 }
 
+/**
+ * @brief Preliminary check for fuzzycollide functions.
+ *
+ * @tparam E the mpr object type to evaluate
+ * @param d the physent to get object location and other information from
+ * @param mdlvol the model volume bounding values to check
+ * @param bbradius the bounding box radius to check against
+ *
+ * @return true if it is possible for these models to collide
+ * @return false if there is no way for these models to collide
+ */
+template<class E>
+static bool checkfuzzycollidebounds(const physent *d, const E &mdlvol, const vec &bbradius)
+{
+    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius ||
+       std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
+       d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z ||
+       d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
+    {
+        return false;
+    }
+    return true;
+}
+
 //cwall -> collide wall
 //orient {yaw, pitch, roll}
 static CollisionInfo fuzzycollidebox(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, const ivec &orient)
 {
     mpr::ModelOBB mdlvol(o, center, radius, orient.x, orient.y, orient.z);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
-    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
-       d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
+    if(!checkfuzzycollidebounds(d, mdlvol, bbradius))
     {
         return {false, vec(0,0,0)};
     }
@@ -499,18 +522,15 @@ static CollisionInfo fuzzycollidebox(const physent *d, const vec &dir, float cut
 template<class E>
 static CollisionInfo fuzzycollideellipse(const physent *d, const vec &dir, float cutoff, const vec &o, const vec &center, const vec &radius, const ivec &orient)
 {
-    vec cwall(0, 0, 0);
     mpr::ModelEllipse mdlvol(o, center, radius, orient.x, orient.y, orient.z);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
 
-    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius ||
-       std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
-       d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z ||
-       d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
+    if(!checkfuzzycollidebounds(d, mdlvol, bbradius))
     {
-        return {false, cwall};
+        return {false, vec(0,0,0)};
     }
     E entvol(d);
+    vec cwall(0, 0, 0);
     float bestdist = -1e10f;
     for(int i = 0; i < 3; ++i)
     {
