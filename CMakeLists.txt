@@ -144,6 +144,8 @@ add_library(primis SHARED
 set_target_properties(primis PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(primis PROPERTIES PUBLIC_HEADER src/libprimis-headers/cube.h)
 set_target_properties(primis PROPERTIES PUBLIC_HEADER src/libprimis-headers/iengine.h)
+target_compile_options(primis PRIVATE -ffast-math -Wall -Wextra -Wsuggest-override -Wpedantic -Wno-cast-function-type -Wold-style-cast)
+
 install(TARGETS primis
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
