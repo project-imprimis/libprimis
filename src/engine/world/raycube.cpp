@@ -442,7 +442,9 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
             return dent;
         }
 
-        ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
+        ivec lo(x&(~0U<<lshift),
+             y&(~0U<<lshift),
+             z&(~0U<<lshift));
 
         if(!(c.isempty()))
         {
