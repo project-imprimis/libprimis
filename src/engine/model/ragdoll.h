@@ -212,9 +212,14 @@ class ragdolldata final
          * Modifies the vertices pointed to by the two assigned tri objects by rotating them
          * to the amount indicated by the angle and about the axis specified by axis.
          *
-         * @param t1 the first triangle to modify
-         * @param t2 the second triangle to modify
-         * @param angle the angle to rotate by
+         * For each vertex indicated by the indices in the triangle objects, adds to the
+         * newpos vec a value corresponding to the rotation desired. Increments the weight
+         * field for each vertex so modified by one. Does not modify the vert's pos or oldpos,
+         * only newpos.
+         *
+         * @param t1 the first triangle to retrieve vertices with
+         * @param t2 the second triangle to retrieve vertices with
+         * @param angle the angle in radians to rotate by
          * @param axis the axis by which to rotate around
          */
         void applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis);
