@@ -747,7 +747,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
             const ragdollskel::joint &j = ragdoll->joints[i];
             const boneinfo &b = bones[j.bone];
             const dualquat &q = bdata[b.interpindex];
-            d.calcanimjoint(i, matrix4x3(q));
+            d.animjoints[i] = d.calcanimjoint(i, matrix4x3(q));
         }
     }
     for(uint i = 0; i < ragdoll->verts.size(); i++)

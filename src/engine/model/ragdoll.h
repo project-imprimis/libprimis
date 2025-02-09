@@ -7,6 +7,7 @@
  * ragdollskel objects are owned by skelmodel::skeleton objects and therefore there
  * is exactly one `ragdollskel` no matter how many entities use a particular model
  */
+
 class ragdollskel final
 {
     public:
@@ -135,17 +136,16 @@ class ragdolldata final
         void move(bool water, float ts);
 
         /**
-         * @brief Sets the ragdolldata::animjoints matrix element at index i according to the animation matrix and position
+         * @brief Returns a transformation matrix according to the animation matrix and position
          *
-         * Const with respect to all other fields within ragdolldata other than animjoints[i].
-         *
-         * The value set at animjoints[i] is not dependent on the value of animjoints[i]
-         * prior to the calculation.
+         * Assumes that there are joints to use to calcuate.
          *
          * @param i the index of the joint to calculate
          * @param anim the animation matrix to transform the joint with
+         *
+         * @return an orientation matrix corresponding to the animation data passed
          */
-        void calcanimjoint(int i, const matrix4x3 &anim);
+        matrix4x3 calcanimjoint(int i, const matrix4x3 &anim) const;
         void init(const dynent *d);
 
     private:

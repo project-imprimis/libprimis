@@ -185,12 +185,8 @@ ragdolldata::~ragdolldata()
     parented transform = parent{invert(curtri) * origtrig} * (invert(parent{base2anim}) * base2anim)
 */
 
-void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
+matrix4x3 ragdolldata::calcanimjoint(int i, const matrix4x3 &anim) const
 {
-    if(!animjoints)
-    {
-        return;
-    }
     const ragdollskel::joint &j = skel->joints[i];
     vec pos(0, 0, 0);
     for(int k = 0; k < 3; ++k)
@@ -211,7 +207,9 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     m.c.cross(m.a, vec(v3).sub(v1)).normalize();
     m.b.cross(m.c, m.a);
     m.d = pos;
-    animjoints[i].transposemul(m, anim);
+    matrix4x3 result;
+    result.transposemul(m, anim);
+    return result;
 }
 
 void ragdolldata::calctris()
