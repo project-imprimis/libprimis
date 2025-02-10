@@ -283,6 +283,13 @@ class ragdolldata final
         static bool collidevert(const vec &pos, const vec &dir, float radius, vec &cwall);
 };
 
+/**
+ * @brief Deletes the heap-allocated ragdoll associated with the passed dynent.
+ *
+ * If there is no ragdoll associated with `d`, then there is no effect.
+ *
+ * @param d the dynent to delete the ragdoll of
+ */
 extern void cleanragdoll(dynent *d);
 
 #endif
