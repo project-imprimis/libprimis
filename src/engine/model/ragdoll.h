@@ -133,6 +133,16 @@ class ragdolldata final
         ragdolldata(const ragdollskel *skel, float scale = 1);
         ~ragdolldata();
 
+        /**
+         * @brief Moves the joints of the ragdoll.
+         *
+         * Moves the ragdoll joints by an amount indicated by the amount of time
+         * passed to `ts`. The ragdoll movement will be calculated using
+         * the ragdollwaterfric variable if water is true, and ragdollairfric if not.
+         *
+         * @param water whether the ragdoll is moving through air (false) or water(true)
+         * @param ts the time to use to calculate physics with, in seconds
+         */
         void move(bool water, float ts);
 
         /**
