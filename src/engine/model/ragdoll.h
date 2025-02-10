@@ -223,6 +223,13 @@ class ragdolldata final
          * @param axis the axis by which to rotate around
          */
         void applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::tri &t2, float angle, const vec &axis);
+
+        /**
+         * @brief Calculates and applies a rotation limit each defined rotation limit
+         *
+         * For each rotlimit in the associated skeleton, calculates the angle and rotation
+         * from that rotlimit and applies it to the associated vertices.
+         */
         void constrainrot();
 
         /**

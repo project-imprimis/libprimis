@@ -339,7 +339,7 @@ void ragdolldata::applyrotlimit(const ragdollskel::tri &t1, const ragdollskel::t
 
 void ragdolldata::constrainrot()
 {
-    calctris();
+    calctris(); //set up shadowing matrix3 objects for skel->tris
     for(const ragdollskel::rotlimit &r : skel->rotlimits)
     {
         matrix3 rot;
@@ -349,6 +349,7 @@ void ragdolldata::constrainrot()
         vec axis;
         float angle;
         const float tr = rot.trace();
+        //calculate angle and axis from the matrix `rot`, if possible
         if(tr >= r.maxtrace || !rot.calcangleaxis(tr, angle, axis))
         {
             continue;
