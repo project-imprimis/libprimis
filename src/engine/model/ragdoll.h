@@ -69,6 +69,9 @@ class ragdollskel final
         };
         std::vector<rotfriction> rotfrictions;
 
+        //a distance constraint between two specified vertices
+        //vert specifies the indices of the vertices in the verts vector, and
+        //min/maxdist the limits to keep them within
         struct distlimit final
         {
             int vert[2];
@@ -214,6 +217,16 @@ class ragdolldata final
          */
         void calcboundsphere();
         void constrain(vec &cwall);
+
+        /**
+         * @brief Adds weights to keep pairs of vertices within specified bounds
+         *
+         * For each vertex pair in the defined distlimits vector, adds weights to
+         * those verts to pull or push those vertices to lie within the specified min/maxdist
+         * distance apart.
+         *
+         * Modifies vertex weights and newpos fields and no other components of ragdolldata.
+         */
         void constraindist();
 
         /**
