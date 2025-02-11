@@ -251,6 +251,15 @@ class ragdolldata final
          * Previous values in ragdolldata::rotfrictions are ignored and overwritten.
          */
         void calcrotfriction();
+
+        /**
+         * @brief Applies rotation friction and propagates it to the model's vertices
+         *
+         * Calculates rotation limits with applyrotlimit() and then moves the set `newpos`
+         * values to the `pos` values in each vert.
+         *
+         * @param ts the time duration to apply in seconds
+         */
         void applyrotfriction(float ts);
 
         /**
