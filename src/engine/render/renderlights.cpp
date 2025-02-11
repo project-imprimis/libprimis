@@ -2958,7 +2958,7 @@ void collectlights()
         {
             continue;
         }
-        lightinfo &l = lights.emplace_back(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
+        const lightinfo &l = lights.emplace_back(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
         if(l.validscissor())
         {
             lightorder.emplace_back(lights.size()-1);
