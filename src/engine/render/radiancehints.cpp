@@ -212,7 +212,7 @@ void setupradiancehints()
 
     if(rhrect)
     {
-        for(uint i = 0; i < rhrb.size(); ++i)
+        for(size_t i = 0; i < rhrb.size(); ++i)
         {
             if(!rhrb[i])
             {
