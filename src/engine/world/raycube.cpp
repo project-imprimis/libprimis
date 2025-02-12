@@ -213,7 +213,7 @@ namespace
         const std::vector<extentity *> &ents = entities::getents();
         for(const int &i : outsideents)
         {
-            extentity &e = *ents[i];
+            const extentity &e = *ents[i];
             if(!(e.flags&EntFlag_Octa) || &e == t)
             {
                 continue;
