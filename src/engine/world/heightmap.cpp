@@ -51,7 +51,7 @@ class hmap
 
         void clearhbrush()
         {
-            for(auto &i : brush)
+            for(std::array<int, 64> &i : brush)
             {
                 i.fill(0);
             }
