@@ -148,13 +148,13 @@ void vertmodel::vertmesh::assignvert(vvertg &vv, const tcvert &tc, const vert &v
     vv.tangent = v.tangent;
 }
 
-int vertmodel::vertmesh::genvbo(std::vector<uint> &idxs, int offset)
+int vertmodel::vertmesh::genvbo(std::vector<size_t> &idxs, int offset)
 {
     voffset = offset;
     for(int i = 0; i < numtris; ++i)
     {
         const tri &t = tris[i];
-        for(int j = 0; j < 3; ++j)
+        for(size_t j = 0; j < 3; ++j)
         {
             idxs.push_back(voffset+t.vert[j]);
         }
@@ -298,7 +298,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    std::vector<uint> idxs;
+    std::vector<size_t> idxs;
     std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes = getrendermeshes();
     vlen = 0;
     if(numframes>1)
