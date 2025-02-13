@@ -223,7 +223,7 @@ namespace
             {
                 continue;
             }
-            if(f<dist && f>0)
+            if(f < dist && f > 0)
             {
                 hitentdist = dist = f;
                 hitent = outsideents[i];
@@ -250,7 +250,7 @@ namespace
             {
                 continue;
             }
-            if(f>0 && f<dist)
+            if(f > 0 && f < dist)
             {
                 dist = f;
             }
