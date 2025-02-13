@@ -156,7 +156,7 @@ namespace
         const std::vector<extentity *> &ents = entities::getents();
     //=======ENT_SEL_INTERSECT ENT_INTERSECT
         #define ENT_INTERSECT(type, func) do { \
-            for(uint i = 0; i < oc->type.size(); i++) \
+            for(size_t i = 0; i < oc->type.size(); i++) \
             { \
                 extentity &e = *ents[oc->type[i]]; \
                 if(!(e.flags&EntFlag_Octa) || &e==t) \
