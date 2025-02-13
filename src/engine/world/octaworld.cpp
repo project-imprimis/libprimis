@@ -118,9 +118,9 @@ std::array<cube, 8> *newcubes(uint face, int mat)
         (*c)[i].visible = 0;
         (*c)[i].merged = 0;
         setcubefaces((*c)[i], face);
-        for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
+        for(int j = 0; j < 6; ++j)
         {
-            (*c)[i].texture[l] = Default_Geom;
+            (*c)[i].texture[j] = Default_Geom;
         }
         (*c)[i].material = mat;
     }
