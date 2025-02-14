@@ -68,11 +68,12 @@ bool cube::mincubeface(const cube &cu, int orient, const ivec &co, int size, fac
     return smaller;
 }
 
-template <> struct std::hash<cube::plink>
+template <>
+struct std::hash<cube::plink>
 {
     size_t operator()(const cube::plink& x) const
     {
-        return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
+        return static_cast<size_t>(x.from.x)^(static_cast<size_t>(x.from.y)<<8);
     }
 };
 
