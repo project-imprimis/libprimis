@@ -1507,7 +1507,7 @@ void compacteditvslots()
     }
     for(size_t i = 0; i < editinfos.size(); i++)
     {
-        editinfo *e = editinfos[i];
+        const editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
     }
     for(undoblock *u : undos)
