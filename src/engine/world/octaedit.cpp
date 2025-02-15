@@ -1494,18 +1494,18 @@ std::vector<int *> editingvslots;
 
 void compacteditvslots()
 {
-    for(uint i = 0; i < editingvslots.size(); i++)
+    for(size_t i = 0; i < editingvslots.size(); i++)
     {
         if(*editingvslots[i])
         {
             compactvslot(*editingvslots[i]);
         }
     }
-    for(uint i = 0; i < unpackingvslots.size(); i++)
+    for(size_t i = 0; i < unpackingvslots.size(); i++)
     {
         compactvslot(*unpackingvslots[i].vslot);
     }
-    for(uint i = 0; i < editinfos.size(); i++)
+    for(size_t i = 0; i < editinfos.size(); i++)
     {
         editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
