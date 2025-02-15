@@ -1554,11 +1554,11 @@ int reptex = -1;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {
-    for(uint i = 0; i < remappedvslots.size(); i++)
+    for(vslotmap &v : remappedvslots)
     {
-        if(remappedvslots[i].index == index)
+        if(v.index == index)
         {
-            return remappedvslots[i].vslot;
+            return v.vslot;
         }
     }
     VSlot &vs = lookupvslot(index, false);
