@@ -1528,7 +1528,7 @@ void compacteditvslots()
 
 ///////////// height maps ////////////////
 
-ushort getmaterial(cube &c)
+ushort getmaterial(const cube &c)
 {
     if(c.children)
     {
