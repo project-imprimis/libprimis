@@ -1107,7 +1107,7 @@ int intersectmodel(std::string_view mdl, int anim, const vec &pos, float yaw, fl
 
 void abovemodel(vec &o, const char *mdl)
 {
-    model *m = loadmodel(mdl);
+    const model *m = loadmodel(mdl);
     if(!m)
     {
         return;
