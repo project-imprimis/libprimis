@@ -742,7 +742,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     }
     if(ragdoll->animjoints)
     {
-        for(uint i = 0; i < ragdoll->joints.size(); i++)
+        for(size_t i = 0; i < ragdoll->joints.size(); i++)
         {
             const ragdollskel::joint &j = ragdoll->joints[i];
             const boneinfo &b = bones[j.bone];
@@ -750,12 +750,12 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
             d.animjoints[i] = d.calcanimjoint(i, matrix4x3(q));
         }
     }
-    for(uint i = 0; i < ragdoll->verts.size(); i++)
+    for(size_t i = 0; i < ragdoll->verts.size(); i++)
     {
         ragdolldata::vert &dv = d.verts[i];
         matrixstack.top().transform(vec(dv.pos).mul(scale), dv.pos);
     }
-    for(uint i = 0; i < ragdoll->reljoints.size(); i++)
+    for(size_t i = 0; i < ragdoll->reljoints.size(); i++)
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
@@ -772,7 +772,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
     }
     sc.nextversion();
     const vec trans = vec(d.center).div(scale).add(translate);
-    for(uint i = 0; i < ragdoll->joints.size(); i++)
+    for(size_t i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
         const boneinfo &b = bones[j.bone];
@@ -789,7 +789,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
         m.mul(d.tris[j.tri], pos, d.animjoints ? d.animjoints[i] : j.orient);
         sc.bdata[b.interpindex] = dualquat(m);
     }
-    for(uint i = 0; i < ragdoll->reljoints.size(); i++)
+    for(size_t i = 0; i < ragdoll->reljoints.size(); i++)
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
