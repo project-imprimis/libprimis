@@ -1183,6 +1183,8 @@ static CollisionInfo octacollide(const physent *d, const vec &dir, float cutoff,
 
 // all collision happens here
 //
+
+//used in iengine
 bool collide(const physent *d, vec *cwall, const vec &dir, float cutoff, bool insideplayercol)
 {
     collideinside = 0;
@@ -1211,6 +1213,7 @@ bool collide(const physent *d, vec *cwall, const vec &dir, float cutoff, bool in
     }
 }
 
+//used in iengine
 void recalcdir(const physent *d, const vec &oldvel, vec &dir)
 {
     float speed = oldvel.magnitude();
@@ -1223,6 +1226,7 @@ void recalcdir(const physent *d, const vec &oldvel, vec &dir)
     }
 }
 
+//used in iengine
 void slideagainst(physent *d, vec &dir, const vec &obstacle, bool foundfloor, bool slidecollide)
 {
     vec wall(obstacle);
@@ -1241,6 +1245,7 @@ void slideagainst(physent *d, vec &dir, const vec &obstacle, bool foundfloor, bo
     recalcdir(d, oldvel, dir);
 }
 
+//used in iengine
 void avoidcollision(physent *d, const vec &dir, const physent *obstacle, float space)
 {
     float rad = obstacle->radius+d->radius;
@@ -1278,6 +1283,7 @@ void avoidcollision(physent *d, const vec &dir, const physent *obstacle, float s
     }
 }
 
+//used in iengine
 bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
 {
     int steps = static_cast<int>(ceil(dist/stepdist));
@@ -1300,7 +1306,7 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
     return true;
 }
 
-bool droptofloor(vec &o, float radius, float height)
+static bool droptofloor(vec &o, float radius, float height)
 {
     static struct dropent : physent
     {
@@ -1356,11 +1362,13 @@ float dropheight(const entity &e)
     }
 }
 
+//used in iengine
 void dropenttofloor(entity *e)
 {
     droptofloor(e->o, 1.0f, dropheight(*e));
 }
 
+//used in iengine
 void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 {
     if(move)
@@ -1391,6 +1399,7 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
     }
 }
 
+//used in iengine
 bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective way to find a free spawn spot in the map
 {
     d->o.z += d->eyeheight; // pos specified is at feet
