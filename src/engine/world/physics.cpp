@@ -1346,7 +1346,7 @@ static bool droptofloor(vec &o, float radius, float height)
     return false;
 }
 
-float dropheight(const entity &e)
+static float dropheight(const entity &e)
 {
     switch(e.type)
     {
