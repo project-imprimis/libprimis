@@ -1142,7 +1142,7 @@ void findanimscmd(const char *name)
         {
             buf.push_back(' ');
         }
-        for(uint i = 0; i < std::strlen(num); ++i)
+        for(size_t i = 0; i < std::strlen(num); ++i)
         {
             buf.push_back(num[i]);
         }
