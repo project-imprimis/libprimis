@@ -193,12 +193,12 @@ static CollisionInfo ellipsecollide(const physent *d, const vec &dir, const vec 
 
 static constexpr int dynentcachesize = 1024;
 
-static uint dynentframe = 0;
+static size_t dynentframe = 0;
 
 static struct dynentcacheentry
 {
     int x, y;
-    uint frame;
+    size_t frame;
     std::vector<const physent *> dynents;
 } dynentcache[dynentcachesize];
 
