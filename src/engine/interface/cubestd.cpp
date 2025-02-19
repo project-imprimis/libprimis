@@ -838,7 +838,7 @@ static void listfindeq(const char *list, const int *val, const int *skip)
             intret(n);
             return;
         }
-        for(int i = 0; i < static_cast<int>(*skip); ++i)
+        for(int i = 0; i < *skip; ++i)
         {
             if(!parselist(s))
             {
