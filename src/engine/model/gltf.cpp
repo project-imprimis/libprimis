@@ -142,7 +142,7 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float, part &p)
             p.initskins(notexture, notexture, meshes.size());
 
         }
-        for(uint i = 0; i < meshes.size(); i++)
+        for(size_t i = 0; i < meshes.size(); i++)
         {
             gltfmesh &m = *static_cast<gltfmesh *>(meshes[i]);
             m.buildnorms();
