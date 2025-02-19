@@ -2058,9 +2058,9 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Sha
     }
     else if(load)
     {
-        for(uint i = 0; i < params.size(); i++)
+        for(SlotShaderParam &p : params)
         {
-            params[i].loc = SIZE_MAX;
+            p.loc = SIZE_MAX;
         }
     }
 }
