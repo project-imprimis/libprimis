@@ -357,19 +357,19 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
 //======================================================= DOWNOCTREE INITRAYCUBE
 
 #define DOWNOCTREE(disttoent, earlyexit) \
-        cube *lc = levels[lshift]; \
+        cube *lc = r.levels[r.lshift]; \
         for(;;) \
         { \
-            lshift--; \
-            lc += OCTA_STEP(x, y, z, lshift); \
-            if(lc->ext && lc->ext->ents && lshift < elvl) \
+            r.lshift--; \
+            lc += OCTA_STEP(x, y, z, r.lshift); \
+            if(lc->ext && lc->ext->ents && r.lshift < r.elvl) \
             { \
-                float edist = disttoent(lc->ext->ents, o, ray, dent, mode, t); \
-                if(edist < dent) \
+                float edist = disttoent(lc->ext->ents, o, ray, r.dent, mode, t); \
+                if(edist < r.dent) \
                 { \
-                    earlyexit return std::min(edist, dist); \
-                    elvl = lshift; \
-                    dent = std::min(dent, edist); \
+                    earlyexit return std::min(edist, r.dist); \
+                    r.elvl = r.lshift; \
+                    r.dent = std::min(r.dent, edist); \
                 } \
             } \
             if(lc->children==nullptr) \
@@ -377,7 +377,7 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
                 break; \
             } \
             lc = &(*lc->children)[0]; \
-            levels[lshift] = lc; \
+            r.levels[r.lshift] = lc; \
         }
 
 //NOTE: levels[20] magically assumes mapscale <20
@@ -392,77 +392,101 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
         elvl = mode&Ray_BB ? worldscale : 0; \
     ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0);
 
+struct raycubeinfo
+{
+    float dist,
+          dent;
+    vec v,
+        invray;
+    cube *levels[20];
+    int lshift,
+        elvl;
+    ivec lsizemask;
+
+    raycubeinfo(float radius, const vec &o, const vec &ray, int worldscale, int mode, cube *r)
+    {
+        dist = 0;
+        dent = radius > 0 ? radius : 1e16f;
+        v = o;
+        invray = vec(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
+        levels[worldscale] = r;
+        lshift = worldscale;
+        elvl = mode&Ray_BB ? worldscale : 0;
+        lsizemask = ivec(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0);
+    }
+};
+
 float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, const extentity *t) const
 {
     if(ray.iszero())
     {
         return 0;
     }
-    INITRAYCUBE;
+    raycubeinfo r(radius, o, ray, worldscale, mode, &(*worldroot)[0]);
     //scope limiting brackets
     {
         float outrad = 0.f;
-        if(checkinsideworld(invray, radius, outrad, o, v, ray, dist))
+        if(checkinsideworld(r.invray, radius, outrad, o, r.v, ray, r.dist))
         {
             return outrad;
         }
     }
     int closest = -1,
-        x = static_cast<int>(v.x),
-        y = static_cast<int>(v.y),
-        z = static_cast<int>(v.z);
+        x = static_cast<int>(r.v.x),
+        y = static_cast<int>(r.v.y),
+        z = static_cast<int>(r.v.z);
     for(;;)
     {
         DOWNOCTREE(disttoent, if(mode&Ray_Shadow));
 
-        int lsize = 1<<lshift;
+        int lsize = 1<<r.lshift;
 
         cube &c = *lc;
-        if((dist>0 || !(mode&Ray_SkipFirst)) &&
+        if((r.dist>0 || !(mode&Ray_SkipFirst)) &&
            (((mode&Ray_ClipMat) && IS_CLIPPED(c.material&MatFlag_Volume)) ||
             ((mode&Ray_EditMat) && c.material != Mat_Air) ||
             (!(mode&Ray_Pass) && lsize==size && !(c.isempty())) ||
             c.issolid() ||
-            dent < dist) &&
+            r.dent < r.dist) &&
             (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
         {
-            if(dist < dent)
+            if(r.dist < r.dent)
             {
                 if(closest < 0)
                 {
-                    float dx = ((x&(~0U<<lshift))+(invray.x>0 ? 0 : 1<<lshift)-v.x)*invray.x,
-                          dy = ((y&(~0U<<lshift))+(invray.y>0 ? 0 : 1<<lshift)-v.y)*invray.y,
-                          dz = ((z&(~0U<<lshift))+(invray.z>0 ? 0 : 1<<lshift)-v.z)*invray.z;
+                    float dx = ((x&(~0U<<r.lshift))+(r.invray.x>0 ? 0 : 1<<r.lshift)-r.v.x)*r.invray.x,
+                          dy = ((y&(~0U<<r.lshift))+(r.invray.y>0 ? 0 : 1<<r.lshift)-r.v.y)*r.invray.y,
+                          dz = ((z&(~0U<<r.lshift))+(r.invray.z>0 ? 0 : 1<<r.lshift)-r.v.z)*r.invray.z;
                     closest = dx > dy ? (dx > dz ? 0 : 2) : (dy > dz ? 1 : 2);
                 }
                 hitsurface = vec(0, 0, 0);
                 hitsurface[closest] = ray[closest]>0 ? -1 : 1;
-                return dist;
+                return r.dist;
             }
-            return dent;
+            return r.dent;
         }
 
-        ivec lo(x&(~0U<<lshift),
-             y&(~0U<<lshift),
-             z&(~0U<<lshift));
+        ivec lo(x&(~0U<<r.lshift),
+             y&(~0U<<r.lshift),
+             z&(~0U<<r.lshift));
 
         if(!(c.isempty()))
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
-            if(raycubeintersect(p, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
+            if(raycubeintersect(p, r.v, ray, r.invray, r.dent-r.dist, f) && (r.dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
             {
-                return std::min(dent, dist+f);
+                return std::min(r.dent, r.dist+f);
             }
         }
-        findclosest(closest, 0, 1, 2, lsizemask, invray, lo, lshift, v, dist, ray);
-        if(radius>0 && dist>=radius)
+        findclosest(closest, 0, 1, 2, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
+        if(radius>0 && r.dist>=radius)
         {
-            return std::min(dent, dist);
+            return std::min(r.dent, r.dist);
         }
-        if(upoctree(v, x, y, z, lo, lshift))
+        if(upoctree(r.v, x, y, z, lo, r.lshift))
         {
-            return std::min(dent, radius>0 ? radius : dist);
+            return std::min(r.dent, radius>0 ? radius : r.dist);
         }
     }
 }
@@ -470,69 +494,68 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
 // optimized version for light shadowing... every cycle here counts!!!
 float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode, const extentity *t)
 {
-    INITRAYCUBE;
+    raycubeinfo r(radius, o, ray, worldscale, mode, &(*worldroot)[0]);
     //scope limiting brackets
     {
         float outrad = 0.f;
-        if(checkinsideworld(invray, radius, outrad, o, v, ray, dist))
+        if(checkinsideworld(r.invray, radius, outrad, o, r.v, ray, r.dist))
         {
             return outrad;
         }
     }
     int side = Orient_Bottom,
-        x = static_cast<int>(v.x),
-        y = static_cast<int>(v.y),
-        z = static_cast<int>(v.z);
+        x = static_cast<int>(r.v.x),
+        y = static_cast<int>(r.v.y),
+        z = static_cast<int>(r.v.z);
     for(;;)
     {
         DOWNOCTREE(shadowent, );
 
         const cube &c = *lc;
-        ivec lo(x&(~0U<<lshift),
-             y&(~0U<<lshift),
-             z&(~0U<<lshift));
+        ivec lo(x&(~0U<<r.lshift),
+             y&(~0U<<r.lshift),
+             z&(~0U<<r.lshift));
 
         if(!(c.isempty()) && !(c.material&Mat_Alpha))
         {
             if(c.issolid())
             {
-                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist;
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : r.dist;
             }
-            const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
+            const clipplanes &p = getclipplanes(c, lo, 1<<r.lshift);
             float enterdist = -1e16f,
                   exitdist  = 1e16f;
             int i = 0;
-            bool intersected = intersectplanes(p, v, ray, enterdist, exitdist, i);
+            bool intersected = intersectplanes(p, r.v, ray, enterdist, exitdist, i);
             side = p.side[i];
             if(!intersected)
             {
                 goto nextcube;
             }
-            intersected = intersectbox(p, v, ray, invray, enterdist, exitdist, i);
-            side = (i<<1) + 1 - lsizemask[i];
+            intersected = intersectbox(p, r.v, ray, r.invray, enterdist, exitdist, i);
+            side = (i<<1) + 1 - r.lsizemask[i];
             if(!intersected)
             {
                 goto nextcube;
             }
             if(exitdist >= 0)
             {
-                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+std::max(enterdist+0.1f, 0.0f);
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : r.dist+std::max(enterdist+0.1f, 0.0f);
             }
         }
 
     nextcube:
-        findclosest(side, Orient_Right - lsizemask.x, Orient_Front - lsizemask.y, Orient_Top - lsizemask.z, lsizemask, invray, lo, lshift, v, dist, ray);
-        if(dist>=radius)
+        findclosest(side, Orient_Right - r.lsizemask.x, Orient_Front - r.lsizemask.y, Orient_Top - r.lsizemask.z, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
+        if(r.dist>=radius)
         {
-            return dist;
+            return r.dist;
         }
-        if(upoctree(v, x, y, z, lo, lshift))
+        if(upoctree(r.v, x, y, z, lo, r.lshift))
         {
             return radius;
         }
     }
 }
-#undef INITRAYCUBE
 #undef DOWNOCTREE
 //==============================================================================
 float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent)
