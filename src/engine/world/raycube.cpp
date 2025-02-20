@@ -274,20 +274,6 @@ bool insideworld(const ivec &o)
 
 vec hitsurface;
 
-//==================INITRAYCUBE CHECKINSIDEWORLD DOWNOCTREE FINDCLOSEST UPOCTREE
-
-//NOTE: levels[20] magically assumes mapscale <20
-#define INITRAYCUBE \
-    float dist = 0, \
-          dent = radius > 0 ? radius : 1e16f; \
-    vec v(o), \
-        invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
-    cube *levels[20]; \
-    levels[worldscale] = &(*worldroot)[0]; \
-    int lshift = worldscale, \
-        elvl = mode&Ray_BB ? worldscale : 0; \
-    ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0); \
-
 //will only change &outrad and &dist if not inside the world
 //true if outside world, false if inside
 bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad, const vec &o, vec &v, const vec& ray, float &dist) const
@@ -322,30 +308,6 @@ bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad,
     }
     return false;
 }
-
-#define DOWNOCTREE(disttoent, earlyexit) \
-        cube *lc = levels[lshift]; \
-        for(;;) \
-        { \
-            lshift--; \
-            lc += OCTA_STEP(x, y, z, lshift); \
-            if(lc->ext && lc->ext->ents && lshift < elvl) \
-            { \
-                float edist = disttoent(lc->ext->ents, o, ray, dent, mode, t); \
-                if(edist < dent) \
-                { \
-                    earlyexit return std::min(edist, dist); \
-                    elvl = lshift; \
-                    dent = std::min(dent, edist); \
-                } \
-            } \
-            if(lc->children==nullptr) \
-            { \
-                break; \
-            } \
-            lc = &(*lc->children)[0]; \
-            levels[lshift] = lc; \
-        }
 
 static void findclosest(int &closest, int xval, int yval, int zval, const ivec &lsizemask, const vec &invray, const ivec &lo, const int &lshift, vec &v, float &dist, const vec& ray)
 {
@@ -391,6 +353,44 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
     } while(diff);
     return false;
 }
+
+//======================================================= DOWNOCTREE INITRAYCUBE
+
+#define DOWNOCTREE(disttoent, earlyexit) \
+        cube *lc = levels[lshift]; \
+        for(;;) \
+        { \
+            lshift--; \
+            lc += OCTA_STEP(x, y, z, lshift); \
+            if(lc->ext && lc->ext->ents && lshift < elvl) \
+            { \
+                float edist = disttoent(lc->ext->ents, o, ray, dent, mode, t); \
+                if(edist < dent) \
+                { \
+                    earlyexit return std::min(edist, dist); \
+                    elvl = lshift; \
+                    dent = std::min(dent, edist); \
+                } \
+            } \
+            if(lc->children==nullptr) \
+            { \
+                break; \
+            } \
+            lc = &(*lc->children)[0]; \
+            levels[lshift] = lc; \
+        }
+
+//NOTE: levels[20] magically assumes mapscale <20
+#define INITRAYCUBE \
+    float dist = 0, \
+          dent = radius > 0 ? radius : 1e16f; \
+    vec v(o), \
+        invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
+    cube *levels[20]; \
+    levels[worldscale] = &(*worldroot)[0]; \
+    int lshift = worldscale, \
+        elvl = mode&Ray_BB ? worldscale : 0; \
+    ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0);
 
 float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, const extentity *t) const
 {
