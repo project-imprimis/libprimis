@@ -488,7 +488,9 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
         DOWNOCTREE(shadowent, );
 
         const cube &c = *lc;
-        ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
+        ivec lo(x&(~0U<<lshift),
+             y&(~0U<<lshift),
+             z&(~0U<<lshift));
 
         if(!(c.isempty()) && !(c.material&Mat_Alpha))
         {
