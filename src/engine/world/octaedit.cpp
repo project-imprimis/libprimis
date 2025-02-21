@@ -700,7 +700,7 @@ static void packcube(const cube &c, B &buf)
     }
     else
     {
-        cube data = c;
+        const cube &data = c;
         buf.push_back(c.material&0xFF);
         buf.push_back(c.material>>8);
         for(uint i = 0; i < sizeof(data.edges); ++i)
@@ -709,7 +709,7 @@ static void packcube(const cube &c, B &buf)
         }
         for(uint i = 0; i < sizeof(data.texture); ++i)
         {
-            buf.push_back(reinterpret_cast<uchar *>(data.texture)[i]);
+            buf.push_back(reinterpret_cast<const uchar *>(data.texture)[i]);
         }
     }
 }
