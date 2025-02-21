@@ -94,7 +94,7 @@ void boxs(int orient, vec origin, const vec &s, bool boxoutline)
 
     gle::defvertex();
     gle::begin(GL_LINE_LOOP);
-    //draw four surfaces
+    //draw four lines
     gle::attrib(origin); origin[R[d]] += s[R[d]];
     gle::attrib(origin); origin[C[d]] += s[C[d]];
     gle::attrib(origin); origin[R[d]] -= s[R[d]];
@@ -288,7 +288,8 @@ bool noedit(bool inview, bool msg)
     {
         return false;
     }
-    vec o(sel.o), s(sel.s);
+    vec o(sel.o),
+        s(sel.s);
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = std::max(std::max(s.x, s.y), s.z);
@@ -315,6 +316,7 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 {
     int dim = DIMENSION(b.orient),
         dc = DIM_COORD(b.orient);
+    //ivec::ivec(int d, int row, int col, int depth)
     ivec s(dim, x*b.grid, y*b.grid, dc*(b.s[dim]-1)*b.grid);
     s.add(b.o);
     if(dc)
