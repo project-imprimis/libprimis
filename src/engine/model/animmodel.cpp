@@ -52,6 +52,7 @@ bool animmodel::enabletc = false,
      animmodel::enablecullface = true,
      animmodel::enabledepthoffset = false;
 
+std::stack<matrix4> animmodel::matrixstack;
 float animmodel::sizescale = 1;
 
 vec4<float> animmodel::colorscale(1, 1, 1, 1);
@@ -66,8 +67,6 @@ const Texture *animmodel::lasttex = nullptr,
               *animmodel::lastdecal = nullptr,
               *animmodel::lastmasks = nullptr,
               *animmodel::lastnormalmap = nullptr;
-
-std::stack<matrix4> animmodel::matrixstack;
 
 template <>
 struct std::hash<animmodel::shaderparams>
