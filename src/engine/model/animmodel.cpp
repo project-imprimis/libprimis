@@ -422,7 +422,7 @@ void animmodel::skin::invalidateshaderparams()
 
 //Mesh
 
-void animmodel::Mesh::genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(const skin &s, std::vector<BIH::mesh> &bih, const matrix4x3 &t) const
 {
     bih.emplace_back();
     BIH::mesh &m = bih.back();
