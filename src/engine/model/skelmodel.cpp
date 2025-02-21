@@ -1581,7 +1581,7 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     return vverts.size()-voffset;
 }
 
-void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, int row)
+void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, int row) const
 {
     if(row)
     {

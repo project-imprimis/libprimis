@@ -359,7 +359,7 @@ struct skelmodel : animmodel
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
             int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
 
-            void setshader(Shader *s, bool usegpuskel, int vweights, int row) override final;
+            void setshader(Shader *s, bool usegpuskel, int vweights, int row) const override final;
             void render() const;
             /**
              * @brief Assigns indices from the remap parameter to the object's verts

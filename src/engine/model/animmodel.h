@@ -153,7 +153,7 @@ class animmodel : public model
 
                 virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m) const = 0;
 
-                virtual void setshader(Shader *s, bool, int, int row = 0)
+                virtual void setshader(Shader *s, bool, int, int row = 0) const
                 {
                     if(row)
                     {
