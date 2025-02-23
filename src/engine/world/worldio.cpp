@@ -435,9 +435,8 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     }
     if(octsav&0x20)
     {
-        int surfmask, totalverts;
-        surfmask = f->getchar();
-        totalverts = std::max(f->getchar(), 0);
+        int surfmask = f->getchar(),
+            totalverts = std::max(f->getchar(), 0);
         newcubeext(c, totalverts, false);
         c.ext->surfaces.fill({0,0});
         std::memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
