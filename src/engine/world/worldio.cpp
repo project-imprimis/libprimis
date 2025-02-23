@@ -263,8 +263,8 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
                 {
                     if(surfmask&(1<<j))
                     {
-                        surfaceinfo surf = c[i].ext->surfaces[j];
-                        vertinfo *verts = c[i].ext->verts() + surf.verts;
+                        surfaceinfo surf = c[i].ext->surfaces[j]; //intentional copy
+                        const vertinfo *verts = c[i].ext->verts() + surf.verts;
                         int layerverts = surf.numverts&Face_MaxVerts,
                             numverts = surf.totalverts(),
                             vertmask   = 0,
