@@ -1115,7 +1115,7 @@ void cleanupprefabs()
 
 void pasteundoblock(block3 *b, const uchar *g)
 {
-    cube *s = b->c();
+    const cube *s = b->c();
     uint i = 0;
     LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), rootworld.mapscale()-1), pastecube(s[i], c); i++; );
 }
