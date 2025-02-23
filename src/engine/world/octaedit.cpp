@@ -85,6 +85,7 @@ void boxs(int orient, vec o, const vec &s, float size, bool boxoutline)
 }
 
 //used in iengine.h
+//boxsquare, draws a 2d square at a specified location
 void boxs(int orient, vec origin, const vec &s, bool boxoutline)
 {
     int d  = DIMENSION(orient),
