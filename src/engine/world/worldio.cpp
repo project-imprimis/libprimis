@@ -580,7 +580,7 @@ std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &fai
 
 VAR(debugvars, 0, 0, 1);
 
-void savevslot(stream *f, VSlot &vs, int prev)
+static void savevslot(stream *f, const VSlot &vs, int prev)
 {
     f->put<int>(vs.changed);
     f->put<int>(prev);
