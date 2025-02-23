@@ -89,7 +89,7 @@ Notes:
     * Unsure what 'w' and 'h' refers to, maybe screen resolution?
 */
 
-static void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
+static void renderbackgroundview(int win_w, int win_h, const char *caption, const Texture *mapshot, const char *mapname, const char *mapinfo)
 {
     static int lastupdate  = -1,
                lastw       = -1,
