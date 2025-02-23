@@ -961,7 +961,7 @@ void cubeworld::clearmapcrc()
 
 bool cubeworld::load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
 {
-    int loadingstart = SDL_GetTicks();
+    const int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
     stream *f = opengzfile(ogzname, "rb");
     if(!f)
@@ -978,7 +978,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         return false;
     }
     resetmap();
-    Texture *mapshot = textureload(picname, 3, true, false);
+    const Texture *mapshot = textureload(picname, 3, true, false);
     renderbackground("loading...", mapshot, mname, gameinfo);
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
@@ -993,8 +993,8 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     renderprogress(0, "loading vars...");
     for(int i = 0; i < hdr.numvars; ++i)
     {
-        int type = f->getchar(),
-            ilen = f->get<ushort>();
+        const int type = f->getchar(),
+                  ilen = f->get<ushort>();
         string name;
         f->read(name, std::min(ilen, maxstrlen-1));
         name[std::min(ilen, maxstrlen-1)] = '\0';
@@ -1002,7 +1002,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         {
             f->seek(ilen - (maxstrlen-1), SEEK_CUR);
         }
-        ident *id = getident(name);
+        const ident *id = getident(name);
         tagval val;
         string str;
         switch(type)
@@ -1019,7 +1019,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
             }
             case Id_StringVar:
             {
-                int slen = f->get<ushort>();
+                const int slen = f->get<ushort>();
                 f->read(str, std::min(slen, maxstrlen-1));
                 str[std::min(slen, maxstrlen-1)] = '\0';
                 if(slen >= maxstrlen)
@@ -1040,7 +1040,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
             {
                 case Id_Var:
                 {
-                    int i = val.getint();
+                    const int i = val.getint();
                     if(id->val.i.min <= id->val.i.max && i >= id->val.i.min && i <= id->val.i.max)
                     {
                         setvar(name, i);
@@ -1053,7 +1053,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
                 }
                 case Id_FloatVar:
                 {
-                    float f = val.getfloat();
+                    const float f = val.getfloat();
                     if(id->val.f.min <= id->val.f.max && f >= id->val.f.min && f <= id->val.f.max)
                     {
                         setfvar(name, f);
@@ -1082,7 +1082,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     }
     string gametype;
     bool samegame = true;
-    int len = f->getchar();
+    const int len = f->getchar();
     if(len >= 0)
     {
         f->read(gametype, len+1);
@@ -1099,7 +1099,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     extras.reserve(extrasize);
     f->read(&(*extras.begin()), extrasize);
     texmru.clear();
-    ushort nummru = f->get<ushort>();
+    const ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)
     {
         texmru.push_back(f->get<ushort>());
