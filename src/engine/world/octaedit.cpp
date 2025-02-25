@@ -595,8 +595,8 @@ static int undosize(undoblock *u)
     }
     else
     {
-        block3 *b = u->block();
-        cube *q = b->c();
+        const block3 *b = u->block();
+        const cube *q = b->getcube();
         int size = b->size(),
             total = size;
         uint i = 0;
