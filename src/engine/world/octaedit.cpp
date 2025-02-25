@@ -730,7 +730,7 @@ static bool packblock(const block3 &b, B &buf)
         buf.push_back(reinterpret_cast<const uchar *>(&hdr)[i]);
     }
     const cube *c = b.getcube();
-    for(uint i = 0; i < static_cast<uint>(b.size()); ++i)
+    for(int i = 0; i < b.size(); ++i)
     {
         packcube(c[i], buf);
     }
@@ -875,7 +875,7 @@ static void unpackvslots(cube &c, ucharbuf &buf)
         for(int i = 0; i < 6; ++i) //one for each face
         {
             ushort tex = c.texture[i];
-            for(uint j = 0; j < unpackingvslots.size(); j++)
+            for(size_t j = 0; j < unpackingvslots.size(); j++)
             {
                 if(unpackingvslots[j].index == tex)
                 {
@@ -1259,7 +1259,7 @@ class prefabmesh
             }
             p.cleanup();
 
-            for(uint i = 0; i < verts.size(); i++)
+            for(size_t i = 0; i < verts.size(); i++)
             {
                 verts[i].norm.flip();
             }
@@ -1666,7 +1666,7 @@ void compactmruvslots()
         }
         texmru.erase(texmru.begin() + i);
     }
-    if(vslots.size() > static_cast<uint>(lasttex))
+    if(vslots.size() > static_cast<size_t>(lasttex))
     {
         VSlot &vs = *vslots[lasttex];
         lasttex = vs.index >= 0 ? vs.index : 0;
@@ -1675,7 +1675,7 @@ void compactmruvslots()
     {
         lasttex = 0;
     }
-    reptex = (vslots.size() > static_cast<uint>(reptex)) ? vslots[reptex]->index : -1;
+    reptex = (vslots.size() > static_cast<size_t>(reptex)) ? vslots[reptex]->index : -1;
 }
 
 void edittexcube(cube &c, int tex, int orient, bool &findrep)
