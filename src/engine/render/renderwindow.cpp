@@ -69,7 +69,7 @@ static void getbackgroundres(int &w, int &h)
 static std::string backgroundcaption   = "",
                    backgroundmapname   = "",
                    backgroundmapinfo   = "";
-static Texture *backgroundmapshot = nullptr;
+static const Texture *backgroundmapshot = nullptr;
 
 static void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
@@ -216,7 +216,7 @@ void swapbuffers(bool)
     SDL_GL_SwapWindow(screen);
 }
 
-static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
+static void setbackgroundinfo(const char *caption = nullptr, const Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
 {
     renderedframe = false;
     backgroundcaption = std::string(caption ? caption : "");
@@ -237,7 +237,7 @@ static void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = 
     }
 }
 
-void renderbackground(const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo, bool force)
+void renderbackground(const char *caption, const Texture *mapshot, const char *mapname, const char *mapinfo, bool force)
 {
     if(!inbetweenframes && !force)
     {
