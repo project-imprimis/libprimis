@@ -501,7 +501,7 @@ class zipstream final : public stream
         {
             return reading == ~0U || ended;
         }
-        offset tell() override final
+        offset tell() const override final
         {
             return reading != ~0U ? (info->compressedsize ? zfile.total_out : reading - info->offset) : offset(-1);
         }

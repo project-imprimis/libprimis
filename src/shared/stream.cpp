@@ -678,7 +678,8 @@ SDL_RWops *stream::rwops()
 
 stream::offset stream::size()
 {
-    offset pos = tell(), endpos;
+    offset pos = tell(),
+                 endpos;
     if(pos < 0 || !seek(0, SEEK_END))
     {
         return -1;
@@ -803,7 +804,7 @@ struct filestream final : stream
         return feof(file)!=0;
     }
 
-    offset tell() override final
+    offset tell() const override final
     {
 #ifdef WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__)
@@ -1149,12 +1150,12 @@ class gzstream final : public stream
             return !reading && !writing;
         }
 
-        offset tell() override final
+        offset tell() const override final
         {
             return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
         }
 
-        offset rawtell() override final
+        offset rawtell() const override final
         {
             return file ? file->tell() : offset(-1);
         }
