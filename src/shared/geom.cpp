@@ -348,4 +348,7 @@ float vec::project_bb(const ivec &min, const ivec &max) const
 
 //ivec
 
-float ivec::dist(const plane &p) const { return x*p.x + y*p.y + z*p.z + p.offset; }
+float ivec::dist(const plane &p) const
+{
+    return x*p.x + y*p.y + z*p.z + p.offset;
+}
