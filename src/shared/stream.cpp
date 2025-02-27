@@ -163,7 +163,7 @@ done:
 #include <dirent.h>
 #endif
 
-string homedir = "";
+std::string homedir = "";
 struct packagedir
 {
     std::string dir;
@@ -449,8 +449,8 @@ const char *sethomedir(const char *dir)
     {
         return nullptr;
     }
-    copystring(homedir, pdir);
-    return homedir;
+    homedir = pdir;
+    return homedir.c_str();
 }
 
 const char *addpackagedir(const char *dir)
@@ -488,7 +488,7 @@ const char *findfile(const char *filename, const char *mode)
     static string s;
     if(homedir[0])
     {
-        formatstring(s, "%s%s", homedir, filename);
+        formatstring(s, "%s%s", homedir.c_str(), filename);
         if(fileexists(s, mode))
         {
             return s;
@@ -617,7 +617,7 @@ int listfiles(const char *dir, const char *ext, std::vector<char *> &files)
     string s;
     if(homedir[0])
     {
-        formatstring(s, "%s%s", homedir, dirname);
+        formatstring(s, "%s%s", homedir.c_str(), dirname);
         if(listdir(s, false, ext, files))
         {
             dirs++;
