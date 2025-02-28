@@ -224,7 +224,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
         ids.push_back(&id);
     }
     std::sort(ids.begin(), ids.end());
-    for(uint i = 0; i < ids.size(); i++)
+    for(size_t i = 0; i < ids.size(); i++)
     {
         ident &id = *ids[i];
         if(id.flags&Idf_Persist)
@@ -1074,7 +1074,7 @@ static void loopfiles(ident *id, const char *dir, const char *ext, const uint *b
     std::vector<char *> files;
     listfiles(dir, ext[0] ? ext : nullptr, files);
     std::sort(files.begin(), files.end());
-    for(uint i = 0; i < files.size(); i++)
+    for(size_t i = 0; i < files.size(); i++)
     {
         setiter(*id, files[i], stack);
         execute(body);
@@ -1169,7 +1169,7 @@ static void sortlist(const char *list, ident *x, ident *y, const uint *body, con
             f.body = unique;
             totalunique = items[0].quotelength();
             numunique = 1;
-            for(uint i = 1; i < items.size(); i++)
+            for(size_t i = 1; i < items.size(); i++)
             {
                 SortItem &item = items[i];
                 if(f(items[i-1], item))
@@ -1189,10 +1189,10 @@ static void sortlist(const char *list, ident *x, ident *y, const uint *body, con
         SortFunction f = { x, y, unique };
         totalunique = items[0].quotelength();
         numunique = 1;
-        for(uint i = 1; i < items.size(); i++)
+        for(size_t i = 1; i < items.size(); i++)
         {
             SortItem &item = items[i];
-            for(uint j = 0; j < i; ++j)
+            for(size_t j = 0; j < i; ++j)
             {
                 SortItem &prev = items[j];
                 if(prev.quotestart && f(item, prev))
@@ -1218,7 +1218,7 @@ static void sortlist(const char *list, ident *x, ident *y, const uint *body, con
         sorted = newstring(sortedlen);
     }
     int offset = 0;
-    for(uint i = 0; i < items.size(); i++)
+    for(size_t i = 0; i < items.size(); i++)
     {
         SortItem &item = items[i];
         if(!item.quotestart)
@@ -1468,7 +1468,7 @@ void addsleep(const int *msec, const char *cmd)
 
 void checksleep(int millis)
 {
-    for(uint i = 0; i < sleepcmds.size(); i++)
+    for(size_t i = 0; i < sleepcmds.size(); i++)
     {
         sleepcmd &s = sleepcmds[i];
         if(millis - s.millis >= s.delay)
