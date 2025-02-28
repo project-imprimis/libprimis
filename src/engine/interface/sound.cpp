@@ -145,7 +145,7 @@ void SoundEngine::SoundChannel::syncchannel()
 
 void SoundEngine::stopchannels()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(!chan.inuse) //don't clear channels that are already flagged as unused
@@ -273,7 +273,7 @@ bool SoundEngine::initaudio()
     {
         std::vector<std::string> drivers;
         explodelist(audiodriver.c_str(), drivers);
-        for(uint i = 0; i < drivers.size(); i++)
+        for(size_t i = 0; i < drivers.size(); i++)
         {
             SDL_setenv("SDL_AUDIODRIVER", drivers[i].c_str(), 1);
             if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
@@ -502,7 +502,7 @@ SoundEngine::SoundType::SoundType(const char *dir, SoundEngine& p) : parent(&p),
 
 int SoundEngine::SoundType::findsound(const char *name, int vol)
 {
-    for(uint i = 0; i < configs.size(); i++)
+    for(size_t i = 0; i < configs.size(); i++)
     {
         SoundConfig &s = configs[i];
         for(int j = 0; j < s.numslots; ++j)
@@ -539,7 +539,7 @@ int SoundEngine::SoundType::addslot(const char *name, int vol)
     // soundslots.add() may relocate slot pointers
     if(slots.data() != oldslots)
     {
-        for(uint i = 0; i < parent->channels.size(); i++)
+        for(size_t i = 0; i < parent->channels.size(); i++)
         {
             SoundChannel &chan = parent->channels[i];
             if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
@@ -578,11 +578,11 @@ void SoundEngine::SoundType::clear()
 }
 void SoundEngine::SoundType::reset() //cleanup each channel
 {
-    for(uint i = 0; i < parent->channels.size(); i++)
+    for(size_t i = 0; i < parent->channels.size(); i++)
     {
         SoundChannel &chan = parent->channels[i];
         soundslot * array = slots.data();
-        uint size = slots.size();
+        size_t size = slots.size();
         bool inbuf = chan.slot >= array + size && chan.slot < array; //within bounds of utilized vector spaces
         if(chan.inuse && inbuf)
         {
@@ -626,7 +626,7 @@ bool SoundEngine::SoundType::playing(const SoundChannel &chan, const SoundConfig
 //free all channels
 void SoundEngine::resetchannels()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse)
         {
@@ -653,7 +653,7 @@ void SoundEngine::clear_sound()
 
 void SoundEngine::stopmapsound(extentity *e)
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && chan.ent == e)
@@ -741,7 +741,7 @@ bool SoundEngine::SoundChannel::updatechannel()
 //free channels that are not playing sounds
 void SoundEngine::reclaimchannels()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && !Mix_Playing(i))
@@ -753,7 +753,7 @@ void SoundEngine::reclaimchannels()
 
 void SoundEngine::syncchannels()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         SoundChannel &chan = channels[i];
         if(chan.inuse && chan.hasloc() && chan.updatechannel())
@@ -794,7 +794,7 @@ void SoundEngine::preloadsound(int n)
 void SoundEngine::preloadmapsounds()
 {
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(size_t i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type==EngineEnt_Sound)
@@ -893,7 +893,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
         conoutf("sound: %s%s", sounds.dir, slot.sample->name.c_str());
     }
     chanid = -1;
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         if(!channels[i].inuse)
         {
@@ -907,7 +907,7 @@ int SoundEngine::playsound(int n, const vec *loc, extentity *ent, int flags, int
     }
     if(chanid < 0)
     {
-        for(uint i = 0; i < channels.size(); i++)
+        for(size_t i = 0; i < channels.size(); i++)
         {
             if(!channels[i].volume)
             {
@@ -970,7 +970,7 @@ bool SoundEngine::stopsound(int n, int chanid, int fade)
 
 void SoundEngine::stopmapsounds()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse && channels[i].ent)
         {
@@ -984,7 +984,7 @@ void SoundEngine::stopmapsounds()
 void SoundEngine::checkmapsounds()
 {
     const std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(size_t i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type!=EngineEnt_Sound) //ents that aren't soundents don't make sound (!)
@@ -1007,7 +1007,7 @@ void SoundEngine::checkmapsounds()
 
 void SoundEngine::stopsounds()
 {
-    for(uint i = 0; i < channels.size(); i++)
+    for(size_t i = 0; i < channels.size(); i++)
     {
         if(channels[i].inuse)
         {
