@@ -147,7 +147,7 @@ void SoundEngine::stopchannels()
 {
     for(size_t i = 0; i < channels.size(); i++)
     {
-        SoundChannel &chan = channels[i];
+        const SoundChannel &chan = channels[i];
         if(!chan.inuse) //don't clear channels that are already flagged as unused
         {
             continue;
@@ -580,7 +580,7 @@ void SoundEngine::SoundType::reset() //cleanup each channel
 {
     for(size_t i = 0; i < parent->channels.size(); i++)
     {
-        SoundChannel &chan = parent->channels[i];
+        const SoundChannel &chan = parent->channels[i];
         soundslot * array = slots.data();
         size_t size = slots.size();
         bool inbuf = chan.slot >= array + size && chan.slot < array; //within bounds of utilized vector spaces
@@ -655,7 +655,7 @@ void SoundEngine::stopmapsound(extentity *e)
 {
     for(size_t i = 0; i < channels.size(); i++)
     {
-        SoundChannel &chan = channels[i];
+        const SoundChannel &chan = channels[i];
         if(chan.inuse && chan.ent == e)
         {
             Mix_HaltChannel(i);
@@ -743,7 +743,7 @@ void SoundEngine::reclaimchannels()
 {
     for(size_t i = 0; i < channels.size(); i++)
     {
-        SoundChannel &chan = channels[i];
+        const SoundChannel &chan = channels[i];
         if(chan.inuse && !Mix_Playing(i))
         {
             freechannel(i);
