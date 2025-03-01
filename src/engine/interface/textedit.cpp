@@ -443,7 +443,7 @@ void Editor::copyselectionto(Editor *b)
             break;
         }
         int y = sy+i;
-        char *line = lines[y].text;
+        const char *line = lines[y].text;
         int len = lines[y].len;
         if(y == sy && y == ey)
         {
