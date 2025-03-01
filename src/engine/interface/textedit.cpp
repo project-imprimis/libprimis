@@ -206,7 +206,7 @@ void EditLine::combinelines(std::vector<EditLine> &src)
     }
     else
     {
-        for(uint i = 0; i < src.size(); i++)
+        for(size_t i = 0; i < src.size(); i++)
         {
             if(i)
             {
@@ -317,7 +317,7 @@ void Editor::save()
     {
         return;
     }
-    for(uint i = 0; i < lines.size(); i++)
+    for(size_t i = 0; i < lines.size(); i++)
     {
         file << lines[i].text;
     }
@@ -340,7 +340,7 @@ void Editor::selectall()
 // also ensures that cy is always within lines[] and cx is valid
 bool Editor::region(int &sx, int &sy, int &ex, int &ey)
 {
-    uint n = lines.size();
+    size_t n = lines.size();
     if(cy < 0)
     {
         cy = 0;
@@ -407,7 +407,7 @@ bool Editor::region()
 // also ensures that cy is always within lines[] and cx is valid
 EditLine &Editor::currentline()
 {
-    uint n = lines.size();
+    size_t n = lines.size();
     if(cy < 0)
     {
         cy = 0;
@@ -471,13 +471,13 @@ void Editor::copyselectionto(Editor *b)
 char *Editor::tostring()
 {
     int len = 0;
-    for(uint i = 0; i < lines.size(); i++)
+    for(size_t i = 0; i < lines.size(); i++)
     {
         len += lines[i].len + 1;
     }
     char *str = newstring(len);
     int offset = 0;
-    for(uint i = 0; i < lines.size(); i++)
+    for(size_t i = 0; i < lines.size(); i++)
     {
         EditLine &l = lines[i];
         std::memcpy(&str[offset], l.text, l.len);
@@ -659,7 +659,7 @@ void Editor::insertallfrom(const Editor * const b)
     }
     else
     {
-        for(uint i = 0; i < b->lines.size(); i++)
+        for(size_t i = 0; i < b->lines.size(); i++)
         {
             if(!i)
             {
@@ -821,7 +821,7 @@ void Editor::hit(int hitx, int hity, bool dragged)
 {
     int maxwidth = linewrap?pixelwidth:-1,
         h = 0;
-    for(uint i = scrolly; i < lines.size(); i++)
+    for(size_t i = scrolly; i < lines.size(); i++)
     {
         int width, height;
         text_bounds(lines[i].text, width, height, maxwidth);
@@ -955,7 +955,7 @@ void Editor::draw(int x, int y, int color)
     }
 
     int h = 0;
-    for(uint i = scrolly; i < lines.size(); i++)
+    for(size_t i = scrolly; i < lines.size(); i++)
     {
         int width, height;
         text_bounds(lines[i].text, width, height, maxwidth);
@@ -963,7 +963,7 @@ void Editor::draw(int x, int y, int color)
         {
             break;
         }
-        //draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<uint>(cy)==i)?cx:-1, maxwidth);
+        //draw_text(lines[i].text, x, y+h, color>>16, (color>>8)&0xFF, color&0xFF, 0xFF, hit&&(static_cast<size_t>(cy)==i)?cx:-1, maxwidth);
         ttr.renderttf(lines[i].text, {static_cast<uchar>(color>>16), static_cast<uchar>((color>>8)&0xFF), static_cast<uchar>(color&0xFF), 0}, x, y+h);
         if(linewrap && height > FONTH) // line wrap indicator
         {
@@ -1013,7 +1013,7 @@ void flusheditors()
 
 Editor *useeditor(std::string name, int mode, bool focus, const char *initval)
 {
-    for(uint i = 0; i < editors.size(); i++)
+    for(size_t i = 0; i < editors.size(); i++)
     {
         if(editors[i]->name == name)
         {
@@ -1046,7 +1046,7 @@ void textlist()
         return;
     }
     std::string s;
-    for(uint i = 0; i < editors.size(); i++)
+    for(size_t i = 0; i < editors.size(); i++)
     {
         if(i > 0)
         {
