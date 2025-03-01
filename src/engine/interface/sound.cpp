@@ -500,14 +500,14 @@ bool SoundEngine::SoundSample::load(const char *dir)
 //SoundType
 SoundEngine::SoundType::SoundType(const char *dir, SoundEngine& p) : parent(&p), dir(dir) {}
 
-int SoundEngine::SoundType::findsound(const char *name, int vol)
+int SoundEngine::SoundType::findsound(const char *name, int vol) const
 {
     for(size_t i = 0; i < configs.size(); i++)
     {
-        SoundConfig &s = configs[i];
+        const SoundConfig &s = configs[i];
         for(int j = 0; j < s.numslots; ++j)
         {
-            soundslot &c = slots[s.slots+j];
+            const soundslot &c = slots[s.slots+j];
             if(!std::strcmp(c.sample->name.c_str(), name) && (!vol || c.volume==vol))
             {
                 return i;
