@@ -366,7 +366,7 @@ void SoundEngine::musicdone()
 }
 
 //uses Mix_Music object from libSDL
-Mix_Music *SoundEngine::loadmusic(const char *name)
+const Mix_Music *SoundEngine::loadmusic(const char *name)
 {
     if(!musicstream)
     {
