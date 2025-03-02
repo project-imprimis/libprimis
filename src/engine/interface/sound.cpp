@@ -483,7 +483,7 @@ bool SoundEngine::SoundSample::load(const char *dir)
     }
     static const char * const exts[] = { "", ".ogg" };
     string filename;
-    for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
+    for(size_t i = 0; i < sizeof(exts)/sizeof(exts[0]); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name.c_str(), exts[i]);
         path(filename);
