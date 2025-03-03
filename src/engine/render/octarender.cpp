@@ -291,7 +291,7 @@ namespace
             cur  = ext(*e.c).tjoints;
         while(cur >= 0)
         {
-            tjoint &o = tjoints[cur];
+            const tjoint &o = tjoints[cur];
             if(tj.edge < o.edge || (tj.edge==o.edge && (e.flags&CubeEdge_Flip ? tj.offset > o.offset : tj.offset < o.offset)))
             {
                 break;
