@@ -592,12 +592,12 @@ void updatevabb(vtxarray *va, bool force)
         va->bbmin.min(child->bbmin);
         va->bbmax.max(child->bbmax);
     }
-    for(octaentities *oe : va->mapmodels)
+    for(const octaentities *oe : va->mapmodels)
     {
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
     }
-    for(octaentities *oe : va->decals)
+    for(const octaentities *oe : va->decals)
     {
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
