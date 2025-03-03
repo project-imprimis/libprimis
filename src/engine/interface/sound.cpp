@@ -264,7 +264,7 @@ bool SoundEngine::initaudio()
     if(initfallback)
     {
         initfallback = false;
-        if(const char *env = SDL_getenv("SDL_AUDIODRIVER"))
+        if(const char *env = SDL_getenv("SDL_AUDIODRIVER")) //intentional check against assignment operator
         {
             fallback = std::string(env);
         }
