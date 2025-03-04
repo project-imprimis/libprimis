@@ -314,7 +314,7 @@ namespace
     void precachetextures()
     {
         std::vector<int> texs;
-        for(uint i = 0; i < valist.size(); i++)
+        for(size_t i = 0; i < valist.size(); i++)
         {
             const vtxarray *va = valist[i];
             for(int j = 0; j < va->texs; ++j)
@@ -326,7 +326,7 @@ namespace
                 }
             }
         }
-        for(uint i = 0; i < texs.size(); i++)
+        for(size_t i = 0; i < texs.size(); i++)
         {
             lookupvslot(texs[i]);
         }
@@ -516,7 +516,7 @@ void destroyva(vtxarray *va, bool reparent)
                 va->parent->children.erase(itr);
             }
         }
-        for(uint i = 0; i < va->children.size(); i++)
+        for(size_t i = 0; i < va->children.size(); i++)
         {
             vtxarray *child = va->children[i];
             child->parent = va->parent;
@@ -615,7 +615,7 @@ void updatevabbs(bool force)
     {
         worldmin = ivec(rootworld.mapsize(), rootworld.mapsize(), rootworld.mapsize());
         worldmax = ivec(0, 0, 0);
-        for(uint i = 0; i < varoot.size(); i++)
+        for(size_t i = 0; i < varoot.size(); i++)
         {
             updatevabb(varoot[i], true);
         }
@@ -627,7 +627,7 @@ void updatevabbs(bool force)
     }
     else
     {
-        for(uint i = 0; i < varoot.size(); i++)
+        for(size_t i = 0; i < varoot.size(); i++)
         {
             updatevabb(varoot[i]);
         }
