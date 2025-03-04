@@ -63,7 +63,7 @@ class vertmodel : public animmodel
                 static void assignvert(vvertg &vv, const tcvert &tc, const vert &v);
 
                 template<class T>
-                int genvbo(std::vector<size_t> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
+                int genvbo(std::vector<uint> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
                 {
                     voffset = offset;
                     minvert = UINT_MAX;
@@ -91,20 +91,20 @@ class vertmodel : public animmodel
                                 }
                                 else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
                                 {
-                                    idxs.push_back(static_cast<size_t>(vidx));
+                                    idxs.push_back(static_cast<uint>(vidx));
                                     minvert = std::min(minvert, idxs.back());
                                     break;
                                 }
                             }
                         }
                     }
-                    minvert = std::min(minvert, static_cast<size_t>(voffset));
-                    maxvert = std::max(minvert, static_cast<size_t>(vverts.size()-1));
+                    minvert = std::min(minvert, static_cast<uint>(voffset));
+                    maxvert = std::max(minvert, static_cast<uint>(vverts.size()-1));
                     elen = idxs.size();
                     return vverts.size()-voffset;
                 }
 
-                int genvbo(std::vector<size_t> &idxs, int offset);
+                int genvbo(std::vector<uint> &idxs, int offset);
 
                 template<class T>
                 static void fillvert(T &vv, tcvert &tc)
@@ -157,7 +157,7 @@ class vertmodel : public animmodel
                 void render() const;
             private:
                 int voffset, elen;
-                size_t minvert, maxvert;
+                uint minvert, maxvert;
         };
 
         struct tag final
