@@ -31,7 +31,7 @@ struct timer
     bool gpu;                       //whether the timer is for gpu time (true) or cpu time
     std::array<GLuint, Timer_MaxQuery> query; //gpu query information
     int waiting;                    //internal bitmask for queries
-    uint starttime;                 //time the timer was started (in terms of ms since game started)
+    size_t starttime;               //time the timer was started (in terms of ms since game started)
     float result,                   //raw value of the timer, -1 if no info available
           print;                    //the time the timer displays: ms per frame for whatever object
 };
@@ -40,12 +40,12 @@ struct timer
 namespace
 {
     std::vector<timer> timers;
-    std::vector<uint> timerorder;
-    uint timercycle = 0;
+    std::vector<size_t> timerorder;
+    size_t timercycle = 0;
 
     timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
     {
-        for(uint i = 0; i < timers.size(); i++)
+        for(size_t i = 0; i < timers.size(); i++)
         {
             if(!std::strcmp(timers[i].name, name) && timers[i].gpu == gpu)
             {
