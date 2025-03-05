@@ -217,7 +217,7 @@ void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &vas)
 
     GLuint vbo;
     glGenBuffers(1, &vbo);
-    GLenum target = type==VBO_VBuf ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
+    const GLenum target = type==VBO_VBuf ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
     glBindBuffer(target, vbo);
     glBufferData(target, buf.size(), buf.data(), GL_STATIC_DRAW);
     glBindBuffer(target, 0);
