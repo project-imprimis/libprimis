@@ -586,7 +586,7 @@ void vacollect::setupdata(vtxarray *va)
             e.texture = k.tex;
             e.attrs.orient = k.orient;
             e.attrs.layer = k.layer;
-            ushort *startbuf = curbuf;
+            const ushort *startbuf = curbuf;
             e.minvert = USHRT_MAX;
             e.maxvert = 0;
 
