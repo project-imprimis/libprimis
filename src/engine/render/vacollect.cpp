@@ -397,8 +397,13 @@ class vacollect
 
         static constexpr int vamaxsize = 0x1000; //4096 = 2^12
 
+        // pos is an array of length numverts
         void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top);
+
+        // verts is an array of length numverts
         void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj);
+
+        // verts is an array of length face + 2 or face + 3
         void addgrasstri(int face, const vertex *verts, int numv, ushort texture);
         vtxarray *newva(const ivec &o, int size);
         void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel); // creates vertices and indices ready to be put into a va
