@@ -774,7 +774,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
 
     static auto testaxis = [] (const vec &v0, const vec &v1, const vec &v2,
                                const vec &e, const int &s, const int &t,
-                               const vec &radius)
+                               const vec &radius) -> bool
     {
         float p = v0[s]*v1[t] - v0[t]*v1[s],
               q = v2[s]*e[t] - v2[t]*e[s],
@@ -794,7 +794,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
     };
 
     static auto testface = [] (const vec &a,  const vec &b,  const vec &c,
-                               uint axis, const vec &radius)
+                               uint axis, const vec &radius) -> bool
     {
         if(a[axis] < b[axis])
         {
