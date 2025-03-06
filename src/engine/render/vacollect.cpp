@@ -578,7 +578,7 @@ void vacollect::setupdata(vtxarray *va)
         va->texelems = new elementset[va->texs];
         ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
                *curbuf = edata;
-        for(uint i = 0; i < texs.size(); i++)
+        for(size_t i = 0; i < texs.size(); i++)
         {
             const sortkey &k = texs[i];
             const sortval &t = indices[k];
@@ -593,7 +593,7 @@ void vacollect::setupdata(vtxarray *va)
             if(t.tris.size())
             {
                 std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
-                for(uint j = 0; j < t.tris.size(); j++)
+                for(size_t j = 0; j < t.tris.size(); j++)
                 {
                     curbuf[j] += va->voffset;
                     e.minvert = std::min(e.minvert, curbuf[j]);
@@ -653,7 +653,7 @@ void vacollect::setupdata(vtxarray *va)
         va->decalelems = new elementset[va->decaltexs];
         ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
                *curbuf = edata;
-        for(uint i = 0; i < decaltexs.size(); i++)
+        for(size_t i = 0; i < decaltexs.size(); i++)
         {
             const decalkey &k = decaltexs[i];
             const sortval &t = decalindices[k];
@@ -666,7 +666,7 @@ void vacollect::setupdata(vtxarray *va)
             if(t.tris.size())
             {
                 std::memcpy(curbuf, t.tris.data(), t.tris.size() * sizeof(ushort));
-                for(uint j = 0; j < t.tris.size(); j++)
+                for(size_t j = 0; j < t.tris.size(); j++)
                 {
                     curbuf[j] += va->voffset;
                     e.minvert = std::min(e.minvert, curbuf[j]);
@@ -759,7 +759,7 @@ void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey 
         bbmin = vec(center).sub(radius),
         bbmax = vec(center).add(radius),
         clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
-    for(uint i = 0; i < texs.size(); i++)
+    for(size_t i = 0; i < texs.size(); i++)
     {
         const sortkey &k = texs[i];
         if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
@@ -776,7 +776,7 @@ void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey 
         {
             tkey.reuse = k.tex;
         }
-        for(uint j = 0; j < t.tris.size(); j += 3)
+        for(size_t j = 0; j < t.tris.size(); j += 3)
         {
             const vertex &t0 = verts[t.tris[j]],
                          &t1 = verts[t.tris[j+1]],
@@ -1514,7 +1514,7 @@ void vacollect::calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax) c
         vmax = vmin;
     vmin.add(size);
 
-    for(uint i = 0; i < verts.size(); i++)
+    for(size_t i = 0; i < verts.size(); i++)
     {
         const vec &v = verts[i].pos;
         vmin.min(v);
@@ -1880,7 +1880,7 @@ void cubeworld::octarender()                               // creates va s for a
     vc.updateva(*worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
     explicitsky = false;
-    for(uint i = 0; i < valist.size(); i++)
+    for(size_t i = 0; i < valist.size(); i++)
     {
         if(valist[i]->sky)
         {
