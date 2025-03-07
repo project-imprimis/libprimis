@@ -62,7 +62,8 @@ class hmap
 
         void hbrushvert(const int *x, const int *y, const int * const v)
         {
-            int x1, y1;
+            int x1,
+                y1;
             x1 = *x + maxbrush/2 - brushx + 1; // +1 for automatic padding
             y1 = *y + maxbrush/2 - brushy + 1;
             if(x1<0 || y1<0 || x1>=maxbrush || y1>=maxbrush)
@@ -152,9 +153,9 @@ class hmap
                              maxbrushc = 63;
 
         std::array<std::array<int, maxbrush>, maxbrush> brush;//2d array of heights for heightmap brushs
-        int brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &brushx, nullptr, 0); //max width for a brush
-        int brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &brushy, nullptr, 0); //max length for a brush
-        bool paintbrush = 0;
+        int brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &brushx, nullptr, 0), //max width for a brush
+            brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &brushy, nullptr, 0); //max length for a brush
+        bool paintbrush = false;
         int brushmaxx = 0,
             brushminx = maxbrush,
             brushmaxy = 0,
@@ -163,8 +164,8 @@ class hmap
         static constexpr int painted = 1,
                              nothmap = 2,
                              mapped  = 16;
-        uchar  flags[maxbrush][maxbrush];
-        cube   *cmap[maxbrushc][maxbrushc][4];
+        uchar flags[maxbrush][maxbrush];
+        cube *cmap[maxbrushc][maxbrushc][4];
         int  mapz[maxbrushc][maxbrushc],
              map [maxbrush][maxbrush];
 
@@ -353,7 +354,9 @@ class hmap
             }
 
             bool changed = false;
-            int *o[4], best, par,
+            int *o[4];
+            int best,
+                par,
                 q = 0;
             for(int i = 0; i < 2; ++i)
             {
