@@ -792,7 +792,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
 {
     //dim must be 0..2
     //dir should be +/- 1
-    auto checkplane = [] (int dim, const float &dc, int dir, float focaldist, float &low, float &high, const float &cz, const float &drt, const vec &e)
+    auto checkplane = [] (int dim, const float &dc, int dir, float focaldist, float &low, float &high, const float &cz, const float &drt, const vec &e) -> void
     {
         float nzc = (cz*cz + 1) / (cz + dir*drt) - cz,
               pz = dc/(nzc*e[dim] - e.z);
@@ -943,7 +943,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
-    static auto addxyzscissor = [] (const vec4<float> &p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
+    static auto addxyzscissor = [] (const vec4<float> &p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2) -> void
     {
         if(p.z >= -p.w)
         {
@@ -976,7 +976,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     camprojmatrix.transform(origin, v[4]);
     addxyzscissor(v[4], sx1, sy1, sx2, sy2, sz1, sz2);
 
-    static auto interpxyzscissor = [] (const vec4<float> &p, const vec4<float> &o, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1)
+    static auto interpxyzscissor = [] (const vec4<float> &p, const vec4<float> &o, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1) -> void
     {
         float t = (p.z + p.w)/(p.z + p.w - o.z - o.w),
               w = p.w + t*(o.w - p.w),
