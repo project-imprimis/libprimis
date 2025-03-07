@@ -315,7 +315,7 @@ class hmap
                 face += c[2] ? getface(c[2], d) : 0x08080808;
             }
             face += 0x08080808;                  // c[3]
-            uchar *f = reinterpret_cast<uchar*>(&face);
+            const uchar *f = reinterpret_cast<uchar*>(&face);
             addpoint(x,   y,   z, f[0]);
             addpoint(x+1, y,   z, f[1]);
             addpoint(x,   y+1, z, f[2]);
