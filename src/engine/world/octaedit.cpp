@@ -1941,7 +1941,7 @@ void initoctaeditcmds()
     //in this file
 
     //static to make sure that these lambdas have constant location in memory for identmap to look up
-    static auto movingcmd = [] (int *n)
+    static auto movingcmd = [] (int *n) -> void
     {
         if(*n >= 0)
         {
@@ -1964,7 +1964,7 @@ void initoctaeditcmds()
     addcommand("cancelsel",     reinterpret_cast<identfun>(cancelsel), "", Id_Command); ///
     addcommand("reorient",      reinterpret_cast<identfun>(reorient), "", Id_Command); ///
 
-    static auto selextend = [] ()
+    static auto selextend = [] () -> void
     {
         if(noedit(true))
         {
@@ -1985,7 +1985,7 @@ void initoctaeditcmds()
     };
     addcommand("selextend",     reinterpret_cast<identfun>(+selextend), "", Id_Command);
 
-    static auto selmoved = [] ()
+    static auto selmoved = [] () -> void
     {
         if(noedit(true))
         {
@@ -1994,7 +1994,7 @@ void initoctaeditcmds()
         intret(sel.o != savedsel.o ? 1 : 0);
     };
 
-    static auto selsave = [] ()
+    static auto selsave = [] () -> void
     {
         if(noedit(true))
         {
@@ -2003,7 +2003,7 @@ void initoctaeditcmds()
         savedsel = sel;
     };
 
-    static auto selrestore = [] ()
+    static auto selrestore = [] () -> void
     {
         if(noedit(true))
         {
@@ -2012,7 +2012,7 @@ void initoctaeditcmds()
         sel = savedsel;
     };
 
-    static auto selswap = [] ()
+    static auto selswap = [] () -> void
     {
         if(noedit(true))
         {
@@ -2026,7 +2026,7 @@ void initoctaeditcmds()
     addcommand("selrestore",    reinterpret_cast<identfun>(+selrestore), "", Id_Command);
     addcommand("selswap",       reinterpret_cast<identfun>(+selswap), "", Id_Command);
 
-    static auto haveselcmd = [] ()
+    static auto haveselcmd = [] () -> void
     {
         intret(havesel ? selchildcount : 0);
     };
@@ -2034,7 +2034,7 @@ void initoctaeditcmds()
     addcommand("havesel",       reinterpret_cast<identfun>(+haveselcmd), "", Id_Command);
 
 
-    static auto selchildcountcmd = [] ()
+    static auto selchildcountcmd = [] () -> void
     {
         if(selchildcount < 0)
         {
@@ -2048,7 +2048,7 @@ void initoctaeditcmds()
     addcommand("selchildnum", reinterpret_cast<identfun>(+selchildcountcmd), "", Id_Command);
 
 
-    static auto selchildmatcmd = [] (char *prefix)
+    static auto selchildmatcmd = [] (char *prefix) -> void
     {
         if(selchildmat > 0)
         {
@@ -2057,13 +2057,13 @@ void initoctaeditcmds()
     };
     addcommand("selchildmat",   reinterpret_cast<identfun>(+selchildmatcmd), "s", Id_Command);
 
-    static auto clearundos = [] ()
+    static auto clearundos = [] () -> void
     {
         pruneundos(0);
     };
     addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos), "", Id_Command); //run pruneundos but with a cache size of zero
 
-    static auto delprefab = [] (char *name)
+    static auto delprefab = [] (char *name) -> void
     {
         auto itr = prefabs.find(name);
         if(itr != prefabs.end())
@@ -2091,7 +2091,7 @@ void initoctaeditcmds()
      * into a map with a different texture slot list will result in meaningless textures.
      *
      */
-    static auto saveprefab = [] (char *name)
+    static auto saveprefab = [] (char *name) -> void
     {
         if(!name[0] || noedit(true) || (nompedit && multiplayer))
         {
@@ -2141,7 +2141,7 @@ void initoctaeditcmds()
     };
     addcommand("saveprefab",    reinterpret_cast<identfun>(+saveprefab), "s", Id_Command);
 
-    static auto pasteprefab = [] (char *name)
+    static auto pasteprefab = [] (char *name) -> void
     {
         if(!name[0] || noedit() || (nompedit && multiplayer))
         {
@@ -2158,7 +2158,7 @@ void initoctaeditcmds()
 
     //defines editing readonly variables, useful for the HUD
     #define EDITSTAT(name, val) \
-        static auto name = [] () \
+        static auto name = [] ()  -> void\
         { \
             static int laststat = 0; \
             static int prevstat = 0; \
