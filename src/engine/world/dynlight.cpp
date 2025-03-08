@@ -131,7 +131,7 @@ namespace
     void cleardynlights()
     {
         int faded = -1;
-        for(uint i = 0; i < dynlights.size(); i++)
+        for(size_t i = 0; i < dynlights.size(); i++)
         {
             if(lastmillis<dynlights[i].expire)
             {
