@@ -1941,7 +1941,7 @@ void initoctaeditcmds()
     //in this file
 
     //static to make sure that these lambdas have constant location in memory for identmap to look up
-    static auto movingcmd = [] (int *n) -> void
+    static auto movingcmd = [] (const int *n) -> void
     {
         if(*n >= 0)
         {
@@ -2048,7 +2048,7 @@ void initoctaeditcmds()
     addcommand("selchildnum", reinterpret_cast<identfun>(+selchildcountcmd), "", Id_Command);
 
 
-    static auto selchildmatcmd = [] (char *prefix) -> void
+    static auto selchildmatcmd = [] (const char *prefix) -> void
     {
         if(selchildmat > 0)
         {
@@ -2063,7 +2063,7 @@ void initoctaeditcmds()
     };
     addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos), "", Id_Command); //run pruneundos but with a cache size of zero
 
-    static auto delprefab = [] (char *name) -> void
+    static auto delprefab = [] (const char *name) -> void
     {
         auto itr = prefabs.find(name);
         if(itr != prefabs.end())
@@ -2091,7 +2091,7 @@ void initoctaeditcmds()
      * into a map with a different texture slot list will result in meaningless textures.
      *
      */
-    static auto saveprefab = [] (char *name) -> void
+    static auto saveprefab = [] (const char *name) -> void
     {
         if(!name[0] || noedit(true) || (nompedit && multiplayer))
         {
