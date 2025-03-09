@@ -354,7 +354,7 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
     return false;
 }
 
-//======================================================= DOWNOCTREE INITRAYCUBE
+//=================================================================== DOWNOCTREE
 
 #define DOWNOCTREE(disttoent, earlyexit) \
         cube *lc = r.levels[r.lshift]; \
@@ -379,18 +379,6 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
             lc = &(*lc->children)[0]; \
             r.levels[r.lshift] = lc; \
         }
-
-//NOTE: levels[20] magically assumes mapscale <20
-#define INITRAYCUBE \
-    float dist = 0, \
-          dent = radius > 0 ? radius : 1e16f; \
-    vec v(o), \
-        invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
-    cube *levels[20]; \
-    levels[worldscale] = &(*worldroot)[0]; \
-    int lshift = worldscale, \
-        elvl = mode&Ray_BB ? worldscale : 0; \
-    ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0);
 
 struct raycubeinfo
 {
