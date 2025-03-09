@@ -441,7 +441,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
 
         int lsize = 1<<r.lshift;
 
-        cube &c = *lc;
+        const cube &c = *lc;
         if((r.dist>0 || !(mode&Ray_SkipFirst)) &&
            (((mode&Ray_ClipMat) && IS_CLIPPED(c.material&MatFlag_Volume)) ||
             ((mode&Ray_EditMat) && c.material != Mat_Air) ||
@@ -466,9 +466,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
             return r.dent;
         }
 
-        ivec lo(x&(~0U<<r.lshift),
-             y&(~0U<<r.lshift),
-             z&(~0U<<r.lshift));
+        const ivec lo(x&(~0U<<r.lshift), y&(~0U<<r.lshift), z&(~0U<<r.lshift));
 
         if(!(c.isempty()))
         {
