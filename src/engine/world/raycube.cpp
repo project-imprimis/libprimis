@@ -33,8 +33,6 @@ namespace
         return p;
     }
 
-    //============================================================= INTERSECTBOX
-
     static bool intersectplanes(const clipplanes& p, const vec &v, const vec& ray, float &enterdist, float &exitdist, int &entry)
     {
         for(int i = 0; i < p.size; ++i)
