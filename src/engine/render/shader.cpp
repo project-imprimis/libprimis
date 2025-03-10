@@ -1824,9 +1824,9 @@ static void shader_get_defines()
 
     std::string res;
 
-    for(const std::pair<std::string, std::string> &define : shader_defines)
+    for(auto &[name, value] : shader_defines)
     {
-        res += " [" + define.first + " " + define.second + "]";
+        res += " [" + name + " " + value + "]";
     }
 
     result(res.c_str());
