@@ -1805,7 +1805,7 @@ static void shader_new(const int *type, const char *name, const uint *code)
     adding_shader = false;
 }
 
-static void shader_define(const char *name, const char *value)
+static void shader_define(std::string_view name, std::string_view value)
 {
     if(!adding_shader)
     {
@@ -1832,7 +1832,7 @@ static void shader_get_defines()
     result(res.c_str());
 }
 
-static void shader_include_vs(const char *path)
+static void shader_include_vs(std::string_view path)
 {
     if(!adding_shader)
     {
@@ -1859,7 +1859,7 @@ static void shader_get_includes_vs()
     result(res.c_str());
 }
 
-static void shader_include_fs(const char *path)
+static void shader_include_fs(std::string_view path)
 {
     if(!adding_shader)
     {
@@ -1886,7 +1886,7 @@ static void shader_get_includes_fs()
     result(res.c_str());
 }
 
-static void shader_source(const char *vs, const char *fs)
+static void shader_source(std::string_view vs, std::string_view fs)
 {
     if(!adding_shader)
     {
