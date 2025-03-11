@@ -1893,7 +1893,7 @@ void invalidatemerges(cube &c)
 uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
 {
     uchar p = 0xFF; // bitmask of possible collisions with octants. 0 bit = 0 octant, etc
-    ivec mid = ivec(o).add(size);
+    const ivec mid = ivec(o).add(size);
     if(mid.z <= bbmin.z)
     {
         p &= 0xF0; // not in a -ve Z octant
