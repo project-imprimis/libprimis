@@ -270,7 +270,7 @@ Shader *animmodel::skin::loadshader()
             opts.push_back('c');
         }
 
-        DEF_FORMAT_STRING(name, "rsmmodel%s", opts.c_str());
+        std::string name = std::string("rsmmodel").append(opts);
         rsmshader = generateshader(name, "rsmmodelshader \"%s\"", opts.c_str());
         return rsmshader;
     }
