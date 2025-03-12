@@ -1409,7 +1409,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     {
         for(int i = numtags-1; i >= 0; i--)
         {
-            animmodel *m = static_cast<animmodel *>(a[i].m);
+            const animmodel *m = static_cast<animmodel *>(a[i].m);
             if(!m)
             {
                 if(a[i].pos)
