@@ -513,7 +513,7 @@ std::vector<std::vector<animmodel::Mesh *>::const_iterator> animmodel::meshgroup
 std::vector<size_t> animmodel::meshgroup::getskins(std::string_view meshname) const
 {
     std::vector<size_t> skinlist;
-    for(uint i = 0; i < meshes.size(); i++)
+    for(size_t i = 0; i < meshes.size(); i++)
     {
         const animmodel::Mesh &m = *(meshes[i]);
         if((meshname == "*") || (m.name.size() && (m.name == meshname)))
@@ -535,7 +535,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t) co
 
 void animmodel::meshgroup::genBIH(const std::vector<skin> &skins, std::vector<BIH::mesh> &bih, const matrix4x3 &t) const
 {
-    for(uint i = 0; i < meshes.size(); i++)
+    for(size_t i = 0; i < meshes.size(); i++)
     {
         meshes[i]->genBIH(skins[i], bih, t);
     }
@@ -1392,7 +1392,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     AnimState as[maxanimparts];
     parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 
-    for(uint i = 1; i < parts.size(); i++)
+    for(size_t i = 1; i < parts.size(); i++)
     {
         part *p = parts[i];
         switch(linktype(this, p))
@@ -1568,7 +1568,7 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     {
         s.tex->loadalphamask();
     }
-    for(uint i = 1; i < parts.size(); i++)
+    for(size_t i = 1; i < parts.size(); i++)
     {
         const part *p = parts[i];
         switch(linktype(this, p))
@@ -1621,7 +1621,7 @@ void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orie
     matrix4x3 m = initmatrix();
     m.mul(orient, matrix4x3(m));
     parts[0]->genshadowmesh(tris, m, scale);
-    for(uint i = 1; i < parts.size(); i++)
+    for(size_t i = 1; i < parts.size(); i++)
     {
         const part *p = parts[i];
         switch(linktype(this, p))
