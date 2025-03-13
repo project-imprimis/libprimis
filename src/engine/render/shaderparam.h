@@ -273,11 +273,5 @@ class LocalShaderParam
             name##shader->set(__VA_ARGS__); \
         } \
     } while(0)
-#define SETVARIANT(name, ...) \
-    do { \
-        static Shader *name##shader = nullptr; \
-        if(!name##shader) name##shader = lookupshaderbyname(#name); \
-        name##shader->setvariant(__VA_ARGS__); \
-    } while(0)
 
 #endif

@@ -292,6 +292,14 @@ class stainrenderer
             }
         }
 
+        //=========================================================== SETVARIANT
+        #define SETVARIANT(name, ...) \
+            do { \
+                static Shader *name##shader = nullptr; \
+                if(!name##shader) name##shader = lookupshaderbyname(#name); \
+                name##shader->setvariant(__VA_ARGS__); \
+            } while(0)
+
         void render(int sbuf)
         {
             float colorscale = 1,
@@ -334,6 +342,9 @@ class stainrenderer
 
             verts[sbuf].render();
         }
+
+        #undef SETVARIANT
+        //======================================================================
 
         void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, const cubeworld &world)
         {
