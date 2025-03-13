@@ -112,7 +112,7 @@ namespace //internal functionality
 
     Shader *loadradiancehintsshader()
     {
-        DEF_FORMAT_STRING(name, "radiancehints%d", rhtaps);
+        std::string name = std::string("radiancehints").append(std::to_string(rhtaps));
         return generateshader(name, "radiancehintsshader %d", rhtaps);
     }
 
