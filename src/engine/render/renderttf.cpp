@@ -76,7 +76,7 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     {
         float w = tex.w*scale,
               h = tex.h*scale;
-        SETSHADER(hudrect,);
+        SETSHADER(hudrect);
         gle::colorf(1, 1, 1, 1);
         int tw = tex.w,
             th = tex.h;

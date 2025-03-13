@@ -89,7 +89,7 @@ namespace
         }
         glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
         setupcaustics(0, surface);
-        SETSHADER(caustics,);
+        SETSHADER(caustics);
         gle::defvertex(2);
         gle::begin(GL_TRIANGLE_STRIP);
         gle::attribf(1, -1);
@@ -402,7 +402,7 @@ void GBuffer::renderwaterfog(int mat, float surface)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    SETSHADER(waterfog,);
+    SETSHADER(waterfog);
     gle::defvertex(3);
     gle::begin(GL_TRIANGLE_STRIP);
     gle::attribf( 1, -1,  1);
@@ -765,7 +765,7 @@ void renderwaterfalls()
         GLOBALPARAMF(waterfallrefract, refractcolor.x*refractscale, refractcolor.y*refractscale, refractcolor.z*refractscale, refract*viewh);
         GLOBALPARAMF(waterfallspec, spec/100.0f);
 
-        SETSHADER(waterfall,);
+        SETSHADER(waterfall);
 
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture(GL_TEXTURE1);

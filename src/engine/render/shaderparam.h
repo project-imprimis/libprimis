@@ -261,7 +261,7 @@ class LocalShaderParam
 //then sets to it any(if present) args passed to set to the shader
 //can only be called once per function, and not in the global scope
 //upon calling set(), the shader associated with the name is loaded into OpenGL
-#define SETSHADER(name, ...) \
+#define SETSHADER(name) \
     do { \
         static Shader *name##shader = nullptr; \
         if(!name##shader) \
@@ -270,7 +270,7 @@ class LocalShaderParam
         } \
         if(name##shader) \
         { \
-            name##shader->set(__VA_ARGS__); \
+            name##shader->set(); \
         } \
     } while(0)
 

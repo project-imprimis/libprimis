@@ -230,7 +230,7 @@ void viewao()
     }
     int w = debugfullscreen ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = debugfullscreen ? hudh() : (w*hudh())/hudw();
-    SETSHADER(hudrect,);
+    SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, aotex[debugao - 1]);
     int tw = aotex[2] ? gw : aow,
@@ -261,7 +261,7 @@ void GBuffer::renderao() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, aofbo[3]);
         glViewport(0, 0, aow, aoh);
-        SETSHADER(linearizedepth,);
+        SETSHADER(linearizedepth);
         screenquad(vieww, viewh);
 
         xscale *= static_cast<float>(vieww)/aow;

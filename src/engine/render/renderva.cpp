@@ -2351,7 +2351,7 @@ void startbb(bool mask)
     gle::bindebo(bbebo);
     gle::vertexpointer(sizeof(vec), nullptr);
     gle::enablevertex();
-    SETSHADER(bbquery,);
+    SETSHADER(bbquery);
     if(mask)
     {
         glDepthMask(GL_FALSE);
@@ -2658,7 +2658,7 @@ bool renderexplicitsky(bool outline)
                     else if(editmode)
                     {
                         maskgbuffer("d");
-                        SETSHADER(depth,);
+                        SETSHADER(depth);
                     }
                     else
                     {
@@ -3197,7 +3197,7 @@ void rendershadowmesh(const shadowmesh *m)
     {
         return;
     }
-    SETSHADER(shadowmapworld,);
+    SETSHADER(shadowmapworld);
     gle::enablevertex();
     GLuint ebuf = 0,
            vbuf = 0;
@@ -3431,7 +3431,7 @@ void renderrsmgeom(bool dyntex)
     if(skyshadow)
     {
         cur.enablevattribs(false);
-        SETSHADER(rsmsky,);
+        SETSHADER(rsmsky);
         vtxarray *prev = nullptr;
         for(vtxarray *va = shadowva; va; va = va->rnext)
         {
@@ -3534,7 +3534,7 @@ void findshadowmms()
 
 void rendershadowmapworld()
 {
-    SETSHADER(shadowmapworld,);
+    SETSHADER(shadowmapworld);
 
     gle::enablevertex();
 

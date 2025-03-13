@@ -4366,7 +4366,7 @@ namespace UI
 
             changedraw(Change_Shader | Change_Color);
 
-            SETSHADER(hudrgb,);
+            SETSHADER(hudrgb);
             std::array<vec2,4> tc = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
             int xoff = vslot.offset.x(),
                 yoff = vslot.offset.y();

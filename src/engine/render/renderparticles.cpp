@@ -1017,11 +1017,11 @@ class fireballrenderer final : public listrenderer
         {
             if(softexplosion)
             {
-                SETSHADER(explosionsoft,);
+                SETSHADER(explosionsoft);
             }
             else
             {
-                SETSHADER(explosion,);
+                SETSHADER(explosion);
             }
             sr.enable();
         }

@@ -1249,7 +1249,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
 
 void drawfogoverlay(int fogmat, float fogbelow, float fogblend, int abovemat)
 {
-    SETSHADER(fogoverlay,);
+    SETSHADER(fogoverlay);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_ZERO, GL_SRC_COLOR);

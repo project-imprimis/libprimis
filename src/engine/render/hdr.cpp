@@ -192,7 +192,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glViewport(0, 0, dw, dh);
 
-    SETSHADER(reorient,);
+    SETSHADER(reorient);
     vec reorientx(flipx ? -0.5f : 0.5f, 0, 0.5f),
         reorienty(0, flipy ? -0.5f : 0.5f, 0.5f);
     if(swapxy)
@@ -309,18 +309,18 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                 {
                     ph = viewh/2;
                     glViewport(0, 0, pw, ph);
-                    SETSHADER(msaareduce,);
+                    SETSHADER(msaareduce);
                 }
                 else
                 {
                     glViewport(0, 0, pw, viewh);
-                    SETSHADER(msaareducew,);
+                    SETSHADER(msaareducew);
                 }
             }
             else
             {
                 glViewport(0, 0, vieww, viewh);
-                SETSHADER(msaaresolve,);
+                SETSHADER(msaaresolve);
             }
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
             screenquad(vieww, viewh);
@@ -341,13 +341,13 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                 if(ch/2 >= bloomh)
                 {
                     ch /= 2;
-                    SETSHADER(hdrreduce2,);
+                    SETSHADER(hdrreduce2);
                 }
-                else SETSHADER(hdrreduce2w,);
+                else SETSHADER(hdrreduce2w);
             }
             else
             {
-                SETSHADER(hdrreduce,);
+                SETSHADER(hdrreduce);
             }
             if(cw == bloomw && ch == bloomh)
             {
@@ -394,29 +394,29 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                     ch /= 2;
                     if(i)
                     {
-                        SETSHADER(hdrreduce2,);
+                        SETSHADER(hdrreduce2);
                     }
                     else
                     {
-                        SETSHADER(hdrluminance2,);
+                        SETSHADER(hdrluminance2);
                     }
                 }
                 else if(i)
                 {
-                    SETSHADER(hdrreduce2w,);
+                    SETSHADER(hdrreduce2w);
                 }
                 else
                 {
-                    SETSHADER(hdrluminance2w,);
+                    SETSHADER(hdrluminance2w);
                 }
             }
             else if(i)
             {
-                SETSHADER(hdrreduce,);
+                SETSHADER(hdrreduce);
             }
             else
             {
-                SETSHADER(hdrluminance,);
+                SETSHADER(hdrluminance);
             }
             glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, cw, ch);
@@ -436,7 +436,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         glViewport(0, 0, bloompbo ? 4 : 1, 1);
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-        SETSHADER(hdraccum,);
+        SETSHADER(hdraccum);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
         LOCALPARAMF(accumscale, lasthdraccum ? std::pow(hdraccumscale, static_cast<float>(lastmillis - lasthdraccum)/hdraccummillis) : 0);
         screenquad(2, 2);
@@ -474,7 +474,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
     glBindFramebuffer(GL_FRAMEBUFFER, b0fbo);
     glViewport(0, 0, b0w, b0h);
-    SETSHADER(hdrbloom,);
+    SETSHADER(hdrbloom);
     glBindTexture(GL_TEXTURE_RECTANGLE, ptex);
     screenquad(pw, ph);
 
@@ -509,18 +509,18 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         {
             case AA_SplitLuma:
             {
-                SETSHADER(msaatonemapsplitluma,);
+                SETSHADER(msaatonemapsplitluma);
                 break;
             }
             case AA_SplitMasked:
             {
-                SETSHADER(msaatonemapsplitmasked,);
+                SETSHADER(msaatonemapsplitmasked);
                 setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
             {
-                SETSHADER(msaatonemapsplit,);
+                SETSHADER(msaatonemapsplit);
                 break;
             }
         }
@@ -538,7 +538,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         {
             case AA_Luma:
             {
-                SETSHADER(hdrtonemapluma,);
+                SETSHADER(hdrtonemapluma);
                 break;
             }
             case AA_Masked:
@@ -548,22 +548,22 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
                     glStencilFunc(GL_EQUAL, 0, 0x80);
                     glEnable(GL_STENCIL_TEST);
-                    SETSHADER(hdrtonemap,);
+                    SETSHADER(hdrtonemap);
                     screenquad(vieww, viewh, b0w, b0h);
 
                     glStencilFunc(GL_EQUAL, 0x80, 0x80);
-                    SETSHADER(hdrtonemapstencil,);
+                    SETSHADER(hdrtonemapstencil);
                     screenquad(vieww, viewh, b0w, b0h);
                     glDisable(GL_STENCIL_TEST);
                     goto done; //see bottom of fxn
                 }
-                SETSHADER(hdrtonemapmasked,);
+                SETSHADER(hdrtonemapmasked);
                 setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
             {
-                SETSHADER(hdrtonemap,);
+                SETSHADER(hdrtonemap);
                 break;
             }
         }
@@ -582,7 +582,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
         if(blit)
         {
-            SETSHADER(msaatonemapsample,);
+            SETSHADER(msaatonemapsample);
         }
         else
         {
@@ -590,18 +590,18 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
             {
                 case AA_Luma:
                 {
-                    SETSHADER(msaatonemapluma,);
+                    SETSHADER(msaatonemapluma);
                     break;
                 }
                 case AA_Masked:
                 {
-                    SETSHADER(msaatonemapmasked,);
+                    SETSHADER(msaatonemapmasked);
                     setaavelocityparams(GL_TEXTURE3);
                     break;
                 }
                 default:
                 {
-                    SETSHADER(msaatonemap,);
+                    SETSHADER(msaatonemap);
                     break;
                 }
             }
@@ -620,7 +620,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                 glViewport(0, 0, vieww, viewh);
                 if(!blit)
                 {
-                    SETSHADER(hdrnop,);
+                    SETSHADER(hdrnop);
                 }
                 else
                 {
@@ -628,18 +628,18 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                     {
                         case AA_Luma:
                         {
-                            SETSHADER(hdrnopluma,);
+                            SETSHADER(hdrnopluma);
                             break;
                         }
                         case AA_Masked:
                         {
-                            SETSHADER(hdrnopmasked,);
+                            SETSHADER(hdrnopmasked);
                             setaavelocityparams(GL_TEXTURE3);
                             break;
                         }
                         default:
                         {
-                            SETSHADER(hdrnop,);
+                            SETSHADER(hdrnop);
                             break;
                         }
                     }

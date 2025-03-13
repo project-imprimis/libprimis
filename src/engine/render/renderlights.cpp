@@ -228,12 +228,12 @@ void GBuffer::doscale(GLuint outfbo) const
         glBindFramebuffer(GL_FRAMEBUFFER, scalefbo[1]);
         glViewport(0, 0, gw, hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[0]);
-        SETSHADER(scalecubicy,);
+        SETSHADER(scalecubicy);
         screenquad(1, 1);
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw(), hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[1]);
-        SETSHADER(scalecubicx,);
+        SETSHADER(scalecubicx);
         screenquad(1, 1);
     }
     else
@@ -241,7 +241,7 @@ void GBuffer::doscale(GLuint outfbo) const
         glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, hudw(), hudh());
         glBindTexture(GL_TEXTURE_2D, scaletex[0]);
-        SETSHADER(scalelinear,);
+        SETSHADER(scalelinear);
         screenquad(1, 1);
     }
 
@@ -857,12 +857,12 @@ void GBuffer::resolvemsaadepth(int w, int h) const
                 glEnable(GL_STENCIL_TEST);
             }
             glDepthFunc(GL_ALWAYS);
-            SETSHADER(msaaresolvedepth,);
+            SETSHADER(msaaresolvedepth);
         }
         else
         {
              glDisable(GL_DEPTH_TEST);
-             SETSHADER(msaaresolve,);
+             SETSHADER(msaaresolve);
         }
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
         screenquad();
@@ -914,7 +914,7 @@ void GBuffer::viewdepth() const
 {
     int w = (debugfullscreen) ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh() : (w*hudh())/hudw();
-    SETSHADER(hudrect,);
+    SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
     debugquad(0, 0, w, h, 0, 0, gw, gh);
@@ -937,7 +937,7 @@ void viewstencil()
     glStencilFunc(GL_NOTEQUAL, 0, debugstencil);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glEnable(GL_STENCIL_TEST);
-    SETSHADER(hudnotexture,);
+    SETSHADER(hudnotexture);
     gle::colorf(1, 1, 1);
     debugquad(0, 0, hudw(), hudh(), 0, 0, gw, gh);
     glDisable(GL_STENCIL_TEST);
@@ -947,7 +947,7 @@ void viewstencil()
 
     int w = debugfullscreen ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = debugfullscreen ? hudh() : (w*hudh())/hudw();
-    SETSHADER(hudrect,);
+    SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
     debugquad(0, 0, w, h, 0, 0, gw, gh);
@@ -959,7 +959,7 @@ void GBuffer::viewrefract()
 {
     int w = debugfullscreen ? hudw() : std::min(hudw(), hudh())/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = debugfullscreen ? hudh() : (w*hudh())/hudw();
-    SETSHADER(hudrect,);
+    SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
     debugquad(0, 0, w, h, 0, 0, gw, gh);
@@ -1252,7 +1252,7 @@ void ShadowAtlas::view()
         vec2 sasize = shadowatlaspacker.dimensions();
         tw = sasize.x;
         th = sasize.y;
-        SETSHADER(hudrect,);
+        SETSHADER(hudrect);
     }
     else
     {
@@ -2499,7 +2499,7 @@ void GBuffer::renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const
             depth = false;
         }
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        SETSHADER(msaaedgedetect,);
+        SETSHADER(msaaedgedetect);
         lightquad(-1, (tx1*2.0f)/vieww-1.0f, (ty1*2.0f)/viewh-1.0f, (tx2*2.0f)/vieww-1.0f, (ty2*2.0f)/viewh-1.0f, tilemask);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
         glStencilFunc(GL_EQUAL, stencilref = stencilmask, (avatar ? 0x40 : 0) | (msaalight==2 ? 0x07 : 0x0F));
@@ -2848,7 +2848,7 @@ void GBuffer::rendervolumetric()
         glEnable(GL_STENCIL_TEST);
     }
 
-    SETSHADER(scalelinear,);
+    SETSHADER(scalelinear);
     glBindTexture(GL_TEXTURE_RECTANGLE, voltex[0]);
     screenquad(volw, volh);
 
@@ -3928,7 +3928,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     GLOBALPARAM(sunlightdir, vec(0, -1, 2).normalize());
     GLOBALPARAMF(sunlightcolor, 0.6f*lightscale, 0.6f*lightscale, 0.6f*lightscale);
 
-    SETSHADER(modelpreview,);
+    SETSHADER(modelpreview);
 
     LOCALPARAMF(cutout, background ? -1 : 0);
 
