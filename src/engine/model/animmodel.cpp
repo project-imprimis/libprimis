@@ -300,7 +300,7 @@ Shader *animmodel::skin::loadshader()
         opts.push_back('c');
     }
 
-    DEF_FORMAT_STRING(name, "model%s", opts.c_str());
+    std::string name = std::string("model").append(opts);
     shader = generateshader(name, "modelshader \"%s\"", opts.c_str());
     return shader;
 }
