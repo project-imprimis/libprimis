@@ -150,7 +150,7 @@ namespace //internal functionality
     }
 
     void rhquad(float dx1, float dy1, float dx2, float dy2, float dtx1, float dty1, float dtx2, float dty2, float dtz,
-                              float px1, float py1, float px2, float py2, float ptx1, float pty1, float ptx2, float pty2, float ptz)
+                float px1, float py1, float px2, float py2, float ptx1, float pty1, float ptx2, float pty2, float ptz)
     {
         gle::begin(GL_TRIANGLE_STRIP);
         gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
