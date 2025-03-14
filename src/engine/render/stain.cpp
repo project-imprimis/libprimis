@@ -292,14 +292,6 @@ class stainrenderer
             }
         }
 
-        //=========================================================== SETVARIANT
-        #define SETVARIANT(name, ...) \
-            do { \
-                static Shader *name##shader = nullptr; \
-                if(!name##shader) name##shader = lookupshaderbyname(#name); \
-                name##shader->setvariant(__VA_ARGS__); \
-            } while(0)
-
         void render(int sbuf)
         {
             float colorscale = 1,
@@ -307,7 +299,14 @@ class stainrenderer
             if(flags&StainFlag_Overbright)
             {
                 glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-                SETVARIANT(overbrightstain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
+                {
+                    static Shader *overbrightstainshader = nullptr;
+                    if(!overbrightstainshader)
+                    {
+                        overbrightstainshader = lookupshaderbyname("overbrightstain");
+                    }
+                    overbrightstainshader->setvariant(sbuf == StainBuffer_Transparent ? 0 : -1, 0);
+                }
             }
             else if(flags&StainFlag_Glow)
             {
@@ -334,7 +333,14 @@ class stainrenderer
                 {
                     colorscale *= 2;
                 }
-                SETVARIANT(stain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
+                {
+                    static Shader *stainshader = nullptr;
+                    if(!stainshader)
+                    {
+                        stainshader = lookupshaderbyname("stain");
+                    }
+                    stainshader->setvariant(sbuf == StainBuffer_Transparent ? 0 : -1, 0);
+                }
             }
             LOCALPARAMF(colorscale, colorscale, colorscale, colorscale, alphascale);
 
@@ -343,8 +349,6 @@ class stainrenderer
             verts[sbuf].render();
         }
 
-        #undef SETVARIANT
-        //======================================================================
 
         void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, const cubeworld &world)
         {
