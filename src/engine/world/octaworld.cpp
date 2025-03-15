@@ -837,23 +837,26 @@ static void gencubevert(const cube &c, int i, vec &v)
 #undef GENCUBEVERTS
 //==============================================================================
 
+//==================================================== GENFACEORIENT GENFACEVERT
+#define GENFACEORIENT(o, v0, v1, v2, v3) \
+        case o: v0 v1 v2 v3 break;
+
+#define GENFACEVERT(o, n, x,y,z, xv,yv,zv) \
+            v[n] = ivec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                        EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                        EDGE_GET(CUBE_EDGE(c, 2, x, y), z));
+
 void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v)
 {
     switch(orient)
     {
         default:
-//==================================================== GENFACEORIENT GENFACEVERT
-#define GENFACEORIENT(o, v0, v1, v2, v3) \
-        case o: v0 v1 v2 v3 break;
-#define GENFACEVERT(o, n, x,y,z, xv,yv,zv) \
-            v[n] = ivec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
-                        EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
-                        EDGE_GET(CUBE_EDGE(c, 2, x, y), z));
-        GENFACEVERTS(0, 1, 0, 1, 0, 1, , , , , , )
-    #undef GENFACEORIENT
-    #undef GENFACEVERT
+            GENFACEVERTS(0, 1, 0, 1, 0, 1, , , , , , )
     }
 }
+
+#undef GENFACEORIENT
+#undef GENFACEVERT
 //==============================================================================
 
 
