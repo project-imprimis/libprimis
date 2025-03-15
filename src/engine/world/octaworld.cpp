@@ -806,7 +806,7 @@ const ivec cubecoords[8] =
     ivec(8, 0, 0)
 };
 
-//================================================================= GENCUBEVERTS
+//===================================================== GENCUBEVERT GENCUBEVERTS
 #define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
     GENCUBEVERT(0, x1, y1, z0) \
     GENCUBEVERT(1, x0, y1, z0) \
@@ -817,23 +817,25 @@ const ivec cubecoords[8] =
     GENCUBEVERT(6, x0, y0, z0) \
     GENCUBEVERT(7, x1, y0, z0)
 
-static void gencubevert(const cube &c, int i, vec &v)
-{
-    switch(i)
-    {
-        default:
-//================================================================== GENCUBEVERT
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
             v = vec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
                     EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
                     EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
             break;
+
+static void gencubevert(const cube &c, int i, vec &v)
+{
+    switch(i)
+    {
+        default:
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
-#undef GENCUBEVERT
-//==============================================================================
     }
 }
+
+#undef GENCUBEVERT
+#undef GENCUBEVERTS
+//==============================================================================
 
 void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v)
 {
@@ -854,8 +856,7 @@ void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v)
 }
 //==============================================================================
 
-#undef GENCUBEVERTS
-//==============================================================================
+
 
 bool flataxisface(const cube &c, int orient)
 {
