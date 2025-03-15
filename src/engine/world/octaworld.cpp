@@ -1234,8 +1234,8 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
         {
             return true;
         }
-        ivec2 cf[8];
-        int numc = clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, cf);
+        std::array<ivec2, 8> cf;
+        int numc = clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, cf.data());
         if(numc < 3)
         {
             return true;
