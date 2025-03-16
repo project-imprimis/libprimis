@@ -12,6 +12,7 @@
 
 #include <optional>
 #include <memory>
+#include <format>
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
@@ -300,12 +301,12 @@ bool obj::loaddefaultparts()
 {
     part &mdl = addpart();
     std::string pname = parentdir(modelname().c_str());
-    DEF_FORMAT_STRING(name1, "%s%s/tris.obj", modelpath.c_str(), modelname().c_str());
-    mdl.meshes = sharemeshes(path(name1));
+    std::string name1 = std::format("{}{}/tris.obj", modelpath, modelname());
+    mdl.meshes = sharemeshes(path(name1.data()));
     if(!mdl.meshes)
     {
-        DEF_FORMAT_STRING(name2, "%s%s/tris.obj", modelpath.c_str(), pname.c_str());    // try obj in parent folder (vert sharing)
-        mdl.meshes = sharemeshes(path(name2));
+        std::string name2 = std::format("{}{}/tris.obj", modelpath, pname);
+        mdl.meshes = sharemeshes(path(name2.data()));
         if(!mdl.meshes)
         {
             return false;
@@ -316,7 +317,7 @@ bool obj::loaddefaultparts()
     mdl.initskins(tex, masks);
     if(tex==notexture)
     {
-        conoutf("could not load model skin for %s", name1);
+        conoutf("could not load model skin for %s", name1.c_str());
     }
     return true;
 }
