@@ -1392,7 +1392,7 @@ struct skelcommands : modelcommands<MDL>
         std::vector<std::string> bonestrs;
         explodelist(maskstr, bonestrs);
         std::vector<uint> bonemask;
-        for(uint i = 0; i < bonestrs.size(); i++)
+        for(size_t i = 0; i < bonestrs.size(); i++)
         {
             const std::string &bonestr = bonestrs[i];
             std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr.substr(1) : bonestr) : std::nullopt;
@@ -1461,7 +1461,7 @@ struct skelcommands : modelcommands<MDL>
         std::vector<std::string> bonestrs;
         explodelist(maskstr, bonestrs);
         std::vector<uint> bonemask;
-        for(uint i = 0; i < bonestrs.size(); i++)
+        for(size_t i = 0; i < bonestrs.size(); i++)
         {
             const std::string &bonestr = bonestrs[i];
             std::optional<int> bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr.substr(1) : bonestr) : std::nullopt;
