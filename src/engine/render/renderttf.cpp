@@ -98,7 +98,7 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     }
 }
 
-void TTFRenderer::ttfbounds(const char *str, float &width, float &height, int pts)
+void TTFRenderer::ttfbounds(std::string_view str, float &width, float &height, int pts)
 {
     fontsize(pts);
     ivec2 size = ttfsize(str);
@@ -106,9 +106,9 @@ void TTFRenderer::ttfbounds(const char *str, float &width, float &height, int pt
     height = size.y();
 }
 
-ivec2 TTFRenderer::ttfsize(const char* message)
+ivec2 TTFRenderer::ttfsize(std::string_view message)
 {
-    if(!std::strlen(message))
+    if(!std::strlen(message.data()))
     {
         return ivec2(0,0);
     }
