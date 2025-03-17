@@ -115,7 +115,7 @@ void attachentity(extentity &e)
     std::vector<extentity *> &ents = entities::getents();
     int closest = -1;
     float closedist = 1e10f; //some arbitrary high value
-    for(uint i = 0; i < ents.size(); i++)
+    for(size_t i = 0; i < ents.size(); i++)
     {
         extentity *a = ents[i];
         if(a->attached)
@@ -394,7 +394,7 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
                     }
                     oe.bbmin = oe.bbmax = oe.o;
                     oe.bbmin.add(oe.size);
-                    for(uint j = 0; j < oe.decals.size(); j++)
+                    for(size_t j = 0; j < oe.decals.size(); j++)
                     {
                         extentity &e = *entities::getents()[oe.decals[j]];
                         ivec eo, er;
@@ -587,7 +587,7 @@ void removeentityedit(int id)
 void cubeworld::entitiesinoctanodes()
 {
     std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(size_t i = 0; i < ents.size(); i++)
     {
         modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
     }
