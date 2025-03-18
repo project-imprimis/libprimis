@@ -112,12 +112,12 @@ void attachentity(extentity &e)
     }
     detachentity(e);
 
-    std::vector<extentity *> &ents = entities::getents();
+    const std::vector<extentity *> &ents = entities::getents();
     int closest = -1;
     float closedist = 1e10f; //some arbitrary high value
     for(size_t i = 0; i < ents.size(); i++)
     {
-        extentity *a = ents[i];
+        const extentity *a = ents[i];
         if(a->attached)
         {
             continue;
