@@ -14,6 +14,7 @@
 
 #include <optional>
 #include <memory>
+#include <format>
 
 #include "aa.h"
 #include "csm.h"

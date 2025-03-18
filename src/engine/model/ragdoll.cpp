@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <optional>
+#include <format>
 
 #include "interface/console.h"
 #include "interface/control.h"

@@ -13,6 +13,7 @@
 
 #include <optional>
 #include <memory>
+#include <format>
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"

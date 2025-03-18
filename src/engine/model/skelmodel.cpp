@@ -16,6 +16,7 @@
 
 #include <optional>
 #include <memory>
+#include <format>
 
 #include "interface/console.h"
 #include "interface/control.h"

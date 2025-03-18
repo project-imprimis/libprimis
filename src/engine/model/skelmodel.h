@@ -1208,11 +1208,11 @@ struct skelcommands : modelcommands<MDL>
         {
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), animfile);
+        std::string filename = std::format("{}/{}", MDL::dir, animfile);
         const animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
-            conoutf("could not load %s anim file %s", MDL::formatname(), filename);
+            conoutf("could not load %s anim file %s", MDL::formatname(), filename.c_str());
             return;
         }
         skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
@@ -1335,11 +1335,11 @@ struct skelcommands : modelcommands<MDL>
             {
                 return;
             }
-            DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), animfile);
+            std::string filename = std::format("{}/{}", MDL::dir, animfile);
             const animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
             if(!sa)
             {
-                conoutf("could not load %s anim file %s", MDL::formatname(), filename);
+                conoutf("could not load %s anim file %s", MDL::formatname(), filename.c_str());
             }
             else
             {
