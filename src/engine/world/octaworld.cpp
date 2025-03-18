@@ -110,22 +110,23 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
  */
 std::array<cube, 8> *newcubes(uint face, int mat)
 {
-    std::array<cube, 8> *c = new std::array<cube, 8> ;
+    std::array<cube, 8> *ca = new std::array<cube, 8>;
     for(int i = 0; i < 8; ++i)
     {
-        (*c)[i].children = nullptr;
-        (*c)[i].ext = nullptr;
-        (*c)[i].visible = 0;
-        (*c)[i].merged = 0;
-        setcubefaces((*c)[i], face);
+        cube &c = (*ca)[i];
+        c.children = nullptr;
+        c.ext = nullptr;
+        c.visible = 0;
+        c.merged = 0;
+        setcubefaces(c, face);
         for(int j = 0; j < 6; ++j)
         {
-            (*c)[i].texture[j] = Default_Geom;
+            c.texture[j] = Default_Geom;
         }
-        (*c)[i].material = mat;
+        c.material = mat;
     }
     allocnodes++;
-    return c;
+    return ca;
 }
 
 //returns the size of the tree starting from the specified cube going down
