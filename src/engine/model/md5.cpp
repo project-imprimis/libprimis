@@ -66,16 +66,6 @@ md5::skelmeshgroup *md5::newmeshes()
     return new md5meshgroup;
 }
 
-/**
- * @brief Attempts to load an md5mesh with default parameters.
- *
- * - adds a skelpart to the current model
- * - attempts to add the md5mesh file at the path indicated by the model's name
- * - the path and md5mesh file name should be the same (e.g. foo/foo.md5mesh)
- *
- * @return true if the mesh was successfully added
- * @return false if no mesh was added (such as if no file found)
- */
 bool md5::loaddefaultparts()
 {
     skelpart &mdl = addpart();
