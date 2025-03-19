@@ -154,6 +154,13 @@ class vertmodel : public animmodel
                     }
                 }
 
+                /**
+                 * @brief Draws the elements in this vertmesh.
+                 *
+                 * Fails to draw if there is no shader assigned to Shader::lastshader.
+                 *
+                 * Increments glde by one and the xtravertsva counter by the number of vertices drawn.
+                 */
                 void render() const;
             private:
                 int voffset, elen;
