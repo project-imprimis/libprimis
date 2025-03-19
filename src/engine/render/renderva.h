@@ -39,7 +39,7 @@ class Occluder
         void setupmodelquery(occludequery *q);
         void clearqueries();
         void flipqueries();
-        void endquery();
+        void endquery() const;
         void endmodelquery(); // starts the model query (!)
         bool checkquery(occludequery *query, bool nowait = false);
         void resetqueries();

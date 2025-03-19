@@ -2411,7 +2411,7 @@ void Occluder::flipqueries()
     queryframes[flipquery].flip();
 }
 
-void Occluder::endquery()
+void Occluder::endquery() const
 {
     glEndQuery(querytarget());
 }
