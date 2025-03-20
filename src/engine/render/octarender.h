@@ -69,7 +69,7 @@ class vtxarray
             distance, rdistance,
             dyntexs, //dynamic if vscroll presentss
             decaltris, decaltexs;
-        uint sky;
+        size_t sky;
         ivec o;
         int size;                // location and size of cube.
         ivec geommin, geommax;   // BB of geom
