@@ -12,13 +12,9 @@ ifeq (2,$(BUILD_TYPE))
 	CXXFLAGS += -ggdb3
 endif
 
-CPP_VERSION ?= 17
+CPP_VERSION ?= 20
 
 # if you want to compile with c++20, use `make -Csrc CPP_VERSION=20`, CPP_VERSION=23 for c++23
-ifeq (17,$(CPP_VERSION))
-	CXXFLAGS += -std=c++17
-endif
-
 ifeq (20,$(CPP_VERSION))
 	CXXFLAGS += -std=c++20
 endif
