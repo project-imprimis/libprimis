@@ -478,9 +478,9 @@ namespace
         {
             float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
             addshadowva(v, dist, vasort);
-            for(size_t i = 0; i < v->children.size(); ++i)
+            for(vtxarray *child : v->children)
             {
-                findcsmshadowvas(v->children[i], vasort);
+                findcsmshadowvas(child, vasort);
             }
         }
     }
@@ -503,9 +503,9 @@ namespace
         {
             float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
             addshadowva(v, dist, vasort);
-            for(size_t i = 0; i < v->children.size(); ++i)
+            for(vtxarray *child : v->children)
             {
-                findrsmshadowvas(v->children[i], vasort);
+                findrsmshadowvas(child, vasort);
             }
         }
     }
@@ -519,9 +519,9 @@ namespace
                                 bbinsidespot(shadoworigin, shadowdir, shadowspot, v->bbmin, v->bbmax) :
                                 bbinsidespot(shadoworigin, shadowdir, shadowspot, v->geommin, v->geommax)) ? 1 : 0;
             addshadowva(v, dist, vasort);
-            for(size_t i = 0; i < v->children.size(); ++i)
+            for(vtxarray *child : v->children)
             {
-                findspotshadowvas(v->children[i], vasort);
+                findspotshadowvas(child, vasort);
             }
         }
     }
