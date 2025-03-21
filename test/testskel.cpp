@@ -5,6 +5,7 @@
 
 #include <optional>
 #include <memory>
+#include <format>
 
 #include "../src/engine/interface/console.h"
 #include "../src/engine/interface/cs.h"
