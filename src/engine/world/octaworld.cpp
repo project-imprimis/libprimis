@@ -96,18 +96,6 @@ cubeext *newcubeext(cube &c, int maxverts, bool init)
     return ext;
 }
 
-/**
- * @brief Returns an octet of cubes allocated on the heap.
- *
- * These cubes should be freed with freeocta() to prevent a leak.
- *
- * `allocnodes` is incremented by one for each call of this function.
- *
- * @param face The face values to set the eight cubes
- * @param mat The material mask to assign to the cubes
- *
- * @return a std::array<cube, 8> pointer pointing to an array containing the created cubes
- */
 std::array<cube, 8> *newcubes(uint face, int mat)
 {
     std::array<cube, 8> *ca = new std::array<cube, 8>;

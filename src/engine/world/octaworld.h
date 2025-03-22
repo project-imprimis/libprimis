@@ -200,6 +200,18 @@ enum
     ViewFrustumCull_NotVisible,
 };
 
+/**
+ * @brief Returns an octet of cubes allocated on the heap.
+ *
+ * These cubes should be freed with freeocta() to prevent a leak.
+ *
+ * `allocnodes` is incremented by one for each call of this function.
+ *
+ * @param face The face values to set the eight cubes
+ * @param mat The material mask to assign to the cubes
+ *
+ * @return a std::array<cube, 8> pointer pointing to an array containing the created cubes
+ */
 extern std::array<cube, 8> *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
