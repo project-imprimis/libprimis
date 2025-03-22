@@ -243,11 +243,7 @@ extern void genfaceverts(const cube &c, int orient, std::array<ivec, 4> &v);
 extern int calcmergedsize(const ivec &co, int size, const vertinfo *verts, int numverts);
 extern void invalidatemerges(cube &c);
 extern void remip();
-
-inline cubeext &ext(cube &c)
-{
-    return *(c.ext ? c.ext : newcubeext(c));
-}
+extern cubeext &ext(cube &c);
 
 #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 

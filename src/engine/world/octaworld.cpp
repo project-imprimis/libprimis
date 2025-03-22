@@ -783,6 +783,11 @@ void cubeworld::remip()
     (*worldroot)[0].calcmerges(); //created as result of calcmerges being cube member
 }
 
+cubeext &ext(cube &c)
+{
+    return *(c.ext ? c.ext : newcubeext(c));
+}
+
 const ivec cubecoords[8] =
 {
     ivec(8, 8, 0),
