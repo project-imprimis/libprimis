@@ -6,10 +6,7 @@
 
 #define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
 
-inline int oppositeorient(int orient)
-{
-    return orient^1;
-}
+extern int oppositeorient(int orient);
 
 enum BlendMapLayers
 {
