@@ -96,16 +96,16 @@ namespace
             curcolor.mul(intensity);
         }
 
-        /* dynlightinfo: gets information about this dynlight
+        /**
+         * @brief gets information about this dynlight
          *
-         * Parameters:
-         *  n: the nth closest dynamic light
-         *  o: a reference to set as the location of the specified dynlight
-         *  radius: a reference to set as the radius of the specified dynlight
-         *  color: a reference to set as the color of the specifeid dynlight
-         *  spot: a reference to the spotlight information of the dynlight
-         *  dir: a reference to set as the direction the dynlight is pointing
-         *  flags: a reference to the flag bitmap for the dynlight
+         *  @param n the nth closest dynamic light
+         *  @param o a reference to set as the location of the specified dynlight
+         *  @param radius a reference to set as the radius of the specified dynlight
+         *  @param color a reference to set as the color of the specifeid dynlight
+         *  @param spot a reference to the spotlight information of the dynlight
+         *  @param dir a reference to set as the direction the dynlight is pointing
+         *  @param flags a reference to the flag bitmap for the dynlight
          */
         void dynlightinfo(vec &origin, float &radius, vec &color, vec &direction, int &spotlight, int &flagmask) const
         {
