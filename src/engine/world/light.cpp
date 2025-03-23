@@ -39,11 +39,11 @@ CVAR1FR(sunlight, 0,
 FVARFR(sunlightscale, 0, 1, 16, clearradiancehintscache(););
 
 vec sunlightdir(0, 0, 1);
-void setsunlightdir();
+static void setsunlightdir();
 FVARFR(sunlightyaw, 0, 0, 360, setsunlightdir());
 FVARFR(sunlightpitch, -90, 90, 90, setsunlightdir());
 
-void setsunlightdir()
+static void setsunlightdir()
 {
     sunlightdir = vec(sunlightyaw/RAD, sunlightpitch/RAD);
     for(int k = 0; k < 3; ++k)
@@ -66,7 +66,7 @@ void brightencube(cube &c)
     c.ext->surfaces.fill(surfaceinfo());
 }
 
-void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
+static void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
 {
     if(!c.ext || c.ext->maxverts < numverts)
     {
