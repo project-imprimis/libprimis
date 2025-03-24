@@ -3421,7 +3421,7 @@ void findshadowmms()
                 }
                 case ShadowMap_Cascade:
                 {
-                    if(!csm.calcbbcsmsplits(oe->bbmin, oe->bbmax))
+                    if(!csm.calcbbsplits(oe->bbmin, oe->bbmax))
                     {
                         continue;
                     }
@@ -3587,7 +3587,7 @@ void vtxarray::findcsmshadowvas(std::array<vtxarray *, vasortsize> &vasort)
         bbmin = geommin;
         bbmax = geommax;
     }
-    shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
+    shadowmask = csm.calcbbsplits(bbmin, bbmax);
     if(shadowmask)
     {
         float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;

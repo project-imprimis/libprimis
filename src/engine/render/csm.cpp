@@ -204,7 +204,7 @@ float cascadedshadowmap::getcsmproperty(int index) const
     }
 }
 
-int cascadedshadowmap::calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
+int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull)
