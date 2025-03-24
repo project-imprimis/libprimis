@@ -37,7 +37,7 @@ cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
 //prints a warning if the bounds were enforced
 bool cascadedshadowmap::setcsmproperty(int index, float value)
 {
-    
+
     switch(index)
     {
         case MaxSize:
