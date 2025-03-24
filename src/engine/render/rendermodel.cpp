@@ -524,7 +524,7 @@ static int shadowmaskmodel(const vec &center, float radius)
         }
         case ShadowMap_Cascade:
         {
-            return csm.calcspherecsmsplits(center, radius);
+            return csm.calcspheresplits(center, radius);
         }
         case ShadowMap_Spot:
         {
