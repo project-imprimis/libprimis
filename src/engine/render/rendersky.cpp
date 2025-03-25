@@ -238,10 +238,10 @@ namespace
 
     void drawenvoverlay(const Texture *overlay = nullptr, float tx = 0, float ty = 0)
     {
-        int w = farplane/2;
-        float z   = w*cloudheight,
-              tsz = 0.5f*(1-cloudfade)/cloudscale,
-              psz = w*(1-cloudfade);
+        const int w = farplane/2;
+        const float z = w*cloudheight,
+                        tsz = 0.5f*(1-cloudfade)/cloudscale,
+                        psz = w*(1-cloudfade);
         glBindTexture(GL_TEXTURE_2D, (overlay ? overlay : notexture)->id);
         vec color = cloudcolor.tocolor();
         gle::color(color, cloudalpha);
@@ -256,7 +256,7 @@ namespace
             gle::attribf(tx - p.x*tsz, ty + p.y*tsz);
         }
         xtraverts += gle::end();
-        float tsz2 = 0.5f/cloudscale;
+        const float tsz2 = 0.5f/cloudscale;
         gle::defvertex();
         gle::deftexcoord0();
         gle::defcolor(4);
