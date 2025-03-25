@@ -121,244 +121,6 @@ namespace mapmodel
     }
 }
 
-// model registry
-
-std::unordered_map<std::string, model *> models;
-std::vector<std::string> preloadmodels;
-
-//used in iengine
-void preloadmodel(std::string name)
-{
-    if(name.empty() || models.find(name) != models.end() || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
-    {
-        return;
-    }
-    preloadmodels.push_back(name);
-}
-
-void flushpreloadedmodels(bool msg)
-{
-    for(uint i = 0; i < preloadmodels.size(); i++)
-    {
-        loadprogress = static_cast<float>(i+1)/preloadmodels.size();
-        model *m = loadmodel(preloadmodels[i].c_str(), -1, msg);
-        if(!m)
-        {
-            if(msg)
-            {
-                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i].c_str());
-            }
-        }
-        else
-        {
-            m->preloadmeshes();
-            m->preloadshaders();
-        }
-    }
-    preloadmodels.clear();
-
-    loadprogress = 0;
-}
-
-void preloadusedmapmodels(bool msg, bool bih)
-{
-    std::vector<extentity *> &ents = entities::getents();
-    std::vector<int> used;
-    for(extentity *&e : ents)
-    {
-        if(e->type==EngineEnt_Mapmodel && e->attr1 >= 0 && std::find(used.begin(), used.end(), e->attr1) != used.end() )
-        {
-            used.push_back(e->attr1);
-        }
-    }
-
-    std::vector<std::string> col;
-    for(uint i = 0; i < used.size(); i++)
-    {
-        loadprogress = static_cast<float>(i+1)/used.size();
-        int mmindex = used[i];
-        if(!(static_cast<int>(mapmodel::mapmodels.size()) > (mmindex)))
-        {
-            if(msg)
-            {
-                conoutf(Console_Warn, "could not find map model: %d", mmindex);
-            }
-            continue;
-        }
-        const mapmodelinfo &mmi = mapmodel::mapmodels[mmindex];
-        if(mmi.name.empty())
-        {
-            continue;
-        }
-        model *m = loadmodel("", mmindex, msg);
-        if(!m)
-        {
-            if(msg)
-            {
-                conoutf(Console_Warn, "could not load map model: %s", mmi.name.c_str());
-            }
-        }
-        else
-        {
-            if(bih)
-            {
-                m->preloadBIH();
-            }
-            else if(m->collide == Collide_TRI && m->collidemodel.empty() && m->bih)
-            {
-                m->setBIH();
-            }
-            m->preloadmeshes();
-            m->preloadshaders();
-            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) == col.end())
-            {
-                col.push_back(m->collidemodel);
-            }
-        }
-    }
-
-    for(uint i = 0; i < col.size(); i++)
-    {
-        loadprogress = static_cast<float>(i+1)/col.size();
-        model *m = loadmodel(col[i].c_str(), -1, msg);
-        if(!m)
-        {
-            if(msg)
-            {
-                conoutf(Console_Warn, "could not load collide model: %s", col[i].c_str());
-            }
-        }
-        else if(!m->bih)
-        {
-            m->setBIH();
-        }
-    }
-
-    loadprogress = 0;
-}
-
-model *loadmodel(std::string_view name, int i, bool msg)
-{
-    model *(__cdecl *md5loader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new md5(filename); };
-    model *(__cdecl *objloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new obj(filename); };
-    model *(__cdecl *gltfloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new gltf(filename); };
-
-    std::vector<model *(__cdecl *)(const std::string &)> loaders;
-    loaders.push_back(md5loader);
-    loaders.push_back(objloader);
-    loaders.push_back(gltfloader);
-    std::unordered_set<std::string> failedmodels;
-
-    if(!name.size())
-    {
-        if(!(static_cast<int>(mapmodel::mapmodels.size()) > i))
-        {
-            return nullptr;
-        }
-        const mapmodelinfo &mmi = mapmodel::mapmodels[i];
-        if(mmi.m)
-        {
-            return mmi.m;
-        }
-        name = mmi.name.c_str();
-    }
-    auto itr = models.find(std::string(name));
-    model *m;
-    if(itr != models.end())
-    {
-        m = (*itr).second;
-    }
-    else
-    {
-        if(!name[0] || failedmodels.find(std::string(name)) != failedmodels.end())
-        {
-            return nullptr;
-        }
-        if(msg)
-        {
-            std::string filename;
-            filename.append(modelpath).append(name);
-            renderprogress(loadprogress, filename.c_str());
-        }
-        for(model *(__cdecl *i)(const std::string &) : loaders)
-        {
-            m = i(std::string(name)); //call model ctor
-            if(!m)
-            {
-                continue;
-            }
-            if(m->load()) //now load the model
-            {
-                break;
-            }
-            //delete model if not successful
-            delete m;
-            m = nullptr;
-        }
-        if(!m)
-        {
-            failedmodels.insert(std::string(name));
-            return nullptr;
-        }
-        if(models.find(m->modelname()) == models.end())
-        {
-            models[m->modelname()] = m;
-        }
-    }
-    if((mapmodel::mapmodels.size() > static_cast<uint>(i)) && !mapmodel::mapmodels[i].m)
-    {
-        mapmodel::mapmodels[i].m = m;
-    }
-    return m;
-}
-
-//used in iengine.h
-void clear_models()
-{
-    for(auto [k, i] : models)
-    {
-        delete i;
-    }
-}
-
-void cleanupmodels()
-{
-    for(auto [k, i] : models)
-    {
-        i->cleanup();
-    }
-}
-
-static void clearmodel(const char *name)
-{
-    model *m = nullptr;
-    const auto it = models.find(name);
-    if(it != models.end())
-    {
-        m = (*it).second;
-    }
-    if(!m)
-    {
-        conoutf("model %s is not loaded", name);
-        return;
-    }
-    for(mapmodelinfo &mmi : mapmodel::mapmodels)
-    {
-        if(mmi.m == m)
-        {
-            mmi.m = nullptr;
-        }
-        if(mmi.collide == m)
-        {
-            mmi.collide = nullptr;
-        }
-    }
-    models.erase(name);
-    m->cleanup();
-    delete m;
-    conoutf("cleared model %s", name);
-}
-
 static bool modeloccluded(const vec &center, float radius)
 {
     ivec bbmin(vec(center).sub(radius)),
@@ -368,26 +130,6 @@ static bool modeloccluded(const vec &center, float radius)
 
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
-
-static void rendercullmodelquery(dynent *d, const vec &center, float radius)
-{
-    if(std::fabs(camera1->o.x-center.x) < radius+1 &&
-       std::fabs(camera1->o.y-center.y) < radius+1 &&
-       std::fabs(camera1->o.z-center.z) < radius+1)
-    {
-        d->query = nullptr;
-        return;
-    }
-    d->query = occlusionengine.newquery(d);
-    if(!d->query)
-    {
-        return;
-    }
-    d->query->startquery();
-    int br = static_cast<int>(radius*2)+1;
-    drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
-    occlusionengine.endquery();
-}
 
 /**
  * @brief Returns whether the model should be culled.
@@ -752,6 +494,264 @@ namespace batching
             }
         }
     }
+}
+
+// model registry
+
+std::unordered_map<std::string, model *> models;
+std::vector<std::string> preloadmodels;
+
+//used in iengine
+void preloadmodel(std::string name)
+{
+    if(name.empty() || models.find(name) != models.end() || std::find(preloadmodels.begin(), preloadmodels.end(), name) != preloadmodels.end() )
+    {
+        return;
+    }
+    preloadmodels.push_back(name);
+}
+
+void flushpreloadedmodels(bool msg)
+{
+    for(uint i = 0; i < preloadmodels.size(); i++)
+    {
+        loadprogress = static_cast<float>(i+1)/preloadmodels.size();
+        model *m = loadmodel(preloadmodels[i].c_str(), -1, msg);
+        if(!m)
+        {
+            if(msg)
+            {
+                conoutf(Console_Warn, "could not load model: %s", preloadmodels[i].c_str());
+            }
+        }
+        else
+        {
+            m->preloadmeshes();
+            m->preloadshaders();
+        }
+    }
+    preloadmodels.clear();
+
+    loadprogress = 0;
+}
+
+void preloadusedmapmodels(bool msg, bool bih)
+{
+    std::vector<extentity *> &ents = entities::getents();
+    std::vector<int> used;
+    for(extentity *&e : ents)
+    {
+        if(e->type==EngineEnt_Mapmodel && e->attr1 >= 0 && std::find(used.begin(), used.end(), e->attr1) != used.end() )
+        {
+            used.push_back(e->attr1);
+        }
+    }
+
+    std::vector<std::string> col;
+    for(uint i = 0; i < used.size(); i++)
+    {
+        loadprogress = static_cast<float>(i+1)/used.size();
+        int mmindex = used[i];
+        if(!(static_cast<int>(mapmodel::mapmodels.size()) > (mmindex)))
+        {
+            if(msg)
+            {
+                conoutf(Console_Warn, "could not find map model: %d", mmindex);
+            }
+            continue;
+        }
+        const mapmodelinfo &mmi = mapmodel::mapmodels[mmindex];
+        if(mmi.name.empty())
+        {
+            continue;
+        }
+        model *m = loadmodel("", mmindex, msg);
+        if(!m)
+        {
+            if(msg)
+            {
+                conoutf(Console_Warn, "could not load map model: %s", mmi.name.c_str());
+            }
+        }
+        else
+        {
+            if(bih)
+            {
+                m->preloadBIH();
+            }
+            else if(m->collide == Collide_TRI && m->collidemodel.empty() && m->bih)
+            {
+                m->setBIH();
+            }
+            m->preloadmeshes();
+            m->preloadshaders();
+            if(!m->collidemodel.empty() && std::find(col.begin(), col.end(), m->collidemodel) == col.end())
+            {
+                col.push_back(m->collidemodel);
+            }
+        }
+    }
+
+    for(uint i = 0; i < col.size(); i++)
+    {
+        loadprogress = static_cast<float>(i+1)/col.size();
+        model *m = loadmodel(col[i].c_str(), -1, msg);
+        if(!m)
+        {
+            if(msg)
+            {
+                conoutf(Console_Warn, "could not load collide model: %s", col[i].c_str());
+            }
+        }
+        else if(!m->bih)
+        {
+            m->setBIH();
+        }
+    }
+
+    loadprogress = 0;
+}
+
+model *loadmodel(std::string_view name, int i, bool msg)
+{
+    model *(__cdecl *md5loader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new md5(filename); };
+    model *(__cdecl *objloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new obj(filename); };
+    model *(__cdecl *gltfloader)(const std::string &filename) = +[] (const std::string &filename) -> model* { return new gltf(filename); };
+
+    std::vector<model *(__cdecl *)(const std::string &)> loaders;
+    loaders.push_back(md5loader);
+    loaders.push_back(objloader);
+    loaders.push_back(gltfloader);
+    std::unordered_set<std::string> failedmodels;
+
+    if(!name.size())
+    {
+        if(!(static_cast<int>(mapmodel::mapmodels.size()) > i))
+        {
+            return nullptr;
+        }
+        const mapmodelinfo &mmi = mapmodel::mapmodels[i];
+        if(mmi.m)
+        {
+            return mmi.m;
+        }
+        name = mmi.name.c_str();
+    }
+    auto itr = models.find(std::string(name));
+    model *m;
+    if(itr != models.end())
+    {
+        m = (*itr).second;
+    }
+    else
+    {
+        if(!name[0] || failedmodels.find(std::string(name)) != failedmodels.end())
+        {
+            return nullptr;
+        }
+        if(msg)
+        {
+            std::string filename;
+            filename.append(modelpath).append(name);
+            renderprogress(loadprogress, filename.c_str());
+        }
+        for(model *(__cdecl *i)(const std::string &) : loaders)
+        {
+            m = i(std::string(name)); //call model ctor
+            if(!m)
+            {
+                continue;
+            }
+            if(m->load()) //now load the model
+            {
+                break;
+            }
+            //delete model if not successful
+            delete m;
+            m = nullptr;
+        }
+        if(!m)
+        {
+            failedmodels.insert(std::string(name));
+            return nullptr;
+        }
+        if(models.find(m->modelname()) == models.end())
+        {
+            models[m->modelname()] = m;
+        }
+    }
+    if((mapmodel::mapmodels.size() > static_cast<uint>(i)) && !mapmodel::mapmodels[i].m)
+    {
+        mapmodel::mapmodels[i].m = m;
+    }
+    return m;
+}
+
+//used in iengine.h
+void clear_models()
+{
+    for(auto [k, i] : models)
+    {
+        delete i;
+    }
+}
+
+void cleanupmodels()
+{
+    for(auto [k, i] : models)
+    {
+        i->cleanup();
+    }
+}
+
+static void clearmodel(const char *name)
+{
+    model *m = nullptr;
+    const auto it = models.find(name);
+    if(it != models.end())
+    {
+        m = (*it).second;
+    }
+    if(!m)
+    {
+        conoutf("model %s is not loaded", name);
+        return;
+    }
+    for(mapmodelinfo &mmi : mapmodel::mapmodels)
+    {
+        if(mmi.m == m)
+        {
+            mmi.m = nullptr;
+        }
+        if(mmi.collide == m)
+        {
+            mmi.collide = nullptr;
+        }
+    }
+    models.erase(name);
+    m->cleanup();
+    delete m;
+    conoutf("cleared model %s", name);
+}
+
+static void rendercullmodelquery(dynent *d, const vec &center, float radius)
+{
+    if(std::fabs(camera1->o.x-center.x) < radius+1 &&
+       std::fabs(camera1->o.y-center.y) < radius+1 &&
+       std::fabs(camera1->o.z-center.z) < radius+1)
+    {
+        d->query = nullptr;
+        return;
+    }
+    d->query = occlusionengine.newquery(d);
+    if(!d->query)
+    {
+        return;
+    }
+    d->query->startquery();
+    int br = static_cast<int>(radius*2)+1;
+    drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
+    occlusionengine.endquery();
 }
 
 void GBuffer::rendermodelbatches()
