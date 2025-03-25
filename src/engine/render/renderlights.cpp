@@ -3342,7 +3342,7 @@ void GBuffer::rendercsmshadowmaps() const
     findshadowvas();
     findshadowmms();
 
-    shadowmaskbatchedmodels(smdynshadow!=0);
+    batching::shadowmaskbatchedmodels(smdynshadow!=0);
     batchshadowmapmodels();
 
     for(int i = 0; i < csm.getcsmproperty(cascadedshadowmap::Splits); ++i)
@@ -3361,11 +3361,11 @@ void GBuffer::rendercsmshadowmaps() const
             shadowside = i;
 
             rendershadowmapworld();
-            rendershadowmodelbatches();
+            batching::rendershadowmodelbatches();
         }
     }
 
-    clearbatchedmapmodels();
+    batching::clearbatchedmapmodels();
 
     glDisable(GL_SCISSOR_TEST);
 
@@ -3501,14 +3501,14 @@ void GBuffer::rendershadowmaps(int offset) const
         findshadowvas();
         findshadowmms();
 
-        shadowmaskbatchedmodels(!(l.flags&LightEnt_Static) && smdynshadow);
+        batching::shadowmaskbatchedmodels(!(l.flags&LightEnt_Static) && smdynshadow);
         batchshadowmapmodels(mesh != nullptr);
 
         const shadowcacheval *cached = nullptr;
         int cachemask = 0;
         if(smcache)
         {
-            int dynmask = smcache <= 1 ? batcheddynamicmodels() : 0;
+            int dynmask = smcache <= 1 ? batching::batcheddynamicmodels() : 0;
             cached = sm.cached;
             if(cached)
             {
@@ -3523,7 +3523,7 @@ void GBuffer::rendershadowmaps(int offset) const
             sidemask &= ~cachemask;
             if(!sidemask)
             {
-                clearbatchedmapmodels();
+                batching::clearbatchedmapmodels();
                 continue;
             }
         }
@@ -3560,7 +3560,7 @@ void GBuffer::rendershadowmaps(int offset) const
             {
                 rendershadowmapworld();
             }
-            rendershadowmodelbatches();
+            batching::rendershadowmodelbatches();
         }
         else
         {
@@ -3603,12 +3603,12 @@ void GBuffer::rendershadowmaps(int offset) const
                     {
                         rendershadowmapworld();
                     }
-                    rendershadowmodelbatches();
+                    batching::rendershadowmodelbatches();
                 }
             }
         }
 
-        clearbatchedmapmodels();
+        batching::clearbatchedmapmodels();
     }
 
     glCullFace(GL_BACK);
@@ -3809,7 +3809,7 @@ void GBuffer::preparegbuffer(bool depthclear)
     {
         resetlights();
     }
-    resetmodelbatches();
+    batching::resetmodelbatches();
 }
 
 

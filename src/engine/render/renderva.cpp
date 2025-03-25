@@ -2472,8 +2472,8 @@ void rendermapmodels()
             }
         }
     }
-    rendermapmodelbatches();
-    clearbatchedmapmodels();
+    batching::rendermapmodelbatches();
+    batching::clearbatchedmapmodels();
 
     bool queried = false;
     for(octaentities *oe = visiblemms; oe; oe = oe->next)

@@ -319,7 +319,7 @@ void GBuffer::rendertransparent()
             }
             case 3:
             {
-                rendertransparentmodelbatches(layer+1);
+                batching::rendertransparentmodelbatches(layer+1);
                 break;
             }
         }

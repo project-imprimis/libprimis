@@ -897,7 +897,7 @@ void GBuffer::renderradiancehints() const
     findshadowvas();
     findshadowmms();
 
-    shadowmaskbatchedmodels(false);
+    batching::shadowmaskbatchedmodels(false);
     batchshadowmapmodels();
 
     rh.rotatedynlimits();
@@ -909,7 +909,7 @@ void GBuffer::renderradiancehints() const
     }
     if(rhdynmm)
     {
-        batcheddynamicmodelbounds(1<<shadowside, rh.dynmin, rh.dynmax);
+        batching::batcheddynamicmodelbounds(1<<shadowside, rh.dynmin, rh.dynmax);
     }
     if(rhforce || rh.checkprevbounds() || rh.dynmin.z < rh.dynmax.z || !rh.allcached())
     {
@@ -928,7 +928,7 @@ void GBuffer::renderradiancehints() const
         glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
 
         renderrsmgeom(rhdyntex!=0);
-        rendershadowmodelbatches(rhdynmm!=0);
+        batching::rendershadowmodelbatches(rhdynmm!=0);
         rh.renderslices();
         if(inoq)
         {
@@ -939,7 +939,7 @@ void GBuffer::renderradiancehints() const
         }
     }
 
-    clearbatchedmapmodels();
+    batching::clearbatchedmapmodels();
     shadowmapping = 0;
     endtimer(rhtimer);
     endtimer(rhcputimer);
