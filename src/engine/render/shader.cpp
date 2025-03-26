@@ -452,7 +452,7 @@ void Shader::setglsluniformformat(const char *name, GLenum format, GLsizei size)
     {
         return;
     }
-    for(uint j = 0; j < defaultparams.size(); j++)
+    for(size_t j = 0; j < defaultparams.size(); j++)
     {
         if(defaultparams[j].loc == loc)
         {
@@ -460,21 +460,21 @@ void Shader::setglsluniformformat(const char *name, GLenum format, GLsizei size)
             return;
         }
     }
-    for(uint j = 0; j < uniformlocs.size(); j++)
+    for(size_t j = 0; j < uniformlocs.size(); j++)
     {
         if(uniformlocs[j].loc == loc)
         {
             return;
         }
     }
-    for(uint j = 0; j < globalparams.size(); j++)
+    for(size_t j = 0; j < globalparams.size(); j++)
     {
         if(globalparams[j].loc == loc)
         {
             return;
         }
     }
-    for(uint j = 0; j < localparams.size(); j++)
+    for(size_t j = 0; j < localparams.size(); j++)
     {
         if(localparams[j].loc == loc)
         {
@@ -678,7 +678,7 @@ static void setslotparams(uint& unimask, const std::vector<SlotShaderParamState>
 
 static void setdefaultparams(const std::vector<SlotShaderParamState>& defaultparams, uint& unimask)
 {
-    for(uint i = 0; i < defaultparams.size(); i++)
+    for(size_t i = 0; i < defaultparams.size(); i++)
     {
         const SlotShaderParamState &l = defaultparams.at(i);
         setslotparam(l, unimask, i, &l.val[0]);
@@ -904,7 +904,7 @@ void Shader::setslotparams(const Slot &slot, const VSlot &vslot)
     else
     {
         ::setslotparams(unimask, defaultparams);
-        for(uint i = 0; i < defaultparams.size(); i++)
+        for(size_t i = 0; i < defaultparams.size(); i++)
         {
             const SlotShaderParamState &l = defaultparams.at(i);
             setslotparam(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name.c_str(), &l.val[0]) : &l.val[0]);
@@ -994,7 +994,7 @@ void Shader::cleanup(bool full)
     }
     else
     {
-        for(uint i = 0; i < defaultparams.size(); i++)
+        for(size_t i = 0; i < defaultparams.size(); i++)
         {
             defaultparams[i].loc = -1;
         }
@@ -1218,14 +1218,14 @@ Shader *Shader::setupshader(int newtype, char *rname, const char *ps, const char
     }
     if(variant)
     {
-        for(uint i = 0; i < variant->defaultparams.size(); i++)
+        for(size_t i = 0; i < variant->defaultparams.size(); i++)
         {
             defaultparams.emplace_back(variant->defaultparams[i]);
         }
     }
     else
     {
-        for(uint i = 0; i < slotparams.size(); i++)
+        for(size_t i = 0; i < slotparams.size(); i++)
         {
             defaultparams.emplace_back(slotparams[i]);
         }
@@ -1289,11 +1289,11 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     bool vschanged = false,
          pschanged = false;
     std::vector<char> vsv, psv;
-    for(uint i = 0; i < std::strlen(vs)+1; ++i)
+    for(size_t i = 0; i < std::strlen(vs)+1; ++i)
     {
         vsv.push_back(vs[i]);
     }
-    for(uint i = 0; i < std::strlen(ps)+1; ++i)
+    for(size_t i = 0; i < std::strlen(ps)+1; ++i)
     {
         psv.push_back(ps[i]);
     }
@@ -2028,7 +2028,7 @@ void setslotshader(Slot &s)
         s.shader = stdworldshader;
         return;
     }
-    for(uint i = 0; i < slotparams.size(); i++)
+    for(size_t i = 0; i < slotparams.size(); i++)
     {
         s.params.push_back(slotparams[i]);
     }
@@ -2041,7 +2041,7 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, const Sha
         for(SlotShaderParam &param : params)
         {
             int loc = -1;
-            for(uint j = 0; j < sh.defaultparams.size(); j++)
+            for(size_t j = 0; j < sh.defaultparams.size(); j++)
             {
                 const SlotShaderParamState &dparam = sh.defaultparams[j];
                 if(dparam.name==param.name)
