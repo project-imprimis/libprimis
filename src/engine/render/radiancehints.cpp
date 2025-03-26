@@ -974,7 +974,7 @@ void reflectiveshadowmap::getprojmatrix()
     minz -= zmargin;
     maxz += zmargin;
     vec c;
-    float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir(), c);
+    const float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir(), c);
     // compute the projected bounding box of the sphere
     vec tc;
     model.transform(c, tc);
