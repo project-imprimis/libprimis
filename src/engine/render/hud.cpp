@@ -184,7 +184,7 @@ namespace
 
     void drawcrosshair(int w, int h, int crosshairindex)
     {
-        bool windowhit = UI::hascursor();
+        const bool windowhit = UI::hascursor();
         if(!windowhit && (!showhud || mainmenu))
         {
             return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
@@ -223,7 +223,7 @@ namespace
             }
             chsize = crosshairsize*w/900.0f;
         }
-        vec color = vec(1, 1, 1);
+        const vec color = vec(1, 1, 1);
         if(crosshair->type&Texture::ALPHA)
         {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -234,8 +234,8 @@ namespace
         }
         hudshader->set();
         gle::color(color);
-        float x = cx*w - (windowhit ? 0 : chsize/2.0f),
-              y = cy*h - (windowhit ? 0 : chsize/2.0f);
+        const float x = cx*w - (windowhit ? 0 : chsize/2.0f),
+                    y = cy*h - (windowhit ? 0 : chsize/2.0f);
         glBindTexture(GL_TEXTURE_2D, crosshair->id);
 
         hudquad(x, y, chsize, chsize);
