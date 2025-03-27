@@ -168,7 +168,7 @@ namespace
         }
     }
 
-    void getcrosshair(int *i)
+    void getcrosshair(const int *i)
     {
         std::string name = "";
         if(*i >= 0 && *i < maxcrosshairs)
