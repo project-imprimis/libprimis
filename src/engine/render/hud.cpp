@@ -170,16 +170,16 @@ namespace
 
     void getcrosshair(int *i)
     {
-        const char *name = "";
+        std::string name = "";
         if(*i >= 0 && *i < maxcrosshairs)
         {
             name = crosshairs[*i] ? crosshairs[*i]->name : defaultcrosshair(*i);
-            if(!name)
+            if(name.empty())
             {
                 name = "media/interface/crosshair/default.png";
             }
         }
-        result(name);
+        result(name.c_str());
     }
 
     void drawcrosshair(int w, int h, int crosshairindex)
