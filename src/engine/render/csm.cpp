@@ -321,14 +321,14 @@ int cascadedshadowmap::calcspheresplits(const vec &center, float radius) const
 
 void cascadedshadowmap::updatesplitdist()
 {
-    float lambda = csmsplitweight,
-          nd     = csmnearplane,
-          fd     = csmfarplane,
-          ratio  = fd/nd;
+    const float lambda = csmsplitweight,
+                nd     = csmnearplane,
+                fd     = csmfarplane,
+                ratio  = fd/nd;
     splits[0].nearplane = nd;
     for(int i = 1; i < csmsplits; ++i)
     {
-        float si = i / static_cast<float>(csmsplits);
+        const float si = i / static_cast<float>(csmsplits);
         splits[i].nearplane = lambda*(nd*std::pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
