@@ -212,7 +212,7 @@ void skelmodel::skeleton::calcantipodes()
             bones[i].scheduled = -1;
         }
     }
-    for(uint i = 0; i < schedule.size(); i++)
+    for(size_t i = 0; i < schedule.size(); i++)
     {
         const uint bone = schedule[i];
         const boneinfo &info = bones[bone];
@@ -319,7 +319,7 @@ void skelmodel::skeleton::remapbones()
     }
     if(ragdoll)
     {
-        for(uint i = 0; i < ragdoll->joints.size(); i++)
+        for(size_t i = 0; i < ragdoll->joints.size(); i++)
         {
             boneinfo &info = bones[ragdoll->joints[i].bone];
             if(info.interpindex < 0)
@@ -376,8 +376,8 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
 {
     for(; bone >= 0; bone = bones[bone].parent)
     {
-        uint pos = pitchdeps.size();
-        for(uint j = 0; j < pitchdeps.size(); j++)
+        size_t pos = pitchdeps.size();
+        for(size_t j = 0; j < pitchdeps.size(); j++)
         {
             if(bone <= pitchdeps[j].bone)
             {
@@ -402,11 +402,11 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
 
 std::optional<size_t> skelmodel::skeleton::findpitchdep(int bone) const
 {
-    for(uint i = 0; i < pitchdeps.size(); i++)
+    for(size_t i = 0; i < pitchdeps.size(); i++)
     {
         if(bone <= pitchdeps[i].bone)
         {
-            return bone == pitchdeps[i].bone ? std::optional<uint>(i) : std::optional<uint>(std::nullopt);
+            return bone == pitchdeps[i].bone ? std::optional<size_t>(i) : std::optional<size_t>(std::nullopt);
         }
     }
     return std::nullopt;
@@ -414,11 +414,11 @@ std::optional<size_t> skelmodel::skeleton::findpitchdep(int bone) const
 
 std::optional<size_t> skelmodel::skeleton::findpitchcorrect(int bone) const
 {
-    for(uint i = 0; i < pitchcorrects.size(); i++)
+    for(size_t i = 0; i < pitchcorrects.size(); i++)
     {
         if(bone <= pitchcorrects[i].bone)
         {
-            return bone == pitchcorrects[i].bone ? std::optional<uint>(i) : std::optional<uint>(std::nullopt);
+            return bone == pitchcorrects[i].bone ? std::optional<size_t>(i) : std::optional<size_t>(std::nullopt);
         }
     }
     return std::nullopt;
@@ -468,7 +468,7 @@ void skelmodel::skeleton::initpitchdeps()
             }
         }
     }
-    for(uint i = 0; i < pitchcorrects.size(); i++)
+    for(size_t i = 0; i < pitchcorrects.size(); i++)
     {
         pitchcorrect &c = pitchcorrects[i];
         bones[c.bone].correctindex = i;
@@ -585,7 +585,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
     {
         c.pitchangle = c.pitchtotal = 0;
     }
-    for(uint j = 0; j < pitchtargets.size(); j++)
+    for(size_t j = 0; j < pitchtargets.size(); j++)
     {
         const pitchtarget &t = pitchtargets[j];
         float tpitch = pitch - t.deviated;
@@ -1689,7 +1689,7 @@ void skelmodel::skelmeshgroup::concattagtransform(int i, const matrix4x3 &m, mat
 
 int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
 {
-    for(uint i = 0; i < blendcombos.size(); i++)
+    for(size_t i = 0; i < blendcombos.size(); i++)
     {
         if(blendcombos[i]==c)
         {
@@ -1708,7 +1708,7 @@ void skelmodel::skelmeshgroup::sortblendcombos()
 {
     std::sort(blendcombos.begin(), blendcombos.end(), blendcombo::sortcmp);
     std::vector<int> remap(blendcombos.size(), 0);
-    for(uint i = 0; i < blendcombos.size(); i++)
+    for(size_t i = 0; i < blendcombos.size(); i++)
     {
         remap[blendcombos[i].interpindex] = i;
     }
