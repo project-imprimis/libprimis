@@ -128,7 +128,6 @@ bool cascadedshadowmap::setcsmproperty(int index, float value)
     }
 }
 
-//returns the csm parameter specified by the index passed, 0 if invalid index
 float cascadedshadowmap::getcsmproperty(int index) const
 {
     switch(index)

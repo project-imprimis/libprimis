@@ -45,6 +45,14 @@ class cascadedshadowmap
         int calcbbsplits(const ivec &bbmin, const ivec &bbmax);
         int calcspheresplits(const vec &center, float radius) const;
         bool setcsmproperty(int index, float value);
+
+        /**
+         * @brief Returns the csm parameter specified by index.
+         *
+         * @param index the index to access
+         *
+         * @return value of parameter associated with that index, or zero if no such parameter
+         */
         float getcsmproperty(int index) const;
 
         cascadedshadowmap();
