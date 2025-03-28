@@ -1712,8 +1712,8 @@ void skelmodel::skelmeshgroup::sortblendcombos()
     {
         remap[blendcombos[i].interpindex] = i;
     }
-    auto rendermeshes = getrendermeshes();
-    for(auto i : rendermeshes)
+    std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes = getrendermeshes();
+    for(std::vector<animmodel::Mesh *>::iterator i : rendermeshes)
     {
         skelmesh *s = static_cast<skelmesh *>(*i);
         s->remapverts(remap);
