@@ -1897,7 +1897,7 @@ int findslottex(const char *name)
     return -1;
 }
 
-static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
+static void texture(const char *type, const char *name, const int *rot, const int *xoffset, const int *yoffset, const float *scale)
 {
     int tnum = findslottex(type), matslot;
     if(tnum == Tex_Diffuse)
@@ -1956,7 +1956,7 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
     }
 }
 
-void texgrass(char *name)
+void texgrass(const char *name)
 {
     if(!defslot)
     {
@@ -1967,7 +1967,7 @@ void texgrass(char *name)
     s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : nullptr;
 }
 
-void texscroll(float *scrollS, float *scrollT)
+void texscroll(const float *scrollS, const float *scrollT)
 {
     if(!defslot)
     {
@@ -1978,7 +1978,7 @@ void texscroll(float *scrollS, float *scrollT)
     propagatevslot(s.variants, 1 << VSlot_Scroll);
 }
 
-void texoffset_(int *xoffset, int *yoffset)
+void texoffset_(const int *xoffset, const int *yoffset)
 {
     if(!defslot)
     {
@@ -1989,7 +1989,7 @@ void texoffset_(int *xoffset, int *yoffset)
     propagatevslot(s.variants, 1 << VSlot_Offset);
 }
 
-void texrotate_(int *rot)
+void texrotate_(const int *rot)
 {
     if(!defslot)
     {
@@ -2000,7 +2000,7 @@ void texrotate_(int *rot)
     propagatevslot(s.variants, 1 << VSlot_Rotation);
 }
 
-void texangle_(float *a)
+void texangle_(const float *a)
 {
     if(!defslot)
     {
@@ -2011,7 +2011,7 @@ void texangle_(float *a)
     propagatevslot(s.variants, 1 << VSlot_Angle);
 }
 
-void texscale(float *scale)
+void texscale(const float *scale)
 {
     if(!defslot)
     {
@@ -2022,7 +2022,7 @@ void texscale(float *scale)
     propagatevslot(s.variants, 1 << VSlot_Scale);
 }
 
-void texalpha(float *front, float *back)
+void texalpha(const float *front, const float *back)
 {
     if(!defslot)
     {
@@ -2034,7 +2034,7 @@ void texalpha(float *front, float *back)
     propagatevslot(s.variants, 1 << VSlot_Alpha);
 }
 
-void texcolor(float *r, float *g, float *b)
+void texcolor(const float *r, const float *g, const float *b)
 {
     if(!defslot)
     {
@@ -2045,7 +2045,7 @@ void texcolor(float *r, float *g, float *b)
     propagatevslot(s.variants, 1 << VSlot_Color);
 }
 
-void texrefract(float *k, float *r, float *g, float *b)
+void texrefract(const float *k, const float *r, const float *g, const float *b)
 {
     if(!defslot)
     {
@@ -2064,7 +2064,7 @@ void texrefract(float *k, float *r, float *g, float *b)
     propagatevslot(s.variants, 1 << VSlot_Refract);
 }
 
-void texsmooth(int *id, int *angle)
+void texsmooth(const int *id, const int *angle)
 {
     if(!defslot)
     {
@@ -2074,7 +2074,7 @@ void texsmooth(int *id, int *angle)
     s.smooth = smoothangle(*id, *angle);
 }
 
-void decaldepth(float *depth, float *fade)
+void decaldepth(const float *depth, const float *fade)
 {
     if(!defslot || defslot->type() != Slot::SlotType_Decal)
     {
@@ -2616,7 +2616,7 @@ bool Texture::reload()
     return true;
 }
 
-void reloadtex(char *name)
+void reloadtex(const char *name)
 {
     auto itr = textures.find(path(std::string(name)));
     if(itr == textures.end())
@@ -2815,7 +2815,7 @@ error:
 
 SVARP(screenshotdir, "screenshot");
 
-void screenshot(char *filename)
+void screenshot(const char *filename)
 {
     static string buf;
     int dirlen = 0;
