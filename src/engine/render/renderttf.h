@@ -24,7 +24,14 @@ class TTFRenderer
         void fontsize(int pts = 12);
 
         void ttfbounds(std::string_view str, float &width, float &height, int pts);
-        //returns the dimensions (x,y) of the rendered text, without paying the full cost of rendering
+
+        /**
+         * @brief returns the dimensions (x,y) of the rendered text, without paying the full cost of rendering
+         *
+         * @param message the message to determine size of
+         *
+         * @return ivec2 containing x,y size in pixels
+         */
         ivec2 ttfsize(std::string_view message);
     private:
 
