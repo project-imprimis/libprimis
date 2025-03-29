@@ -44,6 +44,16 @@ class cascadedshadowmap
         void bindparams();              // bind any shader params necessary for lighting
         int calcbbsplits(const ivec &bbmin, const ivec &bbmax);
         int calcspheresplits(const vec &center, float radius) const;
+
+        /**
+         * @brief attempts to set one of the csm properties, subject to bounds coded in this function
+         * prints a warning if the bounds were enforced
+         *
+         * @param index the index corresponding to the type to change
+         * @param value the value to attempt to set
+         *
+         * @return true if a valid index was set, false otherwise
+         */
         bool setcsmproperty(int index, float value);
 
         /**

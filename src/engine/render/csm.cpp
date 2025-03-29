@@ -33,8 +33,6 @@ cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
 {
 }
 
-//attempts to set one of the csm properties, subject to bounds coded in this function
-//prints a warning if the bounds were enforced
 bool cascadedshadowmap::setcsmproperty(int index, float value)
 {
 
