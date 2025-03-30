@@ -30,7 +30,7 @@ class ImageData
         void texmad(const vec &mul, const vec &add);
         void texpremul();
 
-        bool texturedata(const char *tname, bool msg = true, int * const compress = nullptr, int * const wrap = nullptr, const char *tdir = nullptr, int ttype = 0);
+        bool texturedata(const char *tname, bool msg = true, int * compress = nullptr, int * wrap = nullptr, const char *tdir = nullptr, int ttype = 0);
         bool texturedata(const Slot &slot, const Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
 
     private:
