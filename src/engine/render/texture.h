@@ -11,7 +11,7 @@ extern void create3dtexture(int tnum, int w, int h, int d, const void *pixels, i
 extern bool reloadtexture(const char *name);
 extern void clearslots();
 extern void compacteditvslots();
-extern void compactvslots(cube * const c, int n = 8);
+extern void compactvslots(cube *c, int n = 8);
 extern void compactvslot(int &index);
 extern void compactvslot(VSlot &vs);
 extern void reloadtextures();
