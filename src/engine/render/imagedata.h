@@ -31,7 +31,7 @@ class ImageData
         void texpremul();
 
         bool texturedata(const char *tname, bool msg = true, int * const compress = nullptr, int * const wrap = nullptr, const char *tdir = nullptr, int ttype = 0);
-        bool texturedata(Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
+        bool texturedata(const Slot &slot, const Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
 
     private:
         void *owner; //the owner of the pixel data, generally an SDL_Surface

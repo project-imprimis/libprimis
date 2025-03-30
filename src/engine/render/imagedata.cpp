@@ -935,7 +935,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
     return true;
 }
 
-bool ImageData::texturedata(Slot &slot, Slot::Tex &tex, bool msg, int *compress, int *wrap)
+bool ImageData::texturedata(const Slot &slot, const Slot::Tex &tex, bool msg, int *compress, int *wrap)
 {
     return texturedata(tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
 }
