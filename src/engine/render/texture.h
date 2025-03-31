@@ -35,7 +35,6 @@ struct Texture
     enum
     {
         IMAGE      = 0,
-        CUBEMAP    = 1,
         TYPE       = 0xFF,
 
         STUB       = 1<<8,
