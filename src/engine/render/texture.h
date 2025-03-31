@@ -39,10 +39,8 @@ struct Texture
 
         STUB       = 1<<8,
         TRANSIENT  = 1<<9,
-        COMPRESSED = 1<<10,
         ALPHA      = 1<<11,
-        MIRROR     = 1<<12,
-        FLAGS      = 0xFF00
+        MIRROR     = 1<<12
     };
 
     char *name;
