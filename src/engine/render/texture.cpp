@@ -97,7 +97,7 @@ static void shifttexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
     }
 }
 
-template<int BPP>
+template<size_t BPP>
 static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = (sw<<12)/dw,
@@ -139,12 +139,12 @@ static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
             uint t[BPP] = {0};
             for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
             {
-                for(int i = 0; i < BPP; ++i)
+                for(size_t i = 0; i < BPP; ++i)
                 {
                     t[i] += xcur[i];
                 }
             }
-            for(int i = 0; i < BPP; ++i)
+            for(size_t i = 0; i < BPP; ++i)
             {
                 t[i] = (ylow*(t[i] + ((xsrc[i]*xlow + xend[i]*xhigh)>>12)))>>cscale;
             }
@@ -156,27 +156,27 @@ static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
                 {
                     uint c[BPP] = {0};
                     for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
-                        for(int i = 0; i < BPP; ++i)
+                        for(size_t i = 0; i < BPP; ++i)
                         {
                             c[i] += xcur[i];
                         }
-                    for(int i = 0; i < BPP; ++i)
+                    for(size_t i = 0; i < BPP; ++i)
                     {
                         t[i] += ((c[i]<<12) + xsrc[i]*xlow + xend[i]*xhigh)>>cscale;
                     }
                 }
                 uint c[BPP] = {0};
                 for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
-                    for(int i = 0; i < BPP; ++i)
+                    for(size_t i = 0; i < BPP; ++i)
                     {
                         c[i] += xcur[i];
                     }
-                for(int i = 0; i < BPP; ++i)
+                for(size_t i = 0; i < BPP; ++i)
                 {
                     t[i] += (yhigh*(c[i] + ((xsrc[i]*xlow + xend[i]*xhigh)>>12)))>>cscale;
                 }
             }
-            for(int i = 0; i < BPP; ++i)
+            for(size_t i = 0; i < BPP; ++i)
             {
                 dst[i] = (t[i] * area)>>dscale;
             }
