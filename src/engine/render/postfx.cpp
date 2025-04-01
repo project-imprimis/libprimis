@@ -116,7 +116,7 @@ class postfx
                 return;
             }
             timer *postfxtimer = begintimer("postfx");
-            for(uint i = 0; i < postfxpasses.size(); i++)
+            for(size_t i = 0; i < postfxpasses.size(); i++)
             {
                 postfxpass &p = postfxpasses[i];
 
@@ -186,7 +186,7 @@ class postfx
 
         int allocatepostfxtex(int scale)
         {
-            for(uint i = 0; i < postfxtexs.size(); i++)
+            for(size_t i = 0; i < postfxtexs.size(); i++)
             {
                 postfxtex &t = postfxtexs[i];
                 if(t.scale==scale && t.used < 0)
