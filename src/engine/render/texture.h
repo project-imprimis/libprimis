@@ -106,7 +106,7 @@ struct texrotation
     bool flipx, flipy, swapxy;
 };
 
-extern const texrotation texrotations[8];
+extern const std::array<texrotation, 8> texrotations;
 extern Texture *notexture;
 extern int maxvsuniforms, maxfsuniforms;
 

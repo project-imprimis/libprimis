@@ -23,8 +23,8 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
-extern const texrotation texrotations[8] =
-{
+extern const std::array<texrotation, 8> texrotations =
+{{
     { false, false, false }, // 0: default
     { false,  true,  true }, // 1: 90 degrees
     {  true,  true, false }, // 2: 180 degrees
@@ -33,7 +33,7 @@ extern const texrotation texrotations[8] =
     { false,  true, false }, // 5: flip Y
     { false, false,  true }, // 6: transpose
     {  true,  true,  true }, // 7: flipped transpose
-};
+}};
 
 //copies every other pixel into a destination buffer
 //sw,sh are source width/height
