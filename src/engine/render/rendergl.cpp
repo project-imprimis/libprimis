@@ -1232,9 +1232,9 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
         {
             const bvec &wcol = getwatercolor(fogmat),
                        &wdeepcol = getwaterdeepcolor(fogmat);
-            int wfog = getwaterfog(fogmat),
-                wdeep = getwaterdeep(fogmat);
-            float deepfade = std::clamp(below/std::max(wdeep, wfog), 0.0f, 1.0f);
+            const int wfog = getwaterfog(fogmat),
+                      wdeep = getwaterdeep(fogmat);
+            const float deepfade = std::clamp(below/std::max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r(), wcol.g(), wcol.b()).lerp(vec(wdeepcol.r(), wdeepcol.g(), wdeepcol.b()), deepfade);
             overlay.add(color.div(std::min(32.0f + std::max(color.r(), std::max(color.g(), color.b()))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
