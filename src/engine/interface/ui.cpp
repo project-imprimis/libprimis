@@ -4456,7 +4456,7 @@ namespace UI
     };
 
     //new ui command
-    void newui(char *name, char *contents, char *onshow, char *onhide)
+    void newui(const char *name, const char *contents, const char *onshow, const char *onhide)
     {
         auto itr = windows.find(name);
         if(itr != windows.end())
@@ -4473,7 +4473,7 @@ namespace UI
     }
 
     //command
-    void uiallowinput(int *val)
+    void uiallowinput(const int *val)
     {
         if(window)
         {
@@ -4486,7 +4486,7 @@ namespace UI
     }
 
     //command
-    void uieschide (int *val)
+    void uieschide (const int *val)
     {
         if(window)
         {
