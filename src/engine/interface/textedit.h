@@ -84,7 +84,7 @@ class Editor
         char *tostring();
         char *selectiontostring();
         void insert(const char *s);
-        void insertallfrom(const Editor * const b);
+        void insertallfrom(const Editor *b);
         void scrollup();
         void scrolldown();
         void key(int code);
