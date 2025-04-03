@@ -4652,7 +4652,7 @@ namespace UI
     void inituicmds()
     {
 
-        static auto showuicmd = [] (char * name)
+        static auto showuicmd = [] (const char * name)
         {
             if(!world)
             {
@@ -4662,7 +4662,7 @@ namespace UI
             intret(showui(name) ? 1 : 0);
         };
 
-        static auto hideuicmd = [] (char * name)
+        static auto hideuicmd = [] (const char * name)
         {
             if(!world)
             {
@@ -4692,18 +4692,18 @@ namespace UI
             intret(world->hideall());
         };
 
-        static auto toggleuicmd = [] (char * name)
+        static auto toggleuicmd = [] (const char * name)
         {
 
             intret(toggleui(name) ? 1 : 0);
         };
 
-        static auto holduicmd = [] (char * name, int * down)
+        static auto holduicmd = [] (const char * name, const int * down)
         {
             holdui(name, *down!=0);
         };
 
-        static auto uivisiblecmd = [] (char * name)
+        static auto uivisiblecmd = [] (const char * name)
         {
             intret(uivisible(name) ? 1 : 0);
         };
