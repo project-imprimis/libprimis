@@ -1796,15 +1796,6 @@ skelmodel::skelpart::~skelpart()
 {
 }
 
-/**
- * @brief Manages caching of part masking data.
- *
- * Attempts to match the passed vector of uchar with one in the internal static vector.
- * If a matching entry is found, empties the passed vector returns the entry in the cache.
- *
- * @param o a vector of uchar to delete or insert into the internal cache
- * @return the passed value o, or the equivalent entry in the internal cache
- */
 std::vector<uchar> &skelmodel::skelpart::sharepartmask(std::vector<uchar> &o)
 {
     static std::vector<std::vector<uchar>> partmasks;
