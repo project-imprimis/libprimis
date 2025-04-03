@@ -240,7 +240,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
                 conoutf("Invalid model data: hierarchy (%lu) and baseframe (%lu) size mismatch", hierarchy.size(), basejoints.size());
                 return nullptr;
             }
-            for(uint i = 0; i < basejoints.size(); i++)
+            for(size_t i = 0; i < basejoints.size(); i++)
             {
                 const md5hierarchy &h = hierarchy[i];
                 md5joint j = basejoints[i]; //intentionally getting by value to modify temp copy
@@ -433,7 +433,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
         }
         skel->setbonebases(bases);
     }
-    for(uint i = 0; i < meshes.size(); i++)
+    for(size_t i = 0; i < meshes.size(); i++)
     {
         md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
         m.buildverts(basejoints);
@@ -493,7 +493,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
     {
         md5vert &v = vertinfo[i];
         vec pos(0, 0, 0);
-        for(uint k = 0; k < v.count; ++k)
+        for(size_t k = 0; k < v.count; ++k)
         {
             const md5weight &w = weightinfo[v.start+k];
             const md5joint &j = joints[w.joint];
@@ -508,7 +508,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 
         blendcombo c;
         int sorted = 0;
-        for(uint j = 0; j < v.count; ++j)
+        for(size_t j = 0; j < v.count; ++j)
         {
             const md5weight &w = weightinfo[v.start+j];
             sorted = c.addweight(sorted, w.bias, w.joint);
