@@ -1036,15 +1036,16 @@ struct skelmodel : animmodel
     virtual skelmeshgroup *newmeshes() = 0;
     //override methods
 
-    /* Returns the link type of an animmodel relative to a part
+    /**
+     * @brief Returns the link type of an animmodel relative to a part
      *
      * If `this` model's zeroth part's mesh's skel is the same as the passed part's
      * mesh's skel, returns Link_Reuse
      * If the passed model parameter is not linkable, or does not meet the criteria above,
      * returns Link_Tag.
      *
-     * m *must* point to a valid animmodel object
-     * p *must* point to a valid part object which points to a valid skeleton.
+     * @param m must point to a valid animmodel object
+     * @param p must point to a valid part object which points to a valid skeleton.
      */
     int linktype(const animmodel *m, const part *p) const override final;
     bool skeletal() const override final;
