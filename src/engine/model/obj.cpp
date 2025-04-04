@@ -196,7 +196,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         }
                         c++;
                     }
-                    auto itr = verthash.find(vkey);
+                    std::unordered_map<ivec, uint>::iterator itr = verthash.find(vkey);
                     uint *index;
                     if(itr == verthash.end())
                     {
