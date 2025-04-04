@@ -75,16 +75,7 @@ namespace
 //externally relevant functionality
 
 //used to start a timer in some part of the code, cannot be used outside of rendering part
-/**
- * @brief activates a timer that starts its query from a given point in the code
- *
- * Creates a new timer if necessary.
- *
- * @param name The name of the timer to use
- * @param gpu Toggles timing GPU rendering time
- *
- * @return a pointer to the relevant timer
- */
+
 timer *begintimer(const char *name, bool gpu)
 {
     if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery)))
