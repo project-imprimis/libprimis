@@ -72,7 +72,7 @@ bool obj::skeletal() const
 bool obj::objmeshgroup::load(const char *filename, float smooth)
 {
     int len = std::strlen(filename);
-    if(len < 4 || strcasecmp(&filename[len-4], ".obj"))
+    if(len < 4 || strcasecmp(&filename[len-4], ".obj")) //note: strcasecmp is not in std namespace, it is POSIX
     {
         return false;
     }

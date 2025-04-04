@@ -637,7 +637,7 @@ namespace
     {
         for(auto &[k, km] : keyms)
         {
-            if(!strcasecmp(km.name, key))
+            if(!strcasecmp(km.name, key)) //note: strcasecmp is not in std namespace, it is POSIX
             {
                 return &km;
             }
