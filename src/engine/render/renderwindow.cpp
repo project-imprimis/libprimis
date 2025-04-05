@@ -120,8 +120,8 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, cons
     gle::defvertex(2);
     gle::deftexcoord0();
     settexture("media/interface/background.png", 0); //main menu background
-    float bu = win_w*0.67f/256.0f,
-          bv = win_h*0.67f/256.0f;
+    const float bu = win_w*0.67f/256.0f,
+                bv = win_h*0.67f/256.0f;
     bgquad(0, 0, win_w, win_h, backgroundu, backgroundv, bu, bv);
 
     glEnable(GL_BLEND);
@@ -130,10 +130,10 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, cons
     bgquad(0, 0, win_w, win_h);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     // Set position and size of logo
-    float logo_h = (1.f/3.f)*std::min(win_w, win_h),
-          logo_w = logo_h*(2.f/1.f), // Aspect ratio of logo, defined here
-          logo_x = 0.5f*(win_w - logo_w),
-          logo_y = 0.5f*(win_h*0.5f - logo_h);
+    const float logo_h = (1.f/3.f)*std::min(win_w, win_h),
+                logo_w = logo_h*(2.f/1.f), // Aspect ratio of logo, defined here
+                logo_x = 0.5f*(win_w - logo_w),
+                logo_y = 0.5f*(win_h*0.5f - logo_h);
 
     settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw() > 1280 || hudh() > 800)
               ? "<premul>media/interface/logo_1024.png" //1024x wide logo
@@ -146,9 +146,9 @@ static void renderbackgroundview(int win_w, int win_h, const char *caption, cons
     if(caption)
     {
         int tw = text_width(caption);
-        float tsz = 0.04f*std::min(win_w, win_h)/FONTH,
-              tx  = 0.5f*(win_w - tw*tsz),
-              ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
+        const float tsz = 0.04f*std::min(win_w, win_h)/FONTH,
+                    tx  = 0.5f*(win_w - tw*tsz),
+                    ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         //draw_text(caption, 0, 0);
         ttr.renderttf(caption, {0xFF, 0xFF, 0xFF, 0}, 0, 0);
