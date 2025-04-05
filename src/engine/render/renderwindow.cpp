@@ -289,28 +289,28 @@ static void renderprogressview(int w, int h, float bar, const char *text)   // a
     gle::defvertex(2);
     gle::deftexcoord0();
 
-    float fh = 0.060f*std::min(w, h),
-          fw = fh * 15,
-          fx = renderedframe ? w - fw - fh/4 : 0.5f * (w - fw),
-          fy = renderedframe ? fh/4 : h - fh * 1.5f;
+    const float fh = 0.060f*std::min(w, h),
+                fw = fh * 15,
+                fx = renderedframe ? w - fw - fh/4 : 0.5f * (w - fw),
+                fy = renderedframe ? fh/4 : h - fh * 1.5f;
     settexture("media/interface/loading_frame.png", 3);
     bgquad(fx, fy, fw, fh);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float bw  = fw * (512 - 2*8)/512.0f,
-          bh  = fh * 20/32.0f,
-          bx  = fx + fw * 8/512.0f,
-          by  = fy + fh * 6/32.0f,
-          su1 = 0/32.0f,
-          su2 = 8/32.0f,
-          sw  = fw * 8/512.0f,
-          eu1 = 24/32.0f,
-          eu2 = 32/32.0f,
-          ew  = fw * 8/512.0f,
-          mw  = bw - sw - ew,
-          ex  = bx+sw + std::max(mw*bar, fw * 8/512.0f);
+    const float bw  = fw * (512 - 2*8)/512.0f,
+                bh  = fh * 20/32.0f,
+                bx  = fx + fw * 8/512.0f,
+                by  = fy + fh * 6/32.0f,
+                su1 = 0/32.0f,
+                su2 = 8/32.0f,
+                sw  = fw * 8/512.0f,
+                eu1 = 24/32.0f,
+                eu2 = 32/32.0f,
+                ew  = fw * 8/512.0f,
+                mw  = bw - sw - ew,
+                ex  = bx+sw + std::max(mw*bar, fw * 8/512.0f);
     if(bar > 0)
     {
         settexture("media/interface/loading_bar.png", 3);
@@ -320,7 +320,7 @@ static void renderprogressview(int w, int h, float bar, const char *text)   // a
     }
     if(text)
     {
-        int tw = text_width(text);
+        const int tw = text_width(text);
         float tsz = bh * 0.6f/FONTH;
         if(tw * tsz > mw)
         {
