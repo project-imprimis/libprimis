@@ -1,3 +1,5 @@
+#ifndef MD5_H_
+#define MD5_H_
 
 class md5 final : public skelloader<md5>
 {
@@ -76,3 +78,5 @@ class md5 final : public skelloader<md5>
         };
         static skelcommands<md5> md5commands;
 };
+
+#endif
