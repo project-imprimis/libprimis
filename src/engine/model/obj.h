@@ -1,8 +1,6 @@
 #ifndef OBJ_H_
 #define OBJ_H_
 
-struct obj;
-
 struct obj final : vertloader<obj>
 {
     obj(std::string name);
