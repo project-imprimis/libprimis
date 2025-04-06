@@ -34,13 +34,15 @@ struct obj final : vertloader<obj>
     }
 
     bool loaddefaultparts() override final;
-    /* note about objcommands variable:
-     *
-     * this variable is never used anywhere at all in the codebase
-     * it only exists to call its constructor which adds commands to the cubescript
-     * ident hash table of the given template type (obj)
-     */
-    static vertcommands<obj> objcommands;
+
+    private:
+        /* note about objcommands variable:
+         *
+         * this variable is never used anywhere at all in the codebase
+         * it only exists to call its constructor which adds commands to the cubescript
+         * ident hash table of the given template type (obj)
+         */
+        static vertcommands<obj> objcommands;
 };
 
 #endif
