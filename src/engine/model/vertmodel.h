@@ -1,3 +1,6 @@
+#ifndef VERTMODEL_H_
+#define VERTMODEL_H_
+
 class vertmodel : public animmodel
 {
     public:
@@ -383,3 +386,5 @@ struct vertcommands : modelcommands<MDL>
         }
     }
 };
+
+#endif
