@@ -1,3 +1,5 @@
+#ifndef GLTF_H_
+#define GLTF_H_
 
 class gltf final : public skelloader<gltf>
 {
@@ -67,3 +69,5 @@ class gltf final : public skelloader<gltf>
 
         static skelcommands<gltf> gltfcommands;
 };
+
+#endif
