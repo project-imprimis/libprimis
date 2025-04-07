@@ -1,3 +1,6 @@
+#ifndef BIH_H_
+#define BIH_H_
+
 struct CollisionInfo;
 
 class BIH
@@ -99,3 +102,4 @@ class BIH
 
 extern bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist, int mode, float &dist);
 
+#endif
