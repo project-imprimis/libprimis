@@ -597,7 +597,8 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
 {
     model *m = nullptr;
     const char *mname = entities::entmodel();
-    if(mname && (m = loadmodel(mname)))
+    m = loadmodel(mname);
+    if(mname && m)
     {
         m->collisionbox(eo, es);
         if(es.x > es.y)
