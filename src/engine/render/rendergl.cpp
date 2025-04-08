@@ -962,7 +962,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     vec up     = vec(spotx).mul(spotscale),
         right  = vec(spoty).mul(spotscale),
         center = vec(dir).mul(radius).add(origin);
-    vec4<float> v[5];
+    std::array<vec4<float>, 5> v;
     sx1 = sy1 = sz1 = 1;
     sx2 = sy2 = sz2 = -1;
     camprojmatrix.transform(vec(center).sub(right).sub(up), v[0]);
