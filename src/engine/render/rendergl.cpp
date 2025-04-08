@@ -884,7 +884,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
         }
     };
 
-    vec4<float> v[8];
+    std::array<vec4<float>, 8> v;
     sx1 = sy1 = 1;
     sx2 = sy2 = -1;
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmin.z), v[0]);
