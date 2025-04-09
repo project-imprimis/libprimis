@@ -910,10 +910,10 @@ class stainrenderer
 
         void gentris(const cube &cu, int orient, const ivec &o, int size, const materialsurface *mat = nullptr, int vismask = 0)
         {
-            vec pos[Face_MaxVerts+4];
+            std::array<vec, Face_MaxVerts+4> pos;
             int numverts = 0,
                 numplanes = 1;
-            vec planes[2];
+            std::array<vec, 2> planes;
             if(mat)
             {
                 planes[0] = vec(0, 0, 0);
@@ -1021,7 +1021,7 @@ class stainrenderer
                         pos[1] = pos[2];
                         pos[2] = pos[3];
                     }
-                    numv = polyclip(pos, 3, pt, ptc - stainradius, ptc + stainradius, v1);
+                    numv = polyclip(pos.data(), 3, pt, ptc - stainradius, ptc + stainradius, v1);
                     if(numv<3)
                     {
                         continue;
@@ -1029,7 +1029,7 @@ class stainrenderer
                 }
                 else
                 {
-                    numv = polyclip(pos, numverts, pt, ptc - stainradius, ptc + stainradius, v1);
+                    numv = polyclip(pos.data(), numverts, pt, ptc - stainradius, ptc + stainradius, v1);
                     if(numv<3)
                     {
                         continue;
