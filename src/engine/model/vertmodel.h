@@ -288,16 +288,16 @@ struct vertcommands : modelcommands<MDL>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir.c_str(), model);
+        std::string filename = std::format("{}/{}", MDL::dir, model);
         part &mdl = MDL::loading->addpart();
         if(mdl.index)
         {
             mdl.disablepitch();
         }
-        mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename).c_str(), *smooth > 0 ? std::cos(std::clamp(*smooth, 0.0f, 180.0f)/RAD) : 2);
         if(!mdl.meshes)
         {
-            conoutf("could not load %s", filename);
+            conoutf("could not load %s", filename.c_str());
         }
         else
         {

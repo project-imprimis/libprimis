@@ -5,6 +5,7 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <format>
 #include <memory>
 #include <optional>
 
