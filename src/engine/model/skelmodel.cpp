@@ -912,8 +912,8 @@ GLint skelmodel::skeleton::getblendoffset(const UniformLoc &u)
     if(itr == blendoffsets.end())
     {
         itr = blendoffsets.insert( { Shader::lastshader->program, -1 } ).first;
-        DEF_FORMAT_STRING(offsetname, "%s[%d]", u.name, 2*numgpubones);
-        (*itr).second = glGetUniformLocation(Shader::lastshader->program, offsetname);
+        std::string offsetname = std::format("{}[{}]", u.name, 2*numgpubones);
+        (*itr).second = glGetUniformLocation(Shader::lastshader->program, offsetname.c_str());
     }
     return (*itr).second;
 }
