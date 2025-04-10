@@ -12,6 +12,8 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <format>
+
 #include "aa.h"
 #include "grass.h"
 #include "hdr.h"
@@ -1786,8 +1788,8 @@ void initrenderglcmds()
         }
         else
         {
-            DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
-            result(pos);
+            std::string pos = std::format("{} {} {}",floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
+            result(pos.c_str());
         }
     }), "", Id_Command);
 }
