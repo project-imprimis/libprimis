@@ -11,6 +11,8 @@
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
+#include <format>
+
 #include "ao.h"
 #include "rendergl.h"
 #include "renderlights.h"
@@ -74,8 +76,7 @@ Shader *loadambientobscuranceshader()
         opts[optslen++] = 'p';
     }
     opts[optslen] = '\0';
-
-    DEF_FORMAT_STRING(name, "ambientobscurance%s%d", opts, aotaps);
+    std::string name = std::format("ambientobscurance{}{}", opts, aotaps);
     return generateshader(name, "ambientobscuranceshader \"%s\" %d", opts, aotaps);
 }
 
