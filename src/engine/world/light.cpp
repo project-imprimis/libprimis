@@ -24,289 +24,291 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-static void setsunlightdir()
+namespace
 {
-    sunlightdir = vec(sunlightyaw/RAD, sunlightpitch/RAD);
-    for(int k = 0; k < 3; ++k)
+    void setsunlightdir()
     {
-        if(std::fabs(sunlightdir[k]) < 1e-5f)
+        sunlightdir = vec(sunlightyaw/RAD, sunlightpitch/RAD);
+        for(int k = 0; k < 3; ++k)
         {
-            sunlightdir[k] = 0;
+            if(std::fabs(sunlightdir[k]) < 1e-5f)
+            {
+                sunlightdir[k] = 0;
+            }
         }
+        sunlightdir.normalize();
+        clearradiancehintscache();
     }
-    sunlightdir.normalize();
-    clearradiancehintscache();
-}
 
-static void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
-{
-    if(!c.ext || c.ext->maxverts < numverts)
+    void setsurfaces(cube &c, std::array<surfaceinfo, 6> surfs, const vertinfo *verts, int numverts)
     {
-        newcubeext(c, numverts, false);
+        if(!c.ext || c.ext->maxverts < numverts)
+        {
+            newcubeext(c, numverts, false);
+        }
+        std::copy(c.ext->surfaces.begin(), c.ext->surfaces.end(), surfs.begin());
+        std::memcpy(c.ext->verts(), verts, numverts*sizeof(vertinfo));
     }
-    std::copy(c.ext->surfaces.begin(), c.ext->surfaces.end(), surfs.begin());
-    std::memcpy(c.ext->verts(), verts, numverts*sizeof(vertinfo));
-}
 
-static void clearsurfaces(std::array<cube, 8> &c)
-{
-    for(int i = 0; i < 8; ++i)
+    void clearsurfaces(std::array<cube, 8> &c)
     {
-        if(c[i].ext)
-        {
-            for(int j = 0; j < 6; ++j)
-            {
-                surfaceinfo &surf = c[i].ext->surfaces[j];
-                if(!surf.used())
-                {
-                    continue;
-                }
-                surf.clear();
-                int numverts = surf.numverts&Face_MaxVerts;
-                if(numverts)
-                {
-                    if(!(c[i].merged&(1<<j)))
-                    {
-                        surf.numverts &= ~Face_MaxVerts;
-                        continue;
-                    }
-                    vertinfo *verts = c[i].ext->verts() + surf.verts;
-                    for(int k = 0; k < numverts; ++k)
-                    {
-                        vertinfo &v = verts[k];
-                        v.norm = 0;
-                    }
-                }
-            }
-        }
-        if(c[i].children)
-        {
-            clearsurfaces(*(c[i].children));
-        }
-    }
-}
-
-
-static constexpr int lightcacheentries = 1024;
-
-static struct lightcacheentry
-{
-    int x, y;
-} lightcache[lightcacheentries];
-
-static int lightcachehash(int x, int y)
-{
-    return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1));
-}
-
-static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
-{
-    std::array<surfaceinfo, 6> surfaces;
-    vertinfo litverts[6*2*Face_MaxVerts];
-    int numlitverts = 0;
-    surfaces.fill(surfaceinfo());
-    for(int i = 0; i < 6; ++i) //for each face of the cube
-    {
-        int usefaces = usefacemask&0xF;
-        usefacemask >>= 4;
-        if(!usefaces)
-        {
-            if(!c.ext)
-            {
-                continue;
-            }
-            surfaceinfo &surf = c.ext->surfaces[i];
-            int numverts = surf.totalverts();
-            if(numverts)
-            {
-                std::memcpy(&litverts[numlitverts], c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
-                surf.verts = numlitverts;
-                numlitverts += numverts;
-            }
-            continue;
-        }
-
-        VSlot &vslot = lookupvslot(c.texture[i], false),
-             *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : nullptr;
-        Shader *shader = vslot.slot->shader;
-        int shadertype = shader->type;
-        if(layer)
-        {
-            shadertype |= layer->slot->shader->type;
-        }
-        surfaceinfo &surf = surfaces[i];
-        vertinfo *curlitverts = &litverts[numlitverts];
-        int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
-        ivec mo(co);
-        int msz = size,
-            convex = 0;
-        if(numverts)
-        {
-            const vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
-            for(int j = 0; j < numverts; ++j)
-            {
-                curlitverts[j].set(verts[j].getxyz());
-            }
-            if(c.merged&(1<<i))
-            {
-                msz = 1<<calcmergedsize(mo, size, verts, numverts);
-                mo.mask(~(msz-1));
-                if(!(surf.numverts&Face_MaxVerts))
-                {
-                    surf.verts = numlitverts;
-                    surf.numverts |= numverts;
-                    numlitverts += numverts;
-                }
-            }
-            else if(!flataxisface(c, i))
-            {
-                convex = faceconvexity(verts, numverts, size);
-            }
-        }
-        else
-        {
-            std::array<ivec, 4> v;
-            genfaceverts(c, i, v);
-            if(!flataxisface(c, i))
-            {
-                convex = faceconvexity(v);
-            }
-            int order = usefaces&4 || convex < 0 ? 1 : 0;
-            ivec vo = ivec(co).mask(0xFFF).shl(3);
-            curlitverts[numverts++].set(v[order].mul(size).add(vo));
-            if(usefaces&1)
-            {
-                curlitverts[numverts++].set(v[order+1].mul(size).add(vo));
-            }
-            curlitverts[numverts++].set(v[order+2].mul(size).add(vo));
-            if(usefaces&2)
-            {
-                curlitverts[numverts++].set(v[(order+3)&3].mul(size).add(vo));
-            }
-        }
-
-        vec pos[Face_MaxVerts],
-            n[Face_MaxVerts],
-            po(ivec(co).mask(~0xFFF));
-        for(int j = 0; j < numverts; ++j)
-        {
-            pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
-        }
-
-        int smooth = vslot.slot->smooth;
-        plane planes[2];
-        int numplanes = 0;
-        planes[numplanes++].toplane(pos[0], pos[1], pos[2]);
-        if(numverts < 4 || !convex)
-        {
-            for(int k = 0; k < numverts; ++k)
-            {
-                findnormal(pos[k], smooth, planes[0], n[k]);
-            }
-        }
-        else
-        {
-            planes[numplanes++].toplane(pos[0], pos[2], pos[3]);
-            vec avg = vec(planes[0]).add(planes[1]).normalize();
-            findnormal(pos[0], smooth, avg, n[0]);
-            findnormal(pos[1], smooth, planes[0], n[1]);
-            findnormal(pos[2], smooth, avg, n[2]);
-            for(int k = 3; k < numverts; k++)
-            {
-                findnormal(pos[k], smooth, planes[1], n[k]);
-            }
-        }
-        for(int k = 0; k < numverts; ++k)
-        {
-            curlitverts[k].norm = encodenormal(n[k]);
-        }
-        if(!(surf.numverts&Face_MaxVerts))
-        {
-            surf.verts = numlitverts;
-            surf.numverts |= numverts;
-            numlitverts += numverts;
-        }
-        if(preview)
-        {
-            surf.numverts |= preview;
-            continue;
-        }
-        int surflayer = BlendLayer_Top;
-        if(vslot.layer)
-        {
-            int x1 = curlitverts[numverts-1].x,
-                y1 = curlitverts[numverts-1].y,
-                x2 = x1,
-                y2 = y1;
-            for(int j = 0; j < numverts-1; ++j)
-            {
-                const vertinfo &v = curlitverts[j];
-                x1 = std::min(x1, static_cast<int>(v.x));
-                y1 = std::min(y1, static_cast<int>(v.y));
-                x2 = std::max(x2, static_cast<int>(v.x));
-                y2 = std::max(y2, static_cast<int>(v.y));
-            }
-            x2 = std::max(x2, x1+1);
-            y2 = std::max(y2, y1+1);
-            x1 = (x1>>3) + (co.x&~0xFFF);
-            y1 = (y1>>3) + (co.y&~0xFFF);
-            x2 = ((x2+7)>>3) + (co.x&~0xFFF);
-            y2 = ((y2+7)>>3) + (co.y&~0xFFF);
-        }
-        surf.numverts |= surflayer;
-    }
-    if(preview)
-    {
-        setsurfaces(c, surfaces, litverts, numlitverts);
-    }
-    else
-    {
-        for(const surfaceinfo &surf : surfaces)
-        {
-            if(surf.used())
-            {
-                cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-                std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
-                std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
-                if(c.ext != ext)
-                {
-                    setcubeext(c, ext);
-                }
-                break;
-            }
-        }
-    }
-}
-
-static void calcsurfaces(std::array<cube, 8> &c, const ivec &co, int size)
-{
-    for(int i = 0; i < 8; ++i)
-    {
-        ivec o(i, co, size);
-        if(c[i].children)
-        {
-            calcsurfaces(*(c[i].children), o, size >> 1);
-        }
-        else if(!(c[i].isempty()))
+        for(int i = 0; i < 8; ++i)
         {
             if(c[i].ext)
             {
-                for(surfaceinfo &s : c[i].ext->surfaces)
+                for(int j = 0; j < 6; ++j)
                 {
-                    s.clear();
+                    surfaceinfo &surf = c[i].ext->surfaces[j];
+                    if(!surf.used())
+                    {
+                        continue;
+                    }
+                    surf.clear();
+                    int numverts = surf.numverts&Face_MaxVerts;
+                    if(numverts)
+                    {
+                        if(!(c[i].merged&(1<<j)))
+                        {
+                            surf.numverts &= ~Face_MaxVerts;
+                            continue;
+                        }
+                        vertinfo *verts = c[i].ext->verts() + surf.verts;
+                        for(int k = 0; k < numverts; ++k)
+                        {
+                            vertinfo &v = verts[k];
+                            v.norm = 0;
+                        }
+                    }
                 }
             }
-            int usefacemask = 0;
-            for(int j = 0; j < 6; ++j)
+            if(c[i].children)
             {
-                if(c[i].texture[j] != Default_Sky && (!(c[i].merged & (1 << j)) || (c[i].ext && c[i].ext->surfaces[j].numverts & Face_MaxVerts)))
+                clearsurfaces(*(c[i].children));
+            }
+        }
+    }
+
+    constexpr int lightcacheentries = 1024;
+
+    struct lightcacheentry
+    {
+        int x, y;
+    } lightcache[lightcacheentries];
+
+    int lightcachehash(int x, int y)
+    {
+        return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1));
+    }
+
+    void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
+    {
+        std::array<surfaceinfo, 6> surfaces;
+        vertinfo litverts[6*2*Face_MaxVerts];
+        int numlitverts = 0;
+        surfaces.fill(surfaceinfo());
+        for(int i = 0; i < 6; ++i) //for each face of the cube
+        {
+            int usefaces = usefacemask&0xF;
+            usefacemask >>= 4;
+            if(!usefaces)
+            {
+                if(!c.ext)
                 {
-                    usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
+                    continue;
+                }
+                surfaceinfo &surf = c.ext->surfaces[i];
+                int numverts = surf.totalverts();
+                if(numverts)
+                {
+                    std::memcpy(&litverts[numlitverts], c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
+                    surf.verts = numlitverts;
+                    numlitverts += numverts;
+                }
+                continue;
+            }
+
+            VSlot &vslot = lookupvslot(c.texture[i], false),
+                 *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : nullptr;
+            Shader *shader = vslot.slot->shader;
+            int shadertype = shader->type;
+            if(layer)
+            {
+                shadertype |= layer->slot->shader->type;
+            }
+            surfaceinfo &surf = surfaces[i];
+            vertinfo *curlitverts = &litverts[numlitverts];
+            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
+            ivec mo(co);
+            int msz = size,
+                convex = 0;
+            if(numverts)
+            {
+                const vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
+                for(int j = 0; j < numverts; ++j)
+                {
+                    curlitverts[j].set(verts[j].getxyz());
+                }
+                if(c.merged&(1<<i))
+                {
+                    msz = 1<<calcmergedsize(mo, size, verts, numverts);
+                    mo.mask(~(msz-1));
+                    if(!(surf.numverts&Face_MaxVerts))
+                    {
+                        surf.verts = numlitverts;
+                        surf.numverts |= numverts;
+                        numlitverts += numverts;
+                    }
+                }
+                else if(!flataxisface(c, i))
+                {
+                    convex = faceconvexity(verts, numverts, size);
                 }
             }
-            if(usefacemask)
+            else
             {
-                calcsurfaces(c[i], o, size, usefacemask);
+                std::array<ivec, 4> v;
+                genfaceverts(c, i, v);
+                if(!flataxisface(c, i))
+                {
+                    convex = faceconvexity(v);
+                }
+                int order = usefaces&4 || convex < 0 ? 1 : 0;
+                ivec vo = ivec(co).mask(0xFFF).shl(3);
+                curlitverts[numverts++].set(v[order].mul(size).add(vo));
+                if(usefaces&1)
+                {
+                    curlitverts[numverts++].set(v[order+1].mul(size).add(vo));
+                }
+                curlitverts[numverts++].set(v[order+2].mul(size).add(vo));
+                if(usefaces&2)
+                {
+                    curlitverts[numverts++].set(v[(order+3)&3].mul(size).add(vo));
+                }
+            }
+
+            vec pos[Face_MaxVerts],
+                n[Face_MaxVerts],
+                po(ivec(co).mask(~0xFFF));
+            for(int j = 0; j < numverts; ++j)
+            {
+                pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
+            }
+
+            int smooth = vslot.slot->smooth;
+            plane planes[2];
+            int numplanes = 0;
+            planes[numplanes++].toplane(pos[0], pos[1], pos[2]);
+            if(numverts < 4 || !convex)
+            {
+                for(int k = 0; k < numverts; ++k)
+                {
+                    findnormal(pos[k], smooth, planes[0], n[k]);
+                }
+            }
+            else
+            {
+                planes[numplanes++].toplane(pos[0], pos[2], pos[3]);
+                vec avg = vec(planes[0]).add(planes[1]).normalize();
+                findnormal(pos[0], smooth, avg, n[0]);
+                findnormal(pos[1], smooth, planes[0], n[1]);
+                findnormal(pos[2], smooth, avg, n[2]);
+                for(int k = 3; k < numverts; k++)
+                {
+                    findnormal(pos[k], smooth, planes[1], n[k]);
+                }
+            }
+            for(int k = 0; k < numverts; ++k)
+            {
+                curlitverts[k].norm = encodenormal(n[k]);
+            }
+            if(!(surf.numverts&Face_MaxVerts))
+            {
+                surf.verts = numlitverts;
+                surf.numverts |= numverts;
+                numlitverts += numverts;
+            }
+            if(preview)
+            {
+                surf.numverts |= preview;
+                continue;
+            }
+            int surflayer = BlendLayer_Top;
+            if(vslot.layer)
+            {
+                int x1 = curlitverts[numverts-1].x,
+                    y1 = curlitverts[numverts-1].y,
+                    x2 = x1,
+                    y2 = y1;
+                for(int j = 0; j < numverts-1; ++j)
+                {
+                    const vertinfo &v = curlitverts[j];
+                    x1 = std::min(x1, static_cast<int>(v.x));
+                    y1 = std::min(y1, static_cast<int>(v.y));
+                    x2 = std::max(x2, static_cast<int>(v.x));
+                    y2 = std::max(y2, static_cast<int>(v.y));
+                }
+                x2 = std::max(x2, x1+1);
+                y2 = std::max(y2, y1+1);
+                x1 = (x1>>3) + (co.x&~0xFFF);
+                y1 = (y1>>3) + (co.y&~0xFFF);
+                x2 = ((x2+7)>>3) + (co.x&~0xFFF);
+                y2 = ((y2+7)>>3) + (co.y&~0xFFF);
+            }
+            surf.numverts |= surflayer;
+        }
+        if(preview)
+        {
+            setsurfaces(c, surfaces, litverts, numlitverts);
+        }
+        else
+        {
+            for(const surfaceinfo &surf : surfaces)
+            {
+                if(surf.used())
+                {
+                    cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
+                    std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
+                    std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
+                    if(c.ext != ext)
+                    {
+                        setcubeext(c, ext);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    void calcsurfaces(std::array<cube, 8> &c, const ivec &co, int size)
+    {
+        for(int i = 0; i < 8; ++i)
+        {
+            ivec o(i, co, size);
+            if(c[i].children)
+            {
+                calcsurfaces(*(c[i].children), o, size >> 1);
+            }
+            else if(!(c[i].isempty()))
+            {
+                if(c[i].ext)
+                {
+                    for(surfaceinfo &s : c[i].ext->surfaces)
+                    {
+                        s.clear();
+                    }
+                }
+                int usefacemask = 0;
+                for(int j = 0; j < 6; ++j)
+                {
+                    if(c[i].texture[j] != Default_Sky && (!(c[i].merged & (1 << j)) || (c[i].ext && c[i].ext->surfaces[j].numverts & Face_MaxVerts)))
+                    {
+                        usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
+                    }
+                }
+                if(usefacemask)
+                {
+                    calcsurfaces(c[i], o, size, usefacemask);
+                }
             }
         }
     }
