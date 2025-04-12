@@ -46,7 +46,7 @@ namespace
         hudnotextureshader->set();
 
         int dirs = 0;
-        float size = damagecompasssize/100.0f*std::min(h, w)/2.0f;
+        const float size = damagecompasssize/100.0f*std::min(h, w)/2.0f;
         for(float &dir : damagedirs)
         {
             if(dir > 0)
@@ -60,9 +60,9 @@ namespace
                 }
                 dirs++;
 
-                float logscale = 32,
-                      scale = log(1 + (logscale - 1)*dir) / std::log(logscale),
-                      offset = -size/2.0f-std::min(h, w)/4.0f;
+                const float logscale = 32,
+                            offset = -size/2.0f-std::min(h, w)/4.0f;
+                float scale = log(1 + (logscale - 1)*dir) / std::log(logscale);
                 matrix4x3 m;
                 m.identity();
                 m.settranslation(w/2, h/2, 0);
