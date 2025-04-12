@@ -130,8 +130,8 @@ class postfx
                     tex = allocatepostfxtex(p.outputscale);
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
                 }
-                int w = tex >= 0 ? std::max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
-                    h = tex >= 0 ? std::max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+                const int w = tex >= 0 ? std::max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
+                          h = tex >= 0 ? std::max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
                 glViewport(0, 0, w, h);
                 p.shader->set();
                 LOCALPARAM(params, p.params);
