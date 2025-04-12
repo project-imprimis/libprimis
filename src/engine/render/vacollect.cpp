@@ -714,7 +714,7 @@ void vacollect::optimize()
 void vacollect::genverts(uchar *buf)
 {
     vertex *f = reinterpret_cast<vertex *>(buf);
-    for(vertex i : verts)
+    for(const vertex &i : verts)
     {
         const vertex &v = i;
         *f = v;
