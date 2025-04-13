@@ -15,6 +15,15 @@ struct timer;
 extern timer *begintimer(const char *name, bool gpu = true);
 extern void endtimer(timer *t);
 
+/**
+ * @brief draws timers to the screen using hardcoded text
+ *
+ * If frametimer gvar is enabled, also shows the overall frame time;
+ * otherwise, prints out all timer information available
+ *
+ * @param conw console width to draw into
+ * @param framemillis frame time inside the current frame
+ */
 extern void printtimers(int conw, int framemillis);
 extern int frametimer;
 extern void synctimers();

@@ -154,12 +154,6 @@ void cleanuptimers()
     timerorder.clear();
 }
 
-/*
- * draws timers to the screen using hardcoded text
- *
- * if frametimer gvar is enabled, also shows the overall frame time
- * otherwise, prints out all timer information available
- */
 void printtimers(int conw, int framemillis)
 {
     if(!frametimer && !usetimers)
