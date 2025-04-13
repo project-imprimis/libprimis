@@ -1,5 +1,8 @@
 #ifndef RENDERTIMERS_H_
 #define RENDERTIMERS_H_
+
+extern int frametimer;
+
 struct timer;
 
 /**
@@ -25,7 +28,6 @@ extern void endtimer(timer *t);
  * @param framemillis frame time inside the current frame
  */
 extern void printtimers(int conw, int framemillis);
-extern int frametimer;
 extern void synctimers();
 
 /**
