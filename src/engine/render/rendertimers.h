@@ -18,6 +18,13 @@ extern void endtimer(timer *t);
 extern void printtimers(int conw, int framemillis);
 extern int frametimer;
 extern void synctimers();
+
+/**
+ * @brief deletes the elements in the timers global vector
+ *
+ * Deletes the elements in the `timer` global variable. If any GPU queries are active,
+ * they are cancelled so as not to waste the GPU's time
+ */
 extern void cleanuptimers();
 
 #endif
