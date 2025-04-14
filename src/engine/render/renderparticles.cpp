@@ -1640,10 +1640,10 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
     {
         return;
     }
-    int basetype = parts[type]->parttype()&0xFF;
-    bool flare = (basetype == PT_TAPE),
-         inv = (dir&0x20)!=0,
-         taper = (dir&0x40)!=0 && !seedemitter;
+    const int basetype = parts[type]->parttype()&0xFF;
+    const bool flare = (basetype == PT_TAPE),
+               inv = (dir&0x20)!=0,
+               taper = (dir&0x40)!=0 && !seedemitter;
     dir &= 0x1F;
     for(int i = 0; i < num; ++i)
     {
@@ -1737,7 +1737,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         else
         {
-            vec d = vec(to).sub(from).rescale(vel); //velocity
+            const vec d = vec(to).sub(from).rescale(vel); //velocity
             particle *n = newparticle(from, d, randomint(fade*3)+1, type, color, size, gravity);
             if(parts[type]->parttype()&PT_COLLIDE)
             {
