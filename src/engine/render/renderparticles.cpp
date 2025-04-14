@@ -1492,8 +1492,8 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
     float collidez = parts[type]->parttype()&PT_COLLIDE ?
                      p.z - rootworld.raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->hasstain() ? collideerror : 0) :
                      -1;
-    int fmin = 1,
-        fmax = fade*3;
+    const int fmin = 1,
+              fmax = fade*3;
     for(int i = 0; i < num; ++i)
     {
         int x, y, z;
@@ -1503,8 +1503,8 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
             y = randomint(radius*2)-radius;
             z = randomint(radius*2)-radius;
         } while(x*x + y*y + z*z > radius*radius);
-        vec tmp = vec(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
-        int f = (num < 10) ? (fmin + randomint(fmax)) : (fmax - (i*(fmax-fmin))/(num-1)); //help deallocater by using fade distribution rather than random
+        const vec tmp = vec(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+        const int f = (num < 10) ? (fmin + randomint(fmax)) : (fmax - (i*(fmax-fmin))/(num-1)); //help deallocater by using fade distribution rather than random
         newparticle(p, tmp, f, type, color, size, gravity)->val = collidez;
     }
 }
