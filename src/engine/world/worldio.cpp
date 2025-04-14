@@ -5,6 +5,8 @@
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
 
+#include <format>
+
 #include "light.h"
 #include "octaedit.h"
 #include "octaworld.h"
@@ -160,9 +162,9 @@ void mapcfgname()
     const char *mname = clientmap.c_str();
     string name;
     validmapname(name, mname);
-    DEF_FORMAT_STRING(cfgname, "media/map/%s.cfg", name);
-    path(cfgname);
-    result(cfgname);
+    std::string cfgname = std::format("media/map/{}.cfg", name);
+    cfgname = path(cfgname);
+    result(cfgname.c_str());
 }
 
 void backup(const char *name, const char *backupname)
