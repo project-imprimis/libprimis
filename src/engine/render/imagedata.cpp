@@ -708,6 +708,11 @@ void ImageData::texnormal(int emphasis)
     replace(d);
 }
 
+bool ImageData::matchstring(std::string_view s, size_t len, std::string_view d)
+{
+    return len == d.size() && !std::memcmp(s.data(), d.data(), d.size());
+}
+
 bool ImageData::texturedata(const char *tname, bool msg, int * const compress, int * const wrap, const char *tdir, int ttype)
 {
     auto parsetexcommands = [] (const char *&cmds, const char *&cmd, size_t &len, std::array<const char *, 4> &arg)
