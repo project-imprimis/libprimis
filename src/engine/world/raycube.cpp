@@ -384,7 +384,7 @@ struct raycubeinfo
           dent;
     vec v,
         invray;
-    cube *levels[20]; //NOTE: levels[20] magically assumes mapscale <20
+    std::array<cube *, 20> levels; //NOTE: levels[20] magically assumes mapscale <20
     int lshift,
         elvl;
     ivec lsizemask;
