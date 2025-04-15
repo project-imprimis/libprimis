@@ -298,7 +298,7 @@ int cubeworld::lookupmaterial(const vec &v)
     return c->material;
 }
 
-const cube *neighborstack[32];
+std::array<const cube *, 32> neighborstack;
 int neighbordepth = -1;
 
 const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &ro, int &rsize)

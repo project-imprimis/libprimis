@@ -219,7 +219,7 @@ extern int familysize(const cube &c);
 extern void freeocta(std::array<cube, 8> *&c);
 extern void validatec(std::array<cube, 8> *&c, int size = 0);
 
-extern const cube *neighborstack[32];
+extern std::array<const cube *, 32> neighborstack;
 extern int neighbordepth;
 extern int getmippedtexture(const cube &p, int orient);
 extern void forcemip(cube &c, bool fixtex = true);
