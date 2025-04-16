@@ -101,11 +101,11 @@ namespace
 
     Texture *cloudoverlay = nullptr;
 
-    Texture *loadskyoverlay(const char *basename)
+    Texture *loadskyoverlay(std::string_view basename)
     {
-        const char *ext = std::strrchr(basename, '.');
+        const char *ext = std::strrchr(basename.data(), '.');
         string name;
-        copystring(name, makerelpath("media/sky", basename));
+        copystring(name, makerelpath("media/sky", basename.data()));
         Texture *t = notexture;
         if(ext)
         {
@@ -122,7 +122,7 @@ namespace
         }
         if(t==notexture)
         {
-            conoutf(Console_Error, "could not load sky overlay texture %s", basename);
+            conoutf(Console_Error, "could not load sky overlay texture %s", basename.data());
         }
         return t;
     }
