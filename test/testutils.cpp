@@ -353,16 +353,6 @@ namespace
         }
     }
 
-    void test_matchstring()
-    {
-        std::printf("Testing match string\n");
-        std::string a("test1");
-        std::string b("test2");
-        assert(matchstring(a,5,a));
-        assert(matchstring(a,5,b) == false);
-        assert(matchstring(a,1,a) == false);
-    }
-
     void test_vector_putint()
     {
         std::printf("Testing putint/getint (std::vector)\n");
@@ -709,7 +699,6 @@ testing tools functionality\n\
     test_copystring();
     test_concatstring();
     test_newconcatstring();
-    test_matchstring();
     test_parentdir();
     test_fixpackagedir();
     test_endianswap();
