@@ -16,6 +16,8 @@
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
 
+#include <format>
+
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"
@@ -82,8 +84,8 @@ namespace
             }
             else
             {
-                DEF_FORMAT_STRING(ext, "_%s.jpg", side);
-                concatstring(name, ext);
+                std::string ext = std::format("_{}.jpg", side);
+                concatstring(name, ext.c_str());
                 if((texs[i] = textureload(name, 3, true, false))==notexture)
                 {
                     std::strcpy(name+std::strlen(name)-3, "png");
