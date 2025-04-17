@@ -74,12 +74,12 @@ void TTFRenderer::renderttf(const char* message, SDL_Color col, int x, int y, fl
     TTFSurface tex = renderttfgl(msg.c_str(), col, wrap);
     if(tex.tex)
     {
-        float w = tex.w*scale,
-              h = tex.h*scale;
+        const float w = tex.w*scale,
+                    h = tex.h*scale;
         SETSHADER(hudrect);
         gle::colorf(1, 1, 1, 1);
-        int tw = tex.w,
-            th = tex.h;
+        const int tw = tex.w,
+                  th = tex.h;
         gle::defvertex(2);
         gle::deftexcoord0();
         gle::begin(GL_TRIANGLE_STRIP);
