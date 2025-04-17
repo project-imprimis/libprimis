@@ -148,7 +148,7 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
 
 void TTFRenderer::fontsize(int pts)
 {
-    auto itr = fontcache.find(pts);
+    std::map<int, TTF_Font *>::iterator itr = fontcache.find(pts);
     if(itr == fontcache.end())
     {
         TTF_Font* newfont = TTF_OpenFont(path, pts);
