@@ -124,12 +124,12 @@ TTFRenderer::TTFSurface TTFRenderer::renderttfgl(const char* message, SDL_Color 
     {
         return {0, 0, 0};
     }
-    GLuint tex = 0;
     SDL_Color rgbcol = {col.b, col.g, col.r, 0};
     SDL_Surface* text = TTF_RenderUTF8_Blended_Wrapped(f, message, rgbcol, wrap);
     TTFSurface tts;
     if(text)
     {
+        GLuint tex = 0;
         glEnable(GL_BLEND);
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glGenTextures(1, &tex);
