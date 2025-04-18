@@ -532,7 +532,7 @@ bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const p
         }
 
         plink l;
-        auto itr = links.find(e); //search for a plink that looks like the pedge we have
+        std::unordered_set<plink>::iterator itr = links.find(e); //search for a plink that looks like the pedge we have
         if(itr != links.end())
         {
             l = *itr;
