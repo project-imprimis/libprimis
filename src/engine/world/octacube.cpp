@@ -156,8 +156,8 @@ bool cube::poly::clippoly(const facebounds &b)
         py = verts[numverts-1].y;
     for(int i = 0; i < numverts; ++i)
     {
-        int x = verts[i].x,
-            y = verts[i].y;
+        const int x = verts[i].x,
+                  y = verts[i].y;
         if(x < b.u1)
         {
             if(px > b.u2)
@@ -206,8 +206,8 @@ bool cube::poly::clippoly(const facebounds &b)
     py = verts1[numverts1-1].y;
     for(int i = 0; i < numverts1; ++i)
     {
-        int x = verts1[i].x,
-            y = verts1[i].y;
+        const int x = verts1[i].x,
+                  y = verts1[i].y;
         if(y < b.v1)
         {
             if(py > b.v2)
