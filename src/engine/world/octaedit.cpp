@@ -1170,7 +1170,7 @@ void pasteblock(const block3 &b, selinfo &sel, bool local)
 
 prefab *loadprefab(const char *name, bool msg = true)
 {
-    auto itr = prefabs.find(name);
+    static std::unordered_map<std::string, prefab>::iterator itr = prefabs.find(name);
     if(itr != prefabs.end())
     {
         return &(*itr).second;
@@ -2065,7 +2065,7 @@ void initoctaeditcmds()
 
     static auto delprefab = [] (const char *name) -> void
     {
-        auto itr = prefabs.find(name);
+        static std::unordered_map<std::string, prefab>::iterator itr = prefabs.find(name);
         if(itr != prefabs.end())
         {
             (*itr).second.cleanup();
@@ -2098,7 +2098,7 @@ void initoctaeditcmds()
             multiplayerwarn();
             return;
         }
-        auto itr = prefabs.find(name);
+        static std::unordered_map<std::string, prefab>::iterator itr = prefabs.find(name);
         prefab *b = nullptr;
         if(itr == prefabs.end())
         {
