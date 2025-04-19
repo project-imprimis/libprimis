@@ -40,7 +40,7 @@
 
 struct prefabheader
 {
-    char magic[4];
+    std::array<char, 4> magic;
     int version;
 };
 
@@ -1187,7 +1187,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         return nullptr;
     }
     prefabheader hdr;
-    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || std::memcmp(hdr.magic, "OEBR", 4))
+    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || std::memcmp(hdr.magic.data(), "OEBR", 4))
     {
         delete f;
         if(msg)
@@ -2126,7 +2126,7 @@ void initoctaeditcmds()
         }
         prefabheader hdr;
         std::string headermagic = "OEBR";
-        std::copy(headermagic.begin(), headermagic.end(), hdr.magic);
+        std::copy(headermagic.begin(), headermagic.end(), hdr.magic.begin());
         hdr.version = 0;
         f->write(&hdr, sizeof(hdr));
         streambuf<uchar> s(f);
