@@ -224,7 +224,7 @@ void SoundEngine::stopmusic()
 }
 
 //SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
-void SoundEngine::setaudiodriver(char * f)
+void SoundEngine::setaudiodriver(const char * f)
 {
     audiodriver = std::string(f);
     shouldinitaudio = true;
@@ -412,7 +412,7 @@ const Mix_Music *SoundEngine::loadmusic(const char *name)
 }
 
 //cmd
-void SoundEngine::startmusic(char *name, char *cmd)
+void SoundEngine::startmusic(const char *name, const char *cmd)
 {
     if(nosound)
     {
@@ -1113,22 +1113,22 @@ void SoundEngine::resetsound()
     }
 }
 
-void SoundEngine::registersound (char *name, int *vol)
+void SoundEngine::registersound (const char *name, const int *vol)
 {
     intret(gamesounds.addsound(name, *vol, 0));
 }
 
-void SoundEngine::mapsound(char *name, int *vol, int *maxuses)
+void SoundEngine::mapsound(const char *name, const int *vol, const int *maxuses)
 {
     intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : std::max(1, *maxuses)));
 }
 
-void SoundEngine::altsound(char *name, int *vol)
+void SoundEngine::altsound(const char *name, const int *vol)
 {
     gamesounds.addalt(name, *vol);
 }
 
-void SoundEngine::altmapsound(char *name, int *vol)
+void SoundEngine::altmapsound(const char *name, const int *vol)
 {
     mapsounds.addalt(name, *vol);
 }
