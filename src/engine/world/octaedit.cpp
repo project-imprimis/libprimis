@@ -2141,7 +2141,7 @@ void initoctaeditcmds()
     };
     addcommand("saveprefab",    reinterpret_cast<identfun>(+saveprefab), "s", Id_Command);
 
-    static auto pasteprefab = [] (char *name) -> void
+    static auto pasteprefab = [] (const char *name) -> void
     {
         if(!name[0] || noedit() || (nompedit && multiplayer))
         {
