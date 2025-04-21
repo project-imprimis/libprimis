@@ -1149,7 +1149,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown, int map)
 {
-    auto itr = keyms.find(code);
+    std::map<int, KeyMap>::iterator itr = keyms.find(code);
     if(itr != keyms.end() && (*itr).second.pressed)
     {
         execbind((*itr).second, isdown, map); // allow pressed keys to release
@@ -1233,7 +1233,7 @@ void conoutf(int type, const char *fmt, ...)
 
 const char *getkeyname(int code)
 {
-    auto itr = keyms.find(code);
+    std::map<int, KeyMap>::iterator itr = keyms.find(code);
     return itr != keyms.end() ? (*itr).second.name : nullptr;
 }
 
