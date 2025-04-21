@@ -1290,14 +1290,14 @@ void initconsolecmds()
     addcommand("fullconsole", reinterpret_cast<identfun>(fullconsole), "iN$", Id_Command);
     addcommand("toggleconsole", reinterpret_cast<identfun>(toggleconsole), "", Id_Command);
 
-    static auto conskipcmd = [] (int *n)
+    static auto conskipcmd = [] (const int *n)
     {
         setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
     };
     addcommand("conskip", reinterpret_cast<identfun>(+conskipcmd), "i", Id_Command);
 
 
-    static auto miniconskipcmd = [] (int *n)
+    static auto miniconskipcmd = [] (const int *n)
     {
         setconskip(miniconskip, miniconfilter, *n);
     };
@@ -1306,37 +1306,37 @@ void initconsolecmds()
     addcommand("clearconsole", reinterpret_cast<identfun>(clearconsole), "", Id_Command);
     addcommand("keymap", reinterpret_cast<identfun>(keymap), "is", Id_Command);
 
-    static auto bind = [] (char *key, char *action)
+    static auto bind = [] (const char *key, const char *action)
     {
         bindkey(key, action, KeyMap::Action_Default, "bind");
     };
     addcommand("bind", reinterpret_cast<identfun>(+bind), "ss", Id_Command);
 
-    static auto specbind = [] (char *key, char *action)
+    static auto specbind = [] (const char *key, const char *action)
     {
         bindkey(key, action, KeyMap::Action_Spectator, "specbind");
     };
     addcommand("specbind", reinterpret_cast<identfun>(+specbind), "ss", Id_Command);
 
-    static auto editbind = [] (char *key, char *action)
+    static auto editbind = [] (const char *key, const char *action)
     {
         bindkey(key, action, KeyMap::Action_Editing, "editbind");
     };
     addcommand("editbind", reinterpret_cast<identfun>(+editbind), "ss", Id_Command);
 
-    static auto getbindcmd = [] (char *key)
+    static auto getbindcmd = [] (const char *key)
     {
         getbind(key, KeyMap::Action_Default);
     };
     addcommand("getbind", reinterpret_cast<identfun>(+getbindcmd), "s", Id_Command);
 
-    static auto getspecbind = [] (char *key)
+    static auto getspecbind = [] (const char *key)
     {
         getbind(key, KeyMap::Action_Spectator);
     };
     addcommand("getspecbind", reinterpret_cast<identfun>(+getspecbind), "s", Id_Command);
 
-    static auto geteditbind = [] (char *key)
+    static auto geteditbind = [] (const char *key)
     {
         getbind(key, KeyMap::Action_Editing);
     };
