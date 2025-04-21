@@ -866,7 +866,7 @@ namespace
             ident *id;
         };
         int numargs;
-        tagval args[3];
+        std::array<tagval, 3> args;
     };
     std::vector<releaseaction> releaseactions;
 
@@ -907,7 +907,7 @@ namespace
                 }
                 else
                 {
-                    execute(isdown ? nullptr : ra.id, ra.args, ra.numargs);
+                    execute(isdown ? nullptr : ra.id, ra.args.data(), ra.numargs);
                 }
                 releaseactions.erase(releaseactions.begin() + i);
                 i--;
@@ -1248,7 +1248,7 @@ tagval *addreleaseaction(ident *id, int numargs)
     ra.key = keypressed;
     ra.id = id;
     ra.numargs = numargs;
-    return ra.args;
+    return ra.args.data();
 }
 
 //print to a stream f the binds in the binds vector
