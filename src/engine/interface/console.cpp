@@ -49,12 +49,6 @@ struct std::hash<FilesKey>
 class CompletionFinder
 {
     public:
-        enum
-        {
-            Files_Directory = 0,
-            Files_List,
-        };
-
         void resetcomplete();
         void addfilecomplete(const char *command, char *dir, char *ext);
         void addlistcomplete(const char *command, char *list);
@@ -65,6 +59,12 @@ class CompletionFinder
         void writecompletions(std::fstream& f) const;
 
     private:
+
+        enum
+        {
+            Files_Directory = 0,
+            Files_List,
+        };
 
         struct FilesVal
         {
