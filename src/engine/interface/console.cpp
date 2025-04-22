@@ -93,6 +93,16 @@ class CompletionFinder
 
         void addcomplete(const char *command, int type, char *dir, char *ext);
 
+        /**
+         * @brief Prepends string with specified prefix string.
+         *
+         * Prepends string d with the contents of s. Resulting string takes up at most
+         * `len` characters, including null termination
+         *
+         * @param d the string to be prepended
+         * @param s the string to prepend
+         * @param len the maximum length of the output string
+         */
         char *prependstring(char *d, const char *s, size_t len) const;
 };
 
