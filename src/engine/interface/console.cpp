@@ -183,7 +183,7 @@ void CompletionFinder::complete(char *s, size_t maxlen, const char *cmdprefix)
     FilesVal *f = nullptr;
     if(completesize)
     {
-        char *end = std::strchr(&s[cmdlen], ' ');
+        const char *end = std::strchr(&s[cmdlen], ' ');
         if(end)
         {
             f = completions[stringslice(&s[cmdlen], end).str];
