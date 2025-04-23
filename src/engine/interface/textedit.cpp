@@ -983,8 +983,8 @@ void Editor::draw(int x, int y, int color)
 
 // global
 
-std::vector<Editor *> editors;
-Editor *textfocus = nullptr;
+static std::vector<Editor *> editors;
+static Editor *textfocus = nullptr;
 
 void readyeditors()
 {
