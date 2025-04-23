@@ -1106,7 +1106,7 @@ void textload(const char *file)
 }
 
 
-void textinit(std::string name, char *file, char *initval)
+void textinit(std::string_view name, char *file, char *initval)
 {
     if(identflags&Idf_Overridden)
     {
