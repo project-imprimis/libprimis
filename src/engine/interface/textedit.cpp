@@ -1146,5 +1146,5 @@ void inittextcmds()
     addcommand("textselectall", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->selectall();; }), "", Id_Command);;
     addcommand("textclear", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->clear();; }), "", Id_Command);;
     addcommand("textcurrentline", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; result(textfocus->currentline().text);; }), "", Id_Command);;
-    addcommand("textexec", reinterpret_cast<identfun>(+[] (int *selected) { if(!textfocus || identflags&Idf_Overridden) return; /* execute script commands from the buffer (0=all, 1=selected region only)*/ char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring(); execute(script); delete[] script;; }), "i", Id_Command);
+    addcommand("textexec", reinterpret_cast<identfun>(+[] (const int *selected) { if(!textfocus || identflags&Idf_Overridden) return; /* execute script commands from the buffer (0=all, 1=selected region only)*/ char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring(); execute(script); delete[] script;; }), "i", Id_Command);
 }
