@@ -1128,7 +1128,7 @@ void textinit(std::string_view name, char *file, char *initval)
     }
 }
 
-static constexpr std::string pastebuffer = "#pastebuffer";
+static const std::string pastebuffer = "#pastebuffer";
 
 void inittextcmds()
 {
