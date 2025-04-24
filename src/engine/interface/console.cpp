@@ -49,6 +49,12 @@ struct std::hash<FilesKey>
 class CompletionFinder
 {
     public:
+
+        /**
+         * @brief Resets any saved completions.
+         *
+         * Resets completions added by addfilecomplete(),  addlistcomplete()
+         */
         void resetcomplete();
         void addfilecomplete(const char *command, char *dir, char *ext);
         void addlistcomplete(const char *command, char *list);
