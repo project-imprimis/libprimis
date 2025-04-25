@@ -1137,7 +1137,7 @@ void inittextcmds()
     addcommand("textshow", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; /* @DEBUG return the start of the buffer*/ EditLine line; line.combinelines(textfocus->lines); result(line.text); line.clear();; }), "", Id_Command);
     addcommand("textfocus", reinterpret_cast<identfun>(textfocuscmd), "si", Id_Command);
     addcommand("textprev", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; editors.insert(editors.begin(), textfocus); editors.pop_back();; }), "", Id_Command);; // return to the previous editor
-    addcommand("textmode", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); }; }), "i", Id_Command);
+    addcommand("textmode", reinterpret_cast<identfun>(+[] (const int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); }; }), "i", Id_Command);
     addcommand("textsave", reinterpret_cast<identfun>(textsave), "s", Id_Command);
     addcommand("textload", reinterpret_cast<identfun>(textload), "s", Id_Command);
     addcommand("textcopy", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b);; }), "", Id_Command);;
