@@ -3472,8 +3472,8 @@ void GBuffer::rendershadowmaps(int offset) const
         {
             continue;
         }
-        lightinfo &l = lights[sm.light];
-        extentity *e = l.ent >= 0 ? ents[l.ent] : nullptr;
+        const lightinfo &l = lights[sm.light];
+        const extentity *e = l.ent >= 0 ? ents[l.ent] : nullptr;
         int border, sidemask;
         if(l.spot)
         {
@@ -3496,7 +3496,7 @@ void GBuffer::rendershadowmaps(int offset) const
         shadowdir = l.dir;
         shadowspot = l.spot;
 
-        shadowmesh *mesh = e ? findshadowmesh(l.ent, *e) : nullptr;
+        const shadowmesh *mesh = e ? findshadowmesh(l.ent, *e) : nullptr;
 
         findshadowvas();
         findshadowmms();
