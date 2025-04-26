@@ -594,7 +594,7 @@ void SoundEngine::SoundType::reset() //cleanup each channel
 }
 void SoundEngine::SoundType::cleanupsamples()
 {
-    for (auto& [k, v]: samples)
+    for(auto& [k, v]: samples)
     {
         v.cleanup();
     }
