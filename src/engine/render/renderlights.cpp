@@ -3649,7 +3649,7 @@ void GBuffer::rendershadowatlas()
         rendercsmshadowmaps();
     }
 
-    int smoffset = shadowmaps.size();
+    const int smoffset = shadowmaps.size();
 
     packlights();
 
