@@ -688,8 +688,8 @@ void ImageData::collapsespec()
 void ImageData::texnormal(int emphasis)
 {
     ImageData d(w, h, 3);
-    uchar *src = data,
-          *dst = d.data;
+    const uchar *src = data;
+    uchar *dst = d.data;
     for(int y = 0; y < h; ++y)
     {
         for(int x = 0; x < w; ++x)
