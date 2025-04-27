@@ -1565,6 +1565,17 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->eye = *v;
     }
 
+
+    /**
+     * @brief adds a ragdoll tri
+     *
+     * Adds a triangle to the current ragdoll with the specified indices.
+     * No effect if there is no current ragdoll.
+     *
+     * @param v1 first vertex index
+     * @param v2 second vertex index
+     * @param v3 third vertex index.
+     */
     static void rdtri(const int *v1, const int *v2, const int *v3)
     {
         ragdollskel *ragdoll = checkragdoll();
