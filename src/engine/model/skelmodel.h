@@ -1496,8 +1496,14 @@ struct skelcommands : modelcommands<MDL>
         m->skel->applybonemask(bonemask, MDL::hitzones, *id < 0 ? 0xFF : *id);
     }
 
-    // if a skeletal model is being loaded, and meets the criteria for a ragdoll,
-    // returns the pointer to that ragdollskel (new one made if necessary), returns nullptr otherwise
+    /**
+     * @brief Checks for an available ragdoll to modify.
+     *
+     * If a skeletal model is being loaded, and meets the criteria for a ragdoll,
+     * returns the pointer to that ragdollskel (new one made if necessary), returns nullptr otherwise
+     *
+     * @return pointer to the loading skelmodel's ragdoll, or nullptr if no such object available
+     */
     static ragdollskel *checkragdoll()
     {
         if(!MDL::loading)
