@@ -1,7 +1,10 @@
 #ifndef RAGDOLL_H_
 #define RAGDOLL_H_
 
-/* ragdollskel defines a skeletal animation object for use by skelmodel, which
+/**
+ * @brief A representation of a ragdoll for a class of models.
+ *
+ * ragdollskel defines a skeletal animation object for use by skelmodel, which
  * is able to be dynamically modified by physics (rather than by an animation file)
  *
  * ragdollskel objects are owned by skelmodel::skeleton objects and therefore there
