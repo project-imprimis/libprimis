@@ -4,7 +4,7 @@
 struct _TTF_Font;
 typedef struct _TTF_Font TTF_Font;
 
-class TTFRenderer
+class TTFRenderer final
 {
     public:
         //starts up SDL2_TTF
@@ -36,7 +36,7 @@ class TTFRenderer
     private:
 
         // TTF Surface information
-        struct TTFSurface
+        struct TTFSurface final
         {
             GLuint tex;
             int w;
