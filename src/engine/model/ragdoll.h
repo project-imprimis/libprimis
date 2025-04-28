@@ -100,7 +100,9 @@ class ragdollskel final
         void setuprotfrictions();
 };
 
-/*
+/**
+ * @brief An individual instantiation of a ragdoll for a skeletal model
+ *
  * ragdolldata defines a class corresponding to a specific instantiation of a ragdoll
  * in the context of a dynent. Many ragdolldata objects may point to the same ragdollskel
  * object.
