@@ -69,7 +69,7 @@ VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by 
 ///////////////////////////////////////
 
 //edgegroup: struct used for tjoint joining (to reduce sparklies between geom faces)
-struct edgegroup
+struct edgegroup final
 {
     ivec slope, origin;
     int axis;
@@ -88,7 +88,7 @@ edgegroup::edgegroup()
 }
 
 template<>
-struct std::hash<edgegroup>
+struct std::hash<edgegroup> final
 {
     size_t operator()(const edgegroup &g) const
     {
@@ -106,7 +106,7 @@ namespace
         CubeEdge_Dup   = 1<<3
     };
 
-    struct cubeedge
+    struct cubeedge final
     {
         cube *c;
         int next, offset;

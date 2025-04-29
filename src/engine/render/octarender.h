@@ -3,14 +3,14 @@
 
 struct octaentities;
 
-struct tjoint
+struct tjoint final
 {
     int next;
     ushort offset;
     uchar edge;
 };
 
-struct vertex
+struct vertex final
 {
     vec pos;
     vec4<uchar> norm;
@@ -20,7 +20,7 @@ struct vertex
 
 struct materialsurface;
 
-struct elementset
+struct elementset final
 {
     ushort texture;
     union
@@ -34,7 +34,7 @@ struct elementset
     ushort length, minvert, maxvert;
 };
 
-struct grasstri
+struct grasstri final
 {
     std::array<vec, 4> v;
     int numv;
@@ -47,7 +47,7 @@ struct grasstri
 
 constexpr int vasortsize = 64;
 
-class vtxarray
+class vtxarray final
 {
     public:
         vtxarray *parent;
