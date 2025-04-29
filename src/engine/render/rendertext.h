@@ -1,8 +1,8 @@
 #ifndef RENDERTEXT_H_
 #define RENDERTEXT_H_
-struct font
+struct font final
 {
-    struct charinfo
+    struct charinfo final
     {
         float x, y, w, h, offsetx, offsety, advance;
         int tex;
