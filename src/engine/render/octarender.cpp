@@ -493,14 +493,14 @@ void destroyva(vtxarray *va, bool reparent)
     wverts -= va->verts;
     wtris -= va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
     allocva--;
-    auto itr = std::find(valist.begin(), valist.end(), va);
+    std::vector<vtxarray *>::iterator itr = std::find(valist.begin(), valist.end(), va);
     if(itr != valist.end())
     {
         valist.erase(itr);
     }
     if(!va->parent)
     {
-        auto itr2 = std::find(valist.begin(), valist.end(), va);
+        std::vector<vtxarray *>::iterator itr2 = std::find(valist.begin(), valist.end(), va);
         if(itr2 != valist.end())
         {
             valist.erase(itr2);
@@ -510,7 +510,7 @@ void destroyva(vtxarray *va, bool reparent)
     {
         if(va->parent)
         {
-            auto itr = std::find(va->parent->children.begin(), va->parent->children.end(), va);
+            std::vector<vtxarray *>::iterator itr = std::find(va->parent->children.begin(), va->parent->children.end(), va);
             if(itr != va->parent->children.end())
             {
                 va->parent->children.erase(itr);
