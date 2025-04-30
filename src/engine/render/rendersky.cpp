@@ -48,13 +48,13 @@ namespace
 
     void loadsky(const char *basename, std::array<const Texture *, 6> &texs)
     {
-
-        struct cubemapside
+        struct cubemapside final
         {
             GLenum target;
             const char *name;
             bool flipx, flipy, swapxy;
         };
+
         static const cubemapside cubemapsides[6] =
         {
             { GL_TEXTURE_CUBE_MAP_NEGATIVE_X, "lf", false, true,  true  },
