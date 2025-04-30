@@ -1879,12 +1879,12 @@ void cubeworld::octarender()                               // creates va s for a
     varoot.clear();
     vc.updateva(*worldroot, ivec(0, 0, 0), mapsize()/2, csi-1);
     flushvbo();
-    explicitsky = false;
+    setexplicitsky(false);
     for(size_t i = 0; i < valist.size(); i++)
     {
         if(valist[i]->sky)
         {
-            explicitsky = true;
+            setexplicitsky(true);
             break;
         }
     }

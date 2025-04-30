@@ -349,6 +349,11 @@ namespace
 
 // externally relevant functionality
 
+void setexplicitsky(bool val)
+{
+    explicitsky = val;
+}
+
 bool limitsky()
 {
     return explicitsky && (useskytexture || editmode);
