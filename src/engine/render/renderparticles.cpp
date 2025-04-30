@@ -1756,8 +1756,8 @@ static void regularflame(int type, const vec &p, float radius, float height, int
     {
         return;
     }
-    float size = scale * std::min(radius, height);
-    vec v(0, 0, std::min(1.0f, height)*speed);
+    const float size = scale * std::min(radius, height);
+    const vec v(0, 0, std::min(1.0f, height)*speed);
     for(int i = 0; i < density; ++i)
     {
         vec s = p;
