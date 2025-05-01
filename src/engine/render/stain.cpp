@@ -1074,10 +1074,13 @@ class stainrenderer
 
 std::vector<stainrenderer> stains;
 
-/* initstains: sets up each entry in the stains global variable array using init() method
+/**
+ * @brief Sets up stains array.
+ *
+ * Sets up each entry in the stains global variable array using init() method
  * and then preloads them
  *
- * fails to do anything if initing is set (early game loading time)
+ * Fails to do anything if initing is set (early game loading time)
  */
 void initstains()
 {
