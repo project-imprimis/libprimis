@@ -1,7 +1,7 @@
 #ifndef RENDERMODEL_H_
 #define RENDERMODEL_H_
 
-struct mapmodelinfo
+struct mapmodelinfo final
 {
     std::string name;
     model *m,
