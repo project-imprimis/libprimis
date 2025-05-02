@@ -3,7 +3,7 @@
 
 struct vtxarray;
 
-struct occludequery
+struct occludequery final
 {
     const void *owner;
     GLuint id;
@@ -12,7 +12,7 @@ struct occludequery
     void startquery() const;
 };
 
-class vfc
+class vfc final
 {
     public:
         int isfoggedcube(const ivec &o, int size) const;
@@ -33,7 +33,7 @@ class vfc
                              vfcDfar;
 };
 
-class Occluder
+class Occluder final
 {
     public:
         void setupmodelquery(occludequery *q);
