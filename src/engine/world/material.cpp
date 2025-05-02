@@ -1258,7 +1258,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
     std::memset(mi.matliquidtiles, 0, sizeof(mi.matliquidtiles));
     std::memset(mi.matsolidtiles, 0, sizeof(mi.matsolidtiles));
     int hasmats = 0;
-    for(vtxarray *va = visibleva; va; va = va->next)
+    for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(!va->matsurfs || va->occluded >= Occlude_BB || va->curvfc >= ViewFrustumCull_Fogged)
         {
@@ -1286,7 +1286,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
             mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
-                materialsurface &m = va->matbuf[i];
+                const materialsurface &m = va->matbuf[i];
                 //skip if only rendering edit mat boxes or non-water mat
                 if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MatSurf_EditOnly)
                 {
@@ -1324,7 +1324,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
             mi.matrefractsy2 = std::max(mi.matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
-                materialsurface &m = va->matbuf[i];
+                const materialsurface &m = va->matbuf[i];
                 if((m.material&MatFlag_Volume) != Mat_Glass)
                 {
                     i += m.skip;
