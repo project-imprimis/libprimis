@@ -353,7 +353,7 @@ void generategrass()
         w.bound2.offset = -camera1->o.dot(w.bound2);
     }
 
-    for(vtxarray *va = visibleva; va; va = va->next)
+    for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->grasstris.empty() || va->occluded >= Occlude_Geom)
         {
