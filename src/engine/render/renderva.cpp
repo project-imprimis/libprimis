@@ -2861,7 +2861,7 @@ void GBuffer::rendergeom()
         cur.invalidatetexgenorient();
         setupgeom();
         resetbatches();
-        for(vtxarray *va = visibleva; va; va = va->next)
+        for(const vtxarray *va = visibleva; va; va = va->next)
         {
             if(va->texs && va->occluded < Occlude_Geom)
             {
