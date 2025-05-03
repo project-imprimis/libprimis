@@ -2955,7 +2955,7 @@ void GBuffer::rendergeom()
 
 void renderdecals()
 {
-    vtxarray *decalva;
+    const vtxarray *decalva;
     for(decalva = visibleva; decalva; decalva = decalva->next)
     {
         if(decalva->decaltris && decalva->occluded < Occlude_BB)
@@ -2976,7 +2976,7 @@ void renderdecals()
     {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC1_ALPHA);
         maskgbuffer("c");
-        for(vtxarray *va = decalva; va; va = va->next)
+        for(const vtxarray *va = decalva; va; va = va->next)
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
@@ -3002,7 +3002,7 @@ void renderdecals()
         }
         maskgbuffer("n");
         cur.vbuf = 0;
-        for(vtxarray *va = decalva; va; va = va->next)
+        for(const vtxarray *va = decalva; va; va = va->next)
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
@@ -3023,7 +3023,7 @@ void renderdecals()
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
         maskgbuffer("cn");
-        for(vtxarray *va = decalva; va; va = va->next)
+        for(const vtxarray *va = decalva; va; va = va->next)
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
