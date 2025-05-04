@@ -50,7 +50,7 @@ vfc view;
 
 int deferquery = 0;
 
-struct shadowmesh
+struct shadowmesh final
 {
     vec origin;
     float radius;
@@ -460,7 +460,7 @@ namespace
 
     octaentities *shadowmms = nullptr;
 
-    struct geombatch
+    struct geombatch final
     {
         const elementset &es;
         VSlot &vslot;
@@ -1271,7 +1271,7 @@ namespace
 
     CVARP(explicitskycolor, 0x800080);
 
-    struct decalbatch
+    struct decalbatch final
     {
         const elementset &es;
         DecalSlot &slot;
@@ -1640,14 +1640,14 @@ namespace
 
     VAR(batchdecals, 0, 1, 1);
 
-    struct shadowdraw
+    struct shadowdraw final
     {
         GLuint ebuf, vbuf;
         int offset, tris, next;
         GLuint minvert, maxvert;
     };
 
-    struct shadowverts
+    struct shadowverts final
     {
         static constexpr int tablesize = 1<<13;
         std::array<int, tablesize> table;
@@ -1688,7 +1688,7 @@ namespace
     std::unordered_map<int, shadowmesh> shadowmeshes;
     std::vector<shadowdraw> shadowdraws;
 
-    struct shadowdrawinfo
+    struct shadowdrawinfo final
     {
         int last;
         GLuint minvert, maxvert;
