@@ -2558,8 +2558,8 @@ void renderoutline()
 
 bool renderexplicitsky(bool outline)
 {
-    vtxarray *prev = nullptr;
-    for(vtxarray *va = visibleva; va; va = va->next)
+    const vtxarray *prev = nullptr;
+    for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->sky && va->occluded < Occlude_BB &&
             ((va->skymax.x >= 0 && view.isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
