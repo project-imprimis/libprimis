@@ -2640,7 +2640,7 @@ GBuffer::AlphaInfo GBuffer::findalphavas()
     int alphabackvas = 0,
         alpharefractvas = 0;
     std::memset(alphatiles, 0, sizeof(alphatiles));
-    for(vtxarray *va = visibleva; va; va = va->next)
+    for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->alphabacktris || va->alphafronttris || va->refracttris)
         {
