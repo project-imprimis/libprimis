@@ -2529,8 +2529,8 @@ void renderoutline()
             {
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->ebuf);
-                const vertex *ptr = 0;
-                gle::vertexpointer(sizeof(vertex), ptr->pos.data());
+                const vertex *ptr = nullptr;
+                gle::vertexpointer(sizeof(vertex), ptr->pos.data()); //note: intentional dereference of null pointer
             }
             if(va->texs && va->occluded < Occlude_Geom)
             {
