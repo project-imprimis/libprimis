@@ -2516,8 +2516,8 @@ void renderoutline()
     {
         glDisable(GL_DEPTH_TEST);
     }
-    vtxarray *prev = nullptr;
-    for(vtxarray *va = visibleva; va; va = va->next)
+    const vtxarray *prev = nullptr;
+    for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->occluded < Occlude_BB)
         {
