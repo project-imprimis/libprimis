@@ -552,7 +552,7 @@ namespace
         }
     };
 
-    class renderstate
+    class renderstate final
     {
         public:
             bool colormask, depthmask;
@@ -1334,7 +1334,7 @@ namespace
 
     std::vector<decalbatch> decalbatches;
 
-    class decalrenderer
+    class decalrenderer final
     {
         public:
             GLuint vbuf;
