@@ -289,7 +289,8 @@ namespace
                         }
                         oe->distance = static_cast<int>(camera1->o.dist_to_bb(oe->o, ivec(oe->o).add(oe->size)));
 
-                        octaentities **prev = &visiblemms, *cur = visiblemms;
+                        octaentities **prev = &visiblemms;
+                        octaentities *cur = visiblemms;
                         while(cur && cur->distance >= 0 && oe->distance > cur->distance)
                         {
                             prev = &cur->next;
