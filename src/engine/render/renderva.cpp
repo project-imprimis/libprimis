@@ -210,7 +210,7 @@ namespace
         {
             glGenBuffers(1, &bbebo);
             gle::bindebo(bbebo);
-            GLushort tris[3*2*6];
+            std::array<ushort, 3*2*6> tris;
             //======================================== GENFACEVERT GENFACEORIENT
             #define GENFACEORIENT(orient, v0, v1, v2, v3) do { \
                 int offset = orient*3*2; \
@@ -226,7 +226,7 @@ namespace
             #undef GENFACEORIENT
             #undef GENFACEVERT
             //==================================================================
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tris), tris, GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*tris.size(), tris.data(), GL_STATIC_DRAW);
             gle::clearebo();
         }
     }
