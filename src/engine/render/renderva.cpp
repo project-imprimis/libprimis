@@ -590,7 +590,7 @@ namespace
             float alphascale;
             int texgenorient, texgenmillis;
             int tmu;
-            GLuint textures[7];
+            std::array<GLuint, 7> textures;
             vec colorscale;
             const VSlot *vslot;
             const Slot *texgenslot;
