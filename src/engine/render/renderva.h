@@ -3,15 +3,6 @@
 
 struct vtxarray;
 
-struct occludequery final
-{
-    const void *owner;
-    GLuint id;
-    int fragments;
-
-    void startquery() const;
-};
-
 class vfc final
 {
     public:
@@ -31,6 +22,17 @@ class vfc final
         float vfcDfog;  // far plane culling distance (fog limit).
         std::array<float, numvfc> vfcDnear,
                              vfcDfar;
+};
+
+extern vfc view;
+
+struct occludequery final
+{
+    const void *owner;
+    GLuint id;
+    int fragments;
+
+    void startquery() const;
 };
 
 class Occluder final
@@ -79,7 +81,6 @@ class Occluder final
 
 extern Occluder occlusionengine;
 
-extern vfc view;
 
 extern int oqfrags;
 
