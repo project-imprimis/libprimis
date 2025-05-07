@@ -64,7 +64,7 @@ class Occluder final
                 static constexpr int maxquery = 2048;
 
                 int max, defer;
-                occludequery queries[maxquery];
+                std::array<occludequery, maxquery> queries;
         };
         static constexpr int maxqueryframes = 2;
         std::array<queryframe, maxqueryframes> queryframes;
