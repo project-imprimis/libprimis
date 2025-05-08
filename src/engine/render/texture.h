@@ -30,7 +30,7 @@ struct VSlot;
 // each texture slot can have multiple texture frames, of which currently only the first is used
 // additional frames can be used for various shaders
 
-struct Texture
+struct Texture final
 {
     enum
     {
