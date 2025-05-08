@@ -188,7 +188,7 @@ class postfx
         {
             for(size_t i = 0; i < postfxtexs.size(); i++)
             {
-                postfxtex &t = postfxtexs[i];
+                const postfxtex &t = postfxtexs[i];
                 if(t.scale==scale && t.used < 0)
                 {
                     return i;
