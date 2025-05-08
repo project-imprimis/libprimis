@@ -101,7 +101,7 @@ struct MatSlot final : Slot, VSlot
     }
 };
 
-struct texrotation
+struct texrotation final
 {
     bool flipx, flipy, swapxy;
 };
