@@ -11,7 +11,7 @@
 
 #include "interface/console.h"
 
-class postfx
+class postfx final
 {
     public:
         void cleanuppostfx(bool fullclean)
@@ -226,7 +226,7 @@ class postfx
             return true;
         }
 
-        struct postfxtex
+        struct postfxtex final
         {
             GLuint id;
             int scale, used;
@@ -237,7 +237,7 @@ class postfx
         GLuint postfxfb = 0;
         int postfxw = 0,
             postfxh = 0;
-        struct postfxpass
+        struct postfxpass final
         {
             Shader *shader;
             vec4<float> params;
