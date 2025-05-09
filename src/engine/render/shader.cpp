@@ -194,7 +194,7 @@ static void compileglslshader(GLenum type, GLuint &obj, const char *def, const c
         { 130, "#version 130\n" }, //OpenGL 3.0 (not supported)
         { 120, "#version 120\n" }  //OpenGL 2.1 (not supported)
     };
-    for(int i = 0; i < static_cast<int>(sizeof(glslversions)/sizeof(glslversions[0])); ++i)
+    for(size_t i = 0; i < sizeof(glslversions)/sizeof(glslversions[0]); ++i)
     {
         if(glslversion >= glslversions[i].version)
         {
