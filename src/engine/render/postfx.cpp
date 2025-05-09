@@ -233,7 +233,7 @@ class postfx
             postfxtex() : id(0), scale(0), used(-1) {}
         };
         std::vector<postfxtex> postfxtexs;
-        int postfxbinds[numpostfxbinds];
+        std::array<int, numpostfxbinds> postfxbinds;
         GLuint postfxfb = 0;
         int postfxw = 0,
             postfxh = 0;
