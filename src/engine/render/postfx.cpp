@@ -36,7 +36,7 @@ class postfx final
             cleanuppostfx(false);
         }
 
-        void addpostfx(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
+        void addpostfx(const char *name, const int *bind, const int *scale, const char *inputs, const float &x, const float &y, const float &z, const float &w)
         {
             int inputmask = inputs[0] ? 0 : 1,
                 freemask = inputs[0] ? 0 : 1;
@@ -62,7 +62,7 @@ class postfx final
             }
             inputmask &= (1<<numpostfxbinds)-1;
             freemask &= (1<<numpostfxbinds)-1;
-            addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(*x, *y, *z, *w));
+            addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(x, y, z, w));
         }
 
         void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
@@ -268,7 +268,7 @@ void cleanuppostfx(bool fullclean)
 
 void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
 {
-    pfx.addpostfx(name, bind, scale, inputs, x, y, z, w);
+    pfx.addpostfx(name, bind, scale, inputs, *x, *y, *z, *w);
 }
 
 void clearpostfx()
