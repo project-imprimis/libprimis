@@ -1677,9 +1677,9 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
 
     vec4<float> sgen, tgen;
     calctexgen(vslot, orient, sgen, tgen);
-    vertex verts[Face_MaxVerts];
-    int index[Face_MaxVerts];
-    vec normals[Face_MaxVerts];
+    std::array<vertex, Face_MaxVerts> verts;
+    std::array<int, Face_MaxVerts> index;
+    std::array<vec, Face_MaxVerts> normals;
     for(int k = 0; k < numverts; ++k)
     {
         vertex &v = verts[k];
@@ -1697,7 +1697,7 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
         {
             if(!k)
             {
-                guessnormals(pos, numverts, normals);
+                guessnormals(pos, numverts, normals.data());
             }
             const vec &n = normals[k];
             vec t = orientation_tangent[vslot.rotation][orient];
@@ -1749,7 +1749,7 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
         }
     }
     const sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
-    addtris(vslot, orient, key, verts, index, numverts, tj);
+    addtris(vslot, orient, key, verts.data(), index.data(), numverts, tj);
     if(grassy)
     {
         for(int i = 0; i < numverts-2; i += 2)
@@ -1765,17 +1765,17 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
             }
             if(grassy > 1 && faces==3)
             {
-                addgrasstri(i, verts, 4, texture);
+                addgrasstri(i, verts.data(), 4, texture);
             }
             else
             {
                 if(faces&1)
                 {
-                    addgrasstri(i, verts, 3, texture);
+                    addgrasstri(i, verts.data(), 3, texture);
                 }
                 if(faces&2)
                 {
-                    addgrasstri(i+1, verts, 3, texture);
+                    addgrasstri(i+1, verts.data(), 3, texture);
                 }
             }
         }
