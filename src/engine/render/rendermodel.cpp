@@ -214,7 +214,7 @@ namespace batching
         dynent *d;
         int next;
 
-        void renderbatchedmodel(const model *m) const;
+        void renderbatchedmodel(const model &m) const;
         //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
         void applybb(vec &bbmin, vec &bbmax) const;
         bool shadowmask(bool dynshadow);
@@ -264,7 +264,7 @@ namespace batching
         b->batched = idx;
     }
 
-    void batchedmodel::renderbatchedmodel(const model *m) const
+    void batchedmodel::renderbatchedmodel(const model &m) const
     {
         modelattach *a = nullptr;
         if(attached>=0)
@@ -284,7 +284,7 @@ namespace batching
             }
         }
 
-        m->render(tempanim, basetime, basetime2, pos, orient.x, orient.y, orient.z, d, a, sizescale, colorscale);
+        m.render(tempanim, basetime, basetime2, pos, orient.x, orient.y, orient.z, d, a, sizescale, colorscale);
     }
 
     bool batchedmodel::shadowmask(bool dynshadow)
@@ -398,7 +398,7 @@ namespace batching
                     b.m->startrender();
                     rendered = true;
                 }
-                bm.renderbatchedmodel(b.m);
+                bm.renderbatchedmodel(*b.m);
             }
             if(rendered)
             {
@@ -421,7 +421,7 @@ namespace batching
             for(int j = b.batched; j >= 0;)
             {
                 const batchedmodel &bm = batchedmodels[j];
-                bm.renderbatchedmodel(b.m);
+                bm.renderbatchedmodel(*b.m);
                 j = bm.next;
             }
             b.m->endrender();
@@ -449,12 +449,12 @@ namespace batching
             if(d->query)
             {
                 d->query->startquery();
-                renderbatchedmodel(b.m);
+                renderbatchedmodel(*b.m);
                 occlusionengine.endquery();
                 return j;
             }
         }
-        renderbatchedmodel(b.m);
+        renderbatchedmodel(*b.m);
         return j;
     }
 
@@ -803,12 +803,12 @@ void GBuffer::rendermodelbatches()
                 if(bm.d->query)
                 {
                     bm.d->query->startquery();
-                    bm.renderbatchedmodel(b.m);
+                    bm.renderbatchedmodel(*b.m);
                     occlusionengine.endquery();
                     continue;
                 }
             }
-            bm.renderbatchedmodel(b.m);
+            bm.renderbatchedmodel(*b.m);
         }
         if(rendered)
         {
@@ -874,7 +874,7 @@ void Occluder::endmodelquery()
         do
         {
             const batching::batchedmodel &bm = batching::batchedmodels[j];
-            bm.renderbatchedmodel(b.m);
+            bm.renderbatchedmodel(*b.m);
             j = bm.next;
         } while(j >= modelquerymodels);
         b.batched = j;
