@@ -432,7 +432,7 @@ void gl_checkextensions()
  *
  * glexts is a global variable
  */
-void glext(char *ext)
+static void glext(const char *ext)
 {
     intret(hasext(ext) ? 1 : 0);
 }
