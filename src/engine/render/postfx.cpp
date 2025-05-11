@@ -65,12 +65,12 @@ class postfx final
             addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(x, y, z, w));
         }
 
-        void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
+        void setpostfx(const char *name, const float &x, const float &y, const float &z, const float &w)
         {
             clearpostfx();
             if(name[0])
             {
-                addpostfx(name, 0, 0, 1, 1, vec4<float>(*x, *y, *z, *w));
+                addpostfx(name, 0, 0, 1, 1, vec4<float>(x, y, z, w));
             }
         } //add a postfx shader to the class field, with name & 4d pos vector
 
@@ -278,7 +278,7 @@ void clearpostfx()
 
 void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
 {
-    pfx.setpostfx(name, x, y, z, w);
+    pfx.setpostfx(name, *x, *y, *z, *w);
 }
 
 void initpostfxcmds()
