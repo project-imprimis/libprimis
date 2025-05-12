@@ -1937,12 +1937,12 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
 
 }
 
-static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
+static void lightquads(float z, const vec2 &s1, const vec2 &s2, const ivec2 &t1, const ivec2 &t2)
 {
-    int vx1 = std::max(static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
-        vy1 = std::max(static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
-        vx2 = std::min(static_cast<int>(std::ceil((sx2*0.5f+0.5f)*vieww)), std::min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
-        vy2 = std::min(static_cast<int>(std::ceil((sy2*0.5f+0.5f)*viewh)), std::min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
+    int vx1 = std::max(static_cast<int>(std::floor((s1.x*0.5f+0.5f)*vieww)), ((t1.x()*lighttilevieww)/lighttilew)*lighttilealignw),
+        vy1 = std::max(static_cast<int>(std::floor((s1.y*0.5f+0.5f)*viewh)), ((t1.y()*lighttileviewh)/lighttileh)*lighttilealignh),
+        vx2 = std::min(static_cast<int>(std::ceil((s2.x*0.5f+0.5f)*vieww)), std::min(((t2.x()*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
+        vy2 = std::min(static_cast<int>(std::ceil((s2.y*0.5f+0.5f)*viewh)), std::min(((t2.y()*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
     lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
 }
 
@@ -1950,7 +1950,7 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int 
 {
     if(!tilemask)
     {
-        lightquads(z, sx1, sy1, sx2, sy2, x1, y1, x2, y2);
+        lightquads(z, {sx1, sy1}, {sx2, sy2}, {x1, y1}, {x2, y2});
     }
     else
     {
@@ -1978,7 +1978,7 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int 
                 {
                     ++x;
                 } while(x < x2 && startmask&(1<<x));
-                lightquads(z, sx1, sy1, sx2, sy2, startx, starty, x, y);
+                lightquads(z, {sx1, sy1}, {sx2, sy2}, {startx, starty}, {x, y});
             }
         }
     }
