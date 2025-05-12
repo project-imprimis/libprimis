@@ -1926,14 +1926,14 @@ VAR(depthtestlights, 0, 2, 2);
 FVAR(depthtestlightsclamp, 0, 0.999995f, 1); //z margin for light depth testing at depthtestlights = 2
 VAR(depthfaillights, 0, 1, 1);
 
-static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
+static void lightquads(float z, const vec2 &s1, const vec2 &s2)
 {
-    gle::attribf(sx1, sy1, z);
-    gle::attribf(sx1, sy2, z);
-    gle::attribf(sx2, sy2, z);
-    gle::attribf(sx1, sy1, z);
-    gle::attribf(sx2, sy2, z);
-    gle::attribf(sx2, sy1, z);
+    gle::attribf(s1.x, s1.y, z);
+    gle::attribf(s1.x, s2.y, z);
+    gle::attribf(s2.x, s2.y, z);
+    gle::attribf(s1.x, s1.y, z);
+    gle::attribf(s2.x, s2.y, z);
+    gle::attribf(s2.x, s1.y, z);
 
 }
 
@@ -1943,7 +1943,7 @@ static void lightquads(float z, const vec2 &s1, const vec2 &s2, const ivec2 &t1,
         vy1 = std::max(static_cast<int>(std::floor((s1.y*0.5f+0.5f)*viewh)), ((t1.y()*lighttileviewh)/lighttileh)*lighttilealignh),
         vx2 = std::min(static_cast<int>(std::ceil((s2.x*0.5f+0.5f)*vieww)), std::min(((t2.x()*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
         vy2 = std::min(static_cast<int>(std::ceil((s2.y*0.5f+0.5f)*viewh)), std::min(((t2.y()*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
-    lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
+    lightquads(z, {(vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f}, {(vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f});
 }
 
 static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int x1, int y1, int x2, int y2, const uint *tilemask)
