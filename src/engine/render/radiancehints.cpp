@@ -632,8 +632,8 @@ void radiancehints::renderslices()
             }
         }
 
-        uint clearmasks[(rhmaxgrid+2+31)/32];
-        std::memset(clearmasks, 0xFF, sizeof(clearmasks));
+        std::array<uint, (rhmaxgrid+2+31)/32> clearmasks;
+        std::memset(clearmasks.data(), 0xFF, clearmasks.size()*sizeof(uint));
 
         int sy = rhrect ? i*sh : 0;
         for(int j = sh; --j >= 0;) //note reverse iteration
@@ -863,7 +863,7 @@ void radiancehints::renderslices()
                 }
             }
         }
-        std::memcpy(rhclearmasks[0][i], clearmasks, sizeof(clearmasks));
+        std::memcpy(rhclearmasks[0][i], clearmasks.data(), clearmasks.size()*sizeof(uint));
     }
     if(rhrect)
     {
