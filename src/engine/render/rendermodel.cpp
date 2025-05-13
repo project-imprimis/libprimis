@@ -193,13 +193,13 @@ static int shadowmaskmodel(const vec &center, float radius)
 
 namespace batching
 {
-    struct modelbatch
+    struct modelbatch final
     {
         const model *m;
         int flags, batched;
     };
 
-    struct batchedmodel
+    struct batchedmodel final
     {
         //orient = yaw, pitch, roll
         vec pos, orient, center;
