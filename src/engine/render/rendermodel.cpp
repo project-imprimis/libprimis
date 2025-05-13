@@ -637,7 +637,7 @@ model *loadmodel(std::string_view name, int i, bool msg)
         }
         name = mmi.name.c_str();
     }
-    auto itr = models.find(std::string(name));
+    std::unordered_map<std::string, model *>::const_iterator itr = models.find(std::string(name));
     model *m;
     if(itr != models.end())
     {
@@ -707,7 +707,7 @@ void cleanupmodels()
 static void clearmodel(const char *name)
 {
     model *m = nullptr;
-    const auto it = models.find(name);
+    std::unordered_map<std::string, model *>::const_iterator it = models.find(name);
     if(it != models.end())
     {
         m = (*it).second;
