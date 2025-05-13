@@ -657,7 +657,7 @@ void radiancehints::renderslices()
 
             if(rhborder && i + 1 < rhsplits)
             {
-                splitinfo &next = splits[i+1];
+                const splitinfo &next = splits[i+1];
                 float bx1  = x1-step,
                       bx2  = x2+step,
                       by1  = y1-step,
