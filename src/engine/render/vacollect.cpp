@@ -32,7 +32,7 @@ enum AlphaState
     Alpha_Refract
 };
 
-class sortkey
+class sortkey final
 {
     public:
         ushort tex;
@@ -81,7 +81,7 @@ class sortkey
 };
 
 template<>
-struct std::hash<sortkey>
+struct std::hash<sortkey> final
 {
     size_t operator()(const sortkey &k) const
     {
@@ -89,7 +89,7 @@ struct std::hash<sortkey>
     }
 };
 
-struct decalkey
+struct decalkey final
 {
     ushort tex, reuse;
 
@@ -146,7 +146,7 @@ struct decalkey
 };
 
 template<>
-struct std::hash<decalkey>
+struct std::hash<decalkey> final
 {
     size_t operator()(const decalkey &k) const
     {
@@ -154,14 +154,14 @@ struct std::hash<decalkey>
     }
 };
 
-struct sortval
+struct sortval final
 {
     std::vector<ushort> tris;
 
     sortval() {}
 };
 
-struct vboinfo
+struct vboinfo final
 {
     int uses;
     uchar *data;
@@ -338,7 +338,7 @@ vec decodenormal(ushort norm)
     return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
 }
 
-class vacollect
+class vacollect final
 {
 
     public:
@@ -370,7 +370,7 @@ class vacollect
         std::vector<int> chain;
         std::vector<vertex> verts;
 
-        struct mergedface
+        struct mergedface final
         {
             uchar orient, numverts;
             ushort mat, tex;
