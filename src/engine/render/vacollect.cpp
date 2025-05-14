@@ -183,7 +183,7 @@ enum
 
 std::vector<uchar> vbodata[VBO_NumVBOs];
 std::vector<vtxarray *> vbovas[VBO_NumVBOs];
-int vbosize[VBO_NumVBOs];
+std::array<int, VBO_NumVBOs> vbosize;
 
 void destroyvbo(GLuint vbo)
 {
