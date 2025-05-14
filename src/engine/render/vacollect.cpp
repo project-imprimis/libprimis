@@ -187,7 +187,7 @@ std::array<int, VBO_NumVBOs> vbosize;
 
 void destroyvbo(GLuint vbo)
 {
-    auto exists = vbos.find(vbo);
+    std::unordered_map<GLuint, vboinfo>::iterator exists = vbos.find(vbo);
     if(exists == vbos.end())
     {
         return;
