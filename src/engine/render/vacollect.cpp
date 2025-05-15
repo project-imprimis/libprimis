@@ -828,7 +828,7 @@ void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey 
             float d11 = e1.dot(e1),
                   d12 = e1.dot(e2),
                   d22 = e2.dot(e2);
-            int idx[9];
+            std::array<int, 9> idx;
             for(int k = 0; k < nump; ++k)
             {
                 vertex v;
