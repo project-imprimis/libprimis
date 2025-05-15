@@ -798,21 +798,21 @@ void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey 
             {
                 continue;
             }
-            vec p1[9], p2[9];
+            std::array<vec, 9> p1, p2;
             p1[0] = v0;
             p1[1] = v1;
             p1[2] = v2;
-            int nump = polyclip(p1, 3, orient.b, clipoffset.y, clipoffset.y + size.y, p2);
+            int nump = polyclip(p1.data(), 3, orient.b, clipoffset.y, clipoffset.y + size.y, p2.data());
             if(nump < 3)
             {
                 continue;
             }
-            nump = polyclip(p2, nump, orient.a, clipoffset.x, clipoffset.x + size.x, p1);
+            nump = polyclip(p2.data(), nump, orient.a, clipoffset.x, clipoffset.x + size.x, p1.data());
             if(nump < 3)
             {
                 continue;
             }
-            nump = polyclip(p1, nump, orient.c, clipoffset.z, clipoffset.z + size.z, p2);
+            nump = polyclip(p1.data(), nump, orient.c, clipoffset.z, clipoffset.z + size.z, p2.data());
             if(nump < 3)
             {
                 continue;
