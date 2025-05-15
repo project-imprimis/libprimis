@@ -381,7 +381,7 @@ class vacollect final
         static constexpr int maxmergelevel = 12;
         int vahasmerges = 0,
             vamergemax = 0;
-        std::vector<mergedface> vamerges[maxmergelevel+1];
+        std::array<std::vector<mergedface>, maxmergelevel+1> vamerges;
 
         const vec orientation_bitangent[8][6] =
         {
