@@ -1,7 +1,7 @@
 #ifndef SHADERPARAM_H_
 #define SHADERPARAM_H_
 
-struct UniformLoc
+struct UniformLoc final
 {
     const char *name, *blockname;
     GLint loc;
@@ -11,7 +11,7 @@ struct UniformLoc
     UniformLoc(const char *name = nullptr, const char *blockname = nullptr, int binding = -1, int stride = -1) : name(name), blockname(blockname), loc(-1), version(-1), binding(binding), stride(stride), offset(-1), size(-1), data(nullptr) {}
 };
 
-struct GlobalShaderParamState
+struct GlobalShaderParamState final
 {
     union
     {
@@ -49,7 +49,7 @@ struct ShaderParamBinding
     ShaderParamBinding() {};
 };
 
-struct GlobalShaderParamUse : ShaderParamBinding
+struct GlobalShaderParamUse final : ShaderParamBinding
 {
 
     const GlobalShaderParamState *param;
@@ -68,7 +68,7 @@ struct LocalShaderParamState : ShaderParamBinding
 
 };
 
-struct SlotShaderParamState : LocalShaderParamState
+struct SlotShaderParamState final : LocalShaderParamState
 {
     int flags;
     std::array<float, 4> val;
@@ -83,7 +83,7 @@ struct SlotShaderParamState : LocalShaderParamState
 };
 
 //a container containing a GLSL shader
-class Shader
+class Shader final
 {
     public:
         static Shader *lastshader; //the current shader being used by glUseProgram()
@@ -169,7 +169,7 @@ class Shader
         const Shader *getvariant(int col, int row) const;
 };
 
-class GlobalShaderParam
+class GlobalShaderParam final
 {
     public:
         GlobalShaderParam(const char *name);
@@ -193,7 +193,7 @@ class GlobalShaderParam
 
 };
 
-class LocalShaderParam
+class LocalShaderParam final
 {
     public:
         LocalShaderParam(const char *name);
