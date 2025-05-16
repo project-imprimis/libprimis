@@ -35,7 +35,7 @@
 namespace
 {
     constexpr int numcaustics = 32; //number of separate caustics textures to load
-    Texture *caustictex[numcaustics] = {nullptr};
+    std::array<Texture *, numcaustics> caustictex = {nullptr};
     VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
     VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
     FVARR(causticcontrast, 0, 0.6f, 2);
