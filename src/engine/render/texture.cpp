@@ -1040,7 +1040,7 @@ float Texture::ratio() const
 Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
 {
     std::string tname(name);
-    auto itr = textures.find(path(tname));
+    std::unordered_map<std::string, Texture>::iterator itr = textures.find(path(tname));
     if(itr != textures.end())
     {
         return &(*itr).second;
