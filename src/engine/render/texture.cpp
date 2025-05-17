@@ -487,17 +487,17 @@ static GLenum textarget(GLenum subtarget)
 
 const GLint *swizzlemask(GLenum format)
 {
-    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE },
-                       luminancealpha[4] = { GL_RED, GL_RED, GL_RED, GL_GREEN };
+    static constexpr std::array<GLint, 4> luminance = { GL_RED, GL_RED, GL_RED, GL_ONE },
+                                          luminancealpha = { GL_RED, GL_RED, GL_RED, GL_GREEN };
     switch(format)
     {
         case GL_RED:
         {
-            return luminance;
+            return luminance.data();
         }
         case GL_RG:
         {
-            return luminancealpha;
+            return luminancealpha.data();
         }
     }
     return nullptr;
