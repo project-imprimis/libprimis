@@ -1371,7 +1371,7 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
         {
             slot->load();
         }
-        Texture *t = slot->sts[0].t;
+        const Texture *t = slot->sts[0].t;
         int xs = t->xs,
             ys = t->ys;
         if(t->type & Texture::MIRROR)
