@@ -39,9 +39,9 @@ GLuint hdrfbo = 0,
 
 namespace
 {
-    GLuint bloompbo = 0,
-           bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
-           bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
+    GLuint bloompbo = 0;
+    std::array<GLuint, 6> bloomfbo = { 0, 0, 0, 0, 0, 0 },
+                          bloomtex = { 0, 0, 0, 0, 0, 0 };
 
     GLenum bloomformat = 0;
     int lasthdraccum = 0;
