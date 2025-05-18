@@ -127,8 +127,8 @@ void setupbloom(int w, int h)
         }
         createtexture(bloomtex[5], bloomw, bloomh, nullptr, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
     }
-    static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
-    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, reinterpret_cast<const void *>(grayf), 3, 1, GL_R16F);
+    static constexpr std::array<float, 12> grayf = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
+    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, reinterpret_cast<const void *>(grayf.data()), 3, 1, GL_R16F);
     for(int i = 0; i < (5 + (bloomformat != GL_RGB ? 1 : 0)); ++i)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, bloomfbo[i]);
