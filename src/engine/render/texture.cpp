@@ -1138,7 +1138,7 @@ void decalreset(const int *n)
     }
     defslot = nullptr;
     resetslotshader();
-    for(uint i = *n; i < decalslots.size(); ++i)
+    for(size_t i = *n; i < decalslots.size(); ++i)
     {
         delete decalslots.at(i);
     }
@@ -1247,7 +1247,7 @@ int cubeworld::compactvslots(bool cull)
     markingvslots = cull;
     compactedvslots = 0;
     compactvslotsprogress = 0;
-    for(uint i = 0; i < vslots.size(); i++)
+    for(size_t i = 0; i < vslots.size(); i++)
     {
         vslots[i]->index = -1;
     }
@@ -1301,7 +1301,7 @@ int cubeworld::compactvslots(bool cull)
         compactedvslots = 0;
         compactvslotsprogress = 0;
         int lastdiscard = 0;
-        for(uint i = 0; i < vslots.size(); i++)
+        for(size_t i = 0; i < vslots.size(); i++)
         {
             VSlot &vs = *vslots[i];
             if(vs.changed || (vs.index < 0 && !vs.next))
@@ -1339,19 +1339,19 @@ int cubeworld::compactvslots(bool cull)
                 slots.erase(slots.begin() + i);
             }
         }
-        for(uint i = 0; i < slots.size(); i++)
+        for(size_t i = 0; i < slots.size(); i++)
         {
             slots[i]->index = i;
         }
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(size_t i = 0; i < vslots.size(); i++)
     {
         while(vslots[i]->index >= 0 && vslots[i]->index != static_cast<int>(i))
         {
             std::swap(vslots[i], vslots[vslots[i]->index]);
         }
     }
-    for(uint i = compactedvslots; i < vslots.size(); i++)
+    for(size_t i = compactedvslots; i < vslots.size(); i++)
     {
         delete vslots[i];
     }
@@ -1404,7 +1404,7 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
 {
     if(diff & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(size_t i = 0; i < src.params.size(); i++)
         {
             dst.params.push_back(src.params[i]);
         }
@@ -1469,7 +1469,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = null
 {
     if(diff & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(size_t i = 0; i < src.params.size(); i++)
         {
             const SlotShaderParam &sp = src.params[i];
             for(uint j = 0; j < dst.params.size(); j++)
@@ -1557,7 +1557,7 @@ static VSlot *emptyvslot(Slot &owner)
             break;
         }
     }
-    for(uint i = offset; i < vslots.size(); i++)
+    for(size_t i = offset; i < vslots.size(); i++)
     {
         if(!vslots[i]->changed)
         {
@@ -1576,7 +1576,7 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
         {
             return false;
         }
-        for(uint i = 0; i < src.params.size(); i++)
+        for(size_t i = 0; i < src.params.size(); i++)
         {
             const SlotShaderParam &sp = src.params[i], &dp = dst.params[i];
             if(sp.name != dp.name || std::memcmp(sp.val, dp.val, sizeof(sp.val)))
@@ -1600,7 +1600,7 @@ void packvslot(std::vector<uchar> &buf, const VSlot &src)
 {
     if(src.changed & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(size_t i = 0; i < src.params.size(); i++)
         {
             const SlotShaderParam &p = src.params[i];
             buf.push_back(VSlot_ShParam);
@@ -2148,7 +2148,7 @@ VSlot &Slot::emptyvslot()
 
 int Slot::findtextype(int type, int last) const
 {
-    for(uint i = last+1; i<sts.size(); i++)
+    for(size_t i = last+1; i<sts.size(); i++)
     {
         if((type&(1<<sts[i].type)) && sts[i].combined<0)
         {
@@ -2182,7 +2182,7 @@ void Slot::load(int index, Slot::Tex &t)
     std::vector<char> key;
     addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : nullptr);
     Slot::Tex *combine = nullptr;
-    for(uint i = 0; i < sts.size(); i++)
+    for(size_t i = 0; i < sts.size(); i++)
     {
         Slot::Tex &c = sts[i];
         if(c.combined == index)
@@ -2269,7 +2269,7 @@ void Slot::load(int index, Slot::Tex &t)
 void Slot::load()
 {
     linkslotshader(*this);
-    for(uint i = 0; i < sts.size(); i++)
+    for(size_t i = 0; i < sts.size(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0)
@@ -2283,7 +2283,7 @@ void Slot::load()
             c.combined = i;
         }
     }
-    for(uint i = 0; i < sts.size(); i++)
+    for(size_t i = 0; i < sts.size(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0)
