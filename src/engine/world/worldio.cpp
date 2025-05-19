@@ -22,41 +22,113 @@
 #include "render/shaderparam.h"
 #include "render/texture.h"
 
-static std::string clientmap = "";
-
-static void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
+namespace
 {
-    if(prefix)
+    std::string clientmap = "";
+
+    void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
     {
-        while(*prefix)
+        if(prefix)
         {
-            *dst++ = *prefix++;
-        }
-    }
-    const char *start = dst;
-    if(src)
-    {
-        for(int i = 0; i < static_cast<int>(maxlen); ++i)
-        {
-            char c = *src++;
-            if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\')
+            while(*prefix)
             {
-                *dst++ = c;
-            }
-            else
-            {
-                break;
+                *dst++ = *prefix++;
             }
         }
+        const char *start = dst;
+        if(src)
+        {
+            for(int i = 0; i < static_cast<int>(maxlen); ++i)
+            {
+                char c = *src++;
+                if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\')
+                {
+                    *dst++ = c;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        if(dst > start)
+        {
+            *dst = '\0';
+        }
+        else if(dst != alt)
+        {
+            copystring(dst, alt, maxlen);
+        }
     }
-    if(dst > start)
+
+    void savevslot(stream *f, const VSlot &vs, int prev)
     {
-        *dst = '\0';
+        f->put<int>(vs.changed);
+        f->put<int>(prev);
+        if(vs.changed & (1 << VSlot_ShParam))
+        {
+            f->put<ushort>(vs.params.size());
+            for(const SlotShaderParam& p : vs.params)
+            {
+                f->put<ushort>(std::strlen(p.name));
+                f->write(p.name, std::strlen(p.name));
+                for(int k = 0; k < 4; ++k)
+                {
+                    f->put<float>(p.val[k]);
+                }
+            }
+        }
+        if(vs.changed & (1 << VSlot_Scale))
+        {
+            f->put<float>(vs.scale);
+        }
+        if(vs.changed & (1 << VSlot_Rotation))
+        {
+            f->put<int>(vs.rotation);
+        }
+        if(vs.changed & (1 << VSlot_Angle))
+        {
+            f->put<float>(vs.angle.x);
+            f->put<float>(vs.angle.y);
+            f->put<float>(vs.angle.z);
+        }
+        if(vs.changed & (1 << VSlot_Offset))
+        {
+            for(int k = 0; k < 2; ++k)
+            {
+                f->put<int>(vs.offset[k]);
+            }
+        }
+        if(vs.changed & (1 << VSlot_Scroll))
+        {
+            for(int k = 0; k < 2; ++k)
+            {
+                f->put<float>(vs.scroll[k]);
+            }
+        }
+        if(vs.changed & (1 << VSlot_Alpha))
+        {
+            f->put<float>(vs.alphafront);
+            f->put<float>(vs.alphaback);
+        }
+        if(vs.changed & (1 << VSlot_Color))
+        {
+            for(int k = 0; k < 3; ++k)
+            {
+                f->put<float>(vs.colorscale[k]);
+            }
+        }
+        if(vs.changed & (1 << VSlot_Refract))
+        {
+            f->put<float>(vs.refractscale);
+            for(int k = 0; k < 3; ++k)
+            {
+                f->put<float>(vs.refractcolor[k]);
+            }
+        }
     }
-    else if(dst != alt)
-    {
-        copystring(dst, alt, maxlen);
-    }
+
+    static int savemapprogress = 0;
 }
 
 //used in iengine.h
@@ -182,8 +254,6 @@ enum OctaSave
     OctaSave_Solid,
     OctaSave_Normal
 };
-
-static int savemapprogress = 0;
 
 void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, stream * const f)
 {
@@ -582,72 +652,6 @@ std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &fai
 
 VAR(debugvars, 0, 0, 1);
 
-static void savevslot(stream *f, const VSlot &vs, int prev)
-{
-    f->put<int>(vs.changed);
-    f->put<int>(prev);
-    if(vs.changed & (1 << VSlot_ShParam))
-    {
-        f->put<ushort>(vs.params.size());
-        for(const SlotShaderParam& p : vs.params)
-        {
-            f->put<ushort>(std::strlen(p.name));
-            f->write(p.name, std::strlen(p.name));
-            for(int k = 0; k < 4; ++k)
-            {
-                f->put<float>(p.val[k]);
-            }
-        }
-    }
-    if(vs.changed & (1 << VSlot_Scale))
-    {
-        f->put<float>(vs.scale);
-    }
-    if(vs.changed & (1 << VSlot_Rotation))
-    {
-        f->put<int>(vs.rotation);
-    }
-    if(vs.changed & (1 << VSlot_Angle))
-    {
-        f->put<float>(vs.angle.x);
-        f->put<float>(vs.angle.y);
-        f->put<float>(vs.angle.z);
-    }
-    if(vs.changed & (1 << VSlot_Offset))
-    {
-        for(int k = 0; k < 2; ++k)
-        {
-            f->put<int>(vs.offset[k]);
-        }
-    }
-    if(vs.changed & (1 << VSlot_Scroll))
-    {
-        for(int k = 0; k < 2; ++k)
-        {
-            f->put<float>(vs.scroll[k]);
-        }
-    }
-    if(vs.changed & (1 << VSlot_Alpha))
-    {
-        f->put<float>(vs.alphafront);
-        f->put<float>(vs.alphaback);
-    }
-    if(vs.changed & (1 << VSlot_Color))
-    {
-        for(int k = 0; k < 3; ++k)
-        {
-            f->put<float>(vs.colorscale[k]);
-        }
-    }
-    if(vs.changed & (1 << VSlot_Refract))
-    {
-        f->put<float>(vs.refractscale);
-        for(int k = 0; k < 3; ++k)
-        {
-            f->put<float>(vs.refractcolor[k]);
-        }
-    }
-}
 
 void savevslots(stream *f, int numvslots)
 {
