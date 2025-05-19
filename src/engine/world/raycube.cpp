@@ -33,7 +33,7 @@ namespace
         return p;
     }
 
-    static bool intersectplanes(const clipplanes& p, const vec &v, const vec& ray, float &enterdist, float &exitdist, int &entry)
+    bool intersectplanes(const clipplanes& p, const vec &v, const vec& ray, float &enterdist, float &exitdist, int &entry)
     {
         for(int i = 0; i < p.size; ++i)
         {
@@ -72,7 +72,7 @@ namespace
         return true;
     }
 
-    static bool intersectbox(const clipplanes& p, const vec &v, const vec& ray, const vec& invray, float &enterdist, float &exitdist, int &entry)
+    bool intersectbox(const clipplanes& p, const vec &v, const vec& ray, const vec& invray, float &enterdist, float &exitdist, int &entry)
     {
         for(int i = 0; i < 3; ++i)
         {
