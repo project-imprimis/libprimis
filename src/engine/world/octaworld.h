@@ -68,14 +68,6 @@ struct octaentities
     }
 };
 
-enum OcclusionLevels
-{
-    Occlude_Nothing = 0,
-    Occlude_Geom,
-    Occlude_BB,
-    Occlude_Parent
-};
-
 enum CubeMerges
 {
     Merge_Origin = 1<<0,

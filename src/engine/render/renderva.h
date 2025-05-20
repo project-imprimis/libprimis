@@ -3,6 +3,14 @@
 
 struct vtxarray;
 
+enum OcclusionLevels
+{
+    Occlude_Nothing = 0,
+    Occlude_Geom,
+    Occlude_BB,
+    Occlude_Parent
+};
+
 class vfc final
 {
     public:
