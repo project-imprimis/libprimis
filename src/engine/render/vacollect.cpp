@@ -1660,6 +1660,8 @@ void vacollect::calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, ve
     }
 }
 
+//pos: array of size Face_MaxVerts
+//vinfo: array of size numverts
 void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj, int grassy, bool alpha, int layer)
 {
     // [rotation][orient]
