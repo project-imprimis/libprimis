@@ -38,7 +38,7 @@
 #include "material.h"
 #include "world.h"
 
-struct prefabheader
+struct prefabheader final
 {
     std::array<char, 4> magic;
     int version;
@@ -737,7 +737,7 @@ static bool packblock(const block3 &b, B &buf)
     return true;
 }
 
-struct vslothdr
+struct vslothdr final
 {
     ushort index;
     ushort slot;
@@ -842,7 +842,7 @@ static bool unpackblock(block3 *&b, B &buf)
     return true;
 }
 
-struct vslotmap
+struct vslotmap final
 {
     int index;
     VSlot *vslot;
@@ -1072,7 +1072,7 @@ bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
     }
 }
 
-struct prefab : editinfo
+struct prefab final : editinfo
 {
     std::string name;
     GLuint ebo, vbo;
@@ -1225,10 +1225,10 @@ prefab *loadprefab(const char *name, bool msg = true)
     return b;
 }
 
-class prefabmesh
+class prefabmesh final
 {
     public:
-        struct vertex
+        struct vertex final
         {
             vec pos;
             vec4<uchar> norm;
