@@ -523,7 +523,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     c.children = newcubes(facesolid, c.material);
     std::array<cube, 8> &ch = *c.children;
     bool perfect = true;
-    ivec v[8];
+    std::array<ivec, 8> v;
     for(int i = 0; i < 8; ++i)
     {
         getcubevector(c, i, v[i]);
