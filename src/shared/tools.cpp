@@ -7,7 +7,7 @@
 
 char *tempformatstring(const char *fmt, ...)
 {
-    static string tmpstr[4];
+    static std::array<string, 4> tmpstr;
     static int tmpidx = 0;
     tmpidx = (tmpidx+1)%4;
 
