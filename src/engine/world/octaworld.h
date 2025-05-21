@@ -17,7 +17,7 @@ enum BlendMapLayers
 
 struct prefab;
 
-struct vertinfo
+struct vertinfo final
 {
     ushort x, y, z, norm;
 
@@ -50,7 +50,7 @@ struct vertinfo
     }
 };
 
-struct octaentities
+struct octaentities final
 {
     std::vector<int> mapmodels, //set of indices refering to a position in the getentities() vector corresponding to a mapmodel
                      decals,    //set of indices refering to a position in the getentities() vector corresponding to a decal
@@ -77,7 +77,7 @@ enum CubeMerges
 
 class cube;
 
-struct clipplanes
+struct clipplanes final
 {
     vec o, r;
     std::array<vec, 8> v;
@@ -108,7 +108,7 @@ struct clipplanes
     }
 };
 
-struct surfaceinfo
+struct surfaceinfo final
 {
     uchar verts, numverts;
 
@@ -142,7 +142,7 @@ struct surfaceinfo
 
 struct vtxarray;
 
-struct cubeext
+struct cubeext final
 {
     vtxarray *va;            /**< Vertex array for children, or nullptr. */
     octaentities *ents;      /**< Map entities inside cube. */
