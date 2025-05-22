@@ -81,9 +81,6 @@ namespace
 //toggles if the main menu is shown
 VAR(mainmenu, 1, 1, 0);
 
-//adds a change to the queue of settings changes,
-//if applydialog = 0 then this function does nothing
-//if showchanges = 1 then this function does not display changes UI at the end
 void addchange(const char *desc, int type)
 {
     if(!applydialog)
@@ -109,7 +106,6 @@ void notifywelcome()
     UI::hideui("servers");
 }
 
-//clears out pending changes added by addchange()
 void clearchanges(int type)
 {
     for(int i = needsapply.size(); --i >=0;) //note reverse iteration
