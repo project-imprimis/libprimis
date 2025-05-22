@@ -16,7 +16,7 @@
 //internally relevant functionality
 namespace
 {
-    struct Change
+    struct Change final
     {
         int type;
         const char *desc;
