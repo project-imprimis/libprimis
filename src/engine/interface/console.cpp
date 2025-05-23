@@ -1415,6 +1415,6 @@ void initconsolecmds()
     addcommand("saycommand", reinterpret_cast<identfun>(saycommand), "C", Id_Command);
     addcommand("history", reinterpret_cast<identfun>(historycmd), "i", Id_Command);
     addcommand("onrelease", reinterpret_cast<identfun>(onrelease), "s", Id_Command);
-    addcommand("complete", reinterpret_cast<identfun>(+[] (char *command, char *dir, char *ext) {::cfinder.addfilecomplete(command, dir, ext);}), "sss", Id_Command);
-    addcommand("listcomplete", reinterpret_cast<identfun>(+[] (char *command, char *list) {::cfinder.addlistcomplete(command, list);}), "ss", Id_Command);
+    addcommand("complete", reinterpret_cast<identfun>(+[] (const char *command, char *dir, char *ext) {::cfinder.addfilecomplete(command, dir, ext);}), "sss", Id_Command);
+    addcommand("listcomplete", reinterpret_cast<identfun>(+[] (const char *command, char *list) {::cfinder.addlistcomplete(command, list);}), "ss", Id_Command);
 }
