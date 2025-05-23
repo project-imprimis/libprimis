@@ -18,7 +18,7 @@
 
 int commandmillis = -1;
 
-struct FilesKey
+struct FilesKey final
 {
     const int type;
     const std::string dir,
@@ -46,7 +46,7 @@ struct std::hash<FilesKey>
     }
 };
 
-class CompletionFinder
+class CompletionFinder final
 {
     public:
 
@@ -351,7 +351,7 @@ namespace
 {
     constexpr int maxconsolelines = 1000;  //maximum length of conlines reverse queue
 
-    struct cline
+    struct cline final
     {
         char *line;   //text contents of the line
         int type,     //one of the enum values Console_* in headers/consts.h
@@ -553,7 +553,7 @@ namespace
      * defines a mapping for a single key
      * multiple keymap objects are aggregated in keyms to create the entire bindings list
      */
-    struct KeyMap
+    struct KeyMap final
     {
         enum
         {
@@ -776,7 +776,7 @@ namespace
         SDL_free(cb);
     }
 
-    struct HLine
+    struct HLine final
     {
         char *buf, *action, *prompt;
         int flags;
@@ -873,7 +873,7 @@ namespace
         }
     }
 
-    struct releaseaction
+    struct releaseaction final
     {
         KeyMap *key;
         union
