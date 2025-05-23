@@ -1270,7 +1270,7 @@ tagval *addreleaseaction(ident *id, int numargs)
 //print to a stream f the binds in the binds vector
 void writebinds(std::fstream& f)
 {
-    static const char * const cmds[3] = { "bind", "specbind", "editbind" };
+    static std::array<const char *, 3> cmds = { "bind", "specbind", "editbind" };
     std::vector<KeyMap *> binds;
     for(auto &[k, km] : keyms)
     {
