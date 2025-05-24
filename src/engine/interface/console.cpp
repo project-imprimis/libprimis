@@ -906,7 +906,7 @@ namespace
         addreleaseaction(newstring(s));
     }
 
-    static void execbind(KeyMap &k, bool isdown, int map)
+    void execbind(KeyMap &k, bool isdown, int map)
     {
         for(uint i = 0; i < releaseactions.size(); i++)
         {
