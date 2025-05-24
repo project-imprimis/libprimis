@@ -5785,7 +5785,8 @@ void initcscmds()
             name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+            def.name = name;
+            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
         };
     }), "sss", Id_Command);
