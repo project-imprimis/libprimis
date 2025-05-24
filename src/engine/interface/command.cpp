@@ -5805,11 +5805,11 @@ void initcscmds()
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
         };
     }), "sss", Id_Command);
-    addcommand("getvarmin", reinterpret_cast<identfun>(+[] (char *s) { intret(getvarmin(s)); }), "s", Id_Command);
-    addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
-    addcommand("getfvarmax", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmax(s)); }), "s", Id_Command);
-    addcommand("identexists", reinterpret_cast<identfun>(+[] (char *s) { intret(identexists(s) ? 1 : 0); }), "s", Id_Command);
-    addcommand("getalias", reinterpret_cast<identfun>(+[] (char *s) { result(getalias(s)); }), "s", Id_Command);
+    addcommand("getvarmin", reinterpret_cast<identfun>(+[] (const char *s) { intret(getvarmin(s)); }), "s", Id_Command);
+    addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (const char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
+    addcommand("getfvarmax", reinterpret_cast<identfun>(+[] (const char *s) { floatret(getfvarmax(s)); }), "s", Id_Command);
+    addcommand("identexists", reinterpret_cast<identfun>(+[] (const char *s) { intret(identexists(s) ? 1 : 0); }), "s", Id_Command);
+    addcommand("getalias", reinterpret_cast<identfun>(+[] (const char *s) { result(getalias(s)); }), "s", Id_Command);
 
     addcommand("nodebug", reinterpret_cast<identfun>(+[] (uint *body){nodebug++; executeret(body, *commandret); nodebug--;}), "e", Id_Command);
     addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
