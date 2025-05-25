@@ -5508,7 +5508,7 @@ void executeret(const char *p, tagval &result)
     runcode(code.data()+1, result);
     if(static_cast<int>(code[0]) >= 0x100)
     {
-        uint * arr = new uint[code.size()];
+        uint *arr = new uint[code.size()];
         std::memcpy(arr, code.data(), code.size()*sizeof(uint));
     }
 }
