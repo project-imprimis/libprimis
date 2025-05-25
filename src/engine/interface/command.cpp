@@ -5705,7 +5705,7 @@ void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
 
-    addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
+    addcommand("defvar", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
             const auto itr = idents.find(name);
@@ -5714,15 +5714,14 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name);
                 return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
         };
     }), "siiis", Id_Command);
-    addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange)
+    addcommand("defvarp", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
             const auto itr = idents.find(name);
@@ -5731,15 +5730,14 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name);
                 return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
         };
     }), "siiis", Id_Command);
-    addcommand("deffvar", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
+    addcommand("deffvar", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
             const auto itr = idents.find(name);
@@ -5748,15 +5746,14 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name);
                 return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
         };
     }), "sfffs", Id_Command);
-    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange)
+    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
             const auto itr = idents.find(name);
@@ -5765,15 +5762,14 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name);
                 return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
         };
     }), "sfffs", Id_Command);
-    addcommand("defsvar", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
+    addcommand("defsvar", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
         {
             const auto itr = idents.find(name);
@@ -5782,15 +5778,14 @@ void initcscmds()
                 debugcode("cannot redefine %s as a variable", name);
                 return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
         };
     }), "sss", Id_Command);
-    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange)
+    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
         {
             const auto itr = idents.find(std::string(name));
@@ -5798,10 +5793,9 @@ void initcscmds()
             {
                 debugcode("cannot redefine %s as a variable", name); return;
             }
-            name = newstring(name);
             auto insert = defvars.insert( { std::string(name), DefVar() } );
             DefVar &def = (*(insert.first)).second;
-            def.name = name;
+            def.name = newstring(name);
             def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
             def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
         };
