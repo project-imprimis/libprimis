@@ -5023,7 +5023,7 @@ static const uint *runcode(const uint *code, tagval &result)
                         arg.setstr(newstring("")));
             case Code_Lookup|Ret_String:
                 #define LOOKUP(aval) { \
-                    ident *id = identmap[op>>8]; \
+                    ident * const id = identmap[op>>8]; \
                     if(id->flags&Idf_Unknown) \
                     { \
                         debugcode("unknown alias lookup: %s", id->name); \
@@ -5034,7 +5034,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUP(args[numargs++].setstr(newstring(id->getstr())));
             case Code_LookupArg|Ret_String:
                 #define LOOKUPARG(aval, nval) { \
-                    ident *id = identmap[op>>8]; \
+                    ident * const id = identmap[op>>8]; \
                     if(!(aliasstack->usedargs&(1<<id->index))) \
                     { \
                         nval; \
@@ -5182,7 +5182,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Com|Ret_Float:
             case Code_Com|Ret_Integer:
             {
-                ident *id = identmap[op>>8];
+                ident * const id = identmap[op>>8];
                 int offset = numargs-id->numargs;
                 forcenull(result);
                 callcom(id, args, id->numargs, offset);
@@ -5195,7 +5195,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ComD|Ret_Float:
             case Code_ComD|Ret_Integer:
             {
-                ident *id = identmap[op>>8];
+                ident * const id = identmap[op>>8];
                 int offset = numargs-(id->numargs-1);
                 addreleaseaction(id, &args[offset], id->numargs-1);
                 callcom(id, args, id->numargs, offset);
@@ -5209,7 +5209,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ComV|Ret_Float:
             case Code_ComV|Ret_Integer:
             {
-                ident *id = identmap[op>>13];
+                ident * const id = identmap[op>>13];
                 int callargs = (op>>8)&0x1F,
                     offset = numargs-callargs;
                 forcenull(result);
@@ -5223,7 +5223,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ComC|Ret_Float:
             case Code_ComC|Ret_Integer:
             {
-                ident *id = identmap[op>>13];
+                ident * const id = identmap[op>>13];
                 int callargs = (op>>8)&0x1F,
                     offset = numargs-callargs;
                 forcenull(result);
