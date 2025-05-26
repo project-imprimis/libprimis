@@ -169,11 +169,11 @@ void printtimers(int conw, int framemillis)
         {
             printmillis = framemillis;
         }
-        char framestring[200];
+        std::array<char, 200> framestring;
         constexpr int size = 42;
-        std::sprintf(framestring, "frame time %i ms", printmillis);
+        std::sprintf(framestring.data(), "frame time %i ms", printmillis);
         ttr.fontsize(size);
-        ttr.renderttf(framestring, {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
+        ttr.renderttf(framestring.data(), {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
         //draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
         offset++;
     }
@@ -190,11 +190,11 @@ void printtimers(int conw, int framemillis)
             {
                 continue;
             }
-            char framestring[200];
+            std::array<char, 200> framestring;
             constexpr int size = 42;
-            std::sprintf(framestring, "%s%s %5.2f ms", t.name, t.gpu ? "" : " (cpu)", t.print);
+            std::sprintf(framestring.data(), "%s%s %5.2f ms", t.name, t.gpu ? "" : " (cpu)", t.print);
             ttr.fontsize(size);
-            ttr.renderttf(framestring, {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
+            ttr.renderttf(framestring.data(), {0xFF, 0xFF, 0xFF, 0}, conw-20*size, size*3/2+offset*9*size/8);
 
             //draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
             offset++;
