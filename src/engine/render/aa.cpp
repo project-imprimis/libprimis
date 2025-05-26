@@ -327,8 +327,9 @@ namespace //internal functions incl. AA implementations
             GBuffer &buf;
             //smaa graphics buffers
             GLuint smaaareatex = 0,
-                   smaasearchtex = 0,
-                   smaatex[5] = { 0, 0, 0, 0, 0 };
+                   smaasearchtex = 0;
+
+            std::array<GLuint, 5> smaatex = { 0, 0, 0, 0, 0 };
             //affects subsample vector direction
             int smaasubsampleorder = -1;
             Shader  *smaalumaedgeshader = nullptr,
