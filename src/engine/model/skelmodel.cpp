@@ -1097,12 +1097,12 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
     }
 
     gle::bindvbo(vc.vbuf);
-    auto rendermeshes = getrendermeshes();
+    std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes = getrendermeshes();
     if(skel->numframes)
     {
         vertsize = sizeof(vvertgw);//silent parameter to genvbo()
         std::vector<vvertgw> vvertgws;
-        for(const auto &i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             vlen += static_cast<skelmesh *>(*i)->genvbo(blendcombos, idxs, vlen, vvertgws);
         }
@@ -1128,7 +1128,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         std::memset(htdata, -1, htlen*sizeof(int));
         vertsize = sizeof(vvertg); //silent parameter to genvbo()
         std::vector<vvertg> vvertgs;
-        for(const auto &i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             vlen += static_cast<skelmesh *>(*i)->genvbo(idxs, vlen, vvertgs, htdata, htlen);
         }
