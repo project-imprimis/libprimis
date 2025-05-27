@@ -374,7 +374,7 @@ namespace //internal functions incl. AA implementations
             float areaunderdiag(const vec2 &p1, const vec2 &p2, const vec2 &p);
             vec2 areadiag(const vec2 &p1, const vec2 &p2, float left);
             vec2 areadiag(float p1x, float p1y, float p2x, float p2y, float d, float left, const vec2 &offset, int pattern);
-            vec2 areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern);
+            vec2 areadiag2(vec2 p1, vec2 p2, vec2 p3, vec2 p4, float d, float left, const vec2 &offset, int pattern);
             vec2 areadiag(int pattern, float left, float right, const vec2 &offset);
             void gensmaaareadata();
 
@@ -866,12 +866,10 @@ namespace //internal functions incl. AA implementations
         return areadiag(p1, p2, left);
     }
 
-    vec2 subpixelaa::areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern)
+    vec2 subpixelaa::areadiag2(vec2 p1, vec2 p2, vec2 p3, vec2 p4, float d, float left, const vec2 &offset, int pattern)
     {
-        vec2 p1(p1x, p1y),
-             p2(p2x+d, p2y+d),
-             p3(p3x, p3y),
-             p4(p4x+d, p4y+d);
+        p2.add(d);
+        p4.add(d);
         if(edgesdiag[pattern][0])
         {
             p1.add(offset);
@@ -890,22 +888,22 @@ namespace //internal functions incl. AA implementations
         float d = left + right + 1;
         switch(pattern)
         {
-            case 0:  return areadiag2(1, 1, 1, 1, 1, 0, 1, 0, d, left, offset, pattern);
-            case 1:  return areadiag2(1, 0, 0, 0, 1, 0, 1, 0, d, left, offset, pattern);
-            case 2:  return areadiag2(0, 0, 1, 0, 1, 0, 1, 0, d, left, offset, pattern);
+            case 0:  return areadiag2({1, 1}, {1, 1}, {1, 0}, {1, 0}, d, left, offset, pattern);
+            case 1:  return areadiag2({1, 0}, {0, 0}, {1, 0}, {1, 0}, d, left, offset, pattern);
+            case 2:  return areadiag2({0, 0}, {1, 0}, {1, 0}, {1, 0}, d, left, offset, pattern);
             case 3:  return  areadiag(1, 0, 1, 0, d, left, offset, pattern);
-            case 4:  return areadiag2(1, 1, 0, 0, 1, 1, 1, 0, d, left, offset, pattern);
-            case 5:  return areadiag2(1, 1, 0, 0, 1, 0, 1, 0, d, left, offset, pattern);
+            case 4:  return areadiag2({1, 1}, {0, 0}, {1, 1}, {1, 0}, d, left, offset, pattern);
+            case 5:  return areadiag2({1, 1}, {0, 0}, {1, 0}, {1, 0}, d, left, offset, pattern);
             case 6:  return  areadiag(1, 1, 1, 0, d, left, offset, pattern);
-            case 7:  return areadiag2(1, 1, 1, 0, 1, 0, 1, 0, d, left, offset, pattern);
-            case 8:  return areadiag2(0, 0, 1, 1, 1, 0, 1, 1, d, left, offset, pattern);
+            case 7:  return areadiag2({1, 1}, {1, 0}, {1, 0}, {1, 0}, d, left, offset, pattern);
+            case 8:  return areadiag2({0, 0}, {1, 1}, {1, 0}, {1, 1}, d, left, offset, pattern);
             case 9:  return  areadiag(1, 0, 1, 1, d, left, offset, pattern);
-            case 10: return areadiag2(0, 0, 1, 1, 1, 0, 1, 0, d, left, offset, pattern);
-            case 11: return areadiag2(1, 0, 1, 1, 1, 0, 1, 0, d, left, offset, pattern);
+            case 10: return areadiag2({0, 0}, {1, 1}, {1, 0}, {1, 0}, d, left, offset, pattern);
+            case 11: return areadiag2({1, 0}, {1, 1}, {1, 0}, {1, 0}, d, left, offset, pattern);
             case 12: return  areadiag(1, 1, 1, 1, d, left, offset, pattern);
-            case 13: return areadiag2(1, 1, 1, 1, 1, 0, 1, 1, d, left, offset, pattern);
-            case 14: return areadiag2(1, 1, 1, 1, 1, 1, 1, 0, d, left, offset, pattern);
-            case 15: return areadiag2(1, 1, 1, 1, 1, 0, 1, 0, d, left, offset, pattern);
+            case 13: return areadiag2({1, 1}, {1, 1}, {1, 0}, {1, 1}, d, left, offset, pattern);
+            case 14: return areadiag2({1, 1}, {1, 1}, {1, 1}, {1, 0}, d, left, offset, pattern);
+            case 15: return areadiag2({1, 1}, {1, 1}, {1, 0}, {1, 0}, d, left, offset, pattern);
         }
         return vec2(0, 0);
     }
