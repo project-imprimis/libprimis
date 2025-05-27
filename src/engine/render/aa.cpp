@@ -367,7 +367,6 @@ namespace //internal functions incl. AA implementations
             vec2 areaunderortho(const vec2 &p1, const vec2 &p2, float x);
             void loadsmaashaders(bool split = false);
             void clearsmaashaders();
-            vec2 areaortho(float p1x, float p1y, float p2x, float p2y, float left);
             void smootharea(float d, vec2 &a1, vec2 &a2);
             vec2 areaortho(int pattern, float left, float right, float offset);
 
@@ -667,11 +666,6 @@ namespace //internal functions incl. AA implementations
         return a;
     }
 
-    vec2 subpixelaa::areaortho(float p1x, float p1y, float p2x, float p2y, float left)
-    {
-        return areaunderortho(vec2(p1x, p1y), vec2(p2x, p2y), left);
-    }
-
     void subpixelaa::smootharea(float d, vec2 &a1, vec2 &a2)
     {
         vec2 b1(sqrtf(a1.x*2)*0.5f, sqrtf(a1.y*2)*0.5f),
@@ -694,21 +688,21 @@ namespace //internal functions incl. AA implementations
             }
             case 1:
             {
-                return left <= right ? areaortho(0, o2, d/2, 0, left) : vec2(0, 0);
+                return left <= right ? areaunderortho({0, o2}, {d/2, 0}, left) : vec2(0, 0);
             }
             case 2:
             {
-                return left >= right ? areaortho(d/2, 0, d, o2, left) : vec2(0, 0);
+                return left >= right ? areaunderortho({d/2, 0}, {d, o2}, left) : vec2(0, 0);
             }
             case 3:
             {
-                vec2 a1 = areaortho(0, o2, d/2, 0, left), a2 = areaortho(d/2, 0, d, o2, left);
+                vec2 a1 = areaunderortho({0, o2}, {d/2, 0}, left), a2 = areaunderortho({d/2, 0}, {d, o2}, left);
                 smootharea(d, a1, a2);
                 return a1.add(a2);
             }
             case 4:
             {
-                return left <= right ? areaortho(0, o1, d/2, 0, left) : vec2(0, 0);
+                return left <= right ? areaunderortho({0, o1}, {d/2, 0}, left) : vec2(0, 0);
             }
             case 5:
             {
@@ -716,27 +710,27 @@ namespace //internal functions incl. AA implementations
             }
             case 6:
             {
-                vec2 a = areaortho(0, o1, d, o2, left);
+                vec2 a = areaunderortho({0, o1}, {d, o2}, left);
                 if(std::fabs(offset) > 0)
                 {
-                    a.avg(areaortho(0, o1, d/2, 0, left).add(areaortho(d/2, 0, d, o2, left)));
+                    a.avg(areaunderortho({0, o1}, {d/2, 0}, left).add(areaunderortho({d/2, 0}, {d, o2}, left)));
                 }
                 return a;
             }
             case 7:
             {
-                return areaortho(0, o1, d, o2, left);
+                return areaunderortho({0, o1}, {d, o2}, left);
             }
             case 8:
             {
-                return left >= right ? areaortho(d/2, 0, d, o1, left) : vec2(0, 0);
+                return left >= right ? areaunderortho({d/2, 0}, {d, o1}, left) : vec2(0, 0);
             }
             case 9:
             {
-                vec2 a = areaortho(0, o2, d, o1, left);
+                vec2 a = areaunderortho({0, o2}, {d, o1}, left);
                 if(std::fabs(offset) > 0)
                 {
-                    a.avg(areaortho(0, o2, d/2, 0, left).add(areaortho(d/2, 0, d, o1, left)));
+                    a.avg(areaunderortho({0, o2}, {d/2, 0}, left).add(areaunderortho({d/2, 0}, {d, o1}, left)));
                 }
                 return a;
             }
@@ -746,22 +740,22 @@ namespace //internal functions incl. AA implementations
             }
             case 11:
             {
-                return areaortho(0, o2, d, o1, left);
+                return areaunderortho({0, o2}, {d, o1}, left);
             }
             case 12:
             {
-                vec2 a1 = areaortho(0, o1, d/2, 0, left),
-                     a2 = areaortho(d/2, 0, d, o1, left);
+                vec2 a1 = areaunderortho({0, o1}, {d/2, 0}, left),
+                     a2 = areaunderortho({d/2, 0}, {d, o1}, left);
                 smootharea(d, a1, a2);
                 return a1.add(a2);
             }
             case 13:
             {
-                return areaortho(0, o2, d, o1, left);
+                return areaunderortho({0, o2}, {d, o1}, left);
             }
             case 14:
             {
-                return areaortho(0, o1, d, o2, left);
+                return areaunderortho({0, o1}, {d, o2}, left);
             }
             case 15:
             {
