@@ -299,7 +299,7 @@ static void changedvars()
     }
 }
 
-static string retbuf[4];
+static std::array<string, 4> retbuf;
 static int retidx = 0;
 
 const char *intstr(int v)
