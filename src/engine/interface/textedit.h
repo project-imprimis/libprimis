@@ -81,7 +81,7 @@ class Editor
         bool region();
         EditLine &currentline();
         void copyselectionto(Editor *b);
-        char *tostring();
+        char *tostring() const;
         char *selectiontostring();
         void insert(const char *s);
         void insertallfrom(const Editor *b);

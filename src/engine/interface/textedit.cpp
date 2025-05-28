@@ -468,7 +468,7 @@ void Editor::copyselectionto(Editor *b)
     }
 }
 
-char *Editor::tostring()
+char *Editor::tostring() const
 {
     int len = 0;
     for(size_t i = 0; i < lines.size(); i++)
@@ -479,7 +479,7 @@ char *Editor::tostring()
     int offset = 0;
     for(size_t i = 0; i < lines.size(); i++)
     {
-        EditLine &l = lines[i];
+        const EditLine &l = lines[i];
         std::memcpy(&str[offset], l.text, l.len);
         offset += l.len;
         str[offset++] = '\n';
