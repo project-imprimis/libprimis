@@ -283,7 +283,7 @@ namespace
 
     void addtjoint(const edgegroup &g, const cubeedge &e, int offset)
     {
-        int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
+        const int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
         tjoint tj = tjoint();
         tj.offset = vcoord / g.slope[g.axis];
         tj.edge = e.index;
