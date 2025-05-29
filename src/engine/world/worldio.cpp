@@ -369,7 +369,7 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
                             }
                             else
                             {
-                                int vis = visibletris(c[i], j, co, size);
+                                const int vis = visibletris(c[i], j, co, size);
                                 if(vis&4 || faceconvexity(c[i], j) < 0)
                                 {
                                     vertmask |= 0x01;
@@ -405,8 +405,8 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
                         {
                             if(hasxyz && vertmask&0x01)
                             {
-                                ivec v0 = verts[vertorder].getxyz(),
-                                     v2 = verts[(vertorder+2)&3].getxyz();
+                                const ivec v0 = verts[vertorder].getxyz(),
+                                           v2 = verts[(vertorder+2)&3].getxyz();
                                 f->put<ushort>(v0[vc]); f->put<ushort>(v0[vr]);
                                 f->put<ushort>(v2[vc]); f->put<ushort>(v2[vr]);
                                 hasxyz = false;
@@ -424,7 +424,7 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
                                 const vertinfo &v = verts[(k+vertorder)%layerverts];
                                 if(hasxyz)
                                 {
-                                    ivec xyz = v.getxyz();
+                                    const ivec xyz = v.getxyz();
                                     f->put<ushort>(xyz[vc]); f->put<ushort>(xyz[vr]);
                                 }
                                 if(hasnorm)
