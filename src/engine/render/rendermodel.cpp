@@ -749,7 +749,7 @@ static void rendercullmodelquery(dynent *d, const vec &center, float radius)
         return;
     }
     d->query->startquery();
-    int br = static_cast<int>(radius*2)+1;
+    const int br = static_cast<int>(radius*2)+1;
     drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
     occlusionengine.endquery();
 }
