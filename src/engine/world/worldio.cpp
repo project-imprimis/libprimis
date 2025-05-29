@@ -351,7 +351,7 @@ void cubeworld::savec(const std::array<cube, 8> &c, const ivec &o, int size, str
                                 vertmask |= 0x04;
                                 if(layerverts == 4)
                                 {
-                                    ivec v[4] = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
+                                    std::array<ivec, 4> v = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
                                     for(int k = 0; k < 4; ++k)
                                     {
                                         const ivec &v0 = v[k],
