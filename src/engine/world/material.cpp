@@ -281,9 +281,9 @@ namespace
 
     bool mergematcmp(const materialsurface &x, const materialsurface &y)
     {
-        int dim = DIMENSION(x.orient),
-            c   = C[dim],
-            r   = R[dim];
+        const int dim = DIMENSION(x.orient),
+                  c   = C[dim],
+                  r   = R[dim];
         if(x.o[r] + x.rsize < y.o[r] + y.rsize)
         {
             return true;
@@ -299,9 +299,9 @@ namespace
     //sz: size of the array passed
     int mergematr(materialsurface *m, int sz, materialsurface &n)
     {
-        int dim = DIMENSION(n.orient),
-            c = C[dim],
-            r = R[dim];
+        const int dim = DIMENSION(n.orient),
+                    c = C[dim],
+                    r = R[dim];
         for(int i = sz-1; i >= 0; --i)
         {
             if(m[i].o[r] + m[i].rsize < n.o[r])
@@ -321,9 +321,9 @@ namespace
 
     int mergematc(const materialsurface &m, materialsurface &n)
     {
-        int dim = DIMENSION(n.orient),
-            c   = C[dim],
-            r   = R[dim];
+        const int dim = DIMENSION(n.orient),
+                  c   = C[dim],
+                  r   = R[dim];
         if(m.o[r] == n.o[r] && m.rsize == n.rsize && m.o[c] + m.csize == n.o[c])
         {
             n.o[c] = m.o[c];
