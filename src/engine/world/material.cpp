@@ -956,7 +956,7 @@ namespace
 
 vec matnormals(int i)
 {
-    const vec matnormals[6] =
+    static const std::array<vec, 6> matnormals =
     {
         vec(-1, 0, 0),
         vec( 1, 0, 0),
