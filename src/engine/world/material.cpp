@@ -1014,7 +1014,7 @@ const char *findmaterialname(int mat)
  */
 const char *getmaterialdesc(int mat, const char *prefix)
 {
-    static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
+    static const std::array<ushort, 4> matmasks = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
     static string desc;
     desc[0] = '\0';
     for(int i = 0; i < static_cast<int>(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
