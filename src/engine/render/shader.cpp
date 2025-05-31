@@ -80,7 +80,7 @@ void loadshaders()
 
 Shader *lookupshaderbyname(std::string_view name)
 {
-    auto itr = shaders.find(name.data());
+    std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name.data());
     if(itr != shaders.end())
     {
         return (*itr).second.loaded() ? &(*itr).second : nullptr;
@@ -1170,7 +1170,7 @@ static Shader *newshader(int type, std::string_view name, std::string_view vs, s
         glUseProgram(0);
         Shader::lastshader = nullptr;
     }
-    auto itr = shaders.find(name.data());
+    std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name.data());
     Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
     char *rname = exists ? exists->name : newstring(name.data());
     if(!exists)
@@ -1551,7 +1551,7 @@ VAR(defershaders, 0, 1, 1);
 
 void defershader(const int *type, const char *name, const char *contents)
 {
-    auto itr = shaders.find(name);
+    std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name);
     const Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
     if(exists && !exists->invalid())
     {
@@ -1625,7 +1625,7 @@ int Shader::uniformlocversion()
 
 Shader *useshaderbyname(std::string_view name)
 {
-    auto itr = shaders.find(name.data());
+    std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name.data());
     if(itr == shaders.end())
     {
         return nullptr;
@@ -2002,7 +2002,7 @@ void variantshader_new(const int *type, const char *name, const int *row, const 
 void setshader(const char *name)
 {
     slotparams.clear();
-    auto itr = shaders.find(name);
+    std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name);
     if(itr == shaders.end())
     {
         conoutf(Console_Error, "no such shader: %s", name);
