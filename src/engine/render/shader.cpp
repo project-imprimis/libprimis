@@ -183,7 +183,7 @@ static void compileglslshader(GLenum type, GLuint &obj, const char *def, const c
     }
     const char *source = def + std::strspn(def, " \t\r\n");
     char *modsource = nullptr;
-    const char *parts[16];
+    std::array<const char *, 16> parts;
     int numparts = 0;
     static const struct { int version; const char * const header; } glslversions[] =
     {
@@ -235,7 +235,7 @@ static void compileglslshader(GLenum type, GLuint &obj, const char *def, const c
     parts[numparts++] = modsource ? modsource : source;
     //end glsl 1.4
     obj = glCreateShader(type);
-    glShaderSource(obj, numparts, static_cast<const GLchar **>(parts), nullptr);
+    glShaderSource(obj, numparts, static_cast<const GLchar **>(parts.data()), nullptr);
     glCompileShader(obj);
     GLint success;
     glGetShaderiv(obj, GL_COMPILE_STATUS, &success);
@@ -243,14 +243,14 @@ static void compileglslshader(GLenum type, GLuint &obj, const char *def, const c
     {
         if(msg)
         {
-            showglslinfo(type, obj, name, parts, numparts);
+            showglslinfo(type, obj, name, parts.data(), numparts);
         }
         glDeleteShader(obj);
         obj = 0;
     }
     else if(debugshader > 1 && msg)
     {
-        showglslinfo(type, obj, name, parts, numparts);
+        showglslinfo(type, obj, name, parts.data(), numparts);
     }
     if(modsource)
     {
