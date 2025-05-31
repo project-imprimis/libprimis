@@ -3,7 +3,7 @@
 
 extern int collideinside;
 
-struct CollisionInfo
+struct CollisionInfo final
 {
     bool collided;
     vec collidewall;
