@@ -354,7 +354,7 @@ class hmap
             }
 
             bool changed = false;
-            int *o[4];
+            std::array<int *, 4> o;
             int best,
                 par,
                 q = 0;
