@@ -1353,7 +1353,7 @@ namespace
         private:
             vec colorscale;
             int tmu;
-            GLuint textures[7];
+            std::array<GLuint, 7> textures;
             DecalSlot *slot;
 
             void changebatchtmus();
