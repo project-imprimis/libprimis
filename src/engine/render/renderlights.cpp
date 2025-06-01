@@ -1946,11 +1946,11 @@ static void lightquads(float z, const vec2 &s1, const vec2 &s2, const ivec2 &t1,
     lightquads(z, {(vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f}, {(vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f});
 }
 
-static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int x1, int y1, int x2, int y2, const uint *tilemask)
+static void lightquads(float z, vec2 s1, vec2 s2, int x1, int y1, int x2, int y2, const uint *tilemask)
 {
     if(!tilemask)
     {
-        lightquads(z, {sx1, sy1}, {sx2, sy2}, {x1, y1}, {x2, y2});
+        lightquads(z, s1, s2, {x1, y1}, {x2, y2});
     }
     else
     {
@@ -1978,7 +1978,7 @@ static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int 
                 {
                     ++x;
                 } while(x < x2 && startmask&(1<<x));
-                lightquads(z, {sx1, sy1}, {sx2, sy2}, {startx, starty}, {x, y});
+                lightquads(z, s1, s2, {startx, starty}, {x, y});
             }
         }
     }
@@ -1990,7 +1990,7 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
 
     gle::begin(GL_TRIANGLES);
-    lightquads(sz1, bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2, tilemask);
+    lightquads(sz1, {bsx1, bsy1}, {bsx2, bsy2}, btx1, bty1, btx2, bty2, tilemask);
     gle::end();
 }
 
@@ -2361,7 +2361,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
                 y2 = std::min(static_cast<int>(r.y2), bty2);
             if(x1 < x2 && y1 < y2)
             {
-                lightquads(sz1, sx1, sy1, sx2, sy2, x1, y1, x2, y2, tilemask);
+                lightquads(sz1, {sx1, sy1}, {sx2, sy2}, x1, y1, x2, y2, tilemask);
             }
         }
         gle::end();
