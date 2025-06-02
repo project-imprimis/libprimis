@@ -317,11 +317,7 @@ uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
     std::vector<vtxarray *> &vas = vbovas[type];
     vas.push_back(va);
     int len = numelems*elemsize;
-    data.reserve(len);
-    for(int i = 0; i < len; ++i)
-    {
-        data.emplace_back();
-    }
+    data.insert(data.end(), len, {});
     return &(*(data.end()-len)); //return pointer to where iterator points
 }
 
