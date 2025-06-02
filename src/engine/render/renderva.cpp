@@ -1462,7 +1462,7 @@ namespace
         gle::bindvbo(va.vbuf);
         gle::bindebo(va.decalbuf);
         cur.vbuf = va.vbuf;
-        vertex *vdata = nullptr;
+        const vertex *vdata = nullptr;
         //note inane bikeshedding: use of offset from dereferenced null ptr (aka 0)
         gle::vertexpointer(sizeof(vertex), vdata->pos.data());
         gle::normalpointer(sizeof(vertex), vdata->norm.data(), GL_BYTE, 4);
