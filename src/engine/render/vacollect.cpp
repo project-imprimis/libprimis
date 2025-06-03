@@ -360,7 +360,7 @@ class vacollect final
         std::vector<octaentities *> entstack;
 
 
-        static const int hashsize = 1<<13;
+        static constexpr int hashsize = 1<<13;
         std::array<int, hashsize> table;
 
         std::vector<int> chain;
