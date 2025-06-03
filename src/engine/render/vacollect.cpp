@@ -985,8 +985,8 @@ int vacollect::findmergedfaces(cube &c, const ivec &co, int size, int csi, int m
         int maxlevel = -1;
         for(int i = 0; i < 8; ++i)
         {
-            ivec o(i, co, size/2);
-            int level = findmergedfaces((*c.children)[i], o, size/2, csi-1, minlevel);
+            const ivec o(i, co, size/2);
+            const int level = findmergedfaces((*c.children)[i], o, size/2, csi-1, minlevel);
             maxlevel = std::max(maxlevel, level);
         }
         return maxlevel;
