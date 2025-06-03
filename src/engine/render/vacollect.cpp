@@ -416,6 +416,21 @@ class vacollect final
         void genverts(uchar *buf);
         void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key);
         void gendecals();
+
+        /**
+         * @brief Finds merged faces for a specific cube.
+         *
+         * The grid size is equal to csi^2. Recursively finds merged faces for the cube
+         * provided.
+         *
+         * @param c the cube to query
+         * @param co the cube origin (world vector)
+         * @param size the grid size
+         * @param csi grid scale
+         * @param minlevel level to stop recursively finding at
+         *
+         * @return max merge level, or -1 if failed
+         */
         int findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel);
         int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1);
         void calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen);
