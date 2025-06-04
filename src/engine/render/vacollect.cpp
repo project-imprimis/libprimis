@@ -211,7 +211,7 @@ void destroyvbo(GLuint vbo)
 
 //sets up vbos (vertex buffer objects) for each entry in the vas vector
 //by setting up each vertex array's vbuf and vdata
-void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &vas)
+static void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &vas)
 {
     gle::disable();
 
