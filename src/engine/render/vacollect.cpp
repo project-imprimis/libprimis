@@ -1796,9 +1796,9 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
 }
 
 //va settings, used in updateva below
-VARF(vafacemax, 64, 384, 256*256, rootworld.allchanged());
-VARF(vafacemin, 0, 96, 256*256, rootworld.allchanged());
-VARF(vacubesize, 32, 128, 0x1000, rootworld.allchanged()); //note that performance drops off at low values -> large numbers of VAs
+static VARF(vafacemax, 64, 384, 256*256, rootworld.allchanged());
+static VARF(vafacemin, 0, 96, 256*256, rootworld.allchanged());
+static VARF(vacubesize, 32, 128, 0x1000, rootworld.allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
 //updates the va that contains the cube c
 int vacollect::updateva(std::array<cube, 8> &c, const ivec &co, int size, int csi)
