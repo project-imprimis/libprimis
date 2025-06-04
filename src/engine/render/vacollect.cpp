@@ -167,7 +167,7 @@ struct vboinfo final
     uchar *data;
 };
 
-std::unordered_map<GLuint, vboinfo> vbos;
+static std::unordered_map<GLuint, vboinfo> vbos;
 
 VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
 
@@ -181,9 +181,9 @@ enum
     VBO_NumVBOs
 };
 
-std::vector<uchar> vbodata[VBO_NumVBOs];
-std::vector<vtxarray *> vbovas[VBO_NumVBOs];
-std::array<int, VBO_NumVBOs> vbosize;
+static std::vector<uchar> vbodata[VBO_NumVBOs];
+static std::vector<vtxarray *> vbovas[VBO_NumVBOs];
+static std::array<int, VBO_NumVBOs> vbosize;
 
 void destroyvbo(GLuint vbo)
 {
