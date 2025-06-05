@@ -1016,7 +1016,7 @@ int vacollect::findmergedfaces(cube &c, const ivec &co, int size, int csi, int m
     }
 }
 
-int setcubevisibility(cube &c, const ivec &co, int size)
+static int setcubevisibility(cube &c, const ivec &co, int size)
 {
     if(c.isempty() && (c.material&MatFlag_Clip) != Mat_Clip)
     {
