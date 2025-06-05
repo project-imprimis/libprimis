@@ -322,7 +322,7 @@ uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
 }
 
 //takes a packed ushort vector and turns it into a vec3 vector object
-vec decodenormal(ushort norm)
+static vec decodenormal(ushort norm)
 {
     if(!norm)
     {
