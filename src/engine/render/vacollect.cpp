@@ -1016,6 +1016,15 @@ int vacollect::findmergedfaces(cube &c, const ivec &co, int size, int csi, int m
     }
 }
 
+/**
+ * @brief Sets visibility field for specified cube.
+ *
+ * @param c the cube to modify
+ * @param co face vector
+ * @param size cube size for comparison with neighbors
+ *
+ * @return number of visible faces
+ */
 static int setcubevisibility(cube &c, const ivec &co, int size)
 {
     if(c.isempty() && (c.material&MatFlag_Clip) != Mat_Clip)
