@@ -420,6 +420,15 @@ class vacollect final
         void gencubeverts(const cube &c, const ivec &co, int size);
         void addmergedverts(int level, const ivec &o);
 
+        /**
+         * @brief Clears but does not destroy the vacollect object.
+         *
+         * Each of the vacollect fields will have their clear() method called,
+         * and the bounding vars of alpha/refract/sky min/max will be reset to
+         * +/-1e16.
+         *
+         * Does not free any fields itself.
+         */
         void clear();
         void setupdata(vtxarray *va);
         bool emptyva();
