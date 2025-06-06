@@ -264,7 +264,7 @@ static void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &v
 
 //flushvbo: flushes data out of the specified VBO object and calls genvbo()
 //then destroys the data in the relevant VBO
-void flushvbo(int type = -1)
+static void flushvbo(int type = -1)
 {
     if(type < 0)
     {
@@ -287,7 +287,7 @@ void flushvbo(int type = -1)
     vbosize[type] = 0;
 }
 
-uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
+static uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
 {
     switch(type)
     {
