@@ -131,12 +131,14 @@ void loadcaustics(bool force)
 
 //these variables control the vertex water geometry intensity
 //(nothing to do with any other rendering)
-VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
-VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
+
 VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
 
 namespace
 {
+    VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
+    VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
+
     int wx1, wy1, wx2, wy2, wsize;
 
     float wxscale = 1.0f,
