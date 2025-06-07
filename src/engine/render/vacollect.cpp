@@ -169,7 +169,7 @@ struct vboinfo final
 
 static std::unordered_map<GLuint, vboinfo> vbos;
 
-VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
+static VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
 
 //vbo (vertex buffer object) enum is local to this file
 enum
