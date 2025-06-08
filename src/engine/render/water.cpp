@@ -347,7 +347,7 @@ GETMATIDXVAR(water, refract, float)
 GETMATIDXVAR(water, fallspec, int)
 GETMATIDXVAR(water, fallrefract, float)
 
-VARR(waterreflectstep, 1, 32, 10000);
+static VARR(waterreflectstep, 1, 32, 10000);
 
 void GBuffer::renderwaterfog(int mat, float surface)
 {
