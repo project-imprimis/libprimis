@@ -194,7 +194,7 @@ void optiface(const uchar *p, cube &c)
     }
 }
 
-void printcube()
+static void printcube()
 {
     const cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
     conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<const void *>(&c), lu.x, lu.y, lu.z, lusize);
