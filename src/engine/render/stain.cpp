@@ -40,7 +40,7 @@
 
 #include "model/model.h"
 
-void initstains();
+static void initstains();
 
 static VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initstains to potentially cull extra stain tris
 static VARP(stainfade, 1000, 15000, 60000);                //number of milliseconds before stain geom fades
@@ -1082,7 +1082,7 @@ std::vector<stainrenderer> stains;
  *
  * Fails to do anything if initing is set (early game loading time)
  */
-void initstains()
+static void initstains()
 {
     if(initing)
     {
