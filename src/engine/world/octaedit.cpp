@@ -184,8 +184,8 @@ bool selinfo::validate()
 
 int orient = 0,
     gridsize = 8;
-ivec cor, lastcor,
-     cur, lastcur;
+static ivec cor, lastcor, lastcur;
+ivec cur;
 
 bool editmode     = false,
      multiplayer  = false,
