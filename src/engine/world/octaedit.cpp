@@ -203,12 +203,13 @@ VARF(entediting, 0, 0, 1,
     }
 });
 
-
+//used in iengine
 void multiplayerwarn()
 {
     conoutf(Console_Error, "operation not available in multiplayer");
 }
 
+//used in iengine
 bool pointinsel(const selinfo &sel, const vec &origin)
 {
     return(origin.x <= sel.o.x+sel.s.x*sel.grid
