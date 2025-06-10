@@ -203,6 +203,17 @@ enum
  */
 extern std::array<cube, 8> *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
+
+/**
+ * @brief Replaces a cubeext assigned to a cube.
+ *
+ * If the cube's ext is the same as the passed ext, returns without doing anything.
+ * Otherwise, reassigns the cube's cubeext to ext, and deletes the previously assigned
+ * cubeext if it exists.
+ *
+ * @param c the cube to replace the cubeext of
+ * @param ext the cubeext to assign
+ */
 extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
 extern void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p);
