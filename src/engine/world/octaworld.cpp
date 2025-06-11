@@ -122,8 +122,6 @@ std::array<cube, 8> *newcubes(uint face, int mat)
     return ca;
 }
 
-//returns the size of the tree starting from the specified cube going down
-//the cube in question is counted as part of the family
 int familysize(const cube &c)
 {
     int size = 1;

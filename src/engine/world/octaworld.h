@@ -218,6 +218,16 @@ extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
 extern void getcubevector(const cube &c, int d, int x, int y, int z, ivec &p);
 extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
+
+/**
+ * @brief Returns the size of the tree starting from the specified cube going down.
+ *
+ * The cube in question is counted as part of the family
+ *
+ * @param c the cube at the top of the tree
+ *
+ * @return the size of all children, inclusive
+ */
 extern int familysize(const cube &c);
 extern void freeocta(std::array<cube, 8> *&c);
 extern void validatec(std::array<cube, 8> *&c, int size = 0);
