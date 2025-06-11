@@ -10,7 +10,7 @@
 #include "glexts.h"
 namespace gle
 {
-    struct attribinfo
+    struct attribinfo final
     {
         int type, size, formatsize, offset;
         GLenum format;
