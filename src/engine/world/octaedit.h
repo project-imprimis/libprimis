@@ -35,6 +35,5 @@ extern void cleanupprefabs();
  * @param maxremain the max number of undos to retain
  */
 extern void pruneundos(int maxremain = 0);
-extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
 
 #endif
