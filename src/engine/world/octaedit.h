@@ -25,6 +25,15 @@ extern void compactmruvslots();
 extern void previewprefab(const char *name, const vec &color);
 extern void cleanupprefabs();
 
+/**
+ * @brief Cleans up undo blocks until less than `maxremain` memory is bound
+ *
+ * Cleans up undoblocks, front to back. Stops when the total number of undos is
+ * less than maxremain. Then, cleans up all redos, such that if any redos exist
+ * the end result will be less total undos than the passed maxremain.
+ *
+ * @param maxremain the max number of undos to retain
+ */
 extern void pruneundos(int maxremain = 0);
 extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
 
