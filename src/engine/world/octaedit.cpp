@@ -38,12 +38,6 @@
 #include "material.h"
 #include "world.h"
 
-struct prefabheader final
-{
-    std::array<char, 4> magic;
-    int version;
-};
-
 //used in iengine.h
 void boxs(int orient, vec o, const vec &s, float size, bool boxoutline)
 {
@@ -1175,6 +1169,12 @@ void pasteblock(const block3 &b, selinfo &sel, bool local)
     LOOP_SEL_XYZ(if(!(s[i].isempty()) || s[i].children || s[i].material != Mat_Air) pastecube(s[i], c); i++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
+
+struct prefabheader final
+{
+    std::array<char, 4> magic;
+    int version;
+};
 
 prefab *loadprefab(const char *name, bool msg = true)
 {
