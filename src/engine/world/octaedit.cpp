@@ -256,7 +256,7 @@ void forcenextundo()
     lastsel.orient = -1;
 }
 
-void cubecancel()
+static void cubecancel()
 {
     havesel = false;
     moving = dragging = hmapedit = passthroughsel = 0;
