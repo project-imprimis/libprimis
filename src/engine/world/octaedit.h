@@ -23,6 +23,12 @@ extern bool noedit(bool view = false, bool msg = true);
 extern void compactmruvslots();
 
 extern void previewprefab(const char *name, const vec &color);
+
+/**
+ * @brief Calls the cleanup function for all prefabs.
+ *
+ * Does not destroy elements in the prefabs container.
+ */
 extern void cleanupprefabs();
 
 /**
