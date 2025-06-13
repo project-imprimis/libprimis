@@ -1121,8 +1121,15 @@ void pasteundoblock(block3 *b, const uchar *g)
     LOOP_XYZ(*b, 1<<std::min(static_cast<int>(*g++), rootworld.mapscale()-1), pastecube(s[i], c); i++; );
 }
 
-//used in client prefab unpacking, handles the octree unpacking (not the entities,
-// which are game-dependent)
+/**
+ * @brief Unpacks an undocube into a uchar buffer
+ *
+ * used in client prefab unpacking, handles the octree unpacking (not the entities,
+ * which are game-dependent)
+ *
+ * @param buf the buffer to unpack
+ * @param outbuf output buffer of the buf intput
+ */
 void unpackundocube(ucharbuf &buf, uchar *outbuf)
 {
     block3 *b = nullptr;
