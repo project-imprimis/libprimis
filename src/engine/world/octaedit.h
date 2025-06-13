@@ -26,6 +26,20 @@ extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
 extern bool noedit(bool view = false, bool msg = true);
 
+/**
+ * @brief Compacts most recently used vslots list.
+ *
+ * Deletes all elements in remappedvslots.
+ * Goes through most recently used textures list, and removes trailing elements
+ * unless the most recently used texture index is lower than the number of total
+ * elements and the vslot at that index is nonzero. If this is the case, reassigns
+ * the texmru to the slot pointed to by the object to be cleaned up.
+ *
+ * Also attempts to set lasttex to its pointed index in a similar manner.
+ *
+ * Attempts to set reptex to the index pointed to by its previous manner in a
+ * similar manner.
+ */
 extern void compactmruvslots();
 
 extern void previewprefab(const char *name, const vec &color);
