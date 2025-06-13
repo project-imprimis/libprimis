@@ -16,6 +16,12 @@ extern int orient;
 extern void makeundo(selinfo &s);
 extern void forcenextundo();
 extern void multiplayerwarn();
+
+/**
+ * @brief Cancels cube and entity selections,
+ *
+ * Deselects entire selection context, including cube and ent selections.
+ */
 extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
 extern bool noedit(bool view = false, bool msg = true);
