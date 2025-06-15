@@ -14,6 +14,16 @@ extern float loadprogress;
  * Uses SDL to set gamma level to 1.0f
  */
 extern void cleargamma();
+
+/**
+ * @brief Retrieves fps info and diffs,
+ *
+ * Returns statistics about the frame rate to the passed parameters
+ *
+ * @param fps average fps
+ * @param bestdiff difference between average and best fps
+ * @param worstdiff difference between average and worst fps
+ */
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
 extern void renderbackground(const char *caption = nullptr, const Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr, bool force = false);
