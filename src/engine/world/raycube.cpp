@@ -378,7 +378,7 @@ bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, i
             r.levels[r.lshift] = lc; \
         }
 
-struct raycubeinfo
+struct raycubeinfo final
 {
     float dist,
           dent;
