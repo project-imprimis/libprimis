@@ -8,6 +8,11 @@ extern int scr_w, scr_h;
 extern int screenw, screenh;
 extern float loadprogress;
 
+/**
+ * @brief Restores gamma to default level
+ *
+ * Uses SDL to set gamma level to 1.0f
+ */
 extern void cleargamma();
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
