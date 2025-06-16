@@ -1801,7 +1801,7 @@ void rendertexturepanel(int w, int h)
         flushhudmatrix(false);
         SETSHADER(hudrgb);
         int y = 50,
-        gap = 10;
+            gap = 10;
         gle::defvertex(2);
         gle::deftexcoord0();
 
