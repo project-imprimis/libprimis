@@ -1830,7 +1830,7 @@ void rendertexturepanel(int w, int h)
                       sy = std::min(1.0f, tex->ys/static_cast<float>(tex->xs));
                 int x = w*1800/h-s-50,
                     r = s;
-                vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
+                std::array<vec2, 4> tc = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
                 float xoff = vslot.offset.x(),
                       yoff = vslot.offset.y();
                 if(vslot.rotation)
