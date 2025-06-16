@@ -329,7 +329,7 @@ static void findclosest(int &closest, int xval, int yval, int zval, const ivec &
         dist += disttonext;
 }
 
-bool cubeworld::upoctree(const vec& v, int& x, int& y, int& z, const ivec& lo, int& lshift) const
+bool cubeworld::upoctree(const vec &v, int &x, int &y, int &z, const ivec &lo, int &lshift) const
 {
     x = static_cast<int>(v.x);
     y = static_cast<int>(v.y);
