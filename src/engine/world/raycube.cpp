@@ -307,6 +307,21 @@ bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad,
     return false;
 }
 
+/**
+ * @brief Finds the closest value and returns it to ref parameters
+ *
+ * @param closest returns closest of xval, yval, zval
+ * @param xval value to return if dx is smallest
+ * @param yval value to return if dy is smallest
+ * @param zval value to return if dz is smallest
+ * @param lsizemask scale mask to shift
+ * @param invray inverse of the ray to track (elementwise inverse)
+ * @param lo origin of the coordinates
+ * @param lshift shift factor for the sizemask
+ * @param v returns sum of itself and ray scaled to dist value
+ * @param dist returns sum of itself and whichever of dx/dy/dz returned
+ * @param ray direction of value to add to v
+ */
 static void findclosest(int &closest, int xval, int yval, int zval, const ivec &lsizemask, const vec &invray, const ivec &lo, const int &lshift, vec &v, float &dist, const vec& ray)
 {
         float dx = (lo.x+(lsizemask.x<<lshift)-v.x)*invray.x,
