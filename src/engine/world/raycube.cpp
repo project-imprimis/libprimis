@@ -324,24 +324,24 @@ bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad,
  */
 static void findclosest(int &closest, int xval, int yval, int zval, const ivec &lsizemask, const vec &invray, const ivec &lo, const int &lshift, vec &v, float &dist, const vec& ray)
 {
-        float dx = (lo.x+(lsizemask.x<<lshift)-v.x)*invray.x,
-              dy = (lo.y+(lsizemask.y<<lshift)-v.y)*invray.y,
-              dz = (lo.z+(lsizemask.z<<lshift)-v.z)*invray.z;
-        float disttonext = dx;
-        closest = xval;
-        if(dy < disttonext)
-        {
-            disttonext = dy;
-            closest = yval;
-        }
-        if(dz < disttonext)
-        {
-            disttonext = dz;
-            closest = zval;
-        }
-        disttonext += 0.1f;
-        v.add(vec(ray).mul(disttonext));
-        dist += disttonext;
+    float dx = (lo.x+(lsizemask.x<<lshift)-v.x)*invray.x,
+          dy = (lo.y+(lsizemask.y<<lshift)-v.y)*invray.y,
+          dz = (lo.z+(lsizemask.z<<lshift)-v.z)*invray.z;
+    float disttonext = dx;
+    closest = xval;
+    if(dy < disttonext)
+    {
+        disttonext = dy;
+        closest = yval;
+    }
+    if(dz < disttonext)
+    {
+        disttonext = dz;
+        closest = zval;
+    }
+    disttonext += 0.1f;
+    v.add(vec(ray).mul(disttonext));
+    dist += disttonext;
 }
 
 bool cubeworld::upoctree(const vec &v, int &x, int &y, int &z, const ivec &lo, int &lshift) const
