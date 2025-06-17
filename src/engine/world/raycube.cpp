@@ -310,7 +310,6 @@ bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad,
 /**
  * @brief Finds the closest value and returns it to ref parameters
  *
- * @param closest returns closest of xval, yval, zval
  * @param xval value to return if dx is smallest
  * @param yval value to return if dy is smallest
  * @param zval value to return if dz is smallest
@@ -321,14 +320,16 @@ bool cubeworld::checkinsideworld(const vec &invray, float radius, float &outrad,
  * @param v returns sum of itself and ray scaled to dist value
  * @param dist returns sum of itself and whichever of dx/dy/dz returned
  * @param ray direction of value to add to v
+ *
+ * @return closest returns closest of xval, yval, zval
  */
-static void findclosest(int &closest, int xval, int yval, int zval, const ivec &lsizemask, const vec &invray, const ivec &lo, const int &lshift, vec &v, float &dist, const vec& ray)
+static int findclosest(int xval, int yval, int zval, const ivec &lsizemask, const vec &invray, const ivec &lo, const int &lshift, vec &v, float &dist, const vec& ray)
 {
     float dx = (lo.x+(lsizemask.x<<lshift)-v.x)*invray.x,
           dy = (lo.y+(lsizemask.y<<lshift)-v.y)*invray.y,
           dz = (lo.z+(lsizemask.z<<lshift)-v.z)*invray.z;
     float disttonext = dx;
-    closest = xval;
+    int closest = xval;
     if(dy < disttonext)
     {
         disttonext = dy;
@@ -342,6 +343,7 @@ static void findclosest(int &closest, int xval, int yval, int zval, const ivec &
     disttonext += 0.1f;
     v.add(vec(ray).mul(disttonext));
     dist += disttonext;
+    return closest;
 }
 
 bool cubeworld::upoctree(const vec &v, int &x, int &y, int &z, const ivec &lo, int &lshift) const
@@ -478,7 +480,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
                 return std::min(r.dent, r.dist+f);
             }
         }
-        findclosest(closest, 0, 1, 2, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
+        closest = findclosest(0, 1, 2, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
         if(radius>0 && r.dist>=radius)
         {
             return std::min(r.dent, r.dist);
@@ -544,7 +546,7 @@ float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode,
         }
 
     nextcube:
-        findclosest(side, Orient_Right - r.lsizemask.x, Orient_Front - r.lsizemask.y, Orient_Top - r.lsizemask.z, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
+        side = findclosest(Orient_Right - r.lsizemask.x, Orient_Front - r.lsizemask.y, Orient_Top - r.lsizemask.z, r.lsizemask, r.invray, lo, r.lshift, r.v, r.dist, ray);
         if(r.dist>=radius)
         {
             return r.dist;
