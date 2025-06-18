@@ -266,17 +266,17 @@ void cleanuppostfx(bool fullclean)
     pfx.cleanuppostfx(fullclean);
 }
 
-void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
+static void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
 {
     pfx.addpostfx(name, bind, scale, inputs, *x, *y, *z, *w);
 }
 
-void clearpostfx()
+static void clearpostfx()
 {
     pfx.clearpostfx();
 }
 
-void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
+static void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
 {
     pfx.setpostfx(name, *x, *y, *z, *w);
 }
