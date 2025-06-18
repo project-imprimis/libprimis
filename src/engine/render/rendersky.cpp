@@ -314,15 +314,15 @@ namespace
 
         const float earthradius     = 6.371e6f, //radius of earth in meters
                     earthatmoheight = 100e3f; //atmospheric height (100km)
-        float planetradius = earthradius*atmoplanetsize,
-              atmoradius   = planetradius + earthatmoheight*atmoheight;
+        const float planetradius = earthradius*atmoplanetsize,
+                    atmoradius   = planetradius + earthatmoheight*atmoheight;
         LOCALPARAMF(atmoradius, planetradius, atmoradius*atmoradius, atmoradius*atmoradius - planetradius*planetradius);
 
-        float gm = (1 - atmohaze)*0.2f + 0.75f;
+        const float gm = (1 - atmohaze)*0.2f + 0.75f;
         LOCALPARAMF(gm, gm);
 
-        vec lambda(680e-9f, 550e-9f, 450e-9f),
-            betar = vec(lambda).square().square().recip().mul(1.86e-31f / atmodensity),
+        const vec lambda(680e-9f, 550e-9f, 450e-9f);
+        vec betar = vec(lambda).square().square().recip().mul(1.86e-31f / atmodensity),
             betam = vec(lambda).recip().mul(2*M_PI).square().mul(atmohazefade.tocolor().mul(atmohazefadescale)).mul(1.36e-19f * std::max(atmohaze, 1e-3f)),
             betarm = vec(betar).div(1+atmoclarity).add(betam);
         betar.div(betarm).mul(3/(16*M_PI));
