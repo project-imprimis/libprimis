@@ -249,7 +249,27 @@ class postfx final
         std::vector<postfxpass> postfxpasses;
 };
 
-postfx pfx;
+namespace
+{
+    postfx pfx;
+
+    void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
+    {
+        pfx.addpostfx(name, bind, scale, inputs, *x, *y, *z, *w);
+    }
+
+    void clearpostfx()
+    {
+        pfx.clearpostfx();
+    }
+
+    void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
+    {
+        pfx.setpostfx(name, *x, *y, *z, *w);
+    }
+}
+
+//extern functions
 
 GLuint setuppostfx(const GBuffer &buf, int w, int h, GLuint outfbo)
 {
@@ -264,21 +284,6 @@ void renderpostfx(GLuint outfbo)
 void cleanuppostfx(bool fullclean)
 {
     pfx.cleanuppostfx(fullclean);
-}
-
-static void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
-{
-    pfx.addpostfx(name, bind, scale, inputs, *x, *y, *z, *w);
-}
-
-static void clearpostfx()
-{
-    pfx.clearpostfx();
-}
-
-static void setpostfx(const char *name, const float *x, const float *y, const float *z, const float *w)
-{
-    pfx.setpostfx(name, *x, *y, *z, *w);
 }
 
 void initpostfxcmds()
