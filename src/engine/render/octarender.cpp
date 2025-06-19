@@ -311,6 +311,14 @@ namespace
         }
     }
 
+
+    /**
+     * @brief Calls lookupvslot for textures associated with the VA list
+     *
+     * Searches the VA list for all associated texture indices and calls lookupvslot
+     * for each one found. Only calls once even if multiple VAs share the same
+     * texture.
+     */
     void precachetextures()
     {
         std::vector<int> texs;
