@@ -320,7 +320,7 @@ namespace
             for(int j = 0; j < va->texs; ++j)
             {
                 int tex = va->texelems[j].texture;
-                if(std::find(texs.begin(), texs.end(), tex) != texs.end())
+                if(std::find(texs.begin(), texs.end(), tex) == texs.end())
                 {
                     texs.push_back(tex);
                 }
