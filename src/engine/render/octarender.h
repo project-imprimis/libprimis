@@ -100,7 +100,6 @@ extern std::vector<vtxarray *> varoot, valist;
 extern int filltjoints;
 extern int allocva;
 
-extern ushort encodenormal(const vec &n);
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
 extern void clearvas(std::array<cube, 8> &c);

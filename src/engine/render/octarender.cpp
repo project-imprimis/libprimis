@@ -401,21 +401,6 @@ void findtjoints(int cur, const edgegroup &g)
     }
 }
 
-//takes a 3d vec3 and transforms it into a packed ushort vector
-//the output ushort is in base 360 and has yaw in the first place and pitch in the second place
-//the second place has pitch as a range from 0 to 90
-//since this is a normal vector, no magnitude needed
-ushort encodenormal(const vec &n)
-{
-    if(n.iszero())
-    {
-        return 0;
-    }
-    int yaw = static_cast<int>(-std::atan2(n.x, n.y)*RAD), //arctangent in degrees
-        pitch = static_cast<int>(std::asin(n.z)*RAD); //arcsin in degrees
-    return static_cast<ushort>(std::clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
-}
-
 void reduceslope(ivec &n)
 {
     int mindim = -1,
