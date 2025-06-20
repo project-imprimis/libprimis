@@ -110,8 +110,8 @@ namespace
         {
             return 0;
         }
-        int yaw = static_cast<int>(-std::atan2(n.x, n.y)*RAD), //arctangent in degrees
-            pitch = static_cast<int>(std::asin(n.z)*RAD); //arcsin in degrees
+        const int yaw = static_cast<int>(-std::atan2(n.x, n.y)*RAD), //arctangent in degrees
+                  pitch = static_cast<int>(std::asin(n.z)*RAD); //arcsin in degrees
         return static_cast<ushort>(std::clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
     }
 
