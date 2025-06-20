@@ -90,7 +90,7 @@ namespace
 
     constexpr int lightcacheentries = 1024;
 
-    struct lightcacheentry
+    struct lightcacheentry final
     {
         int x, y;
     } lightcache[lightcacheentries];
