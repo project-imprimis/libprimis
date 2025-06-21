@@ -27,95 +27,95 @@ namespace
     class dynlight final
     {
         public:
+            vec o;
+            float curradius, dist;
+            int expire;
+            const physent *owner;
 
-        vec o;
-        float curradius, dist;
-        int expire;
-        const physent *owner;
-
-        dynlight(vec o, int expire, physent *owner, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int flags, vec dir, int spot) :
-            o(o), expire(expire), owner(owner), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), flags(flags), dir(dir), spot(spot)
-        {
-        }
-
-        void calcradius()
-        {
-            if(fade + peak > 0)
+            dynlight(vec o, int expire, physent *owner, float radius, float initradius, vec color, vec initcolor, int fade, int peak, int flags, vec dir, int spot) :
+                o(o), expire(expire), owner(owner), radius(radius), initradius(initradius), color(color), initcolor(initcolor), fade(fade), peak(peak), flags(flags), dir(dir), spot(spot)
             {
-                int remaining = expire - lastmillis;
-                if(flags&DynLight_Expand)
+            }
+
+            void calcradius()
+            {
+                if(fade + peak > 0)
                 {
-                    curradius = initradius + (radius - initradius) * (1.0f - remaining/static_cast<float>(fade + peak));
-                }
-                else if(!(flags&DynLight_Flash) && remaining > fade)
-                {
-                    curradius = initradius + (radius - initradius) * (1.0f - static_cast<float>(remaining - fade)/peak);
-                }
-                else if(flags&DynLight_Shrink)
-                {
-                    curradius = (radius*remaining)/fade;
+                    int remaining = expire - lastmillis;
+                    if(flags&DynLight_Expand)
+                    {
+                        curradius = initradius + (radius - initradius) * (1.0f - remaining/static_cast<float>(fade + peak));
+                    }
+                    else if(!(flags&DynLight_Flash) && remaining > fade)
+                    {
+                        curradius = initradius + (radius - initradius) * (1.0f - static_cast<float>(remaining - fade)/peak);
+                    }
+                    else if(flags&DynLight_Shrink)
+                    {
+                        curradius = (radius*remaining)/fade;
+                    }
+                    else
+                    {
+                        curradius = radius;
+                    }
                 }
                 else
                 {
                     curradius = radius;
                 }
             }
-            else
-            {
-                curradius = radius;
-            }
-        }
 
-        void calccolor()
-        {
-            if(flags&DynLight_Flash || peak <= 0)
+            void calccolor()
             {
-                curcolor = color;
-            }
-            else
-            {
-                int peaking = expire - lastmillis - fade;
-                if(peaking <= 0)
+                if(flags&DynLight_Flash || peak <= 0)
                 {
                     curcolor = color;
                 }
                 else
                 {
-                    curcolor.lerp(initcolor, color, 1.0f - static_cast<float>(peaking)/peak);
+                    int peaking = expire - lastmillis - fade;
+                    if(peaking <= 0)
+                    {
+                        curcolor = color;
+                    }
+                    else
+                    {
+                        curcolor.lerp(initcolor, color, 1.0f - static_cast<float>(peaking)/peak);
+                    }
                 }
-            }
-            float intensity = 1.0f;
-            if(fade > 0)
-            {
-                int fading = expire - lastmillis;
-                if(fading < fade)
+                float intensity = 1.0f;
+                if(fade > 0)
                 {
-                    intensity = static_cast<float>(fading)/fade;
+                    int fading = expire - lastmillis;
+                    if(fading < fade)
+                    {
+                        intensity = static_cast<float>(fading)/fade;
+                    }
                 }
+                curcolor.mul(intensity);
             }
-            curcolor.mul(intensity);
-        }
 
-        /**
-         * @brief gets information about this dynlight
-         *
-         *  @param n the nth closest dynamic light
-         *  @param o a reference to set as the location of the specified dynlight
-         *  @param radius a reference to set as the radius of the specified dynlight
-         *  @param color a reference to set as the color of the specifeid dynlight
-         *  @param spot a reference to the spotlight information of the dynlight
-         *  @param dir a reference to set as the direction the dynlight is pointing
-         *  @param flags a reference to the flag bitmap for the dynlight
-         */
-        void dynlightinfo(vec &origin, float &radius, vec &color, vec &direction, int &spotlight, int &flagmask) const
-        {
-            origin = o;
-            radius = curradius;
-            color = curcolor;
-            spotlight = spot;
-            direction = dir;
-            flagmask = flags & 0xFF;
-        }
+            /**
+             * @brief gets information about this dynlight
+             *
+             *  @param n the nth closest dynamic light
+             *  @param o a reference to set as the location of the specified dynlight
+             *  @param radius a reference to set as the radius of the specified dynlight
+             *  @param color a reference to set as the color of the specifeid dynlight
+             *  @param spot a reference to the spotlight information of the dynlight
+             *  @param dir a reference to set as the direction the dynlight is pointing
+             *  @param flags a reference to the flag bitmap for the dynlight
+             */
+            void dynlightinfo(vec &origin, float &radius, vec &color, vec &direction, int &spotlight, int &flagmask) const
+            {
+                origin = o;
+                radius = curradius;
+                color = curcolor;
+                spotlight = spot;
+                direction = dir;
+                flagmask = flags & 0xFF;
+            }
+
         private:
             float radius, initradius;
             vec color, initcolor, curcolor;
