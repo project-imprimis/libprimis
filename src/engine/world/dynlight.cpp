@@ -24,7 +24,7 @@ namespace
     VARNP(dynlights, usedynlights, 0, 1, 1); //toggle using dynamic lights
     VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
 
-    class dynlight
+    class dynlight final
     {
         public:
 
