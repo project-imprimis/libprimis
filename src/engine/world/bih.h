@@ -3,7 +3,7 @@
 
 struct CollisionInfo;
 
-class BIH
+class BIH final
 {
     public:
         struct node
@@ -25,7 +25,7 @@ class BIH
             Mesh_CullFace = 1<<5
         };
 
-        class mesh
+        class mesh final
         {
             public:
                 static constexpr int maxtriangles = 1<<14;
