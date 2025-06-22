@@ -1472,7 +1472,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = null
         for(size_t i = 0; i < src.params.size(); i++)
         {
             const SlotShaderParam &sp = src.params[i];
-            for(uint j = 0; j < dst.params.size(); j++)
+            for(size_t j = 0; j < dst.params.size(); j++)
             {
                 SlotShaderParam &dp = dst.params[j];
                 if(sp.name == dp.name)
@@ -2398,7 +2398,7 @@ void linkslotshaders()
             linkvslotshader(*i);
         }
     }
-    for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
+    for(size_t i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         if(materialslots[i].loaded)
         {
@@ -2463,7 +2463,7 @@ Texture *Slot::loadthumbnail()
     int glow = -1;
     if(texmask&(1 << Tex_Glow))
     {
-        for(uint j = 0; j < sts.size(); j++)
+        for(size_t j = 0; j < sts.size(); j++)
         {
             if(sts[j].type == Tex_Glow)
             {
@@ -2559,7 +2559,7 @@ void cleanuptextures()
     {
         i->cleanup();
     }
-    for(uint i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
+    for(size_t i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].cleanup();
     }
