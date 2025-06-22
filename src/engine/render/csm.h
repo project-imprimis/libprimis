@@ -1,7 +1,7 @@
 #ifndef CSM_H_
 #define CSM_H_
 
-class cascadedshadowmap
+class cascadedshadowmap final
 {
     public:
         static const int csmmaxsplits = 8;
@@ -26,7 +26,7 @@ class cascadedshadowmap
             PolyFactor2
         };
 
-        struct splitinfo
+        struct splitinfo final
         {
             float nearplane;     // split distance to near plane
             float farplane;      // split distance to farplane
