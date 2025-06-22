@@ -540,7 +540,6 @@ void destroyva(vtxarray *va, bool reparent)
     delete va;
 }
 
-//recursively clear vertex arrays for an array of eight cube objects and their children
 void clearvas(std::array<cube, 8> &c)
 {
     for(int i = 0; i < 8; ++i)

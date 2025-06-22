@@ -102,6 +102,17 @@ extern int allocva;
 
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
+
+/**
+ * @brief Recursively clear vertex arrays for an array of eight cube objects and their children.
+ *
+ * For a given set of 8 leaf nodes (cube objects), clears any vas assigned directly
+ * to those leaves, and then clears any vas recursively belonging to their children.
+ *
+ * Clearing VAs involves calling destroyva() without reparenting lost children.
+ *
+ * @param c an array of cubes corresponding to a 2x2x2 volume of cubes
+ */
 extern void clearvas(std::array<cube, 8> &c);
 
 /**
