@@ -388,7 +388,7 @@ class animmodel : public model
                 }
 
             private:
-                struct smoothdata
+                struct smoothdata final
                 {
                     vec norm;
                     int next;
