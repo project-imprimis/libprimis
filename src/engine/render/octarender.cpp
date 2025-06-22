@@ -475,12 +475,6 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
 
 //va external fxns
 
-/* destroyva
- * destroys the vertex array object, its various buffer objects and information from
- * the valist object
- *
- * if reparent is set to true, assigns child vertex arrays to the parent of the selected va
- */
 void destroyva(vtxarray *va, bool reparent)
 {
     wverts -= va->verts;

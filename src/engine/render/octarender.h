@@ -103,6 +103,15 @@ extern int allocva;
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
 extern void clearvas(std::array<cube, 8> &c);
+
+/**
+ * @brief Destroys the vertex array object, its various buffer objects and information from the valist object
+ *
+ * If reparent is set to true, assigns child vertex arrays to the parent of the selected va
+ *
+ * @param va the va to destroy
+ * @param reparent whether to reassign child arrays to va's parent
+ */
 extern void destroyva(vtxarray *va, bool reparent = true);
 extern void updatevabbs(bool force = false);
 
