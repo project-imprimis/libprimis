@@ -17,32 +17,32 @@ class gltf final : public skelloader<gltf>
         static const char *formatname();
 
     private:
-        struct gltfjoint
+        struct gltfjoint final
         {
             vec pos;
             quat orient;
         };
 
-        struct gltfweight
+        struct gltfweight final
         {
             int joint;
             float bias;
             vec pos;
         };
 
-        struct gltfvert
+        struct gltfvert final
         {
             vec2 tc;
             uint start, count;
         };
 
-        struct gltfhierarchy
+        struct gltfhierarchy final
         {
             string name;
             int parent, flags, start;
         };
 
-        class gltfmeshgroup : public skelmeshgroup
+        class gltfmeshgroup final : public skelmeshgroup
         {
             public:
                 gltfmeshgroup();
@@ -56,7 +56,7 @@ class gltf final : public skelloader<gltf>
 
 
         //extensions to skelmesh objects for gltf specifically
-        class gltfmesh : public skelmesh
+        class gltfmesh final : public skelmesh
         {
             public:
                 gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
