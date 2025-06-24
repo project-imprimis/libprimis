@@ -31,28 +31,28 @@ std::array<GLuint, 4> aotex = { 0, 0, 0, 0 };
 GLuint aonoisetex = 0;
 
 VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); }); //toggles ao use in general
-FVARR(aoradius, 0, 5, 256);
-FVAR(aocutoff, 0, 2.0f, 1e3f);
-FVARR(aodark, 1e-3f, 11.0f, 1e3f);
-FVARR(aosharp, 1e-3f, 1, 1e3f);
-FVAR(aoprefilterdepth, 0, 1, 1e3f);
+static FVARR(aoradius, 0, 5, 256);
+static FVAR(aocutoff, 0, 2.0f, 1e3f);
+static FVARR(aodark, 1e-3f, 11.0f, 1e3f);
+static FVARR(aosharp, 1e-3f, 1, 1e3f);
+static FVAR(aoprefilterdepth, 0, 1, 1e3f);
 FVARR(aomin, 0, 0.25f, 1);
 VARFR(aosun, 0, 1, 1, cleardeferredlightshaders()); //toggles ambient occlusion for sunlight
 FVARR(aosunmin, 0, 0.5f, 1);
-VARP(aoblur, 0, 4, 7);
-VARP(aoiter, 0, 0, 4); //number of times to run ao shader (higher is smoother)
+static VARP(aoblur, 0, 4, 7);
+static VARP(aoiter, 0, 0, 4); //number of times to run ao shader (higher is smoother)
 VARFP(aoreduce, 0, 1, 2, cleanupao());
 VARF(aoreducedepth, 0, 1, 2, cleanupao());
-VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
-VARFP(aoprec, 0, 1, 1, cleanupao()); //toggles between r8 and rgba8 buffer format
-VAR(aodepthformat, 1, 0, 0);
-VARF(aonoise, 0, 5, 8, cleanupao()); //power or two scale factor for ao noise effect
+static VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
+static VARFP(aoprec, 0, 1, 1, cleanupao()); //toggles between r8 and rgba8 buffer format
+static VAR(aodepthformat, 1, 0, 0);
+static VARF(aonoise, 0, 5, 8, cleanupao()); //power or two scale factor for ao noise effect
 VARFP(aobilateral, 0, 3, 10, cleanupao());
-FVARP(aobilateraldepth, 0, 4, 1e3f);
+static FVARP(aobilateraldepth, 0, 4, 1e3f);
 VARFP(aobilateralupscale, 0, 0, 1, cleanupao());
 VARF(aopackdepth, 0, 1, 1, cleanupao());
-VARFP(aotaps, 1, 12, 12, cleanupao());
-VAR(debugao, 0, 0, 4);
+static VARFP(aotaps, 1, 12, 12, cleanupao());
+static VAR(debugao, 0, 0, 4);
 
 static Shader *ambientobscuranceshader = nullptr;
 
