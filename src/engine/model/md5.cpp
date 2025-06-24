@@ -112,7 +112,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
     }
     //hierarchy, basejoints vectors are to have correlating indices with
     // skel->bones, this->adjustments, this->frame, skel->framebones
-    struct md5hierarchy
+    struct md5hierarchy final
     {
         string name;
         int parent, flags, start;
