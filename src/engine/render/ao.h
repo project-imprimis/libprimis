@@ -2,7 +2,7 @@
 #define AO_H_
 
 extern int aow, aoh;
-extern GLuint aotex[4];
+extern std::array<GLuint, 4> aotex;
 extern float aomin, aosunmin;
 extern int ao, aosun, aopackdepth, aoreduce, aoreducedepth;
 extern int aobilateral, aobilateralupscale;
