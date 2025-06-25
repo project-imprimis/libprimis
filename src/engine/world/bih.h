@@ -6,7 +6,7 @@ struct CollisionInfo;
 class BIH final
 {
     public:
-        struct node
+        struct node final
         {
             std::array<short, 2> split;
             std::array<ushort, 2> child;
