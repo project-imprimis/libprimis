@@ -18,7 +18,7 @@
 #include "world.h"
 
 
-class hmap
+class hmap final
 {
     public:
         void cancel()
