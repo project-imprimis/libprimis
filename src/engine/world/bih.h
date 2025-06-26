@@ -1,7 +1,11 @@
 #ifndef BIH_H_
 #define BIH_H_
 
-struct CollisionInfo;
+struct CollisionInfo final
+{
+    bool collided;
+    vec collidewall;
+};
 
 class BIH final
 {
