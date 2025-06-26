@@ -241,9 +241,9 @@ VARF(gridpower, 0, 3, 12,
     cancelsel();
 });
 
-VAR(passthroughsel, 0, 0, 1);
-VAR(selectcorners, 0, 0, 1);
-VARF(hmapedit, 0, 0, 1, horient = sel.orient);
+VAR(passthroughsel, 0, 0, 1); //used in iengine
+VAR(selectcorners, 0, 0, 1); //used in iengine
+VARF(hmapedit, 0, 0, 1, horient = sel.orient); //used in iengine
 
 void forcenextundo()
 {
