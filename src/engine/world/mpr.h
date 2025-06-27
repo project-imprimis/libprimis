@@ -5,7 +5,7 @@ struct clipplanes;
 
 namespace mpr
 {
-    struct CubePlanes
+    struct CubePlanes final
     {
         const clipplanes &p;
 
@@ -15,7 +15,7 @@ namespace mpr
         vec supportpoint(const vec &n) const;
     };
 
-    struct SolidCube
+    struct SolidCube final
     {
         vec o;
         int size;
@@ -37,7 +37,7 @@ namespace mpr
         vec center() const;
     };
 
-    class EntOBB : public Ent
+    class EntOBB final : public Ent
     {
         public:
             EntOBB(const physent *ent);
@@ -70,7 +70,7 @@ namespace mpr
         float top()    const;
     };
 
-    struct EntCylinder : EntFuzzy
+    struct EntCylinder final : EntFuzzy
     {
         EntCylinder(const physent *ent) : EntFuzzy(ent) {}
 
@@ -78,14 +78,14 @@ namespace mpr
         vec supportpoint(const vec &n) const;
     };
 
-    struct EntCapsule : EntFuzzy
+    struct EntCapsule final : EntFuzzy
     {
         EntCapsule(const physent *ent) : EntFuzzy(ent) {}
 
         vec supportpoint(const vec &n) const;
     };
 
-    struct EntEllipsoid : EntFuzzy
+    struct EntEllipsoid final : EntFuzzy
     {
         EntEllipsoid(const physent *ent) : EntFuzzy(ent) {}
 
@@ -102,7 +102,7 @@ namespace mpr
         vec center() const;
     };
 
-    struct ModelOBB : Model
+    struct ModelOBB final : Model
     {
         ModelOBB(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) :
             Model(ent, center, radius, yaw, pitch, roll)
@@ -113,7 +113,7 @@ namespace mpr
     };
 
 
-    struct ModelEllipse : Model
+    struct ModelEllipse final : Model
     {
         ModelEllipse(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) :
             Model(ent, center, radius, yaw, pitch, roll)
