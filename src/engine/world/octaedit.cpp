@@ -328,8 +328,8 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 
 ////////////// cursor ///////////////
 
-int selchildcount = 0,
-    selchildmat = -1;
+int selchildcount = 0, //used in iengine
+    selchildmat = -1; //used in iengine
 
 //used in iengine.h
 void countselchild(const std::array<cube, 8> &c, const ivec &cor, int size)
