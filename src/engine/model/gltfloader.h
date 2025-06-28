@@ -2,7 +2,7 @@
 #ifndef GLTFLOADER_H_
 #define GLTFLOADER_H_
 
-class GLTFModelInfo
+class GLTFModelInfo final
 {
     public:
         //populates the object vectors with the data in the gltf file
@@ -36,7 +36,7 @@ class GLTFModelInfo
         };
     private:
 
-        struct Node
+        struct Node final
         {
             std::string name;
             std::optional<std::array<float, 3>> translation;
@@ -45,7 +45,7 @@ class GLTFModelInfo
             std::vector<size_t> children;
         };
 
-        struct Mesh
+        struct Mesh final
         {
             std::string name;
             //indices of accessors
@@ -57,7 +57,7 @@ class GLTFModelInfo
                                 indices;
         };
 
-        struct Accessor
+        struct Accessor final
         {
             size_t index; //index of this accessor
             uint bufferview; //index in the binary buffer this points to
@@ -66,7 +66,7 @@ class GLTFModelInfo
             std::string type; //type of data structure (vec2/vec3/scalar/etc)
         };
 
-        struct BufferView
+        struct BufferView final
         {
             size_t index;
             uint buffer,
@@ -74,7 +74,7 @@ class GLTFModelInfo
                  bytelength;
         };
 
-        struct Buffer
+        struct Buffer final
         {
             size_t index;
             uint bytelength;
@@ -82,9 +82,9 @@ class GLTFModelInfo
             std::vector<char> buf;
         };
 
-        struct Animation
+        struct Animation final
         {
-            struct Channel
+            struct Channel final
             {
                 size_t index;
                 size_t sampler;
@@ -92,7 +92,7 @@ class GLTFModelInfo
                 std::string targetpath;
             };
             std::vector<Channel> channels;
-            struct Sampler
+            struct Sampler final
             {
                 size_t index;
                 size_t input;
