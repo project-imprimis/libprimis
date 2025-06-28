@@ -11,7 +11,7 @@ struct obj final : vertloader<obj>
     int type() const override final;
     bool skeletal() const override final;
 
-    struct objmeshgroup : vertmeshgroup
+    struct objmeshgroup final : vertmeshgroup
     {
         public:
             bool load(const char *filename, float smooth) override final;
