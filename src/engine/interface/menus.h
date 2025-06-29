@@ -3,9 +3,12 @@
 
 extern int mainmenu;
 
-//adds a change to the queue of settings changes,
-//if applydialog = 0 then this function does nothing
-//if showchanges = 1 then this function does not display changes UI at the end
+/**
+ * @brief Adds a change to the vector queue of settings changes.
+ *
+ * if applydialog = 0 then this function does nothing
+ * if showchanges = 1 then this function does not display changes UI at the end
+ */
 extern void addchange(const char *desc, int type);
 
 //clears out pending changes added by addchange()
