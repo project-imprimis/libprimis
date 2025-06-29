@@ -1,4 +1,5 @@
-/* hdr.cpp: hdr, tonemapping, and bloom
+/**
+ * @file hdr.cpp: hdr, tonemapping, and bloom
  *
  * Libprimis supports a type of high dynamic range by calculating the average
  * brightness of the scene and slowly changing the calibration point for the
