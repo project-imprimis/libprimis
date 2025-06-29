@@ -33,7 +33,7 @@ int oppositeorient(int orient)
     return orient^1;
 }
 
-const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
+static const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 {//0..1 = row edges, 2..3 = column edges
     { 4,  5,  8, 10 },
     { 6,  7,  9, 11 },
