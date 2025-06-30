@@ -262,13 +262,13 @@ namespace
         std::printf("testing notouchingface\n");
         cube c;
         setcubefaces(c, 1);
-        assert(!touchingface(c, 0));
-        assert(!touchingface(c, 1));
-        assert(!touchingface(c, 2));
+        assert(!notouchingface(c, 0));
+        assert(notouchingface(c, 1));
+        assert(!notouchingface(c, 2));
         setcubefaces(c, 0);
-        assert(touchingface(c, 0));
-        assert(!touchingface(c, 1));
-        assert(touchingface(c, 2));
+        assert(!notouchingface(c, 0));
+        assert(notouchingface(c, 1));
+        assert(!notouchingface(c, 2));
     }
 }
 
