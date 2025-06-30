@@ -2,6 +2,7 @@
 #include "libprimis.h"
 #include "../shared/geomexts.h"
 #include "../src/engine/world/octaworld.h"
+#include "../src/engine/world/octacube.h"
 
 namespace
 {
@@ -241,6 +242,34 @@ namespace
         std::printf("testing undoblock::block\n");
         assert(std::distance(&block, reinterpret_cast<undoblock *>(block.ents())) == 1);
     }
+
+    void test_touchingface()
+    {
+        std::printf("testing touchingface\n");
+        cube c;
+        setcubefaces(c, 1);
+        assert(!touchingface(c, 0));
+        assert(!touchingface(c, 1));
+        assert(!touchingface(c, 2));
+        setcubefaces(c, 0);
+        assert(touchingface(c, 0));
+        assert(!touchingface(c, 1));
+        assert(touchingface(c, 2));
+    }
+
+    void test_notouchingface()
+    {
+        std::printf("testing notouchingface\n");
+        cube c;
+        setcubefaces(c, 1);
+        assert(!touchingface(c, 0));
+        assert(!touchingface(c, 1));
+        assert(!touchingface(c, 2));
+        setcubefaces(c, 0);
+        assert(touchingface(c, 0));
+        assert(!touchingface(c, 1));
+        assert(touchingface(c, 2));
+    }
 }
 
 void test_octa()
@@ -267,4 +296,6 @@ testing octa functionality\n\
     test_editinfo_ctor();
     test_undoblock_block();
     test_undoblock_ents();
+    test_touchingface();
+    test_notouchingface();
 }
