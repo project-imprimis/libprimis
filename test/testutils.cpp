@@ -548,6 +548,14 @@ namespace
             out = d.get();
             assert(d.overread() == true);
         }
+        {
+            std::array<int, 1> buf{1};
+            databuf<int> d(buf.data(),1);
+            std::array<int, 2> a;
+            int out = d.get(a.data(), 2);
+            assert(out == 1);
+            assert(d.overread() == true);
+        }
     }
 
     void test_databuf_offset()
