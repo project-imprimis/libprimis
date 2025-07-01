@@ -2457,6 +2457,26 @@ namespace
         test_3d_rotate_around_y<float, vec4<float>>("vec4");
     }
 
+    void test_vec4_tonormal()
+    {
+        std::printf("testing vec4 tonormal\n");
+        {
+            vec4<float> f = {255,255,255,0};
+            std::printf("%f %f %f\n", f.tonormal().x, f.tonormal().y, f.tonormal().z);
+            assert(f.tonormal().sub(vec(1,1,1)).magnitude() < tolerance);
+        }
+        {
+            vec4<float> f = {127,127,127,0};
+            std::printf("%f %f %f\n", f.tonormal().x, f.tonormal().y, f.tonormal().z);
+            assert(f.tonormal().sub(vec(-0.004,-0.004,-0.004)).magnitude() < tolerance);
+        }
+        {
+            vec4<float> f = {0,0,0,0};
+            std::printf("%f %f %f\n", f.tonormal().x, f.tonormal().y, f.tonormal().z);
+            assert(f.tonormal().sub(vec(-1,-1,-1)).magnitude() < tolerance);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     // integer vec tests
     ////////////////////////////////////////////////////////////////////////////////
@@ -3321,6 +3341,7 @@ testing geometry\n\
     test_vec4_rotate_around_z();
     test_vec4_rotate_around_x();
     test_vec4_rotate_around_y();
+    test_vec4_tonormal();
 
     test_ivec_ctor();
     test_ivec_bracket();
