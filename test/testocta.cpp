@@ -121,6 +121,29 @@ namespace
         }
     }
 
+    void test_cube_isvalidcube()
+    {
+        std::printf("Testing cube::isvalidcube\n");
+        {
+            cube c;
+            assert(c.isvalidcube());
+        }
+        {
+            cube c;
+            c.faces[0] = facesolid;
+            c.faces[1] = facesolid;
+            c.faces[2] = facesolid;
+            assert(c.isvalidcube());
+        }
+        {
+            cube c;
+            c.faces[0] = 0;
+            c.faces[1] = 0;
+            c.faces[2] = 0;
+            assert(c.isvalidcube());
+        }
+    }
+
     void test_selinfo_size()
     {
         std::printf("Testing selinfo::size\n");
@@ -286,6 +309,7 @@ testing octa functionality\n\
     test_cube_isempty();
     test_cube_issolid();
     test_cube_calcmerges();
+    test_cube_isvalidcube();
     test_selinfo_size();
     test_selinfo_us();
     test_selinfo_equals();
