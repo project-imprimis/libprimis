@@ -18,7 +18,7 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
-struct normalkey
+struct normalkey final
 {
     vec pos;
     int smooth;
@@ -41,7 +41,7 @@ struct std::hash<normalkey>
 
 namespace //internal functionality not seen by other files
 {
-    struct normalgroup
+    struct normalgroup final
     {
         vec pos;
         int smooth, flat, normals, tnormals;
@@ -50,13 +50,13 @@ namespace //internal functionality not seen by other files
         normalgroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
     };
 
-    struct normal
+    struct normal final
     {
         int next;
         vec surface;
     };
 
-    struct tnormal
+    struct tnormal final
     {
         int next;
         float offset;
