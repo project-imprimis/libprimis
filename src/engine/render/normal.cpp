@@ -60,7 +60,7 @@ namespace //internal functionality not seen by other files
     {
         int next;
         float offset;
-        int normals[2];
+        std::array<int, 2> normals;
         normalgroup *groups[2];
     };
 
