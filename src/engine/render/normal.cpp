@@ -1,4 +1,5 @@
-/* normal.cpp: cube geometry normal interpolation
+/**
+ * @file normal.cpp: cube geometry normal interpolation
  *
  * cube geometry in the libprimis engine is faceted, only allowing 8 ticks of
  * movement; as a result, normal vectors of geometry are not very smooth
