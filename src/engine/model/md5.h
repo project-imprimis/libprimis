@@ -28,26 +28,26 @@ class md5 final : public skelloader<md5>
         static const char *formatname();
 
     private:
-        struct md5joint
+        struct md5joint final
         {
             vec pos;
             quat orient;
         };
 
-        struct md5weight
+        struct md5weight final
         {
             int joint;
             float bias;
             vec pos;
         };
 
-        struct md5vert
+        struct md5vert final
         {
             vec2 tc;
             uint start, count;
         };
 
-        class md5meshgroup : public skelmeshgroup
+        class md5meshgroup final : public skelmeshgroup
         {
             public:
                 md5meshgroup();
@@ -61,7 +61,7 @@ class md5 final : public skelloader<md5>
 
 
         //extensions to skelmesh objects for md5 specifically
-        class md5mesh : public skelmesh
+        class md5mesh final : public skelmesh
         {
             public:
                 md5mesh(std::string_view name, meshgroup *m);
