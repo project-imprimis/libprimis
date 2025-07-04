@@ -71,8 +71,8 @@ namespace //internal functionality not seen by other files
 
     constexpr int numgrassoffsets = 32;
 
-    float grassoffsets[numgrassoffsets] = { -1 },
-          grassanimoffsets[numgrassoffsets];
+    std::array<float, numgrassoffsets> grassoffsets = { -1 };
+    std::array<float, numgrassoffsets> grassanimoffsets;
     int lastgrassanim = -1;
 
     VARR(grassanimmillis, 0, 3000, 60000);      //sets the characteristic rate of grass animation change
