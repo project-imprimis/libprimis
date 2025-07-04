@@ -246,8 +246,8 @@ namespace mpr
     bool collide(const EntOBB &p1, const T &p2, vec *contactnormal, vec *contactpoint1, vec *contactpoint2)
     {
         // v0 = center of Minkowski sum
-        vec v01 = p1.center();
-        vec v02 = p2.center();
+        const vec v01 = p1.center();
+        const vec v02 = p2.center();
         vec v0 = vec(v02).sub(v01);
 
         // Avoid case where centers overlap -- any direction is fine in this case
