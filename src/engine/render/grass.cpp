@@ -31,7 +31,7 @@ namespace //internal functionality not seen by other files
 
     constexpr int numgrasswedges = 8;
 
-    struct grasswedge
+    struct grasswedge final
     {
         vec dir, across, edge1, edge2;
         plane bound1, bound2;
@@ -48,7 +48,7 @@ namespace //internal functionality not seen by other files
         }
     } grasswedges[numgrasswedges] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-    struct grassvert
+    struct grassvert final
     {
         vec pos;
         vec4<uchar> color;
@@ -61,7 +61,7 @@ namespace //internal functionality not seen by other files
 
     VAR(maxgrass, 10, 10000, 10000);            //number of grass squares allowed to be rendered at a time
 
-    struct grassgroup
+    struct grassgroup final
     {
         const grasstri *tri;
         int tex, offset, numquads;
