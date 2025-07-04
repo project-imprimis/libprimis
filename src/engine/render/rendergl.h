@@ -83,7 +83,7 @@ extern void pophudmatrix(bool flush = true, bool flushparams = true);
 extern void pushhudscale(float scale);
 extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 
-class ModelPreview
+class ModelPreview final
 {
     public:
         void start(int x, int y, int w, int h, bool background, bool scissor);
