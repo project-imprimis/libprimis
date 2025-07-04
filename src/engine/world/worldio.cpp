@@ -127,7 +127,6 @@ namespace
             }
         }
     }
-
     static int savemapprogress = 0;
 }
 
@@ -651,7 +650,6 @@ std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bool &fai
 }
 
 VAR(debugvars, 0, 0, 1);
-
 
 void savevslots(stream *f, int numvslots)
 {
