@@ -19,6 +19,20 @@ extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0
  * @return whether the vec is inside the world
  */
 extern bool insideworld(const vec &o);
+
+/**
+ * @brief Returns whether the passed ivec lies inside the bounds of the rootworld.
+ *
+ * Returns true if all dimensions are within the range [0, rootworld.mapsize).
+ * This is inclusive of 0 and exclusive of the mapsize.
+ * Since worlds are cubes, all dimensions are measured against the same limits.
+ * Checks by determining that the ivec's int fields are less than mapsize when
+ * cast to uint.
+ *
+ * @param o the ivec to check
+ *
+ * @return whether the ivec is inside the world
+ */
 extern bool insideworld(const ivec &o);
 
 #endif
