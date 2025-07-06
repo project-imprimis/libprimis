@@ -1721,14 +1721,15 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
     }
 }
 
-/*setmat: sets a cube's materials, given a material & filter to use
- * Arguments:
- *  c: the cube object to use
- *  mat: material index to apply
- *  matmask: material mask
- *  filtermat: if nonzero, determines what existing mats to apply to
- *  filtermask: filter material mask
- *  filtergeom: type of geometry inside the cube (empty, solid, partially solid)
+/**
+ * @brief Sets a cube's materials, given a material & filter to use
+ *
+ * @param c the cube object to use
+ * @param mat material index to apply
+ * @param matmask material mask
+ * @param filtermat if nonzero, determines what existing mats to apply to
+ * @param filtermask filter material mask
+ * @param filtergeom type of geometry inside the cube (empty, solid, partially solid)
  */
 void cube::setmat(ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
 {
