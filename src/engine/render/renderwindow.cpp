@@ -46,9 +46,12 @@ int screenw = 0,
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
 
-//helper function for main menu rendering routines
-//returns w and h if both are above 1024x768
-//returns w and h multiplied by the factor by which the smallest dimension is smaller than 1024x768
+/**
+ * @brief helper function for main menu rendering routines
+ *
+ * @return w and h if both are above 1024x768
+ * @return w and h multiplied by the factor by which the smallest dimension is smaller than 1024x768
+ */
 static void getbackgroundres(int &w, int &h)
 {
     float wk = 1,
