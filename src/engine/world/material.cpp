@@ -42,7 +42,7 @@ namespace
 {
     std::vector<materialsurface> editsurfs;
 
-    class QuadNode
+    class QuadNode final
     {
         public:
             QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
@@ -226,7 +226,7 @@ namespace
         gle::end();
     }
 
-    const struct material
+    const struct material final
     {
         const char *name;
         ushort id;
