@@ -195,7 +195,7 @@ static constexpr int dynentcachesize = 1024;
 
 static size_t dynentframe = 0;
 
-static struct dynentcacheentry
+static struct dynentcacheentry final
 {
     int x, y;
     size_t frame;
@@ -1308,7 +1308,7 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
 
 static bool droptofloor(vec &o, float radius, float height)
 {
-    static struct dropent : physent
+    static struct dropent final : physent
     {
         dropent()
         {
