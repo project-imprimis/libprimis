@@ -243,7 +243,7 @@ namespace batching
     static void addbatchedmodel(model *m, batchedmodel &bm, int idx)
     {
         modelbatch *b = nullptr;
-        if(batches.size() > static_cast<uint>(m->batch))
+        if(batches.size() > static_cast<size_t>(m->batch))
         {
             b = &batches[m->batch];
             if(b->m == m && (b->flags & Model_Mapmodel) == (bm.flags & Model_Mapmodel))
@@ -483,7 +483,7 @@ namespace batching
 
     void clearbatchedmapmodels()
     {
-        for(uint i = 0; i < batches.size(); i++)
+        for(size_t i = 0; i < batches.size(); i++)
         {
             const modelbatch &b = batches[i];
             if(b.flags&Model_Mapmodel)
@@ -513,7 +513,7 @@ void preloadmodel(std::string name)
 
 void flushpreloadedmodels(bool msg)
 {
-    for(uint i = 0; i < preloadmodels.size(); i++)
+    for(size_t i = 0; i < preloadmodels.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/preloadmodels.size();
         model *m = loadmodel(preloadmodels[i].c_str(), -1, msg);
@@ -548,7 +548,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     }
 
     std::vector<std::string> col;
-    for(uint i = 0; i < used.size(); i++)
+    for(size_t i = 0; i < used.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
         int mmindex = used[i];
@@ -592,7 +592,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         }
     }
 
-    for(uint i = 0; i < col.size(); i++)
+    for(size_t i = 0; i < col.size(); i++)
     {
         loadprogress = static_cast<float>(i+1)/col.size();
         model *m = loadmodel(col[i].c_str(), -1, msg);
@@ -680,7 +680,7 @@ model *loadmodel(std::string_view name, int i, bool msg)
             models[m->modelname()] = m;
         }
     }
-    if((mapmodel::mapmodels.size() > static_cast<uint>(i)) && !mapmodel::mapmodels[i].m)
+    if((mapmodel::mapmodels.size() > static_cast<size_t>(i)) && !mapmodel::mapmodels[i].m)
     {
         mapmodel::mapmodels[i].m = m;
     }
