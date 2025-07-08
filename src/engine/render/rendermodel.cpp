@@ -129,7 +129,7 @@ static bool modeloccluded(const vec &center, float radius)
 }
 
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
-VAR(maxmodelradiusdistance, 10, 200, 1000);
+static VAR(maxmodelradiusdistance, 10, 200, 1000);
 
 /**
  * @brief Returns whether the model should be culled.
