@@ -397,8 +397,8 @@ void cascadedshadowmap::gencullplanes()
         matrix4 mvp;
         mvp.mul(split.proj, model);
         vec4<float> px = mvp.rowx(),
-             py = mvp.rowy(),
-             pw = mvp.roww();
+                    py = mvp.rowy(),
+                    pw = mvp.roww();
         split.cull[0] = plane(vec4<float>(pw).add(px)).normalize(); // left plane
         split.cull[1] = plane(vec4<float>(pw).sub(px)).normalize(); // right plane
         split.cull[2] = plane(vec4<float>(pw).add(py)).normalize(); // bottom plane
