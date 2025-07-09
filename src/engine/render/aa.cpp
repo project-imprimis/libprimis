@@ -173,7 +173,7 @@ namespace //internal functions incl. AA implementations
     /* FXAA: Fast approXimate Anti Aliasing */
     //////////////////////////////////////////
 
-    class fxaa
+    class fxaa final
     {
         public:
             GLuint fxaafbo = 0;
@@ -280,7 +280,7 @@ namespace //internal functions incl. AA implementations
     /* SMAA: Subpixel Morphological Anti Aliasing */
     ////////////////////////////////////////////////
 
-    class subpixelaa
+    class subpixelaa final
     {
         public:
             enum SMAAProp
