@@ -119,9 +119,6 @@ int ImageData::calcsize() const
     return size;
 }
 
-//Clears the objects pointers that the image data points to, to allow them to be exclusively
-//pointed to by another object. This is used when calling replace() such that the old object
-//does not have references to the new object's data fields.
 void ImageData::disown()
 {
     data = nullptr;

@@ -39,6 +39,13 @@ class ImageData
 
         void setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE);
         int calcsize() const;
+        /**
+         * @brief Clears ownership of this object's pointers.
+         *
+         * Clears the objects pointers that the image data points to, to allow them to be exclusively
+         * pointed to by another object. This is used when calling replace() such that the old object
+         * does not have references to the new object's data fields.
+         */
         void disown();
         void cleanup();
         void replace(ImageData &d);
