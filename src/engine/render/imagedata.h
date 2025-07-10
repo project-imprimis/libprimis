@@ -1,7 +1,7 @@
 #ifndef IMAGEDATA_H_
 #define IMAGEDATA_H_
 
-class ImageData
+class ImageData final
 {
     public:
         ImageData();
