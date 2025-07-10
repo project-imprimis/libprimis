@@ -1833,12 +1833,22 @@ namespace
     void test_matrix4_transform()
     {
         std::printf("testing matrix4 transform\n");
-        vec test = vec(1,2,3);
-        vec testout;
-        matrix4 m;
-        m.identity();
-        m.transform(test, testout);
-        assert(testout.sub(vec(1,2,3)).magnitude() < tolerance);
+        {
+            vec test = vec(1,2,3);
+            vec testout;
+            matrix4 m;
+            m.identity();
+            m.transform(test, testout);
+            assert(testout.sub(vec(1,2,3)).magnitude() < tolerance);
+        }
+        {
+            vec4<float> test = vec4<float>(1,2,3,4);
+            vec4<float> testout;
+            matrix4 m;
+            m.identity();
+            m.transform(test, testout);
+            assert(testout.sub(vec4<float>(1,2,3,4)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4_transformnormal()
