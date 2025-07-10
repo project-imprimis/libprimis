@@ -92,9 +92,16 @@ namespace //internal functionality not seen by other files
     CVAR0R(grasscolor, 0xFFFFFF);//tint color for grass
     FVARR(grasstest, 0, 0.6f, 1);
 
-    //generate the grass geometry placed above cubes
-    //grass always faces the camera (billboarded)
-    //and therefore grass geom is calculated realtime to face the cam
+    /**
+     * @brief Generate the grass geometry placed above cubes
+     *
+     * Grass always faces the camera (billboarded) and therefore grass geom is
+     * calculated realtime to face the camera
+     *
+     * @brief group the grass group to use, or if nullptr a new one will be used
+     * @brief w grass wedge geometry information
+     * @brief tex the grass texture to apply
+     */
     void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, const Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
