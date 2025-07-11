@@ -1857,6 +1857,14 @@ namespace
             m.transform(test, testout);
             assert(testout.sub(vec(1,2,3)).magnitude() < tolerance);
         }
+        {
+            vec test = vec(1,2,3);
+            vec4<float> testout;
+            matrix4 m;
+            m.identity();
+            m.transform(test, testout);
+            assert(testout.sub(vec4<float>(1,2,3,1)).magnitude() < tolerance);
+        }
     }
 
     void test_matrix4_transformnormal()
