@@ -178,8 +178,8 @@ bool selinfo::validate()
 
 int orient = 0,
     gridsize = 8;
-static ivec cor, lastcor, lastcur;
-ivec cur;
+static ivec lastcur;
+ivec cor, lastcor, cur; //used in iengine
 
 bool editmode     = false,
      multiplayer  = false,

@@ -40,7 +40,7 @@
 
 #include "model/model.h"
 
-static void initstains();
+void initstains();
 
 static VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initstains to potentially cull extra stain tris
 static VARP(stainfade, 1000, 15000, 60000);                //number of milliseconds before stain geom fades
@@ -1081,8 +1081,10 @@ std::vector<stainrenderer> stains;
  * and then preloads them
  *
  * Fails to do anything if initing is set (early game loading time)
+ *
+ * Used in iengine.h.
  */
-static void initstains()
+void initstains()
 {
     if(initing)
     {
