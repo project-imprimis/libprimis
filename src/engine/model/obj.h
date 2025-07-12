@@ -7,14 +7,14 @@ struct obj final : vertloader<obj>
 
     static const char *formatname();
     static bool cananimate();
-    bool flipy() const override final;
-    int type() const override final;
-    bool skeletal() const override final;
+    bool flipy() const final;
+    int type() const final;
+    bool skeletal() const final;
 
     struct objmeshgroup final : vertmeshgroup
     {
         public:
-            bool load(const char *filename, float smooth) override final;
+            bool load(const char *filename, float smooth) final;
 
         private:
             static void parsevert(char *s, std::vector<vec> &out);
@@ -26,12 +26,12 @@ struct obj final : vertloader<obj>
                            float smooth);
     };
 
-    vertmeshgroup *newmeshes() override final
+    vertmeshgroup *newmeshes() final
     {
         return new objmeshgroup;
     }
 
-    bool loaddefaultparts() override final;
+    bool loaddefaultparts() final;
 
     private:
         /* note about objcommands variable:
