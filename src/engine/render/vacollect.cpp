@@ -1790,7 +1790,10 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
             }
         }
     }
-    const sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
+    const sortkey key(texture,
+                      vslot.scroll.iszero() ? Orient_Any : orient,
+                      layer&BlendLayer_Bottom ? layer : BlendLayer_Top,
+                      alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
     addtris(vslot, orient, key, verts.data(), index.data(), numverts, tj);
     if(grassy)
     {
