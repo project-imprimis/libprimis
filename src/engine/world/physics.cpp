@@ -287,10 +287,10 @@ void updatedynentcache(physent *d)
 }
 
 template<class O>
-static CollisionInfo plcollide(const physent &d, const vec &dir, const physent &o)
+static CollisionInfo plcollide(const physent *d, const vec &dir, const physent *o)
 {
-    mpr::EntOBB entvol(&d);
-    O obvol(&o);
+    mpr::EntOBB entvol(d);
+    O obvol(o);
     vec cp;
     if(mpr::collide(entvol, obvol, nullptr, nullptr, &cp))
     {
@@ -305,24 +305,24 @@ static CollisionInfo plcollide(const physent &d, const vec &dir, const physent &
     return {false, vec(0,0,0)};
 }
 
-static CollisionInfo plcollide(const physent &d, const vec &dir, const physent &o)
+static CollisionInfo plcollide(const physent *d, const vec &dir, const physent *o)
 {
-    switch(d.collidetype)
+    switch(d->collidetype)
     {
         case Collide_Ellipse:
         {
-            if(o.collidetype == Collide_Ellipse)
+            if(o->collidetype == Collide_Ellipse)
             {
-                return ellipsecollide(&d, dir, o.o, vec(0, 0, 0), o.yaw, o.xradius, o.yradius, o.aboveeye, o.eyeheight);
+                return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
             }
             else
             {
-                return ellipseboxcollide(&d, dir, o.o, vec(0, 0, 0), o.yaw, o.xradius, o.yradius, o.aboveeye, o.eyeheight);
+                return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
             }
         }
         case Collide_OrientedBoundingBox:
         {
-            if(o.collidetype == Collide_Ellipse)
+            if(o->collidetype == Collide_Ellipse)
             {
                 return plcollide<mpr::EntCylinder>(d, dir, o);
             }
