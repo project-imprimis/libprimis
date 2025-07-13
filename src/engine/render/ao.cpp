@@ -212,12 +212,6 @@ void initao()
     aodepthformat = aofloatdepth ? aofloatdepth : 0;
 }
 
-/* viewao
- *
- * displays the raw output of the ao buffer, useful for debugging
- *
- * either fullscreen (if debugfullscreen is 1) or corner of screen
- */
 void viewao()
 {
     if(!ao || !debugao)

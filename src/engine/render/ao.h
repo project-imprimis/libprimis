@@ -16,6 +16,13 @@ extern int aobilateral, aobilateralupscale;
  */
 extern void initao();
 extern void cleanupao();
+
+/** @brief displays the raw output of the ao buffer, useful for debugging
+ *
+ * Displays the AO buffer either fullscreen (if debugfullscreen is 1) or corner
+ * of screen. The frame drawn will be red, with darkening of the debug buffer
+ * where the darkening of the scene is
+ */
 extern void viewao();
 extern void setupao(int w, int h);
 
