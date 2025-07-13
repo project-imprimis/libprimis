@@ -207,10 +207,6 @@ void cleanupao()
     clearbilateralshaders();
 }
 
-/* initao
- *
- * sets the ao buffer depth format flag depending on the aofloatdepth variable
- */
 void initao()
 {
     aodepthformat = aofloatdepth ? aofloatdepth : 0;

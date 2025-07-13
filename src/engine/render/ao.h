@@ -7,6 +7,13 @@ extern float aomin, aosunmin;
 extern int ao, aosun, aopackdepth, aoreduce, aoreducedepth;
 extern int aobilateral, aobilateralupscale;
 
+/**
+ * @brief sets the ao buffer depth format flag
+ *
+ * Sets the AO buffer depth format flag, depending on the aofloatdepth variable.
+ * If aofloatdepth is enabled, use its value, otherwise use 0.
+ * aofloatdepth represents a GL format.
+ */
 extern void initao();
 extern void cleanupao();
 extern void viewao();
