@@ -8,9 +8,9 @@ class md5 final : public skelloader<md5>
         md5(std::string name);
 
         //method overrides
-        bool flipy() const override final;
-        int type() const override final;
-        skelmeshgroup *newmeshes() override final;
+        bool flipy() const final;
+        int type() const final;
+        skelmeshgroup *newmeshes() final;
 
         /**
          * @brief Attempts to load an md5mesh with default parameters.
@@ -22,7 +22,7 @@ class md5 final : public skelloader<md5>
          * @return true if the mesh was successfully added
          * @return false if no mesh was added (such as if no file found)
          */
-        bool loaddefaultparts() override final;
+        bool loaddefaultparts() final;
 
         //static methods
         static const char *formatname();
@@ -52,11 +52,11 @@ class md5 final : public skelloader<md5>
             public:
                 md5meshgroup();
                 //main anim loading functionality
-                const skelanimspec * loadanim(const std::string &filename) override final;
+                const skelanimspec * loadanim(const std::string &filename) final;
 
             private:
                 bool loadmesh(std::string_view filename, float smooth, part &p);
-                bool load(std::string_view meshfile, float smooth, part &p) override final;
+                bool load(std::string_view meshfile, float smooth, part &p) final;
         };
 
 
