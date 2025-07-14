@@ -1,7 +1,7 @@
 #ifndef TEXTEDIT_H_
 #define TEXTEDIT_H_
 
-struct EditLine
+struct EditLine final
 {
     enum { Chunk_Size = 256 };
 
@@ -34,7 +34,7 @@ enum
     Editor_Forever
 };
 
-class Editor
+class Editor final
 {
     public:
         int mode; //editor mode - 1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)
