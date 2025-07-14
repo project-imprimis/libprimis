@@ -89,7 +89,7 @@ void logoutf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    logoutfv(fmt, args);
+    logoutfv(fmt, args, getlogfile());
     va_end(args);
 }
 
