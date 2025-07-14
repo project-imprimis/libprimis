@@ -66,9 +66,11 @@ FILE *getlogfile()
 #endif
 }
 
-/* initsdl
- * calls the SDL 2 init procedure
+/**
+ * @brief calls the SDL 2 init procedure
+ *
  * returns false on failure, true on success
+ * used in iengine.h
  */
 bool initsdl()
 {
