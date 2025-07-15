@@ -373,7 +373,7 @@ namespace UI
                 }
             }
 
-            void enddraw(int change)
+            void enddraw(int change) const
             {
                 enddraw();
                 changed &= ~change;
@@ -648,7 +648,7 @@ namespace UI
             }
 
             virtual void startdraw() {}
-            virtual void enddraw() {}
+            virtual void enddraw() const {}
 
             void changedraw(int change = 0)
             {
@@ -2011,7 +2011,7 @@ namespace UI
             gle::begin(GL_TRIANGLE_STRIP);
         }
 
-        void enddraw() override final
+        void enddraw() const override final
         {
             gle::end();
         }
@@ -4162,7 +4162,7 @@ namespace UI
             }
         }
 
-        void enddraw() override final
+        void enddraw() const override final
         {
             glEnable(GL_BLEND);
 
