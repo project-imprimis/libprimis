@@ -1,4 +1,5 @@
-/* control.cpp: misc engine utilities for program control
+/**
+ * @brief misc engine utilities for program control
  *
  * control.cpp defines a handful of useful utilities for creating a useful program
  * using the library, including logging (to file), program crash handling, engine
