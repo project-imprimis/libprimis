@@ -8,10 +8,10 @@ class gltf final : public skelloader<gltf>
         gltf(std::string name);
 
         //method overrides
-        bool flipy() const override final;
-        int type() const override final;
-        skelmeshgroup *newmeshes() override final;
-        bool loaddefaultparts() override final;
+        bool flipy() const final;
+        int type() const final;
+        skelmeshgroup *newmeshes() final;
+        bool loaddefaultparts() final;
 
         //static methods
         static const char *formatname();
@@ -47,11 +47,11 @@ class gltf final : public skelloader<gltf>
             public:
                 gltfmeshgroup();
                 //main anim loading functionality
-                const skelanimspec * loadanim(const std::string &) override final { return nullptr;};
+                const skelanimspec * loadanim(const std::string &) final { return nullptr;};
 
             private:
                 bool loadmesh(const char *filename, float smooth, part &p);
-                bool load(std::string_view meshname, float smooth, part &p) override final;
+                bool load(std::string_view meshname, float smooth, part &p) final;
         };
 
 
