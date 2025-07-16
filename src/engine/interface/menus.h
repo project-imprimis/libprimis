@@ -1,7 +1,7 @@
 #ifndef MENUS_H_
 #define MENUS_H_
 
-extern int mainmenu;
+extern int mainmenu; /// boolean-like value whether the main menu UI is being shown
 
 /**
  * @brief Adds a change to the vector queue of settings changes.
