@@ -185,17 +185,6 @@ static std::vector<uchar> vbodata[VBO_NumVBOs];
 static std::vector<vtxarray *> vbovas[VBO_NumVBOs];
 static std::array<int, VBO_NumVBOs> vbosize;
 
-/**
- * @brief Tries to destroy a VBO at the specified index
- *
- * Searches for the vbo with the specified name from the vbo map. If the vbo exists,
- * decrements the use counter for that vboinfo. If the use count hits zero,
- * destroys the VBO. and the vboinfo object related to it.
- *
- * Used extern in other files.
- *
- * @param vbo the vbo to decrement
- */
 void destroyvbo(GLuint vbo)
 {
     std::unordered_map<GLuint, vboinfo>::iterator exists = vbos.find(vbo);
