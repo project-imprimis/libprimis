@@ -241,7 +241,7 @@ namespace UI
 
     static int changed = 0;
 
-    static Object *drawing = nullptr;
+    static const Object *drawing = nullptr;
 
     static int blendtype = Blend_Alpha;
 
@@ -650,7 +650,7 @@ namespace UI
             virtual void startdraw() const {}
             virtual void enddraw() const {}
 
-            void changedraw(int change = 0)
+            void changedraw(int change = 0) const
             {
                 if(!drawing)
                 {
