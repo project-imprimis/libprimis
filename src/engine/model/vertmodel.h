@@ -59,9 +59,9 @@ class vertmodel : public animmodel
                 void smoothnorms(float limit = 0, bool areaweight = true);
                 void buildnorms(bool areaweight = true);
                 void calctangents(bool areaweight = true);
-                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
-                void genBIH(BIH::mesh &m) const override final;
-                void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const final;
+                void genBIH(BIH::mesh &m) const final;
+                void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const final;
 
                 static void assignvert(vvertg &vv, const tcvert &tc, const vert &v);
 
@@ -197,16 +197,16 @@ class vertmodel : public animmodel
             vertmeshgroup();
             virtual ~vertmeshgroup();
 
-            virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
+            virtual void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const final;
             bool addtag(std::string_view name, const matrix4x3 &matrix);
-            std::optional<size_t> findtag(std::string_view name) override final;
+            std::optional<size_t> findtag(std::string_view name) final;
 
             /**
              * @brief Returns the number of frames associated with this model.
              *
              * This is the numframes field in the meshgroup object.
              */
-            int totalframes() const override final;
+            int totalframes() const final;
             void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;
 
             void genvbo(vbocacheentry &vc);
@@ -249,10 +249,10 @@ class vertmodel : public animmodel
              * There is no appropriate pointer to pass other than itself, since
              * this is not a skeletal model
              */
-            void *animkey() override final;
-            void cleanup() override final;
-            void preload() override final;
-            void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p) override final;
+            void *animkey() final;
+            void cleanup() final;
+            void preload() final;
+            void render(const AnimState *as, float, const vec &, const vec &, dynent *, part *p) final;
 
             virtual bool load(const char *name, float smooth) = 0;
         };
