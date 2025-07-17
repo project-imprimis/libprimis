@@ -647,7 +647,7 @@ namespace UI
                 return false;
             }
 
-            virtual void startdraw() {}
+            virtual void startdraw() const {}
             virtual void enddraw() const {}
 
             void changedraw(int change = 0)
@@ -1801,7 +1801,7 @@ namespace UI
             return typestr();
         }
 
-        void startdraw() override
+        void startdraw() const override
         {
             hudnotextureshader->set();
             gle::defvertex(2);
@@ -1852,7 +1852,7 @@ namespace UI
                 return typestr();
             }
 
-            void startdraw() override final
+            void startdraw() const override final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
@@ -1900,7 +1900,7 @@ namespace UI
             return typestr();
         }
 
-        void startdraw() override final
+        void startdraw() const override final
         {
             hudnotextureshader->set();
             gle::defvertex(2);
@@ -1951,7 +1951,7 @@ namespace UI
                 Object::draw(sx, sy);
             }
         protected:
-            void startdraw() override final
+            void startdraw() const override final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
@@ -2002,7 +2002,7 @@ namespace UI
             return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cx/w, cy/h);
         }
 
-        void startdraw() override final
+        void startdraw() const override final
         {
             lasttex = nullptr;
 
@@ -2445,7 +2445,7 @@ namespace UI
             type = type_;
         }
 
-        void startdraw() override final
+        void startdraw() const override final
         {
             hudnotextureshader->set();
             gle::defvertex(2);
@@ -4152,7 +4152,7 @@ namespace UI
 
     struct Preview : Target
     {
-        void startdraw() override final
+        void startdraw() const override final
         {
             glDisable(GL_BLEND);
 
