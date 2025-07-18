@@ -1078,7 +1078,9 @@ std::vector<skeladjustment> skelloader<MDL>::adjustments;
 template<class MDL>
 std::vector<uchar> skelloader<MDL>::hitzones;
 
-/*
+/**
+ * @brief Defines skeletal commands for a chosen type of skeletal model format.
+ *
  * this template structure defines a series of commands for a model object (or
  * child of the model object) which can be used to set its dynamically modifiable
  * properties
