@@ -342,9 +342,9 @@ struct skelmodel : animmodel
             void smoothnorms(float limit = 0, bool areaweight = true);
             void buildnorms(bool areaweight = true);
             void calctangents(bool areaweight = true);
-            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const override final;
-            void genBIH(BIH::mesh &m) const override final;
-            void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const override final;
+            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) const final;
+            void genBIH(BIH::mesh &m) const final;
+            void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m) const final;
             //assignvert() functions are used externally in test code
             static void assignvert(vvertg &vv, const vert &v);
             static void assignvert(vvertgw &vv, const vert &v, const blendcombo &c);
@@ -359,7 +359,7 @@ struct skelmodel : animmodel
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts);
             int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
 
-            void setshader(Shader *s, bool usegpuskel, int vweights, int row) const override final;
+            void setshader(Shader *s, bool usegpuskel, int vweights, int row) const final;
             void render() const;
             /**
              * @brief Assigns indices from the remap parameter to the object's verts
@@ -893,18 +893,18 @@ struct skelmodel : animmodel
 
             virtual ~skelmeshgroup();
 
-            std::optional<size_t> findtag(std::string_view) override final;
+            std::optional<size_t> findtag(std::string_view) final;
 
             /**
              * @brief Returns the skelmodel::skeleton object this skelmeshgroup points to.
              *
              * Returns the pointer to the skeleton object associated with this object.
              */
-            void *animkey() override final;
-            int totalframes() const override final;
-            void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const override final;
-            void preload() override final;
-            void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) override final;
+            void *animkey() final;
+            int totalframes() const final;
+            void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const final;
+            void preload() final;
+            void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) final;
 
             //for vvert, vvertg and vvertgw (also for vvertgw see below function),
             //disable bones if active
@@ -973,7 +973,7 @@ struct skelmodel : animmodel
             //sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
             void sortblendcombos();
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc) const;
-            void cleanup() override final;
+            void cleanup() final;
 
             virtual bool load(std::string_view meshfile, float smooth, part &p) = 0;
             virtual const skelanimspec *loadanim(const std::string &filename) = 0;
@@ -1009,7 +1009,7 @@ struct skelmodel : animmodel
 
             void initanimparts();
             bool addanimpart(const std::vector<uint> &bonemask);
-            void loaded() override final;
+            void loaded() final;
         private:
             std::vector<uchar> buildingpartmask;
 
@@ -1047,8 +1047,8 @@ struct skelmodel : animmodel
      * @param m must point to a valid animmodel object
      * @param p must point to a valid part object which points to a valid skeleton.
      */
-    int linktype(const animmodel *m, const part *p) const override final;
-    bool skeletal() const override final;
+    int linktype(const animmodel *m, const part *p) const final;
+    bool skeletal() const final;
 
 };
 
