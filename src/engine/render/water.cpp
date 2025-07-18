@@ -79,7 +79,7 @@ namespace
         GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
     }
 
-    VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });
+    VARFP(caustics, 0, 1, 1, { loadcaustics(false); preloadwatershaders(); });
 
     void rendercaustics(float surface, float syl, float syr)
     {
@@ -132,7 +132,7 @@ void loadcaustics(bool force)
 //these variables control the vertex water geometry intensity
 //(nothing to do with any other rendering)
 
-VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
+VARFP(vertwater, 0, 1, 1, rootworld.allchanged()); //used in material
 
 namespace
 {

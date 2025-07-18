@@ -27,7 +27,7 @@ extern int getwaterdeep(int mat);
 
 extern void renderwater();
 extern void renderwaterfalls();
-extern void loadcaustics(bool force = false);
+extern void loadcaustics(bool force);
 extern void preloadwatershaders(bool force = false);
 
 #endif
