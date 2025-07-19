@@ -16,7 +16,7 @@ enum
 
 extern float blursigma;
 extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
-const int maxblurradius = 7;
+constexpr int maxblurradius = 7;
 
 extern size_t getlocalparam(const std::string &name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
