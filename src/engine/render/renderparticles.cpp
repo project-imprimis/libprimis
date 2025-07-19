@@ -69,7 +69,7 @@ static int seedmillis = variable("seedparticles", 0, 3000, 10000, &seedmillis, n
 VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
 VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
 
-class particleemitter
+class particleemitter final
 {
     public:
         const extentity *ent;
@@ -1113,7 +1113,7 @@ class fireballrenderer final : public listrenderer
         }
 
     private:
-        class sphererenderer
+        class sphererenderer final
         {
             public:
                 void cleanup()
