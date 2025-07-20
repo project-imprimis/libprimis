@@ -59,7 +59,7 @@ class Occluder final
             return queryframes[flipquery].newquery(owner);
         }
     private:
-        class queryframe
+        class queryframe final
         {
             public:
                 int cur;
