@@ -49,7 +49,7 @@ static VAR(debugstain, 0, 0, 1);                           //toggles printout of
 //stainrenderer: handles rendering to the gbuffer of a single class of particle
 //each stainrenderer handles the rendering of a single type of particle
 //all the level's particles of a single type will be handled by a single stainrenderer object
-class stainrenderer
+class stainrenderer final
 {
     public:
         enum
@@ -485,14 +485,14 @@ class stainrenderer
         vec4<uchar> staincolor;
         Texture *tex;
 
-        struct stainvert
+        struct stainvert final
         {
             vec pos;
             vec4<uchar> color;
             vec2 tc;
         };
 
-        struct staininfo
+        struct staininfo final
         {
             int millis;
             bvec color;
@@ -501,7 +501,7 @@ class stainrenderer
         };
         staininfo *stains;
 
-        class stainbuffer
+        class stainbuffer final
         {
             public:
                 int maxverts, endvert, lastvert, availverts;
