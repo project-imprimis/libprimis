@@ -804,14 +804,14 @@ namespace UI
 
     struct Window final : Object
     {
-        char *name;
+        std::string name;
         uint *contents, *onshow, *onhide;
         bool allowinput, eschide, abovehud;
         float px, py, pw, ph;
         vec2 sscale, soffset;
 
         Window(const char *name, const char *contents, const char *onshow, const char *onhide) :
-            name(newstring(name)),
+            name(name),
             contents(compilecode(contents)),
             onshow(onshow && onshow[0] ? compilecode(onshow) : nullptr),
             onhide(onhide && onhide[0] ? compilecode(onhide) : nullptr),
@@ -822,7 +822,6 @@ namespace UI
         }
         ~Window()
         {
-            delete[] name;
             freecode(contents);
             freecode(onshow);
             freecode(onhide);
@@ -840,7 +839,7 @@ namespace UI
 
         const char *getname() const override final
         {
-            return name;
+            return name.c_str();
         }
 
         void build();
@@ -4720,7 +4719,7 @@ namespace UI
         {
             if(window)
             {
-                result(window->name);
+                result(window->name.c_str());
             }
         };
         addcommand("uiname",        reinterpret_cast<identfun>(+uinamecmd),   "",     Id_Command);
