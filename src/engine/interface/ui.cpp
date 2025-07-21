@@ -3704,9 +3704,9 @@ namespace UI
 
         float scale, offsetx, offsety;
         Editor *edit;
-        char *keyfilter;
+        std::string keyfilter;
 
-        TextEditor() : edit(nullptr), keyfilter(nullptr) {}
+        TextEditor() : edit(nullptr), keyfilter("") {}
 
         void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = nullptr, int mode = Editor_Used, const char *keyfilter_ = nullptr)
         {
@@ -3744,19 +3744,17 @@ namespace UI
             scale = scale_;
             if(keyfilter_)
             {
-                setstring(keyfilter, keyfilter_);
+                keyfilter = std::string(keyfilter_);
             }
             else
             {
-                delete[] keyfilter;
-                keyfilter = nullptr;
+                keyfilter = std::string();
             }
         }
         ~TextEditor()
         {
             clearfocus();
-            delete[] keyfilter;
-            keyfilter = nullptr;
+            keyfilter = std::string();
         }
 
         static void setfocus(TextEditor *e)
@@ -3936,7 +3934,7 @@ namespace UI
             {
                 return false;
             }
-            if(!keyfilter)
+            if(keyfilter.empty())
             {
                 edit->input(str, len);
             }
@@ -3944,7 +3942,7 @@ namespace UI
             {
                 while(len > 0)
                 {
-                    int accept = std::min(len, static_cast<int>(std::strspn(str, keyfilter)));
+                    int accept = std::min(len, static_cast<int>(std::strspn(str, keyfilter.c_str())));
                     if(accept > 0)
                     {
                         edit->input(str, accept);
@@ -3955,7 +3953,7 @@ namespace UI
                     {
                         break;
                     }
-                    int reject = static_cast<int>(std::strcspn(str, keyfilter));
+                    int reject = static_cast<int>(std::strcspn(str, keyfilter.c_str()));
                     str += reject;
                     str -= reject;
                 }
