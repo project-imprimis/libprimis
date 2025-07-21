@@ -2676,22 +2676,21 @@ namespace UI
 
     struct TextString final : Text
     {
-        char *str;
+        std::string str;
 
-        TextString() : str(nullptr)
+        TextString() : str("")
         {
         }
 
         ~TextString()
         {
-            delete[] str;
         }
 
         void setup(const char *str_, float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
         {
             Text::setup(scale_, color_, wrap_);
 
-            setstring(str, str_);
+            str = std::string(str_);
         }
 
         static const char *typestr()
@@ -2706,7 +2705,7 @@ namespace UI
 
         const char *getstr() const override final
         {
-            return str;
+            return str.c_str();
         }
     };
 
