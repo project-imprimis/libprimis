@@ -87,7 +87,7 @@ enum CubeScriptCodes
 };
 
 
-struct stringslice
+struct stringslice final
 {
     const char *str;
     int len;
@@ -204,12 +204,12 @@ inline void tagval::getval(tagval &r) const
     ::getval(*this, type, r);
 }
 
-struct NullVal : tagval
+struct NullVal final : tagval
 {
     NullVal() { setnull(); }
 };
 
-struct IdentLink
+struct IdentLink final
 {
     ident *id;
     IdentLink *next;
