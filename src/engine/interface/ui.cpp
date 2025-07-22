@@ -3429,11 +3429,7 @@ namespace UI
 
     struct Slider : Object
     {
-        ident *id;
-        double val, vmin, vmax, vstep;
-        bool changed;
-
-        Slider() : id(nullptr), val(0), vmin(0), vmax(0), vstep(0), changed(false) {}
+        Slider() : val(0), vmin(0), vmax(0), vstep(0), id(nullptr), changed(false) {}
 
         void setup(ident *id_, double vmin_ = 0, double vmax_ = 0, double vstep_ = 1, uint *onchange = nullptr)
         {
@@ -3535,6 +3531,13 @@ namespace UI
             val = newval;
             changed = true;
         }
+
+        protected:
+            double val, vmin, vmax, vstep;
+
+        private:
+            ident *id;
+            bool changed;
     };
 
     VARP(uislidersteptime, 0, 50, 1000);
