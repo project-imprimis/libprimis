@@ -2587,8 +2587,8 @@ namespace UI
     };
 
     // default size of text in terms of rows per screenful
-    VARP(uitextrows, 1, 24, 200);
-    FVAR(uitextscale, 1, 0, 0);
+    static VARP(uitextrows, 1, 24, 200);
+    static FVAR(uitextscale, 1, 0, 0);
 
     static void setstring(char*& dst, const char* src)
     {
@@ -3203,7 +3203,7 @@ namespace UI
         }
     };
 
-    VARP(uiscrollsteptime, 0, 50, 1000);
+    static VARP(uiscrollsteptime, 0, 50, 1000);
 
     void ScrollBar::wheelscroll(float step)
     {
@@ -3540,7 +3540,7 @@ namespace UI
             bool changed;
     };
 
-    VARP(uislidersteptime, 0, 50, 1000);
+    static VARP(uislidersteptime, 0, 50, 1000);
 
     struct SliderArrow final : Object
     {
@@ -4295,7 +4295,7 @@ namespace UI
             vec color;
     };
 
-    VARP(uislotviewtime, 0, 25, 1000);
+    static VARP(uislotviewtime, 0, 25, 1000);
     static int lastthumbnail = 0;
 
     struct SlotViewer : Target
@@ -4865,7 +4865,7 @@ namespace UI
         cursorx = cursory = 0.5f;
     }
 
-    FVARP(uisensitivity, 1e-4f, 1, 1e4f);
+    static FVARP(uisensitivity, 1e-4f, 1, 1e4f);
 
     bool movecursor(int dx, int dy)
     {
