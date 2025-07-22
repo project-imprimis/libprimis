@@ -734,23 +734,23 @@ class animmodel : public model
         virtual void endload() = 0;
 
         //model object overrides
-        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const override final;
-        void cleanup() override final;
-        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) const override final;
-        void preloadBIH() override final;
-        void setBIH() override final;
-        bool animated() const override final;
-        bool pitched() const override final;
-        bool alphatested() const override final;
-        bool load() override final;
-        void preloadshaders() override final;
+        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color) const final;
+        void cleanup() final;
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient) const final;
+        void preloadBIH() final;
+        void setBIH() final;
+        bool animated() const final;
+        bool pitched() const final;
+        bool alphatested() const final;
+        bool load() final;
+        void preloadshaders() final;
 
         /**
          * @brief Preloades every entry in the part::meshes array.
          *
          * No effect if there are no meshes to be loaded.
          */
-        void preloadmeshes() override final;
+        void preloadmeshes() final;
 
         /**
          * @brief Sets the shader to be used by the model
@@ -761,10 +761,10 @@ class animmodel : public model
          *
          * @param shader the shader to set
          */
-        void setshader(Shader *shader) override final;
-        void setspec(float spec) override final;
-        void setgloss(int gloss) override final;
-        void setglow(float glow, float delta, float pulse) override final;
+        void setshader(Shader *shader) final;
+        void setspec(float spec) final;
+        void setgloss(int gloss) final;
+        void setglow(float glow, float delta, float pulse) final;
         /**
          * @brief Sets the alphatest value for each skin in each part of this model
          *
@@ -773,24 +773,24 @@ class animmodel : public model
          *
          * @param alphatest the alphatest value to set
          */
-        void setalphatest(float alphatest) override final;
-        void setfullbright(float fullbright) override final;
-        void setcullface(int cullface) override final;
-        void setcolor(const vec &color) override final;
+        void setalphatest(float alphatest) final;
+        void setfullbright(float fullbright) final;
+        void setcullface(int cullface) final;
+        void setcolor(const vec &color) final;
         void settransformation(const std::optional<vec> pos,
                                const std::optional<vec> rotate,
                                const std::optional<vec> orient,
-                               const std::optional<float> size) override final;
+                               const std::optional<float> size) final;
 
         /**
          * @brief Returns a 4-vector consisting of the translation and scale of the model.
          *
          * @return translation coordinates in x,y,z; scale factor in w
          */
-        vec4<float> locationsize() const override final;
-        void calcbb(vec &center, vec &radius) const override final;
-        void startrender() const override final;
-        void endrender() const override final;
+        vec4<float> locationsize() const final;
+        void calcbb(vec &center, vec &radius) const final;
+        void startrender() const final;
+        void endrender() const final;
 
         /**
          * @brief Recalculates the bounding box parameters and returns them to the parameters passed
@@ -798,9 +798,9 @@ class animmodel : public model
          * @param center returns the value of this model's bounding box
          * @param radius returns the radius of this model's bounding box
          */
-        void boundbox(vec &center, vec &radius) override final;
-        float collisionbox(vec &center, vec &radius) override final;
-        const std::string &modelname() const override final;
+        void boundbox(vec &center, vec &radius) final;
+        float collisionbox(vec &center, vec &radius) final;
+        const std::string &modelname() const final;
         //static methods
         static void disablebones();
         static void disabletangents();
@@ -825,7 +825,7 @@ class animmodel : public model
          * @return the linkage type of this part
          */
         virtual int linktype(const animmodel *, const part *) const;
-        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray) const override final;
+        int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray) const final;
 
         static bool enabletc, enablebones, enabletangents;
 
@@ -882,17 +882,17 @@ struct modelloader : BASE
         return true;
     }
 
-    void startload() override final
+    void startload() final
     {
         loading = static_cast<MDL *>(this);
     }
 
-    void endload() override final
+    void endload() final
     {
         loading = nullptr;
     }
 
-    bool loadconfig(const std::string &mdlname) override final
+    bool loadconfig(const std::string &mdlname) final
     {
         dir.clear();
         dir.append(modelpath).append(mdlname);
