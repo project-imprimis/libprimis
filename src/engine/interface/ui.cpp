@@ -4457,7 +4457,7 @@ namespace UI
     };
 
     //new ui command
-    void newui(const char *name, const char *contents, const char *onshow, const char *onhide)
+    static void newui(const char *name, const char *contents, const char *onshow, const char *onhide)
     {
         auto itr = windows.find(name);
         if(itr != windows.end())
@@ -4474,7 +4474,7 @@ namespace UI
     }
 
     //command
-    void uiallowinput(const int *val)
+    static void uiallowinput(const int *val)
     {
         if(window)
         {
@@ -4499,6 +4499,7 @@ namespace UI
         }
     }
 
+    //used in iengine
     bool showui(const char *name)
     {
         if(!world)
@@ -4509,6 +4510,7 @@ namespace UI
         return (itr != windows.end()) && world->show((*itr).second);
     }
 
+    //used in iengine
     bool hideui(const char *name)
     {
         if(!world)
@@ -4523,6 +4525,7 @@ namespace UI
         return (itr != windows.end()) && world->hide((*itr).second);
     }
 
+    //used in console
     bool toggleui(const char *name)
     {
         if(showui(name))
@@ -4533,6 +4536,7 @@ namespace UI
         return false;
     }
 
+    //used in iengine
     void holdui(const char *name, bool on)
     {
         if(!world)
@@ -4549,6 +4553,7 @@ namespace UI
         }
     }
 
+    //used in iengine
     bool uivisible(const char *name)
     {
         if(!name)
@@ -4563,7 +4568,7 @@ namespace UI
         return false;
     }
 
-    void ifstateval(bool state, tagval * t, tagval * f)
+    static void ifstateval(bool state, tagval * t, tagval * f)
     {
         if(state)
         {
