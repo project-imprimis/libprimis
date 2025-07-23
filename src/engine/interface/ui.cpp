@@ -1644,10 +1644,12 @@ namespace UI
         {
             return "#Spacer";
         }
+
         const char *gettype() const override final
         {
             return typestr();
         }
+
         void layout() override final
         {
             w = spacew;
