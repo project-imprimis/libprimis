@@ -955,8 +955,8 @@ struct skelmodel : animmodel
             }
 
             void makeskeleton();
-            /*
-             * generates a vertex buffer object for an associated vbocache entry
+            /**
+             * @brief Generates a vertex buffer object for an associated vbocache entry
              * the vbocacheentry passed will have its vbuf assigned to a GL buffer,
              * and if there is no ebuf (element array buffer) the following will
              * occur (summarized):
@@ -966,6 +966,8 @@ struct skelmodel : animmodel
              * - vdata will be deleted and re-allocated as an array of size vlen*sizeof(vert object)
              * - vdata will be filled with values using fillverts() (which gets data from skelmesh::verts array)
              * - ebuf will be filled with data from skelmesh::genvbo, with ebuf size being equal to all of the respective meshes' tri counts summed
+             *
+             * @param vc the vbocacheentry to modify
              */
             void genvbo(vbocacheentry &vc);
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
