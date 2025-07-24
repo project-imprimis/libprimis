@@ -3707,10 +3707,6 @@ namespace UI
     {
         static TextEditor *focus;
 
-        float scale, offsetx, offsety;
-        Editor *edit;
-        std::string keyfilter;
-
         TextEditor() : edit(nullptr), keyfilter("") {}
 
         void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = nullptr, int mode = Editor_Used, const char *keyfilter_ = nullptr)
@@ -3965,6 +3961,12 @@ namespace UI
             }
             return true;
         }
+        protected:
+            Editor *edit;
+        private:
+            std::string keyfilter;
+            float scale, offsetx, offsety;
+
     };
 
     TextEditor *TextEditor::focus = nullptr;
