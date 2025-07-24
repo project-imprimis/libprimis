@@ -1432,8 +1432,6 @@ namespace UI
 
     struct TableHeader : Object
     {
-        int columns;
-
         TableHeader() : columns(-1) {}
 
         static const char *typestr()
@@ -1505,6 +1503,8 @@ namespace UI
                 }
             });
         }
+        private:
+            int columns;
     };
 
     struct TableRow final: TableHeader
