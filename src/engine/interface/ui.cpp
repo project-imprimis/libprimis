@@ -95,7 +95,7 @@ namespace UI
         gle::end();
     }
 
-    class ClipArea
+    class ClipArea final
     {
         public:
             ClipArea(float x, float y, float w, float h) : x1(x), y1(y), x2(x+w), y2(y+h) {}
