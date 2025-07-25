@@ -1885,40 +1885,44 @@ namespace UI
             }
     };
 
-    struct Line final : Filler
+    class Line final : public Filler
     {
-        Color color;
+        public:
+            void setup(const Color &color_, float minw_ = 0, float minh_ = 0)
+            {
+                Filler::setup(minw_, minh_);
+                color = color_;
+            }
 
-        void setup(const Color &color_, float minw_ = 0, float minh_ = 0)
-        {
-            Filler::setup(minw_, minh_);
-            color = color_;
-        }
+            static const char *typestr() { return "#Line"; }
 
-        static const char *typestr() { return "#Line"; }
-        const char *gettype() const override final
-        {
-            return typestr();
-        }
+            const char *gettype() const override final
+            {
+                return typestr();
+            }
 
-        void startdraw() const override final
-        {
-            hudnotextureshader->set();
-            gle::defvertex(2);
-        }
+        protected:
+            void startdraw() const override final
+            {
+                hudnotextureshader->set();
+                gle::defvertex(2);
+            }
 
-        void draw(float sx, float sy) override final
-        {
-            changedraw(Change_Shader | Change_Color);
+            void draw(float sx, float sy) override final
+            {
+                changedraw(Change_Shader | Change_Color);
 
-            color.init();
-            gle::begin(GL_LINES);
-            gle::attribf(sx,   sy);
-            gle::attribf(sx+w, sy+h);
-            gle::end();
+                color.init();
+                gle::begin(GL_LINES);
+                gle::attribf(sx,   sy);
+                gle::attribf(sx+w, sy+h);
+                gle::end();
 
-            Object::draw(sx, sy);
-        }
+                Object::draw(sx, sy);
+            }
+
+        private:
+            Color color;
     };
 
     class Outline final : public Filler
