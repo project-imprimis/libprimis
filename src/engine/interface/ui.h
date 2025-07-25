@@ -3,6 +3,11 @@
 
 namespace UI
 {
+    /**
+     * @brief Returns whether any UI is being grabbed by the cursor
+     *
+     * @return true if any window is accepting input, false otherwise
+     */
     bool hascursor();
     void getcursorpos(float &x, float &y);
     void resetcursor();
