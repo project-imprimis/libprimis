@@ -1980,67 +1980,69 @@ namespace UI
         return false;
     }
 
-    struct Image : Filler
+    class Image : public Filler
     {
-        static Texture *lasttex;
-
-        Texture *tex;
-
-        void setup(Texture *tex_, float minw_ = 0, float minh_ = 0)
-        {
-            Filler::setup(minw_, minh_);
-            tex = tex_;
-        }
-
-        static const char *typestr() { return "#Image"; }
-        const char *gettype() const override
-        {
-            return typestr();
-        }
-
-        bool target(float cx, float cy) override
-        {
-            return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cx/w, cy/h);
-        }
-
-        void startdraw() const override final
-        {
-            lasttex = nullptr;
-
-            gle::defvertex(2);
-            gle::deftexcoord0();
-            gle::begin(GL_TRIANGLE_STRIP);
-        }
-
-        void enddraw() const override final
-        {
-            gle::end();
-        }
-
-        void bindtex()
-        {
-            changedraw();
-            if(lasttex != tex)
+        public:
+            void setup(Texture *tex_, float minw_ = 0, float minh_ = 0)
             {
-                if(lasttex)
+                Filler::setup(minw_, minh_);
+                tex = tex_;
+            }
+
+            const char *gettype() const override
+            {
+                return typestr();
+            }
+
+            void draw(float sx, float sy) override
+            {
+                if(tex != notexture)
                 {
-                    gle::end();
+                    bindtex();
+                    quads(sx, sy, w, h);
                 }
-                lasttex = tex;
-                glBindTexture(GL_TEXTURE_2D, tex->id);
-            }
-        }
 
-        void draw(float sx, float sy) override
-        {
-            if(tex != notexture)
+                Object::draw(sx, sy);
+            }
+
+        protected:
+            Texture *tex;
+
+            bool target(float cx, float cy) override
             {
-                bindtex();
-                quads(sx, sy, w, h);
+                return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cx/w, cy/h);
             }
 
-            Object::draw(sx, sy);
-        }
+            void bindtex()
+            {
+                changedraw();
+                if(lasttex != tex)
+                {
+                    if(lasttex)
+                    {
+                        gle::end();
+                    }
+                    lasttex = tex;
+                    glBindTexture(GL_TEXTURE_2D, tex->id);
+                }
+            }
+
+            void startdraw() const override final
+            {
+                lasttex = nullptr;
+
+                gle::defvertex(2);
+                gle::deftexcoord0();
+                gle::begin(GL_TRIANGLE_STRIP);
+            }
+
+            void enddraw() const override final
+            {
+                gle::end();
+            }
+
+        private:
+            static Texture *lasttex;
     };
 
     Texture *Image::lasttex = nullptr;
