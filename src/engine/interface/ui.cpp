@@ -2862,7 +2862,7 @@ namespace UI
         }
     };
 
-    float uicontextscale = 0;
+    static float uicontextscale = 0;
 
     void uicontextscalecmd()
     {
