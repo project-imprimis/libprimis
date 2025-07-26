@@ -2432,31 +2432,34 @@ namespace UI
         }
     };
 
-    struct Shape : Filler
+    class Shape : public Filler
     {
-        enum
-        {
-            SOLID = 0,
-            OUTLINE,
-            MODULATE
-        };
+        public:
+            enum
+            {
+                SOLID = 0,
+                OUTLINE,
+                MODULATE
+            };
 
-        int type;
-        Color color;
+            void setup(const Color &color_, int type_ = SOLID, float minw_ = 0, float minh_ = 0)
+            {
+                Filler::setup(minw_, minh_);
 
-        void setup(const Color &color_, int type_ = SOLID, float minw_ = 0, float minh_ = 0)
-        {
-            Filler::setup(minw_, minh_);
+                color = color_;
+                type = type_;
+            }
 
-            color = color_;
-            type = type_;
-        }
+        protected:
+            int type;
+            Color color;
 
-        void startdraw() const override final
-        {
-            hudnotextureshader->set();
-            gle::defvertex(2);
-        }
+            void startdraw() const override final
+            {
+                hudnotextureshader->set();
+                gle::defvertex(2);
+            }
+
     };
 
     struct Triangle final : Shape
