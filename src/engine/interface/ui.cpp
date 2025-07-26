@@ -2051,7 +2051,7 @@ namespace UI
 
     Texture *Image::lasttex = nullptr;
 
-    struct CroppedImage final : Image
+    class CroppedImage final : public Image
     {
         public:
             void setup(Texture *tex_, float minw_ = 0, float minh_ = 0, float cropx_ = 0, float cropy_ = 0, float cropw_ = 1, float croph_ = 1)
