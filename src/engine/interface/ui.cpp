@@ -68,8 +68,8 @@ static ModelPreview modelpreview = ModelPreview();
 
 namespace UI
 {
-    float cursorx = 0.499f,
-          cursory = 0.499f;
+    static float cursorx = 0.499f,
+                 cursory = 0.499f;
 
     static void quads(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
     {
