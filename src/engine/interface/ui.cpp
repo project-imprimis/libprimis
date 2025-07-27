@@ -3081,17 +3081,19 @@ namespace UI
         void scrolldown(float cx, float cy) override final;
     };
 
-    struct ScrollButton final : Object
+    class ScrollButton final : public Object
     {
-        static const char *typestr()
-        {
-            return "#ScrollButton";
-        }
+        public:
+            static const char *typestr()
+            {
+                return "#ScrollButton";
+            }
 
-        const char *gettype() const override final
-        {
-            return typestr();
-        }
+        protected:
+            const char *gettype() const override final
+            {
+                return typestr();
+            }
     };
 
     class ScrollBar : public Object
