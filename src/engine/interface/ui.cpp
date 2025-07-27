@@ -2904,64 +2904,69 @@ namespace UI
         }
     };
 
-    struct Clipper : Object
+    class Clipper : public Object
     {
-        float clipw, cliph, virtw, virth;
+        public:
+            float virtw, virth;
 
-        void setup(float clipw_ = 0, float cliph_ = 0)
-        {
-            Object::setup();
-            clipw = clipw_;
-            cliph = cliph_;
-            virtw = virth = 0;
-        }
-
-        static const char *typestr()
-        {
-            return "#Clipper";
-        }
-
-        const char *gettype() const override
-        {
-            return typestr();
-        }
-
-        void layout() override
-        {
-            Object::layout();
-
-            virtw = w;
-            virth = h;
-            if(clipw)
+            void setup(float clipw_ = 0, float cliph_ = 0)
             {
-                w = std::min(w, clipw);
+                Object::setup();
+                clipw = clipw_;
+                cliph = cliph_;
+                virtw = virth = 0;
             }
-            if(cliph)
-            {
-                h = std::min(h, cliph);
-            }
-        }
 
-        void adjustchildren() override final
-        {
-            adjustchildrento(0, 0, virtw, virth);
-        }
+            static const char *typestr()
+            {
+                return "#Clipper";
+            }
 
-        void draw(float sx, float sy) override
-        {
-            if((clipw && virtw > clipw) || (cliph && virth > cliph))
+            void layout() override
             {
-                stopdrawing();
-                pushclip(sx, sy, w, h);
-                Object::draw(sx, sy);
-                stopdrawing();
-                popclip();
+                Object::layout();
+
+                virtw = w;
+                virth = h;
+                if(clipw)
+                {
+                    w = std::min(w, clipw);
+                }
+                if(cliph)
+                {
+                    h = std::min(h, cliph);
+                }
             }
-            else
+
+            void draw(float sx, float sy) override
             {
-                Object::draw(sx, sy);
+                if((clipw && virtw > clipw) || (cliph && virth > cliph))
+                {
+                    stopdrawing();
+                    pushclip(sx, sy, w, h);
+                    Object::draw(sx, sy);
+                    stopdrawing();
+                    popclip();
+                }
+                else
+                {
+                    Object::draw(sx, sy);
+                }
             }
-        }
+
+        protected:
+            float clipw, cliph;
+
+            const char *gettype() const override
+            {
+                return typestr();
+            }
+
+            void adjustchildren() override final
+            {
+                adjustchildrento(0, 0, virtw, virth);
+            }
+
     };
 
     struct Scroller final : Clipper
