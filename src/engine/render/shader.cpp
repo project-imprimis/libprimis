@@ -1547,9 +1547,9 @@ void setupshaders()
     dummyslot.shader = nullshader;
 }
 
-VAR(defershaders, 0, 1, 1);
+static VAR(defershaders, 0, 1, 1);
 
-void defershader(const int *type, const char *name, const char *contents)
+static void defershader(const int *type, const char *name, const char *contents)
 {
     std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name);
     const Shader *exists = (itr != shaders.end()) ? &(*itr).second : nullptr;
