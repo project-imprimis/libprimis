@@ -119,6 +119,8 @@ namespace UI
             float x1, y1, x2, y2;
     };
 
+    class Object;
+
     namespace
     {
         std::vector<ClipArea> clipstack;
@@ -220,11 +222,27 @@ namespace UI
             Change_Color  = 1 << 1,
             Change_Blend  = 1 << 2
         };
-    }
-    class Object;
 
-    static Object *buildparent = nullptr;
-    static int buildchild = -1;
+        Object *buildparent = nullptr;
+        int buildchild = -1;
+
+        int changed = 0;
+
+        const Object *drawing = nullptr;
+
+        int blendtype = Blend_Alpha;
+
+        void changeblend(int type, GLenum src, GLenum dst)
+        {
+            if(blendtype != type)
+            {
+                blendtype = type;
+                glBlendFunc(src, dst);
+            }
+        }
+    }
+
+
 
     //type: the type of object to build
     //o the name of the temp variable to use
@@ -239,20 +257,6 @@ namespace UI
         } \
     } while(0)
 
-    static int changed = 0;
-
-    static const Object *drawing = nullptr;
-
-    static int blendtype = Blend_Alpha;
-
-    static void changeblend(int type, GLenum src, GLenum dst)
-    {
-        if(blendtype != type)
-        {
-            blendtype = type;
-            glBlendFunc(src, dst);
-        }
-    }
 
     void resetblend()
     {
