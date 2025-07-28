@@ -42,7 +42,7 @@ VARF(debugcolmesh, 0, 0, 1,
     cleanupmodels();
 });
 
-VAR(animationinterpolationtime, 0, 200, 1000);
+static VAR(animationinterpolationtime, 0, 200, 1000);
 
 std::unordered_map<std::string, animmodel::meshgroup *> animmodel::meshgroups;
 
