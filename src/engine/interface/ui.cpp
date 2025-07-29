@@ -68,33 +68,6 @@ static ModelPreview modelpreview = ModelPreview();
 
 namespace UI
 {
-    static float cursorx = 0.499f,
-                 cursory = 0.499f;
-
-    static void quads(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
-    {
-        gle::defvertex(2);
-        gle::deftexcoord0();
-        gle::begin(GL_TRIANGLE_STRIP);
-        gle::attribf(x+w, y);   gle::attribf(tx+tw, ty);
-        gle::attribf(x,   y);   gle::attribf(tx,    ty);
-        gle::attribf(x+w, y+h); gle::attribf(tx+tw, ty+th);
-        gle::attribf(x,   y+h); gle::attribf(tx,    ty+th);
-        gle::end();
-    }
-
-    static void quad(float x, float y, float w, float h, const std::array<vec2, 4> &tc)
-    {
-        gle::defvertex(2);
-        gle::deftexcoord0();
-        gle::begin(GL_TRIANGLE_STRIP);
-        gle::attribf(x+w, y);   gle::attrib(tc[1]);
-        gle::attribf(x,   y);   gle::attrib(tc[0]);
-        gle::attribf(x+w, y+h); gle::attrib(tc[2]);
-        gle::attribf(x,   y+h); gle::attrib(tc[3]);
-        gle::end();
-    }
-
     class ClipArea final
     {
         public:
@@ -123,6 +96,33 @@ namespace UI
 
     namespace
     {
+        float cursorx = 0.499f,
+              cursory = 0.499f;
+
+        void quads(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
+        {
+            gle::defvertex(2);
+            gle::deftexcoord0();
+            gle::begin(GL_TRIANGLE_STRIP);
+            gle::attribf(x+w, y);   gle::attribf(tx+tw, ty);
+            gle::attribf(x,   y);   gle::attribf(tx,    ty);
+            gle::attribf(x+w, y+h); gle::attribf(tx+tw, ty+th);
+            gle::attribf(x,   y+h); gle::attribf(tx,    ty+th);
+            gle::end();
+        }
+
+        void quad(float x, float y, float w, float h, const std::array<vec2, 4> &tc)
+        {
+            gle::defvertex(2);
+            gle::deftexcoord0();
+            gle::begin(GL_TRIANGLE_STRIP);
+            gle::attribf(x+w, y);   gle::attrib(tc[1]);
+            gle::attribf(x,   y);   gle::attrib(tc[0]);
+            gle::attribf(x+w, y+h); gle::attrib(tc[2]);
+            gle::attribf(x,   y+h); gle::attrib(tc[3]);
+            gle::end();
+        }
+
         std::vector<ClipArea> clipstack;
 
         void pushclip(float x, float y, float w, float h)
