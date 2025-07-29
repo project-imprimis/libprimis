@@ -4322,139 +4322,141 @@ namespace UI
     static VARP(uislotviewtime, 0, 25, 1000);
     static int lastthumbnail = 0;
 
-    struct SlotViewer : Target
+    class SlotViewer : public Target
     {
-        int index;
-
-        void setup(int index_, float minw_ = 0, float minh_ = 0)
-        {
-            Target::setup(minw_, minh_);
-            index = index_;
-        }
-
-        static const char *typestr() { return "#SlotViewer"; }
-        const char *gettype() const override
-        {
-            return typestr();
-        }
-
-        void previewslot(Slot &slot, VSlot &vslot, float x, float y)
-        {
-            if(slot.sts.empty())
+        public:
+            void setup(int index_, float minw_ = 0, float minh_ = 0)
             {
-                return;
+                Target::setup(minw_, minh_);
+                index = index_;
             }
-            Texture *t = nullptr,
-                    *glowtex = nullptr;
-            if(slot.loaded)
+
+            static const char *typestr() { return "#SlotViewer"; }
+            const char *gettype() const override
             {
-                t = slot.sts[0].t;
-                if(t == notexture)
+                return typestr();
+            }
+
+            void draw(float sx, float sy) override
+            {
+                Slot &slot = lookupslot(index, false);
+                previewslot(slot, *slot.variants, sx, sy);
+
+                Object::draw(sx, sy);
+            }
+
+        protected:
+            int index;
+
+            void previewslot(Slot &slot, VSlot &vslot, float x, float y)
+            {
+                if(slot.sts.empty())
                 {
                     return;
                 }
-                Slot &slot = *vslot.slot;
-                if(slot.texmask&(1 << Tex_Glow))
+                Texture *t = nullptr,
+                        *glowtex = nullptr;
+                if(slot.loaded)
                 {
-                    for(uint j = 0; j < slot.sts.size(); j++)
-                    {
-                        if(slot.sts[j].type == Tex_Glow)
-                        {
-                            glowtex = slot.sts[j].t;
-                            break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if(!slot.thumbnail)
-                {
-                    if(totalmillis - lastthumbnail < uislotviewtime)
+                    t = slot.sts[0].t;
+                    if(t == notexture)
                     {
                         return;
                     }
-                    slot.loadthumbnail();
-                    lastthumbnail = totalmillis;
-                }
-                if(slot.thumbnail != notexture)
-                {
-                    t = slot.thumbnail;
+                    Slot &slot = *vslot.slot;
+                    if(slot.texmask&(1 << Tex_Glow))
+                    {
+                        for(uint j = 0; j < slot.sts.size(); j++)
+                        {
+                            if(slot.sts[j].type == Tex_Glow)
+                            {
+                                glowtex = slot.sts[j].t;
+                                break;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    return;
+                    if(!slot.thumbnail)
+                    {
+                        if(totalmillis - lastthumbnail < uislotviewtime)
+                        {
+                            return;
+                        }
+                        slot.loadthumbnail();
+                        lastthumbnail = totalmillis;
+                    }
+                    if(slot.thumbnail != notexture)
+                    {
+                        t = slot.thumbnail;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
-            }
 
-            changedraw(Change_Shader | Change_Color);
+                changedraw(Change_Shader | Change_Color);
 
-            SETSHADER(hudrgb);
-            std::array<vec2,4> tc = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
-            int xoff = vslot.offset.x(),
-                yoff = vslot.offset.y();
-            if(vslot.rotation)
-            {
-                const texrotation &r = texrotations[vslot.rotation];
-                if(r.swapxy)
+                SETSHADER(hudrgb);
+                std::array<vec2,4> tc = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
+                int xoff = vslot.offset.x(),
+                    yoff = vslot.offset.y();
+                if(vslot.rotation)
                 {
-                    std::swap(xoff, yoff);
-                    for(int k = 0; k < 4; ++k)
+                    const texrotation &r = texrotations[vslot.rotation];
+                    if(r.swapxy)
                     {
-                        std::swap(tc[k].x, tc[k].y);
+                        std::swap(xoff, yoff);
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            std::swap(tc[k].x, tc[k].y);
+                        }
+                    }
+                    if(r.flipx)
+                    {
+                        xoff *= -1;
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            tc[k].x *= -1;
+                        }
+                    }
+                    if(r.flipy)
+                    {
+                        yoff *= -1;
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            tc[k].y *= -1;
+                        }
                     }
                 }
-                if(r.flipx)
+                float xt = std::min(1.0f, t->xs/static_cast<float>(t->ys)),
+                      yt = std::min(1.0f, t->ys/static_cast<float>(t->xs));
+                for(int k = 0; k < 4; ++k)
                 {
-                    xoff *= -1;
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        tc[k].x *= -1;
-                    }
+                    tc[k].x = tc[k].x/xt - static_cast<float>(xoff)/t->xs;
+                    tc[k].y = tc[k].y/yt - static_cast<float>(yoff)/t->ys;
                 }
-                if(r.flipy)
+                glBindTexture(GL_TEXTURE_2D, t->id);
+                if(slot.loaded)
                 {
-                    yoff *= -1;
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        tc[k].y *= -1;
-                    }
+                    gle::color(vslot.colorscale);
                 }
-            }
-            float xt = std::min(1.0f, t->xs/static_cast<float>(t->ys)),
-                  yt = std::min(1.0f, t->ys/static_cast<float>(t->xs));
-            for(int k = 0; k < 4; ++k)
-            {
-                tc[k].x = tc[k].x/xt - static_cast<float>(xoff)/t->xs;
-                tc[k].y = tc[k].y/yt - static_cast<float>(yoff)/t->ys;
-            }
-            glBindTexture(GL_TEXTURE_2D, t->id);
-            if(slot.loaded)
-            {
-                gle::color(vslot.colorscale);
-            }
-            else
-            {
-                gle::colorf(1, 1, 1);
-            }
-            quad(x, y, w, h, tc);
-            if(glowtex)
-            {
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                glBindTexture(GL_TEXTURE_2D, glowtex->id);
-                gle::color(vslot.glowcolor);
+                else
+                {
+                    gle::colorf(1, 1, 1);
+                }
                 quad(x, y, w, h, tc);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                if(glowtex)
+                {
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    glBindTexture(GL_TEXTURE_2D, glowtex->id);
+                    gle::color(vslot.glowcolor);
+                    quad(x, y, w, h, tc);
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                }
             }
-        }
-
-        void draw(float sx, float sy) override
-        {
-            Slot &slot = lookupslot(index, false);
-            previewslot(slot, *slot.variants, sx, sy);
-
-            Object::draw(sx, sy);
-        }
     };
 
     class VSlotViewer final : public SlotViewer
@@ -4465,7 +4467,6 @@ namespace UI
                 return "#VSlotViewer";
             }
 
-        protected:
             const char *gettype() const final
             {
                 return typestr();
