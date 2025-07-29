@@ -4457,25 +4457,27 @@ namespace UI
         }
     };
 
-    struct VSlotViewer final : SlotViewer
+    class VSlotViewer final : public SlotViewer
     {
-        static const char *typestr()
-        {
-            return "#VSlotViewer";
-        }
+        public:
+            static const char *typestr()
+            {
+                return "#VSlotViewer";
+            }
 
-        const char *gettype() const override final
-        {
-            return typestr();
-        }
+        protected:
+            const char *gettype() const final
+            {
+                return typestr();
+            }
 
-        void draw(float sx, float sy) override final
-        {
-            VSlot &vslot = lookupvslot(index, false);
-            previewslot(*vslot.slot, vslot, sx, sy);
+            void draw(float sx, float sy) final
+            {
+                VSlot &vslot = lookupvslot(index, false);
+                previewslot(*vslot.slot, vslot, sx, sy);
 
-            Object::draw(sx, sy);
-        }
+                Object::draw(sx, sy);
+            }
     };
 
     //new ui command
