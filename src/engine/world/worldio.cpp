@@ -200,7 +200,7 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     return true;
 }
 
-VARP(savebak, 0, 2, 2);
+static VARP(savebak, 0, 2, 2);
 
 void cubeworld::setmapfilenames(const char *fname, const char *cname)
 {
