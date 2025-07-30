@@ -4198,16 +4198,16 @@ namespace UI
 
     struct ModelPreview final : Preview
     {
-        char *name;
+        std::string name;
         int anim;
 
-        ModelPreview() : name(nullptr) {}
-        ~ModelPreview() { delete[] name; }
+        ModelPreview() : name("") {}
+        ~ModelPreview() {}
 
         void setup(const char *name_, const char *animspec, float minw_, float minh_)
         {
             Preview::setup(minw_, minh_);
-            setstring(name, name_);
+            name = std::string(name_);
 
             anim = Anim_All;
             if(animspec[0])
