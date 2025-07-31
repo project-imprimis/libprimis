@@ -480,7 +480,7 @@ class zipstream final : public stream
             reading = ~0U;
         }
 
-        void close() override final
+        void close() final
         {
             stopreading();
             delete[] buf;
@@ -493,19 +493,19 @@ class zipstream final : public stream
             }
         }
 
-        offset size() override final
+        offset size() final
         {
             return info->size;
         }
-        bool end() override final
+        bool end() final
         {
             return reading == ~0U || ended;
         }
-        offset tell() const override final
+        offset tell() const final
         {
             return reading != ~0U ? (info->compressedsize ? zfile.total_out : reading - info->offset) : offset(-1);
         }
-        bool seek(offset pos, int whence) override final
+        bool seek(offset pos, int whence) final
         {
             if(reading == ~0U)
             {
@@ -616,7 +616,7 @@ class zipstream final : public stream
             ended = false;
             return true;
         }
-        size_t read(void *buf, size_t len) override final
+        size_t read(void *buf, size_t len) final
         {
             if(reading == ~0U || !buf || !len)
             {
