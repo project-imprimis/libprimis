@@ -1527,9 +1527,9 @@ int calcspherersmsplits(const vec &center, float radius)
     return 1;
 }
 
-FVAR(avatarshadowdist, 0, 12, 100);
-FVAR(avatarshadowbias, 0, 8, 100);
-VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
+static FVAR(avatarshadowdist, 0, 12, 100);
+static FVAR(avatarshadowbias, 0, 8, 100);
+static VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 
 int avatarmask = 0;
 
