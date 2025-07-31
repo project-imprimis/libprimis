@@ -595,7 +595,8 @@ class meterrenderer final : public listrenderer
             gle::end();
         }
 };
-static meterrenderer meters(PT_METER), metervs(PT_METERVS);
+static meterrenderer meters(PT_METER),
+                     metervs(PT_METERVS);
 
 template<int T>
 static void modifyblend(int &blend)
