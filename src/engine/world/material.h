@@ -14,8 +14,6 @@ struct vtxarray;
 
 extern std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs;
 
-extern int showmat;
-
 extern vec matnormals(int i); //returns one of the six basis vectors for 0 <= i <= 6; 0,0,0 otherwise
 extern int findmaterial(const char *name);
 extern const char *findmaterialname(int mat);

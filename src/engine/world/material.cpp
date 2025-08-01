@@ -1241,7 +1241,7 @@ void setupmaterials(int start, int len)
     }
 }
 
-VARP(showmat, 0, 1, 1); //toggles rendering material faces
+VARP(showmat, 0, 1, 1); //toggles rendering material faces, used in iengine
 
 GBuffer::MaterialInfo GBuffer::findmaterials() const
 {
