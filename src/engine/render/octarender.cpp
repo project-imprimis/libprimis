@@ -193,7 +193,7 @@ namespace
                     ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                     ce.next = -1;
                     bool insert = true;
-                    auto exists = edgegroups.find(g);
+                    std::unordered_map<edgegroup, int>::iterator exists = edgegroups.find(g);
                     if(exists != edgegroups.end())
                     {
                         int prev = -1,
