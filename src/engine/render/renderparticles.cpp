@@ -719,285 +719,287 @@ static void setcolor(float r, float g, float b, float a, partvert * vs)
 };
 
 template<int T>
-struct varenderer final : partrenderer
+class varenderer final : public partrenderer
 {
-    partvert *verts;
-    particle *parts;
-    int maxparts, numparts, lastupdate, rndmask;
-    GLuint vbo;
-
-    varenderer(const char *texname, int type, int stain = -1)
-        : partrenderer(texname, 3, type, stain),
-          verts(nullptr), parts(nullptr), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
-    {
-        if(type & PT_HFLIP)
+    public:
+        varenderer(const char *texname, int type, int stain = -1)
+            : partrenderer(texname, 3, type, stain),
+              verts(nullptr), parts(nullptr), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
         {
-            rndmask |= 0x01;
-        }
-        if(type & PT_VFLIP)
-        {
-            rndmask |= 0x02;
-        }
-        if(type & PT_ROT)
-        {
-            rndmask |= 0x1F<<2;
-        }
-        if(type & PT_RND4)
-        {
-            rndmask |= 0x03<<5;
-        }
-    }
-
-    void cleanup() final
-    {
-        if(vbo)
-        {
-            glDeleteBuffers(1, &vbo);
-            vbo = 0;
-        }
-    }
-
-    void init(int n) final
-    {
-        delete[] parts;
-        delete[] verts;
-        parts = new particle[n];
-        verts = new partvert[n*4];
-        maxparts = n;
-        numparts = 0;
-        lastupdate = -1;
-    }
-
-    void reset() final
-    {
-        numparts = 0;
-        lastupdate = -1;
-    }
-
-    void resettracked(const physent *owner) final
-    {
-        if(!(parttype()&PT_TRACK))
-        {
-            return;
-        }
-        for(int i = 0; i < numparts; ++i)
-        {
-            particle *p = parts+i;
-            if(!owner || (p->owner == owner))
+            if(type & PT_HFLIP)
             {
-                p->fade = -1;
+                rndmask |= 0x01;
+            }
+            if(type & PT_VFLIP)
+            {
+                rndmask |= 0x02;
+            }
+            if(type & PT_ROT)
+            {
+                rndmask |= 0x1F<<2;
+            }
+            if(type & PT_RND4)
+            {
+                rndmask |= 0x03<<5;
             }
         }
-        lastupdate = -1;
-    }
 
-    int count() const final
-    {
-        return numparts;
-    }
-
-    bool haswork() const final
-    {
-        return (numparts > 0);
-    }
-
-    particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity) final
-    {
-        particle *p = parts + (numparts < maxparts ? numparts++ : randomint(maxparts)); //next free slot, or kill a random kitten
-        p->o = o;
-        p->d = d;
-        p->gravity = gravity;
-        p->fade = fade;
-        p->millis = lastmillis + emitoffset;
-        p->color = bvec::hexcolor(color);
-        p->size = size;
-        p->owner = nullptr;
-        p->flags = 0x80 | (rndmask ? randomint(0x80) & rndmask : 0);
-        lastupdate = -1;
-        return p;
-    }
-
-    void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) final
-    {
-        pe.maxfade = std::max(pe.maxfade, fade);
-        size *= SQRT2;
-        pe.extendbb(o, size);
-
-        seedpos<T>(pe, o, d, fade, size, gravity);
-        if(!gravity)
+        void cleanup() final
         {
-            return;
-        }
-        vec end(o);
-        float t = fade;
-        end.add(vec(d).mul(t/5000.0f));
-        end.z -= t*t/(2.0f * 5000.0f * gravity);
-        pe.extendbb(end, size);
-        float tpeak = d.z*gravity;
-        if(tpeak > 0 && tpeak < fade)
-        {
-            pe.extendbb(o.z + 1.5f*d.z*tpeak/5000.0f, size);
-        }
-    }
-
-    void genverts(particle *p, partvert *vs, bool regen)
-    {
-        vec o, d;
-        int blend, ts;
-        calc(p, blend, ts, o, d);
-        if(blend <= 1 || p->fade <= 5)
-        {
-            p->fade = -1; //mark to remove on next pass (i.e. after render)
-        }
-        modifyblend<T>(blend);
-        if(regen)
-        {
-            p->flags &= ~0x80;
-
-            auto swaptexcoords = [&] (float u1, float u2, float v1, float v2)
+            if(vbo)
             {
-                if(p->flags&0x01)
+                glDeleteBuffers(1, &vbo);
+                vbo = 0;
+            }
+        }
+
+        void init(int n) final
+        {
+            delete[] parts;
+            delete[] verts;
+            parts = new particle[n];
+            verts = new partvert[n*4];
+            maxparts = n;
+            numparts = 0;
+            lastupdate = -1;
+        }
+
+        void reset() final
+        {
+            numparts = 0;
+            lastupdate = -1;
+        }
+
+        void resettracked(const physent *owner) final
+        {
+            if(!(parttype()&PT_TRACK))
+            {
+                return;
+            }
+            for(int i = 0; i < numparts; ++i)
+            {
+                particle *p = parts+i;
+                if(!owner || (p->owner == owner))
                 {
-                    std::swap(u1, u2);
+                    p->fade = -1;
                 }
-                if(p->flags&0x02)
+            }
+            lastupdate = -1;
+        }
+
+        int count() const final
+        {
+            return numparts;
+        }
+
+        bool haswork() const final
+        {
+            return (numparts > 0);
+        }
+
+        particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity) final
+        {
+            particle *p = parts + (numparts < maxparts ? numparts++ : randomint(maxparts)); //next free slot, or kill a random kitten
+            p->o = o;
+            p->d = d;
+            p->gravity = gravity;
+            p->fade = fade;
+            p->millis = lastmillis + emitoffset;
+            p->color = bvec::hexcolor(color);
+            p->size = size;
+            p->owner = nullptr;
+            p->flags = 0x80 | (rndmask ? randomint(0x80) & rndmask : 0);
+            lastupdate = -1;
+            return p;
+        }
+
+        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) final
+        {
+            pe.maxfade = std::max(pe.maxfade, fade);
+            size *= SQRT2;
+            pe.extendbb(o, size);
+
+            seedpos<T>(pe, o, d, fade, size, gravity);
+            if(!gravity)
+            {
+                return;
+            }
+            vec end(o);
+            float t = fade;
+            end.add(vec(d).mul(t/5000.0f));
+            end.z -= t*t/(2.0f * 5000.0f * gravity);
+            pe.extendbb(end, size);
+            float tpeak = d.z*gravity;
+            if(tpeak > 0 && tpeak < fade)
+            {
+                pe.extendbb(o.z + 1.5f*d.z*tpeak/5000.0f, size);
+            }
+        }
+
+        void render() final
+        {
+            genvbo();
+
+            glBindTexture(GL_TEXTURE_2D, tex->id);
+
+            gle::bindvbo(vbo);
+            const partvert *ptr = 0;
+            gle::vertexpointer(sizeof(partvert), ptr->pos.data());
+            gle::texcoord0pointer(sizeof(partvert), ptr->tc.data());
+            gle::colorpointer(sizeof(partvert), ptr->color.data());
+            gle::enablevertex();
+            gle::enabletexcoord0();
+            gle::enablecolor();
+            gle::enablequads();
+            gle::drawquads(0, numparts);
+            gle::disablequads();
+            gle::disablevertex();
+            gle::disabletexcoord0();
+            gle::disablecolor();
+            gle::clearvbo();
+        }
+
+    private:
+        partvert *verts;
+        particle *parts;
+        int maxparts, numparts, lastupdate, rndmask;
+        GLuint vbo;
+
+        void genverts(particle *p, partvert *vs, bool regen)
+        {
+            vec o, d;
+            int blend, ts;
+            calc(p, blend, ts, o, d);
+            if(blend <= 1 || p->fade <= 5)
+            {
+                p->fade = -1; //mark to remove on next pass (i.e. after render)
+            }
+            modifyblend<T>(blend);
+            if(regen)
+            {
+                p->flags &= ~0x80;
+
+                auto swaptexcoords = [&] (float u1, float u2, float v1, float v2)
                 {
-                    std::swap(v1, v2);
-                }
-            };
+                    if(p->flags&0x01)
+                    {
+                        std::swap(u1, u2);
+                    }
+                    if(p->flags&0x02)
+                    {
+                        std::swap(v1, v2);
+                    }
+                };
 
-            //sets the partvert vs array's tc fields to four permutations of input parameters
-            auto settexcoords = [vs, swaptexcoords] (float u1c, float u2c, float v1c, float v2c, bool swap)
-            {
-                float u1 = u1c,
-                      u2 = u2c,
-                      v1 = v1c,
-                      v2 = v2c;
-                if(swap)
+                //sets the partvert vs array's tc fields to four permutations of input parameters
+                auto settexcoords = [vs, swaptexcoords] (float u1c, float u2c, float v1c, float v2c, bool swap)
                 {
-                    swaptexcoords(u1, u2, v1, v2);
+                    float u1 = u1c,
+                          u2 = u2c,
+                          v1 = v1c,
+                          v2 = v2c;
+                    if(swap)
+                    {
+                        swaptexcoords(u1, u2, v1, v2);
+                    }
+                    vs[0].tc = vec2(u1, v1);
+                    vs[1].tc = vec2(u2, v1);
+                    vs[2].tc = vec2(u2, v2);
+                    vs[3].tc = vec2(u1, v2);
+                };
+
+                if(parttype()&PT_RND4)
+                {
+                    float tx = 0.5f*((p->flags>>5)&1),
+                          ty = 0.5f*((p->flags>>6)&1);
+                    settexcoords(tx, tx + 0.5f, ty, ty + 0.5f, true);
                 }
-                vs[0].tc = vec2(u1, v1);
-                vs[1].tc = vec2(u2, v1);
-                vs[2].tc = vec2(u2, v2);
-                vs[3].tc = vec2(u1, v2);
-            };
+                else if(parttype()&PT_ICON)
+                {
+                    float tx = 0.25f*(p->flags&3),
+                          ty = 0.25f*((p->flags>>2)&3);
+                    settexcoords(tx, tx + 0.25f, ty, ty + 0.25f, false);
+                }
+                else
+                {
+                    settexcoords(0, 1, 0, 1, false);
+                }
 
-            if(parttype()&PT_RND4)
-            {
-                float tx = 0.5f*((p->flags>>5)&1),
-                      ty = 0.5f*((p->flags>>6)&1);
-                settexcoords(tx, tx + 0.5f, ty, ty + 0.5f, true);
-            }
-            else if(parttype()&PT_ICON)
-            {
-                float tx = 0.25f*(p->flags&3),
-                      ty = 0.25f*((p->flags>>2)&3);
-                settexcoords(tx, tx + 0.25f, ty, ty + 0.25f, false);
-            }
-            else
-            {
-                settexcoords(0, 1, 0, 1, false);
-            }
+                if(parttype()&PT_MOD)
+                {
+                    setcolor((p->color.r()*blend)>>8, (p->color.g()*blend)>>8, (p->color.b()*blend)>>8, 255, vs);
+                }
+                else
+                {
+                    setcolor(p->color.r(), p->color.g(), p->color.b(), blend, vs);
+                }
 
-            if(parttype()&PT_MOD)
+            }
+            else if(parttype()&PT_MOD)
             {
+                //note: same call as `if(type&PT_MOD)` above
                 setcolor((p->color.r()*blend)>>8, (p->color.g()*blend)>>8, (p->color.b()*blend)>>8, 255, vs);
             }
             else
             {
-                setcolor(p->color.r(), p->color.g(), p->color.b(), blend, vs);
-            }
-
-        }
-        else if(parttype()&PT_MOD)
-        {
-            //note: same call as `if(type&PT_MOD)` above
-            setcolor((p->color.r()*blend)>>8, (p->color.g()*blend)>>8, (p->color.b()*blend)>>8, 255, vs);
-        }
-        else
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                vs[i].color.a() = blend;
-            }
-        }
-        if(parttype()&PT_ROT)
-        {
-            genrotpos<T>(o, d, p->size, ts, p->gravity, vs, (p->flags>>2)&0x1F);
-        }
-        else
-        {
-            genpos<T>(o, d, p->size, ts, p->gravity, vs);
-        }
-    }
-
-    void genverts()
-    {
-        for(int i = 0; i < numparts; ++i)
-        {
-            particle *p = &parts[i];
-            partvert *vs = &verts[i*4];
-            if(p->fade < 0)
-            {
-                do
+                for(int i = 0; i < 4; ++i)
                 {
-                    --numparts;
-                    if(numparts <= i)
-                    {
-                        return;
-                    }
-                } while(parts[numparts].fade < 0);
-                *p = parts[numparts];
-                genverts(p, vs, true);
+                    vs[i].color.a() = blend;
+                }
+            }
+            if(parttype()&PT_ROT)
+            {
+                genrotpos<T>(o, d, p->size, ts, p->gravity, vs, (p->flags>>2)&0x1F);
             }
             else
             {
-                genverts(p, vs, (p->flags&0x80)!=0);
+                genpos<T>(o, d, p->size, ts, p->gravity, vs);
             }
         }
-    }
 
-    void genvbo()
-    {
-        if(lastmillis == lastupdate && vbo)
+        void genverts()
         {
-            return;
+            for(int i = 0; i < numparts; ++i)
+            {
+                particle *p = &parts[i];
+                partvert *vs = &verts[i*4];
+                if(p->fade < 0)
+                {
+                    do
+                    {
+                        --numparts;
+                        if(numparts <= i)
+                        {
+                            return;
+                        }
+                    } while(parts[numparts].fade < 0);
+                    *p = parts[numparts];
+                    genverts(p, vs, true);
+                }
+                else
+                {
+                    genverts(p, vs, (p->flags&0x80)!=0);
+                }
+            }
         }
-        lastupdate = lastmillis;
-        genverts();
-        if(!vbo)
+
+        void genvbo()
         {
-            glGenBuffers(1, &vbo);
+            if(lastmillis == lastupdate && vbo)
+            {
+                return;
+            }
+            lastupdate = lastmillis;
+            genverts();
+            if(!vbo)
+            {
+                glGenBuffers(1, &vbo);
+            }
+            gle::bindvbo(vbo);
+            glBufferData(GL_ARRAY_BUFFER, maxparts*4*sizeof(partvert), nullptr, GL_STREAM_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, numparts*4*sizeof(partvert), verts);
+            gle::clearvbo();
         }
-        gle::bindvbo(vbo);
-        glBufferData(GL_ARRAY_BUFFER, maxparts*4*sizeof(partvert), nullptr, GL_STREAM_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, numparts*4*sizeof(partvert), verts);
-        gle::clearvbo();
-    }
-
-    void render() final
-    {
-        genvbo();
-
-        glBindTexture(GL_TEXTURE_2D, tex->id);
-
-        gle::bindvbo(vbo);
-        const partvert *ptr = 0;
-        gle::vertexpointer(sizeof(partvert), ptr->pos.data());
-        gle::texcoord0pointer(sizeof(partvert), ptr->tc.data());
-        gle::colorpointer(sizeof(partvert), ptr->color.data());
-        gle::enablevertex();
-        gle::enabletexcoord0();
-        gle::enablecolor();
-        gle::enablequads();
-        gle::drawquads(0, numparts);
-        gle::disablequads();
-        gle::disablevertex();
-        gle::disabletexcoord0();
-        gle::disablecolor();
-        gle::clearvbo();
-    }
 };
 
 // explosions
