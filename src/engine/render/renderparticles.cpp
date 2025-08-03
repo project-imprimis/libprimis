@@ -194,7 +194,7 @@ struct particle
     };
 };
 
-struct partvert
+struct partvert final
 {
     vec pos;     //x,y,z of particle
     vec4<uchar> color; //r,g,b,a color
@@ -330,7 +330,7 @@ class partrenderer
 
 };
 
-struct listparticle : particle
+struct listparticle final : particle
 {
     listparticle *next;
 };
