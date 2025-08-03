@@ -188,8 +188,8 @@ struct particle
         physent *owner;        //particle owner (a player/bot)
         struct                 //meter particle
         {
-            uchar color2[3];   //color of bar
-            uchar progress;    //bar fill %
+            std::array<uchar,3 > color2; //color of bar
+            uchar progress;              //bar fill %
         } meter;
     };
 };
