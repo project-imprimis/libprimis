@@ -860,8 +860,8 @@ class varenderer final : public partrenderer
         }
 
     private:
-        partvert *verts;
-        particle *parts;
+        partvert *verts; //an array of vert objects
+        particle *parts; //an array of particle objects
         int maxparts, numparts, lastupdate, rndmask;
         GLuint vbo;
 
