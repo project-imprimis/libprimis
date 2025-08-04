@@ -95,7 +95,7 @@ void setupbloom(int w, int h)
     bloomw = w;
     bloomh = h;
 
-    for(int i = 0; i < 5; ++i)
+    for(size_t i = 0; i < bloomtex.size() - 1; ++i)
     {
         if(!bloomtex[i])
         {
@@ -103,7 +103,7 @@ void setupbloom(int w, int h)
         }
     }
 
-    for(int i = 0; i < 5; ++i)
+    for(size_t i = 0; i < bloomfbo.size() - 1; ++i)
     {
         if(!bloomfbo[i])
         {
@@ -150,7 +150,7 @@ void cleanupbloom()
         glDeleteBuffers(1, &bloompbo);
         bloompbo = 0;
     }
-    for(int i = 0; i < 6; ++i)
+    for(size_t i = 0; i < bloomfbo.size(); ++i)
     {
         if(bloomfbo[i])
         {
@@ -158,7 +158,7 @@ void cleanupbloom()
             bloomfbo[i] = 0;
         }
     }
-    for(int i = 0; i < 6; ++i)
+    for(size_t i = 0; i < bloomtex.size(); ++i)
     {
         if(bloomtex[i])
         {
