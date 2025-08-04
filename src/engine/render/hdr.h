@@ -11,6 +11,6 @@ extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupbloom();
 extern void setupbloom(int w, int h);
 extern void loadhdrshaders(int aa);
-extern void copyhdr(int sw, int sh, GLuint fbo, int dw = 0, int dh = 0, bool flipx = false, bool flipy = false, bool swapxy = false);
+extern void copyhdr(int sw, int sh, GLuint fbo);
 
 #endif

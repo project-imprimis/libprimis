@@ -173,17 +173,8 @@ void cleanupbloom()
 FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", Init_Load, Change_Shaders));
 VARFP(hdrprec, 0, 2, 3, gbuf.cleanupgbuffer()); //precision of hdr buffer
 
-void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy, bool swapxy)
+void copyhdr(int sw, int sh, GLuint fbo)
 {
-    if(!dw)
-    {
-        dw = sw;
-    }
-    if(!dh)
-    {
-        dh = sh;
-    }
-
     if(msaalight)
     {
         gbuf.resolvemsaacolor(sw, sh);
@@ -191,15 +182,11 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
     glerror();
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glViewport(0, 0, dw, dh);
+    glViewport(0, 0, sw, sh);
 
     SETSHADER(reorient);
-    vec reorientx(flipx ? -0.5f : 0.5f, 0, 0.5f),
-        reorienty(0, flipy ? -0.5f : 0.5f, 0.5f);
-    if(swapxy)
-    {
-        std::swap(reorientx, reorienty);
-    }
+    vec reorientx(0.5f, 0, 0.5f),
+        reorienty(0, 0.5f, 0.5f);
     reorientx.mul(sw);
     reorienty.mul(sh);
     LOCALPARAM(reorientx, reorientx);
