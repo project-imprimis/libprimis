@@ -211,7 +211,7 @@ class partrenderer
         {
         }
         partrenderer(int type, int stain = -1)
-            : tex(nullptr), type(type), stain(stain), texname(nullptr), texclamp(0)
+            : tex(nullptr), type(type), stain(stain), texname(""), texclamp(0)
         {
         }
         virtual ~partrenderer()
@@ -231,9 +231,9 @@ class partrenderer
 
         virtual void preload()
         {
-            if(texname && !tex)
+            if(!texname.empty() && !tex)
             {
-                tex = textureload(texname, texclamp);
+                tex = textureload(texname.c_str(), texclamp);
             }
         }
 
@@ -301,9 +301,9 @@ class partrenderer
             if(type&PT_COLLIDE) concatstring(info, "c,");
             int len = std::strlen(info);
             info[len-1] = info[len-1] == ',' ? ')' : '\0';
-            if(texname)
+            if(!texname.empty())
             {
-                const char *title = std::strrchr(texname, '/');
+                const char *title = std::strrchr(texname.c_str(), '/');
                 if(title)
                 {
                     concformatstring(info, ": %s", title+1);
@@ -325,7 +325,7 @@ class partrenderer
     private:
         uint type;
         int stain;
-        const char *texname;
+        std::string texname;
         int texclamp;
 
 };
