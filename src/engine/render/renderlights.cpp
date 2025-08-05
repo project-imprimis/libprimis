@@ -908,7 +908,7 @@ float ldrscaleb()
     return ldrscale/255;
 }
 
-VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
+static VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
 void GBuffer::viewdepth() const
 {
@@ -920,7 +920,7 @@ void GBuffer::viewdepth() const
     debugquad(0, 0, w, h, 0, 0, gw, gh);
 }
 
-VAR(debugstencil, 0, 0, 0xFF);
+static VAR(debugstencil, 0, 0, 0xFF);
 
 void viewstencil()
 {
@@ -953,7 +953,7 @@ void viewstencil()
     debugquad(0, 0, w, h, 0, 0, gw, gh);
 }
 
-VAR(debugrefract, 0, 0, 1);
+static VAR(debugrefract, 0, 0, 1);
 
 void GBuffer::viewrefract()
 {
