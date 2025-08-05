@@ -248,24 +248,24 @@ void GBuffer::doscale(GLuint outfbo) const
     endtimer(scaletimer);
 }
 
-VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", Init_Load, Change_Shaders)); // g-buffer linear depth buffer
-VAR(gdepthformat, 1, 0, 0);                                                             // g-buffer depth buffer format
-VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));      // g-buffer stenciling
-VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders)); // g-buffer depth buffer stenciling
-VAR(ghasstencil, 1, 0, 0);                                                              // g buffer has stencil
-VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));            // multi-sample antialiasing
-VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));  // multi-sample antialiasing depth buffer stenciling
-VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));       // multi-sample antialiasing stenciling
-VARF(msaaedgedetect, 0, 1, 1, gbuf.cleanupgbuffer());                                        // multi-sample antialiasing edge detection
-VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));// multi-sample antialiasing linear depth
-VARFP(msaatonemap, 0, 0, 1, gbuf.cleanupgbuffer());                                          // multi-sample antialiasing tone mapping
-VAR(msaamaxsamples, 1, 0, 0);                                                           // multi-sample antialiasing maximum samples
-VAR(msaamaxdepthtexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum depth buffer texture sample count
-VAR(msaamaxcolortexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum color buffer texture sample count
-VAR(msaaminsamples, 1, 0, 0);                                                           // multi-sample antialiasing minimum sample count
-VAR(msaasamples, 1, 0, 0);                                                              // multi-sample antialiasing sampling
-VAR(msaalight, 1, 0, 0);                                                                // multi-sample antialias lights
-VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));     // preserve multi-sample antialiasing
+VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", Init_Load, Change_Shaders));        // g-buffer linear depth buffer
+VAR(gdepthformat, 1, 0, 0);                                                                    // g-buffer depth buffer format
+VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));             // g-buffer stenciling
+VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));        // g-buffer depth buffer stenciling
+VAR(ghasstencil, 1, 0, 0);                                                                     // g buffer has stencil
+static VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));            // multi-sample antialiasing
+static VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));  // multi-sample antialiasing depth buffer stenciling
+static VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));       // multi-sample antialiasing stenciling
+VARF(msaaedgedetect, 0, 1, 1, gbuf.cleanupgbuffer());                                          // multi-sample antialiasing edge detection
+VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));       // multi-sample antialiasing linear depth
+VARFP(msaatonemap, 0, 0, 1, gbuf.cleanupgbuffer());                                            // multi-sample antialiasing tone mapping
+static VAR(msaamaxsamples, 1, 0, 0);                                                           // multi-sample antialiasing maximum samples
+static VAR(msaamaxdepthtexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum depth buffer texture sample count
+static VAR(msaamaxcolortexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum color buffer texture sample count
+static VAR(msaaminsamples, 1, 0, 0);                                                           // multi-sample antialiasing minimum sample count
+VAR(msaasamples, 1, 0, 0);                                                                     // multi-sample antialiasing sampling
+VAR(msaalight, 1, 0, 0);                                                                       // multi-sample antialias lights
+static VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));     // preserve multi-sample antialiasing
 
 void checkmsaasamples()
 {
