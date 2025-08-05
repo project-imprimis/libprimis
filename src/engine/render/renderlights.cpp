@@ -969,7 +969,7 @@ PackNode shadowatlaspacker(0, 0, shadowatlassize, shadowatlassize);
 
 VAR(smminradius, 0, 16, 10000);
 
-class lightinfo
+class lightinfo final
 {
     public:
         int ent, shadowmap, flags;
@@ -1089,7 +1089,7 @@ class lightinfo
         }
 };
 
-struct shadowcachekey
+struct shadowcachekey final
 {
     vec o;
     float radius;
@@ -1115,7 +1115,7 @@ struct std::hash<shadowcachekey>
     }
 };
 
-struct shadowcacheval
+struct shadowcacheval final
 {
     ushort x, y, size, sidemask;
 
@@ -1129,7 +1129,7 @@ static inline bool htcmp(const shadowcachekey &x, const shadowcachekey &y)
     shadowcacheval(const shadowmapinfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
 };
 
-class ShadowAtlas
+class ShadowAtlas final
 {
     public:
         GLuint fbo = 0;
