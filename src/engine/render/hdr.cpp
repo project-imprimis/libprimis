@@ -170,6 +170,7 @@ void cleanupbloom()
     lasthdraccum = 0;
 }
 
+//both of these vars used in hdr.h
 FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", Init_Load, Change_Shaders));
 VARFP(hdrprec, 0, 2, 3, gbuf.cleanupgbuffer()); //precision of hdr buffer
 
