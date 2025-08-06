@@ -341,7 +341,7 @@ void initgbuffer()
     initao();
 }
 
-VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
+static VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 
 bool usepacknorm()
 {
