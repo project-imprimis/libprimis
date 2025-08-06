@@ -267,7 +267,7 @@ VAR(msaasamples, 1, 0, 0);                                                      
 VAR(msaalight, 1, 0, 0);                                                                       // multi-sample antialias lights
 static VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));     // preserve multi-sample antialiasing
 
-void checkmsaasamples()
+static void checkmsaasamples()
 {
     GLuint tex;
     glGenTextures(1, &tex);
