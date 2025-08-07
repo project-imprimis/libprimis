@@ -983,6 +983,7 @@ class lightinfo final
         lightinfo() : query(nullptr)
         {
         }
+
         lightinfo(const vec &o, const vec &color, float radius, int flags = 0, const vec &dir = vec(0, 0, 0), int spot = 0)
           : ent(-1), shadowmap(-1), flags(flags),
             o(o), color(color), radius(radius), dist(camera1->o.dist(o)),
@@ -994,6 +995,7 @@ class lightinfo final
             }
             calcscissor();
         }
+
         lightinfo(int i, const extentity &e)
           : ent(i), shadowmap(-1), flags(e.attr5),
             o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
@@ -1012,10 +1014,12 @@ class lightinfo final
         {
             return flags&LightEnt_NoShadow || radius <= smminradius;
         }
+
         bool nospec() const
         {
             return (flags&LightEnt_NoSpecular) != 0;
         }
+
         bool volumetric() const
         {
             return (flags&LightEnt_Volumetric) != 0;
@@ -1066,6 +1070,7 @@ class lightinfo final
                 bbmax = vec(o).add(radius);
             }
         }
+
     private:
         void calcspot()
         {
