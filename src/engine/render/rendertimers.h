@@ -28,6 +28,13 @@ extern void endtimer(timer *t);
  * @param framemillis frame time inside the current frame
  */
 extern void printtimers(int conw, int framemillis);
+
+/**
+ * @brief For each timer, query what time has passed since last update
+ *
+ * Sets the amount of time passed in the timer's result field. If timer is not
+ * activated, sets the result field to -1.
+ */
 extern void synctimers();
 
 /**
