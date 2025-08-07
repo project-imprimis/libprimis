@@ -1320,6 +1320,7 @@ VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
 
 int shadowmapping = 0;
 
+//not final: batchstack/batchrect derived
 class lightrect
 {
     public:
@@ -3086,7 +3087,7 @@ bool shouldworkinoq()
     return !drawtex && oqfrags && (!wireframe || !editmode);
 }
 
-struct batchrect : lightrect
+struct batchrect final : lightrect
 {
     uchar group;
     ushort idx;
@@ -3099,7 +3100,7 @@ struct batchrect : lightrect
     {}
 };
 
-struct batchstack : lightrect
+struct batchstack final : lightrect
 {
     ushort offset, numrects;
     uchar flags;
