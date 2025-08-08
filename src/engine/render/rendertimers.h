@@ -1,7 +1,7 @@
 #ifndef RENDERTIMERS_H_
 #define RENDERTIMERS_H_
 
-extern int frametimer;
+extern int frametimer; ///toggles timing how long each frame takes (and rendering it to timer ui)
 
 struct timer;
 
