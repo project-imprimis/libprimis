@@ -16,6 +16,13 @@ struct timer;
  * @return a pointer to the relevant timer
  */
 extern timer *begintimer(const char *name, bool gpu = true);
+
+/**
+ * @brief Ends a timer duration.
+ *
+ * Used to end a timer started by begintimer(), needs to be included sometime after begintimer
+ * the part between begintimer() and endtimer() is what gets timed
+ */
 extern void endtimer(timer *t);
 
 /**
