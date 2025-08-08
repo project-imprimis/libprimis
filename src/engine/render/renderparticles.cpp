@@ -335,7 +335,7 @@ struct listparticle final : particle
     listparticle *next;
 };
 
-VARP(outlinemeters, 0, 0, 1);
+static VARP(outlinemeters, 0, 0, 1);
 
 class listrenderer : public partrenderer
 {
