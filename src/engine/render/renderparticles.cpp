@@ -1164,7 +1164,7 @@ class fireballrenderer final : public listrenderer
                     gle::clearebo();
                 }
             private:
-                struct vert
+                struct vert final
                 {
                     vec pos;
                     ushort s, t;
