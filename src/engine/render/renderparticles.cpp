@@ -1004,8 +1004,8 @@ class varenderer final : public partrenderer
 
 // explosions
 
-VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
-VARP(softexplosionblend, 1, 16, 64);
+static VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
+static VARP(softexplosionblend, 1, 16, 64);
 
 class fireballrenderer final : public listrenderer
 {
