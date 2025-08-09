@@ -21,7 +21,7 @@ void cleanuptimers();                              //needed for timer script gva
 VARFN(timer, usetimers, 0, 0, 1, cleanuptimers()); //toggles logging timer information & rendering it
 VAR(frametimer, 0, 0, 1);                          //toggles timing how long each frame takes (and rendering it to timer ui)
 
-struct timer
+struct timer final
 {
     enum
     {
