@@ -91,12 +91,18 @@ class GBuffer
 
         /**
          * @brief Returns debug information about lighting.
+         *
+         * Types:
          * 0: light passes used
          * 1: lights visible
          * 2: lights occluded
          * 3: light batches used
          * 4: light batch rects used
          * 5: light batch stacks used
+         *
+         * @param type of value to query
+         *
+         * @return numeric value of appropriate type
          */
         int getlightdebuginfo(uint type) const;
     private:
