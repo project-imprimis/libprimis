@@ -74,6 +74,16 @@ class GBuffer
         void setupscale(int sw, int sh, int w, int h);
         GLuint shouldscale() const;
         void workinoq();
+
+        /**
+         * @brief Creates the geometry buffer for the scene
+         *
+         * Renders and copies a fbo (framebuffer object) to msfbo (multisample framebuffer object)
+         * or gfbo (geometry buffer framebuffer object) depending on whether msaa is enabled
+         *
+         * @param bool depthclear toggles clearing the depth buffer
+         * @param gamefxn pointer to a function for game-specific rendering
+         */
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
         bool istransparentlayer() const;
         void rendermodelbatches();
