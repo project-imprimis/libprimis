@@ -18,7 +18,6 @@
 #include "interface/control.h"
 
 void cleanuptimers();                              //needed for timer script gvar
-VARFN(timer, usetimers, 0, 0, 1, cleanuptimers()); //toggles logging timer information & rendering it
 VAR(frametimer, 0, 0, 1);                          //toggles timing how long each frame takes (and rendering it to timer ui)
 
 struct timer final
@@ -42,6 +41,8 @@ namespace
     std::vector<timer> timers;
     std::vector<size_t> timerorder;
     size_t timercycle = 0;
+
+    VARFN(timer, usetimers, 0, 0, 1, cleanuptimers()); //toggles logging timer information & rendering it
 
     timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
     {
