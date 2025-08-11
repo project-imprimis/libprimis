@@ -1,11 +1,16 @@
-/* renderalpha.cpp: alpha geoemtry rendering
+/**
+ * @brief alpha geoemtry rendering
  *
- * libprimis has support for a single level of alpha geometry, which is rendered
+ * Libprimis has support for a single level of alpha geometry, which is rendered
  * using a single stencil layer over the base geometry
  *
- * combinations of alpha materials (glass, alpha, water) therefore do not stack
+ * Combinations of alpha materials (glass, alpha, water) therefore do not stack
  * since there is only one stencil and only the nearest layer in the view frustum
  * is rendered
+ *
+ * All of the methods and variables in this file are part of the GBuffer object.
+ * See renderlights.h for the declaration of this object.
+ *
  */
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
