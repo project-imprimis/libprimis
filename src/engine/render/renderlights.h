@@ -215,6 +215,9 @@ class GBuffer final
         lightbatchesused,
         lightbatchrectsused,
         lightbatchstacksused;
+
+    static float refractmargin,
+                 refractdepth;
 };
 
 extern GBuffer gbuf;
