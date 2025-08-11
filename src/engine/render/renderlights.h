@@ -7,7 +7,7 @@ const int lighttilemaxheight = 16;
 /* gbuffer: a singleton object used to store the graphics buffers
  * (as OpenGL uints) and the functions which act upon the g-buffers.
  */
-class GBuffer
+class GBuffer final
 {
     public:
         GBuffer()
