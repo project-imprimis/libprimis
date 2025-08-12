@@ -726,7 +726,7 @@ class stainrenderer final
 
         void findmaterials(vtxarray *va)
         {
-            int matsurfs = va->matsurfs;
+            const int matsurfs = va->matsurfs;
             for(int i = 0; i < matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -735,15 +735,15 @@ class stainrenderer final
                     i += m.skip;
                     continue;
                 }
-                int dim = DIMENSION(m.orient),
-                    dc = DIM_COORD(m.orient);
+                const int dim = DIMENSION(m.orient),
+                           dc = DIM_COORD(m.orient);
                 if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0)
                 {
                     i += m.skip;
                     continue;
                 }
-                int c = C[dim],
-                    r = R[dim];
+                const int c = C[dim],
+                          r = R[dim];
                 for(;;)
                 {
                     const materialsurface &m = va->matbuf[i];
