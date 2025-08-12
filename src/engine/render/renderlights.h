@@ -124,7 +124,7 @@ class GBuffer final
         void renderliquidmaterials() const;
         void packlights();
 
-        struct MaterialInfo
+        struct MaterialInfo final
         {
             float matliquidsx1,
                   matliquidsy1,
@@ -143,7 +143,7 @@ class GBuffer final
             int hasmats;
         };
 
-        struct AlphaInfo
+        struct AlphaInfo final
         {
             float alphafrontsx1, alphafrontsx2,
                   alphafrontsy1, alphafrontsy2,
@@ -157,7 +157,7 @@ class GBuffer final
         MaterialInfo findmaterials() const; //materials.cpp
         AlphaInfo findalphavas();
 
-        struct transparentmodelinfo
+        struct transparentmodelinfo final
         {
             float mdlsx1, mdlsy1, mdlsx2, mdlsy2;
             std::array<uint, lighttilemaxheight> mdltiles;
