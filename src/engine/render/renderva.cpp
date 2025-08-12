@@ -35,6 +35,7 @@
 
 #include "model/model.h"
 
+//oqfrags, outlinecolor are both extern vars
 VAR(oqfrags, 0, 8, 64); //occlusion query fragments
 CVARP(outlinecolor, 0); //color of edit mode outlines
 
