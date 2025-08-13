@@ -1117,7 +1117,7 @@ void clearstains()
     }
 }
 
-VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
+static VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
