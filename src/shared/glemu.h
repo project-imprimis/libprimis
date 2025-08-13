@@ -26,7 +26,23 @@ namespace gle
 
     extern void disable();
 
+    /**
+     * @brief Replacement for glBegin.
+     *
+     * This function should be used with gle::end().
+     *
+     * @param mode the primitive mode to draw with, e.g. GL_TRIANGLE_STRIP, GL_LINE_LOOP
+     */
     extern void begin(GLenum mode);
+
+    /**
+     * @brief Replacement for glBegin.
+     *
+     * This function should be used with gle::end().
+     *
+     * @param mode the primitive mode to draw with, e.g. GL_TRIANGLE_STRIP, GL_LINE_LOOP
+     * @param numverts sets the number of vertices before drawing stops
+     */
     extern void begin(GLenum mode, int numverts);
     extern void multidraw();
 
