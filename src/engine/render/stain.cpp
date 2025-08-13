@@ -724,12 +724,12 @@ class stainrenderer final
             return verts[d.owner].freestain(d);
         }
 
-        void findmaterials(vtxarray *va)
+        void findmaterials(const vtxarray *va)
         {
             const int matsurfs = va->matsurfs;
             for(int i = 0; i < matsurfs; ++i)
             {
-                materialsurface &m = va->matbuf[i];
+                const materialsurface &m = va->matbuf[i];
                 if(!IS_CLIPPED(m.material&MatFlag_Volume))
                 {
                     i += m.skip;
