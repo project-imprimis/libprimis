@@ -18,8 +18,8 @@
 #include "render/octarender.h"
 #include "render/renderwindow.h"
 
-VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
-VAR(minface, 0, 4, 12);
+static VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
+static VAR(minface, 0, 4, 12);
 
 bool touchingface(const cube &c, int orient)
 {
