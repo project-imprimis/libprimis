@@ -98,6 +98,11 @@ namespace gle
     extern void attrib(const vec &v, float w);
     extern void attrib(const vec2 &v);
 
+    /**
+     * @brief Replacement for glEnd().
+     *
+     * This function should be used with gle::begin().
+     */
     extern int end();
 
     extern void enablequads();
