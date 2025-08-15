@@ -95,7 +95,7 @@ void detachentity(extentity &e)
     e.attached = nullptr;
 }
 
-VAR(attachradius, 1, 100, 1000);
+static VAR(attachradius, 1, 100, 1000);
 
 //used in iengine
 void attachentity(extentity &e)
