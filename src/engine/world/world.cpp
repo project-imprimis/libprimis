@@ -70,8 +70,8 @@ namespace entities
 }
 //octaents are the ones that modify the level directly: other entities like
 //sounds, lights, spawns etc. don't get directly rendered
-VAR(entselradius, 0, 2, 10);
-VAR(octaentsize, 0, 64, 1024);
+static VAR(entselradius, 0, 2, 10);
+static VAR(octaentsize, 0, 64, 1024);
 
 void entcancel()
 {
