@@ -84,6 +84,7 @@ float getdecalslotdepth(const DecalSlot &s)
     return s.depth;
 }
 
+//used in iengine
 void detachentity(extentity &e)
 {
     if(!e.attached)
@@ -96,6 +97,7 @@ void detachentity(extentity &e)
 
 VAR(attachradius, 1, 100, 1000);
 
+//used in iengine
 void attachentity(extentity &e)
 {
     //don't attempt to attach invalid to attach ents
