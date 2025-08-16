@@ -649,7 +649,7 @@ static std::array<cube, 8> *loadchildren(stream *f, const ivec &co, int size, bo
     return c;
 }
 
-VAR(debugvars, 0, 0, 1);
+static VAR(debugvars, 0, 0, 1);
 
 void savevslots(stream *f, int numvslots)
 {
