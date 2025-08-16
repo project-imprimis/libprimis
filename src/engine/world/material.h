@@ -1,7 +1,7 @@
 #ifndef MATERIAL_H_
 #define MATERIAL_H_
 
-struct materialsurface
+struct materialsurface final
 {
     ivec o;
     ushort csize, rsize;
