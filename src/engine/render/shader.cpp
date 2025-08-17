@@ -44,10 +44,10 @@ static bool standardshaders = false,
 constexpr int maxvariantrows = 32;
 
 VAR(maxvsuniforms, 1, 0, 0);
-VAR(maxfsuniforms, 1, 0, 0);
-VAR(mintexoffset, 1, 0, 0);
-VAR(maxtexoffset, 1, 0, 0);
-VAR(debugshader, 0, 1, 2);
+static VAR(maxfsuniforms, 1, 0, 0);
+static VAR(mintexoffset, 1, 0, 0);
+static VAR(maxtexoffset, 1, 0, 0);
+static VAR(debugshader, 0, 1, 2);
 
 void loadshaders()
 {

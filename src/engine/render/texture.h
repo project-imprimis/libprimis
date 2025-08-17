@@ -108,7 +108,7 @@ struct texrotation final
 
 extern const std::array<texrotation, 8> texrotations;
 extern Texture *notexture;
-extern int maxvsuniforms, maxfsuniforms;
+extern int maxvsuniforms;
 
 extern SDL_Surface *loadsurface(const char *name);
 
