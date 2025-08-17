@@ -1539,7 +1539,7 @@ static VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Loa
 
 int avatarmask = 0;
 
-bool useavatarmask()
+static bool useavatarmask()
 {
     return avatarshadowstencil && ghasstencil && (!msaasamples || (msaalight && avatarshadowstencil > 1));
 }

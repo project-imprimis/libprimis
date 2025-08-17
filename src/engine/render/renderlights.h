@@ -418,7 +418,6 @@ extern bool debuglights();
 extern void cleanuplights();
 
 extern int avatarmask;
-extern bool useavatarmask();
 extern void enableavatarmask();
 extern void disableavatarmask();
 
