@@ -29,6 +29,15 @@ namespace aamask
  * @param gbuffer the gbuffer to apply hdr with
  */
 extern void doaa(GLuint outfbo, GBuffer &gbuffer);
+
+/**
+ * @brief Shows smaa/tqaa debug information if possible
+ *
+ * Draws the debug information for smaa/tqaa if their debug vars are enabled.
+ * If one or more of these were shown, returns true.
+ *
+ * @return true if any debug was shown
+ */
 extern bool debugaa();
 extern void cleanupaa();
 
