@@ -39,6 +39,13 @@ extern void doaa(GLuint outfbo, GBuffer &gbuffer);
  * @return true if any debug was shown
  */
 extern bool debugaa();
+
+/**
+ * @brief Cleans up screenspace AA methods.
+ *
+ * For any one or more of smaa, tqaa, fxaa modes enabled, deletes their textures and disables
+ * their operation.
+ */
 extern void cleanupaa();
 
 enum AAFlag
