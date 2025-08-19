@@ -854,7 +854,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         t->type |= Texture::ALPHA;
     }
-    t->w = t->xs = s.w;
+    t->w = t->xs = s.width();
     t->h = t->ys = s.h;
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
     glGenTextures(1, &t->id);
@@ -1008,13 +1008,13 @@ const uchar * Texture::loadalphamask()
     {
         return nullptr;
     }
-    alphamask = new uchar[s.h * ((s.w+7)/8)];
+    alphamask = new uchar[s.h * ((s.width()+7)/8)];
     uchar *srcrow = s.data,
           *dst = alphamask-1;
     for(int y = 0; y < s.h; ++y)
     {
         uchar *src = srcrow+s.bpp-1;
-        for(int x = 0; x < s.w; ++x)
+        for(int x = 0; x < s.width(); ++x)
         {
             int offset = x%8;
             if(!offset)
@@ -2228,9 +2228,9 @@ void Slot::load(int index, Slot::Tex &t)
                     ImageData cs;
                     if(cs.texturedata(*this, *combine))
                     {
-                        if(cs.w!=ts.w || cs.h!=ts.h)
+                        if(cs.width()!=ts.width() || cs.h!=ts.h)
                         {
-                            cs.scaleimage(ts.w, ts.h);
+                            cs.scaleimage(ts.width(), ts.h);
                         }
                         switch(combine->type)
                         {
@@ -2424,7 +2424,7 @@ static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
           *srcrow = s.data;
     for(int y = 0; y < s.h; ++y)
     {
-        for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.w*s.bpp]; src < end; dst += d.bpp, src += s.bpp)
+        for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.width()*s.bpp]; src < end; dst += d.bpp, src += s.bpp)
         {
             for(int k = 0; k < 3; ++k)
             {
@@ -2504,23 +2504,27 @@ Texture *Slot::loadthumbnail()
             {
                 s.texmad(vslot.colorscale, vec(0, 0, 0));
             }
-            int xs = s.w, ys = s.h;
-            if(s.w > 128 || s.h > 128)
+            int xs = s.width(),
+                ys = s.h;
+            if(s.width() > 128 || s.h > 128)
             {
-                s.scaleimage(std::min(s.w, 128), std::min(s.h, 128));
+                s.scaleimage(std::min(s.width(), 128), std::min(s.h, 128));
             }
             if(g.data)
             {
-                if(g.w != s.w || g.h != s.h) g.scaleimage(s.w, s.h);
+                if(g.width() != s.width() || g.h != s.h)
+                {
+                    g.scaleimage(s.width(), s.h);
+                }
                 s.addglow(g, vslot.glowcolor);
             }
             if(l.data)
             {
-                if(l.w != s.w/2 || l.h != s.h/2)
+                if(l.width() != s.width()/2 || l.h != s.h/2)
                 {
-                    l.scaleimage(s.w/2, s.h/2);
+                    l.scaleimage(s.width()/2, s.h/2);
                 }
-                blitthumbnail(s, l, s.w-l.w, s.h-l.h);
+                blitthumbnail(s, l, s.width()-l.width(), s.h-l.h);
             }
             if(d.data)
             {
@@ -2528,9 +2532,9 @@ Texture *Slot::loadthumbnail()
                 {
                     d.texmad(vslot.colorscale, vec(0, 0, 0));
                 }
-                if(d.w != s.w/2 || d.h != s.h/2)
+                if(d.width() != s.width()/2 || d.h != s.h/2)
                 {
-                    d.scaleimage(s.w/2, s.h/2);
+                    d.scaleimage(s.width()/2, s.h/2);
                 }
                 blitthumbnail(s, d, 0, 0);
             }
@@ -2685,7 +2689,7 @@ static void flushzip(z_stream &z, uchar *buf, const uint &buflen, uint &len, str
 
 static void savepng(const char *filename, const ImageData &image, bool flip)
 {
-    if(!image.h || !image.w)
+    if(!image.h || !image.width())
     {
         conoutf(Console_Error, "cannot save 0-size png");
         return;
@@ -2739,7 +2743,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
     };
     pngihdr ihdr =
     {
-        static_cast<uint>(endianswap(image.w)),
+        static_cast<uint>(endianswap(image.width())),
         static_cast<uint>(endianswap(image.h)),
         8,
         ctype,
@@ -2770,7 +2774,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
         for(int j = 0; j < 2; ++j)
         {
             z.next_in = j ? static_cast<Bytef *>(image.data) + (flip ? image.h-i-1 : i)*image.pitch : static_cast<Bytef *>(&filter);
-            z.avail_in = j ? image.w*image.bpp : 1;
+            z.avail_in = j ? image.width()*image.bpp : 1;
             while(z.avail_in > 0)
             {
                 if(deflate(&z, Z_NO_FLUSH) != Z_OK)

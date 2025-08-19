@@ -17,6 +17,8 @@ class ImageData final
         GLenum compressed; //type of GL compression
         uchar *data; //the raw array of pixel data
 
+        int width() const;
+
         int calclevelsize(int level) const;
 
         void addglow(const ImageData &g, const vec &glowcolor);
