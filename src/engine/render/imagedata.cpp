@@ -72,6 +72,11 @@ int ImageData::width() const
     return w;
 }
 
+int ImageData::height() const
+{
+    return h;
+}
+
 void ImageData::setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels, int nalign, GLenum ncompressed)
 {
     w = nw;

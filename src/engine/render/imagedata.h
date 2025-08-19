@@ -18,6 +18,7 @@ class ImageData final
         uchar *data; //the raw array of pixel data
 
         int width() const;
+        int height() const;
 
         int calclevelsize(int level) const;
 
