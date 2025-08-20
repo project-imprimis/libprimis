@@ -77,6 +77,11 @@ int ImageData::height() const
     return h;
 }
 
+int ImageData::depth() const
+{
+    return bpp;
+}
+
 void ImageData::setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels, int nalign, GLenum ncompressed)
 {
     w = nw;

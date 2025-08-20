@@ -848,8 +848,8 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 
     bool swizzle = !(clamp&0x10000);
     GLenum format;
-    format = texformat(s.bpp);
-    t->bpp = s.bpp;
+    format = texformat(s.depth());
+    t->bpp = s.depth();
     if(alphaformat(format))
     {
         t->type |= Texture::ALPHA;
@@ -876,7 +876,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
                 t->h /= 2;
             }
         }
-        createcompressedtexture(t->id, t->w, t->h, data, s.align, s.bpp, levels, clamp, filter, s.compressed, GL_TEXTURE_2D, swizzle);
+        createcompressedtexture(t->id, t->w, t->h, data, s.align, s.depth(), levels, clamp, filter, s.compressed, GL_TEXTURE_2D, swizzle);
     }
     else
     {
@@ -1013,7 +1013,7 @@ const uchar * Texture::loadalphamask()
           *dst = alphamask-1;
     for(int y = 0; y < s.height(); ++y)
     {
-        uchar *src = srcrow+s.bpp-1;
+        uchar *src = srcrow+s.depth()-1;
         for(int x = 0; x < s.width(); ++x)
         {
             int offset = x%8;
@@ -1025,7 +1025,7 @@ const uchar * Texture::loadalphamask()
             {
                 *dst |= 1<<offset;
             }
-            src += s.bpp;
+            src += s.depth();
         }
         srcrow += s.pitch;
     }
@@ -2214,7 +2214,7 @@ void Slot::load(int index, Slot::Tex &t)
         {
             case Tex_Spec:
             {
-                if(ts.bpp > 1)
+                if(ts.depth() > 1)
                 {
                     ts.collapsespec();
                 }
@@ -2252,7 +2252,7 @@ void Slot::load(int index, Slot::Tex &t)
                         }
                     }
                 }
-                if(ts.bpp < 3)
+                if(ts.depth() < 3)
                 {
                     ts.swizzleimage();
                 }
@@ -2420,11 +2420,11 @@ static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
 {
     d.forcergbimage();
     s.forcergbimage();
-    uchar *dstrow = &d.data[d.pitch*y + d.bpp*x],
+    uchar *dstrow = &d.data[d.pitch*y + d.depth()*x],
           *srcrow = s.data;
     for(int y = 0; y < s.height(); ++y)
     {
-        for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.width()*s.bpp]; src < end; dst += d.bpp, src += s.bpp)
+        for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.width()*s.depth()]; src < end; dst += d.depth(), src += s.depth())
         {
             for(int k = 0; k < 3; ++k)
             {
@@ -2538,7 +2538,7 @@ Texture *Slot::loadthumbnail()
                 }
                 blitthumbnail(s, d, 0, 0);
             }
-            if(s.bpp < 3)
+            if(s.depth() < 3)
             {
                 s.forcergbimage();
             }
@@ -2695,7 +2695,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
         return;
     }
     uchar ctype = 0;
-    switch(image.bpp)
+    switch(image.depth())
     {
         case 1:
         {
@@ -2774,7 +2774,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
         for(int j = 0; j < 2; ++j)
         {
             z.next_in = j ? static_cast<Bytef *>(image.data) + (flip ? image.height()-i-1 : i)*image.pitch : static_cast<Bytef *>(&filter);
-            z.avail_in = j ? image.width()*image.bpp : 1;
+            z.avail_in = j ? image.width()*image.depth() : 1;
             while(z.avail_in > 0)
             {
                 if(deflate(&z, Z_NO_FLUSH) != Z_OK)

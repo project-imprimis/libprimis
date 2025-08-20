@@ -29,6 +29,13 @@ class ImageData final
          */
         int height() const;
 
+        /**
+         * @brief Returns the bit depth of the image.
+         *
+         * @return depth of each pixel
+         */
+        int depth() const;
+
         int calclevelsize(int level) const;
 
         void addglow(const ImageData &g, const vec &glowcolor);
