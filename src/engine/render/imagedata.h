@@ -8,8 +8,7 @@ class ImageData final
         ImageData(int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE);
         ~ImageData();
 
-        int bpp, //bits per image pixel
-            levels,
+        int levels,
             align,
             pitch;
         GLenum compressed; //type of GL compression
@@ -53,7 +52,8 @@ class ImageData final
         bool texturedata(const Slot &slot, const Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
 
     private:
-        int w, // image's width
+        int bpp, //bits per image pixel
+            w, // image's width
             h; // image's height
 
         void *owner; //the owner of the pixel data, generally an SDL_Surface
