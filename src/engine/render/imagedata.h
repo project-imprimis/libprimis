@@ -70,6 +70,18 @@ class ImageData final
          */
         void disown();
         void cleanup();
+
+        /**
+         * @brief Replaces this object with another.
+         *
+         * Deletes the data associated with the current ImageData object
+         * and makes the object point to the one passed by parameter.
+         *
+         * Transfers heap allocated resources to this object and leaves the original
+         * object with NULL handles.
+         *
+         * @param d the imagedata to replace this object with.
+         */
         void replace(ImageData &d);
         void wraptex(SDL_Surface *s); //wraps a SDL_Surface's data in this object
 
