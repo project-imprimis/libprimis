@@ -444,7 +444,6 @@ void radiancehints::bindparams() const
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
 }
 
-
 void radiancehints::clearcache()
 {
     for(splitinfo &i : splits)
@@ -452,6 +451,7 @@ void radiancehints::clearcache()
         i.clearcache();
     }
 }
+
 bool radiancehints::allcached() const
 {
     for(const splitinfo &i : splits)
