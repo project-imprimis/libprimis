@@ -188,6 +188,16 @@ void ImageData::wraptex(SDL_Surface *s)
         } \
     } while(0)
 
+/**
+ * @brief Manpulates one texture using another texture's data.
+ *
+ * For each pixel in the source, executes an arbitrary effect, passed as the body
+ * parameter.
+ *
+ * @param t imagedata object, destination of texture write
+ * @param s imagedata object, source of texture write
+ * @param body code to execute
+ */
 #define READ_WRITE_TEX(t, s, body) do \
     { \
         uchar *dstrow = t.data, *srcrow = s.data; \
