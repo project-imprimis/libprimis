@@ -112,13 +112,10 @@ void loadbilateralshaders()
     }
 }
 
-/* clearsbilateralshaders: clears bilateralarray
- * args:
- *      void
- * returns:
- *      void
- * other state changes:
- *      bilateralshader[2] elements point to the null pointer
+/**
+ * @brief clears bilateralarray
+ *
+ * Makes bilateralshader[2]'s elements point to the null pointer..
  */
 void clearbilateralshaders()
 {
