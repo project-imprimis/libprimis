@@ -146,7 +146,7 @@ void setbilateralshader(int radius, int pass, float depth)
 
 //debug commands
 //for individual debug commands, see respective functions lower in the file
-VAR(debugfullscreen, 0, 0, 1);
+VAR(debugfullscreen, 0, 0, 1); //used in header
 
 void GBuffer::cleanupscale()
 {
