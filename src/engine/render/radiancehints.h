@@ -14,7 +14,7 @@ extern Shader *rsmworldshader;
 
 //defines the size, position & projection info for a reflective shadow map
 // the reflective shadow map is then used to calculate global illumination
-class reflectiveshadowmap
+class reflectiveshadowmap final
 {
     public:
         plane cull[4];
