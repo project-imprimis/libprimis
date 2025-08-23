@@ -31,7 +31,7 @@ class reflectiveshadowmap final
 
 extern reflectiveshadowmap rsm;
 
-class radiancehints
+class radiancehints final
 {
     public:
         radiancehints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
