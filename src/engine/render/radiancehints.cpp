@@ -90,6 +90,7 @@ FVARFR(giscale, 0, 1.5f, 1e3f,
 FVARR(giaoscale, 0, 3, 1e3f);                                                   //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
 VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); });   //`g`lobal `i`llumination toggle: 0 disables global illumination
 
+//debugrsm/rh used extern in renderlights
 VAR(debugrsm, 0, 0, 2);                                                         //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, normal map
 VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 
