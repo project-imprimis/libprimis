@@ -49,7 +49,7 @@ class radiancehints final
     private:
         vec prevdynmin, prevdynmax;
         //splits are used to LOD global illumination (more detail near camera)
-        struct splitinfo
+        struct splitinfo final
         {
             float nearplane, farplane;
             vec offset, scale;
