@@ -388,14 +388,14 @@ bool useradiancehints()
 
 void radiancehints::updatesplitdist()
 {
-    float lambda = rhsplitweight,
-          nd = rhnearplane,
-          fd = rhfarplane,
-          ratio = fd/nd;
+    const float lambda = rhsplitweight,
+                nd = rhnearplane,
+                fd = rhfarplane,
+                ratio = fd/nd;
     splits[0].nearplane = nd;
     for(int i = 1; i < rhsplits; ++i)
     {
-        float si = i / static_cast<float>(rhsplits);
+        const float si = i / static_cast<float>(rhsplits);
         splits[i].nearplane = lambda*(nd*std::pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
