@@ -411,7 +411,7 @@ void radiancehints::setup()
         splitinfo &split = splits[i];
 
         vec c;
-        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
+        const float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
 
         // compute the projected bounding box of the sphere
         const float pradius = std::ceil(radius * rhpradiustweak),
