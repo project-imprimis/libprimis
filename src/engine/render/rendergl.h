@@ -6,7 +6,7 @@ extern int renderw();
 extern int renderh();
 extern vec worldpos;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
-extern int glversion, glslversion;
+extern int glslversion;
 extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode

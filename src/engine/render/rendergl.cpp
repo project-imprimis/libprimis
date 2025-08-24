@@ -56,7 +56,7 @@ bool hasFBMSBS = false,
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 
 //read-only info for gl debugging
-VAR(glversion, 1, 0, 0);
+static VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
 
 // GL_EXT_framebuffer_blit
