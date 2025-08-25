@@ -475,7 +475,7 @@ void gl_init()
     gl_resize();
 }
 
-VAR(wireframe, 0, 0, 1);
+VAR(wireframe, 0, 0, 1); //used in rendergl.h
 
 vec worldpos;
 
