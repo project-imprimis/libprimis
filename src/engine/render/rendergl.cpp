@@ -425,12 +425,15 @@ void gl_checkextensions()
     tqaaresolvegather = 1;
 }
 
-/* glext(): checks for existence of glext
+/**
+ * @brief checks for existence of glext
  *
  * returns to console 1 if hashtable glexts contains glext (with the name passed)
  * and returns 0 otherwise
  *
  * glexts is a global variable
+ *
+ * @param ext the ext to check for
  */
 static void glext(const char *ext)
 {
