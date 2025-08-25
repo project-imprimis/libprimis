@@ -600,13 +600,13 @@ void pushhudtranslate(float tx, float ty, float sx, float sy)
 float curfov, aspect, fovy;
 static float curavatarfov;
 int farplane;
-VARP(zoominvel, 0, 40, 500);
-VARP(zoomoutvel, 0, 50, 500);
-VARP(zoomfov, 10, 42, 90);
-VARP(fov, 10, 100, 150);
-VAR(avatarzoomfov, 1, 1, 1);
-VAR(avatarfov, 10, 40, 100);
-FVAR(avatardepth, 0, 0.7f, 1);
+static VARP(zoominvel, 0, 40, 500);
+static VARP(zoomoutvel, 0, 50, 500);
+static VARP(zoomfov, 10, 42, 90);
+static VARP(fov, 10, 100, 150);
+static VAR(avatarzoomfov, 1, 1, 1);
+static VAR(avatarfov, 10, 40, 100);
+static FVAR(avatardepth, 0, 0.7f, 1);
 FVARNP(aspect, forceaspect, 0, 0, 1e3f);
 
 static float zoomprogress = 0;
