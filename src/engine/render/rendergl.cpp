@@ -763,9 +763,9 @@ void renderavatar(void (*hudfxn)())
     setcamprojmatrix(false);
 }
 
-FVAR(polygonoffsetfactor, -1e4f, -3.0f, 1e4f);
-FVAR(polygonoffsetunits, -1e4f, -3.0f, 1e4f);
-FVAR(depthoffset, -1e4f, 0.01f, 1e4f);
+static FVAR(polygonoffsetfactor, -1e4f, -3.0f, 1e4f);
+static FVAR(polygonoffsetunits, -1e4f, -3.0f, 1e4f);
+static FVAR(depthoffset, -1e4f, 0.01f, 1e4f);
 
 static matrix4 nooffsetmatrix;
 
