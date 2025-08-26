@@ -660,7 +660,7 @@ physent *camera1 = nullptr;
 //used in iengine.h
 bool detachedcamera = false;
 
-bool isthirdperson()
+static bool isthirdperson()
 {
     return player!=camera1 || detachedcamera;
 }
