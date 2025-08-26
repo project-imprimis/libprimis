@@ -769,6 +769,7 @@ FVAR(depthoffset, -1e4f, 0.01f, 1e4f);
 
 static matrix4 nooffsetmatrix;
 
+//used in rendergl.h
 void enablepolygonoffset(GLenum type)
 {
     if(!depthoffset)
@@ -784,6 +785,7 @@ void enablepolygonoffset(GLenum type)
     setcamprojmatrix(false, true);
 }
 
+//used in rendergl.h
 void disablepolygonoffset(GLenum type)
 {
     if(!depthoffset)
@@ -796,6 +798,7 @@ void disablepolygonoffset(GLenum type)
     setcamprojmatrix(false, true);
 }
 
+//used in renderlights
 bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
     //dim must be 0..2
@@ -877,6 +880,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
 }
 
+//used in rendergl.h
 bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1, float &sx2, float &sy2)
 {
     auto addxyscissor = [&] (const vec4<float> &p)
@@ -949,6 +953,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
     return true;
 }
 
+//used in renderlights
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
     static auto addxyzscissor = [] (const vec4<float> &p, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2) -> void
