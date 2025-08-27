@@ -17,7 +17,7 @@ extern Shader *rsmworldshader;
 class reflectiveshadowmap final
 {
     public:
-        plane cull[4];
+        std::array<plane, 4> cull;
         matrix4 model, proj;
         vec lightview;
         vec scale, offset;
