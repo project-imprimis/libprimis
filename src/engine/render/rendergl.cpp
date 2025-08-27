@@ -1136,9 +1136,9 @@ void debugquad(float x, float y, float w, float h, float tx, float ty, float tw,
     createhudquad(x, y, x+w, y+h, tx, ty+th, tx+tw, ty);
 }
 
-VARR(fog, 16, 4000, 1000024);
-CVARR(fogcolor, 0x8099B3);
-VAR(fogoverlay, 0, 1, 1);
+static VARR(fog, 16, 4000, 1000024);
+static CVARR(fogcolor, 0x8099B3);
+static VAR(fogoverlay, 0, 1, 1);
 
 static float findsurface(int fogmat, const vec &v, int &abovemat)
 {
