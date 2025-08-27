@@ -1204,14 +1204,14 @@ void resetfogcolor()
     setfogcolor(curfogcolor);
 }
 
-FVAR(fogintensity, 0, 0.15f, 1);
+static FVAR(fogintensity, 0, 0.15f, 1);
 
 float calcfogdensity(float dist)
 {
     return std::log(fogintensity)/(M_LN2*dist);
 }
 
-FVAR(fogcullintensity, 0, 1e-3f, 1);
+static FVAR(fogcullintensity, 0, 1e-3f, 1);
 
 float calcfogcull()
 {
