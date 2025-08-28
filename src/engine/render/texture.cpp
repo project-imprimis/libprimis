@@ -860,7 +860,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     glGenTextures(1, &t->id);
     if(s.compressed)
     {
-        uchar *data = s.data;
+        static uchar *data = s.data;
         int levels = s.levels, level = 0;
         int sizelimit = mipit && maxtexsize ? std::min(maxtexsize, hwtexsize) : hwtexsize;
         while(t->w > sizelimit || t->h > sizelimit)
