@@ -19,8 +19,14 @@ class TTFRenderer final
         //with a (BGRA) SDL_Color value as passed to its third parameter
         void renderttf(const char* message, SDL_Color col, int x, int y, float scale = 1.f, uint wrap = 0) const;
 
-        //sets the current working font renderer to one with the appropriate font size
-        //if the size does not exist already, creates a new one with the appropriate size
+        /**
+         * @brief Changes this font's working font size
+         *
+         * Sets the current working font renderer to one with the appropriate font size.
+         * If the size does not exist already, creates a new one with the appropriate size.
+         *
+         * @param pts the point size of the font to add
+         */
         void fontsize(int pts = 12);
 
         void ttfbounds(std::string_view str, float &width, float &height, int pts);
