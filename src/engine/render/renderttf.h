@@ -9,7 +9,7 @@ class TTFRenderer final
     public:
         //starts up SDL2_TTF
         //if the init process did not start properly, returns false
-        bool initttf();
+        static bool initttf();
 
         //opens a font with the given path and size in points
         //if fails, returns nullptr to internal value f
