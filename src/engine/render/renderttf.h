@@ -41,6 +41,17 @@ class TTFRenderer final
          */
         void fontsize(int pts = 12);
 
+        /**
+         * @brief Returns to parameters size of the text without rendering it.
+         *
+         * Faster than actually drawing the text, allows checking the dimension
+         * in pixels of a sample string.
+         *
+         * @param str the string to try
+         * @param width outputs the width of the rendered text
+         * @param height outputs the height of the rendered text
+         * @param pts the size of the font to trial
+         */
         void ttfbounds(std::string_view str, float &width, float &height, int pts);
 
         /**
