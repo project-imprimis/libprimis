@@ -15,8 +15,20 @@ class TTFRenderer final
         //if fails, returns nullptr to internal value f
         void openfont(const char * path, int size);
 
-        //draws a string to the coordinates x, y in the current hud context at a scale factor `scale`
-        //with a (BGRA) SDL_Color value as passed to its third parameter
+        /**
+         * @brief Draws a string.
+         *
+         * Draws a string to the coordinates x, y in the current hud context at a scale factor `scale`
+         * with a (BGRA) SDL_Color value as passed to its third parameter. The font size is implicit
+         * to whatever fontsize() has set
+         *
+         * @param message string to draw
+         * @param color color of text to draw
+         * @param x x coordinate to draw at
+         * @param y y coordinate to draw at
+         * @param scale the scale factor of the text
+         * @param wrap number of pixels before the text should wrap to more lines
+         */
         void renderttf(const char* message, SDL_Color col, int x, int y, float scale = 1.f, uint wrap = 0) const;
 
         /**
