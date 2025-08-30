@@ -18,8 +18,9 @@
 #include "interface/control.h"
 
 void cleanuptimers();                              //needed for timer script gvar
-VAR(frametimer, 0, 0, 1);                          //toggles timing how long each frame takes (and rendering it to timer ui)
+VAR(frametimer, 0, 0, 1);                          //toggles timing how long each frame takes (and rendering it to timer ui), used in hud
 
+//declared and used as pointer in header
 struct timer final
 {
     enum
