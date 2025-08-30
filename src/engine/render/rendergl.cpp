@@ -113,6 +113,18 @@ static void *getprocaddress(const char *name)
 
 VAR(glerr, 0, 0, 1);
 
+void glerror()
+{
+    if(glerr)
+    {
+        GLenum error = glGetError();
+        if(error != GL_NO_ERROR)
+        {
+            glerror(__FILE__, __LINE__, error);
+        }
+    }
+}
+
 void glerror(const char *file, int line, GLenum error)
 {
     const char *desc = "unknown";

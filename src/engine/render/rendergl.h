@@ -37,21 +37,11 @@ extern matrix4 cammatrix, projmatrix, camprojmatrix;
 extern int wireframe;
 extern int usetexgather;
 
-extern int glerr;
 extern int intel_texalpha_bug;
 extern void glerror(const char *file, int line, GLenum error);
 
-inline void glerror()
-{
-    if(glerr)
-    {
-        GLenum error = glGetError();
-        if(error != GL_NO_ERROR)
-        {
-            glerror(__FILE__, __LINE__, error);
-        }
-    }
-}
+extern void glerror();
+
 extern void mousemove(int dx, int dy);
 extern void gl_init();
 extern void gl_resize();
