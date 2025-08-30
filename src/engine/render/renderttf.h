@@ -11,8 +11,17 @@ class TTFRenderer final
         //if the init process did not start properly, returns false
         static bool initttf();
 
-        //opens a font with the given path and size in points
-        //if fails, returns nullptr to internal value f
+        /**
+         * @brief Opens a new object wrapping a font.
+         *
+         * Opens a font with the given path and size in points. A new point size
+         * can be specified later, but the font cannot be changed.
+         *
+         * If this fails, returns nullptr to internal field f.
+         *
+         * @param path the path to the font file
+         * @param size the size in points of the font
+         */
         void openfont(const char * path, int size);
 
         /**
