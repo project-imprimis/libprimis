@@ -11,7 +11,7 @@
 
 #include "interface/console.h"
 
-class postfx final
+class PostFx final
 {
     public:
         void cleanuppostfx(bool fullclean)
@@ -251,7 +251,7 @@ class postfx final
 
 namespace
 {
-    postfx pfx;
+    PostFx pfx;
 
     void addpostfxcmd(const char *name, const int *bind, const int *scale, const char *inputs, const float *x, const float *y, const float *z, const float *w)
     {
