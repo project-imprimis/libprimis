@@ -318,7 +318,7 @@ extern PackNode shadowatlaspacker;
 
 struct shadowcacheval;
 
-struct shadowmapinfo
+struct shadowmapinfo final
 {
     ushort x, y, size, sidemask;
     int light;
