@@ -605,7 +605,7 @@ static CollisionInfo fuzzycollideellipse(const physent *d, const vec &dir, float
 // 0: do not force
 // 1: Collide_Ellipse
 // 2: Collide_OrientedBoundingBox
-VAR(testtricol, 0, 0, 2);
+static VAR(testtricol, 0, 0, 2);
 
 static CollisionInfo mmcollide(const physent *d, const vec &dir, float cutoff, const octaentities &oc) // collide with a mapmodel
 {
