@@ -617,7 +617,7 @@ static CollisionInfo mmcollide(const physent *d, const vec &dir, float cutoff, c
         {
             continue;
         }
-        mapmodelinfo &mmi = mapmodel::mapmodels[e.attr1];
+        MapModelInfo &mmi = mapmodel::mapmodels[e.attr1];
         model *m = mmi.collide;
         if(!m)
         {

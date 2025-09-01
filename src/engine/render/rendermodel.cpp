@@ -69,13 +69,13 @@ model *loadmapmodel(int n)
 
 namespace mapmodel
 {
-    std::vector<mapmodelinfo> mapmodels;
+    std::vector<MapModelInfo> mapmodels;
     static const std::string mmprefix = "mapmodel/";
     static const size_t mmprefixlen = mmprefix.size();
 
     void open(const char *name)
     {
-        mapmodelinfo mmi;
+        MapModelInfo mmi;
         if(name[0])
         {
             mmi.name = std::string().append(mmprefix).append(name);
@@ -560,7 +560,7 @@ void preloadusedmapmodels(bool msg, bool bih)
             }
             continue;
         }
-        const mapmodelinfo &mmi = mapmodel::mapmodels[mmindex];
+        const MapModelInfo &mmi = mapmodel::mapmodels[mmindex];
         if(mmi.name.empty())
         {
             continue;
@@ -630,7 +630,7 @@ model *loadmodel(std::string_view name, int i, bool msg)
         {
             return nullptr;
         }
-        const mapmodelinfo &mmi = mapmodel::mapmodels[i];
+        const MapModelInfo &mmi = mapmodel::mapmodels[i];
         if(mmi.m)
         {
             return mmi.m;
@@ -717,7 +717,7 @@ static void clearmodel(const char *name)
         conoutf("model %s is not loaded", name);
         return;
     }
-    for(mapmodelinfo &mmi : mapmodel::mapmodels)
+    for(MapModelInfo &mmi : mapmodel::mapmodels)
     {
         if(mmi.m == m)
         {
@@ -894,7 +894,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-    const mapmodelinfo &mmi = mapmodel::mapmodels[idx];
+    const MapModelInfo &mmi = mapmodel::mapmodels[idx];
     model *m = mmi.m ? mmi.m : loadmodel(mmi.name);
     if(!m)
     {

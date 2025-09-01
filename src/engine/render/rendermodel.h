@@ -1,7 +1,7 @@
 #ifndef RENDERMODEL_H_
 #define RENDERMODEL_H_
 
-struct mapmodelinfo final
+struct MapModelInfo final
 {
     std::string name;
     model *m,
@@ -10,7 +10,7 @@ struct mapmodelinfo final
 
 namespace mapmodel
 {
-    extern std::vector<mapmodelinfo> mapmodels;
+    extern std::vector<MapModelInfo> mapmodels;
 }
 
 namespace batching
