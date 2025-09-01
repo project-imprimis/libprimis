@@ -169,13 +169,13 @@ void glerror(const char *file, int line, GLenum error)
     std::printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
 
-VAR(intel_texalpha_bug, 0, 0, 1);
-VAR(mesa_swap_bug, 0, 0, 1);
-VAR(usetexgather, 1, 0, 0);
-VAR(maxdrawbufs, 1, 0, 0);
-VAR(maxdualdrawbufs, 1, 0, 0);
+VAR(intel_texalpha_bug, 0, 0, 1); //used in rendergl.h
+VAR(mesa_swap_bug, 0, 0, 1); //used in rendergl.h
+VAR(usetexgather, 1, 0, 0); //used in rendergl.h
+static VAR(maxdrawbufs, 1, 0, 0);
+VAR(maxdualdrawbufs, 1, 0, 0); //used in rendergl.h
 
-VAR(debugexts, 0, 0, 1);
+static VAR(debugexts, 0, 0, 1);
 
 static std::unordered_set<std::string> glexts;
 
