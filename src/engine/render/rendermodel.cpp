@@ -38,7 +38,7 @@
 #include "world/bih.h"
 #include "world/world.h"
 
-VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
+static VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 
 std::vector<std::string> animnames; //set by game at runtime
 
