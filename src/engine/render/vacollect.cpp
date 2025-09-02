@@ -366,7 +366,7 @@ class vacollect final
         std::vector<int> chain;
         std::vector<vertex> verts;
 
-        struct mergedface final
+        struct MergedFace final
         {
             uchar orient, numverts;
             ushort mat, tex;
@@ -377,7 +377,7 @@ class vacollect final
         static constexpr int maxmergelevel = 12;
         int vahasmerges = 0,
             vamergemax = 0;
-        std::array<std::vector<mergedface>, maxmergelevel+1> vamerges;
+        std::array<std::vector<MergedFace>, maxmergelevel+1> vamerges;
 
         const vec orientation_bitangent[8][6] =
         {
@@ -957,7 +957,7 @@ int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
                 }
                 continue;
             }
-            mergedface mf;
+            MergedFace mf;
             mf.orient = i;
             mf.mat = c.material;
             mf.tex = c.texture[i];
@@ -1424,14 +1424,14 @@ vtxarray *vacollect::newva(const ivec &o, int size)
 
 void vacollect::addmergedverts(int level, const ivec &o)
 {
-    std::vector<mergedface> &mfl = vamerges[level];
+    std::vector<MergedFace> &mfl = vamerges[level];
     if(mfl.empty())
     {
         return;
     }
     vec vo(ivec(o).mask(~0xFFF));
     vec pos[Face_MaxVerts];
-    for(mergedface &mf : mfl)
+    for(MergedFace &mf : mfl)
     {
         int numverts = mf.numverts&Face_MaxVerts;
         for(int i = 0; i < numverts; ++i)
