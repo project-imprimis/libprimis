@@ -106,7 +106,7 @@ namespace
         CubeEdge_Dup   = 1<<3
     };
 
-    struct cubeedge final
+    struct CubeEdge final
     {
         cube *c;
         int next, offset;
@@ -114,7 +114,7 @@ namespace
         uchar index, flags;
     };
 
-    std::vector<cubeedge> cubeedges;
+    std::vector<CubeEdge> cubeedges;
     std::unordered_map<edgegroup, int> edgegroups;
 
     void gencubeedges(cube &c, const ivec &co, int size)
@@ -185,7 +185,7 @@ namespace
                     g.origin = ivec(pos[e1]).sub(ivec(d).mul(t1));
                     g.slope = d;
                     g.axis = axis;
-                    cubeedge ce;
+                    CubeEdge ce;
                     ce.c = &c;
                     ce.offset = t1;
                     ce.size = t2 - t1;
@@ -200,7 +200,7 @@ namespace
                             cur  = (*exists).second;
                         while(cur >= 0)
                         {
-                            cubeedge &p = cubeedges[cur];
+                            CubeEdge &p = cubeedges[cur];
                             if(p.flags&CubeEdge_Dup ?
                                 ce.offset>=p.offset && ce.offset+ce.size<=p.offset+p.size :
                                 ce.offset==p.offset && ce.size==p.size)
@@ -228,7 +228,7 @@ namespace
                             ce.next = cur;
                             while(cur >= 0)
                             {
-                                const cubeedge &p = cubeedges[cur];
+                                const CubeEdge &p = cubeedges[cur];
                                 if(ce.offset+ce.size==p.offset)
                                 {
                                     ce.flags &= ~CubeEdge_End;
@@ -281,7 +281,7 @@ namespace
         --neighbordepth;
     }
 
-    void addtjoint(const edgegroup &g, const cubeedge &e, int offset)
+    void addtjoint(const edgegroup &g, const CubeEdge &e, int offset)
     {
         const int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
         tjoint tj = tjoint();
@@ -349,12 +349,12 @@ void findtjoints(int cur, const edgegroup &g)
     int active = -1;
     while(cur >= 0)
     {
-        cubeedge &e = cubeedges[cur];
+        CubeEdge &e = cubeedges[cur];
         int prevactive = -1,
             curactive  = active;
         while(curactive >= 0)
         {
-            const cubeedge &a = cubeedges[curactive];
+            const CubeEdge &a = cubeedges[curactive];
             if(a.offset+a.size <= e.offset)
             {
                 if(prevactive >= 0)
