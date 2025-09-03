@@ -69,28 +69,28 @@ VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by 
 ///////////////////////////////////////
 
 //edgegroup: struct used for tjoint joining (to reduce sparklies between geom faces)
-struct edgegroup final
+struct EdgeGroup final
 {
     ivec slope, origin;
     int axis;
 
-    edgegroup();
+    EdgeGroup();
 
-    bool operator==(const edgegroup &y) const
+    bool operator==(const EdgeGroup &y) const
     {
         return slope==y.slope && origin==y.origin;
     }
 };
 
-edgegroup::edgegroup()
+EdgeGroup::EdgeGroup()
 {
     axis = 0;
 }
 
 template<>
-struct std::hash<edgegroup> final
+struct std::hash<EdgeGroup> final
 {
-    size_t operator()(const edgegroup &g) const
+    size_t operator()(const EdgeGroup &g) const
     {
         return g.slope.x^g.slope.y^g.slope.z^g.origin.x^g.origin.y^g.origin.z;
     }
@@ -115,7 +115,7 @@ namespace
     };
 
     std::vector<CubeEdge> cubeedges;
-    std::unordered_map<edgegroup, int> edgegroups;
+    std::unordered_map<EdgeGroup, int> edgegroups;
 
     void gencubeedges(cube &c, const ivec &co, int size)
     {
@@ -181,7 +181,7 @@ namespace
                     reduceslope(d);
                     int t1 = pos[e1][axis]/d[axis],
                         t2 = pos[e2][axis]/d[axis];
-                    edgegroup g;
+                    EdgeGroup g;
                     g.origin = ivec(pos[e1]).sub(ivec(d).mul(t1));
                     g.slope = d;
                     g.axis = axis;
@@ -193,7 +193,7 @@ namespace
                     ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                     ce.next = -1;
                     bool insert = true;
-                    std::unordered_map<edgegroup, int>::iterator exists = edgegroups.find(g);
+                    std::unordered_map<EdgeGroup, int>::iterator exists = edgegroups.find(g);
                     if(exists != edgegroups.end())
                     {
                         int prev = -1,
@@ -281,7 +281,7 @@ namespace
         --neighbordepth;
     }
 
-    void addtjoint(const edgegroup &g, const CubeEdge &e, int offset)
+    void addtjoint(const EdgeGroup &g, const CubeEdge &e, int offset)
     {
         const int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
         tjoint tj = tjoint();
@@ -344,7 +344,7 @@ namespace
 /* externally relevant functionality */
 ///////////////////////////////////////
 
-void findtjoints(int cur, const edgegroup &g)
+void findtjoints(int cur, const EdgeGroup &g)
 {
     int active = -1;
     while(cur >= 0)
