@@ -1274,7 +1274,8 @@ void ShadowAtlas::view()
         setsmcomparemode();
     }
 }
-VAR(debugshadowatlas, 0, 0, 1);
+
+static VAR(debugshadowatlas, 0, 0, 1);
 
 void ShadowAtlas::setup()
 {
