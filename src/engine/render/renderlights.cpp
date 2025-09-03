@@ -1320,7 +1320,7 @@ const matrix4 cubeshadowviewmatrix[6] =
 
 static constexpr int LightTile_MaxBatch = 8; //also used in lightbatchkey below
 
-VARF(lighttilebatch, 0, LightTile_MaxBatch, LightTile_MaxBatch, cleardeferredlightshaders());
+static VARF(lighttilebatch, 0, LightTile_MaxBatch, LightTile_MaxBatch, cleardeferredlightshaders());
 VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
 
 int shadowmapping = 0;
