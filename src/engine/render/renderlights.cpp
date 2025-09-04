@@ -1179,15 +1179,15 @@ void ShadowAtlas::bind()
 ShadowAtlas shadowatlas;
 
 //`s`hadow `m`ap vars
-FVAR(smpolyfactor, -1e3f, 1, 1e3f);
-FVAR(smpolyoffset, -1e3f, 0, 1e3f);
-FVAR(smbias, -1e6f, 0.01f, 1e6f);
-FVAR(smpolyfactor2, -1e3f, 1.5f, 1e3f);
-FVAR(smpolyoffset2, -1e3f, 0, 1e3f);
-FVAR(smbias2, -1e6f, 0.02f, 1e6f);
-FVAR(smprec, 1e-3f, 1, 1e3f);
-FVAR(smcubeprec, 1e-3f, 1, 1e3f);
-FVAR(smspotprec, 1e-3f, 1, 1e3f);
+static FVAR(smpolyfactor, -1e3f, 1, 1e3f);
+static FVAR(smpolyoffset, -1e3f, 0, 1e3f);
+static FVAR(smbias, -1e6f, 0.01f, 1e6f);
+static FVAR(smpolyfactor2, -1e3f, 1.5f, 1e3f);
+static FVAR(smpolyoffset2, -1e3f, 0, 1e3f);
+static FVAR(smbias2, -1e6f, 0.02f, 1e6f);
+static FVAR(smprec, 1e-3f, 1, 1e3f);
+static FVAR(smcubeprec, 1e-3f, 1, 1e3f);
+static FVAR(smspotprec, 1e-3f, 1, 1e3f);
 
 VARFP(smsize, 10, 12, 14, shadowatlas.cleanup()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
 VARFP(smdepthprec, 0, 0, 2, shadowatlas.cleanup()); //bit depth of sm depth map: 16bpp, 24bpp, or 32bpp respectively
