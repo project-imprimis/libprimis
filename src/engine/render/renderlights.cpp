@@ -1093,26 +1093,26 @@ class lightinfo final
         }
 };
 
-struct shadowcachekey final
+struct ShadowCacheKey final
 {
     vec o;
     float radius;
     vec dir;
     int spot;
 
-    bool operator==(const shadowcachekey &y) const
+    bool operator==(const ShadowCacheKey &y) const
     {
         return o == y.o && radius == y.radius && dir == y.dir && spot == y.spot;
     }
 
-    shadowcachekey() {}
-    shadowcachekey(const lightinfo &l) : o(l.o), radius(l.radius), dir(l.dir), spot(l.spot) {}
+    ShadowCacheKey() {}
+    ShadowCacheKey(const lightinfo &l) : o(l.o), radius(l.radius), dir(l.dir), spot(l.spot) {}
 };
 
 template <>
-struct std::hash<shadowcachekey>
+struct std::hash<ShadowCacheKey>
 {
-    size_t operator()(const shadowcachekey &k) const
+    size_t operator()(const ShadowCacheKey &k) const
     {
         auto vechash = std::hash<vec>();
         return vechash(k.o);
@@ -1124,7 +1124,7 @@ struct shadowcacheval final
     ushort x, y, size, sidemask;
 
 
-static inline bool htcmp(const shadowcachekey &x, const shadowcachekey &y)
+static inline bool htcmp(const ShadowCacheKey &x, const ShadowCacheKey &y)
 {
     return x.o == y.o && x.radius == y.radius && x.dir == y.dir && x.spot == y.spot;
 }
@@ -1137,7 +1137,7 @@ class ShadowAtlas final
 {
     public:
         GLuint fbo = 0;
-        std::unordered_map<shadowcachekey, shadowcacheval> cache;
+        std::unordered_map<ShadowCacheKey, shadowcacheval> cache;
         bool full = false;
 
         void cleanup();
