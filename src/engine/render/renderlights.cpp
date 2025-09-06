@@ -2114,7 +2114,7 @@ static void setlightglobals(bool transparent = false)
 struct lightparaminfo
 {
     vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
-    vec2 shadowoffsetv[8];
+    std::array<vec2, 8> shadowoffsetv;
 };
 
 //sets the ith element of lightposv, lightcolorv, spotparamsv, shadowparamsv, shadowoffsetv
@@ -2171,7 +2171,7 @@ static void setlightshader(Shader *s, const lightparaminfo &li, int n, bool base
     if(shadowmap)
     {
         shadowparams.setv(li.shadowparamsv, n);
-        shadowoffset.setv(li.shadowoffsetv, n);
+        shadowoffset.setv(li.shadowoffsetv.data(), n);
     }
 }
 
