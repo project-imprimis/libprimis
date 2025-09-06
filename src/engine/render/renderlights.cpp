@@ -2113,7 +2113,7 @@ static void setlightglobals(bool transparent = false)
 //values only for interaction between setlightparams() and setlightshader()
 struct lightparaminfo
 {
-    vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
+    std::array<vec4<float>, 8> lightposv, lightcolorv, spotparamsv, shadowparamsv;
     std::array<vec2, 8> shadowoffsetv;
 };
 
@@ -2162,15 +2162,15 @@ static void setlightshader(Shader *s, const lightparaminfo &li, int n, bool base
                                   shadowparams("shadowparams"),
                                   shadowoffset("shadowoffset");
     s->setvariant(n-1, (shadowmap ? 1 : 0) + (baselight ? 0 : 2) + (spotlight ? 4 : 0) + (transparent ? 8 : 0) + (avatar ? 24 : 0));
-    lightpos.setv(li.lightposv, n);
-    lightcolor.setv(li.lightcolorv, n);
+    lightpos.setv(li.lightposv.data(), n);
+    lightcolor.setv(li.lightcolorv.data(), n);
     if(spotlight)
     {
-        spotparams.setv(li.spotparamsv, n);
+        spotparams.setv(li.spotparamsv.data(), n);
     }
     if(shadowmap)
     {
-        shadowparams.setv(li.shadowparamsv, n);
+        shadowparams.setv(li.shadowparamsv.data(), n);
         shadowoffset.setv(li.shadowoffsetv.data(), n);
     }
 }
