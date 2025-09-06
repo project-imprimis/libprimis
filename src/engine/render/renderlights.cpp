@@ -1928,9 +1928,9 @@ void resetlights()
     calctilesize();
 }
 
-VAR(depthtestlights, 0, 2, 2);
-FVAR(depthtestlightsclamp, 0, 0.999995f, 1); //z margin for light depth testing at depthtestlights = 2
-VAR(depthfaillights, 0, 1, 1);
+static VAR(depthtestlights, 0, 2, 2);
+static FVAR(depthtestlightsclamp, 0, 0.999995f, 1); //z margin for light depth testing at depthtestlights = 2
+static VAR(depthfaillights, 0, 1, 1);
 
 static void lightquads(float z, const vec2 &s1, const vec2 &s2)
 {
