@@ -2111,7 +2111,7 @@ static void setlightglobals(bool transparent = false)
 }
 
 //values only for interaction between setlightparams() and setlightshader()
-struct lightparaminfo
+struct LightParamInfo
 {
     std::array<vec4<float>, 8> lightposv, lightcolorv, spotparamsv, shadowparamsv;
     std::array<vec2, 8> shadowoffsetv;
@@ -2120,7 +2120,7 @@ struct lightparaminfo
 //sets the ith element of lightposv, lightcolorv, spotparamsv, shadowparamsv, shadowoffsetv
 //UB if i > 7
 //
-static void setlightparams(int i, const lightinfo &l, lightparaminfo &li)
+static void setlightparams(int i, const lightinfo &l, LightParamInfo &li)
 {
     li.lightposv[i]   = vec4<float>(l.o, 1).div(l.radius);
     li.lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb()), l.nospec() ? 0 : 1);
@@ -2154,7 +2154,7 @@ static void setlightparams(int i, const lightinfo &l, lightparaminfo &li)
     }
 }
 
-static void setlightshader(Shader *s, const lightparaminfo &li, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
+static void setlightshader(Shader *s, const LightParamInfo &li, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
 {
     static const LocalShaderParam lightpos("lightpos"),
                                   lightcolor("lightcolor"),
@@ -2213,7 +2213,7 @@ void GBuffer::renderlightsnobatch(Shader *s, int stencilref, bool transparent, f
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
-    static lightparaminfo li;
+    static LightParamInfo li;
     for(int avatarpass = 0; avatarpass < (stencilref >= 0 ? 2 : 1); ++avatarpass)
     {
         if(avatarpass)
@@ -2295,7 +2295,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
     bool sunpass = !sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap) && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
-    static lightparaminfo li;
+    static LightParamInfo li;
     for(size_t i = 0; i < lightbatches.size(); i++)
     {
         const lightbatch &batch = lightbatches[i];
