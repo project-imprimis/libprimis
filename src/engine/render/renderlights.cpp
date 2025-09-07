@@ -2882,7 +2882,7 @@ static VAR(oqvol, 0, 1, 1); //`o`cclusion `q`uery `vol`umetrics: toggles occlusi
 static VAR(oqlights, 0, 1, 1); //`o`cclusion `q`uery `lights: toggles occlusion queries of lights behind geometry
 static VAR(debuglightscissor, 0, 0, 1); //displays the light scissor map in the corner of the screen
 
-void viewlightscissor()
+static void viewlightscissor()
 {
     std::vector<extentity *> &ents = entities::getents();
     gle::defvertex(2);
