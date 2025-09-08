@@ -3092,13 +3092,13 @@ bool shouldworkinoq()
     return !drawtex && oqfrags && (!wireframe || !editmode);
 }
 
-struct batchrect final : lightrect
+struct BatchRect final : lightrect
 {
     uchar group;
     ushort idx;
 
-    batchrect() {}
-    batchrect(const lightinfo &l, ushort idx)
+    BatchRect() {}
+    BatchRect(const lightinfo &l, ushort idx)
       : lightrect(l),
         group((l.shadowmap < 0 ? BatchFlag_NoShadow : 0) | (l.spot > 0 ? BatchFlag_Spotlight : 0)),
         idx(idx)
@@ -3114,7 +3114,7 @@ struct batchstack final : lightrect
     batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : lightrect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
-static void batchlights(const batchstack &initstack, std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
+static void batchlights(const batchstack &initstack, std::vector<BatchRect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
 {
     constexpr size_t stacksize = 32;
     std::stack<batchstack> stack;
@@ -3137,7 +3137,7 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
             inside  = s.offset + s.numrects;
         for(int i = outside; i < inside; ++i)
         {
-            const batchrect &r = batchrects[i];
+            const BatchRect &r = batchrects[i];
             if(r.outside(s))
             {
                 if(i != outside)
@@ -3177,7 +3177,7 @@ static void batchlights(const batchstack &initstack, std::vector<batchrect> &bat
                     ushort bestidx = USHRT_MAX;
                     for(int j = inside; j < batched; ++j)
                     {
-                        const batchrect &r = batchrects[j];
+                        const BatchRect &r = batchrects[j];
                         {
                             if(r.group == g && r.idx < bestidx)
                             {
@@ -3234,7 +3234,7 @@ static bool sortlightbatches(const lightbatch &x, const lightbatch &y)
     return x.numlights > y.numlights;
 }
 
-static void batchlights(std::vector<batchrect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused, int &lightbatchesused)
+static void batchlights(std::vector<BatchRect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused, int &lightbatchesused)
 {
     lightbatches.clear();
     lightbatchstacksused = 0;
@@ -3253,7 +3253,7 @@ void GBuffer::packlights()
 {
     lightsvisible = lightsoccluded = 0;
     lightpassesused = 0;
-    std::vector<batchrect> batchrects;
+    std::vector<BatchRect> batchrects;
 
     for(size_t i = 0; i < lightorder.size(); i++)
     {
@@ -3305,7 +3305,7 @@ void GBuffer::packlights()
                 shadowatlas.full = true;
             }
         }
-        batchrects.push_back(batchrect(l, i));
+        batchrects.push_back(BatchRect(l, i));
     }
 
     lightsvisible = lightorder.size() - lightsoccluded;
