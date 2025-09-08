@@ -3305,7 +3305,7 @@ void GBuffer::packlights()
                 shadowatlas.full = true;
             }
         }
-        batchrects.push_back(BatchRect(l, i));
+        batchrects.emplace_back(l, i);
     }
 
     lightsvisible = lightorder.size() - lightsoccluded;
