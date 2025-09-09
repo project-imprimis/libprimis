@@ -53,6 +53,7 @@ bool hasFBMSBS = false,
      hasES3    = false,
      hasCI     = false;
 
+//used in iengine
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 
 //read-only info for gl debugging
