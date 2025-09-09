@@ -112,7 +112,7 @@ static void *getprocaddress(const char *name)
     return SDL_GL_GetProcAddress(name);
 }
 
-VAR(glerr, 0, 0, 1);
+static VAR(glerr, 0, 0, 1);
 
 void glerror()
 {
