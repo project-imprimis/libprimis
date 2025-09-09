@@ -1508,8 +1508,8 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
     glViewport(0, 0, hudw(), hudh());
 }
 
-VAR(modelpreviewfov, 10, 20, 100);    //y axis field of view
-VAR(modelpreviewpitch, -90, -15, 90); //pitch above model to render
+static VAR(modelpreviewfov, 10, 20, 100);    //y axis field of view
+static VAR(modelpreviewpitch, -90, -15, 90); //pitch above model to render
 
 /* ======================== model preview windows =========================== */
 
