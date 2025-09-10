@@ -668,8 +668,8 @@ FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
  * 333: COD, Destiny, Overwatch, ~BL2/3
  * 400: Cube/RE
  */
-VARP(invmouse, 0, 0, 1); //toggles inverting the mouse
-FVARP(mouseaccel, 0, 0, 1000);
+static VARP(invmouse, 0, 0, 1); //toggles inverting the mouse
+static FVARP(mouseaccel, 0, 0, 1000);
 
 physent *camera1 = nullptr;
 //used in iengine.h
