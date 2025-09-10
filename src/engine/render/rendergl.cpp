@@ -548,7 +548,9 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     }
 }
 
-matrix4 hudmatrix, hudmatrixstack[64];
+matrix4 hudmatrix;
+static std::array<matrix4, 64> hudmatrixstack;
+
 int hudmatrixpos = 0;
 
 void resethudmatrix()
