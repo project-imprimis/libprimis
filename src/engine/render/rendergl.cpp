@@ -490,7 +490,7 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1); //used in rendergl.h
 
-vec worldpos;
+vec worldpos; //used in iengine
 
 //these three cam() functions replace global variables that previously tracked their respective transforms of cammatrix
 vec camdir()

@@ -4,7 +4,6 @@
 extern int xtraverts, xtravertsva;
 extern int renderw();
 extern int renderh();
-extern vec worldpos;
 extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
 extern int glslversion;
 extern int mesa_swap_bug;
