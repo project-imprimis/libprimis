@@ -627,12 +627,14 @@ FVARNP(aspect, forceaspect, 0, 0, 1e3f);
 static float zoomprogress = 0;
 VAR(zoom, -1, 0, 1);
 
+//used in iengine
 void disablezoom()
 {
     zoom = 0;
     zoomprogress = 0;
 }
 
+//used in iengine
 void computezoom()
 {
     if(!zoom)
