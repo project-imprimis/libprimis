@@ -658,9 +658,9 @@ void computezoom()
     curavatarfov = avatarzoomfov*zoomprogress + avatarfov*(1 - zoomprogress);
 }
 
-FVARP(zoomsens, 1e-4f, 4.5f, 1e4f);
-FVARP(zoomaccel, 0, 0, 1000);
-VARP(zoomautosens, 0, 1, 1);
+static FVARP(zoomsens, 1e-4f, 4.5f, 1e4f);
+static FVARP(zoomaccel, 0, 0, 1000);
+static VARP(zoomautosens, 0, 1, 1);
 FVARP(sensitivity, 0.01f, 3, 100.f);
 FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
 /* Sensitivity scales:
