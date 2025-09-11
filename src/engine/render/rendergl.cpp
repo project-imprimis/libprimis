@@ -661,8 +661,8 @@ void computezoom()
 static FVARP(zoomsens, 1e-4f, 4.5f, 1e4f);
 static FVARP(zoomaccel, 0, 0, 1000);
 static VARP(zoomautosens, 0, 1, 1);
-FVARP(sensitivity, 0.01f, 3, 100.f);
-FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
+static FVARP(sensitivity, 0.01f, 3, 100.f);
+static FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
 /* Sensitivity scales:
  * 100: Quake/Source (TF2, Q3, Apex, L4D)
  * 333: COD, Destiny, Overwatch, ~BL2/3
