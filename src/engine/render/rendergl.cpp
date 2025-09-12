@@ -1379,11 +1379,11 @@ void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalef
         {
             glGenTextures(1, &minimaptex);
         }
-        uchar v[3];
+        std::array<uchar, 3> v;
         v[0] = nominimapcolor.r();
         v[1] = nominimapcolor.g();
         v[2] = nominimapcolor.b();
-        createtexture(minimaptex, 1, 1, v, 3, 0, GL_RGB, GL_TEXTURE_2D);
+        createtexture(minimaptex, 1, 1, v.data(), 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
 
