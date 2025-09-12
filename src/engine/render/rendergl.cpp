@@ -743,7 +743,7 @@ void mousemove(int dx, int dy)
 
 matrix4 cammatrix, projmatrix, camprojmatrix;
 
-FVAR(nearplane, 0.01f, 0.54f, 2.0f);
+FVAR(nearplane, 0.01f, 0.54f, 2.0f); //used in rendergl
 
 vec calcavatarpos(const vec &pos, float dist)
 {
