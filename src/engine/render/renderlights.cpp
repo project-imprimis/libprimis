@@ -64,7 +64,7 @@ matrix4 worldmatrix, screenmatrix;
 
 static std::array<Shader *, 2> bilateralshader = { nullptr, nullptr };
 
-Shader *loadbilateralshader(int pass)
+static Shader *loadbilateralshader(int pass)
 {
     if(!aobilateral)
     {
