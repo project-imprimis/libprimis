@@ -364,6 +364,12 @@ extern matrix4 shadowmatrix;
 
 extern void setbilateralshader(int radius, int pass, float depth);
 void clearbilateralshaders();
+
+/**
+ * @brief sets bilateralshader array using bilateralshader()
+ *
+ * Sets bilateralshader[2] elements to point to Shader objects representing the two passes
+ */
 void loadbilateralshaders();
 
 extern void loaddeferredlightshaders();

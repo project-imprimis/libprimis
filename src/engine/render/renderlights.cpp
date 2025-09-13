@@ -96,14 +96,7 @@ Shader *loadbilateralshader(int pass)
     DEF_FORMAT_STRING(name, "bilateral%c%s%d", 'x' + pass, opts.c_str(), aobilateral);
     return generateshader(name, "bilateralshader \"%s\" %d %d", opts.c_str(), aobilateral, reduce ? aoreduce : 0);
 }
-/* loadbilateralshaders: sets bilateralshader array using bilateralshader()
- * args:
- *      void
- * returns:
- *      void
- * other state changes:
- *      bilateralshader[2] elements point to Shader objects representing the two passes
- */
+
 void loadbilateralshaders()
 {
     for(int k = 0; k < 2; ++k)
