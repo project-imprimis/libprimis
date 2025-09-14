@@ -121,16 +121,6 @@ static void setbilateralparams(int radius, float depth)
     LOCALPARAMF(bilateralparams, 1.0f/(M_LN2*2*sigma*sigma), 1.0f/(M_LN2*depth*depth));
 }
 
-/**
- * @brief sets values for one of the bilateralshader[] elements
- *
- * bilateralshader[2] elements' referenced Shader objects have their radius
- * and depth parameters changed
- *
- * @param radius the bilateral filter radius to set
- * @param pass [0-1] the element of the bilateralshader() array to change
- * @param depth the depth of the bilateral filtering to set
- */
 void setbilateralshader(int radius, int pass, float depth)
 {
     bilateralshader[pass]->set();

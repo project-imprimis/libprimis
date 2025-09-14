@@ -362,6 +362,16 @@ extern int smcullside;
 
 extern matrix4 shadowmatrix;
 
+/**
+ * @brief sets values for one of the bilateralshader[] elements
+ *
+ * bilateralshader[2] elements' referenced Shader objects have their radius
+ * and depth parameters changed
+ *
+ * @param radius the bilateral filter radius to set
+ * @param pass [0-1] the element of the bilateralshader() array to change
+ * @param depth the depth of the bilateral filtering to set
+ */
 extern void setbilateralshader(int radius, int pass, float depth);
 void clearbilateralshaders();
 
