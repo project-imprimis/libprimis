@@ -361,7 +361,7 @@ void cascadedshadowmap::getprojmatrix()
         {
             continue;
         }
-        const shadowmapinfo &sm = shadowmaps[split.idx];
+        const ShadowMapInfo &sm = shadowmaps[split.idx];
 
         vec c;
         float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
@@ -421,7 +421,7 @@ void cascadedshadowmap::bindparams()
         {
             continue;
         }
-        const shadowmapinfo &sm = shadowmaps[split.idx];
+        const ShadowMapInfo &sm = shadowmaps[split.idx];
 
         csmtcv[i] = vec4<float>(vec2(split.center).mul(-split.scale.x), split.scale.x, split.bounds.x*split.scale.x);
 

@@ -318,14 +318,14 @@ extern PackNode shadowatlaspacker;
 
 struct shadowcacheval;
 
-struct shadowmapinfo final
+struct ShadowMapInfo final
 {
     ushort x, y, size, sidemask;
     int light;
     const shadowcacheval *cached;
 };
 
-extern std::vector<shadowmapinfo> shadowmaps;
+extern std::vector<ShadowMapInfo> shadowmaps;
 extern int smfilter;
 
 extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, const shadowcacheval *cached = nullptr);

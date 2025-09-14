@@ -1108,7 +1108,7 @@ static inline bool htcmp(const ShadowCacheKey &x, const ShadowCacheKey &y)
 }
 
     shadowcacheval() {}
-    shadowcacheval(const shadowmapinfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
+    shadowcacheval(const ShadowMapInfo &sm) : x(sm.x), y(sm.y), size(sm.size), sidemask(sm.sidemask) {}
 };
 
 class ShadowAtlas final
@@ -1398,7 +1398,7 @@ struct lightbatch
 static std::vector<lightinfo> lights;
 static std::vector<int> lightorder;
 static std::vector<lightbatch> lightbatches;
-std::vector<shadowmapinfo> shadowmaps;
+std::vector<ShadowMapInfo> shadowmaps;
 
 void clearshadowcache()
 {
@@ -1411,7 +1411,7 @@ void clearshadowcache()
 void addshadowmap(ushort x, ushort y, int size, int &idx, int light, const shadowcacheval *cached)
 {
     idx = shadowmaps.size();
-    shadowmapinfo sm;
+    ShadowMapInfo sm;
     sm.x = x;
     sm.y = y;
     sm.size = size;
@@ -1872,7 +1872,7 @@ void resetlights()
             evicty = ((evictshadowcache/shadowcacheevict)*sasize.y)/shadowcacheevict,
             evictx2 = (((evictshadowcache%shadowcacheevict)+1)*sasize.x)/shadowcacheevict,
             evicty2 = (((evictshadowcache/shadowcacheevict)+1)*sasize.y)/shadowcacheevict;
-        for(const shadowmapinfo &sm : shadowmaps)
+        for(const ShadowMapInfo &sm : shadowmaps)
         {
             if(sm.light < 0)
             {
@@ -2108,7 +2108,7 @@ static void setlightparams(int i, const lightinfo &l, LightParamInfo &li)
     }
     if(l.shadowmap >= 0)
     {
-        const shadowmapinfo &sm = shadowmaps[l.shadowmap];
+        const ShadowMapInfo &sm = shadowmaps[l.shadowmap];
         float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3,
               bias = (smfilter > 2 || shadowatlaspacker.dimensions().x > shadowatlassize ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
         int border = smfilter > 2 ? smborder2 : smborder;
@@ -2699,7 +2699,7 @@ void GBuffer::rendervolumetric()
 
         if(l.shadowmap >= 0)
         {
-            shadowmapinfo &sm = shadowmaps[l.shadowmap];
+            ShadowMapInfo &sm = shadowmaps[l.shadowmap];
             float smnearclip = SQRT3 / l.radius,
                   smfarclip = SQRT3,
                   bias = (smfilter > 2 ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
@@ -3333,7 +3333,7 @@ void GBuffer::rendercsmshadowmaps() const
     {
         if(csm.splits[i].idx >= 0)
         {
-            const shadowmapinfo &sm = shadowmaps[csm.splits[i].idx];
+            const ShadowMapInfo &sm = shadowmaps[csm.splits[i].idx];
 
             shadowmatrix.mul(csm.splits[i].proj, csm.model);
             GLOBALPARAM(shadowmatrix, shadowmatrix);
@@ -3451,7 +3451,7 @@ void GBuffer::rendershadowmaps(int offset) const
     const std::vector<extentity *> &ents = entities::getents();
     for(size_t i = offset; i < shadowmaps.size(); i++)
     {
-        shadowmapinfo &sm = shadowmaps[i];
+        ShadowMapInfo &sm = shadowmaps[i];
         if(sm.light < 0)
         {
             continue;
