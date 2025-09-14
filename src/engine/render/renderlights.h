@@ -373,6 +373,12 @@ extern matrix4 shadowmatrix;
  * @param depth the depth of the bilateral filtering to set
  */
 extern void setbilateralshader(int radius, int pass, float depth);
+
+/**
+ * @brief clears bilateralarray
+ *
+ * Makes bilateralshader[2]'s elements point to the null pointer..
+ */
 void clearbilateralshaders();
 
 /**

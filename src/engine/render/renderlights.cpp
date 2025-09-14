@@ -105,11 +105,6 @@ void loadbilateralshaders()
     }
 }
 
-/**
- * @brief clears bilateralarray
- *
- * Makes bilateralshader[2]'s elements point to the null pointer..
- */
 void clearbilateralshaders()
 {
     bilateralshader.fill(nullptr);
