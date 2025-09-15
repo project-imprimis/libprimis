@@ -44,30 +44,6 @@ constexpr int rhmaxgrid = 64; //subdivision count for radiance hints
 
 //radiance hints (global illumination) vars
 VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`r`adiance `h`ints `splits`: number of radiance hints subdivisions
-VARF(rhrect, 0, 0, 1, cleanupradiancehints());
-VARF(rhborder, 0, 1, 1, cleanupradiancehints());
-VARF(rsmsize, 64, 512, 2048, cleanupradiancehints());                           //`r`eflective `s`hadow `m`ap `size`: resolution (squared) of global illumination
-VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());                         //`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
-VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());                   //`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
-FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());              //`r`eflective `s`hadow `m`ap `p`robe `radius tweak`
-FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());               //`r`adiance `h`ints `p`robe `radius tweak`
-FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache());                 //`r`eflective `s`hadow `m`ap `depth range`
-FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());                //`r`eflective `s`hadow `m`ap `depth margin`
-VARFP(rhprec, 0, 0, 1, cleanupradiancehints());                                 //`r`adiance `h`ints `prec`ision: toggles between rgba16 or rgba8 map for radiance hints
-VARFP(rsmprec, 0, 0, 3, cleanupradiancehints());                                //`r`eflective `s`hadow `m`ap `prec`ision: toggles the rsm bit depth between rgb8 (0,1) , r11g11b10 (rgb 32bit) (2), or rgb16 (3)
-VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());                           //`r`eflective `s`hadow `m`ap `depth` `prec`ision: toggles the rsm depth map (buffer) between 16b, 24b, or 32b
-FVAR(rhnudge, 0, 0.5f, 4);                                                      //`r`adiance `h`ints `nudge`: (minor) factor for rsmsplits offset
-FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());                     //`r`adiance `h`ints `worldbias`: (minor) factor for radiance hints nudge
-FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());            //`r`adiance `h`ints `split weight`
-VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints());                         //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
-FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache());                       //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
-VAR(rhclipgrid, 0, 1, 1);                                                       //`r`adiance `h`ints `clip` `grid`: determines whether the radiance hints clips to grid
-VARF(rhcache, 0, 1, 1, cleanupradiancehints());                                 //`r`adiance `h`ints `cache`: determines whether to create cache textures and use the cache shader
-VARF(rhforce, 0, 0, 1, cleanupradiancehints());
-VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
-VARFP(rhtaps, 0, 20, 32, cleanupradiancehints());                               //`r`adiance `h`ints `taps`: number of sample points for global illumination
-VAR(rhdyntex, 0, 0, 1);                                                         //`r`adiance `h`ints `dyn`amic `tex`tures
-VAR(rhdynmm, 0, 0, 1);                                                          //`r`adiance `h`ints `dyn`amic `m`ap `m`odels
 
 //distance at which to render global illumination in cubits
 VARFR(gidist, 0, 384, 1024,
@@ -103,6 +79,31 @@ Shader *rsmworldshader = nullptr;
 
 namespace //internal functionality
 {
+    VARF(rhrect, 0, 0, 1, cleanupradiancehints());
+    VARF(rhborder, 0, 1, 1, cleanupradiancehints());
+    VARF(rsmsize, 64, 512, 2048, cleanupradiancehints());                           //`r`eflective `s`hadow `m`ap `size`: resolution (squared) of global illumination
+    VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());                         //`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
+    VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());                   //`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
+    FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());              //`r`eflective `s`hadow `m`ap `p`robe `radius tweak`
+    FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());               //`r`adiance `h`ints `p`robe `radius tweak`
+    FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache());                 //`r`eflective `s`hadow `m`ap `depth range`
+    FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());                //`r`eflective `s`hadow `m`ap `depth margin`
+    VARFP(rhprec, 0, 0, 1, cleanupradiancehints());                                 //`r`adiance `h`ints `prec`ision: toggles between rgba16 or rgba8 map for radiance hints
+    VARFP(rsmprec, 0, 0, 3, cleanupradiancehints());                                //`r`eflective `s`hadow `m`ap `prec`ision: toggles the rsm bit depth between rgb8 (0,1) , r11g11b10 (rgb 32bit) (2), or rgb16 (3)
+    VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());                           //`r`eflective `s`hadow `m`ap `depth` `prec`ision: toggles the rsm depth map (buffer) between 16b, 24b, or 32b
+    FVAR(rhnudge, 0, 0.5f, 4);                                                      //`r`adiance `h`ints `nudge`: (minor) factor for rsmsplits offset
+    FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());                     //`r`adiance `h`ints `worldbias`: (minor) factor for radiance hints nudge
+    FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());            //`r`adiance `h`ints `split weight`
+    VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints());                         //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
+    FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache());                       //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
+    VAR(rhclipgrid, 0, 1, 1);                                                       //`r`adiance `h`ints `clip` `grid`: determines whether the radiance hints clips to grid
+    VARF(rhcache, 0, 1, 1, cleanupradiancehints());                                 //`r`adiance `h`ints `cache`: determines whether to create cache textures and use the cache shader
+    VARF(rhforce, 0, 0, 1, cleanupradiancehints());
+    VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
+    VARFP(rhtaps, 0, 20, 32, cleanupradiancehints());                               //`r`adiance `h`ints `taps`: number of sample points for global illumination
+    VAR(rhdyntex, 0, 0, 1);                                                         //`r`adiance `h`ints `dyn`amic `tex`tures
+    VAR(rhdynmm, 0, 0, 1);                                                          //`r`adiance `h`ints `dyn`amic `m`ap `m`odels
+
     uint rhclearmasks[2][rhmaxsplits][(rhmaxgrid+2+31)/32];
     //reflective shadow map buffers, rendered from sun location
     GLuint rsmdepthtex = 0,
