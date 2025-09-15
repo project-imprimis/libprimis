@@ -5,7 +5,7 @@
 constexpr int rhmaxsplits = 4, //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
               rhmaxgrid = 64; //subdivision count for radiance hints
 
-extern int rhrect, rhgrid, rhsplits, rhborder, rhprec, rhtaps, rhcache, rhforce, rsmprec, rsmdepthprec, rsmsize;
+extern int rhsplits;
 extern int gi, gidist;
 extern float giscale, giaoscale;
 extern int debugrsm, debugrh;
