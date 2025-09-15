@@ -39,6 +39,8 @@
 
 std::array<GLuint, 8> rhtex = { 0, 0, 0, 0, 0, 0, 0, 0 };
 GLuint rhfbo = 0;
+constexpr int rhmaxgrid = 64; //subdivision count for radiance hints
+
 
 //radiance hints (global illumination) vars
 VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`r`adiance `h`ints `splits`: number of radiance hints subdivisions
