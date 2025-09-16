@@ -151,7 +151,7 @@ static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, flo
         return;
     }
     fontdef->chars.emplace_back();
-    font::charinfo &c = fontdef->chars.back();
+    font::CharInfo &c = fontdef->chars.back();
     c.x = *x;
     c.y = *y;
     c.w = *w ? *w : fontdef->defaultw;
@@ -174,7 +174,7 @@ static void fontskip(int *n)
     for(int i = 0; i < std::max(*n, 1); ++i)
     {
         fontdef->chars.emplace_back();
-        font::charinfo &c = fontdef->chars.back();
+        font::CharInfo &c = fontdef->chars.back();
         c.x = c.y = c.w = c.h = c.offsetx = c.offsety = c.advance = 0;
         c.tex = 0;
     }

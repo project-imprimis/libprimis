@@ -2,7 +2,7 @@
 #define RENDERTEXT_H_
 struct font final
 {
-    struct charinfo final
+    struct CharInfo final
     {
         float x, y, w, h, offsetx, offsety, advance;
         int tex;
@@ -11,7 +11,7 @@ struct font final
 
     std::string name;
     std::vector<Texture *> texs;
-    std::vector<charinfo> chars;
+    std::vector<CharInfo> chars;
     int charoffset, defaultw, defaulth, scale;
     float bordermin, bordermax, outlinemin, outlinemax;
 
