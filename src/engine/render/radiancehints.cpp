@@ -76,7 +76,6 @@ reflectiveshadowmap rsm;
 radiancehints rh;
 Shader *rsmworldshader = nullptr;
 
-
 namespace //internal functionality
 {
     VARF(rhrect, 0, 0, 1, cleanupradiancehints());
