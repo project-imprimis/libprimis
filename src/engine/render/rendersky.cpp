@@ -37,11 +37,11 @@
 
 VARFR(skyshadow, 0, 0, 1, clearshadowcache());   //toggles rsm features in renderva.cpp
 
-bool explicitsky = false;
-
 // internally relevant functionality
 namespace
 {
+    bool explicitsky = false;
+
     VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
 
     std::array<const Texture *, 6> sky = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
