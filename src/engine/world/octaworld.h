@@ -140,7 +140,7 @@ struct surfaceinfo final
     }
 };
 
-struct vtxarray;
+class vtxarray;
 
 struct cubeext final
 {

@@ -1,7 +1,7 @@
 #ifndef RENDERVA_H_
 #define RENDERVA_H_
 
-struct vtxarray;
+class vtxarray;
 
 enum OcclusionLevels
 {

@@ -10,7 +10,7 @@ struct materialsurface final
     uchar ends;
 };
 
-struct vtxarray;
+class vtxarray;
 
 extern std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs;
 
