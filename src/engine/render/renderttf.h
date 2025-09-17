@@ -7,8 +7,14 @@ typedef struct _TTF_Font TTF_Font;
 class TTFRenderer final
 {
     public:
-        //starts up SDL2_TTF
-        //if the init process did not start properly, returns false
+        /**
+         * @brief Starts up SDL2_TTF
+         *
+         * If the init process did not start properly, returns false. Called once
+         * per program lifetime.
+         *
+         * @return true if started correctly, false otherwise
+         */
         static bool initttf();
 
         /**
