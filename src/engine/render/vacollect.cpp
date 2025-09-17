@@ -1385,7 +1385,7 @@ void vacollect::gencubeverts(const cube &c, const ivec &co, int size)
 
 vtxarray *vacollect::newva(const ivec &o, int size)
 {
-    auto *va = new vtxarray;
+    vtxarray *va = new vtxarray;
     va->parent = nullptr;
     va->o = o;
     va->size = size;
