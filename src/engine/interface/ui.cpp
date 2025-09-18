@@ -4405,7 +4405,7 @@ namespace UI
                     yoff = vslot.offset.y();
                 if(vslot.rotation)
                 {
-                    const texrotation &r = texrotations[vslot.rotation];
+                    const TexRotation &r = texrotations[vslot.rotation];
                     if(r.swapxy)
                     {
                         std::swap(xoff, yoff);

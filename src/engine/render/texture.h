@@ -101,12 +101,12 @@ struct MatSlot final : Slot, VSlot
     }
 };
 
-struct texrotation final
+struct TexRotation final
 {
     bool flipx, flipy, swapxy;
 };
 
-extern const std::array<texrotation, 8> texrotations;
+extern const std::array<TexRotation, 8> texrotations;
 extern Texture *notexture;
 extern int maxvsuniforms;
 

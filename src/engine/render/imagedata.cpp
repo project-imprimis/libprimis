@@ -319,7 +319,7 @@ void ImageData::texrotate(int numrots, int type)
 {
     if(numrots>=1 && numrots<=7)
     {
-        const texrotation &r = texrotations[numrots];
+        const TexRotation &r = texrotations[numrots];
         texreorient(r.flipx, r.flipy, r.swapxy, type);
     }
 }

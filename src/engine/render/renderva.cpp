@@ -941,7 +941,7 @@ namespace
                  texgenvslot->offset != vslot.offset || texgenvslot->scroll != vslot.scroll) ||
                  texgenvslot->angle != vslot.angle)
             {
-                const texrotation &r = texrotations[vslot.rotation];
+                const TexRotation &r = texrotations[vslot.rotation];
                 float xs = r.flipx ? -tex->xs : tex->xs,
                       ys = r.flipy ? -tex->ys : tex->ys;
                 vec2 scroll(vslot.scroll);

@@ -23,7 +23,7 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
-extern const std::array<texrotation, 8> texrotations =
+extern const std::array<TexRotation, 8> texrotations =
 {{
     { false, false, false }, // 0: default
     { false,  true,  true }, // 1: 90 degrees

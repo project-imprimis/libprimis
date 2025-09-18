@@ -1594,7 +1594,7 @@ void vacollect::setva(cube &c, const ivec &co, int sz, int csi)
 void vacollect::calctexgen(const VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
 {
     const Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
-    const texrotation &r = texrotations[vslot.rotation];
+    const TexRotation &r = texrotations[vslot.rotation];
     float k = defaulttexscale/vslot.scale,
           xs = r.flipx ? -tex->xs : tex->xs,
           ys = r.flipy ? -tex->ys : tex->ys,
