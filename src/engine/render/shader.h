@@ -18,6 +18,16 @@ extern float blursigma;
 extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
 constexpr int maxblurradius = 7;
 
+/**
+ * @brief Gets or creates a local shader param.
+ *
+ * Tries to get the index for the passed localparam in localparams. If there is
+ * no matching member, creates one with the passed name at the end of localparams.
+ *
+ * @param name the name to look for
+ *
+ * @return the index of the local param
+ */
 extern size_t getlocalparam(const std::string &name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
