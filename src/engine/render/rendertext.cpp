@@ -162,8 +162,13 @@ static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, flo
     c.tex = fontdeftex;
 }
 
-/* fontskip
- * addes an entry to the fontdef vector, which is empty
+/**
+ * @brief Adds empty entries to fontdef
+ *
+ * adds entries to the fontdef vector, which are empty. All of their values are set
+ * to zero.
+ *
+ * @param n pointer to the number of elements to add. At least one element will be added.
  */
 static void fontskip(int *n)
 {
