@@ -29,6 +29,14 @@ constexpr int maxblurradius = 7;
  * @return the index of the local param
  */
 extern size_t getlocalparam(const std::string &name);
+
+/**
+ * @brief Sets up blur weights passed by parameter.
+ *
+ * @param radius sets number of weights & offsets for blurring to be made
+ * @param weights array of length at least radius + 1
+ * @param offsets array of length at least radius + 1
+ */
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 
