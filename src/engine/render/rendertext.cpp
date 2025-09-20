@@ -139,10 +139,18 @@ static void fonttex(char *s)
     fontdef->texs.push_back(t);
 }
 
-/* fontchar
- * adds an entry to the fontdef vector
+/**
+ * @brief Adds an entry to the fontdef vector
+ *
  * sets the new entry in the vector to have the parameters passed
  *
+ * @param x x size of the charinfo
+ * @param y y size of the charinfo
+ * @param w width of the charinfo
+ * @param h width of the charinfo
+ * @param offsetx positional offset in x direction
+ * @param offsety positional offset in y direction
+ * @param advance x advance, if zero, set to offsetx + width
  */
 static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
 {
