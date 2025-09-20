@@ -1869,7 +1869,7 @@ static void fixinsidefaces(std::array<cube, 8> &c, const ivec &o, int size, int 
 int findslottex(const char *name)
 {
 
-    const struct slottex
+    const struct SlotTex
     {
         const char *name;
         int id;
@@ -1887,7 +1887,7 @@ int findslottex(const char *name)
         {"a", Tex_Alpha}
     };
 
-    for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(SlotTex)); ++i)
     {
         if(!std::strcmp(slottexs[i].name, name))
         {
