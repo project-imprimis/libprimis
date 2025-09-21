@@ -32,23 +32,23 @@ enum AlphaState
     Alpha_Refract
 };
 
-class sortkey final
+class SortKey final
 {
     public:
         ushort tex;
         uchar orient, layer, alpha;
 
-        sortkey() {}
-        sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, uchar alpha = Alpha_None)
+        SortKey() {}
+        SortKey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, uchar alpha = Alpha_None)
          : tex(tex), orient(orient), layer(layer), alpha(alpha)
         {}
 
-        bool operator==(const sortkey &o) const
+        bool operator==(const SortKey &o) const
         {
             return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha;
         }
 
-        static bool sort(const sortkey &x, const sortkey &y)
+        static bool sort(const SortKey &x, const SortKey &y)
         {
             if(x.alpha != y.alpha)
             {
@@ -81,9 +81,9 @@ class sortkey final
 };
 
 template<>
-struct std::hash<sortkey> final
+struct std::hash<SortKey> final
 {
-    size_t operator()(const sortkey &k) const
+    size_t operator()(const SortKey &k) const
     {
         return k.tex;
     }
@@ -352,9 +352,9 @@ class vacollect final
         std::vector<grasstri> grasstris;
         int worldtris, skytris;
         std::vector<ushort> skyindices;
-        std::unordered_map<sortkey, sortval> indices;
+        std::unordered_map<SortKey, sortval> indices;
         std::unordered_map<decalkey, sortval> decalindices;
-        std::vector<sortkey> texs;
+        std::vector<SortKey> texs;
         std::vector<decalkey> decaltexs;
         int decaltris;
         std::vector<octaentities *> entstack;
@@ -397,7 +397,7 @@ class vacollect final
         void addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort texture, const vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top);
 
         // verts is an array of length numverts
-        void addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj);
+        void addtris(const VSlot &vslot, int orient, const SortKey &key, vertex *verts, const int *index, int numverts, int tj);
 
         // verts is an array of length face + 2 or face + 3
         void addgrasstri(int face, const vertex *verts, int numv, ushort texture);
@@ -600,7 +600,7 @@ void vacollect::setupdata(vtxarray *va)
                *curbuf = edata;
         for(size_t i = 0; i < texs.size(); i++)
         {
-            const sortkey &k = texs[i];
+            const SortKey &k = texs[i];
             const sortval &t = indices[k];
             elementset &e = va->texelems[i];
             e.texture = k.tex;
@@ -726,7 +726,7 @@ void vacollect::optimize()
             texs.push_back(k);
         }
     }
-    std::sort(texs.begin(), texs.end(), sortkey::sort);
+    std::sort(texs.begin(), texs.end(), SortKey::sort);
 
     matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
 }
@@ -781,7 +781,7 @@ void vacollect::gendecal(const extentity &e, const DecalSlot &s, const decalkey 
         clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
     for(size_t i = 0; i < texs.size(); i++)
     {
-        const sortkey &k = texs[i];
+        const SortKey &k = texs[i];
         if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
         {
             continue;
@@ -932,7 +932,7 @@ void vacollect::gendecals()
             decaltexs.push_back(k);
         }
     }
-    std::sort(texs.begin(), texs.end(), sortkey::sort);
+    std::sort(texs.begin(), texs.end(), SortKey::sort);
 }
 
 int vacollect::genmergedfaces(cube &c, const ivec &co, int size, int minlevel)
@@ -1077,7 +1077,7 @@ static int setcubevisibility(cube &c, const ivec &co, int size)
 
 //index array must be >= numverts long
 //verts array must be >= Face_MaxVerts + 1 and >= numverts long
-void vacollect::addtris(const VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
+void vacollect::addtris(const VSlot &vslot, int orient, const SortKey &key, vertex *verts, const int *index, int numverts, int tj)
 {
     int &total = key.tex == Default_Sky ? skytris : worldtris,
          edge  = orient*(Face_MaxVerts+1);
@@ -1779,7 +1779,7 @@ void vacollect::addcubeverts(VSlot &vslot, int orient, const vec *pos, ushort te
             }
         }
     }
-    const sortkey key(texture,
+    const SortKey key(texture,
                       vslot.scroll.iszero() ? Orient_Any : orient,
                       layer&BlendLayer_Bottom ? layer : BlendLayer_Top,
                       alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
