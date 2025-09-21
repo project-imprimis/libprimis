@@ -152,7 +152,7 @@ static void fonttex(char *s)
  * @param offsety positional offset in y direction
  * @param advance x advance, if zero, set to offsetx + width
  */
-static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
+static void fontchar(const float *x, const float *y, const float *w, const float *h, const float *offsetx, const float *offsety, const float *advance)
 {
     if(!fontdef)
     {
