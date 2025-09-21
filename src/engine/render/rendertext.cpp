@@ -178,7 +178,7 @@ static void fontchar(const float *x, const float *y, const float *w, const float
  *
  * @param n pointer to the number of elements to add. At least one element will be added.
  */
-static void fontskip(int *n)
+static void fontskip(const int *n)
 {
     if(!fontdef)
     {
