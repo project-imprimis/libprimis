@@ -50,14 +50,14 @@ class radiancehints final
     private:
         vec prevdynmin, prevdynmax;
         //splits are used to LOD global illumination (more detail near camera)
-        struct splitinfo final
+        struct SplitInfo final
         {
             float nearplane, farplane;
             vec offset, scale;
             vec center; float bounds;
             vec cached; bool copied;
 
-            splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
+            SplitInfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
             {
             }
 
@@ -66,7 +66,7 @@ class radiancehints final
                 bounds = -1e16f;
             }
         };
-        std::array<splitinfo, rhmaxsplits> splits;
+        std::array<SplitInfo, rhmaxsplits> splits;
 
         void updatesplitdist();
 };

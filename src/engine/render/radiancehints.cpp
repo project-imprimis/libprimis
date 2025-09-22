@@ -410,7 +410,7 @@ void radiancehints::setup()
 
     for(int i = 0; i < rhsplits; ++i)
     {
-        splitinfo &split = splits[i];
+        SplitInfo &split = splits[i];
 
         vec c;
         const float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir(), c);
@@ -441,7 +441,7 @@ void radiancehints::bindparams() const
     vec4<float> *rhtcv = rhtc.reserve<vec4<float>>();
     for(int i = 0; i < rhsplits; ++i)
     {
-        const splitinfo &split = splits[i];
+        const SplitInfo &split = splits[i];
         rhtcv[i] = vec4<float>(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
     }
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
@@ -449,7 +449,7 @@ void radiancehints::bindparams() const
 
 void radiancehints::clearcache()
 {
-    for(splitinfo &i : splits)
+    for(SplitInfo &i : splits)
     {
         i.clearcache();
     }
@@ -457,7 +457,7 @@ void radiancehints::clearcache()
 
 bool radiancehints::allcached() const
 {
-    for(const splitinfo &i : splits)
+    for(const SplitInfo &i : splits)
     {
         if(i.cached != i.center)
         {
@@ -567,7 +567,7 @@ void radiancehints::renderslices()
         cy = -1;
     for(int i = rhsplits; --i >= 0;) //reverse iterate through rhsplits
     {
-        splitinfo &split = splits[i];
+        SplitInfo &split = splits[i];
         float cellradius = split.bounds/rhgrid,
               step       = 2*cellradius,
               nudge      = rhnudge*2*splits[0].bounds/rhgrid + rhworldbias*step;
@@ -627,7 +627,7 @@ void radiancehints::renderslices()
             GLOBALPARAMF(borderrange, 0.5f - 0.5f/(rhgrid+2), 0.5f - 0.5f/(rhgrid+2), (0.5f - 0.5f/(rhgrid+2))/rhsplits);
             GLOBALPARAMF(borderscale, rhgrid+2, rhgrid+2, (rhgrid+2)*rhsplits);
 
-            splitinfo &next = splits[i+1];
+            SplitInfo &next = splits[i+1];
             for(int k = 0; k < 3; ++k)
             {
                 bmin[k] = std::floor((std::max(static_cast<float>(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
@@ -660,7 +660,7 @@ void radiancehints::renderslices()
 
             if(rhborder && i + 1 < rhsplits)
             {
-                const splitinfo &next = splits[i+1];
+                const SplitInfo &next = splits[i+1];
                 float bx1  = x1-step,
                       bx2  = x2+step,
                       by1  = y1-step,
