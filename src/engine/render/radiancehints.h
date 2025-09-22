@@ -10,6 +10,8 @@ extern float giscale, giaoscale;
 extern int debugrsm, debugrh;
 extern std::array<GLuint, 8> rhtex;
 extern Shader *rsmworldshader;
+extern int rsmcull;
+extern GLuint rhfbo;
 
 //defines the size, position & projection info for a reflective shadow map
 // the reflective shadow map is then used to calculate global illumination

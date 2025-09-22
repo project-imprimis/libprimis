@@ -427,8 +427,6 @@ extern int msaasamples, msaalight;
 extern std::vector<vec2> msaapositions;
 
 extern int rhinoq;
-extern int rsmcull;
-extern GLuint rhfbo;
 
 extern bool shouldworkinoq();
 extern void initgbuffer();
