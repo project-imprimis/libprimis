@@ -71,6 +71,7 @@ VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); });   
 //debugrsm/rh used extern in renderlights
 VAR(debugrsm, 0, 0, 2);                                                         //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, normal map
 VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
+VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
 
 reflectiveshadowmap rsm;
 radiancehints rh;
@@ -98,7 +99,6 @@ namespace //internal functionality
     VAR(rhclipgrid, 0, 1, 1);                                                       //`r`adiance `h`ints `clip` `grid`: determines whether the radiance hints clips to grid
     VARF(rhcache, 0, 1, 1, cleanupradiancehints());                                 //`r`adiance `h`ints `cache`: determines whether to create cache textures and use the cache shader
     VARF(rhforce, 0, 0, 1, cleanupradiancehints());
-    VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
     VARFP(rhtaps, 0, 20, 32, cleanupradiancehints());                               //`r`adiance `h`ints `taps`: number of sample points for global illumination
     VAR(rhdyntex, 0, 0, 1);                                                         //`r`adiance `h`ints `dyn`amic `tex`tures
     VAR(rhdynmm, 0, 0, 1);                                                          //`r`adiance `h`ints `dyn`amic `m`ap `m`odels
