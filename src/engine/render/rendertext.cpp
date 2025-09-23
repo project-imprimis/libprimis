@@ -113,32 +113,6 @@ static void fontscale(int *scale)
 fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
 }
 
-
-/* fonttex
- * adds a texture for fonts to be loaded from
- *
- * Arguments:
- *    s: a pointer to a char * array representing the path to a font texture file
- */
-static void fonttex(char *s)
-{
-    if(!fontdef)
-    {
-        return;
-    }
-    Texture *t = textureload(s);
-    for(uint i = 0; i < fontdef->texs.size(); i++)
-    {
-        if(fontdef->texs[i] == t)
-        {
-            fontdeftex = i;
-            return;
-        }
-    }
-    fontdeftex = fontdef->texs.size();
-    fontdef->texs.push_back(t);
-}
-
 /**
  * @brief Adds an entry to the fontdef vector
  *
@@ -466,7 +440,6 @@ void initrendertextcmds()
     addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);
     addcommand("fontoffset", reinterpret_cast<identfun>(fontoffset), "s", Id_Command);
     addcommand("fontscale", reinterpret_cast<identfun>(fontscale), "i", Id_Command);
-    addcommand("fonttex", reinterpret_cast<identfun>(fonttex), "s", Id_Command);
     addcommand("fontchar", reinterpret_cast<identfun>(fontchar), "fffffff", Id_Command);
     addcommand("fontskip", reinterpret_cast<identfun>(fontskip), "i", Id_Command);
 }
