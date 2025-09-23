@@ -69,7 +69,7 @@ static int seedmillis = variable("seedparticles", 0, 3000, 10000, &seedmillis, n
 VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
 VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
 
-class particleemitter final
+class ParticleEmitter final
 {
     public:
         const extentity *ent;
@@ -77,7 +77,7 @@ class particleemitter final
         float radius;
         int maxfade, lastemit, lastcull;
 
-        particleemitter(const extentity *ent)
+        ParticleEmitter(const extentity *ent)
             : ent(ent), maxfade(-1), lastemit(0), lastcull(0), bbmin(ent->o), bbmax(ent->o)
         {}
 
@@ -110,8 +110,8 @@ class particleemitter final
         vec bbmin, bbmax;
 };
 
-static std::vector<particleemitter> emitters;
-static particleemitter *seedemitter = nullptr;
+static std::vector<ParticleEmitter> emitters;
+static ParticleEmitter *seedemitter = nullptr;
 
 const char * getentname(int i)
 {
@@ -134,7 +134,7 @@ void addparticleemitters()
         {
             continue;
         }
-        emitters.emplace_back(particleemitter(e));
+        emitters.emplace_back(ParticleEmitter(e));
     }
     regenemitters = false;
 }
@@ -227,7 +227,7 @@ class partrenderer
         virtual int count() const = 0; //for debug
         virtual void cleanup() {}
 
-        virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) = 0;
+        virtual void seedemitter(ParticleEmitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) = 0;
 
         virtual void preload()
         {
@@ -509,7 +509,7 @@ class meterrenderer final : public listrenderer
         {
         }
 
-        void seedemitter(particleemitter &, const vec &, const vec &, int, float, int) final
+        void seedemitter(ParticleEmitter &, const vec &, const vec &, int, float, int) final
         {
         }
 
@@ -673,7 +673,7 @@ void genrotpos<PT_PART>(const vec &o, const vec &, float size, int, int, partver
 }
 
 template<int T>
-void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos(ParticleEmitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     constexpr float scale = 5000.f;
     if(grav)
@@ -691,13 +691,13 @@ void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float si
 }
 
 template<>
-void seedpos<PT_TAPE>(particleemitter &pe, const vec &, const vec &d, int, float size, int)
+void seedpos<PT_TAPE>(ParticleEmitter &pe, const vec &, const vec &d, int, float size, int)
 {
     pe.extendbb(d, size);
 }
 
 template<>
-void seedpos<PT_TRAIL>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos<PT_TRAIL>(ParticleEmitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     vec e = d;
     if(grav)
@@ -813,7 +813,7 @@ class varenderer final : public partrenderer
             return p;
         }
 
-        void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) final
+        void seedemitter(ParticleEmitter &pe, const vec &o, const vec &d, int fade, float size, int gravity) final
         {
             pe.maxfade = std::max(pe.maxfade, fade);
             size *= SQRT2;
@@ -1039,7 +1039,7 @@ class fireballrenderer final : public listrenderer
             sr.cleanup();
         }
 
-        void seedemitter(particleemitter &pe, const vec &o, const vec &, int fade, float size, int) final
+        void seedemitter(ParticleEmitter &pe, const vec &o, const vec &, int fade, float size, int) final
         {
             pe.maxfade = std::max(pe.maxfade, fade);
             pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
@@ -1873,7 +1873,7 @@ void cubeworld::seedparticles()
     renderprogress(0, "seeding particles");
     addparticleemitters();
     canemit = true;
-    for(particleemitter &pe : emitters)
+    for(ParticleEmitter &pe : emitters)
     {
         const extentity &e = *pe.ent;
         seedemitter = &pe;
@@ -1915,7 +1915,7 @@ void cubeworld::updateparticles()
         int emitted = 0,
             replayed = 0;
         addedparticles = 0;
-        for(particleemitter& pe : emitters) //foreach particle emitter
+        for(ParticleEmitter& pe : emitters) //foreach particle emitter
         {
             const extentity &e = *pe.ent; //get info for the entity associated w/ent
             if(e.o.dist(camera1->o) > maxparticledistance) //distance check (don't update faraway particle ents)
