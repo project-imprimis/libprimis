@@ -26,17 +26,17 @@
 
 #include "interface/control.h"
 
-static std::unordered_map<std::string, font> fonts;
-static font *fontdef = nullptr;
+static std::unordered_map<std::string, Font> fonts;
+static Font *fontdef = nullptr;
 static int fontdeftex = 0;
 
-font *curfont = nullptr;
+Font *curfont = nullptr;
 
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 {
-    auto insert = fonts.insert( {name, font()} ).first;
-    font *f = &((*insert).second);
+    auto insert = fonts.insert( {name, Font()} ).first;
+    Font *f = &((*insert).second);
     f->name = std::string(name);
     f->texs.clear();
     f->texs.push_back(textureload(tex));
@@ -133,7 +133,7 @@ static void fontchar(const float *x, const float *y, const float *w, const float
         return;
     }
     fontdef->chars.emplace_back();
-    font::CharInfo &c = fontdef->chars.back();
+    Font::CharInfo &c = fontdef->chars.back();
     c.x = *x;
     c.y = *y;
     c.w = *w ? *w : fontdef->defaultw;
@@ -161,7 +161,7 @@ static void fontskip(const int *n)
     for(int i = 0; i < std::max(*n, 1); ++i)
     {
         fontdef->chars.emplace_back();
-        font::CharInfo &c = fontdef->chars.back();
+        Font::CharInfo &c = fontdef->chars.back();
         c.x = c.y = c.w = c.h = c.offsetx = c.offsety = c.advance = 0;
         c.tex = 0;
     }
@@ -178,7 +178,7 @@ bool setfont(const char *name)
     return true;
 }
 
-static std::stack<font *> fontstack;
+static std::stack<Font *> fontstack;
 
 void pushfont()
 {

@@ -1,6 +1,6 @@
 #ifndef RENDERTEXT_H_
 #define RENDERTEXT_H_
-struct font final
+struct Font final
 {
     struct CharInfo final
     {
@@ -15,12 +15,12 @@ struct font final
     int charoffset, defaultw, defaulth, scale;
     float bordermin, bordermax, outlinemin, outlinemax;
 
-    font() {}
+    Font() {}
 };
 
 #define FONTH (curfont->scale)
 
-extern font *curfont;
+extern Font *curfont;
 
 inline int fontwidth()
 {
@@ -33,7 +33,7 @@ extern float textscale;
 
 extern void reloadfonts();
 
-inline void setfont(font *f)
+inline void setfont(Font *f)
 {
     if(f)
     {

@@ -2794,7 +2794,7 @@ namespace UI
 
     struct Font final : Object
     {
-        ::font *font;
+        ::Font *font;
 
         Font() : font(nullptr) {}
 
