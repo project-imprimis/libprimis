@@ -66,7 +66,7 @@ static void fontborder(const float *bordermin, const float *bordermax)
 }
 
 //sets the fontdef gvar's outlinemin/max to the values passed
-static void fontoutline(float *outlinemin, float *outlinemax)
+static void fontoutline(const float *outlinemin, const float *outlinemax)
 {
     if(!fontdef)
     {
