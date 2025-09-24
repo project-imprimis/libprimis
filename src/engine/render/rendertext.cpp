@@ -33,7 +33,7 @@ static int fontdeftex = 0;
 Font *curfont = nullptr;
 
 //adds a new font to the hashnameset "fonts" given the parameters passed
-static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
+static void newfont(const char *name, const char *tex, const int *defaultw, const int *defaulth, const int *scale)
 {
     auto insert = fonts.insert( {name, Font()} ).first;
     Font *f = &((*insert).second);
