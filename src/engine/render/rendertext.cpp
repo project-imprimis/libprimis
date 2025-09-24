@@ -55,7 +55,7 @@ static void newfont(const char *name, const char *tex, const int *defaultw, cons
 }
 
 //sets the fontdef gvar's bordermin/max to the values passed
-static void fontborder(float *bordermin, float *bordermax)
+static void fontborder(const float *bordermin, const float *bordermax)
 {
     if(!fontdef)
     {
