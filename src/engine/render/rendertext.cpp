@@ -423,7 +423,7 @@ void reloadfonts()
 {
     for(auto &[k, f] : fonts)
     {
-        for(uint i = 0; i < f.texs.size(); i++)
+        for(size_t i = 0; i < f.texs.size(); i++)
         {
             if(!f.texs[i]->reload())
             {
