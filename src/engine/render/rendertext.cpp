@@ -85,7 +85,7 @@ static void fontoutline(const float *outlinemin, const float *outlinemax)
  * Only the first element of the array is accepted, all others are ignored
  *
  */
-static void fontoffset(char *c)
+static void fontoffset(const char *c)
 {
     if(!fontdef)
     {
