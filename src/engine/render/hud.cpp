@@ -485,6 +485,6 @@ void damageblend(int n)
 
 void inithudcmds()
 {
-    addcommand("loadcrosshair", reinterpret_cast<identfun>(+[](const char *name, int *i){loadcrosshair(name, *i);}), "si", Id_Command);
+    addcommand("loadcrosshair", reinterpret_cast<identfun>(+[](const char *name, const int *i){loadcrosshair(name, *i);}), "si", Id_Command);
     addcommand("getcrosshair", reinterpret_cast<identfun>(getcrosshair), "i", Id_Command);
 }
