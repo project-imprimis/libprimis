@@ -42,13 +42,12 @@ struct std::hash<normalkey>
 
 namespace //internal functionality not seen by other files
 {
-    struct normalgroup final
-    {
+    struct NormalGroup final {
         vec pos;
         int smooth, flat, normals, tnormals;
 
-        normalgroup() : smooth(0), flat(0), normals(-1), tnormals(-1) {}
-        normalgroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
+        NormalGroup() : smooth(0), flat(0), normals(-1), tnormals(-1) {}
+        NormalGroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
     };
 
     struct normal final
@@ -62,10 +61,10 @@ namespace //internal functionality not seen by other files
         int next;
         float offset;
         std::array<int, 2> normals;
-        std::array<normalgroup *, 2> groups;
+        std::array<NormalGroup *, 2> groups;
     };
 
-    std::unordered_map<normalkey, normalgroup> normalgroups;
+    std::unordered_map<normalkey, NormalGroup> normalgroups;
     std::vector<normal> normals;
     std::vector<tnormal> tnormals;
     std::vector<int> smoothgroups;
@@ -80,7 +79,7 @@ namespace //internal functionality not seen by other files
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
-            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+            itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
         }
         normal n;
         n.next = (*itr).second.normals;
@@ -95,7 +94,7 @@ namespace //internal functionality not seen by other files
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
-            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+            itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
         }
         tnormal n;
         n.next = (*itr).second.tnormals;
@@ -116,13 +115,13 @@ namespace //internal functionality not seen by other files
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
-            itr = normalgroups.insert( { key, normalgroup(key) } ).first;
+            itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
         }
         (*itr).second.flat += 1<<(4*axis);
         return axis - 6;
     }
 
-    void findnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
+    void findnormal(const NormalGroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         v = vec(0, 0, 0);
         int total = 0;
@@ -186,7 +185,7 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
+    bool findtnormal(const NormalGroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         float bestangle = lerpthreshold;
         const tnormal *bestnorm = nullptr;
