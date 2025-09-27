@@ -36,8 +36,8 @@
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 
-VAR(menufps, 0, 60, 1000);   //maximum framerate while in main menu
-VARP(maxfps, 0, 240, 1000);  //maximum framerate while world is being rendered
+static VAR(menufps, 0, 60, 1000);   //maximum framerate while in main menu
+static VARP(maxfps, 0, 240, 1000);  //maximum framerate while world is being rendered
 
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
