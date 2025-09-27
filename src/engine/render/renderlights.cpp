@@ -1542,7 +1542,7 @@ void disableavatarmask()
     }
 }
 
-VAR(forcespotlights, 1, 0, 0);
+static VAR(forcespotlights, 1, 0, 0);
 
 static Shader *volumetricshader = nullptr;
 std::array<Shader *, 2> volumetricbilateralshader = { nullptr, nullptr };
