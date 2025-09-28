@@ -1553,17 +1553,17 @@ void clearvolumetricshaders()
     volumetricbilateralshader.fill(nullptr);
 }
 
-VARFP(volumetric, 0, 1, 1, cleanupvolumetric());    //toggles displaying volumetric lights
-VARFP(volreduce, 0, 1, 2, cleanupvolumetric());     //size reduction factor for volumetric tex: 1 is 1/4, 2 is 1/16
-VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());  //toggles bilateral filtering
-FVAR(volbilateraldepth, 0, 4, 1e3f);                //bilateral filtering depth
-VARFP(volblur, 0, 1, 3, cleanupvolumetric());
-VARFP(volsteps, 1, 32, 128, cleanupvolumetric());   //iterations to run for volumetric algorithm
-FVAR(volminstep, 0, 0.0625f, 1e3f);
-FVAR(volprefilter, 0, 0.1, 1e3f);
-FVAR(voldistclamp, 0, 0.99f, 2);
-CVAR1R(volcolor, 0x808080);
-FVARR(volscale, 0, 1, 16);
+static VARFP(volumetric, 0, 1, 1, cleanupvolumetric());    //toggles displaying volumetric lights
+static VARFP(volreduce, 0, 1, 2, cleanupvolumetric());     //size reduction factor for volumetric tex: 1 is 1/4, 2 is 1/16
+static VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());  //toggles bilateral filtering
+static FVAR(volbilateraldepth, 0, 4, 1e3f);                //bilateral filtering depth
+static VARFP(volblur, 0, 1, 3, cleanupvolumetric());
+static VARFP(volsteps, 1, 32, 128, cleanupvolumetric());   //iterations to run for volumetric algorithm
+static FVAR(volminstep, 0, 0.0625f, 1e3f);
+static FVAR(volprefilter, 0, 0.1, 1e3f);
+static FVAR(voldistclamp, 0, 0.99f, 2);
+static CVAR1R(volcolor, 0x808080);
+static FVARR(volscale, 0, 1, 16);
 
 Shader *loadvolumetricshader()
 {
