@@ -39,8 +39,8 @@ VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 static VAR(menufps, 0, 60, 1000);   //maximum framerate while in main menu
 static VARP(maxfps, 0, 240, 1000);  //maximum framerate while world is being rendered
 
-VAR(desktopw, 1, 0, 0);
-VAR(desktoph, 1, 0, 0);
+VAR(desktopw, 1, 0, 0); //used in iengine.h
+VAR(desktoph, 1, 0, 0); //used in iengine.h
 int screenw = 0,
     screenh = 0;
 SDL_Window   *screen    = nullptr;
