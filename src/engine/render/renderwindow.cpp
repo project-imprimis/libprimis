@@ -640,12 +640,14 @@ void resetgl()
     rootworld.allchanged(true);
 }
 
-/* limitfps: uses SDL_Delay to delay a frame, given the time the last frame was
- * rendered and the current time
+/**
+ * @brief Delays the frame to the prescribed rate.
  *
- * Arguments:
- *    millis: the time (in ms) since program started
- *    curmillis: the last registered frame time
+ * Uses SDL_Delay to delay a frame, given the time the last frame was
+ * rendered and the current time.
+ *
+ * @param millis the time (in ms) since program started
+ * @param curmillis the last registered frame time
  */
 void limitfps(int &millis, int curmillis)
 {
