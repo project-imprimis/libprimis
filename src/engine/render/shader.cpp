@@ -1897,7 +1897,7 @@ static void shader_source(std::string_view vs, std::string_view fs)
     shader_path_fs = fs;
 }
 
-void variantshader(const int *type, const char *name, const int *row, const char *vs, const char *ps, const int *maxvariants)
+static void variantshader(const int *type, const char *name, const int *row, const char *vs, const char *ps, const int *maxvariants)
 {
     if(*row < 0)
     {
