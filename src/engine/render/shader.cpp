@@ -1998,8 +1998,7 @@ void variantshader_new(const int *type, const char *name, const int *row, const 
 
 //==============================================================================
 
-
-void setshader(const char *name)
+static void setshader(const char *name)
 {
     slotparams.clear();
     std::unordered_map<std::string, Shader>::iterator itr = shaders.find(name);
