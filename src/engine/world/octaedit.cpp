@@ -1344,7 +1344,8 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
                     convex = faceconvexity(v);
                 }
                 int order = vis&4 || convex < 0 ? 1 : 0, numverts = 0;
-                vec vo(co), pos[4], norm[4];
+                vec vo(co);
+                std::array<vec, 4> pos, norm;
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
                 if(vis&1)
                 {
@@ -1355,7 +1356,7 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
                 {
                     pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
                 }
-                guessnormals(pos, numverts, norm);
+                guessnormals(pos.data(), numverts, norm.data());
                 int index[4];
                 for(int j = 0; j < numverts; ++j)
                 {
