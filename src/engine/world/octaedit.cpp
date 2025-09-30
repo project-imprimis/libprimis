@@ -1357,7 +1357,7 @@ static void genprefabmesh(prefabmesh &r, const cube &c, const ivec &co, int size
                     pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
                 }
                 guessnormals(pos.data(), numverts, norm.data());
-                int index[4];
+                std::array<int, 4> index;
                 for(int j = 0; j < numverts; ++j)
                 {
                     index[j] = r.addvert(pos[j], bvec(norm[j]));
