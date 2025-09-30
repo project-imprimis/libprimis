@@ -1639,7 +1639,7 @@ Shader *useshaderbyname(std::string_view name)
     return s;
 }
 
-void shader(const int *type, const char *name, const char *vs, const char *ps)
+static void shader(const int *type, const char *name, const char *vs, const char *ps)
 {
     if(lookupshaderbyname(name))
     {
