@@ -2817,7 +2817,7 @@ error:
     conoutf(Console_Error, "failed saving png to %s", filename);
 }
 
-SVARP(screenshotdir, "screenshot");
+static SVARP(screenshotdir, "screenshot");
 
 void screenshot(const char *filename)
 {
