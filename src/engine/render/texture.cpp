@@ -2731,7 +2731,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
     }
     uchar signature[] = { 137, 80, 78, 71, 13, 10, 26, 10 };
     f->write(signature, sizeof(signature));
-    struct pngihdr
+    struct PngIHdr
     {
         uint width,
              height;
@@ -2741,7 +2741,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
               filter,
               interlace;
     };
-    pngihdr ihdr =
+    PngIHdr ihdr =
     {
         static_cast<uint>(endianswap(image.width())),
         static_cast<uint>(endianswap(image.height())),
