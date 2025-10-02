@@ -118,7 +118,6 @@ extern void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta);
 extern void packvslot(std::vector<uchar> &buf, const VSlot &src);
 
 extern Slot dummyslot;
-extern VSlot dummyvslot;
 extern DecalSlot dummydecalslot;
 
 #endif
