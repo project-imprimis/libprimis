@@ -1434,13 +1434,13 @@ void cleanupaa()
 
 void initaacmds()
 {
-    addcommand("getsmaaproperty", reinterpret_cast<identfun>(+[] (char* name)
+    addcommand("getsmaaproperty", reinterpret_cast<identfun>(+[] (const char* name)
     {
         const prop::Property<>* prop = smaarenderer.getsmaaproperty(std::string(name));
         if(prop) prop->cmd_result();
     }), "s", Id_Command);
 
-    addcommand("setsmaaproperty", reinterpret_cast<identfun>(+[] (char* name, int* value)
+    addcommand("setsmaaproperty", reinterpret_cast<identfun>(+[] (const char* name, const int* value)
     {
         smaarenderer.setsmaaproperty(std::string(name), *value);
     }), "si", Id_Command);
