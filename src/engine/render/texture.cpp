@@ -1063,7 +1063,7 @@ bool settexture(const char *name, int clamp)
 
 std::vector<VSlot *> vslots;
 std::vector<Slot *> slots;
-MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
+static MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
 static std::vector<DecalSlot *> decalslots;
