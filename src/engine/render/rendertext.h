@@ -33,6 +33,13 @@ extern float textscale;
 
 extern void reloadfonts();
 
+/**
+ * @brief Attempts to set the global curfont variable to the passed object.
+ *
+ * No effect if the pointer passed is null.
+ *
+ * @param f the font to attempt to set.
+ */
 inline void setfont(Font *f)
 {
     if(f)
