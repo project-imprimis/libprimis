@@ -26,6 +26,9 @@
 
 #include "interface/control.h"
 
+constexpr int minreswidth = 640,
+              minresheight = 480;
+
 static std::unordered_map<std::string, Font> fonts;
 static Font *fontdef = nullptr;
 static int fontdeftex = 0;

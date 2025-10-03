@@ -26,8 +26,6 @@ inline int fontwidth()
 {
     return FONTH/2;
 }
-constexpr int minreswidth = 640,
-              minresheight = 480;
 
 extern float textscale;
 
