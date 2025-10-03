@@ -48,6 +48,15 @@ inline void setfont(Font *f)
     }
 }
 
+/**
+ * @brief Attempts to set the global curfont variable with a named entry in fonts global
+ *
+ * If no font exists by the name passed, returns false and curfont remains unchanged.
+ *
+ * @param name the name of the font to search for
+ *
+ * @return true if successfully set curfont, false otherwise
+ */
 extern bool setfont(const char *name);
 extern void pushfont();
 extern bool popfont();
