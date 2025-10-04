@@ -279,7 +279,7 @@ namespace
 
     /* renderflatwater: renders water with no vertex water subdivision
      */
-    void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
+    void renderflatwater(ivec o, int rsize, int csize, int mat)
     {
         if(mat == Mat_Water)
         {
@@ -288,10 +288,10 @@ namespace
                 defvertwtn();
                 gle::begin(GL_TRIANGLE_FAN);
             }
-            vertwtn(x, y, z);
-            vertwtn(x+rsize, y, z);
-            vertwtn(x+rsize, y+csize, z);
-            vertwtn(x, y+csize, z);
+            vertwtn(o.x, o.y, o.z);
+            vertwtn(o.x+rsize, o.y, o.z);
+            vertwtn(o.x+rsize, o.y+csize, o.z);
+            vertwtn(o.x, o.y+csize, o.z);
             xtraverts += 4;
         }
     }
@@ -300,7 +300,7 @@ namespace
     {
         if(!vertwater || drawtex == Draw_TexMinimap)
         {
-            renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
+            renderflatwater(m.o, m.rsize, m.csize, mat);
         }
         else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= static_cast<int>(m.csize) * 2)
         {
