@@ -277,7 +277,17 @@ namespace
         }
     }
 
-    /* renderflatwater: renders water with no vertex water subdivision
+
+    /**
+     * @brief renders water with no vertex water subdivision
+     *
+     * If `mat` is not Mat_Water, this function has no effect. Otherwise, draws
+     * water at the position `o` and size `rsize`/`csize`.
+     *
+     * @param o the position to draw at
+     * @param rsize x size of the water
+     * @param csize y size of the water
+     * @param mat check that appropriate material is being used
      */
     void renderflatwater(ivec o, int rsize, int csize, int mat)
     {
