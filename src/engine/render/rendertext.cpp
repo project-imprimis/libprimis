@@ -80,9 +80,8 @@ static void fontoutline(const float *outlinemin, const float *outlinemax)
 }
 
 /**
- * @brief fontoffset
+ * @brief sets the character offset for the currently loaded font
  *
- * sets the character offset for the currently loaded font
  * Only the first element of the array is accepted, all others are ignored
  *
  * @param c a pointer to a char * array representing the character to be offset to
