@@ -96,14 +96,12 @@ static void fontoffset(const char *c)
     fontdef->charoffset = c[0];
 }
 
-/* fontscale
- * sets the global scale for fonts
- *
- * Arguments:
- *    scale: a pointer to an integer representing the new scale to set the font to
+/**
+ * @brief sets the global scale for fonts
  *
  * If the scale parameter points to the value 0, the font scale is et to its default value.
  *
+ * @param scale a pointer to an integer representing the new scale to set the font to
  */
 static void fontscale(int *scale)
 {
