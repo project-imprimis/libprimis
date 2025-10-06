@@ -43,7 +43,7 @@ void TTFRenderer::openfont(const char * inpath, int size)
     path = inpath;
 }
 
-std::string TTFRenderer::trimstring(std::string msg) const
+std::string TTFRenderer::trimstring(std::string msg)
 {
     for(;;)
     {

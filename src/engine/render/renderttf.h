@@ -102,7 +102,7 @@ class TTFRenderer final
          *
          * @return a new string equal to the passed `msg` but with no CS color codes
          */
-        std::string trimstring(std::string msg) const; //trims color codes out of a string
+        static std::string trimstring(std::string msg); //trims color codes out of a string
 };
 
 extern TTFRenderer ttr;
