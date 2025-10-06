@@ -91,6 +91,17 @@ class TTFRenderer final
         std::map<int, TTF_Font *> fontcache; //different sizes of the font are cached in a map which maps them to their size in pt
         const char * path;                   //the path which the font was originally found, so it can load other font sizes if needed
         TTFSurface renderttfgl(const char* message, SDL_Color col, uint wrap = 0) const;
+
+        /**
+         * @brief Removes CubeScript color codes from a string
+         *
+         * Removes any instances of "^f#" from the passed string, and returns a new
+         * string with these modifications applied.
+         *
+         * @param msg the string to parse
+         *
+         * @return a new string equal to the passed `msg` but with no CS color codes
+         */
         std::string trimstring(std::string msg) const; //trims color codes out of a string
 };
 
