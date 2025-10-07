@@ -1343,6 +1343,7 @@ static VARP(minimapsize, 7, 10, 12);      //2^n size of the minimap texture (alo
 static VARP(showminimap, 0, 1, 1);
 static CVARP(nominimapcolor, 0x101010);  //color for the part of the minimap that isn't the map texture
 
+//used in iengine
 void bindminimap()
 {
     glBindTexture(GL_TEXTURE_2D, minimaptex);
@@ -1371,6 +1372,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, const std::array<cube, 8> &c, const i
     }
 }
 
+//used in iengine
 void drawminimap(int yaw, int pitch, vec loc, const cubeworld& world, int scalefactor)
 {
     if(!showminimap)
