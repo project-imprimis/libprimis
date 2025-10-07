@@ -159,16 +159,16 @@ class GBuffer final
         MaterialInfo findmaterials() const; //materials.cpp
         AlphaInfo findalphavas();
 
-        struct transparentmodelinfo final
+        struct TransparentModelInfo final
         {
             float mdlsx1, mdlsy1, mdlsx2, mdlsy2;
             std::array<uint, lighttilemaxheight> mdltiles;
 
-            transparentmodelinfo() : mdlsx1(-1), mdlsy1(-1), mdlsx2(1), mdlsy2(1), mdltiles()
+            TransparentModelInfo() : mdlsx1(-1), mdlsy1(-1), mdlsx2(1), mdlsy2(1), mdltiles()
             {
             }
         };
-        transparentmodelinfo tmodelinfo;
+        TransparentModelInfo tmodelinfo;
 
         uint alphatiles[lighttilemaxheight];
 
