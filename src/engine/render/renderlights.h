@@ -4,8 +4,10 @@
 const int lighttilemaxwidth  = 16;
 const int lighttilemaxheight = 16;
 
-/* gbuffer: a singleton object used to store the graphics buffers
- * (as OpenGL uints) and the functions which act upon the g-buffers.
+/** @brief Singleton object used to store the graphics buffers
+ *
+ * Stores the handles for the graphics buffers nd the functions which act upon
+ * the g-buffers.
  */
 class GBuffer final
 {
