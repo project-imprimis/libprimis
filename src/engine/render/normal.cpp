@@ -19,21 +19,21 @@
 #include "world/octaworld.h"
 #include "world/world.h"
 
-struct normalkey final
+struct NormalKey final
 {
     vec pos;
     int smooth;
 
-    bool operator==(const normalkey &k) const
+    bool operator==(const NormalKey &k) const
     {
         return k.pos == pos && smooth == k.smooth;
     }
 };
 
 template<>
-struct std::hash<normalkey>
+struct std::hash<NormalKey>
 {
-    size_t operator()(const normalkey &k) const
+    size_t operator()(const NormalKey &k) const
     {
         auto vechash = std::hash<vec>();
         return vechash(k.pos);
@@ -47,7 +47,7 @@ namespace //internal functionality not seen by other files
         int smooth, flat, normals, tnormals;
 
         NormalGroup() : smooth(0), flat(0), normals(-1), tnormals(-1) {}
-        NormalGroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
+        NormalGroup(const NormalKey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
     };
 
     struct normal final
@@ -64,7 +64,7 @@ namespace //internal functionality not seen by other files
         std::array<NormalGroup *, 2> groups;
     };
 
-    std::unordered_map<normalkey, NormalGroup> normalgroups;
+    std::unordered_map<NormalKey, NormalGroup> normalgroups;
     std::vector<normal> normals;
     std::vector<tnormal> tnormals;
     std::vector<int> smoothgroups;
@@ -75,7 +75,7 @@ namespace //internal functionality not seen by other files
 
     int addnormal(const vec &pos, int smooth, const vec &surface)
     {
-        normalkey key = { pos, smooth };
+        NormalKey key = { pos, smooth };
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
@@ -90,7 +90,7 @@ namespace //internal functionality not seen by other files
 
     void addtnormal(const vec &pos, int smooth, float offset, int normal1, int normal2, const vec &pos1, const vec &pos2)
     {
-        normalkey key = { pos, smooth };
+        NormalKey key = { pos, smooth };
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
@@ -101,7 +101,7 @@ namespace //internal functionality not seen by other files
         n.offset = offset;
         n.normals[0] = normal1;
         n.normals[1] = normal2;
-        normalkey key1 = { pos1, smooth },
+        NormalKey key1 = { pos1, smooth },
                   key2 = { pos2, smooth };
         n.groups[0] = &((*normalgroups.find(key1)).second);
         n.groups[1] = &((*normalgroups.find(key2)).second);
@@ -111,7 +111,7 @@ namespace //internal functionality not seen by other files
 
     int addnormal(const vec &pos, int smooth, int axis)
     {
-        normalkey key = { pos, smooth };
+        NormalKey key = { pos, smooth };
         auto itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
@@ -380,7 +380,7 @@ namespace //internal functionality not seen by other files
 
 void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
-    normalkey key = { pos, smooth };
+    NormalKey key = { pos, smooth };
     auto itr = normalgroups.find(key);
     if(smooth < 0)
     {
