@@ -1349,7 +1349,7 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, const std::array<cube, 8> &c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
+static void clipminimap(ivec &bbmin, ivec &bbmax, const std::array<cube, 8> &c, const ivec &co = ivec(0, 0, 0), int size = rootworld.mapsize()>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
