@@ -37,14 +37,19 @@ int allocva  = 0,
     gbatches = 0;
 
 
-/* A vector that carries identically all elements also in the various varoot objects.
+/**
+ * @brief List of all vertex arrays
+ *
+ *  A vector that carries identically all elements also in the various varoot objects.
  * The entries in the vector will first be the children of varoot[0] followed by
  * varoot[0] itself, followed by the same for the other VAs in varoot. The last
  * element should always be `varoot[7]`.
  */
 std::vector<vtxarray *> valist;
 
-/*
+/**
+ * @brief List of top level vertex arrays
+ *
  * A vector containing the highest-level vertex array objects.
  * There will always be at least eight VAs in varoot, corresponding to the eight
  * subdivisions of the worldroot cube.
