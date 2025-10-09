@@ -41,6 +41,13 @@ class ImageData final
         void mergespec(const ImageData &s);
         void mergedepth(const ImageData &z);
         void mergealpha(const ImageData &s);
+
+        /**
+         * @brief Replaces this ImageData with a new one with a single channel.
+         *
+         * Replaces this object with a single level replacement texture, collapsing down
+         * from 4 channels by averaging if 4 exist.
+         */
         void collapsespec();
         void forcergbimage();
         void swizzleimage();
