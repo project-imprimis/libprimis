@@ -76,6 +76,18 @@ class ImageData final
          * does not have references to the new object's data fields.
          */
         void disown();
+
+        /**
+         * @brief Cleans up this object heap allocated data.
+         *
+         * Notifies parent function pointed to by this object's freefunc, if it has been
+         * set. This is expected to clean up data pointed to by the data object.
+         *
+         * If this object has no parent, the object can free its own data array. The
+         * pointer to this array, data, will be nullified.
+         *
+         * Sets data, owner, and freefunc fn ptr to nullptr.
+         */
         void cleanup();
 
         /**
