@@ -56,10 +56,14 @@ static VAR(debugao, 0, 0, 4);
 
 static Shader *ambientobscuranceshader = nullptr;
 
-/* loadambientobscuranceshader
+/**
+ * @brief Creates a new ambient obscurance object.
  *
- * creates a new ambient obscurance (ambient occlusion) object with values based
- * on current settings
+ * Creates a new ambient obscurance (ambient occlusion) object with values based
+ * on current settings. This object envelops the AO shader and its accompanying
+ * values.
+ *
+ * @return a new Shader object that applies an AO effect.
  */
 static Shader *loadambientobscuranceshader()
 {
