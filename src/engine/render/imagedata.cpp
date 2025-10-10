@@ -154,8 +154,6 @@ void ImageData::cleanup()
     disown();
 }
 
-// Deletes the data associated with the current ImageData object
-//and makes the object point to the one passed by parameter
 void ImageData::replace(ImageData &d)
 {
     cleanup();
