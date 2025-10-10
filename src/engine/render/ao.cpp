@@ -61,7 +61,7 @@ static Shader *ambientobscuranceshader = nullptr;
  * creates a new ambient obscurance (ambient occlusion) object with values based
  * on current settings
  */
-Shader *loadambientobscuranceshader()
+static Shader *loadambientobscuranceshader()
 {
     string opts;
     int optslen = 0;
