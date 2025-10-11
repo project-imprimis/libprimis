@@ -97,7 +97,7 @@ static void loadaoshaders()
 }
 
 //un-sets the ambientobscuranceshader gvar defined by loadaoshaders
-void clearaoshaders()
+static void clearaoshaders()
 {
     ambientobscuranceshader = nullptr;
 }
