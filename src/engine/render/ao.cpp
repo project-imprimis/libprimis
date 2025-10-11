@@ -85,7 +85,7 @@ static Shader *loadambientobscuranceshader()
 }
 
 //sets the ambientobscuranceshader gvar to the value created by above fxn
-void loadaoshaders()
+static void loadaoshaders()
 {
     ambientobscuranceshader = loadambientobscuranceshader();
 }
