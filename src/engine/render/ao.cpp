@@ -84,7 +84,13 @@ static Shader *loadambientobscuranceshader()
     return generateshader(name, "ambientobscuranceshader \"%s\" %d", opts, aotaps);
 }
 
-//sets the ambientobscuranceshader gvar to the value created by above fxn
+/**
+ * @brief Sets the ambientobscuranceshader gvar to the value created by above fxn.
+ *
+ * The loadambientobscuranceshader() function is called to generate a Shader object
+ * and is assigned to the ambient obscurance shader global variable. This global
+ * is local to this file.
+ */
 static void loadaoshaders()
 {
     ambientobscuranceshader = loadambientobscuranceshader();
