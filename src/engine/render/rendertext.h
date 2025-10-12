@@ -29,6 +29,11 @@ inline int fontwidth()
 
 extern float textscale;
 
+/**
+ * @brief Reloads all fonts in the font map.
+ *
+ * If any fonts fail to reload, terminates the program with an error message.
+ */
 extern void reloadfonts();
 
 /**
