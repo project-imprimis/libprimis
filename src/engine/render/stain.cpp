@@ -47,10 +47,10 @@ static VARFP(maxstaintris, 1, 2048, 16384, initstains());  //need to call initst
 static VARP(stainfade, 1000, 15000, 60000);                //number of milliseconds before stain geom fades
 static VAR(debugstain, 0, 0, 1);                           //toggles printout of stain information to console
 
-//stainrenderer: handles rendering to the gbuffer of a single class of particle
-//each stainrenderer handles the rendering of a single type of particle
-//all the level's particles of a single type will be handled by a single stainrenderer object
-class stainrenderer final
+//StainRenderer: handles rendering to the gbuffer of a single class of particle
+//each StainRenderer handles the rendering of a single type of particle
+//all the level's particles of a single type will be handled by a single StainRenderer object
+class StainRenderer final
 {
     public:
         enum
@@ -63,7 +63,7 @@ class stainrenderer final
             StainFlag_Saturate   = 1<<5
         };
 
-        stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
+        StainRenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
             : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
               maxstains(0), startstain(0), endstain(0),
@@ -71,7 +71,7 @@ class stainrenderer final
         {
         }
 
-        ~stainrenderer()
+        ~StainRenderer()
         {
             delete[] stains;
         }
@@ -1073,7 +1073,7 @@ class stainrenderer final
         }
 };
 
-std::vector<stainrenderer> stains;
+std::vector<StainRenderer> stains;
 
 /**
  * @brief Sets up stains array.
@@ -1091,12 +1091,12 @@ void initstains()
     {
         return;
     }
-    stains.emplace_back("<grey>media/particle/blood.png", stainrenderer::StainFlag_Rnd4|stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_InvMod);
-    stains.emplace_back("<grey>media/particle/pulse_scorch.png", stainrenderer::StainFlag_Rotate, 500);
-    stains.emplace_back("<grey>media/particle/rail_hole.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Overbright);
-    stains.emplace_back("<grey>media/particle/pulse_glow.png", stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 250, 1500, 250);
-    stains.emplace_back("<grey>media/particle/rail_glow.png",  stainrenderer::StainFlag_Rotate|stainrenderer::StainFlag_Glow|stainrenderer::StainFlag_Saturate, 100, 1100, 100);
-    for(stainrenderer &i : stains)
+    stains.emplace_back("<grey>media/particle/blood.png", StainRenderer::StainFlag_Rnd4|StainRenderer::StainFlag_Rotate|StainRenderer::StainFlag_InvMod);
+    stains.emplace_back("<grey>media/particle/pulse_scorch.png", StainRenderer::StainFlag_Rotate, 500);
+    stains.emplace_back("<grey>media/particle/rail_hole.png", StainRenderer::StainFlag_Rotate|StainRenderer::StainFlag_Overbright);
+    stains.emplace_back("<grey>media/particle/pulse_glow.png", StainRenderer::StainFlag_Rotate|StainRenderer::StainFlag_Glow|StainRenderer::StainFlag_Saturate, 250, 1500, 250);
+    stains.emplace_back("<grey>media/particle/rail_glow.png",  StainRenderer::StainFlag_Rotate|StainRenderer::StainFlag_Glow|StainRenderer::StainFlag_Saturate, 100, 1100, 100);
+    for(StainRenderer &i : stains)
     {
         i.init(maxstaintris);
     }
@@ -1115,7 +1115,7 @@ void initstains()
  */
 void clearstains()
 {
-    for(stainrenderer &i : stains)
+    for(StainRenderer &i : stains)
     {
         i.clearstains();
     }
@@ -1126,7 +1126,7 @@ static VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(stainrenderer& d : stains)
+    for(StainRenderer& d : stains)
     {
         if(d.usegbuffer() != gbuf)
         {
@@ -1145,7 +1145,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
         if(!rendered)
         {
             rendered = true;
-            stainrenderer::setuprenderstate(sbuf, gbuf, layer);
+            StainRenderer::setuprenderstate(sbuf, gbuf, layer);
         }
         d.render(sbuf);
     }
@@ -1153,13 +1153,13 @@ bool renderstains(int sbuf, bool gbuf, int layer)
     {
         return false;
     }
-    stainrenderer::cleanuprenderstate(sbuf, gbuf);
+    StainRenderer::cleanuprenderstate(sbuf, gbuf);
     return true;
 }
 
 void cleanupstains()
 {
-    for(stainrenderer& i : stains)
+    for(StainRenderer& i : stains)
     {
         i.cleanup();
     }
@@ -1172,6 +1172,6 @@ void addstain(int type, const vec &center, const vec &surface, float radius, con
     {
         return;
     }
-    stainrenderer &d = stains[type];
+    StainRenderer &d = stains[type];
     d.addstain(center, surface, radius, color, info, rootworld);
 }
