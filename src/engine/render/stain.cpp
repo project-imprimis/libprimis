@@ -1,4 +1,5 @@
-/* stain.cpp: dynamic world geometry decals
+/**
+ * @brief dynamic world geometry decals
  *
  * Stains are mostly useful for player-created effects, mainly those left behind
  * by weapons. They fade at a fixed period (not controllable by individual stains)
