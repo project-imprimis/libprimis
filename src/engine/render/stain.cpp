@@ -1108,11 +1108,6 @@ void initstains()
     loadprogress = 0;
 }
 
-/**
- * @brief Clears stains array
- *
- * Loops through the stains[] global variable array and runs clearstains for each entry.
- */
 void clearstains()
 {
     for(StainRenderer &i : stains)

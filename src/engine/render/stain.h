@@ -10,6 +10,11 @@ enum
     StainBuffer_Number,
 };
 
+/**
+ * @brief Clears stains array
+ *
+ * Loops through the stains[] global variable array and runs clearstains for each entry.
+ */
 extern void clearstains();
 extern bool renderstains(int sbuf, bool gbuf, int layer = 0);
 extern void cleanupstains();
