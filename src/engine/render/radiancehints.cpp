@@ -1,5 +1,5 @@
-/*
- * radiancehints.cpp: radiance hints global illumination
+/**
+ * @brief radiance hints global illumination
  *
  * Libprimis supports global illumination via the Radiance Hints algorithm. This
  * global illumination is rendered using a reflective shadow map mapped from the
