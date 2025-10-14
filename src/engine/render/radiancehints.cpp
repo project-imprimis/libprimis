@@ -74,7 +74,7 @@ VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
 
 reflectiveshadowmap rsm;
-radiancehints rh;
+RadianceHints rh;
 Shader *rsmworldshader = nullptr;
 
 namespace //internal functionality
@@ -388,7 +388,7 @@ bool useradiancehints()
 
 //============================= radiance hints object ==========================//
 
-void radiancehints::updatesplitdist()
+void RadianceHints::updatesplitdist()
 {
     const float lambda = rhsplitweight,
                 nd = rhnearplane,
@@ -404,7 +404,7 @@ void radiancehints::updatesplitdist()
     splits[rhsplits-1].farplane = fd;
 }
 
-void radiancehints::setup()
+void RadianceHints::setup()
 {
     updatesplitdist();
 
@@ -433,7 +433,7 @@ void radiancehints::setup()
     }
 }
 
-void radiancehints::bindparams() const
+void RadianceHints::bindparams() const
 {
     float step = 2*splits[0].bounds/rhgrid;
     GLOBALPARAMF(rhnudge, rhnudge*step);
@@ -447,7 +447,7 @@ void radiancehints::bindparams() const
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
 }
 
-void radiancehints::clearcache()
+void RadianceHints::clearcache()
 {
     for(SplitInfo &i : splits)
     {
@@ -455,7 +455,7 @@ void radiancehints::clearcache()
     }
 }
 
-bool radiancehints::allcached() const
+bool RadianceHints::allcached() const
 {
     for(const SplitInfo &i : splits)
     {
@@ -467,13 +467,13 @@ bool radiancehints::allcached() const
     return true;
 }
 
-void radiancehints::rotatedynlimits()
+void RadianceHints::rotatedynlimits()
 {
     prevdynmin = dynmin;
     prevdynmax = dynmax;
 }
 
-bool radiancehints::checkprevbounds()
+bool RadianceHints::checkprevbounds()
 {
     return prevdynmin.z < rh.prevdynmax.z;
 }
@@ -494,7 +494,7 @@ static void bindslice(int sx, int sy, int sw, int sh, int i, int j)
     }
 }
 
-void radiancehints::renderslices()
+void RadianceHints::renderslices()
 {
     int sw = rhgrid+2*rhborder,
         sh = rhgrid+2*rhborder;

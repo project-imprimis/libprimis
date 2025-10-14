@@ -32,10 +32,10 @@ class reflectiveshadowmap final
 
 extern reflectiveshadowmap rsm;
 
-class radiancehints final
+class RadianceHints final
 {
     public:
-        radiancehints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
+        RadianceHints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
 
         vec dynmin, dynmax;
         void setup();
@@ -71,7 +71,7 @@ class radiancehints final
         void updatesplitdist();
 };
 
-extern radiancehints rh;
+extern RadianceHints rh;
 
 extern void clearradiancehintscache();
 extern bool useradiancehints();
