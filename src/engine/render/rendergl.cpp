@@ -126,6 +126,16 @@ void glerror()
     }
 }
 
+/**
+ * @brief Prints out a GL error to the command line.
+ *
+ * Used by glerror(). This function is a helper to allow glerror() to print out
+ * the location and file where a GL error occured.
+ *
+ * @param a filename to use to help locate where the error is
+ * @param line the line of code in the file
+ * @param error the GL error code to print out
+ */
 void glerror(const char *file, int line, GLenum error)
 {
     const char *desc = "unknown";
