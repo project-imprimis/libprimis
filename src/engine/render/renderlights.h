@@ -409,12 +409,7 @@ extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
 bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius);
-inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
-{
-    vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f),
-        center = vec(bbmin).add(radius);
-    return sphereinsidespot(dir, spot, center.sub(origin), radius.magnitude());
-}
+bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax);
 
 extern matrix4 worldmatrix, screenmatrix;
 

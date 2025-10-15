@@ -1519,6 +1519,13 @@ bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
     return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
 }
 
+bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
+{
+    vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f),
+        center = vec(bbmin).add(radius);
+    return sphereinsidespot(dir, spot, center.sub(origin), radius.magnitude());
+}
+
 static FVAR(avatarshadowdist, 0, 12, 100);
 static FVAR(avatarshadowbias, 0, 8, 100);
 static VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
