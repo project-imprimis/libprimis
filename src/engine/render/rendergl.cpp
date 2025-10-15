@@ -114,18 +114,6 @@ static void *getprocaddress(const char *name)
 
 static VAR(glerr, 0, 0, 1);
 
-void glerror()
-{
-    if(glerr)
-    {
-        GLenum error = glGetError();
-        if(error != GL_NO_ERROR)
-        {
-            glerror(__FILE__, __LINE__, error);
-        }
-    }
-}
-
 /**
  * @brief Prints out a GL error to the command line.
  *
@@ -136,7 +124,7 @@ void glerror()
  * @param line the line of code in the file
  * @param error the GL error code to print out
  */
-void glerror(const char *file, int line, GLenum error)
+static void glerror(const char *file, int line, GLenum error)
 {
     const char *desc = "unknown";
     switch(error)
@@ -178,6 +166,18 @@ void glerror(const char *file, int line, GLenum error)
         }
     }
     std::printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
+}
+
+void glerror()
+{
+    if(glerr)
+    {
+        GLenum error = glGetError();
+        if(error != GL_NO_ERROR)
+        {
+            glerror(__FILE__, __LINE__, error);
+        }
+    }
 }
 
 VAR(intel_texalpha_bug, 0, 0, 1); //used in rendergl.h
