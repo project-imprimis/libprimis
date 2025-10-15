@@ -1511,6 +1511,14 @@ int calcspherersmsplits(const vec &center, float radius)
     return 1;
 }
 
+bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
+{
+    const vec2 &sc = sincos360[spot];
+    float cdist = dir.dot(center),
+          cradius = radius + sc.y*cdist;
+    return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
+}
+
 static FVAR(avatarshadowdist, 0, 12, 100);
 static FVAR(avatarshadowbias, 0, 8, 100);
 static VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));

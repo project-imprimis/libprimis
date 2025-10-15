@@ -408,13 +408,7 @@ extern int calcspheresidemask(const vec &p, float radius, float bias);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
-inline bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
-{
-    const vec2 &sc = sincos360[spot];
-    float cdist = dir.dot(center),
-          cradius = radius + sc.y*cdist;
-    return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
-}
+bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius);
 inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
 {
     vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f),
