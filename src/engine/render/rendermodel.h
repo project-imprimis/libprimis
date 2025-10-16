@@ -33,6 +33,20 @@ extern void rendermodel(std::string_view mdl, int anim, const vec &o, float yaw 
 extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 
 extern void cleanupmodels();
+
+/**
+ * @brief Gets or loads a model by index.
+ *
+ * Gets the mapmodel at the nth index in the mapmodels vector. If there is no entry
+ * at that index (but that index is valid) then a new empty model will be created.
+ *
+ * If the index passed is too large then nullptr is returned and no model is created.
+ * Therefore, the length of the mapmodels vector is invariant regardless of input.
+ *
+ * @param n the index to load
+ *
+ * @return pointer to the model at index n, or nullptr
+ */
 extern model *loadmapmodel(int n);
 extern std::vector<size_t> findanims(std::string_view pattern);
 
