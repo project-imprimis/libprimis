@@ -4,7 +4,11 @@
 extern int xtraverts, xtravertsva;
 extern int renderw();
 extern int renderh();
-extern bool hasFBMSBS, hasTQ, hasDBT, hasES3, hasCI;
+extern bool hasFBMSBS,  //GL_EXT_framebuffer_multisample_blit_scaled
+            hasTQ,
+            hasDBT,     //glDepthBoundsEXT
+            hasES3,     //GL_ARB_ES3_compatibility
+            hasCI;      //glCopyImageSubData
 extern int glslversion;
 extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
