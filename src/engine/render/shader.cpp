@@ -1670,330 +1670,333 @@ static void shader(const int *type, const char *name, const char *vs, const char
     slotparams.clear();
 }
 
-static bool adding_shader = false;
-static std::vector<std::pair<std::string, std::string>> shader_defines;
-static std::vector<std::string> shader_includes_vs, shader_includes_fs;
-static std::string shader_path_vs, shader_path_fs;
-
-static std::string shader_make_defines()
+namespace ShaderMgr
 {
-    std::string defines;
+    static bool adding_shader = false;
+    static std::vector<std::pair<std::string, std::string>> shader_defines;
+    static std::vector<std::string> shader_includes_vs, shader_includes_fs;
+    static std::string shader_path_vs, shader_path_fs;
 
-    for(const std::pair<std::string, std::string> &define : shader_defines)
+    static std::string shader_make_defines()
     {
-        defines += "#define " + define.first + " " + define.second + "\n";
+        std::string defines;
+
+        for(const std::pair<std::string, std::string> &define : shader_defines)
+        {
+            defines += "#define " + define.first + " " + define.second + "\n";
+        }
+
+        return defines;
     }
 
-    return defines;
-}
-
-static void shader_clear_defines()
-{
-    shader_defines.clear();
-    shader_includes_vs.clear();
-    shader_includes_fs.clear();
-    shader_path_vs.clear();
-    shader_path_fs.clear();
-}
-
-//loads the vertex and pixel shaders at the indicated paths and returns them to vs, ps
-static void shader_assemble(std::string vs_path, std::string fs_path, std::string &vs, std::string &ps)
-{
-    std::string defines;
-
-    defines = shader_make_defines();
-
-    if(!shader_path_vs.empty())
+    static void shader_clear_defines()
     {
-        const char *vs_file = loadfile(path(vs_path).c_str(), nullptr);
-        if(!vs_file)
+        shader_defines.clear();
+        shader_includes_vs.clear();
+        shader_includes_fs.clear();
+        shader_path_vs.clear();
+        shader_path_fs.clear();
+    }
+
+    //loads the vertex and pixel shaders at the indicated paths and returns them to vs, ps
+    static void shader_assemble(std::string vs_path, std::string fs_path, std::string &vs, std::string &ps)
+    {
+        std::string defines;
+
+        defines = shader_make_defines();
+
+        if(!shader_path_vs.empty())
         {
-            conoutf(Console_Error, "could not load vertex shader %s", vs_path.c_str());
-            adding_shader = false;
+            const char *vs_file = loadfile(path(vs_path).c_str(), nullptr);
+            if(!vs_file)
+            {
+                conoutf(Console_Error, "could not load vertex shader %s", vs_path.c_str());
+                adding_shader = false;
+                return;
+            }
+
+            vs = vs_file;
+
+            std::string includes;
+            for(const std::string &include : shader_includes_vs)
+            {
+                const char *vs_include = loadfile(path(include).c_str(), nullptr);
+
+                if(!vs_include)
+                {
+                    conoutf(Console_Error, "could not load vertex shader include %s", include.c_str());
+                    adding_shader = false;
+                    return;
+                }
+
+                includes += std::string(vs_include) + "\n";
+            }
+
+            vs = defines + includes + vs;
+        }
+
+        if(!fs_path.empty())
+        {
+            char *ps_file = loadfile(path(fs_path).c_str(), nullptr);
+            if(!ps_file)
+            {
+                conoutf(Console_Error, "could not load fragment shader %s", fs_path.c_str());
+                adding_shader = false;
+                return;
+            }
+
+            ps = ps_file;
+
+            std::string includes;
+            for(const std::string &include : shader_includes_fs)
+            {
+                char *ps_include = loadfile(path(include).c_str(), nullptr);
+
+                if(!ps_include)
+                {
+                    conoutf(Console_Error, "could not load fragment shader include %s", include.c_str());
+                    adding_shader = false;
+                    return;
+                }
+
+                includes += std::string(ps_include) + "\n";
+            }
+
+            ps = defines + includes + ps;
+        }
+    }
+
+    static void shader_new(const int *type, const char *name, const uint *code)
+    {
+        if(lookupshaderbyname(name))
+        {
             return;
         }
 
-        vs = vs_file;
+        adding_shader = true;
+        shader_clear_defines();
 
-        std::string includes;
+        execute(code);
+
+        std::string vs, ps;
+        shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
+
+        DEF_FORMAT_STRING(info, "shader %s", name);
+        renderprogress(loadprogress, info);
+
+        if(!slotparams.empty())
+        {
+            genuniformdefs(vs, ps);
+        }
+
+        if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
+        {
+            genfogshader(vs, ps);
+        }
+
+        Shader *s = newshader(*type, name, vs.c_str(), ps.c_str());
+        if(s)
+        {
+            if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+            {
+                gengenericvariant(*s, name, vs.c_str(), ps.c_str());
+            }
+        }
+        slotparams.clear();
+
+        adding_shader = false;
+    }
+
+    static void shader_define(std::string_view name, std::string_view value)
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        shader_defines.emplace_back(name, value);
+    }
+
+    static void shader_get_defines()
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        std::string res;
+
+        for(auto &[name, value] : shader_defines)
+        {
+            res += " [" + name + " " + value + "]";
+        }
+
+        result(res.c_str());
+    }
+
+    static void shader_include_vs(std::string_view path)
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        shader_includes_vs.emplace_back(path);
+    }
+
+    static void shader_get_includes_vs()
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        std::string res;
+
         for(const std::string &include : shader_includes_vs)
         {
-            const char *vs_include = loadfile(path(include).c_str(), nullptr);
-
-            if(!vs_include)
-            {
-                conoutf(Console_Error, "could not load vertex shader include %s", include.c_str());
-                adding_shader = false;
-                return;
-            }
-
-            includes += std::string(vs_include) + "\n";
+            res += " \"" + include + "\"";
         }
 
-        vs = defines + includes + vs;
+        result(res.c_str());
     }
 
-    if(!fs_path.empty())
+    static void shader_include_fs(std::string_view path)
     {
-        char *ps_file = loadfile(path(fs_path).c_str(), nullptr);
-        if(!ps_file)
+        if(!adding_shader)
         {
-            conoutf(Console_Error, "could not load fragment shader %s", fs_path.c_str());
-            adding_shader = false;
             return;
         }
 
-        ps = ps_file;
+        shader_includes_fs.emplace_back(path);
+    }
 
-        std::string includes;
+    static void shader_get_includes_fs()
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        std::string res;
+
         for(const std::string &include : shader_includes_fs)
         {
-            char *ps_include = loadfile(path(include).c_str(), nullptr);
+            res += " \"" + include + "\"";
+        }
 
-            if(!ps_include)
+        result(res.c_str());
+    }
+
+    static void shader_source(std::string_view vs, std::string_view fs)
+    {
+        if(!adding_shader)
+        {
+            return;
+        }
+
+        shader_path_vs = vs;
+        shader_path_fs = fs;
+    }
+
+    static void variantshader(const int *type, const char *name, const int *row, const char *vs, const char *ps, const int *maxvariants)
+    {
+        if(*row < 0)
+        {
+            shader(type, name, vs, ps);
+            return;
+        }
+        else if(*row >= maxvariantrows)
+        {
+            return;
+        }
+        Shader *s = lookupshaderbyname(name);
+        if(!s)
+        {
+            return;
+        }
+        DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
+        if(*maxvariants > 0)
+        {
+            DEF_FORMAT_STRING(info, "shader %s", name);
+            renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
+        }
+
+        std::string vs_string(vs), ps_string(ps);
+
+        if(!s->defaultparams.empty())
+        {
+            genuniformdefs(vs_string, ps_string, s);
+        }
+
+        if(vs_string.find("//:fog") != std::string::npos || ps_string.find("//:fog") != std::string::npos)
+        {
+            genfogshader(vs_string, ps_string);
+        }
+
+        const Shader *v = newshader(*type, varname, vs_string.c_str(), ps_string.c_str(), s, *row);
+        if(v)
+        {
+            if(vs_string.find("//:variant") != std::string::npos || ps_string.find("//:variant") != std::string::npos)
             {
-                conoutf(Console_Error, "could not load fragment shader include %s", include.c_str());
-                adding_shader = false;
-                return;
+                gengenericvariant(*s, varname, vs_string.c_str(), ps_string.c_str(), *row);
             }
-
-            includes += std::string(ps_include) + "\n";
         }
-
-        ps = defines + includes + ps;
-    }
-}
-
-static void shader_new(const int *type, const char *name, const uint *code)
-{
-    if(lookupshaderbyname(name))
-    {
-        return;
     }
 
-    adding_shader = true;
-    shader_clear_defines();
-
-    execute(code);
-
-    std::string vs, ps;
-    shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
-
-    DEF_FORMAT_STRING(info, "shader %s", name);
-    renderprogress(loadprogress, info);
-
-    if(!slotparams.empty())
+    void variantshader_new(const int *type, const char *name, const int *row, const int *maxvariants, const uint *code)
     {
-        genuniformdefs(vs, ps);
-    }
-
-    if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
-    {
-        genfogshader(vs, ps);
-    }
-
-    Shader *s = newshader(*type, name, vs.c_str(), ps.c_str());
-    if(s)
-    {
-        if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+        if(*row < 0)
         {
-            gengenericvariant(*s, name, vs.c_str(), ps.c_str());
+            shader_new(type, name, code);
+            return;
         }
-    }
-    slotparams.clear();
-
-    adding_shader = false;
-}
-
-static void shader_define(std::string_view name, std::string_view value)
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    shader_defines.emplace_back(name, value);
-}
-
-static void shader_get_defines()
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    std::string res;
-
-    for(auto &[name, value] : shader_defines)
-    {
-        res += " [" + name + " " + value + "]";
-    }
-
-    result(res.c_str());
-}
-
-static void shader_include_vs(std::string_view path)
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    shader_includes_vs.emplace_back(path);
-}
-
-static void shader_get_includes_vs()
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    std::string res;
-
-    for(const std::string &include : shader_includes_vs)
-    {
-        res += " \"" + include + "\"";
-    }
-
-    result(res.c_str());
-}
-
-static void shader_include_fs(std::string_view path)
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    shader_includes_fs.emplace_back(path);
-}
-
-static void shader_get_includes_fs()
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    std::string res;
-
-    for(const std::string &include : shader_includes_fs)
-    {
-        res += " \"" + include + "\"";
-    }
-
-    result(res.c_str());
-}
-
-static void shader_source(std::string_view vs, std::string_view fs)
-{
-    if(!adding_shader)
-    {
-        return;
-    }
-
-    shader_path_vs = vs;
-    shader_path_fs = fs;
-}
-
-static void variantshader(const int *type, const char *name, const int *row, const char *vs, const char *ps, const int *maxvariants)
-{
-    if(*row < 0)
-    {
-        shader(type, name, vs, ps);
-        return;
-    }
-    else if(*row >= maxvariantrows)
-    {
-        return;
-    }
-    Shader *s = lookupshaderbyname(name);
-    if(!s)
-    {
-        return;
-    }
-    DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
-    if(*maxvariants > 0)
-    {
-        DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
-    }
-
-    std::string vs_string(vs), ps_string(ps);
-
-    if(!s->defaultparams.empty())
-    {
-        genuniformdefs(vs_string, ps_string, s);
-    }
-
-    if(vs_string.find("//:fog") != std::string::npos || ps_string.find("//:fog") != std::string::npos)
-    {
-        genfogshader(vs_string, ps_string);
-    }
-
-    const Shader *v = newshader(*type, varname, vs_string.c_str(), ps_string.c_str(), s, *row);
-    if(v)
-    {
-        if(vs_string.find("//:variant") != std::string::npos || ps_string.find("//:variant") != std::string::npos)
+        else if(*row >= maxvariantrows)
         {
-            gengenericvariant(*s, varname, vs_string.c_str(), ps_string.c_str(), *row);
+            return;
         }
-    }
-}
-
-void variantshader_new(const int *type, const char *name, const int *row, const int *maxvariants, const uint *code)
-{
-    if(*row < 0)
-    {
-        shader_new(type, name, code);
-        return;
-    }
-    else if(*row >= maxvariantrows)
-    {
-        return;
-    }
-    Shader *s = lookupshaderbyname(name);
-    if(!s)
-    {
-        return;
-    }
-
-    adding_shader = true;
-    shader_clear_defines();
-
-    execute(code);
-
-    std::string vs, ps;
-    shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
-
-    DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
-    if(*maxvariants > 0)
-    {
-        DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
-    }
-
-    if(!s->defaultparams.empty())
-    {
-        genuniformdefs(vs, ps, s);
-    }
-
-    if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
-    {
-        genfogshader(vs, ps);
-    }
-
-    const Shader *v = newshader(*type, varname, vs.c_str(), ps.c_str(), s, *row);
-    if(v)
-    {
-        if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+        Shader *s = lookupshaderbyname(name);
+        if(!s)
         {
-            gengenericvariant(*s, varname, vs.c_str(), ps.c_str(), *row);
+            return;
         }
-    }
 
-    adding_shader = false;
+        adding_shader = true;
+        shader_clear_defines();
+
+        execute(code);
+
+        std::string vs, ps;
+        shader_assemble(shader_path_vs, shader_path_fs, vs, ps);
+
+        DEF_FORMAT_STRING(varname, "<variant:%d,%d>%s", s->numvariants(*row), *row, name);
+        if(*maxvariants > 0)
+        {
+            DEF_FORMAT_STRING(info, "shader %s", name);
+            renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
+        }
+
+        if(!s->defaultparams.empty())
+        {
+            genuniformdefs(vs, ps, s);
+        }
+
+        if(vs.find("//:fog") != std::string::npos || ps.find("//:fog") != std::string::npos)
+        {
+            genfogshader(vs, ps);
+        }
+
+        const Shader *v = newshader(*type, varname, vs.c_str(), ps.c_str(), s, *row);
+        if(v)
+        {
+            if(vs.find("//:variant") != std::string::npos || ps.find("//:variant") != std::string::npos)
+            {
+                gengenericvariant(*s, varname, vs.c_str(), ps.c_str(), *row);
+            }
+        }
+
+        adding_shader = false;
+    }
 }
 
 //==============================================================================
@@ -2302,22 +2305,22 @@ void initshadercmds()
     addcommand("defershader", reinterpret_cast<identfun>(defershader), "iss", Id_Command);
     addcommand("forceshader", reinterpret_cast<identfun>(+[](const char *name){useshaderbyname(name);}), "s", Id_Command);
     addcommand("shader", reinterpret_cast<identfun>(shader), "isss", Id_Command);
-    addcommand("variantshader", reinterpret_cast<identfun>(variantshader), "isissi", Id_Command);
+    addcommand("variantshader", reinterpret_cast<identfun>(ShaderMgr::variantshader), "isissi", Id_Command);
     addcommand("setshader", reinterpret_cast<identfun>(setshader), "s", Id_Command);
     addcommand("isshaderdefined", reinterpret_cast<identfun>(+[](const char *name){intret(lookupshaderbyname(name) ? 1 : 0);}), "s", Id_Command);
     addcommand("setshaderparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w);}), "sfFFf", Id_Command);
     addcommand("reuseuniformparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);}), "sfFFf", Id_Command);
     addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders), "", Id_Command);
 
-    addcommand("variantshader_new", reinterpret_cast<identfun>(variantshader_new), "isiie", Id_Command);
-    addcommand("shader_new", reinterpret_cast<identfun>(shader_new), "ise", Id_Command);
-    addcommand("shader_define", reinterpret_cast<identfun>(shader_define), "ss", Id_Command);
-    addcommand("shader_source", reinterpret_cast<identfun>(shader_source), "ss", Id_Command);
-    addcommand("shader_include_vs", reinterpret_cast<identfun>(shader_include_vs), "s", Id_Command);
-    addcommand("shader_include_fs", reinterpret_cast<identfun>(shader_include_fs), "s", Id_Command);
-    addcommand("shader_get_defines", reinterpret_cast<identfun>(shader_get_defines), "", Id_Command);
-    addcommand("shader_get_includes_vs", reinterpret_cast<identfun>(shader_get_includes_vs), "", Id_Command);
-    addcommand("shader_get_includes_fs", reinterpret_cast<identfun>(shader_get_includes_fs), "", Id_Command);
+    addcommand("variantshader_new", reinterpret_cast<identfun>(ShaderMgr::variantshader_new), "isiie", Id_Command);
+    addcommand("shader_new", reinterpret_cast<identfun>(ShaderMgr::shader_new), "ise", Id_Command);
+    addcommand("shader_define", reinterpret_cast<identfun>(ShaderMgr::shader_define), "ss", Id_Command);
+    addcommand("shader_source", reinterpret_cast<identfun>(ShaderMgr::shader_source), "ss", Id_Command);
+    addcommand("shader_include_vs", reinterpret_cast<identfun>(ShaderMgr::shader_include_vs), "s", Id_Command);
+    addcommand("shader_include_fs", reinterpret_cast<identfun>(ShaderMgr::shader_include_fs), "s", Id_Command);
+    addcommand("shader_get_defines", reinterpret_cast<identfun>(ShaderMgr::shader_get_defines), "", Id_Command);
+    addcommand("shader_get_includes_vs", reinterpret_cast<identfun>(ShaderMgr::shader_get_includes_vs), "", Id_Command);
+    addcommand("shader_get_includes_fs", reinterpret_cast<identfun>(ShaderMgr::shader_get_includes_fs), "", Id_Command);
 
     initpostfxcmds();
 }
