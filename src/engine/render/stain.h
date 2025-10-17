@@ -17,5 +17,9 @@ enum
  */
 extern void clearstains();
 extern bool renderstains(int sbuf, bool gbuf, int layer = 0);
+
+/**
+ * @brief Cleans up each stain in the stains global.
+ */
 extern void cleanupstains();
 #endif
