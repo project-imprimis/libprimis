@@ -82,9 +82,9 @@ class TTFRenderer final
         // TTF Surface information
         struct TTFSurface final
         {
-            GLuint tex;
-            int w;
-            int h;
+            GLuint tex; /// the texture handle of the drawn ttf object
+            int w; /// width of texture in pixels
+            int h; /// height of texture in pixels
         };
 
         TTF_Font* f;                         //the current working font
