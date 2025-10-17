@@ -1,5 +1,6 @@
 #ifndef STAIN_H_
 #define STAIN_H_
+
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
 
 enum
