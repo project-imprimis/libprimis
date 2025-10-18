@@ -554,7 +554,7 @@ namespace
         }
     };
 
-    class renderstate final
+    class RenderState final
     {
         public:
             bool colormask, depthmask;
@@ -575,7 +575,7 @@ namespace
             void invalidatealphascale();
             void cleartexgenmillis();
 
-            renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+            RenderState() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
                             vquery(false), globals(-1), alphascale(0), texgenorient(-1),
                             texgenmillis(lastmillis), tmu(-1), colorscale(1, 1, 1),
                             vslot(nullptr), texgenslot(nullptr), texgenvslot(nullptr),
@@ -608,29 +608,29 @@ namespace
 
     };
 
-    void renderstate::invalidatetexgenorient()
+    void RenderState::invalidatetexgenorient()
     {
         texgenorient = -1;
     }
 
-    void renderstate::invalidatealphascale()
+    void RenderState::invalidatealphascale()
     {
         alphascale = -1;
     }
 
-    void renderstate::cleartexgenmillis()
+    void RenderState::cleartexgenmillis()
     {
         texgenmillis = 0;
     }
 
-    void renderstate::disablevbuf()
+    void RenderState::disablevbuf()
     {
         gle::clearvbo();
         gle::clearebo();
         vbuf = 0;
     }
 
-    void renderstate::enablevquery()
+    void RenderState::enablevquery()
     {
         if(colormask)
         {
@@ -646,13 +646,13 @@ namespace
         vquery = true;
     }
 
-    void renderstate::disablevquery()
+    void RenderState::disablevquery()
     {
         endbb(false);
         vquery = false;
     }
 
-    void renderquery(renderstate &cur, const occludequery &query, const vtxarray &va, bool full = true)
+    void renderquery(RenderState &cur, const occludequery &query, const vtxarray &va, bool full = true)
     {
         if(!cur.vquery)
         {
@@ -684,7 +684,7 @@ namespace
     int firstbatch = -1,
         numbatches = 0;
 
-    void mergetexs(const renderstate &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
+    void mergetexs(const RenderState &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
     {
         int numtexs = 0;
         if(!texs)
@@ -785,7 +785,7 @@ namespace
         } while(++curtex < numtexs);
     }
 
-    void renderstate::enablevattribs(bool all)
+    void RenderState::enablevattribs(bool all)
     {
         gle::enablevertex();
         if(all)
@@ -797,7 +797,7 @@ namespace
         vattribs = true;
     }
 
-    void renderstate::disablevattribs(bool all)
+    void RenderState::disablevattribs(bool all)
     {
         gle::disablevertex();
         if(all)
@@ -809,7 +809,7 @@ namespace
         vattribs = false;
     }
 
-    void changevbuf(renderstate &cur, int pass, const vtxarray &va)
+    void changevbuf(RenderState &cur, int pass, const vtxarray &va)
     {
         gle::bindvbo(va.vbuf);
         gle::bindebo(va.ebuf);
@@ -827,7 +827,7 @@ namespace
         }
     }
 
-    void renderstate::changebatchtmus()
+    void RenderState::changebatchtmus()
     {
         if(tmu != 0)
         {
@@ -836,7 +836,7 @@ namespace
         }
     }
 
-    void renderstate::bindslottex(int type, const Texture *tex, GLenum target)
+    void RenderState::bindslottex(int type, const Texture *tex, GLenum target)
     {
         if(textures[type] != tex->id)
         {
@@ -849,7 +849,7 @@ namespace
         }
     }
 
-    void renderstate::changeslottmus(int pass, Slot &newslot, VSlot &newvslot)
+    void RenderState::changeslottmus(int pass, Slot &newslot, VSlot &newvslot)
     {
         Texture *diffuse = newslot.sts.empty() ? notexture : newslot.sts[0].t;
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
@@ -929,7 +929,7 @@ namespace
         vslot = &newvslot;
     }
 
-    void renderstate::changetexgen(int orient, Slot &slot, VSlot &vslot)
+    void RenderState::changetexgen(int orient, Slot &slot, VSlot &vslot)
     {
         if(texgenslot != &slot || texgenvslot != &vslot)
         {
@@ -970,7 +970,7 @@ namespace
         texgenorient = orient;
     }
 
-    void renderstate::changeshader(int pass, const geombatch &b)
+    void RenderState::changeshader(int pass, const geombatch &b)
     {
         VSlot &vslot = b.vslot;
         Slot &slot = *vslot.slot;
@@ -1038,7 +1038,7 @@ namespace
         numbatches = 0;
     }
 
-    void renderstate::renderbatches(int pass)
+    void RenderState::renderbatches(int pass)
     {
         vslot = nullptr;
         int curbatch = firstbatch;
@@ -1100,7 +1100,7 @@ namespace
         resetbatches();
     }
 
-    void renderstate::renderzpass(const vtxarray &va)
+    void RenderState::renderzpass(const vtxarray &va)
     {
         if(!vattribs)
         {
@@ -1144,7 +1144,7 @@ namespace
 
     VAR(batchgeom, 0, 1, 1);
 
-    void renderva(renderstate &cur, const vtxarray &va, int pass = RenderPass_GBuffer, bool doquery = false)
+    void renderva(RenderState &cur, const vtxarray &va, int pass = RenderPass_GBuffer, bool doquery = false)
     {
         switch(pass)
         {
@@ -1255,7 +1255,7 @@ namespace
         GLOBALPARAMF(colorparams, 1, 1, 1, 1);
     }
 
-    void renderstate::cleanupgeom()
+    void RenderState::cleanupgeom()
     {
         if(vattribs)
         {
@@ -2726,7 +2726,7 @@ void renderalphageom(int side)
 {
     resetbatches();
 
-    renderstate cur;
+    RenderState cur;
     cur.alphaing = side;
     cur.invalidatealphascale();
 
@@ -2767,7 +2767,7 @@ void GBuffer::rendergeom()
 {
     bool doOQ = oqfrags && oqgeom && !drawtex,
          multipassing = false;
-    renderstate cur;
+    RenderState cur;
 
     if(doOQ)
     {
@@ -3347,7 +3347,7 @@ static void findshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, v
 
 void renderrsmgeom(bool dyntex)
 {
-    renderstate cur;
+    RenderState cur;
     if(!dyntex)
     {
         cur.cleartexgenmillis();
