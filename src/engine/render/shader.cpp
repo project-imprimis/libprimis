@@ -1944,7 +1944,7 @@ namespace ShaderMgr
         }
     }
 
-    void variantshader_new(const int *type, const char *name, const int *row, const int *maxvariants, const uint *code)
+    static void variantshader_new(const int *type, const char *name, const int *row, const int *maxvariants, const uint *code)
     {
         if(*row < 0)
         {
