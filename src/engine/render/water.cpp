@@ -342,6 +342,7 @@ namespace
 //==============================================================================
 
     VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
+    VARR(waterreflectstep, 1, 32, 10000);
 }
 
 GETMATIDXVAR(water, color, const bvec &)
@@ -357,7 +358,6 @@ GETMATIDXVAR(water, refract, float)
 GETMATIDXVAR(water, fallspec, int)
 GETMATIDXVAR(water, fallrefract, float)
 
-static VARR(waterreflectstep, 1, 32, 10000);
 
 void GBuffer::renderwaterfog(int mat, float surface)
 {
