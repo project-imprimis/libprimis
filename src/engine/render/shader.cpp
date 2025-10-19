@@ -2015,7 +2015,6 @@ static void setshader(const char *name)
     }
 }
 
-
 void resetslotshader()
 {
     slotshader = nullptr;
