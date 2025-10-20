@@ -53,6 +53,13 @@ extern Shader *lookupshaderbyname(std::string_view name);
  */
 extern Shader *useshaderbyname(std::string_view name);
 extern Shader *generateshader(std::string_view name, const char *cmd, ...);
+
+/**
+ * @brief Clears the slot shader and its parameters.
+ *
+ * Sets the slotshader to nullptr. Does not free it.
+ * Clears all associated params with that slotshader.
+ */
 extern void resetslotshader();
 extern void setslotshader(Slot &s);
 extern void linkslotshader(Slot &s, bool load = true);
