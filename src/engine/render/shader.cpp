@@ -2238,13 +2238,6 @@ void resetshaders()
 
 FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
-/**
- * @brief Sets up the blur kernel weights and offsets
- *
- * @param radius sets number of weights & offsets for blurring to be made
- * @param weights array of length at least radius + 1
- * @param offsets array of length at least radius + 1
- */
 void setupblurkernel(int radius, float *weights, float *offsets)
 {
     if(radius<1 || radius>maxblurradius)
