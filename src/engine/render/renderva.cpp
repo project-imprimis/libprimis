@@ -2324,7 +2324,7 @@ void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 
 void Occluder::clearqueries()
 {
-    for(queryframe &i : queryframes)
+    for(QueryFrame &i : queryframes)
     {
         i.cleanup();
     }
@@ -2364,7 +2364,7 @@ bool Occluder::checkquery(occludequery *query, bool nowait)
 
 void Occluder::resetqueries()
 {
-    for(queryframe &i : queryframes)
+    for(QueryFrame &i : queryframes)
     {
         i.reset();
     }
@@ -2375,7 +2375,7 @@ int Occluder::getnumqueries() const
     return queryframes[flipquery].cur;
 }
 
-void Occluder::queryframe::flip()
+void Occluder::QueryFrame::flip()
 {
     for(int i = 0; i < cur; ++i)
     {
@@ -2390,7 +2390,7 @@ void Occluder::queryframe::flip()
     cur = defer = 0;
 }
 
-occludequery *Occluder::queryframe::newquery(const void *owner)
+occludequery *Occluder::QueryFrame::newquery(const void *owner)
 {
     if(cur >= max)
     {
@@ -2414,7 +2414,7 @@ occludequery *Occluder::queryframe::newquery(const void *owner)
     return query;
 }
 
-void Occluder::queryframe::reset()
+void Occluder::QueryFrame::reset()
 {
     for(int i = 0; i < max; ++i)
     {
@@ -2422,7 +2422,7 @@ void Occluder::queryframe::reset()
     }
 }
 
-void Occluder::queryframe::cleanup()
+void Occluder::QueryFrame::cleanup()
 {
     for(int i = 0; i < max; ++i)
     {

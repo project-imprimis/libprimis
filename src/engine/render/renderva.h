@@ -59,12 +59,12 @@ class Occluder final
             return queryframes[flipquery].newquery(owner);
         }
     private:
-        class queryframe final
+        class QueryFrame final
         {
             public:
                 int cur;
 
-                queryframe() : cur(0), max(0), defer(0) {}
+                QueryFrame() : cur(0), max(0), defer(0) {}
 
                 void flip();
                 occludequery *newquery(const void *owner);
@@ -77,7 +77,7 @@ class Occluder final
                 std::array<occludequery, maxquery> queries;
         };
         static constexpr int maxqueryframes = 2;
-        std::array<queryframe, maxqueryframes> queryframes;
+        std::array<QueryFrame, maxqueryframes> queryframes;
         uint flipquery = 0;
 
         occludequery *modelquery = nullptr;
