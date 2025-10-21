@@ -24,17 +24,17 @@
 
 #include "model/model.h"
 
-int BIH::node::axis() const
+int BIH::Node::axis() const
 {
     return child[0]>>14;
 }
 
-int BIH::node::childindex(int which) const
+int BIH::Node::childindex(int which) const
 {
     return child[which]&0x3FFF;
 }
 
-bool BIH::node::isleaf(int which) const
+bool BIH::Node::isleaf(int which) const
 {
     return (child[1]&(1<<(14+which)))!=0;
 }
@@ -184,11 +184,11 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     return true; //true if collided
 }
 
-bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const node *curnode, float tmin, float tmax) const
+bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, const Node *curnode, float tmin, float tmax) const
 {
     struct traversestate
     {
-        const BIH::node *node;
+        const BIH::Node *Node;
         float tmin, tmax;
     };
     std::array<traversestate, 128> stack;
@@ -248,7 +248,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
                     if(stacksize < stack.size())
                     {
                         traversestate &save = stack[stacksize++];
-                        save.node = curnode + curnode->childindex(faridx);
+                        save.Node = curnode + curnode->childindex(faridx);
                         save.tmin = std::max(tmin, farsplit);
                         save.tmax = tmax;
                     }
@@ -277,7 +277,7 @@ bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invra
             return false;
         }
         const traversestate &restore = stack[--stacksize];
-        curnode = restore.node;
+        curnode = restore.Node;
         tmin = restore.tmin;
         tmax = restore.tmax;
     }
@@ -420,7 +420,7 @@ void BIH::build(mesh &m, uint *indices, int numindices, const ivec &vmin, const 
     }
 
     int offset = m.numnodes++;
-    node &curnode = m.nodes[offset];
+    Node &curnode = m.nodes[offset];
     curnode.split[0] = static_cast<short>(splitleft);
     curnode.split[1] = static_cast<short>(splitright);
 
@@ -507,8 +507,8 @@ BIH::BIH(const std::vector<mesh> &buildmeshes)
     center = vec(bbmin).add(bbmax).mul(0.5f);
     radius = vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
 
-    nodes = new node[numtris];
-    node *curnode = nodes;
+    nodes = new Node[numtris];
+    Node *curnode = nodes;
     uint *indices = new uint[numtris];
     for(mesh &m : meshes)
     {
@@ -957,9 +957,9 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, const
 }
 
 template<int C>
-void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br, vec &cwall) const
+void BIH::collide(const mesh &m, const physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, Node *curnode, const ivec &bo, const ivec &br, vec &cwall) const
 {
-    node *stack[128];
+    Node *stack[128];
     int stacksize = 0;
     ivec bmin = ivec(bo).sub(br),
          bmax = ivec(bo).add(br);
@@ -1172,9 +1172,9 @@ void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, int
     tris.push_back(v);
 }
 
-void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, node *curnode, const ivec &bo, const ivec &br) const
+void BIH::genstaintris(std::vector<std::array<vec, 3>> &tris, const mesh &m, const vec &center, float radius, const matrix4x3 &orient, Node *curnode, const ivec &bo, const ivec &br) const
 {
-    std::stack<node *> stack;
+    std::stack<Node *> stack;
     ivec bmin = static_cast<ivec>(bo).sub(br),
          bmax = static_cast<ivec>(bo).add(br);
     for(;;)
