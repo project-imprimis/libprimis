@@ -246,6 +246,7 @@ VAR(passthroughsel, 0, 0, 1); //used in iengine
 VAR(selectcorners, 0, 0, 1); //used in iengine
 VARF(hmapedit, 0, 0, 1, horient = sel.orient); //used in iengine
 
+//used in iengine
 void forcenextundo()
 {
     lastsel.orient = -1;
@@ -259,6 +260,7 @@ static void cubecancel()
     hmapcancel();
 }
 
+//used in iengine
 void cancelsel()
 {
     cubecancel();
@@ -271,6 +273,7 @@ bool haveselent()
     return entgroup.size() > 0;
 }
 
+//used in iengine
 bool noedit(bool inview, bool msg)
 {
     if(!editmode)
@@ -298,6 +301,7 @@ bool noedit(bool inview, bool msg)
     return !viewable;
 }
 
+//used in iengine
 void reorient()
 {
     sel.cx = 0;
