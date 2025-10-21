@@ -976,10 +976,6 @@ vec matnormals(int i)
     }
 }
 
-/* findmaterial
- *
- * given a material name, returns the bitmask ID of the material as an integer
- */
 int findmaterial(const char *name)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(material)); ++i)

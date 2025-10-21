@@ -15,6 +15,15 @@ class vtxarray;
 extern std::array<std::vector<materialsurface>, 4> watersurfs, waterfallsurfs;
 
 extern vec matnormals(int i); //returns one of the six basis vectors for 0 <= i <= 6; 0,0,0 otherwise
+
+/** @brief Get bitmask associated with a material name.
+ *
+ * Given a material name, returns the bitmask ID of the material as an integer.
+ *
+ * Material string names are defined in consts.h
+ *
+ * @param name the material name to find
+ */
 extern int findmaterial(const char *name);
 extern const char *findmaterialname(int mat);
 extern const char *getmaterialdesc(int mat, const char *prefix = "");
