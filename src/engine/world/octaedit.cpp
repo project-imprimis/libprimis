@@ -189,7 +189,7 @@ bool editmode     = false,
 int horient  = 0,
     entmoving = 0;
 
-
+//used in iengine
 VARF(entediting, 0, 0, 1,
 {
     if(!entediting)
@@ -215,6 +215,7 @@ bool pointinsel(const selinfo &sel, const vec &origin)
         && origin.z >= sel.o.z);
 }
 
+//used in iengine
 VARF(dragging, 0, 0, 1,
     if(!dragging || cor[0]<0)
     {
