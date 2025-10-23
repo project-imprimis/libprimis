@@ -5,6 +5,16 @@ class GBuffer;
 
 extern matrix4 nojittermatrix;
 
+/**
+ * @brief Sets up relevant AA methods
+ *
+ * Only enables the AA mode that has been turned on. MSAA is not handled, only
+ * screenspace AA methods.
+ *
+ * @param buf g-buffer with rendering information to use
+ * @param w width of aa buffer in pixels
+ * @param h height of aa buffer in pixels
+ */
 extern void setupaa(GBuffer &buf, int w, int h);
 extern void jitteraa();
 
