@@ -56,7 +56,7 @@ namespace
         VSlot s;
 
         assert(s.slot == nullptr);
-        assert(s.index == 0);
+        assert(s.index == -1);
         assert(s.next == nullptr);
         assert(s.changed == 0);
         assert(s.linked == false);
