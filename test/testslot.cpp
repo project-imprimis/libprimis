@@ -84,7 +84,7 @@ namespace
 
     void test_vslot_reset()
     {
-        std::printf("testing vslot::reset");
+        std::printf("testing vslot::reset\n");
         VSlot s;
         s.reset();
 
