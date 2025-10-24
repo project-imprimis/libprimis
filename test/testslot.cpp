@@ -50,6 +50,30 @@ namespace
         assert(s.shouldpremul(99) == false);
     }
 
+    void test_vslot_ctor()
+    {
+        std::printf("testing vslot constructor\n");
+        VSlot s;
+
+        assert(s.slot == nullptr);
+        assert(s.index == 0);
+        assert(s.next == nullptr);
+        assert(s.changed == 0);
+        assert(s.linked == false);
+        assert(s.scale == 1);
+        assert(s.rotation == 0);
+        assert(s.angle == vec(0, sinf(0), cosf(0)));
+        assert(s.offset == ivec2(0, 0));
+        assert(s.scroll == vec2(0, 0));
+        assert(s.layer == 0);
+        assert(s.alphafront == 0.5f);
+        assert(s.alphaback == 0);
+        assert(s.colorscale == vec(1, 1, 1));
+        assert(s.glowcolor == vec(1, 1, 1));
+        assert(s.refractscale == 0);
+        assert(s.refractcolor == vec(1, 1, 1));
+    }
+
     void test_vslot_cleanup()
     {
         std::printf("testing vslot::cleanup\n");
@@ -143,6 +167,7 @@ testing slot functionality\n\
     test_slot_texturedir();
     test_slot_cleanup();
     test_slot_shouldpremul();
+    test_vslot_ctor();
     test_vslot_cleanup();
     test_vslot_reset();
     test_decalslot_type();
