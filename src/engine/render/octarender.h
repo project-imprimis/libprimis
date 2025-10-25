@@ -96,7 +96,17 @@ class vtxarray final
 
 extern ivec worldmin, worldmax;
 extern std::vector<tjoint> tjoints;
-extern std::vector<vtxarray *> varoot, valist;
+extern std::vector<vtxarray *> varoot;
+
+/**
+ * @brief List of all vertex arrays
+ *
+ *  A vector that carries identically all elements also in the various varoot objects.
+ * The entries in the vector will first be the children of varoot[0] followed by
+ * varoot[0] itself, followed by the same for the other VAs in varoot. The last
+ * element should always be `varoot[7]`.
+ */
+extern std::vector<vtxarray *> valist;
 extern int filltjoints;
 extern int allocva;
 
