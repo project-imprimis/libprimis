@@ -50,7 +50,7 @@ namespace //internal functionality not seen by other files
         NormalGroup(const NormalKey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
     };
 
-    struct normal final
+    struct Normal final
     {
         int next;
         vec surface;
@@ -65,7 +65,7 @@ namespace //internal functionality not seen by other files
     };
 
     std::unordered_map<NormalKey, NormalGroup> normalgroups;
-    std::vector<normal> normals;
+    std::vector<Normal> normals;
     std::vector<tnormal> tnormals;
     std::vector<int> smoothgroups;
 
@@ -81,7 +81,7 @@ namespace //internal functionality not seen by other files
         {
             itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
         }
-        normal n;
+        Normal n;
         n.next = (*itr).second.normals;
         n.surface = surface;
         normals.push_back(n);
@@ -167,7 +167,7 @@ namespace //internal functionality not seen by other files
 
         for(int cur = g.normals; cur >= 0;)
         {
-            normal &o = normals[cur];
+            Normal &o = normals[cur];
             if(o.surface.dot(surface) >= lerpthreshold)
             {
                 v.add(o.surface);
