@@ -1,4 +1,5 @@
-/* hud.cpp: hud & main menu rendering code
+/**
+ * @brief hud & main menu rendering code
  *
  * includes hud compass, hud readouts, crosshair handling
  * main hud rendering
