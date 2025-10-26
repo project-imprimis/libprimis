@@ -4,6 +4,20 @@
 
 namespace
 {
+    void test_slot_reset()
+    {
+        std::printf("testing slot::reset\n");
+        Slot s;
+        s.reset();
+        assert(s.smooth == -1);
+        assert(s.shader == nullptr);
+        assert(s.loaded == false);
+        assert(s.texmask == 0);
+        assert(s.grass == nullptr);
+        assert(s.grasstex == nullptr);
+        assert(s.thumbnail == nullptr);
+    }
+
     void test_slot_type()
     {
         std::printf("testing slot::type\n");
@@ -162,6 +176,7 @@ void test_slot()
 testing slot functionality\n\
 ===============================================================\n"
     );
+    test_slot_reset();
     test_slot_type();
     test_slot_name();
     test_slot_texturedir();
