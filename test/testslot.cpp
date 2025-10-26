@@ -4,6 +4,22 @@
 
 namespace
 {
+    void test_slot_ctor()
+    {
+        std::printf("testing slot constructor\n");
+        Slot s(10);
+        assert(s.index == 10);
+        assert(s.variants == nullptr);
+        assert(s.grass == nullptr);
+        assert(s.smooth == -1);
+        assert(s.shader == nullptr);
+        assert(s.loaded == false);
+        assert(s.texmask == 0);
+        assert(s.grass == nullptr);
+        assert(s.grasstex == nullptr);
+        assert(s.thumbnail == nullptr);
+    }
+
     void test_slot_reset()
     {
         std::printf("testing slot::reset\n");
@@ -176,6 +192,7 @@ void test_slot()
 testing slot functionality\n\
 ===============================================================\n"
     );
+    test_slot_ctor();
     test_slot_reset();
     test_slot_type();
     test_slot_name();
