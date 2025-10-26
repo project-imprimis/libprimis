@@ -34,6 +34,13 @@ namespace
         assert(s.thumbnail == nullptr);
     }
 
+    void test_slot_loadthumbnail() {
+        std::printf("testing slot::loadthumbnail");
+        Slot s;
+        Texture *t = s.loadthumbnail();
+        assert(t == notexture);
+    }
+
     void test_slot_type()
     {
         std::printf("testing slot::type\n");
@@ -194,6 +201,7 @@ testing slot functionality\n\
     );
     test_slot_ctor();
     test_slot_reset();
+    test_slot_loadthumbnail();
     test_slot_type();
     test_slot_name();
     test_slot_texturedir();
