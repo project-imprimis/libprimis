@@ -166,7 +166,7 @@ class GLTFModelInfo final
         size_t findbufferviews(std::string_view path);
         size_t findbuffers(std::string_view path);
         size_t findanimations(std::string_view path);
-        std::vector<std::string> getblock(const std::vector<std::string> &file, uint line);
+        std::vector<std::string> getblock(const std::vector<std::string> &file, size_t line);
 
         const bool messages;
         std::vector<Node> nodes;

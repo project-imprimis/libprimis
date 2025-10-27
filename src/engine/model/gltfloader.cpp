@@ -838,7 +838,7 @@ size_t GLTFModelInfo::findanimations(std::string_view path)
 }
 
 //get the indented block starting at the specified line
-std::vector<std::string> GLTFModelInfo::getblock(const std::vector<std::string> &file, uint line)
+std::vector<std::string> GLTFModelInfo::getblock(const std::vector<std::string> &file, size_t line)
 {
     auto getindentationdepth = [] (const std::string &r) -> size_t
     {
