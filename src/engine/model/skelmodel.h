@@ -1093,7 +1093,7 @@ struct skelcommands : modelcommands<MDL>
 {
     typedef modelcommands<MDL> commands;
     typedef class  MDL::skeleton skeleton;
-    typedef struct MDL::skelmeshgroup meshgroup;
+    typedef class  MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
     typedef struct MDL::skelanimspec animspec;
     typedef struct MDL::skeleton::pitchtarget pitchtarget;
