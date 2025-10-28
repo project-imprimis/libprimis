@@ -20,7 +20,7 @@ struct vertex final
 
 struct materialsurface;
 
-struct elementset final
+struct ElementSet final
 {
     ushort texture;
     union
@@ -58,7 +58,7 @@ class vtxarray final
         ushort *edata, *skydata, *decaldata; // vertex indices
         GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
         ushort minvert, maxvert; // DRE info
-        elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
+        ElementSet *texelems, *decalelems;   // List of element indices sets (range) per texture
         std::vector<materialsurface> matbuf; // buffer of material surfaces
         int verts,
             tris,

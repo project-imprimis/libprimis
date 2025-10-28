@@ -595,14 +595,14 @@ void vacollect::setupdata(vtxarray *va)
     va->eoffset = 0;
     if(va->texs)
     {
-        va->texelems = new elementset[va->texs];
+        va->texelems = new ElementSet[va->texs];
         ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
                *curbuf = edata;
         for(size_t i = 0; i < texs.size(); i++)
         {
             const SortKey &k = texs[i];
             const sortval &t = indices[k];
-            elementset &e = va->texelems[i];
+            ElementSet &e = va->texelems[i];
             e.texture = k.tex;
             e.attrs.orient = k.orient;
             e.attrs.layer = k.layer;
@@ -670,14 +670,14 @@ void vacollect::setupdata(vtxarray *va)
     va->decaltris = decaltris/3;
     if(va->decaltexs)
     {
-        va->decalelems = new elementset[va->decaltexs];
+        va->decalelems = new ElementSet[va->decaltexs];
         ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
                *curbuf = edata;
         for(size_t i = 0; i < decaltexs.size(); i++)
         {
             const decalkey &k = decaltexs[i];
             const sortval &t = decalindices[k];
-            elementset &e = va->decalelems[i];
+            ElementSet &e = va->decalelems[i];
             e.texture = k.tex;
             e.reuse = k.reuse;
             ushort *startbuf = curbuf;

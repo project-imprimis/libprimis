@@ -464,13 +464,13 @@ namespace
 
     struct geombatch final
     {
-        const elementset &es;
+        const ElementSet &es;
         VSlot &vslot;
         int offset;
         const vtxarray * const va;
         int next, batch;
 
-        geombatch(const elementset &es, int offset, const vtxarray *va)
+        geombatch(const ElementSet &es, int offset, const vtxarray *va)
           : es(es), vslot(lookupvslot(es.texture)), offset(offset), va(va),
             next(-1), batch(-1)
         {}
@@ -684,7 +684,7 @@ namespace
     int firstbatch = -1,
         numbatches = 0;
 
-    void mergetexs(const RenderState &cur, const vtxarray &va, elementset *texs = nullptr, int offset = 0)
+    void mergetexs(const RenderState &cur, const vtxarray &va, ElementSet *texs = nullptr, int offset = 0)
     {
         int numtexs = 0;
         if(!texs)
@@ -1275,13 +1275,13 @@ namespace
 
     struct decalbatch final
     {
-        const elementset &es;
+        const ElementSet &es;
         DecalSlot &slot;
         int offset;
         const vtxarray &va;
         int next, batch;
 
-        decalbatch(const elementset &es, int offset, const vtxarray &va)
+        decalbatch(const ElementSet &es, int offset, const vtxarray &va)
           : es(es), slot(lookupdecalslot(es.texture)), offset(offset), va(va),
             next(-1), batch(-1)
         {}
@@ -1365,7 +1365,7 @@ namespace
 
     void mergedecals(const vtxarray &va)
     {
-        elementset *texs = va.decalelems;
+        ElementSet *texs = va.decalelems;
         int numtexs = va.decaltexs,
             offset  = 0;
 
