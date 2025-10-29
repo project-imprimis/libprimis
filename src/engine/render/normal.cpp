@@ -76,7 +76,7 @@ namespace //internal functionality not seen by other files
     int addnormal(const vec &pos, int smooth, const vec &surface)
     {
         NormalKey key = { pos, smooth };
-        auto itr = normalgroups.find(key);
+        std::unordered_map<NormalKey, NormalGroup>::iterator itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
             itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
@@ -91,7 +91,7 @@ namespace //internal functionality not seen by other files
     void addtnormal(const vec &pos, int smooth, float offset, int normal1, int normal2, const vec &pos1, const vec &pos2)
     {
         NormalKey key = { pos, smooth };
-        auto itr = normalgroups.find(key);
+        std::unordered_map<NormalKey, NormalGroup>::iterator itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
             itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
@@ -112,7 +112,7 @@ namespace //internal functionality not seen by other files
     int addnormal(const vec &pos, int smooth, int axis)
     {
         NormalKey key = { pos, smooth };
-        auto itr = normalgroups.find(key);
+        std::unordered_map<NormalKey, NormalGroup>::iterator itr = normalgroups.find(key);
         if(itr == normalgroups.end())
         {
             itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
@@ -381,7 +381,7 @@ namespace //internal functionality not seen by other files
 void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
     NormalKey key = { pos, smooth };
-    auto itr = normalgroups.find(key);
+    std::unordered_map<NormalKey, NormalGroup>::iterator itr = normalgroups.find(key);
     if(smooth < 0)
     {
         smooth = 0;
