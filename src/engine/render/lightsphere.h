@@ -1,3 +1,5 @@
+#ifndef LIGHTSPHERE_H_
+#define LIGHTSPHERE_H_
 
 namespace lightsphere
 {
@@ -6,3 +8,5 @@ namespace lightsphere
     extern void draw();
     extern void disable();
 }
+
+#endif
