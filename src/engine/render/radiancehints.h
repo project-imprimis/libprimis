@@ -13,8 +13,12 @@ extern Shader *rsmworldshader;
 extern int rsmcull;
 extern GLuint rhfbo;
 
-//defines the size, position & projection info for a reflective shadow map
-// the reflective shadow map is then used to calculate global illumination
+/**
+ * @brief reflective shadow map object
+ *
+ * defines the size, position & projection info for a reflective shadow map
+ * the reflective shadow map is then used to calculate global illumination
+ */
 class reflectiveshadowmap final
 {
     public:
