@@ -68,6 +68,19 @@ namespace
         assert(!(p1 != p2));
         assert((p1 != p3));
     }
+
+    void test_skin_ctor()
+    {
+        std::printf("testing skin ctor\n");
+        animmodel::skin s(nullptr, nullptr, nullptr);
+
+        assert(s.tex == nullptr);
+        assert(s.decal == nullptr);
+        assert(s.masks == nullptr);
+        assert(s.normalmap == nullptr);
+        assert(s.shader == nullptr);
+        assert(s.cullface == 1);
+    }
 }
 
 void test_animmodel()
@@ -81,4 +94,5 @@ testing animmodel functionality\n\
     test_animstate_nequals();
     test_animpos_equals();
     test_animpos_nequals();
+    test_skin_ctor();
 };
