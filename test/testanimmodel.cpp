@@ -81,6 +81,14 @@ namespace
         assert(s.shader == nullptr);
         assert(s.cullface == 1);
     }
+
+    void test_skin_cleanup()
+    {
+        std::printf("testing skin cleanup\n");
+        animmodel::skin s(nullptr, nullptr, nullptr);
+        s.cleanup();
+        assert(s.shader == nullptr);
+    }
 }
 
 void test_animmodel()
@@ -95,4 +103,5 @@ testing animmodel functionality\n\
     test_animpos_equals();
     test_animpos_nequals();
     test_skin_ctor();
+    test_skin_cleanup();
 };
