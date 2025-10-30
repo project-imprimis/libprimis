@@ -695,7 +695,7 @@ struct skelmodel : animmodel
             skelmeshgroup * const owner;
             size_t numinterpbones;
 
-            struct boneinfo final
+            struct BoneInfo final
             {
                 std::string name;
                 int parent, //parent node in boneinfo
@@ -710,7 +710,7 @@ struct skelmodel : animmodel
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
                 dualquat base;
 
-                boneinfo();
+                BoneInfo();
             };
             /**
              * nodes in boneinfo tree, node relations in the tree are indicated
@@ -720,7 +720,7 @@ struct skelmodel : animmodel
              *
              * size equal to numbones
              */
-            boneinfo *bones;
+            BoneInfo *bones;
 
             struct pitchdep
             {

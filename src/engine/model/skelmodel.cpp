@@ -215,7 +215,7 @@ void skelmodel::skeleton::calcantipodes()
     for(size_t i = 0; i < schedule.size(); i++)
     {
         const uint bone = schedule[i];
-        const boneinfo &info = bones[bone];
+        const BoneInfo &info = bones[bone];
         for(size_t j = 0; j < numbones; ++j)
         {
             if(std::abs(bones[j].group) == bone && bones[j].scheduled < 0)
@@ -248,7 +248,7 @@ void skelmodel::skeleton::remapbones()
 {
     for(size_t i = 0; i < numbones; ++i)//loop i
     {
-        boneinfo &info = bones[i];
+        BoneInfo &info = bones[i];
         info.interpindex = -1;
         info.ragdollindex = -1;
     }
@@ -262,7 +262,7 @@ void skelmodel::skeleton::remapbones()
                 c.setinterpbones(k > 0 ? c.bonedata[k-1].interpbone : 0, k);
                 continue;
             }
-            boneinfo &info = bones[c.getbone(k)];
+            BoneInfo &info = bones[c.getbone(k)];
             if(info.interpindex < 0)
             {
                 info.interpindex = numgpubones++;
@@ -311,7 +311,7 @@ void skelmodel::skeleton::remapbones()
     numinterpbones = numgpubones;
     for(const tag &i : tags)
     {
-        boneinfo &info = bones[i.bone];
+        BoneInfo &info = bones[i.bone];
         if(info.interpindex < 0)
         {
             info.interpindex = numinterpbones++;
@@ -321,7 +321,7 @@ void skelmodel::skeleton::remapbones()
     {
         for(size_t i = 0; i < ragdoll->joints.size(); i++)
         {
-            boneinfo &info = bones[ragdoll->joints[i].bone];
+            BoneInfo &info = bones[ragdoll->joints[i].bone];
             if(info.interpindex < 0)
             {
                 info.interpindex = numinterpbones++;
@@ -331,7 +331,7 @@ void skelmodel::skeleton::remapbones()
     }
     for(size_t i = 0; i < numbones; ++i)
     {
-        const boneinfo &info = bones[i];
+        const BoneInfo &info = bones[i];
         if(info.interpindex < 0)
         {
             continue;
@@ -343,7 +343,7 @@ void skelmodel::skeleton::remapbones()
     }
     for(size_t i = 0; i < numbones; ++i)
     {
-        boneinfo &info = bones[i];
+        BoneInfo &info = bones[i];
         if(info.interpindex < 0)
         {
             continue;
@@ -354,7 +354,7 @@ void skelmodel::skeleton::remapbones()
     {
         for(size_t i = 0; i < numbones; ++i)
         {
-            const boneinfo &info = bones[i];
+            const BoneInfo &info = bones[i];
             if(info.interpindex < 0 || info.ragdollindex >= 0)
             {
                 continue;
@@ -542,7 +542,7 @@ void skelmodel::skeleton::linkchildren()
 {
     for(size_t i = 0; i < numbones; ++i)
     {
-        boneinfo &b = bones[i];
+        BoneInfo &b = bones[i];
         b.children = -1;
         if(b.parent<0)
         {
@@ -685,7 +685,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
         {
             dualquat d = interpbone(i, partframes, as, partmask);
             d.normalize();
-            const boneinfo &b = bones[i];
+            const BoneInfo &b = bones[i];
             if(b.interpparent<0)
             {
                 sc.bdata[b.interpindex] = d;
@@ -729,7 +729,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     const dualquat *bdata = sc.bdata;
     for(const ragdollskel::joint &j : ragdoll->joints)
     {
-        const boneinfo &b = bones[j.bone];
+        const BoneInfo &b = bones[j.bone];
         const dualquat &q = bdata[b.interpindex];
         for(int k = 0; k < 3; ++k)
         {
@@ -746,7 +746,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
         for(size_t i = 0; i < ragdoll->joints.size(); i++)
         {
             const ragdollskel::joint &j = ragdoll->joints[i];
-            const boneinfo &b = bones[j.bone];
+            const BoneInfo &b = bones[j.bone];
             const dualquat &q = bdata[b.interpindex];
             d.animjoints[i] = d.calcanimjoint(i, matrix4x3(q));
         }
@@ -760,7 +760,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, const skelcacheentry &sc, 
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
-        const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
+        const BoneInfo &br = bones[r.bone], &bj = bones[j.bone];
         d.reljoints[i].mul(dualquat(bdata[bj.interpindex]).invert(), bdata[br.interpindex]);
     }
 }
@@ -776,7 +776,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
     for(size_t i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
-        const boneinfo &b = bones[j.bone];
+        const BoneInfo &b = bones[j.bone];
         vec pos(0, 0, 0);
         for(int k = 0; k < 3; ++k)
         {
@@ -794,7 +794,7 @@ void skelmodel::skeleton::genragdollbones(const ragdolldata &d, skelcacheentry &
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
-        const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
+        const BoneInfo &br = bones[r.bone], &bj = bones[j.bone];
         sc.bdata[br.interpindex].mul(sc.bdata[bj.interpindex], d.reljoints[i]);
     }
     for(const antipode &i : antipodes)
@@ -962,7 +962,7 @@ bool skelmodel::skeleton::setbonepitch(size_t index, float scale, float offset, 
     {
         return false;
     }
-    boneinfo &b = bones[index];
+    BoneInfo &b = bones[index];
     b.pitchscale = scale;
     b.pitchoffset = offset;
     b.pitchmin = min;
@@ -998,7 +998,7 @@ bool skelmodel::skeleton::setbonename(size_t index, std::string_view name)
     {
         return false;
     }
-    boneinfo &b = bones[index];
+    BoneInfo &b = bones[index];
     if(!b.name.size())
     {
         b.name = name;
@@ -1013,7 +1013,7 @@ bool skelmodel::skeleton::setboneparent(size_t index, size_t parent)
     {
         return false;
     }
-    boneinfo &b = bones[index];
+    BoneInfo &b = bones[index];
     b.parent = parent;
     return true;
 }
@@ -1021,7 +1021,7 @@ bool skelmodel::skeleton::setboneparent(size_t index, size_t parent)
 void skelmodel::skeleton::createbones(size_t num)
 {
     numbones = num;
-    bones = new boneinfo[numbones];
+    bones = new BoneInfo[numbones];
 }
 
 ragdollskel *skelmodel::skeleton::trycreateragdoll()
@@ -1633,9 +1633,9 @@ const skelmodel::vert &skelmodel::skelmesh::getvert(size_t index) const
     return verts[index];
 }
 
-// boneinfo
+// BoneInfo
 
-skelmodel::skeleton::boneinfo::boneinfo() :
+skelmodel::skeleton::BoneInfo::BoneInfo() :
     name(""),
     parent(-1),
     children(-1),
