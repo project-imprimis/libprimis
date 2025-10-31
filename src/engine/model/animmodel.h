@@ -52,7 +52,7 @@ class animmodel : public model
             bool operator==(const animmodel::shaderparams &y) const
             {
                 return spec == y.spec
-                    && gloss == y.glow
+                    && gloss == y.gloss
                     && glow == y.glow
                     && glowdelta == y.glowdelta
                     && glowpulse == y.glowpulse
