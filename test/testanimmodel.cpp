@@ -69,6 +69,23 @@ namespace
         assert((p1 != p3));
     }
 
+    void test_shaderparams_ctor()
+    {
+        std::printf("testing shaderparams ctor\n");
+        animmodel::shaderparams s;
+
+        assert(s.spec == 1.f);
+        assert(s.gloss == 1.f);
+        assert(s.glow == 3.f);
+        assert(s.glowdelta == 0.f);
+        assert(s.glowpulse == 0.f);
+        assert(s.fullbright == 0.f);
+        assert(s.scrollu == 0.f);
+        assert(s.scrollv == 0.f);
+        assert(s.alphatest == 0.9f);
+        assert(s.color == vec(1.f, 1.f, 1.f));
+    }
+
     void test_skin_ctor()
     {
         std::printf("testing skin ctor\n");
@@ -111,6 +128,7 @@ testing animmodel functionality\n\
     test_animstate_nequals();
     test_animpos_equals();
     test_animpos_nequals();
+    test_shaderparams_ctor();
     test_skin_ctor();
     test_skin_cleanup();
 };
