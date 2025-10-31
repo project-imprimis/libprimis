@@ -86,6 +86,69 @@ namespace
         assert(s.color == vec(1.f, 1.f, 1.f));
     }
 
+    void test_shaderparams_equals()
+    {
+        std::printf("testing shaderparams operator==\n");
+        {
+            animmodel::shaderparams s1;
+            animmodel::shaderparams s2;
+
+            assert(s1.spec == 1.f);
+            assert(s1.gloss == 1.f);
+            assert(s1.glow == 3.f);
+            assert(s1.glowdelta == 0.f);
+            assert(s1.glowpulse == 0.f);
+            assert(s1.fullbright == 0.f);
+            assert(s1.scrollu == 0.f);
+            assert(s1.scrollv == 0.f);
+            assert(s1.alphatest == 0.9f);
+            assert(s1.color == vec(1.f, 1.f, 1.f));
+
+            assert(s2.spec == 1.f);
+            assert(s2.gloss == 1.f);
+            assert(s2.glow == 3.f);
+            assert(s2.glowdelta == 0.f);
+            assert(s2.glowpulse == 0.f);
+            assert(s2.fullbright == 0.f);
+            assert(s2.scrollu == 0.f);
+            assert(s2.scrollv == 0.f);
+            assert(s2.alphatest == 0.9f);
+            assert(s2.color == vec(1.f, 1.f, 1.f));
+
+            assert(s2.spec == s1.spec);
+            assert(s2.gloss == s1.gloss);
+            assert(s2.glow == s1.glow);
+            assert(s2.glowdelta == s1.glowdelta);
+            assert(s2.glowpulse == s1.glowpulse);
+            assert(s2.fullbright == s1.fullbright);
+            assert(s2.scrollu == s1.scrollu);
+            assert(s2.scrollv == s1.scrollv);
+            assert(s2.alphatest == s1.alphatest);
+            assert(s2.color == s1.color);
+            assert(s1 == s2);
+        }
+        {
+            animmodel::shaderparams s1, s2;
+            s1.spec = 2.f;
+            assert(!(s1 == s2));
+        }
+        {
+            animmodel::shaderparams s1, s2;
+            s2.fullbright = 2.f;
+            assert(!(s1 == s2));
+        }
+        {
+            animmodel::shaderparams s1, s2;
+            s1.alphatest = 2.f;
+            assert(!(s1 == s2));
+        }
+        {
+            animmodel::shaderparams s1, s2;
+            s2.color = vec(2.f);
+            assert(!(s1 == s2));
+        }
+    }
+
     void test_skin_ctor()
     {
         std::printf("testing skin ctor\n");
@@ -129,6 +192,7 @@ testing animmodel functionality\n\
     test_animpos_equals();
     test_animpos_nequals();
     test_shaderparams_ctor();
+    test_shaderparams_equals();
     test_skin_ctor();
     test_skin_cleanup();
 };
