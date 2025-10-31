@@ -85,9 +85,18 @@ namespace
     void test_skin_cleanup()
     {
         std::printf("testing skin cleanup\n");
-        animmodel::skin s(nullptr, nullptr, nullptr);
-        s.cleanup();
-        assert(s.shader == nullptr);
+        {
+            animmodel::skin s(nullptr, nullptr, nullptr);
+            s.cleanup();
+            assert(s.shader == nullptr);
+        }
+        {
+            Shader t;
+            animmodel::skin s(nullptr, nullptr, nullptr);
+            s.shader = &t;
+            s.cleanup();
+            assert(s.shader != nullptr);
+        }
     }
 }
 
