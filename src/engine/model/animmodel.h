@@ -519,7 +519,9 @@ class animmodel : public model
             //no private-able members
         };
 
-        /*
+        /**
+         * @brief Global map to share mesh froups across models.
+         *
          * The meshgroups map stores meshgroups which may be shared between different
          * model instantiations (e.g. skeletal models which have other models attached
          * as parts).
