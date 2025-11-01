@@ -154,6 +154,22 @@ bool animmodel::AnimState::operator!=(const AnimState &a) const
     return cur!=a.cur || (interp<1 ? interp!=a.interp || prev!=a.prev : a.interp<1);
 }
 
+//ShaderParams
+
+bool animmodel::shaderparams::operator==(const animmodel::shaderparams &y) const
+{
+    return spec == y.spec
+        && gloss == y.gloss
+        && glow == y.glow
+        && glowdelta == y.glowdelta
+        && glowpulse == y.glowpulse
+        && fullbright == y.fullbright
+        && scrollu == y.scrollu
+        && scrollv == y.scrollv
+        && alphatest == y.alphatest
+        && color == y.color;
+}
+
 // ShaderParamsKey
 
 bool animmodel::skin::ShaderParamsKey::checkversion()

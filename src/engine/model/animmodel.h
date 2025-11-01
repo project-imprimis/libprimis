@@ -49,19 +49,7 @@ class animmodel : public model
             vec color;
 
 
-            bool operator==(const animmodel::shaderparams &y) const
-            {
-                return spec == y.spec
-                    && gloss == y.gloss
-                    && glow == y.glow
-                    && glowdelta == y.glowdelta
-                    && glowpulse == y.glowpulse
-                    && fullbright == y.fullbright
-                    && scrollu == y.scrollu
-                    && scrollv == y.scrollv
-                    && alphatest == y.alphatest
-                    && color == y.color;
-            }
+            bool operator==(const animmodel::shaderparams &y) const;
             shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
         };
 
