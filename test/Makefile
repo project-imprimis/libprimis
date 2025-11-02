@@ -41,6 +41,7 @@ CLIENT_OBJS= \
 	testshadowatlas.o \
 	testslot.o \
 	testutils.o \
+	testbih.o \
 
 #default: compiles the test executable and places it in the same directory as this file
 default: client

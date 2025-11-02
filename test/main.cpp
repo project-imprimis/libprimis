@@ -15,6 +15,7 @@
 #include "testslot.h"
 #include "testmd5.h"
 #include "testragdoll.h"
+#include "testbih.h"
 
 int main()
 {
@@ -36,5 +37,6 @@ int main()
     test_geom();
     test_geomexts();
     test_matrix();
+    test_bih();
     return EXIT_SUCCESS;
 }
