@@ -21,6 +21,17 @@ namespace
         assert(m.flags == 0);
     }
 
+    void test_bih_node_axis()
+    {
+        std::printf("test bih::node axis\n");
+
+        BIH::Node n;
+
+        n.child[0] = 1;
+
+        assert(n.axis() == 1>>14);
+    }
+
 }
 
 void test_bih()
@@ -31,4 +42,5 @@ testing bih functionality\n\
 ===============================================================\n"
     );
     test_bih_mesh_ctor();
+    test_bih_node_axis();
 };
