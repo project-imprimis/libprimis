@@ -531,7 +531,10 @@ class animmodel : public model
          */
         static std::unordered_map<std::string, meshgroup *> meshgroups;
 
-        /* The `part` object is the highest level of organization in a model object.
+        /**
+         * @brief High level component of a model instance.
+         *
+         * The `part` object is the highest level of organization in a model object.
          * Each `part` is a logically separate part of an overall model, containing
          * its own skin(s) (`skin` objects), mesh(es) (`meshgroup` objects), and
          * model rendering parameters.
