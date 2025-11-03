@@ -153,14 +153,14 @@ class GLTFModelInfo final
             return outbuf;
         }
 
-        /* loadjsonfile: loads a (gltf) json file to a std::vector
+        /**
+         * @brief Loads a (gltf) json file to a std::vector
          *
          * Loads a JSON file and creates a new line for each bracket level and entry.
          *
-         * Parameters:
-         *  - std::string name: path to the file to load
-         * Returns:
-         *  - std::vector<std::string> of file
+         * @param name path to the file to load
+         *
+         * @return vector containing contents of file line by line
          */
         std::vector<std::string> loadjsonfile(std::string_view name);
         std::vector<std::string> getblockbyname(std::string_view path, std::string_view blockname, size_t maxdepth = 0);
