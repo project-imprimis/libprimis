@@ -75,12 +75,12 @@ class ragdollskel final
         //a distance constraint between two specified vertices
         //vert specifies the indices of the vertices in the verts vector, and
         //min/maxdist the limits to keep them within
-        struct distlimit final
+        struct DistLimit final
         {
             int vert[2];
             float mindist, maxdist;
         };
-        std::vector<distlimit> distlimits;
+        std::vector<DistLimit> distlimits;
 
         int eye;
 

@@ -264,7 +264,7 @@ void ragdolldata::init(const dynent *d)
 
 void ragdolldata::constraindist()
 {
-    for(const ragdollskel::distlimit &d : skel->distlimits)
+    for(const ragdollskel::DistLimit &d : skel->distlimits)
     {
         vert &v1 = verts[d.vert[0]],
              &v2 = verts[d.vert[1]];
