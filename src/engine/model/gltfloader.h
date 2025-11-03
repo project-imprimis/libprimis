@@ -5,10 +5,15 @@
 class GLTFModelInfo final
 {
     public:
-        //populates the object vectors with the data in the gltf file
-        //throws std::ios_base::failure if unable to load file
-        //throws std::logic_error if invalid bracketing
-        //throws std::logic_error if invalid geometry data type (e.g. float vertex indices)
+        /**
+         * @brief Populates the object vectors with the data in the gltf file
+         * throws std::ios_base::failure if unable to load file
+         * throws std::logic_error if invalid bracketing
+         * throws std::logic_error if invalid geometry data type (e.g. float vertex indices)
+         *
+         * @param path the path of the file to load
+         * @param messages toggles enabling of debug messages
+         */
         GLTFModelInfo(std::string_view path, bool messages = false);
         //return list of mesh names, using one of the NodeTypes
         std::vector<std::string> getnodenames(int type) const;
