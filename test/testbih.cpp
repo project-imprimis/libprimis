@@ -25,11 +25,22 @@ namespace
     {
         std::printf("test bih::node axis\n");
 
-        BIH::Node n;
-
-        n.child[0] = 1;
-
-        assert(n.axis() == 1>>14);
+        {
+            BIH::Node n;
+            n.child[0] = 0b0010'0000'0000'0000;
+            assert(n.axis() == 0);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 0b0100'0000'0000'0000;
+            assert(n.axis() == 1);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 0b1100'0000'0000'0000;
+            assert(n.axis() == 0b11);
+            assert(n.axis() == 3);
+        }
     }
 
     void test_bih_node_childindex()
