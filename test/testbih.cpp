@@ -32,6 +32,40 @@ namespace
         assert(n.axis() == 1>>14);
     }
 
+    void test_bih_node_childindex()
+    {
+        std::printf("test bih::node childindex\n");
+
+        {
+            BIH::Node n;
+            n.child[0] = 1;
+            assert(n.childindex(0) == 1);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 3;
+            assert(n.childindex(0) == 3);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 31;
+            assert(n.childindex(0) == 31);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 0x3FFF;
+            assert(n.childindex(0) == 0x3FFF);
+            assert(n.childindex(0) == 0b11'1111'1111'1111);
+            assert(n.childindex(0) == 16383);
+        }
+        {
+            BIH::Node n;
+            n.child[0] = 0x4000;
+            assert(n.childindex(0) == 0x0);
+            assert(n.childindex(0) == 0b0);
+            assert(n.childindex(0) == 0);
+        }
+    }
 }
 
 void test_bih()
@@ -43,4 +77,5 @@ testing bih functionality\n\
     );
     test_bih_mesh_ctor();
     test_bih_node_axis();
+    test_bih_node_childindex();
 };
