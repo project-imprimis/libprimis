@@ -16,6 +16,14 @@ class BIH final
             std::array<ushort, 2> child;
 
             int axis() const;
+
+            /**
+             * @brief Returns last 14 bits of the child index (0-16383).
+             *
+             * @param which element of child array, valid values: 0,1
+             *
+             * @return last 14 bits (0-16383).
+             */
             int childindex(int which) const;
             bool isleaf(int which) const;
         };
