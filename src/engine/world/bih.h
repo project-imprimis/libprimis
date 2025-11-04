@@ -15,6 +15,13 @@ class BIH final
             std::array<short, 2> split;
             std::array<ushort, 2> child;
 
+            /**
+             * @brief Returns top two bits of child[0] which store axis information
+             *
+             * The bottom 14 bits should be accessed separately with childindex(0).
+             *
+             * @return top two bits (0-3).
+             */
             int axis() const;
 
             /**
