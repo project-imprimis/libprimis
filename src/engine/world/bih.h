@@ -32,6 +32,14 @@ class BIH final
              * @return last 14 bits (0-16383).
              */
             int childindex(int which) const;
+
+            /**
+             * @brief Returns leaf information from top 1|2 bits of child[1].
+             *
+             * @param whether to check top 1 or 2 bits (1, 0 args)
+             *
+             * @return whether top 1|2 bits are set
+             */
             bool isleaf(int which) const;
         };
 
