@@ -77,6 +77,36 @@ namespace
             assert(n.childindex(0) == 0);
         }
     }
+
+    void test_bih_node_isleaf()
+    {
+        std::printf("test bih::node isleaf\n");
+        {
+            BIH::Node n;
+            n.child[1] = 0b0010'0000'0000'0000;
+            assert(n.isleaf(0) == false);
+            assert(n.isleaf(1) == false);
+        }
+        {
+            BIH::Node n;
+            n.child[1] = 0b0100'0000'0000'0000;
+            assert(n.isleaf(0) == true);
+            assert(n.isleaf(1) == false);
+        }
+        {
+            BIH::Node n;
+            n.child[1] = 0b1000'0000'0000'0000;
+            assert(n.isleaf(0) == false);
+            assert(n.isleaf(1) == true);
+        }
+        {
+            BIH::Node n;
+            n.child[1] = 0b1100'0000'0000'0000;
+            assert(n.isleaf(0) == true);
+            assert(n.isleaf(1) == true);
+        }
+    }
+
 }
 
 void test_bih()
@@ -89,4 +119,5 @@ testing bih functionality\n\
     test_bih_mesh_ctor();
     test_bih_node_axis();
     test_bih_node_childindex();
+    test_bih_node_isleaf();
 };
