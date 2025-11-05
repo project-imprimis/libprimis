@@ -13,6 +13,17 @@ class BIH final
         struct Node final
         {
             std::array<short, 2> split;
+
+            /**
+             * @brief Array of child indices, packed with leaf and axis information.
+             *
+             * 14 bits of index data in each ushort, with two bits of axis data
+             * and two bits of leaf data in the first two bits of the 0th and 1st
+             * entry respectively:
+             *
+             *  |aaii'iiii'iiii'iiii|llii'iiii'iiii'iiii|
+             *
+             */
             std::array<ushort, 2> child;
 
             /**
