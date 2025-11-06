@@ -1,4 +1,5 @@
-/* dynlight.cpp: handling of changing lights
+/**
+ * @brief Handling of changing lights
  *
  * while the lighting system is dynamic, the changing state of the light entities
  * for the renderer to handle must be updated with new values that reflect the type
