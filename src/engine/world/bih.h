@@ -12,6 +12,12 @@ class BIH final
     public:
         struct Node final
         {
+            /**
+             * @brief Array containing left and right splits.
+             *
+             * The 0th element contains the left split, and the 1st element
+             * contains the right split.
+             */
             std::array<short, 2> split;
 
             /**
