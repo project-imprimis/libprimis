@@ -2,6 +2,19 @@
 #define DYNLIGHT_H_
 
 extern void updatedynlights();
+
+/**
+ * @brief Finds nearby dynamic lights visible to the player.
+ *
+ * Finds which dynamic lights are near enough and are visible to the player, and
+ * returns the number of lights (and sets `closedynlights` vector contents to the
+ * appropriate nearby light ents).
+ *
+ * The distance at which a dynlight is considered close is controlled by
+ * `dynlightdist`.
+ *
+ * @return number of closeby dynlights
+ */
 extern size_t finddynlights();
 
 /**
