@@ -17,7 +17,7 @@ class gltf final : public skelloader<gltf>
         static const char *formatname();
 
     private:
-        struct gltfjoint final
+        struct GLTFJoint final
         {
             vec pos;
             quat orient;
@@ -62,7 +62,7 @@ class gltf final : public skelloader<gltf>
                 gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
                 ~gltfmesh();
                 void cleanup();
-                void buildverts(const std::vector<gltfjoint> &joints);
+                void buildverts(const std::vector<GLTFJoint> &joints);
                 //gltf model loader
                 void load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir);
         };
