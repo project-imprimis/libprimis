@@ -21,6 +21,22 @@ namespace
         assert(m.flags == 0);
     }
 
+    void test_bih_mesh_setmesh()
+    {
+        std::printf("test bih::mesh setmesh\n");
+
+        BIH::mesh m;
+
+        m.setmesh(nullptr, 1, nullptr, 1, nullptr, 1);
+
+        assert(m.tris == nullptr);
+        assert(m.numtris == 1);
+
+        m.setmesh(nullptr, 2, nullptr, 1, nullptr, 1);
+
+        assert(m.numtris == 2);
+    }
+
     void test_bih_node_axis()
     {
         std::printf("test bih::node axis\n");
@@ -117,6 +133,7 @@ testing bih functionality\n\
 ===============================================================\n"
     );
     test_bih_mesh_ctor();
+    test_bih_mesh_setmesh();
     test_bih_node_axis();
     test_bih_node_childindex();
     test_bih_node_isleaf();
