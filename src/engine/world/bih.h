@@ -105,6 +105,17 @@ class BIH final
 
                 vec getpos(int i) const;
                 vec2 gettc(int i) const;
+
+                /**
+                 * @brief Sets up arrays for this mesh.
+                 *
+                 * @param tris triangle array
+                 * @param numtris number of triangles
+                 * @param pos position array
+                 * @param posstride distance between position entries
+                 * @param tc texture coordinate array
+                 * @param tcstride distance between tc entries
+                 */
                 void setmesh(const tri *tris, int numtris,
                              const uchar *pos, int posstride,
                              const uchar *tc, int tcstride);
