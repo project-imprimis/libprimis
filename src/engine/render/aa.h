@@ -3,7 +3,7 @@
 
 class GBuffer;
 
-extern matrix4 nojittermatrix;
+extern matrix4 nojittermatrix; /// matrix without aa jitter applied
 
 /**
  * @brief Sets up relevant AA methods
