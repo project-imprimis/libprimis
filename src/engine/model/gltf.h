@@ -23,7 +23,7 @@ class gltf final : public skelloader<gltf>
             quat orient;
         };
 
-        struct gltfweight final
+        struct GLTFWeight final
         {
             int joint;
             float bias;
