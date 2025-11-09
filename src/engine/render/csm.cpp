@@ -1,4 +1,5 @@
-/* csm.cpp: cascaded shadow maps
+/**
+ * @brief Cascaded shadow maps for sunlight rendering
  *
  * The cascaded shadow maps are used to provide levels of detail for sunlight
  * (nearer areas get higher resolution shadow maps, and farther areas are
