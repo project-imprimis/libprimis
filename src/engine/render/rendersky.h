@@ -3,7 +3,16 @@
 
 extern int skyshadow;
 
+/**
+ * @brief Sets the explicitsky global to the value provided.
+ *
+ * explicitsky affects the return value of limitsky(), which in turn affects the
+ * behavior of drawskybox() with respect to vertex arrays.
+ *
+ * @param val value to set explicitsky to
+ */
 extern void setexplicitsky(bool val);
+
 extern void drawskybox(bool clear = false);
 
 /**
