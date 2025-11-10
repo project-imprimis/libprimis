@@ -178,6 +178,20 @@ namespace
             assert(s.shader != nullptr);
         }
     }
+
+    //animmodel related objects
+
+    void test_animinfo_ctor()
+    {
+        std::printf("testing animinfo ctor\n");
+        animinfo a;
+        assert(a.anim == 0);
+        assert(a.frame == 0);
+        assert(a.range == 0);
+        assert(a.basetime == 0);
+        assert(a.speed == 100.f);
+        assert(a.varseed == 0);
+    }
 }
 
 void test_animmodel()
@@ -195,4 +209,5 @@ testing animmodel functionality\n\
     test_shaderparams_equals();
     test_skin_ctor();
     test_skin_cleanup();
+    test_animinfo_ctor();
 };
