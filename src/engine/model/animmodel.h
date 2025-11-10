@@ -5,7 +5,10 @@ extern int fullbrightmodels, testtags, debugcolmesh;
 
 const std::string modelpath = "media/model/";
 
-/* animmodel: generic class for an animated model object, derived from the very
+/**
+ * @brief Animated model object/
+ *
+ * Generic class for an animated model object, derived from the very
  * general model structure
  *
  * animmodel provides functionality to implement an animated model consisting of
