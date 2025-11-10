@@ -30,7 +30,7 @@ class gltf final : public skelloader<gltf>
             vec pos;
         };
 
-        struct gltfvert final
+        struct GLTFVert final
         {
             vec2 tc;
             uint start, count;
