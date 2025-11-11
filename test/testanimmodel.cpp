@@ -260,6 +260,74 @@ namespace
             assert((b == a) == true);
         }
     }
+
+    void test_animinfo_nequals()
+    {
+        std::printf("testing animinfo operator!=\n");
+        {
+            animinfo a;
+            assert((a != a) == false);
+        }
+        //test anim which has specific conditions
+        {
+            animinfo a;
+            animinfo b;
+            b.anim = Anim_SetTime;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        {
+            animinfo a;
+            animinfo b;
+            b.anim = Anim_Dir;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        {
+            animinfo a;
+            animinfo b;
+            b.anim = 1;
+            assert((a != b) == false);
+            assert((b != a) == false);
+        }
+        //test other params
+        {
+            animinfo a;
+            animinfo b;
+            b.frame = 1;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        {
+            animinfo a;
+            animinfo b;
+            b.range = 1;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        {
+            animinfo a;
+            animinfo b;
+            b.basetime = 1.f;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        {
+            animinfo a;
+            animinfo b;
+            b.speed = 1;
+            assert((a != b) == true);
+            assert((b != a) == true);
+        }
+        //note: varseed not used in comparison
+        {
+            animinfo a;
+            animinfo b;
+            b.varseed = 1;
+            assert((a != b) == false);
+            assert((b != a) == false);
+        }
+    }
 }
 
 void test_animmodel()
@@ -279,4 +347,5 @@ testing animmodel functionality\n\
     test_skin_cleanup();
     test_animinfo_ctor();
     test_animinfo_equals();
+    test_animinfo_nequals();
 };
