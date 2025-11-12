@@ -328,6 +328,20 @@ namespace
             assert((b != a) == false);
         }
     }
+
+    void test_modelattach_ctor()
+    {
+        std::printf("testing modelattach ctor\n");
+        {
+            modelattach m;
+            assert(m.tag == nullptr);
+            assert(m.name == nullptr);
+            assert(m.anim == -1);
+            assert(m.basetime == 0);
+            assert(m.pos == nullptr);
+            assert(m.m == nullptr);
+        }
+    }
 }
 
 void test_animmodel()
@@ -348,4 +362,5 @@ testing animmodel functionality\n\
     test_animinfo_ctor();
     test_animinfo_equals();
     test_animinfo_nequals();
+    test_modelattach_ctor();
 };
