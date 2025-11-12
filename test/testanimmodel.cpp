@@ -352,6 +352,17 @@ namespace
             assert(m.pos == nullptr);
             assert(m.m == nullptr);
         }
+        {
+            const char *t = "t";
+            vec v(1,2,3);
+            modelattach m(t, &v);
+            assert(m.tag == t);
+            assert(m.name == nullptr);
+            assert(m.anim == -1);
+            assert(m.basetime == 0);
+            assert(m.pos == &v);
+            assert(m.m == nullptr);
+        }
     }
 }
 
