@@ -43,7 +43,7 @@ struct Texture final
         MIRROR     = 1<<12
     };
 
-    char *name;
+    const char *name;
     int type, w, h, xs, ys, bpp, clamp;
     bool mipmap, canreduce;
     GLuint id;
