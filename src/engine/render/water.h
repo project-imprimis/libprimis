@@ -1,7 +1,7 @@
 #ifndef WATER_H_
 #define WATER_H_
 
-extern int vertwater;
+extern int vertwater; //used like a bool, will only ever be 0 or 1; toggles vertex subdivision water
 
 /* creates a set of functions by appending name & var to "get" and of the type "type"
  * e.g. GETMATIDXVAR(water, deep, int) creates `int getwaterdeep(int mat)`
