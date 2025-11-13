@@ -823,7 +823,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(!t)
     {
         char *key = newstring(rname);
-        auto itr = textures.insert_or_assign(key, Texture()).first;
+        std::unordered_map<std::string, Texture>::iterator itr = textures.insert_or_assign(key, Texture()).first;
         t = &(*itr).second;
         t->name = key;
     }
