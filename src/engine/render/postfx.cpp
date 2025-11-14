@@ -118,7 +118,7 @@ class PostFx final
             timer *postfxtimer = begintimer("postfx");
             for(size_t i = 0; i < postfxpasses.size(); i++)
             {
-                postfxpass &p = postfxpasses[i];
+                PostFxPass &p = postfxpasses[i];
 
                 int tex = -1;
                 if(!(postfxpasses.size() < i+1))
@@ -215,7 +215,7 @@ class PostFx final
                 conoutf(Console_Error, "no such postfx shader: %s", name);
                 return false;
             }
-            postfxpass p;
+            PostFxPass p;
             p.shader = s;
             p.outputbind = outputbind;
             p.outputscale = outputscale;
@@ -237,16 +237,16 @@ class PostFx final
         GLuint postfxfb = 0;
         int postfxw = 0,
             postfxh = 0;
-        struct postfxpass final
+        struct PostFxPass final
         {
             Shader *shader;
             vec4<float> params;
             uint inputs, freeinputs;
             int outputbind, outputscale;
 
-            postfxpass() : shader(nullptr), inputs(1), freeinputs(1), outputbind(0), outputscale(0) {}
+            PostFxPass() : shader(nullptr), inputs(1), freeinputs(1), outputbind(0), outputscale(0) {}
         };
-        std::vector<postfxpass> postfxpasses;
+        std::vector<PostFxPass> postfxpasses;
 };
 
 namespace
