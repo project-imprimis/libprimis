@@ -7,6 +7,17 @@ extern int bloomw, bloomh;
 extern int hdrprec;
 extern GLenum hdrformat;
 
+/**
+ * @brief Gets the HDR texture format associated with `prec`.
+ *
+ * If prec is below 1, returns `fallback`.
+ * If prec is 1, 2, or 3+, returns GL_RGB10, GL_R11F_G11F_B10F, or GL_RGB16F respectively.
+ *
+ * @param prec the precision indicator for the HDR tex
+ * @param fallback value to return if prec < 0
+ *
+ * @return a GL texture format number
+ */
 extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupbloom();
 extern void setupbloom(int w, int h);
