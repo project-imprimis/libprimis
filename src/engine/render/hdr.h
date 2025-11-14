@@ -20,6 +20,18 @@ extern GLenum hdrformat;
  */
 extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupbloom();
+
+/**
+ * @brief Sets up bloom with specified size.
+ *
+ * Will attempt to make a set of bloom buffers of size w pixels by h pixels. Uses texture
+ * type set by gethdrformat() and hdrprec variable. There are six FBOs and textures
+ * stored in bloomtex/bloomfbo which are modified by this setup operation.
+ *
+ * Size of the bl
+ * @param w width of bloom buffer
+ * @param h height of bloom buffer
+ */
 extern void setupbloom(int w, int h);
 extern void loadhdrshaders(int aa);
 extern void copyhdr(int sw, int sh, GLuint fbo);
