@@ -36,7 +36,7 @@ class gltf final : public skelloader<gltf>
             uint start, count;
         };
 
-        struct gltfhierarchy final
+        struct GLTFHierarchy final
         {
             string name;
             int parent, flags, start;
