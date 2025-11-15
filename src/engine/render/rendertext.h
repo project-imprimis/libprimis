@@ -43,13 +43,7 @@ extern void reloadfonts();
  *
  * @param f the font to attempt to set.
  */
-inline void setfont(Font *f)
-{
-    if(f)
-    {
-        curfont = f;
-    }
-}
+extern void setfont(Font *f);
 
 /**
  * @brief Attempts to set the global curfont variable with a named entry in fonts global

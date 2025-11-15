@@ -178,6 +178,14 @@ bool setfont(const char *name)
     return true;
 }
 
+void setfont(Font *f)
+{
+    if(f)
+    {
+        curfont = f;
+    }
+}
+
 static std::stack<Font *> fontstack;
 
 void pushfont()
