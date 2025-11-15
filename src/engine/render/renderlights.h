@@ -140,8 +140,8 @@ class GBuffer final
                   matrefractsy1,
                   matrefractsx2,
                   matrefractsy2;
-            uint matliquidtiles[lighttilemaxheight],
-                 matsolidtiles[lighttilemaxheight];
+            std::array<uint, lighttilemaxheight> matliquidtiles,
+                                                 matsolidtiles;
             int hasmats;
         };
 

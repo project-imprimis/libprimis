@@ -1251,8 +1251,8 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
     }
     mi.matliquidsx1 = mi.matliquidsy1 = mi.matsolidsx1 = mi.matsolidsy1 = mi.matrefractsx1 = mi.matrefractsy1 = 1;
     mi.matliquidsx2 = mi.matliquidsy2 = mi.matsolidsx2 = mi.matsolidsy2 = mi.matrefractsx2 = mi.matrefractsy2 = -1;
-    std::memset(mi.matliquidtiles, 0, sizeof(mi.matliquidtiles));
-    std::memset(mi.matsolidtiles, 0, sizeof(mi.matsolidtiles));
+    mi.matliquidtiles.fill(0);
+    mi.matsolidtiles.fill(0);
     int hasmats = 0;
     for(const vtxarray *va = visibleva; va; va = va->next)
     {
@@ -1275,7 +1275,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
             mi.matliquidsy1 = std::min(mi.matliquidsy1, sy1);
             mi.matliquidsx2 = std::max(mi.matliquidsx2, sx2);
             mi.matliquidsy2 = std::max(mi.matliquidsy2, sy2);
-            masktiles(mi.matliquidtiles, sx1, sy1, sx2, sy2);
+            masktiles(mi.matliquidtiles.data(), sx1, sy1, sx2, sy2);
             mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
             mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
             mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);
@@ -1313,7 +1313,7 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
             mi.matsolidsy1 = std::min(mi.matsolidsy1, sy1);
             mi.matsolidsx2 = std::max(mi.matsolidsx2, sx2);
             mi.matsolidsy2 = std::max(mi.matsolidsy2, sy2);
-            masktiles(mi.matsolidtiles, sx1, sy1, sx2, sy2);
+            masktiles(mi.matsolidtiles.data(), sx1, sy1, sx2, sy2);
             mi.matrefractsx1 = std::min(mi.matrefractsx1, sx1);
             mi.matrefractsy1 = std::min(mi.matrefractsy1, sy1);
             mi.matrefractsx2 = std::max(mi.matrefractsx2, sx2);

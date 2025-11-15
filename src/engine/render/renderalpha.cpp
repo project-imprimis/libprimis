@@ -193,7 +193,7 @@ void GBuffer::rendertransparent()
                 sy1 = mi.matliquidsy1;
                 sx2 = mi.matliquidsx2;
                 sy2 = mi.matliquidsy2;
-                std::memcpy(tiles.data(), mi.matliquidtiles, sizeof(tiles));
+                std::memcpy(tiles.data(), mi.matliquidtiles.data(), sizeof(tiles));
                 break;
             }
             case 1:
