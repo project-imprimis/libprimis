@@ -25,6 +25,12 @@ class md5 final : public skelloader<md5>
         bool loaddefaultparts() final;
 
         //static methods
+
+        /**
+         * @brief Returns name of this model format, "md5".
+         *
+         * @return string array containing "md5".
+         */
         static const char *formatname();
 
     private:
