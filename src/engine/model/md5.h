@@ -8,6 +8,16 @@ class md5 final : public skelloader<md5>
         md5(std::string name);
 
         //method overrides
+
+        /**
+         * @brief Returns that this format doesn't have a flipped y axis (false).
+         *
+         * This function returns true or false depending on the handedness of the
+         * coordinate system. md5 has a normal y axis orientation so `false` is
+         * always returned.
+         *
+         * @return always returns false
+         */
         bool flipy() const final;
         int type() const final;
         skelmeshgroup *newmeshes() final;
