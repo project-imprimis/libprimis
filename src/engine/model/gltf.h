@@ -42,10 +42,10 @@ class gltf final : public skelloader<gltf>
             int parent, flags, start;
         };
 
-        class gltfmeshgroup final : public skelmeshgroup
+        class GLTFMeshGroup final : public skelmeshgroup
         {
             public:
-                gltfmeshgroup();
+                GLTFMeshGroup();
                 //main anim loading functionality
                 const skelanimspec * loadanim(const std::string &) final { return nullptr;};
 

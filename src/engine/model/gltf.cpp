@@ -61,7 +61,7 @@ const char *gltf::formatname()
 
 gltf::skelmeshgroup *gltf::newmeshes()
 {
-    return new gltfmeshgroup;
+    return new GLTFMeshGroup;
 }
 
 bool gltf::loaddefaultparts()
@@ -86,11 +86,11 @@ bool gltf::loaddefaultparts()
 }
 
 
-gltf::gltfmeshgroup::gltfmeshgroup()
+gltf::GLTFMeshGroup::GLTFMeshGroup()
 {
 }
 
-bool gltf::gltfmeshgroup::loadmesh(const char *filename, float, part &p)
+bool gltf::GLTFMeshGroup::loadmesh(const char *filename, float, part &p)
 {
     try
     {
@@ -166,7 +166,7 @@ bool gltf::gltfmeshgroup::loadmesh(const char *filename, float, part &p)
     }
 }
 
-bool gltf::gltfmeshgroup::load(std::string_view meshfile, float smooth, part &p)
+bool gltf::GLTFMeshGroup::load(std::string_view meshfile, float smooth, part &p)
 {
     name = meshfile;
 
