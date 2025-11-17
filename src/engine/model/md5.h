@@ -19,6 +19,14 @@ class md5 final : public skelloader<md5>
          * @return always returns false
          */
         bool flipy() const final;
+
+        /**
+         * @brief Returns that this model is an MDL_MD5
+         *
+         * Returns the enum entry MDL_MD5 from the enum in model.h
+         *
+         * @return enum value MDL_MD5
+         */
         int type() const final;
         skelmeshgroup *newmeshes() final;
 
