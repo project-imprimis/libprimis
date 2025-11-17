@@ -28,7 +28,14 @@ extern void cleanupbloom();
  * type set by gethdrformat() and hdrprec variable. There are six FBOs and textures
  * stored in bloomtex/bloomfbo which are modified by this setup operation.
  *
- * Size of the bl
+ * Size of the bloom buffers vary; the first two bloom buffers are at least half
+ * and a quarter the size of g buffer size, respectively.
+ *
+ * The third and fourth bloom buffers ([2] [3]) are always the same size, and
+ * are bounded by either w/h or the bloomsize variable. (The bloomsize variable
+ * sets the maximum size of the bloom buffer as the exponent in a power of 2, e.g.
+ * 10 = 2^10 = 1024)
+ *
  * @param w width of bloom buffer
  * @param h height of bloom buffer
  */
