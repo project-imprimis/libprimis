@@ -28,7 +28,6 @@ class md5 final : public skelloader<md5>
          * @return enum value MDL_MD5
          */
         int type() const final;
-        skelmeshgroup *newmeshes() final;
 
         /**
          * @brief Attempts to load an md5mesh with default parameters.
@@ -101,6 +100,8 @@ class md5 final : public skelloader<md5>
                 md5vert *vertinfo;
         };
         static skelcommands<md5> md5commands;
+
+        skelmeshgroup *newmeshes() final;
 };
 
 #endif

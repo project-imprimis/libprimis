@@ -10,7 +10,6 @@ class gltf final : public skelloader<gltf>
         //method overrides
         bool flipy() const final;
         int type() const final;
-        skelmeshgroup *newmeshes() final;
         bool loaddefaultparts() final;
 
         //static methods
@@ -68,6 +67,8 @@ class gltf final : public skelloader<gltf>
         };
 
         static skelcommands<gltf> gltfcommands;
+
+        skelmeshgroup *newmeshes() final;
 };
 
 #endif

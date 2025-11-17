@@ -1034,8 +1034,7 @@ struct skelmodel : animmodel
     skelpart &addpart();
     meshgroup *loadmeshes(const std::string &name, float smooth = 2);
     meshgroup *sharemeshes(const std::string &name, float smooth = 2);
-    //virtual methods
-    virtual skelmeshgroup *newmeshes() = 0;
+
     //override methods
 
     /**
@@ -1051,6 +1050,10 @@ struct skelmodel : animmodel
      */
     int linktype(const animmodel *m, const part *p) const final;
     bool skeletal() const final;
+
+    protected:
+        //virtual methods
+        virtual skelmeshgroup *newmeshes() = 0;
 
 };
 
