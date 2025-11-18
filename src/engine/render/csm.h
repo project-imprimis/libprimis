@@ -26,7 +26,7 @@ class cascadedshadowmap final
             PolyFactor2
         };
 
-        struct splitinfo final
+        struct SplitInfo final
         {
             float nearplane;            // split distance to near plane
             float farplane;             // split distance to farplane
@@ -37,7 +37,7 @@ class cascadedshadowmap final
             std::array<plane, 4> cull;  // world space culling planes of the split's projected sides
         };
         matrix4 model;                  // model view is shared by all splits
-        std::array<splitinfo, csmmaxsplits> splits; // per-split parameters
+        std::array<SplitInfo, csmmaxsplits> splits; // per-split parameters
         vec lightview;                  // view vector for light
 
         void setup();                   // insert shadowmaps for each split frustum if there is sunlight

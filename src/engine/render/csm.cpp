@@ -211,7 +211,7 @@ int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::splitinfo &split = splits[i];
+        const cascadedshadowmap::SplitInfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
@@ -284,7 +284,7 @@ int cascadedshadowmap::calcspheresplits(const vec &center, float radius) const
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::splitinfo &split = splits[i];
+        const cascadedshadowmap::SplitInfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
@@ -357,7 +357,7 @@ void cascadedshadowmap::getprojmatrix()
     // compute each split projection matrix
     for(int i = 0; i < csmsplits; ++i)
     {
-        splitinfo &split = splits[i];
+        SplitInfo &split = splits[i];
         if(split.idx < 0)
         {
             continue;
@@ -394,7 +394,7 @@ void cascadedshadowmap::gencullplanes()
 {
     for(int i = 0; i < csmsplits; ++i)
     {
-        splitinfo &split = splits[i];
+        SplitInfo &split = splits[i];
         matrix4 mvp;
         mvp.mul(split.proj, model);
         vec4<float> px = mvp.rowx(),
@@ -417,7 +417,7 @@ void cascadedshadowmap::bindparams()
     vec  *csmoffsetv = csmoffset.reserve<vec>();
     for(int i = 0; i < csmsplits; ++i)
     {
-        cascadedshadowmap::splitinfo &split = splits[i];
+        cascadedshadowmap::SplitInfo &split = splits[i];
         if(split.idx < 0)
         {
             continue;
