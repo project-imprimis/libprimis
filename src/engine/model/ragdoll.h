@@ -68,7 +68,7 @@ class ragdollskel final
 
         struct rotfriction final
         {
-            int tri[2];
+            std::array<int, 2> tri;
         };
         std::vector<rotfriction> rotfrictions;
 
