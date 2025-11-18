@@ -77,7 +77,7 @@ class ragdollskel final
         //min/maxdist the limits to keep them within
         struct DistLimit final
         {
-            int vert[2];
+            std::array<int, 2> vert;
             float mindist, maxdist;
         };
         std::vector<DistLimit> distlimits;
