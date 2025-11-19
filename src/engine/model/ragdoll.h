@@ -52,7 +52,8 @@ class ragdollskel final
 
         struct joint final
         {
-            int bone, tri, vert[3];
+            int bone, tri;
+            std::array<int, 3> vert;
             float weight;
             matrix4x3 orient;
         };
