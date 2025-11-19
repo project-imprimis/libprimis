@@ -42,6 +42,7 @@ CLIENT_OBJS= \
 	testslot.o \
 	testutils.o \
 	testbih.o \
+	testmpr.o \
 
 #default: compiles the test executable and places it in the same directory as this file
 default: client

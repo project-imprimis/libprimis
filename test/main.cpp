@@ -16,6 +16,7 @@
 #include "testmd5.h"
 #include "testragdoll.h"
 #include "testbih.h"
+#include "testmpr.h"
 
 int main()
 {
@@ -38,5 +39,6 @@ int main()
     test_geomexts();
     test_matrix();
     test_bih();
+    test_mpr();
     return EXIT_SUCCESS;
 }
