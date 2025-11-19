@@ -60,7 +60,7 @@ class ragdollskel final
 
         struct rotlimit final
         {
-            int tri[2];
+            std::array<int, 2> tri;
             float maxangle, maxtrace;
             matrix3 middle;
         };
