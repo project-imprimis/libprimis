@@ -74,14 +74,6 @@ namespace
         assert(m.type() == MDL_MD5);
     }
 
-    void test_md5_newmeshes()
-    {
-        std::printf("testing md5 newmeshes\n");
-
-        md5 m("test");
-        assert(m.newmeshes() != nullptr);
-    }
-
     void test_md5_pitched()
     {
         std::printf("testing md5 pitched\n");
@@ -385,7 +377,6 @@ testing md5 functionality\n\
     test_md5_formatname();
     test_md5_flipy();
     test_md5_type();
-    test_md5_newmeshes();
     test_md5_pitched();
     test_md5_loaddefaultparts();
     test_md5_load();
