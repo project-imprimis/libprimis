@@ -13,6 +13,15 @@ namespace
         mpr::CubePlanes p(clip);
         assert(&p.p == &clip);
     }
+
+    void test_cubeplanes_center()
+    {
+        std::printf("testing cubeplanes::center\n");
+        clipplanes clip;
+        clip.clear();
+        mpr::CubePlanes p(clip);
+        assert(p.center() == vec(0,0,0));
+    }
 }
 
 void test_mpr()
@@ -23,4 +32,5 @@ testing mpr functionality\n\
 ===============================================================\n"
     );
     test_cubeplanes_ctor();
+    test_cubeplanes_center();
 }
