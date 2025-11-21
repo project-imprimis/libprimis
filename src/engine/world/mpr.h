@@ -12,6 +12,18 @@ namespace mpr
         CubePlanes(const clipplanes &p) : p(p) {}
 
         vec center() const;
+
+        /**
+         * @brief Returns element in clipplanes vec array with largest dot product
+         *
+         * Calculates the dot product of n with the elements of the clipplanes
+         * field p. Returns the value of the element with the largest dot product,
+         * or the last element if all have the same dot product.
+         *
+         * @param n the parameter to dot with vec elements
+         *
+         * @return the values of the largest dot product element
+         */
         vec supportpoint(const vec &n) const;
     };
 
