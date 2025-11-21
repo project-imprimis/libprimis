@@ -11,6 +11,11 @@ namespace mpr
 
         CubePlanes(const clipplanes &p) : p(p) {}
 
+        /**
+         * @brief Returns the value of the origin element of this object's clipplanes field.
+         *
+         * @return copy of this.p.o
+         */
         vec center() const;
 
         /**
