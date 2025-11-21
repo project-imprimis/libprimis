@@ -22,6 +22,56 @@ namespace
         mpr::CubePlanes p(clip);
         assert(p.center() == vec(0,0,0));
     }
+
+    void test_cubeplanes_supportpoint()
+    {
+        std::printf("testing cubeplanes::supportpoint\n");
+        {
+            clipplanes clip;
+            clip.v = {{
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0}
+            }};
+            mpr::CubePlanes p(clip);
+            assert(p.supportpoint(vec(0,0,0)) == vec(0,0,0));
+        }
+        {
+            clipplanes clip;
+            clip.v = {{
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,1,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,0,0}
+            }};
+            mpr::CubePlanes p(clip);
+            assert(p.supportpoint(vec(0,1,0)) == vec(0,1,0));
+        }
+        {
+            clipplanes clip;
+            clip.v = {{
+                {0,0,0},
+                {0,0,0},
+                {0,0,0},
+                {0,1,0},
+                {0,0,0},
+                {0,0,0},
+                {0,2,2},
+                {0,0,0}
+            }};
+            mpr::CubePlanes p(clip);
+            assert(p.supportpoint(vec(0,1,0)) == vec(0,2,2));
+        }
+    }
 }
 
 void test_mpr()
@@ -33,4 +83,5 @@ testing mpr functionality\n\
     );
     test_cubeplanes_ctor();
     test_cubeplanes_center();
+    test_cubeplanes_supportpoint();
 }
