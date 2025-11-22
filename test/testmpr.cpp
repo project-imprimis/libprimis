@@ -105,6 +105,23 @@ namespace
             assert(s.center() == vec(3,4,5));
         }
     }
+
+    void test_solidcube_supportpoint()
+    {
+        std::printf("testing solidcube::supportpoint\n");
+        {
+            mpr::SolidCube s(1,2,3,0);
+            assert(s.supportpoint(vec(1,1,1)) == vec(1,2,3));
+        }
+        {
+            mpr::SolidCube s(1,2,3,1);
+            assert(s.supportpoint(vec(1,1,1)) == vec(2,3,4));
+        }
+        {
+            mpr::SolidCube s(1,2,3,1);
+            assert(s.supportpoint(vec(0,1,1)) == vec(1,3,4));
+        }
+    }
 }
 
 void test_mpr()
@@ -119,4 +136,5 @@ testing mpr functionality\n\
     test_cubeplanes_supportpoint();
     test_solidcube_ctor();
     test_solidcube_center();
+    test_solidcube_supportpoint();
 }
