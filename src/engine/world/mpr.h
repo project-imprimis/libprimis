@@ -50,6 +50,16 @@ namespace mpr
          * @return vec containing sum of o, size/2
          */
         vec center() const;
+
+        /**
+         * @brief Returns o added to size in channels specified by passed vec.
+         *
+         * For fields in n that are greater than zero, adds size to that field in
+         * o. The values of n are irrelevant other than whether they are greater
+         * than zero.
+         *
+         * @return vec containing values of o conditionally summed with size
+         */
         vec supportpoint(const vec &n) const;
     };
 
