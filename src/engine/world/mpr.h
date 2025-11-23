@@ -41,6 +41,14 @@ namespace mpr
         SolidCube(const vec &o, int size) : o(o), size(size) {}
         SolidCube(const ivec &o, int size) : o(o), size(size) {}
 
+        /**
+         * @brief Returns SolidCube::o plus half of size.
+         *
+         * Returns value equal to elementwise sum of size/2 and o. That is, half
+         * of size is added to each of o's x, y, z fields.
+         *
+         * @return vec containing sum of o, size/2
+         */
         vec center() const;
         vec supportpoint(const vec &n) const;
     };
