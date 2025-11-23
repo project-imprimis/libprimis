@@ -159,7 +159,7 @@ namespace mpr
     };
 
     //templates
-    const float boundarytolerance = 1e-3f;
+    constexpr float boundarytolerance = 1e-3f;
 
     template<class T>
     bool collide(const T &p1, const EntOBB &p2)
