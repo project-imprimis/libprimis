@@ -69,6 +69,16 @@ namespace mpr
 
         Ent(const physent *ent) : ent(ent) {}
 
+        /**
+         * @brief Returns the center of this ent, modified by the ent's height.
+         *
+         * Returns values containing the x and y positions of the physent inside
+         * this ent, and the z position plus the eye correction. The eye
+         * correction is half of the difference between the aboveeye and
+         * eyeheight fields.
+         *
+         * @return the adjusted center position of the ent
+         */
         vec center() const;
     };
 
