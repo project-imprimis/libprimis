@@ -144,6 +144,13 @@ namespace mpr
 
         Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll);
 
+        /**
+         * @brief Returns the origin vector of this object.
+         *
+         * This is the field model.o.
+         *
+         * @return copy of o
+         */
         vec center() const;
     };
 
