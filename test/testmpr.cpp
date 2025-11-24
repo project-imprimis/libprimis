@@ -122,6 +122,15 @@ namespace
             assert(s.supportpoint(vec(0,1,1)) == vec(1,3,4));
         }
     }
+
+    void test_ent_ctor()
+    {
+        std::printf("testing ent::ent\n");
+        physent p;
+        mpr::Ent e(&p);
+        assert(e.ent == &p);
+        assert(e.ent != nullptr);
+    }
 }
 
 void test_mpr()
@@ -137,4 +146,5 @@ testing mpr functionality\n\
     test_solidcube_ctor();
     test_solidcube_center();
     test_solidcube_supportpoint();
+    test_ent_ctor();
 }
