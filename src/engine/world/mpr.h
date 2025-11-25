@@ -88,7 +88,6 @@ namespace mpr
             EntOBB(const physent *ent);
 
             vec contactface(const vec &wn, const vec &wdir) const;
-            vec localsupportpoint(const vec &ln) const;
             vec supportpoint(const vec &n) const;
 
             float left()   const;
@@ -101,6 +100,7 @@ namespace mpr
             matrix3 orient;
             float supportcoord(const vec &p) const;
             float supportcoordneg(const vec &p) const;
+            vec localsupportpoint(const vec &ln) const;
     };
 
     struct EntFuzzy : Ent
