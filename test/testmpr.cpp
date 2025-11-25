@@ -131,6 +131,36 @@ namespace
         assert(e.ent == &p);
         assert(e.ent != nullptr);
     }
+
+    void test_ent_center()
+    {
+        std::printf("testing ent::center\n");
+        {
+            physent p;
+            p.o = vec(1,2,3);
+            p.aboveeye = 0;
+            p.eyeheight = 0;
+            mpr::Ent e(&p);
+            assert(e.center() == vec(1,2,3));
+        }
+        {
+            physent p;
+            p.o = vec(1,2,3);
+            p.aboveeye = 2;
+            p.eyeheight = 0;
+            mpr::Ent e(&p);
+            assert(e.center() == vec(1,2,4));
+        }
+        {
+            physent p;
+            p.o = vec(1,2,3);
+            p.aboveeye = 4;
+            p.eyeheight = 2;
+            mpr::Ent e(&p);
+            assert(e.center() == vec(1,2,4));
+        }
+    }
+
 }
 
 void test_mpr()
@@ -147,4 +177,5 @@ testing mpr functionality\n\
     test_solidcube_center();
     test_solidcube_supportpoint();
     test_ent_ctor();
+    test_ent_center();
 }
