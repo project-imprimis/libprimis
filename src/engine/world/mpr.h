@@ -85,6 +85,14 @@ namespace mpr
     class EntOBB final : public Ent
     {
         public:
+            /**
+             * @brief Constructs this EntOBB, setting orient yaw direction field.
+             *
+             * Sets the yaw field to the yaw angle in the physent passed, converted
+             * to radians.
+             *
+             * @param ent the physent associated with this EntOBB
+             */
             EntOBB(const physent *ent);
 
             vec contactface(const vec &wn, const vec &wdir) const;
