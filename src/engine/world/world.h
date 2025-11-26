@@ -1,7 +1,3 @@
-
-constexpr int octaversion = 33;
-constexpr int currentmapversion = 1;   // bump if map format changes, see worldio.cpp
-
 constexpr float wateramplitude = 0.4f; //max wave height
 constexpr float wateroffset = 1.1f;    //wave offset from top of mat volume
 
