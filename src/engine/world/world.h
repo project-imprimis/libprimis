@@ -18,6 +18,15 @@ extern char *maptitle;
 extern std::vector<int> entgroup;
 extern std::vector<int> outsideents;
 
+/**
+ * @brief Cleans up and then removes ent information from cubeext.
+ *
+ * Only affects the passed cube's cubeext's ents (an octaentities object). Cleans
+ * up data associated with that octaentities object and then frees it from the
+ * heap.
+ *
+ * @param c the cube to modify the cubeext's octaentities of
+ */
 extern void freeoctaentities(cube &c);
 extern void entcancel();
 extern void entselectionbox(const entity &e, vec &eo, vec &es);
