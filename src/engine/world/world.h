@@ -1,3 +1,6 @@
+#ifndef WORLD_H_
+#define WORLD_H_
+
 constexpr float wateramplitude = 0.4f; //max wave height
 constexpr float wateroffset = 1.1f;    //wave offset from top of mat volume
 
@@ -25,3 +28,5 @@ namespace entities
     extern void deleteentity(extentity *e);
     extern std::vector<extentity *> &getents();
 }
+
+#endif
