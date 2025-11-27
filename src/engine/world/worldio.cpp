@@ -134,12 +134,13 @@ namespace
     static int savemapprogress = 0;
 }
 
-//used in iengine.h
+//used in iengine.h only
 const char * getclientmap()
 {
     return clientmap.c_str();
 }
 
+//used in iengine.h only
 void setmapname(const char * newname)
 {
     clientmap = std::string(newname);
