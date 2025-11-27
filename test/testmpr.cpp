@@ -12,6 +12,7 @@ namespace
         clipplanes clip;
         mpr::CubePlanes p(clip);
         assert(&p.p == &clip);
+        assert(&p.p != nullptr);
     }
 
     void test_cubeplanes_center()
