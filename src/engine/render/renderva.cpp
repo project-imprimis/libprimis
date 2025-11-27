@@ -185,9 +185,20 @@ namespace
     VARF(oqany, 0, 0, 2, occlusionengine.clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
     VAR(oqwait, 0, 1, 1);
 
+    /**
+     * @brief Returns query target
+     *
+     * GL_SAMPLES_PASSED if oqany is 0
+     * GL_ANY_SAMPLES_PASSED if oqany is 1 or ES3 is not present
+     * GL_ANY_SAMPLES_PASSED if oqany is 2 and ES3 is present
+     */
     GLenum querytarget()
     {
-        return oqany ? (oqany > 1 && hasES3 ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) : GL_SAMPLES_PASSED;
+        return oqany ?
+            (oqany > 1 && hasES3 ?
+                GL_ANY_SAMPLES_PASSED_CONSERVATIVE :
+                GL_ANY_SAMPLES_PASSED) :
+             GL_SAMPLES_PASSED;
     }
 
     GLuint bbvbo = 0,
