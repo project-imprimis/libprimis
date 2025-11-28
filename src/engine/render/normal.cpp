@@ -56,7 +56,7 @@ namespace //internal functionality not seen by other files
         vec surface;
     };
 
-    struct tnormal final
+    struct TNormal final
     {
         int next;
         float offset;
@@ -66,7 +66,7 @@ namespace //internal functionality not seen by other files
 
     std::unordered_map<NormalKey, NormalGroup> normalgroups;
     std::vector<Normal> normals;
-    std::vector<tnormal> tnormals;
+    std::vector<TNormal> tnormals;
     std::vector<int> smoothgroups;
 
     VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
@@ -96,7 +96,7 @@ namespace //internal functionality not seen by other files
         {
             itr = normalgroups.insert( { key, NormalGroup(key) } ).first;
         }
-        tnormal n;
+        TNormal n;
         n.next = (*itr).second.tnormals;
         n.offset = offset;
         n.normals[0] = normal1;
@@ -188,10 +188,10 @@ namespace //internal functionality not seen by other files
     bool findtnormal(const NormalGroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         float bestangle = lerpthreshold;
-        const tnormal *bestnorm = nullptr;
+        const TNormal *bestnorm = nullptr;
         for(int cur = g.tnormals; cur >= 0;)
         {
-            const tnormal &o = tnormals[cur];
+            const TNormal &o = tnormals[cur];
             const std::array<vec, 6> flats = { vec(-1,  0,  0),
                                                vec( 1,  0,  0),
                                                vec( 0, -1,  0),
