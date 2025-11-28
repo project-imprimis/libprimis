@@ -1,5 +1,6 @@
 
-/* md5.cpp: md5 (id tech 4) model support
+/**
+ * @brief md5 (id tech 4) model support
  *
  * Libprimis supports the md5 (id Tech 4) skeletal model format for animated
  * models. Ragdolls and animated models (such as players) use this model format.
