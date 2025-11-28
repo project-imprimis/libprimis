@@ -1,7 +1,7 @@
 #ifndef ANIMMODEL_H_
 #define ANIMMODEL_H_
 
-extern int fullbrightmodels, testtags, debugcolmesh;
+extern int testtags, debugcolmesh;
 
 const std::string modelpath = "media/model/";
 
