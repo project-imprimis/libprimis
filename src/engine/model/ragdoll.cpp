@@ -126,7 +126,7 @@ void ragdollskel::setuprotfrictions()
         {
             if(tris[i].shareverts(tris[j]))
             {
-                rotfriction r;
+                RotFriction r;
                 r.tri[0] = i;
                 r.tri[1] = j;
                 rotfrictions.push_back(r);

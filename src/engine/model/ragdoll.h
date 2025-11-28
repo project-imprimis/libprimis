@@ -67,11 +67,11 @@ class ragdollskel final
         };
         std::vector<rotlimit> rotlimits;
 
-        struct rotfriction final
+        struct RotFriction final
         {
             std::array<int, 2> tri;
         };
-        std::vector<rotfriction> rotfrictions;
+        std::vector<RotFriction> rotfrictions;
 
         //a distance constraint between two specified vertices
         //vert specifies the indices of the vertices in the verts vector, and
