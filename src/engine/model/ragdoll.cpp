@@ -244,8 +244,8 @@ void ragdolldata::calcboundsphere()
     }
 }
 
-VAR(ragdolltimestepmin, 1, 5, 50);
-VAR(ragdolltimestepmax, 1, 10, 50);
+static VAR(ragdolltimestepmin, 1, 5, 50);
+static VAR(ragdolltimestepmax, 1, 10, 50);
 
 void ragdolldata::init(const dynent *d)
 {
