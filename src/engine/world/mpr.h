@@ -82,6 +82,15 @@ namespace mpr
         vec center() const;
     };
 
+    /**
+     * @brief Entity Oriented Bounded Box
+     *
+     * The orientation of the box is set by the `orient` matrix and the size of
+     * the bounding box is set by the `ent->xradius`, `ent->yradius`, and
+     * `ent->aboveeye`/`ent->eyeheight`.
+     *
+     * The orient matrix is set by the yaw of the entity `ent`.
+     */
     class EntOBB final : public Ent
     {
         public:
