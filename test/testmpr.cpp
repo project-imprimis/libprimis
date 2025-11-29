@@ -175,6 +175,37 @@ namespace
         vec v = e.supportpoint(vec(1,1,1));
         assert(v == vec(2,2,3));
     }
+
+    void test_entobb_left_right()
+    {
+        std::printf("testing entobb::left and entobb::right\n");
+        {
+            physent p;
+            p.xradius = 1;
+            p.yradius = 1;
+            p.eyeheight = 1;
+            p.o = vec(0,0,0);
+            p.yaw = 0;
+            mpr::EntOBB e(&p);
+            float l = e.left();
+            float r = e.right();
+            assert(l == -r);
+            assert(l == -1.f);
+        }
+        {
+            physent p;
+            p.xradius = 2;
+            p.yradius = 1;
+            p.eyeheight = 1;
+            p.o = vec(0,0,0);
+            p.yaw = 0;
+            mpr::EntOBB e(&p);
+            float l = e.left();
+            float r = e.right();
+            assert(l == -r);
+            assert(l == -2.f);
+        }
+    }
 }
 
 void test_mpr()
@@ -193,4 +224,5 @@ testing mpr functionality\n\
     test_ent_ctor();
     test_ent_center();
     test_entobb_supportpoint();
+    test_entobb_left_right();
 }
