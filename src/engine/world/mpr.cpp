@@ -112,6 +112,7 @@ namespace mpr
                    ln.y > 0 ? ent->yradius : -ent->yradius,
                    ln.z > 0 ? ent->aboveeye : -ent->eyeheight);
     }
+
     vec EntOBB::supportpoint(const vec &n) const
     {
         return orient.transposedtransform(localsupportpoint(orient.transform(n))).add(ent->o);

@@ -96,6 +96,7 @@ namespace mpr
             EntOBB(const physent *ent);
 
             vec contactface(const vec &wn, const vec &wdir) const;
+
             vec supportpoint(const vec &n) const;
 
             float left()   const;
@@ -108,6 +109,19 @@ namespace mpr
             matrix3 orient;
             float supportcoord(const vec &p) const;
             float supportcoordneg(const vec &p) const;
+
+            /**
+             * @brief Returns ent sizes modified by passed ln parameter
+             *
+             * Returns vec(ent->xradius, ent->yradius, ent->eyeheight|-ent->aboveeye) with the signs of
+             * the components set by the signs of the components of `ln`. Values passed
+             * to `ln` are disregarded except for sign. Zero values of components of `ln`
+             * result in a negative sign.
+             *
+             * @param ln the vec to get sign information from
+             *
+             * @return position of ent modified by signs from ln
+             */
             vec localsupportpoint(const vec &ln) const;
     };
 
