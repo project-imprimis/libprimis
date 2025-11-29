@@ -162,6 +162,19 @@ namespace
         }
     }
 
+    void test_entobb_supportpoint()
+    {
+        std::printf("testing entobb::supportpoint\n");
+        physent p;
+        p.xradius = 1;
+        p.yradius = 1;
+        p.eyeheight = 1;
+        p.o = vec(1,1,1);
+        p.yaw = 0;
+        mpr::EntOBB e(&p);
+        vec v = e.supportpoint(vec(1,1,1));
+        assert(v == vec(2,2,3));
+    }
 }
 
 void test_mpr()
@@ -179,4 +192,5 @@ testing mpr functionality\n\
     test_solidcube_supportpoint();
     test_ent_ctor();
     test_ent_center();
+    test_entobb_supportpoint();
 }
