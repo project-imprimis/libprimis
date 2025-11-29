@@ -206,6 +206,37 @@ namespace
             assert(l == -2.f);
         }
     }
+
+    void test_entobb_front_back()
+    {
+        std::printf("testing entobb::front and entobb::back\n");
+        {
+            physent p;
+            p.xradius = 1;
+            p.yradius = 1;
+            p.eyeheight = 1;
+            p.o = vec(0,0,0);
+            p.yaw = 0;
+            mpr::EntOBB e(&p);
+            float f = e.front();
+            float b = e.back();
+            assert(f == -b);
+            assert(f == 1.f);
+        }
+        {
+            physent p;
+            p.xradius = 1;
+            p.yradius = 2;
+            p.eyeheight = 1;
+            p.o = vec(0,0,0);
+            p.yaw = 0;
+            mpr::EntOBB e(&p);
+            float f = e.front();
+            float b = e.back();
+            assert(f == -b);
+            assert(f == 2.f);
+        }
+    }
 }
 
 void test_mpr()
@@ -225,4 +256,5 @@ testing mpr functionality\n\
     test_ent_center();
     test_entobb_supportpoint();
     test_entobb_left_right();
+    test_entobb_front_back();
 }
