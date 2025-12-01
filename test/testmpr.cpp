@@ -237,6 +237,20 @@ namespace
             assert(f == 2.f);
         }
     }
+
+    void test_entobb_top()
+    {
+        std::printf("testing entobb::top\n");
+        {
+            physent p;
+            p.aboveeye = 1;
+            p.o = vec(0,0,0);
+            p.yaw = 0;
+            mpr::EntOBB e(&p);
+            float f = e.top();
+            assert(f == 1.f);
+        }
+    }
 }
 
 void test_mpr()
@@ -257,4 +271,5 @@ testing mpr functionality\n\
     test_entobb_supportpoint();
     test_entobb_left_right();
     test_entobb_front_back();
+    test_entobb_top();
 }
