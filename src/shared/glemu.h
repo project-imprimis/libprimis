@@ -1,6 +1,10 @@
 /**
  * @file glemu.h
- * @brief
+ * @brief Immediate mode OpenGL emulation.
+ *
+ * Provides functionality to emulate OpenGL 1 immediate mode rendering. This is
+ * used to allow legacy engine functionality to work with minimal adaptation and
+ * should not be used in new additions.
  */
 
 #ifndef GLEMU_H_
