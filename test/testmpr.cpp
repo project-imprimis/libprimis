@@ -265,6 +265,19 @@ namespace
             assert(f == -1.f);
         }
     }
+
+    void test_entfuzzy_left()
+    {
+        std::printf("testing entfuzzy::left\n");
+        {
+            physent p;
+            p.radius = 1;
+            p.o = vec(0,0,0);
+            mpr::EntFuzzy e(&p);
+            float f = e.left();
+            assert(f == -1.f);
+        }
+    }
 }
 
 void test_mpr()
@@ -287,4 +300,5 @@ testing mpr functionality\n\
     test_entobb_front_back();
     test_entobb_top();
     test_entobb_bottom();
+    test_entfuzzy_left();
 }
