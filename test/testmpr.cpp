@@ -266,6 +266,15 @@ namespace
         }
     }
 
+    void test_entfuzzy_ctor()
+    {
+        std::printf("testing entfuzzy::entfuzzy\n");
+        physent p;
+        mpr::EntFuzzy e(&p);
+        assert(e.ent == &p);
+        assert(e.ent != nullptr);
+    }
+
     void test_entfuzzy_left()
     {
         std::printf("testing entfuzzy::left\n");
@@ -365,6 +374,7 @@ testing mpr functionality\n\
     test_entobb_front_back();
     test_entobb_top();
     test_entobb_bottom();
+    test_entfuzzy_ctor();
     test_entfuzzy_left();
     test_entfuzzy_right();
     test_entfuzzy_front();
