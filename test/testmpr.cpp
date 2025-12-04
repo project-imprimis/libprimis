@@ -330,6 +330,19 @@ namespace
             assert(f == -1.f);
         }
     }
+
+    void test_entfuzzy_top()
+    {
+        std::printf("testing entfuzzy::top\n");
+        {
+            physent p;
+            p.aboveeye = 1;
+            p.o = vec(0,0,0);
+            mpr::EntFuzzy e(&p);
+            float f = e.top();
+            assert(f == 1.f);
+        }
+    }
 }
 
 void test_mpr()
@@ -357,4 +370,5 @@ testing mpr functionality\n\
     test_entfuzzy_front();
     test_entfuzzy_back();
     test_entfuzzy_bottom();
+    test_entfuzzy_top();
 }
