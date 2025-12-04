@@ -134,6 +134,13 @@ namespace mpr
             vec localsupportpoint(const vec &ln) const;
     };
 
+    /**
+     * @brief Unoriented bounding box entity
+     *
+     * EntFuzzy objects have their x,y boundaries (left,right,back,front) set by
+     * the radius field, and the z boundaries by the aboveeye/eyeheight
+     * fields. The specific x/y radii fields are not used.
+     */
     struct EntFuzzy : Ent
     {
         EntFuzzy(const physent *ent) : Ent(ent) {}
