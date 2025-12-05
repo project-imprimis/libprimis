@@ -338,6 +338,14 @@ namespace
             float f = e.bottom();
             assert(f == -1.f);
         }
+        {
+            physent p;
+            p.eyeheight = 1;
+            p.o = vec(0,0,2);
+            mpr::EntFuzzy e(&p);
+            float f = e.bottom();
+            assert(f == 1.f);
+        }
     }
 
     void test_entfuzzy_top()
@@ -350,6 +358,14 @@ namespace
             mpr::EntFuzzy e(&p);
             float f = e.top();
             assert(f == 1.f);
+        }
+        {
+            physent p;
+            p.aboveeye = 1;
+            p.o = vec(0,0,1);
+            mpr::EntFuzzy e(&p);
+            float f = e.top();
+            assert(f == 2.f);
         }
     }
 }
