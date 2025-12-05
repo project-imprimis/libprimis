@@ -24,7 +24,6 @@
 
 namespace
 {
-
     constexpr int octaversion = 33;
     constexpr int currentmapversion = 1;   // bump if map format changes, see worldio.cpp
 
