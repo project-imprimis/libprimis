@@ -6,6 +6,9 @@
 
 namespace
 {
+
+    //CubePlanes
+
     void test_cubeplanes_ctor()
     {
         std::printf("testing cubeplanes::cubeplanes\n");
@@ -74,6 +77,8 @@ namespace
         }
     }
 
+    //SolidCube
+
     void test_solidcube_ctor()
     {
         std::printf("testing solidcube::solidcube\n");
@@ -124,6 +129,8 @@ namespace
         }
     }
 
+    //Ent
+
     void test_ent_ctor()
     {
         std::printf("testing ent::ent\n");
@@ -161,6 +168,8 @@ namespace
             assert(e.center() == vec(1,2,4));
         }
     }
+
+    //EntOBB
 
     void test_entobb_supportpoint()
     {
@@ -265,6 +274,8 @@ namespace
             assert(f == -1.f);
         }
     }
+
+    //EntFuzzy
 
     void test_entfuzzy_ctor()
     {
