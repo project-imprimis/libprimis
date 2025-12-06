@@ -468,6 +468,16 @@ static void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum form
     }
 }
 
+/**
+ * @brief Returns that the value passed is of a cube map, or returns identity.
+ *
+ * Used to determine whether five other cube faces accompany this texture or whether
+ * it is a texture that exists on its own.
+ *
+ * @param subtarget the value to check if is part of a cube map
+ *
+ * @return GL_TEXTURE_CUBE_MAP if this texture is a face, or subtarget
+ */
 static GLenum textarget(GLenum subtarget)
 {
     switch(subtarget)
