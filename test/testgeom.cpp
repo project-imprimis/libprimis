@@ -3104,6 +3104,18 @@ namespace
             assert(intersected == false);
             assert(std::abs(10 - dist) < tolerance);
         }
+        {
+            //test case where line segment is very short
+            vec  from(0,0,0),
+                   to(0,0,0.0001),
+                start(1,1,5),
+                  end(0.01,1,5);
+            float radius = 0.1,
+                  dist = 10;
+            bool intersected = linecylinderintersect(from, to, start, end, radius, dist);
+            assert(intersected == false);
+            assert(std::abs(10 - dist) < tolerance);
+        }
     }
 
     void test_polyclip()
