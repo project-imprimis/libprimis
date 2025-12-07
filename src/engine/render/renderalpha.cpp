@@ -206,7 +206,7 @@ void GBuffer::rendertransparent()
                 sy1 = ai.alphabacksy1;
                 sx2 = ai.alphabacksx2;
                 sy2 = ai.alphabacksy2;
-                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
+                std::memcpy(tiles.data(), alphatiles.data(), tiles.size()*sizeof(uint));
                 break;
             }
             case 2:
@@ -219,7 +219,7 @@ void GBuffer::rendertransparent()
                 sy1 = ai.alphafrontsy1;
                 sx2 = ai.alphafrontsx2;
                 sy2 = ai.alphafrontsy2;
-                std::memcpy(tiles.data(), alphatiles, tiles.size()*sizeof(uint));
+                std::memcpy(tiles.data(), alphatiles.data(), tiles.size()*sizeof(uint));
                 if(hasmats&2)
                 {
                     sx1 = std::min(sx1, mi.matsolidsx1);

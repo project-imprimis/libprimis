@@ -2652,7 +2652,7 @@ GBuffer::AlphaInfo GBuffer::findalphavas()
     a.alphafrontsx2 = a.alphafrontsy2 = a.alphabacksx2 = a.alphabacksy2 = a.alpharefractsx2 = a.alpharefractsy2 = -1;
     int alphabackvas = 0,
         alpharefractvas = 0;
-    std::memset(alphatiles, 0, sizeof(alphatiles));
+    std::memset(alphatiles.data(), 0, sizeof(alphatiles));
     for(const vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->alphabacktris || va->alphafronttris || va->refracttris)
@@ -2674,7 +2674,7 @@ GBuffer::AlphaInfo GBuffer::findalphavas()
                 continue;
             }
             alphavas.push_back(va);
-            masktiles(alphatiles, sx1, sy1, sx2, sy2);
+            masktiles(alphatiles.data(), sx1, sy1, sx2, sy2);
             a.alphafrontsx1 = std::min(a.alphafrontsx1, sx1);
             a.alphafrontsy1 = std::min(a.alphafrontsy1, sy1);
             a.alphafrontsx2 = std::max(a.alphafrontsx2, sx2);

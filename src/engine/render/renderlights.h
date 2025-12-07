@@ -170,7 +170,7 @@ class GBuffer final
         };
         TransparentModelInfo tmodelinfo;
 
-        uint alphatiles[lighttilemaxheight];
+        std::array<uint, lighttilemaxheight> alphatiles;
 
         bool transparentlayer;
         bool inoq = false;
