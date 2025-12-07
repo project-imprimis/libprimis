@@ -738,7 +738,7 @@ static bool packblock(const block3 &b, B &buf)
     return true;
 }
 
-struct vslothdr final
+struct VSlotHeader final
 {
     ushort index;
     ushort slot;
@@ -763,11 +763,11 @@ static void packvslots(const cube &c, std::vector<uchar> &buf, std::vector<ushor
             {
                 used.push_back(index);
                 VSlot &vs = *vslots[index];
-                for(uint i = 0; i < sizeof(vslothdr); ++i)
+                for(uint i = 0; i < sizeof(VSlotHeader); ++i)
                 {
                     buf.emplace_back();
                 }
-                vslothdr &hdr = *reinterpret_cast<vslothdr *>(&(*(buf.end())) - sizeof(vslothdr));
+                VSlotHeader &hdr = *reinterpret_cast<VSlotHeader *>(&(*(buf.end())) - sizeof(VSlotHeader));
                 hdr.index = index;
                 hdr.slot = vs.slot->index;
                 packvslot(buf, vs);
@@ -784,7 +784,7 @@ static void packvslots(const block3 &b, std::vector<uchar> &buf)
     {
         packvslots(c[i], buf, used);
     }
-    for(uint i = 0; i < sizeof(vslothdr); ++i)
+    for(uint i = 0; i < sizeof(VSlotHeader); ++i)
     {
         buf.push_back(0);
     }
@@ -890,9 +890,9 @@ static void unpackvslots(cube &c, ucharbuf &buf)
 
 static void unpackvslots(block3 &b, ucharbuf &buf)
 {
-    while(buf.remaining() >= static_cast<int>(sizeof(vslothdr)))
+    while(buf.remaining() >= static_cast<int>(sizeof(VSlotHeader)))
     {
-        vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
+        VSlotHeader &hdr = *reinterpret_cast<VSlotHeader *>(buf.pad(sizeof(VSlotHeader)));
         if(!hdr.index)
         {
             break;
