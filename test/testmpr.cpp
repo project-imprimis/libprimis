@@ -398,6 +398,21 @@ namespace
             assert(m.orient.c == vec(0,0,1));
         }
     }
+
+    void test_model_center()
+    {
+        std::printf("testing model::center\n");
+        {
+            vec ent(1,1,1);
+            vec center(1,1,1);
+            vec radius(1,1,1);
+            int yaw = 0;
+            int pitch = 0;
+            int roll = 0;
+            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            assert(m.center() == vec(2,2,2));
+        }
+    }
 }
 
 void test_mpr()
@@ -428,4 +443,5 @@ testing mpr functionality\n\
     test_entfuzzy_bottom();
     test_entfuzzy_top();
     test_model_ctor();
+    test_model_center();
 }
