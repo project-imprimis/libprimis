@@ -180,6 +180,19 @@ namespace mpr
         vec o, radius;
         matrix3 orient;
 
+        /**
+         * @brief Creates a new object with specified position and orientation.
+         *
+         * Sets position to ent + center, with center modified by the rotation matrix
+         * defined by the Euler angle parameters `yaw` `pitch` `roll`.
+         *
+         * @param ent base position of ent
+         * @param center center offset from ent, modified by Euler angles
+         * @param radius radius of entity in basis directions
+         * @param yaw yaw parameter of rotation for center
+         * @param pitch pitch parameter of rotation for center
+         * @param roll roll parameter of rotation for center
+         */
         Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll);
 
         /**
