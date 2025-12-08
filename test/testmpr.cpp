@@ -379,6 +379,25 @@ namespace
             assert(f == 2.f);
         }
     }
+
+    void test_model_ctor()
+    {
+        std::printf("testing model::model\n");
+        {
+            vec ent(1,1,1);
+            vec center(1,1,1);
+            vec radius(1,1,1);
+            int yaw = 0;
+            int pitch = 0;
+            int roll = 0;
+            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            assert(m.o == vec(2,2,2));
+            assert(m.radius == vec(1,1,1));
+            assert(m.orient.a == vec(1,0,0));
+            assert(m.orient.b == vec(0,1,0));
+            assert(m.orient.c == vec(0,0,1));
+        }
+    }
 }
 
 void test_mpr()
@@ -408,4 +427,5 @@ testing mpr functionality\n\
     test_entfuzzy_back();
     test_entfuzzy_bottom();
     test_entfuzzy_top();
+    test_model_ctor();
 }
