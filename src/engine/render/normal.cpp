@@ -258,10 +258,10 @@ namespace //internal functionality not seen by other files
                 if(numverts)
                 {
                     vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
-                    vec vo(static_cast<ivec>(o).mask(~0xFFF));
+                    const vec vo(static_cast<ivec>(o).mask(~0xFFF));
                     for(int j = 0; j < numverts; ++j)
                     {
-                        vertinfo &v = verts[j];
+                        const vertinfo &v = verts[j];
                         pos[j] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
                     }
                     if(!(c.merged&(1<<i)) && !flataxisface(c, i))
@@ -281,8 +281,8 @@ namespace //internal functionality not seen by other files
                     {
                         convex = faceconvexity(v);
                     }
-                    int order = vis&4 || convex < 0 ? 1 : 0;
-                    vec vo(o);
+                    const int order = vis&4 || convex < 0 ? 1 : 0;
+                    const vec vo(o);
                     pos[numverts++] = static_cast<vec>(v[order]).mul(size/8.0f).add(vo);
                     if(vis&1)
                     {
@@ -305,7 +305,7 @@ namespace //internal functionality not seen by other files
                 }
 
                 const VSlot &vslot = lookupvslot(c.texture[i], false);
-                int smooth = vslot.slot->smooth;
+                const int smooth = vslot.slot->smooth;
 
                 if(!numplanes)
                 {
@@ -323,7 +323,7 @@ namespace //internal functionality not seen by other files
                 }
                 else
                 {
-                    vec avg = vec(planes[0]).add(planes[1]).normalize();
+                    const vec avg = vec(planes[0]).add(planes[1]).normalize();
                     norms[0] = addnormal(pos[0], smooth, avg);
                     norms[1] = addnormal(pos[1], smooth, planes[0]);
                     norms[2] = addnormal(pos[2], smooth, avg);
@@ -339,9 +339,9 @@ namespace //internal functionality not seen by other files
                 }
                 while(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1))
                 {
-                    int edge = tjoints[tj].edge,
-                        e1 = edge%(Face_MaxVerts+1),
-                        e2 = (e1+1)%numverts;
+                    const int edge = tjoints[tj].edge,
+                                e1 = edge%(Face_MaxVerts+1),
+                                e2 = (e1+1)%numverts;
                     const vec &v1 = pos[e1],
                               &v2 = pos[e2];
                     ivec d(vec(v2).sub(v1).mul(8));
@@ -351,21 +351,21 @@ namespace //internal functionality not seen by other files
                         d.neg();
                     }
                     reduceslope(d);
-                    int origin  =  static_cast<int>(std::min(v1[axis], v2[axis])*8)&~0x7FFF,
-                        offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
-                        offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
-                    vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)),
-                        n1, n2;
-                    float doffset = 1.0f / (offset2 - offset1);
+                    const int origin  =  static_cast<int>(std::min(v1[axis], v2[axis])*8)&~0x7FFF,
+                              offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
+                              offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
+                    const vec o = vec(v1).sub(vec(d).mul(offset1/8.0f));
+                    vec n1, n2;
+                    const float doffset = 1.0f / (offset2 - offset1);
                     while(tj >= 0)
                     {
-                        tjoint &t = tjoints[tj];
+                        const tjoint &t = tjoints[tj];
                         if(t.edge != edge)
                         {
                             break;
                         }
-                        float offset = (t.offset - offset1) * doffset;
-                        vec tpos = vec(d).mul(t.offset/8.0f).add(o);
+                        const float offset = (t.offset - offset1) * doffset;
+                        const vec tpos = vec(d).mul(t.offset/8.0f).add(o);
                         addtnormal(tpos, smooth, offset, norms[e1], norms[e2], v1, v2);
                         tj = t.next;
                     }
