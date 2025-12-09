@@ -6,6 +6,7 @@
 
 namespace
 {
+    constexpr float tolerance = 0.001;
 
     //CubePlanes
 
@@ -395,6 +396,22 @@ namespace
             assert(m.radius == vec(1,1,1));
             assert(m.orient.a == vec(1,0,0));
             assert(m.orient.b == vec(0,1,0));
+            assert(m.orient.c == vec(0,0,1));
+        }
+        {
+            vec ent(1,1,1);
+            vec center(1,1,1);
+            vec radius(1,1,1);
+            int yaw = 90;
+            int pitch = 0;
+            int roll = 0;
+            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            assert(m.o.x < tolerance);
+            assert(m.o.y - 2 < tolerance);
+            assert(m.o.z - 2 < tolerance);
+            assert(m.radius == vec(1,1,1));
+            assert(m.orient.a == vec(0,-1,0));
+            assert(m.orient.b == vec(1,0,0));
             assert(m.orient.c == vec(0,0,1));
         }
     }
