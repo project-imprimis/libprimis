@@ -61,7 +61,7 @@ namespace //internal functionality not seen by other files
         int next;
         float offset;
         std::array<int, 2> normals;
-        std::array<NormalGroup *, 2> groups;
+        std::array<const NormalGroup *, 2> groups;
     };
 
     std::unordered_map<NormalKey, NormalGroup> normalgroups;
