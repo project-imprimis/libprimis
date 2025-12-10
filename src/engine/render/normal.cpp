@@ -35,7 +35,7 @@ struct std::hash<NormalKey>
 {
     size_t operator()(const NormalKey &k) const
     {
-        auto vechash = std::hash<vec>();
+        std::hash<vec> vechash = std::hash<vec>();
         return vechash(k.pos);
     }
 };
