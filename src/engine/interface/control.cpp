@@ -126,13 +126,16 @@ void fatal(const char *s, ...)    // failure exit
     exit(EXIT_FAILURE);
 }
 
+//all four used in iengine
 int curtime = 0,
     lastmillis = 1,
     elapsedtime = 0,
     totalmillis = 1;
 
+//used in iengine
 dynent *player = nullptr;
 
+//used in iengine
 int initing = Init_Not;
 
 bool initwarning(const char *desc, int level, int type)
@@ -148,6 +151,7 @@ bool initwarning(const char *desc, int level, int type)
 static VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 static VARFP(clockfix, 0, 0, 1, clockreset());
 
+//used in iengine
 int getclockmillis()
 {
     int millis = SDL_GetTicks() - clockrealbase;
