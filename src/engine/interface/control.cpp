@@ -145,8 +145,8 @@ bool initwarning(const char *desc, int level, int type)
     return false;
 }
 
-VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
-VARFP(clockfix, 0, 0, 1, clockreset());
+static VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
+static VARFP(clockfix, 0, 0, 1, clockreset());
 
 int getclockmillis()
 {
