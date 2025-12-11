@@ -1,4 +1,5 @@
-/* water.cpp: rendering of water special effects
+/**
+ * @brief Rendering of water special effects
  *
  * water is a special material to render because of its dynamic effects caused
  * by the surface moving over time, and as a result has its own implementations
