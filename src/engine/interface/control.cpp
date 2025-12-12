@@ -53,6 +53,14 @@ namespace
 
     VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
     VARFP(clockfix, 0, 0, 1, clockreset());
+
+    void logoutfv(const char *fmt, va_list args, FILE *f)
+    {
+        if(f)
+        {
+            writelogv(f, fmt, args);
+        }
+    }
 }
 
 
@@ -61,7 +69,7 @@ bool inbetweenframes = false,
 
 FILE *logfile = nullptr; //used in iengine.h
 
-FILE *getlogfile()
+FILE *getlogfile() //used in iengine.h
 {
 #ifdef WIN32
     return logfile;
@@ -81,15 +89,7 @@ bool initsdl()
     return (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_GAMECONTROLLER) < 0 ? false : true);
 }
 
-void logoutfv(const char *fmt, va_list args, FILE *f)
-{
-    if(f)
-    {
-        writelogv(f, fmt, args);
-    }
-}
-
-void logoutf(const char *fmt, ...)
+void logoutf(const char *fmt, ...) //used in iengine.h
 {
     va_list args;
     va_start(args, fmt);
