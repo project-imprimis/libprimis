@@ -50,6 +50,9 @@ namespace
         clockrealbase = SDL_GetTicks();
         clockvirtbase = totalmillis;
     }
+
+    VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
+    VARFP(clockfix, 0, 0, 1, clockreset());
 }
 
 
@@ -147,9 +150,6 @@ bool initwarning(const char *desc, int level, int type)
     }
     return false;
 }
-
-static VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
-static VARFP(clockfix, 0, 0, 1, clockreset());
 
 //used in iengine
 int getclockmillis()
