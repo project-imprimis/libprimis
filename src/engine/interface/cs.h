@@ -86,7 +86,6 @@ enum CubeScriptCodes
     Ret_Float   = Value_Float<<Code_Ret,
 };
 
-
 struct stringslice final
 {
     const char *str;
@@ -97,7 +96,6 @@ struct stringslice final
 
     const char *end() const { return &str[len]; }
 };
-
 
 inline char *copystring(char *d, const stringslice &s, size_t len)
 {
@@ -129,10 +127,8 @@ inline double parsenumber(const char *s)
         || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
 }
 
-
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
-
 
 extern const char *intstr(int v);
 
@@ -160,6 +156,7 @@ inline const char *getstr(const identval &v, int type)
         }
     }
 }
+
 inline const char *tagval::getstr() const
 {
     return ::getstr(*this, type);
