@@ -33,7 +33,8 @@ int identflags = 0;
 const char *sourcefile = nullptr,
            *sourcestr  = nullptr;
 
-std::vector<char> strbuf[4];
+std::array<std::vector<char>, 4> strbuf;
+
 int stridx = 0;
 
 static constexpr int undoflag = 1<<Max_Args;

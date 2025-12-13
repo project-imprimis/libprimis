@@ -217,7 +217,7 @@ struct IdentLink final
 extern const char *sourcefile,
                   *sourcestr;
 
-extern std::vector<char> strbuf[4];
+extern std::array<std::vector<char>, 4> strbuf;
 extern int stridx;
 
 extern tagval *commandret;
