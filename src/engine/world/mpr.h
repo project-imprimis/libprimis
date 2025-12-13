@@ -496,9 +496,9 @@ namespace mpr
                     hit = true;
                 }
                 // Find the support point in the direction of the wedge face
-                vec v41 = p1.supportpoint(vec(n).neg());
-                vec v42 = p2.supportpoint(n);
-                vec v4 = vec(v42).sub(v41);
+                const vec v41 = p1.supportpoint(vec(n).neg());
+                const vec v42 = p2.supportpoint(n);
+                const vec v4 = vec(v42).sub(v41);
                 // If the boundary is thin enough or the origin is outside the support plane for the newly discovered vertex, then we can terminate
                 if(v4.dot(n) <= 0 || vec(v4).sub(v3).dot(n) <= boundarytolerance || j > 100)
                 {
