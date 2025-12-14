@@ -3,7 +3,7 @@
 
 struct octaentities;
 
-struct tjoint final
+struct TJoint final
 {
     int next;
     ushort offset;
@@ -95,7 +95,7 @@ class vtxarray final
 };
 
 extern ivec worldmin, worldmax;
-extern std::vector<tjoint> tjoints;
+extern std::vector<TJoint> tjoints;
 extern std::vector<vtxarray *> varoot;
 
 /**

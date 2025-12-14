@@ -1193,7 +1193,7 @@ void vacollect::addtris(const VSlot &vslot, int orient, const SortKey &key, vert
                     {
                         for(;;)
                         {
-                            tjoint &t = tjoints[ctj];
+                            TJoint &t = tjoints[ctj];
                             if(t.next < 0 || tjoints[t.next].edge != cedge)
                             {
                                 break;
@@ -1203,7 +1203,7 @@ void vacollect::addtris(const VSlot &vslot, int orient, const SortKey &key, vert
                     }
                     while(ctj >= 0)
                     {
-                        tjoint &t = tjoints[ctj];
+                        TJoint &t = tjoints[ctj];
                         if(t.edge != cedge)
                         {
                             break;

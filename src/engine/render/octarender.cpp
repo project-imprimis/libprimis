@@ -57,7 +57,7 @@ std::vector<vtxarray *> varoot;
 ivec worldmin(0, 0, 0),
      worldmax(0, 0, 0);
 
-std::vector<tjoint> tjoints;
+std::vector<TJoint> tjoints;
 
 VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by filling in geom t-joints
 
@@ -280,14 +280,14 @@ namespace
     void addtjoint(const EdgeGroup &g, const CubeEdge &e, int offset)
     {
         const int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
-        tjoint tj = tjoint();
+        TJoint tj = TJoint();
         tj.offset = vcoord / g.slope[g.axis];
         tj.edge = e.index;
         int prev = -1,
             cur  = ext(*e.c).tjoints;
         while(cur >= 0)
         {
-            const tjoint &o = tjoints[cur];
+            const TJoint &o = tjoints[cur];
             if(tj.edge < o.edge || (tj.edge==o.edge && (e.flags&CubeEdge_Flip ? tj.offset > o.offset : tj.offset < o.offset)))
             {
                 break;

@@ -359,7 +359,7 @@ namespace //internal functionality not seen by other files
                     const float doffset = 1.0f / (offset2 - offset1);
                     while(tj >= 0)
                     {
-                        const tjoint &t = tjoints[tj];
+                        const TJoint &t = tjoints[tj];
                         if(t.edge != edge)
                         {
                             break;
