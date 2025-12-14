@@ -14,6 +14,7 @@
 #include "rendertext.h"
 #include "renderttf.h"
 #include "renderva.h"
+#include "renderwindow.h"
 
 #include "interface/control.h"
 

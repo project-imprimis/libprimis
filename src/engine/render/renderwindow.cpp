@@ -46,6 +46,9 @@ int screenw = 0,
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
 
+bool inbetweenframes = false, //used in iengine.h
+     renderedframe = true; //used in iengine.h
+
 /**
  * @brief helper function for main menu rendering routines
  *

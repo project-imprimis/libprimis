@@ -10,8 +10,6 @@ extern int totalmillis;                 // total elapsed time
 extern FILE *getlogfile();
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 
-extern bool inbetweenframes, renderedframe;
-
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 
 extern int initing;

@@ -63,10 +63,6 @@ namespace
     }
 }
 
-
-bool inbetweenframes = false,
-     renderedframe = true;
-
 FILE *logfile = nullptr; //used in iengine.h
 
 FILE *getlogfile() //used in iengine.h

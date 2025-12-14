@@ -26,6 +26,8 @@ extern void cleargamma();
  */
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
+extern bool inbetweenframes;
+
 extern void renderbackground(const char *caption = nullptr, const Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr, bool force = false);
 extern void renderprogress(float bar, const char *text, bool background = false);
 
