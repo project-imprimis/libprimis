@@ -47,7 +47,7 @@ SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
 
 bool inbetweenframes = false, //used in iengine.h
-     renderedframe = true; //used in iengine.h
+     renderedframe = true; //used in iengine.h, set to true by main() call in game and false by setbackgroundinfo(), so true during most circumstances
 
 /**
  * @brief helper function for main menu rendering routines
