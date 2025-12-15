@@ -2089,6 +2089,13 @@ namespace
             v1.flip();
             assert(v1 == vec4<uchar>(10,10,10,10));
         }
+        {
+            vec4<uchar> v1(255,255,255,255);
+            v1.flip();
+            assert(v1 == vec4<uchar>(127,127,127,127));
+            v1.flip();
+            assert(v1 == vec4<uchar>(255,255,255,255));
+        }
     }
 
     void test_vec4_avg()
