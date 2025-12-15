@@ -422,6 +422,15 @@ class vacollect final
         void setupdata(vtxarray *va);
         bool emptyva();
         void optimize();
+        /**
+         * @brief Copies verts vector into passed memory space.
+         *
+         * Copies verts into this array and flips its norm and tangent values.
+         * Requires sizeof(vertex) * size(verts) amount of space or this function
+         * will cause a buffer overflow.
+         *
+         * @param buf the start of the memory area to copy values into
+         */
         void genverts(uchar *buf);
         void gendecal(const extentity &e, const DecalSlot &s, const decalkey &key);
         void gendecals();
