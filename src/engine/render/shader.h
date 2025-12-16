@@ -40,6 +40,17 @@ extern size_t getlocalparam(const std::string &name);
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
 
+/**
+ * @brief Attempts to get a shader from the shaders map.
+ *
+ * Tries to access shader associated with the key string passed. Returns a pointer
+ * to this shader if it is present in the map and is loaded, returns nullptr if
+ * no such shader exists for the given key or the shader is not loaded.
+ *
+ * @param name the key to search in the shaders map
+ *
+ * @return pointer to the Shader object or nullptr
+ */
 extern Shader *lookupshaderbyname(std::string_view name);
 
 /** @brief Get a shader by name string.
