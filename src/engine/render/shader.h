@@ -63,6 +63,22 @@ extern Shader *lookupshaderbyname(std::string_view name);
  * @return pointer to a Shader object corresponding to the name passed
  */
 extern Shader *useshaderbyname(std::string_view name);
+
+/**
+ * @brief Creates a shader and adds it to the shaders map, if one with this key does not exist.
+ *
+ * If there is already a shader in the shaders map with the key associated with `name`,
+ * returns a pointer to that shader and does not construct a new one.
+ *
+ * If no such shader exists in `shaders`, creates a new shader by executing in
+ * Cubescript the passed chain of variadic arguments. The expected format is similar
+ * to that of printf, with the first parameter being the string and following parameters
+ * being values inserted into format specifiers (e.g. %f or %d).
+ *
+ * @param name the key to associate with the shader object
+ * @param cmd the command to execute
+ * @param ... values to insert into format specifiers in cmd
+ */
 extern Shader *generateshader(std::string_view name, const char *cmd, ...);
 
 /**
