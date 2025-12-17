@@ -22,6 +22,14 @@ struct Font final
 
 extern Font *curfont;
 
+/**
+ * @brief Returns half of the nominal font height.
+ *
+ * Takes no parameters and uses no information about text being rendered, so only
+ * provides the nominal size of 1/2 the height.
+ *
+ * @return half of the font height (curfont->scale)
+ */
 extern int fontwidth();
 
 extern float textscale;
