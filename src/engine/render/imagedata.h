@@ -51,6 +51,13 @@ class ImageData final
         void collapsespec();
         void forcergbimage();
         void swizzleimage();
+
+        /**
+         * Replaces this ImageData with a new one at the specified size
+         *
+         * @param w the width of the new image
+         * @param h the height of the new image
+         */
         void scaleimage(int w, int h);
         void texmad(const vec &mul, const vec &add);
         void texpremul();
