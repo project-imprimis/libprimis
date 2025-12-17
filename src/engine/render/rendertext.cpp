@@ -36,6 +36,11 @@ static int fontdeftex = 0;
 
 Font *curfont = nullptr;
 
+int fontwidth()
+{
+    return FONTH/2;
+}
+
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(const char *name, const char *tex, const int *defaultw, const int *defaulth, const int *scale)
 {

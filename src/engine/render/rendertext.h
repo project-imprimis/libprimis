@@ -22,10 +22,7 @@ struct Font final
 
 extern Font *curfont;
 
-inline int fontwidth()
-{
-    return FONTH/2;
-}
+extern int fontwidth();
 
 extern float textscale;
 
