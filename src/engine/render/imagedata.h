@@ -66,9 +66,9 @@ class ImageData final
         bool texturedata(const Slot &slot, const Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr);
 
     private:
-        int bpp, /// bits per image pixel
-            w,   /// image's width
-            h;   /// image's height
+        int bpp, /// bytes per image pixel
+            w,   /// image's width in pixels
+            h;   /// image's height in pixels
 
         void *owner; /// the owner of the pixel data, generally an SDL_Surface
         void (*freefunc)(void *); /// the function that is called to free the surface associated with the object, SDL_FreeSurface()
