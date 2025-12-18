@@ -121,6 +121,15 @@ class ImageData final
          * @param d the imagedata to replace this object with.
          */
         void replace(ImageData &d);
+
+        /**
+         * @brief Tells this object to wrap the specified SDL surface
+         *
+         * Takes ownership of this SDL surface. The surface's free function is bound
+         * to this imagedata so its lifetime will be cleaned up by the paret ImageData.
+         *
+         * @param s the surface to wrap
+         */
         void wraptex(SDL_Surface *s); //wraps a SDL_Surface's data in this object
 
         void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
