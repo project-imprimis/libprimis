@@ -74,6 +74,18 @@ class ImageData final
         void (*freefunc)(void *); /// the function that is called to free the surface associated with the object, SDL_FreeSurface()
 
         void setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE);
+
+        /**
+         * @brief Returns size of the image
+         *
+         * If image has no alignment information, returns the number of bytes in the image
+         * (height times width times bit depth).
+         *
+         * Otherwise, scales size down proportionaly to the value of align. Adds sum of
+         * each power-of-two mipmap up to the total number of levels.
+         *
+         * @return number of bytes needed to store image
+         */
         int calcsize() const;
         /**
          * @brief Clears ownership of this object's pointers.
