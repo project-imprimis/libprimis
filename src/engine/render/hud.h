@@ -1,10 +1,10 @@
 #ifndef HUD_H_
 #define HUD_H_
 
-extern int statrate;
-extern int showhud;
+extern int statrate; //time between stat updates to show up, in ms
+extern int showhud; //bool-like flag, true if hud is being shown
 
-extern float conscale;
+extern float conscale; // size of console and readouts
 
 extern void gl_drawmainmenu();
 extern void gl_drawhud(int crosshairindex, void(* hud2d)());
