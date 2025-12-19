@@ -1799,7 +1799,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
     viewh = hudh();
     if(mainmenu)
     {
-        gl_drawmainmenu();
+        renderbackground(nullptr, nullptr, nullptr, nullptr, true);
     }
     else
     {

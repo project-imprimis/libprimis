@@ -6,7 +6,6 @@ extern int showhud; //bool-like flag, true if hud is being shown
 
 extern float conscale; // size of console and readouts
 
-extern void gl_drawmainmenu();
 extern void gl_drawhud(int crosshairindex, void(* hud2d)());
 
 /**

@@ -257,11 +257,6 @@ namespace
 //externally relevant functionality
 //from here to iengine section, functions stay local to the libprimis codebase
 
-void gl_drawmainmenu()
-{
-    renderbackground(nullptr, nullptr, nullptr, nullptr, true);
-}
-
 void gl_drawhud(int crosshairindex, void(* hud2d)())
 {
     /* we want to get the length of the frame at the end of the frame,
