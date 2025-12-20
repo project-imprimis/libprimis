@@ -9,6 +9,7 @@
 
 #include "imagedata.h"
 #include "octarender.h"
+#include "rendergl.h"
 #include "renderwindow.h"
 #include "shader.h"
 #include "shaderparam.h"
@@ -2868,9 +2869,9 @@ void screenshot(const char *filename)
         }
     }
 
-    ImageData image(screenw, screenh, 3);
-    glPixelStorei(GL_PACK_ALIGNMENT, texalign(screenw, 3));
-    glReadPixels(0, 0, screenw, screenh, GL_RGB, GL_UNSIGNED_BYTE, image.data);
+    ImageData image(hudw(), hudh(), 3);
+    glPixelStorei(GL_PACK_ALIGNMENT, texalign(hudw(), 3));
+    glReadPixels(0, 0, hudw(), hudh(), GL_RGB, GL_UNSIGNED_BYTE, image.data);
     savepng(path(buf), image, true);
 }
 
