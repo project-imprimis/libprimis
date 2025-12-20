@@ -192,13 +192,14 @@ static void resetmousemotion()
     }
 }
 
-/* checkmousemotion
+/**
+ * @brief Gets cursor information from SDL2
  *
  * gets the information from SDL2 about the amount by which the cursor has moved, and
  * and changes the passed dx, dy values by that amount
  *
- * int &dx: pointer to the mouse x delta
- * int &dy: pointer to the mouse y delta
+ * @param dx reference to the mouse x delta
+ * @param dy reference to the mouse y delta
  */
 static void checkmousemotion(int &dx, int &dy)
 {
