@@ -182,7 +182,11 @@ void ignoremousemotion()
     }
 }
 
-/* resetmousemotion: resets the cursor to the middle of the screen regardless of where it is
+/**
+ * @brief Resets the cursor to the middle of the screen
+ *
+ * Moves cursor to the center of the screen, regardless of where it is. This corresponds
+ * to the position at half of (hudw(), hudh()).
  */
 static void resetmousemotion()
 {
