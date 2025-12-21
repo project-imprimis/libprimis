@@ -136,7 +136,7 @@ static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
                        xhigh = (xn&0xFFFU) + 1;
             const uchar *xsrc = &ysrc[xi*BPP],
                         *xend = &xsrc[w*BPP];
-            uint t[BPP] = {0};
+            std::array<uint, BPP> t = {0};
             for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
             {
                 for(size_t i = 0; i < BPP; ++i)
@@ -154,7 +154,7 @@ static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
                 xend += stride;
                 for(uint hcur = h; --hcur; xsrc += stride, xend += stride)
                 {
-                    uint c[BPP] = {0};
+                    std::array<uint, BPP> c = {0};
                     for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
                         for(size_t i = 0; i < BPP; ++i)
                         {
@@ -165,7 +165,7 @@ static void scaletexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
                         t[i] += ((c[i]<<12) + xsrc[i]*xlow + xend[i]*xhigh)>>cscale;
                     }
                 }
-                uint c[BPP] = {0};
+                std::array<uint, BPP> c = {0};
                 for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
                     for(size_t i = 0; i < BPP; ++i)
                     {
