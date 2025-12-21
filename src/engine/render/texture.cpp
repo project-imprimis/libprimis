@@ -74,8 +74,7 @@ static void shifttexture(const uchar * RESTRICT src, uint sw, uint sh, uint stri
     {
         for(const uchar *xend = &src[sw*BPP], *xsrc = src; xsrc < xend; xsrc += wfrac*BPP, dst += BPP)
         {
-
-            uint t[BPP] = {0};
+            std::array<uint, BPP> t = {0};
             for(const uchar *ycur = xsrc, *xend = &ycur[wfrac*BPP], *yend = &src[hfrac*stride];
                 ycur < yend;
                 ycur += stride, xend += stride)
