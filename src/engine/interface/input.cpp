@@ -1,4 +1,5 @@
-/* input.h: SDL input handling
+/**
+ * @file SDL input handling
  *
  * SDL handles low-level window manager and key inputs for libprimis
  * this file determines how the game parses the SDL information it is given
