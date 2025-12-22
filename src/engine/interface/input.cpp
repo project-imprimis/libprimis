@@ -23,11 +23,11 @@
 //sets SDL relative mouse mode to enabled if 1, 0 otherwise
 static VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
-bool shouldgrab = false,
-     grabinput  = false,
-     minimized  = false,
-     canrelativemouse = true,
-     relativemouse    = false;
+bool grabinput  = false,
+     minimized  = false;
+static bool shouldgrab = false,
+            canrelativemouse = true,
+            relativemouse    = false;
 int keyrepeatmask = 0,
     textinputmask = 0;
 Uint32 textinputtime = 0;
