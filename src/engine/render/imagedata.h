@@ -49,6 +49,18 @@ class ImageData final
          * from 4 channels by averaging if 4 exist.
          */
         void collapsespec();
+
+        /**
+         * @brief Replaces this ImageData with one widened to 3 channels (r,g,b)
+         *
+         * Has no effect and does not replace this ImageData if at least 3 channels
+         * are already present.
+         *
+         * Replaces this ImageData with one containing three channels all identically
+         * set to the value of the first channel of the existing texture. (This
+         * means an RG texture will lose its green texture channel information,
+         * for example). Intended for use on grayscale textures.
+         */
         void forcergbimage();
         void swizzleimage();
 
