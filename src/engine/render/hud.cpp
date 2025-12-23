@@ -322,16 +322,16 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                 }
                 if(showfpsrange)
                 {
-                    char fpsstring[20];
-                    std::sprintf(fpsstring, "fps %d+%d-%d", curfps[0], curfps[1], curfps[2]);
-                    ttr.renderttf(fpsstring, {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
+                    std::array<char, 20> fpsstring;
+                    std::sprintf(fpsstring.data(), "fps %d+%d-%d", curfps[0], curfps[1], curfps[2]);
+                    ttr.renderttf(fpsstring.data(), {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
                     //draw_textf("fps %d+%d-%d", conw-7*FONTH, conh-FONTH*3/2, curfps[0], curfps[1], curfps[2]);
                 }
                 else
                 {
-                    char fpsstring[20];
-                    std::sprintf(fpsstring, "fps %d", curfps[0]);
-                    ttr.renderttf(fpsstring, {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
+                    std::array<char, 20> fpsstring;
+                    std::sprintf(fpsstring.data(), "fps %d", curfps[0]);
+                    ttr.renderttf(fpsstring.data(), {0xFF, 0xFF, 0xFF, 0},  conw-(1000*conscale), conh-(360*conscale));
                 }
                 roffset += FONTH;
             }
