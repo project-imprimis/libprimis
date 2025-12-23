@@ -612,7 +612,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     available = std::max(child1->available, child2->available);
 }
 
-VARF(lightcachesize, 4, 6, 12, clearlightcache());
+static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
 void clearlightcache(int id)
 {
