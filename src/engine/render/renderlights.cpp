@@ -1993,6 +1993,9 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     gle::end();
 }
 
+static VAR(fullbright, 0, 0, 1);           //toggles rendering at fullbrightlevel light
+static VAR(fullbrightlevel, 0, 160, 255);  //grayscale shade for lighting when at fullbright
+
 void GBuffer::bindlighttexs(int msaapass, bool transparent) const
 {
     if(msaapass)

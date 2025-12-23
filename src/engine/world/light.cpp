@@ -655,9 +655,6 @@ void cubeworld::calclight()
     allchanged();
 }
 
-VAR(fullbright, 0, 0, 1);           //toggles rendering at fullbrightlevel light
-VAR(fullbrightlevel, 0, 160, 255);  //grayscale shade for lighting when at fullbright
-
 void clearlights()
 {
     clearlightcache();
