@@ -1,5 +1,5 @@
 /**
- * @brief renderer functionality used for displaying rendering stats while the program is running
+ * @file renderer functionality used for displaying rendering stats while the program is running
  *
  * timers can be created with designated start/stop points in the code; sub-ms
  * times needed for accurate diagnosis possible (each frame is ~16.6ms @ 60Hz)
