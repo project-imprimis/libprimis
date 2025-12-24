@@ -101,7 +101,9 @@ void ImageData::setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels, int
 
 int ImageData::calclevelsize(int level) const
 {
-    return ((std::max(w>>level, 1)+align-1)/align)*((std::max(h>>level, 1)+align-1)/align)*bpp;
+    return ((std::max(w>>level, 1)+align-1)/align)*
+           ((std::max(h>>level, 1)+align-1)/align)*
+           bpp;
 }
 
 int ImageData::calcsize() const

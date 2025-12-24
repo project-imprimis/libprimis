@@ -35,6 +35,14 @@ class ImageData final
          */
         int depth() const;
 
+        /**
+         * @brief Returns size of nth level of this image,
+         *
+         * Returns size of the level specified, which is the align-corrected size of the texture
+         * at the `level`th mipmap, multiplied by the bytes per pixel
+         *
+         * @param level the mipmap level to calculate
+         */
         int calclevelsize(int level) const;
 
         void addglow(const ImageData &g, const vec &glowcolor);
