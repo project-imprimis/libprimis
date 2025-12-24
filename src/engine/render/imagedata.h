@@ -70,6 +70,17 @@ class ImageData final
          * for example). Intended for use on grayscale textures.
          */
         void forcergbimage();
+
+        /**
+         * @brief Creates a new image that increases the bit depth of the image.
+         *
+         * If there is two channels in the original image, replaces it with a four
+         * channel image where the first channel is copied to the rgb channels, and
+         * the second channel is copied to the a channel.
+         *
+         * If there is one channel in the original image, replaces it with a three
+         * channel image where all three channels are copies of the original channel.
+         */
         void swizzleimage();
 
         /**
