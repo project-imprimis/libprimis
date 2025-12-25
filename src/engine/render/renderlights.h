@@ -338,9 +338,9 @@ extern int smborder, smborder2;
 
 extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
-extern int spotlights;
-extern int volumetriclights;
-extern int nospeclights;
+extern int spotlights;       /// the number of spotlights in the world
+extern int volumetriclights; /// the number of volumetric lights in the world
+extern int nospeclights;     /// number of non specular lights in the world
 extern int debugfullscreen;
 extern int msaaedgedetect;
 extern int hdrclear;
