@@ -1,4 +1,5 @@
-/* renderlights.cpp: render lights to deferred buffers
+/**
+ * @file render lights to deferred buffers
  *
  * light entities and sunlight in the game is rendered to deferred buffers
  * "g-buffers" which are used to compose a scene
