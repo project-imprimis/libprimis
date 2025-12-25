@@ -328,7 +328,7 @@ bool usepacknorm()
 
 void maskgbuffer(const char *mask)
 {
-    GLenum drawbufs[4];
+    std::array<GLenum, 4> drawbufs;
     int numbufs = 0;
     while(*mask)
     {
@@ -359,7 +359,7 @@ void maskgbuffer(const char *mask)
             }
         }
     }
-    glDrawBuffers(numbufs, drawbufs);
+    glDrawBuffers(numbufs, drawbufs.data());
 }
 
 void GBuffer::cleanupmsbuffer()
