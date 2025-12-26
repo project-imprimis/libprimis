@@ -346,6 +346,12 @@ extern int msaaedgedetect;
 extern int hdrclear;
 extern int msaatonemap;
 extern float ldrscale;
+
+/**
+ * @brief Returns ldrscale, but scaled down  by 255
+ *
+ * @return ldrscale divided by 255
+ */
 extern float ldrscaleb(); //derived from ldrscale
 
 extern int vieww, viewh;
