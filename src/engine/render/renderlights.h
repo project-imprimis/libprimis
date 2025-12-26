@@ -341,7 +341,7 @@ extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lig
 extern int spotlights;       /// the number of spotlights in the world
 extern int volumetriclights; /// the number of volumetric lights in the world
 extern int nospeclights;     /// number of non specular lights in the world
-extern int debugfullscreen;
+extern int debugfullscreen;  /// boolean-like, 1 to draw debug on whole screen
 extern int msaaedgedetect;
 extern int hdrclear;
 extern int msaatonemap;
