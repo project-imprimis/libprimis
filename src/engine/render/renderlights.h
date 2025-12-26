@@ -431,6 +431,26 @@ extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
 extern void shadegbuffer();
 extern void setuplights(GBuffer &buf);
+
+/**
+ * @brief Draws any enabled debug buffers.
+ *
+ * Draws the following debug buffers in the following order:
+ *  - ao (debugao)
+ *  - shadowatlas (debushadowatlas)
+ *  - depth (debugdepth)
+ *  - stencil (debugstencil)
+ *  - refract (debugrefract)
+ *  - light scissor (debuglightscissor)
+ *  - rsm (debugrsm)
+ *  - rh (debugrh)
+ *  - aa (subpixelaa::Debug, debugtqaa)
+ *
+ * Later elements on this list will draw over the top of earlier ones. The showing
+ * of these elements are controlled by their respective variables (in parentheses).
+ *
+ * @return true if any debug buffer was drawn, false otherwise.
+ */
 extern bool debuglights();
 extern void cleanuplights();
 
