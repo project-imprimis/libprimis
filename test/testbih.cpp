@@ -37,6 +37,29 @@ namespace
         assert(m.numtris == 2);
     }
 
+    void test_bih_mesh_tribb_outside()
+    {
+        std::printf("test bih::mesh::tribb outside");
+        {
+            BIH::mesh::tribb b;
+            b.center = svec(0,0,0);
+            b.radius = svec(0,0,0);
+            assert(b.outside(ivec(0,0,0), ivec(0,0,0)) == false);
+        }
+        {
+            BIH::mesh::tribb b;
+            b.center = svec(0,0,0);
+            b.radius = svec(1,1,1);
+            assert(b.outside(ivec(0,0,0), ivec(1,1,1)) == false);
+        }
+        {
+            BIH::mesh::tribb b;
+            b.center = svec(0,0,0);
+            b.radius = svec(1,1,1);
+            assert(b.outside(ivec(0,0,0), ivec(0,0,1)) == false);
+        }
+    }
+
     void test_bih_node_axis()
     {
         std::printf("test bih::node axis\n");
@@ -134,6 +157,7 @@ testing bih functionality\n\
     );
     test_bih_mesh_ctor();
     test_bih_mesh_setmesh();
+    test_bih_mesh_tribb_outside();
     test_bih_node_axis();
     test_bih_node_childindex();
     test_bih_node_isleaf();
