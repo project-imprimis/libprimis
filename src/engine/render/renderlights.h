@@ -400,6 +400,13 @@ extern void loaddeferredlightshaders();
 extern void cleardeferredlightshaders();
 extern void clearshadowcache();
 
+
+/**
+ * @brief Cleans up shaders and textures associated with volumetric rendering.
+ *
+ * Cleans up the volumetric framebuffers, the volumetric textures, and the volumetric shaders.
+ * Sets the volw/volh variables indicating size of the buffers to -1.
+ */
 extern void cleanupvolumetric();
 
 extern void findshadowvas();
