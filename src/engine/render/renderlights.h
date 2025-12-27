@@ -427,6 +427,15 @@ extern int rhinoq;
 
 extern bool shouldworkinoq();
 extern void initgbuffer();
+
+/**
+ * @brief Returns whether to pack normal maps into the alpha channel
+ *
+ * Packing normals into alpha channel will be done if `forcepacknorm` is enabled
+ * of if `msaasamples` is nonzero or if the avatar mask is disabled
+ *
+ * @return true if normals are to be packed into the alpha channel
+ */
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
 extern void shadegbuffer();
