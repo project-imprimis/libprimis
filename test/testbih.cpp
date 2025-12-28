@@ -58,6 +58,18 @@ namespace
             b.radius = svec(1,1,1);
             assert(b.outside(ivec(0,0,0), ivec(0,0,1)) == false);
         }
+        {
+            BIH::mesh::tribb b;
+            b.center = svec(5,5,5);
+            b.radius = svec(1,1,1);
+            assert(b.outside(ivec(0,0,0), ivec(0,0,1)) == true);
+        }
+        {
+            BIH::mesh::tribb b;
+            b.center = svec(2,2,2);
+            b.radius = svec(1,1,1);
+            assert(b.outside(ivec(0,0,0), ivec(0,0,1)) == true);
+        }
     }
 
     void test_bih_node_axis()
