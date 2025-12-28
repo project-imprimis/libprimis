@@ -93,6 +93,18 @@ class BIH final
                 {
                     svec center, radius;
 
+                    /**
+                     * @brief Returns whether point at given radius is outside this tribb
+                     *
+                     * Returns whether the difference between the test point and the
+                     * tribb is larger than the sums of their radiuses in each dimension.
+                     * This checks whether the two points' radii interact with each
+                     * other (neither point must be within the radius of the other point,
+                     * it is sufficient that the radii overlap).
+                     *
+                     * @param bo the origin of the test point
+                     * @param br the radius of the text point
+                     */
                     bool outside(const ivec &bo, const ivec &br) const;
                 };
                 const tribb *tribbs;
