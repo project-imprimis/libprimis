@@ -791,6 +791,8 @@ class animmodel : public model
         /**
          * @brief Recalculates the bounding box parameters and returns them to the parameters passed
          *
+         * Sets the parent `model` object's fields `bbcenter` and `bbradius`.
+         *
          * @param center returns the value of this model's bounding box
          * @param radius returns the radius of this model's bounding box
          */
