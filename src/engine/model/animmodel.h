@@ -845,7 +845,8 @@ class animmodel : public model
                              *lastnormalmap;
 };
 
-/* modelloader
+/**
+ * @brief wrapper to load specific format into model object
  *
  * modelloader is a template for a wrapper to load a model into a model/animmodel
  * object from a transactional format, it is intended to be a child template class
