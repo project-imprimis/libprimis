@@ -1,5 +1,5 @@
 /**
- * @brief texture information class definitions
+ * @file texture information class definitions
  *
  * This file implements a class containing the associated date with a texture image.
  * It is only used by texture.cpp and shaderparam.cpp.
