@@ -911,7 +911,8 @@ MDL *modelloader<MDL, BASE>::loading = nullptr;
 template<class MDL, class BASE>
 std::string modelloader<MDL, BASE>::dir = "";
 
-/* modelcommands
+/**
+ * @brief Template for adding command bindings for a particular model format.
  *
  * this template class adds a series of commands to the cubescript binding
  * adaptable to a specific model type
