@@ -9,6 +9,7 @@
 
 namespace
 {
+    constexpr float tolerance = 0.001;
 
     void test_bih_mesh_ctor()
     {
@@ -35,6 +36,32 @@ namespace
         m.setmesh(nullptr, 2, nullptr, 1, nullptr, 1);
 
         assert(m.numtris == 2);
+    }
+
+    void test_bih_mesh_invxform()
+    {
+        std::printf("test bih::mesh invxform\n");
+        {
+            BIH::mesh bm;
+            matrix4x3 m = bm.xform;
+            bm.xform.identity();
+            m = bm.invxform();
+            assert(m.a.sub(vec(1,0,0)).magnitude() < tolerance);
+            assert(m.b.sub(vec(0,1,0)).magnitude() < tolerance);
+            assert(m.c.sub(vec(0,0,1)).magnitude() < tolerance);
+            assert(m.d.magnitude() < tolerance);
+        }
+        {
+            BIH::mesh bm;
+            matrix4x3 m = bm.xform;
+            bm.xform = matrix4x3({1,1,1}, {2,2,2}, {3,3,3}, {0,0,0});
+            m = bm.invxform();
+            vec inv(1.f/3, 1.f/6, 1.f/9);
+            assert(m.a.sub(inv).magnitude() < tolerance);
+            assert(m.b.sub(inv).magnitude() < tolerance);
+            assert(m.c.sub(inv).magnitude() < tolerance);
+            assert(m.d.magnitude() < tolerance);
+        }
     }
 
     void test_bih_mesh_tribb_outside()
@@ -169,6 +196,7 @@ testing bih functionality\n\
     );
     test_bih_mesh_ctor();
     test_bih_mesh_setmesh();
+    test_bih_mesh_invxform();
     test_bih_mesh_tribb_outside();
     test_bih_node_axis();
     test_bih_node_childindex();
