@@ -66,7 +66,7 @@ namespace
 
     void test_bih_mesh_tribb_outside()
     {
-        std::printf("test bih::mesh::tribb outside");
+        std::printf("test bih::mesh::tribb outside\n");
         {
             BIH::mesh::tribb b;
             b.center = svec(0,0,0);
