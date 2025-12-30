@@ -2868,7 +2868,7 @@ namespace UI
 
     static float uicontextscale = 0;
 
-    void uicontextscalecmd()
+    static void uicontextscalecmd()
     {
         floatret(FONTH*uicontextscale);
     }
