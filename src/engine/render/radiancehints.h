@@ -19,7 +19,7 @@ extern GLuint rhfbo;
  * defines the size, position & projection info for a reflective shadow map
  * the reflective shadow map is then used to calculate global illumination
  */
-class reflectiveshadowmap final
+class ReflectiveShadowMap final
 {
     public:
         std::array<plane, 4> cull;
@@ -34,7 +34,7 @@ class reflectiveshadowmap final
         void gencullplanes();
 };
 
-extern reflectiveshadowmap rsm;
+extern ReflectiveShadowMap rsm;
 
 class RadianceHints final
 {

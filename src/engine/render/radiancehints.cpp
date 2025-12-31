@@ -73,7 +73,7 @@ VAR(debugrsm, 0, 0, 2);                                                         
 VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
 
-reflectiveshadowmap rsm;
+ReflectiveShadowMap rsm;
 RadianceHints rh;
 Shader *rsmworldshader = nullptr;
 
@@ -951,7 +951,7 @@ void GBuffer::renderradiancehints() const
 // ============================ reflective shadow map =========================//
 //the reflective shadow map caches the terrain albedo for use by the radiance
 //hints algorithm: it needs to know how bright the surfaces the sun is shining on
-void reflectiveshadowmap::setup()
+void ReflectiveShadowMap::setup()
 {
     getmodelmatrix();
     getprojmatrix();
@@ -960,14 +960,14 @@ void reflectiveshadowmap::setup()
 
 // sets the reflectiveshadowmap's model to the global viewmatrix, then points it
 // to be oriented like the sun
-void reflectiveshadowmap::getmodelmatrix()
+void ReflectiveShadowMap::getmodelmatrix()
 {
     model = viewmatrix;                             //copy global view matrix
     model.rotate_around_x(sunlightpitch/RAD);       //orient camera in same yaw as sunlight
     model.rotate_around_z((180-sunlightyaw)/RAD);   //orient camera in same pitch as sunlight
 }
 
-void reflectiveshadowmap::getprojmatrix()
+void ReflectiveShadowMap::getprojmatrix()
 {
     lightview = vec(sunlightdir).neg();
     // find z extent
@@ -998,7 +998,7 @@ void reflectiveshadowmap::getprojmatrix()
 }
 
 //sets the culling plane objects' location within the reflectiveshadowmap object
-void reflectiveshadowmap::gencullplanes()
+void ReflectiveShadowMap::gencullplanes()
 {
     matrix4 mvp;
     mvp.mul(proj, model);
