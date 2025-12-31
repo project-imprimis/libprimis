@@ -1,4 +1,5 @@
-/* grass.cpp: billboarded grass generation atop cube geometry
+/**
+ * @file billboarded grass generation atop cube geometry
  *
  * grass can be rendered on the top side of geometry, in an "X" shape atop cubes
  * grass is billboarded, and faces the camera, and can be modified as to its draw
