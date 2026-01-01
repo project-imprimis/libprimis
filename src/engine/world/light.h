@@ -13,6 +13,15 @@ extern vec sunlightdir;
 extern void clearlights();
 extern void initlights();
 extern void clearlightcache(int id = -1);
+
+/**
+ * @brief Fills allof the cube's surfaces with empty surfaceinfo objects.
+ *
+ * Creates a cubeext (where the surfaces are stored) for the cube if no cubeext
+ * exists.
+ *
+ * @param c the cube to modify
+ */
 extern void brightencube(cube &c);
 extern void setsurface(cube &c, int orient, const surfaceinfo &surf, const vertinfo *verts, int numverts);
 
