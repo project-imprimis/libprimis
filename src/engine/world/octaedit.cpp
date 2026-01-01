@@ -526,8 +526,7 @@ void pastecube(const cube &src, cube &dst)
     copycube(src, dst);
 }
 
-//used in iengine.h
-void blockcopy(const block3 &s, int rgrid, block3 *b)
+static void blockcopy(const block3 &s, int rgrid, block3 *b)
 {
     *b = s;
     cube *q = b->c();
@@ -535,6 +534,7 @@ void blockcopy(const block3 &s, int rgrid, block3 *b)
     LOOP_XYZ(s, rgrid, copycube(c, q[i]); i++);
 }
 
+//used in iengine.h
 block3 *blockcopy(const block3 &s, int rgrid)
 {
     int bsize = sizeof(block3)+sizeof(cube)*s.size();
