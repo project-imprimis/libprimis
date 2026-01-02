@@ -550,6 +550,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
     return b;
 }
 
+//used in iengine.h
 void freeblock(block3 *b, bool alloced = true)
 {
     cube *q = b->c();
