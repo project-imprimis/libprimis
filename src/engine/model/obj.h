@@ -11,6 +11,12 @@ struct obj final : vertloader<obj>
      * @return the C string "obj"
      */
     static const char *formatname();
+
+    /**
+     * @brief Returns that this model type cannot be animated (false)
+     *
+     * @return false
+     */
     static bool cananimate();
     bool flipy() const final;
     int type() const final;
