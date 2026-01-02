@@ -5,6 +5,11 @@ struct obj final : vertloader<obj>
 {
     obj(std::string name);
 
+    /**
+     * @brief Returns the file type of this obj file, "obj"
+     *
+     * @return the C string "obj"
+     */
     static const char *formatname();
     static bool cananimate();
     bool flipy() const final;
