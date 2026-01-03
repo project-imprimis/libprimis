@@ -34,6 +34,12 @@ struct obj final : vertloader<obj>
      * @return MDL_OBJ (1)
      */
     int type() const final;
+
+    /**
+     * @brief Returns that this model is not skeletal (false)
+     *
+     * @return false
+     */
     bool skeletal() const final;
 
     struct objmeshgroup final : vertmeshgroup
