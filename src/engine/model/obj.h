@@ -25,6 +25,14 @@ struct obj final : vertloader<obj>
      * @return true
      */
     bool flipy() const final;
+
+    /**
+     * @brief Returns the enum type of this model
+     *
+     * Returns MDL_OBJ in model.h
+     *
+     * @return MDL_OBJ (1)
+     */
     int type() const final;
     bool skeletal() const final;
 
