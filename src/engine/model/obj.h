@@ -18,6 +18,12 @@ struct obj final : vertloader<obj>
      * @return false
      */
     static bool cananimate();
+
+    /**
+     * @brief Returns that this model type has a flipped y axis (true)
+     *
+     * @return true
+     */
     bool flipy() const final;
     int type() const final;
     bool skeletal() const final;
