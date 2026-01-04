@@ -98,6 +98,13 @@ class md5 final : public skelloader<md5>
                  * turned into model data.
                  */
                 void cleanup();
+
+                /**
+                 * @brief Vertex building function helper for loadmesh()
+                 *
+                 * Reads model data from weightinfo/joints and saves it to the verts
+                 * array. Adds weights and blendcombos using addweight() and addblendcombo().
+                 */
                 void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
                 void load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir);
