@@ -89,6 +89,14 @@ class md5 final : public skelloader<md5>
             public:
                 md5mesh(std::string_view name, meshgroup *m);
                 ~md5mesh();
+                /**
+                 * @brief Cleans up the heap allocated vertex and weight information
+                 *
+                 * Frees and then sets to `nullptr` the arrays weightinfo/vertinfo that
+                 * contain weight and vertex information. Called at the end of the mesh
+                 * loadmesh() routine after the information from these arrays have been
+                 * turned into model data.
+                 */
                 void cleanup();
                 void buildverts(const std::vector<md5joint> &joints);
                 //md5 model loader
