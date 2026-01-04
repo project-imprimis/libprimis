@@ -8,6 +8,12 @@ class gltf final : public skelloader<gltf>
         gltf(std::string name);
 
         //method overrides
+
+        /**
+         * @brief Returns that this model type does not have a flipped y coord (false)
+         *
+         * @return false
+         */
         bool flipy() const final;
         int type() const final;
         bool loaddefaultparts() final;
