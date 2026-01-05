@@ -252,6 +252,16 @@ void ImageData::forcergbimage()
     replace(d);
 }
 
+/**
+ * @brief Writes data to pixels of an ImageData
+ *
+ * Attempts to write to four channels (r,g,b,a) of a texture; if there are less than
+ * 4 channels in the destination of the texture operation, uses READ_WRITE_TEX.
+ *
+ * @param t imagedata object, destination of texture write
+ * @param s imagedata object, source of texture data
+ * @param body code to execute
+ */
 #define READ_WRITE_RGBA_TEX(t, s, body) \
     { \
         if(t.bpp >= 4) \
