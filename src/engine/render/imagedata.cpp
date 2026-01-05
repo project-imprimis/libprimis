@@ -255,8 +255,8 @@ void ImageData::forcergbimage()
 /**
  * @brief Writes data to pixels of an ImageData
  *
- * Attempts to write to four channels (r,g,b,a) of a texture; if there are less than
- * 4 channels in the destination of the texture operation, uses READ_WRITE_TEX.
+ * Attempts to write to four channels (r,g,b,a) of a texture; if there are at least
+ * 4 channels already in the destination of the texture operation, uses READ_WRITE_TEX.
  *
  * @param t imagedata object, destination of texture write
  * @param s imagedata object, source of texture data
