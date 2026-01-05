@@ -46,6 +46,18 @@ class ImageData final
         int calclevelsize(int level) const;
 
         void addglow(const ImageData &g, const vec &glowcolor);
+
+        /**
+         * @brief Assigns specular (a) channel using information from another ImageData.
+         *
+         * For each 'a' channel in the bytes of the image, sets its value to that
+         * of the the RGB channels or the grayscale channel from the provided ImageData.
+         * If there are three channels present, asusmes an RGB texture and averages
+         * those channels to create the assigned output; if there is less than three
+         * channels, only uses the first (grayscale) channel.
+         *
+         * @param s the ImageData to get specular information from
+         */
         void mergespec(const ImageData &s);
         void mergedepth(const ImageData &z);
         void mergealpha(const ImageData &s);
