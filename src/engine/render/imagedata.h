@@ -59,6 +59,15 @@ class ImageData final
          * @param s the ImageData to get specular information from
          */
         void mergespec(const ImageData &s);
+
+        /**
+         * @brief Copies the depth information to this texture
+         *
+         * Copies the information in the first channel of the provided ImageData
+         * to the z/alpha channel of this image.
+         *
+         * @param z the depth (z) information to read from
+         */
         void mergedepth(const ImageData &z);
         void mergealpha(const ImageData &s);
 
