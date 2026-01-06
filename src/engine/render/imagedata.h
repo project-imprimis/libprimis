@@ -69,6 +69,16 @@ class ImageData final
          * @param z the depth (z) information to read from
          */
         void mergedepth(const ImageData &z);
+
+        /**
+         * @brief Copies the alpha information to this texture
+         *
+         * If there is no alpha channel in the source ImageData, copies the first
+         * channel from the donor texture. Otherwise, copies the alpha channel from
+         * the donor texture to this texture.
+         *
+         * @param s the alpha (a) information to read from
+         */
         void mergealpha(const ImageData &s);
 
         /**
