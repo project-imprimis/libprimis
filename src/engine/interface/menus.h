@@ -11,7 +11,11 @@ extern int mainmenu; /// boolean-like value whether the main menu UI is being sh
  */
 extern void addchange(const char *desc, int type);
 
-//clears out pending changes added by addchange()
+/**
+ * @brief Clears out pending changes added by addchange()
+ *
+ * @param type the mask of the changes to clear
+ */
 extern void clearchanges(int type);
 extern void clearmainmenu();
 
