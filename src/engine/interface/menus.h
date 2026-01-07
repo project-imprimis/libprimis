@@ -8,6 +8,9 @@ extern int mainmenu; /// boolean-like value whether the main menu UI is being sh
  *
  * if applydialog = 0 then this function does nothing
  * if showchanges = 1 then this function does not display changes UI at the end
+ *
+ * @param desc text description of the change to display to the screen
+ * @param type mask value for the change, to allow clearing later
  */
 extern void addchange(const char *desc, int type);
 
