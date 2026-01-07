@@ -14,7 +14,7 @@ struct EditLine final
         set(init);
     }
 
-    bool empty();
+    bool empty() const;
     void clear();
     bool grow(int total, const char *fmt = "", ...);
     void set(const char *str, int slen = -1);

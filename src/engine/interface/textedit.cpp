@@ -37,7 +37,7 @@ inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth
     cy = static_cast<int>(cyf);
 }
 
-bool EditLine::empty()
+bool EditLine::empty() const
 {
     return len <= 0;
 }
