@@ -20,6 +20,14 @@ extern void addchange(const char *desc, int type);
  * @param type the mask of the changes to clear
  */
 extern void clearchanges(int type);
+
+/**
+ * @brief Shows changes and clears menus if main menu is enabled
+ *
+ * Enables any pending changes to be shown.
+ *
+ * If main menu is on and multiplayer is enabled, clears all menus.
+ */
 extern void clearmainmenu();
 
 #endif
