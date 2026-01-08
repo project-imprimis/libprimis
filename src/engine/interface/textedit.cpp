@@ -226,7 +226,7 @@ void EditLine::combinelines(std::vector<EditLine> &src)
 
 // editor
 
-bool Editor::empty()
+bool Editor::empty() const
 {
     return lines.size() == 1 && lines[0].empty();
 }

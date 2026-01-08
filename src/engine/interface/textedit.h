@@ -69,7 +69,7 @@ class Editor final
             clear(nullptr);
         }
 
-        bool empty();
+        bool empty() const;
         void clear(const char *init = "");
         void init(const char *inittext);
         void updateheight();
