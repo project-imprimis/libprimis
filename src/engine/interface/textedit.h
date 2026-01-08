@@ -14,6 +14,11 @@ struct EditLine final
         set(init);
     }
 
+    /**
+     * @brief Returns whether the line's text has any content.
+     *
+     * @return true if the line has at least one character
+     */
     bool empty() const;
     void clear();
     bool grow(int total, const char *fmt = "", ...);
