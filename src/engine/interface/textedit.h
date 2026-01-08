@@ -74,6 +74,14 @@ class Editor final
             clear(nullptr);
         }
 
+        /**
+         * @brief Retuns if there are no lines added to this editor.
+         *
+         * There will be a single blank line with contents "" created by the ctor,
+         * so the presence of this line will not cause this to return "true"
+         *
+         * @return true if any line other than the ctor's "" has been added
+         */
         bool empty() const;
         void clear(const char *init = "");
         void init(const char *inittext);
