@@ -1,35 +1,40 @@
 #ifndef TEXTEDIT_H_
 #define TEXTEDIT_H_
 
-struct EditLine final
+class EditLine final
 {
-    enum { Chunk_Size = 256 };
+    public:
+        enum { Chunk_Size = 256 };
 
-    char *text;
-    int len, maxlen;
+        char *text;
+        int len;
 
-    EditLine() : text(nullptr), len(0), maxlen(0) {}
-    EditLine(const char *init) : text(nullptr), len(0), maxlen(0)
-    {
-        set(init);
-    }
+        EditLine() : text(nullptr), len(0), maxlen(0) {}
+        EditLine(const char *init) : text(nullptr), len(0), maxlen(0)
+        {
+            set(init);
+        }
 
-    /**
-     * @brief Returns whether the line's text has any content.
-     *
-     * @return true if the line has at least one character
-     */
-    bool empty() const;
-    void clear();
-    bool grow(int total, const char *fmt = "", ...);
-    void set(const char *str, int slen = -1);
-    void prepend(const char *str);
-    void append(const char *str);
-    bool read(std::fstream& f, int chop = -1);
-    void del(int start, int count);
-    void chop(int newlen);
-    void insert(char *str, int start, int count = 0);
-    void combinelines(std::vector<EditLine> &src);
+        /**
+         * @brief Returns whether the line's text has any content.
+         *
+         * @return true if the line has at least one character
+         */
+        bool empty() const;
+        void clear();
+        void set(const char *str, int slen = -1);
+        void prepend(const char *str);
+        void append(const char *str);
+        bool read(std::fstream& f, int chop = -1);
+        void del(int start, int count);
+        void chop(int newlen);
+        void insert(char *str, int start, int count = 0);
+        void combinelines(std::vector<EditLine> &src);
+    private:
+        bool grow(int total, const char *fmt = "", ...);
+
+        int maxlen;
+
 };
 
 enum
