@@ -341,7 +341,7 @@ namespace UI
                 }
             }
 
-            void buildchildren(uint *contents)
+            void buildchildren(const uint *contents)
             {
                 if((*contents&Code_OpMask) == Code_Exit)
                 {
@@ -2819,7 +2819,7 @@ namespace UI
             popfont();
         }
 
-        void buildchildren(uint *contents)
+        void buildchildren(const uint *contents)
         {
             pushfont();
             setfont(font);
