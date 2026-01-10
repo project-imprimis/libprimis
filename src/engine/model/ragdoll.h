@@ -20,7 +20,7 @@ class ragdollskel final
 
         struct tri final
         {
-            int vert[3];
+            std::array<int, 3> vert;
 
             /**
              * @brief Determines whether two tris share any vertex indices.
