@@ -2,7 +2,7 @@
 #define RAGDOLL_H_
 
 /**
- * @brief A representation of a ragdoll for a class of models.
+ * @file A representation of a ragdoll for a class of models.
  *
  * ragdollskel defines a skeletal animation object for use by skelmodel, which
  * is able to be dynamically modified by physics (rather than by an animation file)
