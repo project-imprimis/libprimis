@@ -1,5 +1,5 @@
 /**
- * @brief hud & main menu rendering code
+ * @file hud & main menu rendering code
  *
  * includes hud compass, hud readouts, crosshair handling
  * main hud rendering
