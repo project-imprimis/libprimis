@@ -99,6 +99,16 @@ class Editor final
         bool region();
         EditLine &currentline();
         void copyselectionto(Editor *b);
+
+        /**
+         * @brief Returns heap-allocated char array containing whole contents of this editor.
+         *
+         * Creates a char array with size equal to the sum of all lines' values,
+         * then copies the contents of those lines to the return array. Separates
+         * each line with a `\n` newline character.
+         *
+         * @return char array of this editor's contents
+         */
         char *tostring() const;
         char *selectiontostring();
         void insert(const char *s);
