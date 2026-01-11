@@ -108,10 +108,18 @@ class Editor final
          * @brief Moves the editor cursor position up one line.
          *
          * Sets the cursor y position (cy) to one line higher (reduces value of
-         * cy). This can cause an overflow to negative values if cy is already
+         * cy). This can cause an underflow to negative values if cy is already
          * less than or equal to zero.
          */
         void scrollup();
+
+        /**
+         * @brief Moves the editor cursor position down one line.
+         *
+         * Sets the cursor y position (cy) to one line lower (increases value of
+         * cy). This can cause an overflow to values above maxy if cy is already
+         * greater than or equal to maxy.
+         */
         void scrolldown();
         void key(int code);
         void input(const char *str, int len);
