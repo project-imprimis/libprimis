@@ -103,6 +103,14 @@ class Editor final
         char *selectiontostring();
         void insert(const char *s);
         void insertallfrom(const Editor *b);
+
+        /**
+         * @brief Moves the editor cursor position up one line.
+         *
+         * Sets the cursor y position (cy) to one line higher (reduces value of
+         * cy). This can cause an overflow to negative values if cy is already
+         * less than or equal to zero.
+         */
         void scrollup();
         void scrolldown();
         void key(int code);
