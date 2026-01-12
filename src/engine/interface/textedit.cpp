@@ -1139,7 +1139,7 @@ void inittextcmds()
     addcommand("textsave", reinterpret_cast<identfun>(textsave), "s", Id_Command);
     addcommand("textload", reinterpret_cast<identfun>(textload), "s", Id_Command);
     addcommand("textcopy", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b);; }), "", Id_Command);;
-    addcommand("textpaste", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b);; }), "", Id_Command);;
+    addcommand("textpaste", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; const Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b);; }), "", Id_Command);;
     addcommand("textmark", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1=mark, 2=unmark), return current mark setting if no args*/ if(*m) { textfocus->mark(*m==1); } else { intret(textfocus->region() ? 1 : 2); }; }), "i", Id_Command);;
     addcommand("textselectall", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->selectall();; }), "", Id_Command);;
     addcommand("textclear", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->clear();; }), "", Id_Command);;
