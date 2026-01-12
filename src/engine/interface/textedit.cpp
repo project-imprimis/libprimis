@@ -1012,17 +1012,16 @@ void flusheditors()
 
 Editor *useeditor(std::string name, int mode, bool focus, const char *initval)
 {
-    for(size_t i = 0; i < editors.size(); i++)
+    for(Editor *i : editors)
     {
-        if(editors[i]->name == name)
+        if(i->name == name)
         {
-            Editor *e = editors[i];
             if(focus)
             {
-                textfocus = e;
+                textfocus = i;
             }
-            e->active = true;
-            return e;
+            i->active = true;
+            return i;
         }
     }
     if(mode < 0)
