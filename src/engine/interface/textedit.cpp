@@ -1185,7 +1185,7 @@ void inittextcmds()
         const Editor *b = useeditor(pastebuffer, Editor_Forever, false);
         textfocus->insertallfrom(b);
     }), "", Id_Command);
-    addcommand("textmark", reinterpret_cast<identfun>(+[] (int *m)
+    addcommand("textmark", reinterpret_cast<identfun>(+[] (const int *m)
     {
         if(!textfocus || identflags&Idf_Overridden)
         {
