@@ -1232,7 +1232,7 @@ void inittextcmds()
             return;
         }
         /* execute script commands from the buffer (0=all, 1=selected region only)*/
-        char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring();
+        const char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring();
         execute(script);
         delete[] script;
     }), "i", Id_Command);
