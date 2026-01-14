@@ -9,6 +9,15 @@ namespace UI
      * @return true if any window is accepting input, false otherwise
      */
     bool hascursor();
+
+    /**
+     * @brief Returns to reference parameters the position of the cursor
+     *
+     * Valid cursor ranges in x and y direction are 0...1 (regardless of aspect ratio)
+     *
+     * @brief x reference to return x position to
+     * @param y reference to return y position to
+     */
     void getcursorpos(float &x, float &y);
 
     /**
