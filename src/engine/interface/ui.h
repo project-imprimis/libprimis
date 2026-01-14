@@ -26,6 +26,17 @@ namespace UI
      * This is the coordinates (0.5, 0.5).
      */
     void resetcursor();
+
+    /**
+     * @brief Moves cursor relative to previous position
+     *
+     * No effect if there is no cursor. Clamps final position to 0..1 in each dimension.
+     * Amount of total movement is scaled by `uisensitivity` divided by hudw() or hudh
+     * for x,y dimensions specifically.
+     *
+     * @param dx amount to move in x direction
+     * @param dx amount to move in y direction
+     */
     bool movecursor(int dx, int dy);
     bool keypress(int code, bool isdown);
     bool textinput(const char *str, int len);
