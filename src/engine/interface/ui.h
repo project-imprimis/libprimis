@@ -10,6 +10,12 @@ namespace UI
      */
     bool hascursor();
     void getcursorpos(float &x, float &y);
+
+    /**
+     * @brief Returns the cursor to the center of the screen.
+     *
+     * This is the coordinates (0.5, 0.5).
+     */
     void resetcursor();
     bool movecursor(int dx, int dy);
     bool keypress(int code, bool isdown);
