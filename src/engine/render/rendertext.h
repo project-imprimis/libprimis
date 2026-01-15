@@ -68,6 +68,15 @@ extern bool setfont(const char *name);
  * added to fontstack even if it is null or duplicated.
  */
 extern void pushfont();
+
+/**
+ * @brief Pop whatever font is on top of the fontstack to curfont
+ *
+ * fontstack is a std::stack of font pointers. Sets curfont to whatever is on top
+ * of the stack, unless it is empty, in which case nothing happens
+ *
+ * @return true if curfont was assigned, false if no elements to assign
+ */
 extern bool popfont();
 extern void gettextres(int &w, int &h);
 
