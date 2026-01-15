@@ -42,6 +42,12 @@ namespace UI
     bool textinput(const char *str, int len);
     float abovehud();
 
+    /**
+     * @brief Creates a new UI World object, used globally for UI functionality.
+     *
+     * Should only be called once. Does not clean up or de-allocate any existing UI world.
+     * Call cleanup() before calling setup() if a world object already exists.
+     */
     void setup();
     void update();
     void render();
