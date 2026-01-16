@@ -1175,7 +1175,7 @@ void inittextcmds()
         }
         Editor *b = useeditor(pastebuffer, Editor_Forever, false);
         textfocus->copyselectionto(b);
-    }), "", Id_Command);;
+    }), "", Id_Command);
     addcommand("textpaste", reinterpret_cast<identfun>(+[] ()
     {
         if(!textfocus || identflags&Idf_Overridden)
