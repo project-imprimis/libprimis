@@ -269,6 +269,18 @@ extern void printvar(const ident *id, int i);
 
 extern void clearoverrides();
 
+/**
+ * @brief Drops sleep commands, optionally only dropping sleeps with override bit set.
+ *
+ * If clearoverrides is `false`, drops every element in the sleepcmds vector.
+ *
+ * If clearoverrides is `true`, keeps elements where Idf_Overridden bit is not set
+ * and discards elements where Idf_Overridden bit is set.
+ *
+ * Idf_Overridden is an enum element in command.h.
+ *
+ * @param clearoverrides whether to drop elements with Idf_Overridden bit set.
+ */
 extern void clearsleep(bool clearoverrides = true);
 
 extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
