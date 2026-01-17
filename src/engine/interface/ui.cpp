@@ -4799,9 +4799,9 @@ namespace UI
                 }
             };
         }), "ii", Id_Command);
-        addcommand("uiclamp", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent) { buildparent->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
-        addcommand("uiclamp-", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent && buildchild > 0) { buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
-        addcommand("uiclamp*", reinterpret_cast<identfun>(+[] (int *left, int *right, int *top, int *bottom) { { if(buildparent) { for(int i = 0; i < buildchild; ++i) { buildparent->children[i]->setclamp(*left, *right, *top, *bottom); } } }; }), "iiii", Id_Command);
+        addcommand("uiclamp", reinterpret_cast<identfun>(+[] (const int *left, const int *right, const int *top, const int *bottom) { { if(buildparent) { buildparent->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
+        addcommand("uiclamp-", reinterpret_cast<identfun>(+[] (const int *left, const int *right, const int *top, const int *bottom) { { if(buildparent && buildchild > 0) { buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
+        addcommand("uiclamp*", reinterpret_cast<identfun>(+[] (const int *left, const int *right, const int *top, const int *bottom) { { if(buildparent) { for(int i = 0; i < buildchild; ++i) { buildparent->children[i]->setclamp(*left, *right, *top, *bottom); } } }; }), "iiii", Id_Command);
         addcommand("uigroup", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(Object, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uihlist", reinterpret_cast<identfun>(+[] (float *space, uint *children) { BUILD(HorizontalList, o, o->setup(*space), children); }), "fe", Id_Command);
         addcommand("uivlist", reinterpret_cast<identfun>(+[] (float *space, uint *children) { BUILD(VerticalList, o, o->setup(*space), children); }), "fe", Id_Command);
