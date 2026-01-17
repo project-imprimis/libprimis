@@ -4771,33 +4771,27 @@ namespace UI
         addcommand("uifocus+?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild], t, f); }), "tt", Id_Command);
         addcommand("uialign", reinterpret_cast<identfun>(+[] (const int *xalign, const int *yalign)
         {
+            if(buildparent)
             {
-                if(buildparent)
-                {
-                    buildparent->setalign(*xalign, *yalign);
-                }
-            };
+                buildparent->setalign(*xalign, *yalign);
+            }
         }), "ii", Id_Command);
         addcommand("uialign-", reinterpret_cast<identfun>(+[] (const int *xalign, const int *yalign)
         {
+            if(buildparent && buildchild > 0)
             {
-                if(buildparent && buildchild > 0)
-                {
-                    buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
-                }
-            };
+                buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
+            }
         }), "ii", Id_Command);
         addcommand("uialign*", reinterpret_cast<identfun>(+[] (const int *xalign, const int *yalign)
         {
+            if(buildparent)
             {
-                if(buildparent)
+                for(int i = 0; i < buildchild; ++i)
                 {
-                    for(int i = 0; i < buildchild; ++i)
-                    {
-                        buildparent->children[i]->setalign(*xalign, *yalign);
-                    }
+                    buildparent->children[i]->setalign(*xalign, *yalign);
                 }
-            };
+            }
         }), "ii", Id_Command);
         addcommand("uiclamp", reinterpret_cast<identfun>(+[] (const int *left, const int *right, const int *top, const int *bottom) { { if(buildparent) { buildparent->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
         addcommand("uiclamp-", reinterpret_cast<identfun>(+[] (const int *left, const int *right, const int *top, const int *bottom) { { if(buildparent && buildchild > 0) { buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom); } }; }), "iiii", Id_Command);
