@@ -1136,6 +1136,13 @@ namespace UI
             return hidden;
         }
 
+        /**
+         * @brief Returns whether any visible window in this World allows inputs
+         *
+         * Does not count hidden windows.
+         *
+         * @return true if any window allows inputs, or false if none do
+         */
         bool allowinput() const
         {
             LOOP_WINDOWS(w,
