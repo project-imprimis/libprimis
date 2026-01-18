@@ -1252,9 +1252,9 @@ namespace UI
                 return;
             }
             float offset = 0,
-                  sx = 0,
-                  cspace = (w - subw) / std::max(static_cast<int>(children.size()) - 1, 1),
-                  cstep = (w - subw) / children.size();
+                  sx = 0;
+            const float cspace = (w - subw) / std::max(static_cast<int>(children.size()) - 1, 1),
+                        cstep = (w - subw) / children.size();
             for(int i = 0; i < static_cast<int>(children.size()); i++)
             {
                 Object *o = children[i];
