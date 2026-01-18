@@ -1255,9 +1255,8 @@ namespace UI
                   sx = 0;
             const float cspace = (w - subw) / std::max(static_cast<int>(children.size()) - 1, 1),
                         cstep = (w - subw) / children.size();
-            for(int i = 0; i < static_cast<int>(children.size()); i++)
+            for(Object *o : children)
             {
-                Object *o = children[i];
                 o->x = offset;
                 offset += o->w + cspace;
                 float sw = o->w + cstep;
