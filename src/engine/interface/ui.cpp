@@ -757,6 +757,21 @@ namespace UI
                 return nullptr;
             }
 
+            /**
+             * @brief Searches for an object in the same tree as this object.
+             *
+             * This is the tree structure defined by the `parent` and `children`
+             * fields in the object. Searches recursively upwards starting with the
+             * children of this object and then the children of its parent object, until
+             * the entire tree is searched.
+             *
+             * Returns the object farthest down the tree with a matching name. If
+             * none are found, returns nullptr.
+             *
+             * @param name the name of the element to find
+             *
+             * @return pointer to the object if found, or nullptr if not.
+             */
             Object *findsibling(const char *name) const
             {
                 for(const Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
