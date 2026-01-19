@@ -1364,35 +1364,35 @@ namespace UI
         {
             widths.clear();
             heights.clear();
-
-            int column = 0,
-                row = 0;
-            for(Object *o : children)
             {
-                o->layout();
-                if(column >= static_cast<int>(widths.size()))
+                size_t column = 0,
+                       row = 0;
+                for(Object *o : children)
                 {
-                    widths.push_back(o->w);
-                }
-                else if(o->w > widths[column])
-                {
-                    widths[column] = o->w;
-                }
-                if(row >= static_cast<int>(heights.size()))
-                {
-                    heights.push_back(o->h);
-                }
-                else if(o->h > heights[row])
-                {
-                    heights[row] = o->h;
-                }
-                column = (column + 1) % columns;
-                if(!column)
-                {
-                    row++;
+                    o->layout();
+                    if(column >= widths.size())
+                    {
+                        widths.push_back(o->w);
+                    }
+                    else if(o->w > widths[column])
+                    {
+                        widths[column] = o->w;
+                    }
+                    if(row >= heights.size())
+                    {
+                        heights.push_back(o->h);
+                    }
+                    else if(o->h > heights[row])
+                    {
+                        heights[row] = o->h;
+                    }
+                    column = (column + 1) % columns;
+                    if(!column)
+                    {
+                        row++;
+                    }
                 }
             }
-
             subw = subh = 0;
             for(const float &i : widths)
             {
