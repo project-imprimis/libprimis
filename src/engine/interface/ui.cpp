@@ -1581,7 +1581,7 @@ namespace UI
                 }
                 for(int j = 0; j < cols; ++j)
                 {
-                    Object *c = o->children[j];
+                    const Object *c = o->children[j];
                     if(c->w > widths[j])
                     {
                         widths[j] = c->w;
