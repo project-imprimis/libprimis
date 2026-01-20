@@ -4855,10 +4855,29 @@ namespace UI
                 }
             }
         }), "iiii", Id_Command);
-        addcommand("uigroup", reinterpret_cast<identfun>(+[] (const uint *children) { BUILD(Object, o, o->setup(), children); }), "e", Id_Command);
-        addcommand("uihlist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children) { BUILD(HorizontalList, o, o->setup(*space), children); }), "fe", Id_Command);
-        addcommand("uivlist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children) { BUILD(VerticalList, o, o->setup(*space), children); }), "fe", Id_Command);
-        addcommand("uilist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children) { { for(Object *parent = buildparent; parent && !parent->istype<VerticalList>(); parent = parent->parent) { if(parent->istype<HorizontalList>()) { BUILD(VerticalList, o, o->setup(*space), children); return; } } BUILD(HorizontalList, o, o->setup(*space), children); }; }), "fe", Id_Command);
+        addcommand("uigroup", reinterpret_cast<identfun>(+[] (const uint *children)
+        {
+            BUILD(Object, o, o->setup(), children);
+        }), "e", Id_Command);
+        addcommand("uihlist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children)
+        {
+            BUILD(HorizontalList, o, o->setup(*space), children);
+        }), "fe", Id_Command);
+        addcommand("uivlist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children)
+        {
+            BUILD(VerticalList, o, o->setup(*space), children);
+        }), "fe", Id_Command);
+        addcommand("uilist", reinterpret_cast<identfun>(+[] (const float *space, const uint *children)
+        {
+            for(Object *parent = buildparent; parent && !parent->istype<VerticalList>(); parent = parent->parent)
+            {
+                if(parent->istype<HorizontalList>())
+                {
+                    BUILD(VerticalList, o, o->setup(*space), children); return;
+                }
+            }
+            BUILD(HorizontalList, o, o->setup(*space), children);
+        }), "fe", Id_Command);
         addcommand("uigrid", reinterpret_cast<identfun>(+[] (int *columns, float *spacew, float *spaceh, uint *children) { BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children); }), "iffe", Id_Command);
         addcommand("uitableheader", reinterpret_cast<identfun>(+[] (uint *columndata, uint *children) { BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children); }), "ee", Id_Command);
         addcommand("uitablerow", reinterpret_cast<identfun>(+[] (uint *columndata, uint *children) { BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children); }), "ee", Id_Command);
