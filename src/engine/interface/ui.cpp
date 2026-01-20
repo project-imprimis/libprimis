@@ -731,6 +731,23 @@ namespace UI
                 return gettype();
             }
 
+            /**
+             * @brief Searches for an object within this object's children.
+             *
+             * Searches this object's children for an object bearing the name given.
+             * Returns the first matching entry; if recurse is enabled, searches
+             * children of children for a matching entry. If no entry is found,
+             * returns nullptr.
+             *
+             * If exclude is not `nullptr`, search will skip the object at that
+             * address.
+             *
+             * @param name the name of the object to search for
+             * @param recurse whether to recursively search children of children
+             * @param exclude pointer of object to not accept as a result.
+             *
+             * @param pointer to the found object, or nullptr
+             */
             Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr) const
             {
                 for(Object *o : children)
