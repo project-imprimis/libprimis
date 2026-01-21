@@ -4878,10 +4878,22 @@ namespace UI
             }
             BUILD(HorizontalList, o, o->setup(*space), children);
         }), "fe", Id_Command);
-        addcommand("uigrid", reinterpret_cast<identfun>(+[] (const int *columns, const float *spacew, const float *spaceh, const uint *children) { BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children); }), "iffe", Id_Command);
-        addcommand("uitableheader", reinterpret_cast<identfun>(+[] (const uint *columndata, const uint *children) { BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children); }), "ee", Id_Command);
-        addcommand("uitablerow", reinterpret_cast<identfun>(+[] (const uint *columndata, const uint *children) { BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children); }), "ee", Id_Command);
-        addcommand("uitable", reinterpret_cast<identfun>(+[] (const float *spacew, const float *spaceh, const uint *children) { BUILD(Table, o, o->setup(*spacew, *spaceh), children); }), "ffe", Id_Command);
+        addcommand("uigrid", reinterpret_cast<identfun>(+[] (const int *columns, const float *spacew, const float *spaceh, const uint *children)
+        {
+            BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children);
+        }), "iffe", Id_Command);
+        addcommand("uitableheader", reinterpret_cast<identfun>(+[] (const uint *columndata, const uint *children)
+        {
+            BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children);
+        }), "ee", Id_Command);
+        addcommand("uitablerow", reinterpret_cast<identfun>(+[] (const uint *columndata, const uint *children)
+        {
+            BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children);
+        }), "ee", Id_Command);
+        addcommand("uitable", reinterpret_cast<identfun>(+[] (const float *spacew, const float *spaceh, const uint *children)
+        {
+            BUILD(Table, o, o->setup(*spacew, *spaceh), children);
+        }), "ffe", Id_Command);
         addcommand("uispace", reinterpret_cast<identfun>(+[] (float *spacew, float *spaceh, uint *children) { BUILD(Spacer, o, o->setup(*spacew, *spaceh), children); }), "ffe", Id_Command);
         addcommand("uioffset", reinterpret_cast<identfun>(+[] (float *offsetx, float *offsety, uint *children) { BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children); }), "ffe", Id_Command);
         addcommand("uifill", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Filler, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
