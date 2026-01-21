@@ -51,6 +51,18 @@ namespace UI
     void setup();
     void update();
     void render();
+
+    /**
+     * @brief Cleans up and deletes the UI world object.
+     *
+     * Assumes a valid world object was created e.g. by setup(). Will cause a
+     * dereferenced null pointer if no object exists.
+     *
+     * Deletes all of the world object's windows, its child objects, and then
+     * destructs the heap-allocated world object.
+     *
+     * Sets the world global to nullptr afterwards.
+     */
     void cleanup();
 
     bool showui(const char *name);
