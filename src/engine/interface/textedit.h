@@ -94,6 +94,17 @@ class Editor final
         void setfile(const char *fname);
         void load();
         void save();
+
+        /**
+         * @brief Sets the selection marker.
+         *
+         * If enable is false, sets mx to -1; otherwise sets it to the current cursor
+         * x position. mx is the value checked to determine whether a marker exists.
+         *
+         * Sets my, marker y position, to the current cursor position.
+         *
+         * @param enable whether to set disabled (-1) flag, or position of cursor
+         */
         void mark(bool enable);
         void selectall();
         bool region();
