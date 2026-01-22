@@ -93,6 +93,16 @@ class Editor final
         void updateheight();
         void setfile(const char *fname);
         void load();
+
+        /**
+         * @brief Writes contents of this editor to a file.
+         *
+         * The file path/name to write to is located in the `filename` field. If
+         * this string is null, silently fails and does nothing; otherwise, attempts
+         * to write to the file at `filename`.
+         *
+         * Silently fails if std::fstream cannot write to the file indicated.
+         */
         void save();
 
         /**
