@@ -106,6 +106,13 @@ class Editor final
          * @param enable whether to set disabled (-1) flag, or position of cursor
          */
         void mark(bool enable);
+
+        /**
+         * @brief Selects all text in the editor.
+         *
+         * Sets the marker position to the beginning of the text, and the cursor
+         * to the end. This selects all of the text.
+         */
         void selectall();
         bool region();
         EditLine &currentline();
