@@ -4803,9 +4803,9 @@ namespace UI
         DOSTATES
         #undef DOSTATE
 
-        addcommand("uifocus", reinterpret_cast<identfun>(+[] (uint *t, uint *f) { executeret(buildparent && TextEditor::focus == buildparent ? t : f); }), "ee", Id_Command);
+        addcommand("uifocus", reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) { executeret(buildparent && TextEditor::focus == buildparent ? t : f); }), "ee", Id_Command);
         addcommand("uifocus?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && TextEditor::focus == buildparent, t, f); }), "tt", Id_Command);
-        addcommand("uifocus+", reinterpret_cast<identfun>(+[] (uint *t, uint *f) { executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild] ? t : f); }), "ee", Id_Command);
+        addcommand("uifocus+", reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) { executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild] ? t : f); }), "ee", Id_Command);
         addcommand("uifocus+?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && TextEditor::focus == buildparent->children[buildchild], t, f); }), "tt", Id_Command);
         addcommand("uialign", reinterpret_cast<identfun>(+[] (const int *xalign, const int *yalign)
         {
