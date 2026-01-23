@@ -4523,7 +4523,7 @@ namespace UI
     //new ui command
     static void newui(const char *name, const char *contents, const char *onshow, const char *onhide)
     {
-        auto itr = windows.find(name);
+        std::unordered_map<std::string, Window *>::const_iterator itr = windows.find(name);
         if(itr != windows.end())
         {
             if((*itr).second == UI::window)
@@ -4570,7 +4570,7 @@ namespace UI
         {
             return false;
         }
-        auto itr = windows.find(name);
+        std::unordered_map<std::string, Window *>::const_iterator itr = windows.find(name);
         return (itr != windows.end()) && world->show((*itr).second);
     }
 
@@ -4585,7 +4585,7 @@ namespace UI
         {
             return world->hideall() > 0;
         }
-        auto itr = windows.find(name);
+        std::unordered_map<std::string, Window *>::const_iterator itr = windows.find(name);
         return (itr != windows.end()) && world->hide((*itr).second);
     }
 
@@ -4624,7 +4624,7 @@ namespace UI
         {
             return world->children.size() > 0;
         }
-        auto itr = windows.find(name);
+        std::unordered_map<std::string, Window *>::const_iterator itr = windows.find(name);
         if(itr != windows.end() && (*itr).second)
         {
             return std::find(world->children.begin(), world->children.end(), (*itr).second) != world->children.end();
