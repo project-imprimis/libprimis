@@ -4906,7 +4906,7 @@ namespace UI
         {
             BUILD(Table, o, o->setup(*spacew, *spaceh), children);
         }), "ffe", Id_Command);
-        addcommand("uispace", reinterpret_cast<identfun>(+[] (float *spacew, float *spaceh, uint *children) { BUILD(Spacer, o, o->setup(*spacew, *spaceh), children); }), "ffe", Id_Command);
+        addcommand("uispace", reinterpret_cast<identfun>(+[] (const float *spacew, const float *spaceh, const uint *children) { BUILD(Spacer, o, o->setup(*spacew, *spaceh), children); }), "ffe", Id_Command);
         addcommand("uioffset", reinterpret_cast<identfun>(+[] (float *offsetx, float *offsety, uint *children) { BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children); }), "ffe", Id_Command);
         addcommand("uifill", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Filler, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uitarget", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Target, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
