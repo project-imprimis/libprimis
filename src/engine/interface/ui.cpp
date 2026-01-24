@@ -4681,7 +4681,7 @@ namespace UI
         }
     }
 
-    static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
+    static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, const uint *children)
     {
         if(scale <= 0)
         {
