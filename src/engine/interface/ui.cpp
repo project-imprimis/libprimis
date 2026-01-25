@@ -4797,10 +4797,22 @@ namespace UI
         addcommand("uiname",        reinterpret_cast<identfun>(+uinamecmd),   "",     Id_Command);
 
         #define DOSTATE(flags, func) \
-            addcommand("ui" #func, reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) { executeret(buildparent && buildparent->haschildstate(flags) ? t : f); }), "ee", Id_Command); \
-            addcommand("ui" #func "?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && buildparent->haschildstate(flags), t, f); }), "tt", Id_Command); \
-            addcommand("ui" #func "+", reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) { executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->haschildstate(flags) ? t : f); }), "ee", Id_Command); \
-            addcommand("ui" #func "+?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) { ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->haschildstate(flags), t, f); }), "tt", Id_Command);
+            addcommand("ui" #func, reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) \
+            { \
+                executeret(buildparent && buildparent->haschildstate(flags) ? t : f);\
+            }), "ee", Id_Command); \
+            addcommand("ui" #func "?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) \
+            { \
+                ifstateval(buildparent && buildparent->haschildstate(flags), t, f);\
+            }), "tt", Id_Command); \
+            addcommand("ui" #func "+", reinterpret_cast<identfun>(+[] (const uint *t, const uint *f) \
+            { \
+                executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->haschildstate(flags) ? t : f); \
+            }), "ee", Id_Command); \
+            addcommand("ui" #func "+?", reinterpret_cast<identfun>(+[] (tagval *t, tagval *f) \
+            { \
+                ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->haschildstate(flags), t, f); \
+            }), "tt", Id_Command);
         DOSTATES
         #undef DOSTATE
 
