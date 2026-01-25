@@ -429,7 +429,8 @@ namespace UI
                 }
             }
 
-            /* DOSTATES: executes the DOSTATE macro for the applicable special keys
+            /**
+             * @brief executes the DOSTATE macro for the applicable special keys
              *
              * ***NOTE***: DOSTATE is not defined by default, and is defined manually
              * in the code at every location the DOSTATES macro is called --
