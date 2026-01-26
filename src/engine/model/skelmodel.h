@@ -94,7 +94,7 @@ struct skelmodel : animmodel
 
     struct tri final
     {
-        uint vert[3];
+        std::array<uint, 3> vert;
     };
 
     /**
