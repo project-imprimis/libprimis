@@ -22,6 +22,15 @@ extern int vertwater; //used like a bool, will only ever be 0 or 1; toggles vert
 extern const bvec &getwatercolor(int mat);
 extern const bvec &getwaterdeepcolor(int mat);
 extern const bvec &getwaterfallcolor(int mat);
+
+/**
+ * @brief Gets the water fog value for the specified material number.
+ *
+ * There are four water materials; the mat parameter selects the water material
+ * to query.
+ *
+ * @param mat which water to query (water1, water2, water3, water4)
+ */
 extern int getwaterfog(int mat);
 extern int getwaterdeep(int mat);
 
