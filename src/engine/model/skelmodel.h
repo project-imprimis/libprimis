@@ -88,8 +88,8 @@ struct skelmodel : animmodel
 
     struct vvertgw final : vvertg
     {
-        uchar weights[4];
-        uchar bones[4];
+        std::array<uchar, 4> weights,
+                             bones;
     };
 
     struct tri final
