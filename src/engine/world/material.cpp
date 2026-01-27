@@ -988,10 +988,6 @@ int findmaterial(const char *name)
     return -1;
 }
 
-/* findmaterialname
- *
- * given a material id, returns the name of the material as a string (char *)
- */
 const char *findmaterialname(int mat)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(materials[0])); ++i)

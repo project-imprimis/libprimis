@@ -25,6 +25,16 @@ extern vec matnormals(int i); //returns one of the six basis vectors for 0 <= i 
  * @param name the material name to find
  */
 extern int findmaterial(const char *name);
+
+/** @brief Given a material id, returns the name of the material as a C string
+ *
+ * The mappings between material and number are defined in the `materials` global.
+ * Ony matches single materials and not combinations of materials.
+ *
+ * @param mat the material id to search for
+ *
+ * @return C string containing the human readable name of that material
+ */
 extern const char *findmaterialname(int mat);
 extern const char *getmaterialdesc(int mat, const char *prefix = "");
 extern void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs);
