@@ -19,10 +19,12 @@ extern vec matnormals(int i); //returns one of the six basis vectors for 0 <= i 
 /** @brief Get bitmask associated with a material name.
  *
  * Given a material name, returns the bitmask ID of the material as an integer.
- *
- * Material string names are defined in consts.h
+ * Mappings between number and material are defined in the `materials` global.
+ * Only matches a single material name and not combinations of materials.
  *
  * @param name the material name to find
+ *
+ * @return bitmask id number of the passed name, or -1 if not found
  */
 extern int findmaterial(const char *name);
 
