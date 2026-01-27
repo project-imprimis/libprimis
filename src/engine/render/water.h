@@ -32,6 +32,15 @@ extern const bvec &getwaterfallcolor(int mat);
  * @param mat which water to query (water1, water2, water3, water4)
  */
 extern int getwaterfog(int mat);
+
+/**
+ * @brief Gets the water deep fog value for the specified material number.
+ *
+ * There are four water materials; the mat parameter selects the water material
+ * to query.
+ *
+ * @param mat which water to query (water1, water2, water3, water4)
+ */
 extern int getwaterdeep(int mat);
 
 extern void renderwater();
