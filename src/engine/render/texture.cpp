@@ -8,6 +8,7 @@
 #include "SDL_image.h"
 
 #include "imagedata.h"
+#include "normal.h"
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderwindow.h"

@@ -108,6 +108,7 @@
     <ClInclude Include="..\engine\render\hud.h" />
     <ClInclude Include="..\engine\render\imagedata.h" />
     <ClInclude Include="..\engine\render\lightsphere.h" />
+    <ClInclude Include="..\engine\render\normal.h" />
     <ClInclude Include="..\engine\render\octarender.h" />
     <ClInclude Include="..\engine\render\postfx.h" />
     <ClInclude Include="..\engine\render\radiancehints.h" />

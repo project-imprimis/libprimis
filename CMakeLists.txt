@@ -62,6 +62,7 @@ add_library(primis SHARED
         src/engine/render/imagedata.cpp
         src/engine/render/imagedata.h
         src/engine/render/normal.cpp
+        src/engine/render/normal.h
         src/engine/render/octarender.cpp
         src/engine/render/octarender.h
         src/engine/render/postfx.cpp
