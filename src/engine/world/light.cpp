@@ -1,4 +1,5 @@
-/* light.cpp: world light interaction functions
+/**
+ * @file world light interaction functions
  *
  * while renderlights in /render handles the deferred rendering of point lights
  * on the world, light.cpp handles how lights behave in the world
