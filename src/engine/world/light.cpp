@@ -94,7 +94,9 @@ namespace
     struct lightcacheentry final
     {
         int x, y;
-    } lightcache[lightcacheentries];
+    };
+
+    std::array<lightcacheentry, lightcacheentries> lightcache;
 
     int lightcachehash(int x, int y)
     {
@@ -640,9 +642,9 @@ void clearlightcache(int id)
         return;
     }
 
-    for(lightcacheentry *lce = lightcache; lce < &lightcache[lightcacheentries]; lce++)
+    for(lightcacheentry &lce : lightcache)
     {
-        lce->x = -1;
+        lce.x = -1;
     }
 }
 
