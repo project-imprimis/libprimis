@@ -15,4 +15,6 @@
  */
 extern int smoothangle(int id, int angle);
 
+extern void clearnormals();
+
 #endif
