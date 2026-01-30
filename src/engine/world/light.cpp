@@ -212,9 +212,9 @@ namespace
                 }
             }
 
-            vec pos[Face_MaxVerts],
-                n[Face_MaxVerts],
-                po(ivec(co).mask(~0xFFF));
+            std::array<vec, Face_MaxVerts> pos,
+                                           n;
+            vec po(ivec(co).mask(~0xFFF));
             for(int j = 0; j < numverts; ++j)
             {
                 pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
