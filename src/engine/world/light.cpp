@@ -104,10 +104,17 @@ namespace
         return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1));
     }
 
-    //takes a 3d vec3 and transforms it into a packed ushort vector
-    //the output ushort is in base 360 and has yaw in the first place and pitch in the second place
-    //the second place has pitch as a range from 0 to 90
-    //since this is a normal vector, no magnitude needed
+    /**
+     * @brief Takes a 3d vec3 and transforms it into a packed ushort vector
+     *
+     * The output ushort is in base 360 and has yaw in the first place and pitch in the second place.
+     * The second place has pitch as a range from 0 to 90; since this is a normal
+     * vector, no magnitude is needed.
+     *
+     * @param n the normal to encode
+     *
+     * @return the packed normal vector
+     */
     ushort encodenormal(const vec &n)
     {
         if(n.iszero())
