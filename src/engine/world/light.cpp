@@ -129,7 +129,7 @@ namespace
     void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
     {
         std::array<surfaceinfo, 6> surfaces;
-        vertinfo litverts[6*2*Face_MaxVerts];
+        std::array<vertinfo, 6*2*Face_MaxVerts> litverts;
         int numlitverts = 0;
         surfaces.fill(surfaceinfo());
         for(int i = 0; i < 6; ++i) //for each face of the cube
@@ -284,7 +284,7 @@ namespace
         }
         if(preview)
         {
-            setsurfaces(c, surfaces, litverts, numlitverts);
+            setsurfaces(c, surfaces, litverts.data(), numlitverts);
         }
         else
         {
@@ -294,7 +294,7 @@ namespace
                 {
                     cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
                     std::memcpy(ext->surfaces.data(), surfaces.data(), sizeof(ext->surfaces));
-                    std::memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
+                    std::memcpy(ext->verts(), litverts.data(), numlitverts*sizeof(vertinfo));
                     if(c.ext != ext)
                     {
                         setcubeext(c, ext);
