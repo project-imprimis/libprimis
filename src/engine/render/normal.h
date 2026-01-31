@@ -16,5 +16,7 @@
 extern int smoothangle(int id, int angle);
 
 extern void clearnormals();
+extern void resetsmoothgroups();
+
 
 #endif
