@@ -15,6 +15,11 @@
  */
 extern int smoothangle(int id, int angle);
 
+/**
+ * @brief Cleans up the data containing normal information.
+ *
+ * Clears the normalgroups, normals, and tnormals vectors.
+ */
 extern void clearnormals();
 extern void resetsmoothgroups();
 
