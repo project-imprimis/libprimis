@@ -24,7 +24,4 @@ extern void clearlightcache(int id = -1);
  */
 extern void brightencube(cube &c);
 extern void setsurface(cube &c, int orient, const surfaceinfo &surf, const vertinfo *verts, int numverts);
-
-extern void findnormal(const vec &key, int smooth, const vec &surface, vec &v);
-
 #endif

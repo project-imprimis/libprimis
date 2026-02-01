@@ -29,5 +29,6 @@ extern void clearnormals();
  */
 extern void resetsmoothgroups();
 
+extern void findnormal(const vec &key, int smooth, const vec &surface, vec &v);
 
 #endif
