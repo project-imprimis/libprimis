@@ -832,7 +832,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
 {
     //dim must be 0..2
     //dir should be +/- 1
-    auto checkplane = [] (int dim, const float &dc, int dir, float focaldist, float &low, float &high, const float &cz, const float &drt, const vec &e) -> void
+    auto checkplane = [] (int dim, float dc, int dir, float focaldist, float &low, float &high, float cz, float drt, const vec &e) -> void
     {
         float nzc = (cz*cz + 1) / (cz + dir*drt) - cz,
               pz = dc/(nzc*e[dim] - e.z);
