@@ -65,6 +65,13 @@ class cascadedshadowmap final
          */
         float getcsmproperty(int index) const;
 
+        /**
+         * @brief Returns the model matrix
+         *
+         * @return the matrix shared by all splits
+         */
+        const matrix4 &getmodel() const;
+
         cascadedshadowmap();
 
     private:

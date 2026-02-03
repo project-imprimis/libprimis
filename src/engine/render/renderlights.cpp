@@ -3354,7 +3354,7 @@ void GBuffer::rendercsmshadowmaps() const
         {
             const ShadowMapInfo &sm = shadowmaps[csm.splits[i].idx];
 
-            shadowmatrix.mul(csm.splits[i].proj, csm.model);
+            shadowmatrix.mul(csm.splits[i].proj, csm.getmodel());
             GLOBALPARAM(shadowmatrix, shadowmatrix);
 
             glViewport(sm.x, sm.y, sm.size, sm.size);
