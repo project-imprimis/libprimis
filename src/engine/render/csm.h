@@ -36,7 +36,6 @@ class cascadedshadowmap final
             vec center, bounds;         // max extents of shadowmap in sunlight model space
             std::array<plane, 4> cull;  // world space culling planes of the split's projected sides
         };
-        matrix4 model;                  // model view is shared by all splits
         std::array<SplitInfo, csmmaxsplits> splits; // per-split parameters
         vec lightview;                  // view vector for light
 
@@ -79,6 +78,8 @@ class cascadedshadowmap final
         void getmodelmatrix();          // compute the shared model matrix
         void getprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
+
+        matrix4 model;                  // model view is shared by all splits
 
         int csmmaxsize,
             csmnearplane,
