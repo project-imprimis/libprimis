@@ -1010,8 +1010,7 @@ class StainRenderer final
                 fb.cross(ft, n);
                 vec pt = vec(ft).mul(ft.dot(staintangent)).add(vec(fb).mul(fb.dot(staintangent))).normalize(),
                     pb = vec(ft).mul(ft.dot(stainbitangent)).add(vec(fb).mul(fb.dot(stainbitangent))).project(pt).normalize();
-                vec v1[Face_MaxVerts+4],
-                    v2[Face_MaxVerts+4];
+                std::array<vec, Face_MaxVerts+4> v1, v2;
                 float ptc = pt.dot(pcenter),
                       pbc = pb.dot(pcenter);
                 int numv;
@@ -1022,7 +1021,7 @@ class StainRenderer final
                         pos[1] = pos[2];
                         pos[2] = pos[3];
                     }
-                    numv = polyclip(pos.data(), 3, pt, ptc - stainradius, ptc + stainradius, v1);
+                    numv = polyclip(pos.data(), 3, pt, ptc - stainradius, ptc + stainradius, v1.data());
                     if(numv<3)
                     {
                         continue;
@@ -1030,13 +1029,13 @@ class StainRenderer final
                 }
                 else
                 {
-                    numv = polyclip(pos.data(), numverts, pt, ptc - stainradius, ptc + stainradius, v1);
+                    numv = polyclip(pos.data(), numverts, pt, ptc - stainradius, ptc + stainradius, v1.data());
                     if(numv<3)
                     {
                         continue;
                     }
                 }
-                numv = polyclip(v1, numv, pb, pbc - stainradius, pbc + stainradius, v2);
+                numv = polyclip(v1.data(), numv, pb, pbc - stainradius, pbc + stainradius, v2.data());
                 if(numv<3)
                 {
                     continue;
