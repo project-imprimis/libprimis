@@ -37,7 +37,6 @@ class cascadedshadowmap final
             std::array<plane, 4> cull;  // world space culling planes of the split's projected sides
         };
         std::array<SplitInfo, csmmaxsplits> splits; // per-split parameters
-        vec lightview;                  // view vector for light
 
         void setup();                   // insert shadowmaps for each split frustum if there is sunlight
         void bindparams();              // bind any shader params necessary for lighting
@@ -87,6 +86,7 @@ class cascadedshadowmap final
         void gencullplanes();           // generate culling planes for the mvp matrix
 
         matrix4 model;                  // model view is shared by all splits
+        vec lightview;                  // view vector for light
 
         int csmmaxsize,
             csmnearplane,
