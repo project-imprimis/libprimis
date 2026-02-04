@@ -207,6 +207,11 @@ const matrix4 &cascadedshadowmap::getmodel() const
     return model;
 }
 
+const vec &cascadedshadowmap::getlightview() const
+{
+    return lightview;
+}
+
 int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;

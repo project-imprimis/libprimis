@@ -3324,9 +3324,9 @@ void GBuffer::rendercsmshadowmaps() const
     csm.setup();
     shadowmapping = ShadowMap_Cascade;
     shadoworigin = vec(0, 0, 0);
-    shadowdir = csm.lightview;
-    shadowbias = csm.lightview.project_bb(worldmin, worldmax);
-    shadowradius = std::fabs(csm.lightview.project_bb(worldmax, worldmin));
+    shadowdir = csm.getlightview();
+    shadowbias = csm.getlightview().project_bb(worldmin, worldmax);
+    shadowradius = std::fabs(csm.getlightview().project_bb(worldmax, worldmin));
 
     float polyfactor = csm.getcsmproperty(cascadedshadowmap::PolyFactor),
           polyoffset = csm.getcsmproperty(cascadedshadowmap::PolyOffset);

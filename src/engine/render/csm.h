@@ -71,6 +71,13 @@ class cascadedshadowmap final
          */
         const matrix4 &getmodel() const;
 
+        /**
+         * @brief Return the lightview vector
+         *
+         * @return the light direction vector
+         */
+         const vec &getlightview() const;
+
         cascadedshadowmap();
 
     private:
