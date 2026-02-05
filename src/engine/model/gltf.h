@@ -15,6 +15,14 @@ class gltf final : public skelloader<gltf>
          * @return false
          */
         bool flipy() const final;
+
+        /**
+         * @brief Returns that this model is an MDL_GLTF
+         *
+         * Returns the enum entry MDL_GLTF from the enum in model.h
+         *
+         * @return enum value MDL_GLTF
+         */
         int type() const final;
         bool loaddefaultparts() final;
 
