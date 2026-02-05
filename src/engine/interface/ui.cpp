@@ -4923,7 +4923,10 @@ namespace UI
         {
             BUILD(Spacer, o, o->setup(*spacew, *spaceh), children);
         }), "ffe", Id_Command);
-        addcommand("uioffset", reinterpret_cast<identfun>(+[] (float *offsetx, float *offsety, uint *children) { BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children); }), "ffe", Id_Command);
+        addcommand("uioffset", reinterpret_cast<identfun>(+[] (const float *offsetx, const float *offsety, const uint *children)
+        {
+            BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children);
+        }), "ffe", Id_Command);
         addcommand("uifill", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Filler, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uitarget", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Target, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uiclip", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Clipper, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
