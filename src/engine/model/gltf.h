@@ -27,6 +27,12 @@ class gltf final : public skelloader<gltf>
         bool loaddefaultparts() final;
 
         //static methods
+
+        /**
+         * @brief Returns name of this model format, "gltf".
+         *
+         * @return string array containing "gltf".
+         */
         static const char *formatname();
 
     private:
