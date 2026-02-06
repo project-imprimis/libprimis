@@ -243,8 +243,6 @@ namespace UI
         }
     }
 
-
-
     //type: the type of object to build
     //o the name of the temp variable to use
     //setup: a snippet of c++ to run to set up the object
@@ -257,7 +255,6 @@ namespace UI
             o->buildchildren(contents); \
         } \
     } while(0)
-
 
     void resetblend()
     {
@@ -1486,6 +1483,7 @@ namespace UI
         {
             return "#TableHeader";
         }
+
         const char *gettype() const override
         {
             return typestr();
@@ -1590,6 +1588,7 @@ namespace UI
         {
             return "#Table";
         }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -1800,6 +1799,7 @@ namespace UI
         {
             return "#Target";
         }
+
         const char *gettype() const override
         {
             return typestr();
@@ -2572,6 +2572,7 @@ namespace UI
         {
             return "#Triangle";
         }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -3450,6 +3451,7 @@ namespace UI
         {
             return "#SliderButton";
         }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -4179,6 +4181,7 @@ namespace UI
         {
             return "#Field";
         }
+
         const char *gettype() const override
         {
             return typestr();
@@ -4203,6 +4206,7 @@ namespace UI
         {
             return "#KeyField";
         }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -4321,6 +4325,7 @@ namespace UI
         {
             return "#ModelPreview";
         }
+
         const char *gettype() const override final
         {
             return typestr();
