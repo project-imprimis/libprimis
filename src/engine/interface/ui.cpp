@@ -1033,7 +1033,11 @@ namespace UI
 
     struct World final : Object
     {
-        static const char *typestr() { return "#World"; }
+        static const char *typestr()
+        {
+            return "#World";
+        }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -1553,7 +1557,11 @@ namespace UI
 
     struct TableRow final: TableHeader
     {
-        static const char *typestr() { return "#TableRow"; }
+        static const char *typestr()
+        {
+            return "#TableRow";
+        }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -1727,7 +1735,11 @@ namespace UI
             offsety = offsety_;
         }
 
-        static const char *typestr() { return "#Offsetter"; }
+        static const char *typestr()
+        {
+            return "#Offsetter";
+        }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -1840,7 +1852,11 @@ namespace UI
             color = color_;
         }
 
-        static const char *typestr() { return "#FillColor"; }
+        static const char *typestr()
+        {
+            return "#FillColor";
+        }
+
         const char *gettype() const override
         {
             return typestr();
@@ -1889,7 +1905,10 @@ namespace UI
                 color2 = color2_;
             }
 
-            static const char *typestr() { return "#Gradient"; }
+            static const char *typestr()
+            {
+                return "#Gradient";
+            }
 
         protected:
             const char *gettype() const override final
@@ -1938,7 +1957,10 @@ namespace UI
                 color = color_;
             }
 
-            static const char *typestr() { return "#Line"; }
+            static const char *typestr()
+            {
+                return "#Line";
+            }
 
             const char *gettype() const override final
             {
@@ -1983,7 +2005,11 @@ namespace UI
             {
                 return typestr();
             }
-            static const char *typestr() { return "#Outline"; }
+
+            static const char *typestr()
+            {
+                return "#Outline";
+            }
 
             void draw(float sx, float sy) override final
             {
@@ -2107,7 +2133,10 @@ namespace UI
                 croph = croph_;
             }
 
-            static const char *typestr() { return "#CroppedImage"; }
+            static const char *typestr()
+            {
+                return "#CroppedImage";
+            }
 
         private:
             bool target(float cx, float cy) override final
@@ -2139,7 +2168,11 @@ namespace UI
 
     struct StretchedImage final : Image
     {
-        static const char *typestr() { return "#StretchedImage"; }
+        static const char *typestr()
+        {
+            return "#StretchedImage";
+        }
+
         const char *gettype() const override final
         {
             return typestr();
@@ -2301,7 +2334,11 @@ namespace UI
             screenborder = screenborder_;
         }
 
-        static const char *typestr() { return "#BorderedImage"; }
+        static const char *typestr()
+        {
+            return "#BorderedImage";
+        }
+
         const char *gettype() const  override final
         {
             return typestr();
@@ -2584,7 +2621,11 @@ namespace UI
             radius = size/2;
         }
 
-        static const char *typestr() { return "#Circle"; }
+        static const char *typestr()
+        {
+            return "#Circle";
+        }
+
         const char *gettype() const  override final
         {
             return typestr();
@@ -4371,7 +4412,11 @@ namespace UI
                 index = index_;
             }
 
-            static const char *typestr() { return "#SlotViewer"; }
+            static const char *typestr()
+            {
+                return "#SlotViewer";
+            }
+
             const char *gettype() const override
             {
                 return typestr();
