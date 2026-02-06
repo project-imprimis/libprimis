@@ -4931,8 +4931,8 @@ namespace UI
         addcommand("uitarget", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Target, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uiclip", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Clipper, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
         addcommand("uiscroll", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Scroller, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
-        addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsetx);} }), "", Id_Command);
-        addcommand("uivscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsety);} }), "", Id_Command);
+        addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { const Scroller *scroller = static_cast<const Scroller *>(buildparent); floatret(scroller->offsetx);} }), "", Id_Command);
+        addcommand("uivscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { const Scroller *scroller = static_cast<const Scroller *>(buildparent); floatret(scroller->offsety);} }), "", Id_Command);
         addcommand("uihscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(HorizontalScrollBar, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uivscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(VerticalScrollBar, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uiscrollarrow", reinterpret_cast<identfun>(+[] (float *dir, uint *children) { BUILD(ScrollArrow, o, o->setup(*dir), children); }), "fe", Id_Command);
