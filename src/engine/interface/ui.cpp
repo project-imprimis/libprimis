@@ -2809,7 +2809,7 @@ namespace UI
     struct TextInt final : Text
     {
         int val;
-        char str[20];
+        std::array<char, 20> str;
 
         TextInt() : val(0) { str[0] = '0'; str[1] = '\0'; }
 
@@ -2820,7 +2820,7 @@ namespace UI
             if(val != val_)
             {
                 val = val_;
-                intformat(str, val, sizeof(str));
+                intformat(str.data(), val, str.size());
             }
         }
 
@@ -2836,7 +2836,7 @@ namespace UI
 
         const char *getstr() const override final
         {
-            return str;
+            return str.data();
         }
     };
 
