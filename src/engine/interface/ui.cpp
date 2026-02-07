@@ -2843,9 +2843,9 @@ namespace UI
     struct TextFloat final : Text
     {
         float val;
-        char str[20];
+        std::array<char, 20> str;
 
-        TextFloat() : val(0) { std::memcpy(str, "0.0", 4); }
+        TextFloat() : val(0) { std::memcpy(str.data(), "0.0", 4); }
 
         void setup(float val_, float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
         {
@@ -2854,7 +2854,7 @@ namespace UI
             if(val != val_)
             {
                 val = val_;
-                floatformat(str, val, sizeof(str));
+                floatformat(str.data(), val, str.size());
             }
         }
 
@@ -2870,7 +2870,7 @@ namespace UI
 
         const char *getstr() const override final
         {
-            return str;
+            return str.data();
         }
     };
 
