@@ -321,3 +321,8 @@ bool obj::loaddefaultparts()
     }
     return true;
 }
+
+vertmodel::vertmeshgroup *obj::newmeshes()
+{
+    return new objmeshgroup;
+}

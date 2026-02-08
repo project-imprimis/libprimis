@@ -57,10 +57,7 @@ struct obj final : vertloader<obj>
                            float smooth);
     };
 
-    vertmeshgroup *newmeshes() final
-    {
-        return new objmeshgroup;
-    }
+    vertmeshgroup *newmeshes() final;
 
     bool loaddefaultparts() final;
 
