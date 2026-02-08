@@ -4981,7 +4981,10 @@ namespace UI
         {
             BUILD(Filler, o, o->setup(*minw, *minh), children);
         }), "ffe", Id_Command);
-        addcommand("uitarget", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Target, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
+        addcommand("uitarget", reinterpret_cast<identfun>(+[] (const float *minw, const float *minh, const uint *children)
+        {
+            BUILD(Target, o, o->setup(*minw, *minh), children);
+        }), "ffe", Id_Command);
         addcommand("uiclip", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Clipper, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
         addcommand("uiscroll", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Scroller, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
         addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { const Scroller *scroller = static_cast<const Scroller *>(buildparent); floatret(scroller->offsetx);} }), "", Id_Command);
