@@ -5012,7 +5012,7 @@ namespace UI
         addcommand("uicircleoutline", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::OUTLINE), children); }), "ife", Id_Command);
         addcommand("uimodcircle", reinterpret_cast<identfun>(+[] (int *c, float *size, uint *children) { BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children); }), "ife", Id_Command);
         addcommand("uicolortext", reinterpret_cast<identfun>(+[] (tagval *text, int *c, float *scale, uint *children) { buildtext(*text, *scale, uitextscale, Color(*c), -1, children); }), "tife", Id_Command);
-        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, float *scale, uint *children)
+        addcommand("uitext", reinterpret_cast<identfun>(+[] (tagval *text, const float *scale, const uint *children)
         {
             buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children);
         }), "tfe", Id_Command);
