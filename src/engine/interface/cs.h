@@ -94,7 +94,10 @@ struct stringslice final
     stringslice(const char *str, int len) : str(str), len(len) {}
     stringslice(const char *str, const char *end) : str(str), len(static_cast<int>(end-str)) {}
 
-    const char *end() const { return &str[len]; }
+    const char *end() const
+    {
+        return &str[len];
+    }
 };
 
 inline char *copystring(char *d, const stringslice &s, size_t len)
