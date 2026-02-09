@@ -109,7 +109,10 @@ inline char *copystring(char *d, const stringslice &s, size_t len)
 }
 
 template<size_t N>
-inline char *copystring(char (&d)[N], const stringslice &s) { return copystring(d, s, N); }
+inline char *copystring(char (&d)[N], const stringslice &s)
+{
+    return copystring(d, s, N);
+}
 
 // not all platforms (windows) can parse hexadecimal integers via strtod
 inline float parsefloat(const char *s)
