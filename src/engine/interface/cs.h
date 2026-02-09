@@ -203,7 +203,10 @@ inline void tagval::getval(tagval &r) const
 
 struct NullVal final : tagval
 {
-    NullVal() { setnull(); }
+    NullVal()
+    {
+        setnull();
+    }
 };
 
 struct IdentLink final
