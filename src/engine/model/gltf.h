@@ -66,7 +66,10 @@ class gltf final : public skelloader<gltf>
             public:
                 GLTFMeshGroup();
                 //main anim loading functionality
-                const skelanimspec * loadanim(const std::string &) final { return nullptr;};
+                const skelanimspec * loadanim(const std::string &) final
+                {
+                    return nullptr;
+                };
 
             private:
                 bool loadmesh(const char *filename, float smooth, part &p);
