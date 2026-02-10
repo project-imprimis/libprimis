@@ -133,7 +133,11 @@ inline double parsenumber(const char *s)
         || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
 }
 
-inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
+inline void intformat(char *buf, int v, int len = 20)
+{
+    nformatstring(buf, len, "%d", v);
+}
+
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
 
 extern const char *intstr(int v);
