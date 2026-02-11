@@ -72,6 +72,13 @@ struct MatSlot final : Slot, VSlot
 {
     MatSlot();
 
+    /**
+     * @brief Returns the type of slot object that this is.
+     *
+     * This is an enum value in the enum in slot.h in the slot object.
+     *
+     * @return SlotType_Material enum value
+     */
     int type() const final
     {
         return SlotType_Material;
