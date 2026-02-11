@@ -76,6 +76,15 @@ struct MatSlot final : Slot, VSlot
     {
         return SlotType_Material;
     }
+
+    /**
+     * @brief Returns string indicating what material slot this is.
+     *
+     * The return string is one of the four tempformatstring array entries. The
+     * string returned has the format "material string <name>"
+     *
+     * @return pointer to c string containing this slot's name
+     */
     const char *name() const final;
 
     VSlot &emptyvslot() final
