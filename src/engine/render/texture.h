@@ -94,6 +94,14 @@ struct MatSlot final : Slot, VSlot
      */
     const char *name() const final;
 
+    /**
+     * @brief Filler implementation of emptyvslot.
+     *
+     * Does not return an empty vslot like for the VSlot object. Returns
+     * reference to `this` object instead regardless of its status.
+     *
+     * @return reference to `this` object
+     */
     VSlot &emptyvslot() final;
 
     int cancombine(int) const final
