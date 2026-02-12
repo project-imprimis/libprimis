@@ -94,10 +94,7 @@ struct MatSlot final : Slot, VSlot
      */
     const char *name() const final;
 
-    VSlot &emptyvslot() final
-    {
-        return *this;
-    }
+    VSlot &emptyvslot() final;
 
     int cancombine(int) const final
     {

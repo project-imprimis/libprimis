@@ -1092,6 +1092,11 @@ const char *MatSlot::name() const
     return tempformatstring("material slot %s", findmaterialname(Slot::index));
 }
 
+VSlot &MatSlot::emptyvslot()
+{
+    return *this;
+}
+
 const char *DecalSlot::name() const
 {
     return tempformatstring("decal slot %d", Slot::index);
