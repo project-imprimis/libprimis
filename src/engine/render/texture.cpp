@@ -1102,7 +1102,7 @@ const char *DecalSlot::name() const
     return tempformatstring("decal slot %d", Slot::index);
 }
 
-void texturereset(int *n)
+void texturereset(const int *n)
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
     {
