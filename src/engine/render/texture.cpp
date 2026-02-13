@@ -953,8 +953,8 @@ static SDL_Surface *fixsurfaceformat(SDL_Surface *s)
         SDL_FreeSurface(s);
         return nullptr;
     }
-    static const uint rgbmasks[]  = { 0x0000ff, 0x00ff00, 0xff0000, 0 },
-                      rgbamasks[] = { 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 };
+    static const std::array<uint, 4> rgbmasks = {{ 0x0000ff, 0x00ff00, 0xff0000, 0 }},
+                                     rgbamasks = {{ 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000 }};
     switch(s->format->BytesPerPixel)
     {
         case 1:
