@@ -872,8 +872,9 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(s.compressed)
     {
         static uchar *data = s.data;
-        int levels = s.levels, level = 0;
-        int sizelimit = mipit && maxtexsize ? std::min(maxtexsize, hwtexsize) : hwtexsize;
+        int levels = s.levels,
+            level = 0,
+            sizelimit = mipit && maxtexsize ? std::min(maxtexsize, hwtexsize) : hwtexsize;
         while(t->w > sizelimit || t->h > sizelimit)
         {
             data += s.calclevelsize(level++);
