@@ -205,8 +205,8 @@ namespace mpr
 
     vec EntEllipsoid::supportpoint(const vec &dir) const
     {
-        vec p(ent->o);
-        vec n = vec(dir).normalize();
+        vec p(ent->o),
+            n = vec(dir).normalize();
         p.x += ent->radius*n.x;
         p.y += ent->radius*n.y;
         p.z += (ent->aboveeye + ent->eyeheight)/2*(1 + n.z) - ent->eyeheight;
