@@ -73,7 +73,7 @@ namespace
 
     void testconc()
     {
-        tagval tagvalargs[3];
+        std::array<tagval, 3> tagvalargs;
         tagvalargs[0].type = Value_Integer;
         tagvalargs[0].i = 1;
         tagvalargs[1].type = Value_Integer;
@@ -81,27 +81,27 @@ namespace
         tagvalargs[2].type = Value_Integer;
         tagvalargs[2].i = 3;
 
-        const char * conout = conc(tagvalargs, 3, true, "test");
+        const char * conout = conc(tagvalargs.data(), 3, true, "test");
         std::printf("conc output: %s\n", conout);
         assert(std::strcmp(conout, "test 1 2 3") == 0);
 
-        const char * conout2 = conc(tagvalargs, 3, false, "test");
+        const char * conout2 = conc(tagvalargs.data(), 3, false, "test");
         std::printf("conc output: %s\n", conout2);
         assert(std::strcmp(conout2, "test123") == 0);
 
-        tagval tagvalargmix[4];
-        char tagvalstring[11] = "teststring";
+        std::array<tagval, 4> tagvalargmix;
+        std::string tagvalstring = "teststring";
         tagvalargmix[0].type = Value_Integer;
         tagvalargmix[0].i = 1;
         tagvalargmix[1].type = Value_Float;
         tagvalargmix[1].f = 1.1;
         tagvalargmix[2].type = Value_String;
-        tagvalargmix[2].s = tagvalstring;
+        tagvalargmix[2].s = tagvalstring.data();
 
-        const char * conout3 = conc(tagvalargmix, 3, true, "test");
+        const char * conout3 = conc(tagvalargmix.data(), 3, true, "test");
         std::printf("conc output: %s\n", conout3);
         assert(std::strcmp(conout3, "test 1 1.1 teststring") == 0);
-        const char * conout4 = conc(tagvalargmix, 3, false, "test");
+        const char * conout4 = conc(tagvalargmix.data(), 3, false, "test");
         std::printf("conc output: %s\n", conout4);
         assert(std::strcmp(conout4, "test11.1teststring") == 0);
     }
