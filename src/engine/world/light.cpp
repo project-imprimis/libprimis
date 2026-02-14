@@ -221,7 +221,7 @@ namespace
             }
 
             int smooth = vslot.slot->smooth;
-            plane planes[2];
+            std::array<plane, 2> planes;
             int numplanes = 0;
             planes[numplanes++].toplane(pos[0], pos[1], pos[2]);
             if(numverts < 4 || !convex)
