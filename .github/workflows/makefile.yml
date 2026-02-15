@@ -26,7 +26,7 @@ jobs:
       run: make -C src CPP_VERSION=${{ matrix.cpp_version }} -j4
 
     - name: Upload libprimis.so artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: libprimis-linux
         path: ./src/libprimis.so
