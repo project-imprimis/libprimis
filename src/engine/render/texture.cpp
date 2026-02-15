@@ -2746,8 +2746,8 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
         conoutf(Console_Error, "could not write to %s", filename);
         return;
     }
-    uchar signature[] = { 137, 80, 78, 71, 13, 10, 26, 10 };
-    f->write(signature, sizeof(signature));
+    std::array<uchar, 8> signature = {{ 137, 80, 78, 71, 13, 10, 26, 10 }};
+    f->write(signature.data(), signature.size());
     struct PngIHdr
     {
         uint width,
