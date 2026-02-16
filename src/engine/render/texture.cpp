@@ -2782,9 +2782,9 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
     {
         goto error; //goto is beneath FLUSHZ macro
     }
-    uchar buf[1<<12];
-    z.next_out = static_cast<Bytef *>(buf);
-    z.avail_out = sizeof(buf);
+    std::array<uchar, 1<<12> buf;
+    z.next_out = static_cast<Bytef *>(buf.data());
+    z.avail_out = buf.size();
     for(int i = 0; i < image.height(); ++i)
     {
         uchar filter = 0;
@@ -2798,7 +2798,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
                 {
                     goto cleanuperror; //goto is beneath FLUSHZ macro
                 }
-                flushzip(z, buf, sizeof(buf), len, f, crc);
+                flushzip(z, buf.data(), buf.size(), len, f, crc);
             }
         }
     }
@@ -2810,7 +2810,7 @@ static void savepng(const char *filename, const ImageData &image, bool flip)
         {
             goto cleanuperror;
         }
-        flushzip(z, buf, sizeof(buf), len, f, crc);
+        flushzip(z, buf.data(), buf.size(), len, f, crc);
         if(err == Z_STREAM_END)
         {
             break;
