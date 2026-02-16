@@ -132,7 +132,7 @@ namespace
     template<bool fullvis, bool resetocclude>
     void findvisiblevas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(uint i = 0; i < vas.size(); i++)
+        for(size_t i = 0; i < vas.size(); i++)
         {
             vtxarray &v = *vas[i];
             int prevvfc = v.curvfc;
@@ -1934,7 +1934,7 @@ namespace
         const std::vector<extentity *> &ents = entities::getents();
         for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
         {
-            for(uint k = 0; k < oe->mapmodels.size(); k++)
+            for(size_t k = 0; k < oe->mapmodels.size(); k++)
             {
                 extentity &e = *ents[oe->mapmodels[k]];
                 if(e.flags&(EntFlag_NoVis|EntFlag_NoShadow))
@@ -1982,7 +1982,7 @@ namespace
                 tris.clear();
                 mm->genshadowmesh(tris, orient);
 
-                for(uint i = 0; i < tris.size(); i++)
+                for(size_t i = 0; i < tris.size(); i++)
                 {
                     const triangle &t = tris[i];
                     addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
@@ -2128,7 +2128,7 @@ void vfc::visiblecubes(bool cull)
         vfcDnear.fill(0);
         vfcDfar.fill(0);
         visibleva = nullptr;
-        for(uint i = 0; i < valist.size(); i++)
+        for(size_t i = 0; i < valist.size(); i++)
         {
             vtxarray *va = valist[i];
             va->distance = 0;
@@ -2460,7 +2460,7 @@ void rendermapmodels()
         if(oe->distance>=0)
         {
             bool rendered = false;
-            for(uint i = 0; i < oe->mapmodels.size(); i++)
+            for(size_t i = 0; i < oe->mapmodels.size(); i++)
             {
                 extentity &e = *ents[oe->mapmodels[i]];
                 if(!(e.flags&EntFlag_Render))
@@ -3067,7 +3067,7 @@ void clearshadowmeshes()
     if(shadowmeshes.size())
     {
         std::vector<extentity *> &ents = entities::getents();
-        for(uint i = 0; i < ents.size(); i++)
+        for(size_t i = 0; i < ents.size(); i++)
         {
             extentity &e = *ents[i];
             if(e.flags&EntFlag_ShadowMesh)
@@ -3091,7 +3091,7 @@ void genshadowmeshes()
     renderprogress(0, "generating shadow meshes..");
 
     std::vector<extentity *> &ents = entities::getents();
-    for(uint i = 0; i < ents.size(); i++)
+    for(size_t i = 0; i < ents.size(); i++)
     {
         extentity &e = *ents[i];
         if(e.type != EngineEnt_Light)
@@ -3423,7 +3423,7 @@ void findshadowmms()
     octaentities **lastmms = &shadowmms;
     for(vtxarray *va = shadowva; va; va = va->rnext)
     {
-        for(uint j = 0; j < va->mapmodels.size(); j++)
+        for(size_t j = 0; j < va->mapmodels.size(); j++)
         {
             octaentities *oe = va->mapmodels[j];
             switch(shadowmapping)
