@@ -1984,7 +1984,7 @@ namespace
 
                 for(uint i = 0; i < tris.size(); i++)
                 {
-                    triangle &t = tris[i];
+                    const triangle &t = tris[i];
                     addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
                 }
 
