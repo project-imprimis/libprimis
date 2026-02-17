@@ -2101,7 +2101,7 @@ void vfc::calcvfcD()
 {
     for(int i = 0; i < 5; ++i)
     {
-        plane &p = vfcP[i];
+        const plane &p = vfcP[i];
         vfcDnear[i] = vfcDfar[i] = 0;
         for(int k = 0; k < 3; ++k)
         {
