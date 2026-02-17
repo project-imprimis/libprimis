@@ -2610,7 +2610,7 @@ bool renderexplicitsky(bool outline)
                 }
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->skybuf);
-                const vertex *ptr = 0;
+                const vertex *ptr = nullptr;
                 gle::vertexpointer(sizeof(vertex), ptr->pos.data());
             }
             drawvaskytris(*va);
