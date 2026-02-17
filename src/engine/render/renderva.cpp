@@ -2039,7 +2039,13 @@ namespace
         shadowmapping = 0;
     }
 
-    VARF(smmesh, 0, 1, 1, { if(!smmesh) clearshadowmeshes(); });
+    VARF(smmesh, 0, 1, 1,
+    {
+        if(!smmesh)
+        {
+            clearshadowmeshes();
+        }
+    });
 }
 
 /* externally relevant functionality */
