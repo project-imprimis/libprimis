@@ -3099,7 +3099,7 @@ void genshadowmeshes()
     std::vector<extentity *> &ents = entities::getents();
     for(size_t i = 0; i < ents.size(); i++)
     {
-        extentity &e = *ents[i];
+        const extentity &e = *ents[i];
         if(e.type != EngineEnt_Light)
         {
             continue;
