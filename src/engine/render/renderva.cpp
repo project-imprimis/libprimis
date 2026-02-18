@@ -340,10 +340,10 @@ namespace
     {
         LOOP_OCTA_BOX(o, size, bo, br)
         {
-            ivec co(i, o, size);
+            const ivec co(i, o, size);
             if(c[i].ext && c[i].ext->va)
             {
-                vtxarray *va = c[i].ext->va;
+                const vtxarray *va = c[i].ext->va;
                 if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, *va)))
                 {
                     continue;
