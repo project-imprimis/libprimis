@@ -2259,7 +2259,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
     const cube *c = &(*worldroot)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
     {
-        vtxarray *va = c->ext->va;
+        const vtxarray *va = c->ext->va;
         if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, *va)))
         {
             return true;
@@ -2271,7 +2271,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br) const
         c = &(*c->children)[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->va)
         {
-            vtxarray *va = c->ext->va;
+            const vtxarray *va = c->ext->va;
             if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, *va)))
             {
                 return true;
