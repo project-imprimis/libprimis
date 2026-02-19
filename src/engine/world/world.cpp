@@ -387,7 +387,7 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
                         va->bbmin.x = -1;
                         if(oe.decals.empty())
                         {
-                            auto itr = std::find(va->decals.begin(), va->decals.end(), &oe);
+                            std::vector<octaentities *>::const_iterator itr = std::find(va->decals.begin(), va->decals.end(), &oe);
                             if(itr != va->decals.end())
                             {
                                 va->decals.erase(itr);
@@ -414,7 +414,7 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
                 {
                     if(loadmapmodel(e.attr1))
                     {
-                        auto itr = std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id);
+                        std::vector<int>::const_iterator itr = std::find(oe.mapmodels.begin(), oe.mapmodels.end(), id);
                         if(itr != oe.mapmodels.end())
                         {
                             oe.mapmodels.erase(itr);
