@@ -734,7 +734,8 @@ bool cubeworld::enlargemap()
     return true;
 }
 
-/* isallempty: checks whether the cube, and all of its children, are empty
+/**
+ * @brief Checks whether the cube, and all of its children, are empty
  *
  * returns true if cube is empty and has no children, OR
  * returns true if cube has children cubes and none of their children (recursively)
@@ -742,6 +743,9 @@ bool cubeworld::enlargemap()
  *
  * returns false if any cube or child cube is not empty (has geometry)
  *
+ * @param c the cube to check
+ *
+ * @return true if cube and its children are empty, false otherwise
  */
 static bool isallempty(const cube &c)
 {
