@@ -79,10 +79,7 @@ struct MatSlot final : Slot, VSlot
      *
      * @return SlotType_Material enum value
      */
-    int type() const final
-    {
-        return SlotType_Material;
-    }
+    int type() const final;
 
     /**
      * @brief Returns string indicating what material slot this is.

@@ -1088,6 +1088,12 @@ const char *Slot::name() const
 }
 
 MatSlot::MatSlot() : Slot(static_cast<int>(this - materialslots)), VSlot(this) {}
+
+int MatSlot::type() const
+{
+    return SlotType_Material;
+}
+
 const char *MatSlot::name() const
 {
     return tempformatstring("material slot %s", findmaterialname(Slot::index));
