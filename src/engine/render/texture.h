@@ -103,12 +103,7 @@ struct MatSlot final : Slot, VSlot
 
     int cancombine(int) const final;
 
-    void reset()
-    {
-        Slot::reset();
-        VSlot::reset();
-    }
-
+    void reset();
     void cleanup()
     {
         Slot::cleanup();
