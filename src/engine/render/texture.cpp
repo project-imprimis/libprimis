@@ -1104,6 +1104,11 @@ VSlot &MatSlot::emptyvslot()
     return *this;
 }
 
+int MatSlot::cancombine(int) const
+{
+    return -1;
+}
+
 const char *DecalSlot::name() const
 {
     return tempformatstring("decal slot %d", Slot::index);

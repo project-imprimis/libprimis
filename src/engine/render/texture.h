@@ -101,10 +101,7 @@ struct MatSlot final : Slot, VSlot
      */
     VSlot &emptyvslot() final;
 
-    int cancombine(int) const final
-    {
-        return -1;
-    }
+    int cancombine(int) const final;
 
     void reset()
     {
