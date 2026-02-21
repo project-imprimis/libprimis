@@ -3541,7 +3541,7 @@ void batchshadowmapmodels(bool skipmesh)
         nflags |= EntFlag_ShadowMesh;
     }
     const std::vector<extentity *> &ents = entities::getents();
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
+    for(const octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
         for(const int &k : oe->mapmodels)
         {
@@ -3553,7 +3553,7 @@ void batchshadowmapmodels(bool skipmesh)
             e.flags |= EntFlag_Render;
         }
     }
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
+    for(const octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
         for(const int &j : oe->mapmodels)
         {
