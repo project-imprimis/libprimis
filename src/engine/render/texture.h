@@ -104,11 +104,7 @@ struct MatSlot final : Slot, VSlot
     int cancombine(int) const final;
 
     void reset();
-    void cleanup()
-    {
-        Slot::cleanup();
-        VSlot::cleanup();
-    }
+    void cleanup();
 };
 
 struct TexRotation final

@@ -1115,6 +1115,12 @@ void MatSlot::reset()
     VSlot::reset();
 }
 
+void MatSlot::cleanup()
+{
+    Slot::cleanup();
+    VSlot::cleanup();
+}
+
 const char *DecalSlot::name() const
 {
     return tempformatstring("decal slot %d", Slot::index);
