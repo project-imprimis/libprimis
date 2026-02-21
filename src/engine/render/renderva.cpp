@@ -3489,7 +3489,7 @@ void rendershadowmapworld()
             {
                 gle::bindvbo(va->vbuf);
                 gle::bindebo(va->ebuf);
-                const vertex *ptr = 0;
+                const vertex *ptr = nullptr;
                 gle::vertexpointer(sizeof(vertex), ptr->pos.data());
             }
             if(!smnodraw)
@@ -3511,7 +3511,7 @@ void rendershadowmapworld()
                 {
                     gle::bindvbo(va->vbuf);
                     gle::bindebo(va->skybuf);
-                    const vertex *ptr = 0;
+                    const vertex *ptr = nullptr;
                     gle::vertexpointer(sizeof(vertex), ptr->pos.data()); //note offset from nullptr
                 }
                 if(!smnodraw)
