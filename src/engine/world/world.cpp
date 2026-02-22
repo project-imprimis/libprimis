@@ -115,14 +115,14 @@ void attachentity(extentity &e)
     detachentity(e);
 
     const std::vector<extentity *> &ents = entities::getents();
-    int closest = -1;
+    int closest = -1; //index of closest entry to link to
     float closedist = 1e10f; //some arbitrary high value
     for(size_t i = 0; i < ents.size(); i++)
     {
         const extentity *a = ents[i];
         if(a->attached)
         {
-            continue;
+            continue; //do not attempt to attach to an already attached entity
         }
         switch(e.type)
         {
@@ -149,8 +149,10 @@ void attachentity(extentity &e)
     }
     if(closedist>attachradius)
     {
-        return;
+        return; //we found nothing in the radius to attach to, so don't attach anything
     }
+    // closedist <= attachradius implies that closest was set by the above loop,
+    // so closest is always a valid array index
     e.attached = ents[closest];
     ents[closest]->attached = &e;
 }
