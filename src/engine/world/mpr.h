@@ -349,8 +349,8 @@ namespace mpr
     bool collide(const EntOBB &p1, const T &p2, vec *contactnormal, vec *contactpoint1, vec *contactpoint2)
     {
         // v0 = center of Minkowski sum
-        const vec v01 = p1.center();
-        const vec v02 = p2.center();
+        const vec v01 = p1.center(),
+                  v02 = p2.center();
         vec v0 = vec(v02).sub(v01);
 
         // Avoid case where centers overlap -- any direction is fine in this case
@@ -359,10 +359,10 @@ namespace mpr
             v0 = vec(0, 0, 1e-5f);
         }
         // v1 = support in direction of origin
-        vec n = vec(v0).neg();
-        vec v11 = p1.supportpoint(vec(n).neg());
-        vec v12 = p2.supportpoint(n);
-        vec v1 = vec(v12).sub(v11);
+        vec n = vec(v0).neg(),
+            v11 = p1.supportpoint(vec(n).neg()),
+            v12 = p2.supportpoint(n),
+            v1 = vec(v12).sub(v11);
         if(v1.dot(n) <= 0)
         {
             if(contactnormal)
@@ -391,9 +391,9 @@ namespace mpr
             }
             return true;
         }
-        vec v21 = p1.supportpoint(vec(n).neg());
-        vec v22 = p2.supportpoint(n);
-        vec v2 = vec(v22).sub(v21);
+        vec v21 = p1.supportpoint(vec(n).neg()),
+            v22 = p2.supportpoint(n),
+            v2 = vec(v22).sub(v21);
         if(v2.dot(n) <= 0)
         {
             if(contactnormal)
@@ -418,9 +418,9 @@ namespace mpr
         {
             // Obtain the support point in a direction perpendicular to the existing plane
             // Note: This point is guaranteed to lie off the plane
-            vec v31 = p1.supportpoint(vec(n).neg());
-            vec v32 = p2.supportpoint(n);
-            vec v3 = vec(v32).sub(v31);
+            vec v31 = p1.supportpoint(vec(n).neg()),
+                v32 = p2.supportpoint(n),
+                v3 = vec(v32).sub(v31);
             if(v3.dot(n) <= 0)
             {
                 if(contactnormal) *contactnormal = n;
@@ -496,9 +496,9 @@ namespace mpr
                     hit = true;
                 }
                 // Find the support point in the direction of the wedge face
-                const vec v41 = p1.supportpoint(vec(n).neg());
-                const vec v42 = p2.supportpoint(n);
-                const vec v4 = vec(v42).sub(v41);
+                const vec v41 = p1.supportpoint(vec(n).neg()),
+                          v42 = p2.supportpoint(n),
+                          v4 = vec(v42).sub(v41);
                 // If the boundary is thin enough or the origin is outside the support plane for the newly discovered vertex, then we can terminate
                 if(v4.dot(n) <= 0 || vec(v4).sub(v3).dot(n) <= boundarytolerance || j > 100)
                 {
