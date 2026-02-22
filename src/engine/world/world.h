@@ -28,6 +28,12 @@ extern std::vector<int> outsideents;
  * @param c the cube to modify the cubeext's octaentities of
  */
 extern void freeoctaentities(cube &c);
+
+/**
+ * @brief Clears the entgroup vector.
+ *
+ * This contains the current working set of entities.
+ */
 extern void entcancel();
 extern void entselectionbox(const entity &e, vec &eo, vec &es);
 
