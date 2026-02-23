@@ -173,6 +173,10 @@ namespace
 
     /**
      * @brief Returns a vector of tagval results from a std::vector of input strings to execute
+     *
+     * @param inputs list of strings to execute
+     *
+     * @return a list of the respective outputs from the executed strings
      */
     std::vector<tagval> generate_command_tagvals(const std::vector<std::string> &inputs)
     {
