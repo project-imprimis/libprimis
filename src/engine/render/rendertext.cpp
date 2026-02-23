@@ -74,7 +74,12 @@ static void fontborder(const float *bordermin, const float *bordermax)
     fontdef->bordermax = std::max(*bordermax, *bordermin+0.01f);
 }
 
-//sets the fontdef gvar's outlinemin/max to the values passed
+/**
+ * @brief sets the fontdef gvar's outlinemin/max to the values passed
+ *
+ * @param outlinemin the minimum value to set the fontdef to
+ * @param outlinemin the maximum value to set the fontdef to
+ */
 static void fontoutline(const float *outlinemin, const float *outlinemax)
 {
     if(!fontdef)
