@@ -120,7 +120,7 @@ static void fontscale(int *scale)
         return;
     }
 
-fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
+    fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
 }
 
 /**
