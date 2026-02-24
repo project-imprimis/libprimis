@@ -71,6 +71,15 @@ class GBuffer final
         void shadesky() const;
         //refractive
         void processhdr(GLuint outfbo, int aa);
+
+        /**
+         * @brief Draws the debug refraction buffer.
+         *
+         * Draws the buffer containing the refraction information to the screen.
+         * The size of the debug draw is dependent on the debugfullscreen variable;
+         * if 1, the debug buffer spans the whole screen, if not, the debug buffer
+         * is drawn to the bottom right corner of the screen.
+         */
         void viewrefract();
         void doscale(GLuint outfbo = 0) const;
         void setupscale(int sw, int sh, int w, int h);
