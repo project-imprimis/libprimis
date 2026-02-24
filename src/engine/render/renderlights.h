@@ -304,6 +304,12 @@ class PackNode final
         ushort x, y;
         int available;
 
+        /**
+         * @brief Non-recursively discards children.
+         *
+         * Frees the heap allocated child1 and child2 pointers. If those packnodes
+         * point to other children, that memory will be leaked.
+         */
         void discardchildren()
         {
             if(child1)
