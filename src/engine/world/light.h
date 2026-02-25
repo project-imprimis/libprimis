@@ -57,10 +57,7 @@ class PackNode final
         bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
         void reserve(ushort tx, ushort ty, ushort tw, ushort th);
 
-        int availablespace() const
-        {
-            return available;
-        }
+        int availablespace() const;
 
         vec2 dimensions() const
         {
