@@ -32,7 +32,6 @@ extern float forceaspect;
 extern float nearplane;
 extern int farplane;
 extern int drawtex;
-extern const matrix4 viewmatrix;
 
 inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
 
