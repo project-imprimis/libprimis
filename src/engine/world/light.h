@@ -58,11 +58,7 @@ class PackNode final
         void reserve(ushort tx, ushort ty, ushort tw, ushort th);
 
         int availablespace() const;
-
-        vec2 dimensions() const
-        {
-            return {static_cast<float>(w), static_cast<float>(h)};
-        }
+        vec2 dimensions() const;
 
         //debugging printouts, not used in program logic
 

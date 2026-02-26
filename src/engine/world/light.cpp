@@ -628,6 +628,11 @@ int PackNode::availablespace() const
     return available;
 }
 
+vec2 PackNode::dimensions() const
+{
+    return {static_cast<float>(w), static_cast<float>(h)};
+}
+
 static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
 void clearlightcache(int id)
