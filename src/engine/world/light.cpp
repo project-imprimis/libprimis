@@ -633,6 +633,20 @@ vec2 PackNode::dimensions() const
     return {static_cast<float>(w), static_cast<float>(h)};
 }
 
+void PackNode::printchildren(int i) const
+{
+    print(i);
+
+    if(child1)
+    {
+        child1->printchildren(i+1);
+    }
+    if(child2)
+    {
+        child2->printchildren(i+1);
+    }
+}
+
 static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
 void clearlightcache(int id)

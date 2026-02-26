@@ -63,19 +63,7 @@ class PackNode final
         //debugging printouts, not used in program logic
 
         //i: recursion depth
-        void printchildren(int i = 0) const
-        {
-            print(i);
-
-            if(child1)
-            {
-                child1->printchildren(i+1);
-            }
-            if(child2)
-            {
-                child2->printchildren(i+1);
-            }
-        }
+        void printchildren(int i = 0) const;
 
         //i: depth to print out
         void print(int i) const
