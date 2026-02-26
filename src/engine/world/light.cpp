@@ -647,6 +647,12 @@ void PackNode::printchildren(int i) const
     }
 }
 
+void PackNode::print(int i) const
+{
+    std::printf("%d: %d %d\n", i, w, h);
+}
+
+
 static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
 void clearlightcache(int id)

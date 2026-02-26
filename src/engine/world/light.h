@@ -66,10 +66,7 @@ class PackNode final
         void printchildren(int i = 0) const;
 
         //i: depth to print out
-        void print(int i) const
-        {
-            std::printf("%d: %d %d\n", i, w, h);
-        }
+        void print(int i) const;
 
     private:
         ushort w, h;
