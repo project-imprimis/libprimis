@@ -473,6 +473,12 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
     }
 }
 
+void PackNode::reset()
+{
+    discardchildren();
+    available = std::min(w, h);
+}
+
 bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
 {
     if((available < tw && available < th) || w < tw || h < th)

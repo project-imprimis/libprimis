@@ -30,11 +30,7 @@ class PackNode final
     public:
         PackNode(ushort x, ushort y, ushort w, ushort h) :  w(w), h(h), child1(0), child2(0), x(x), y(y), available(std::min(w, h)) {}
 
-        void reset()
-        {
-            discardchildren();
-            available = std::min(w, h);
-        }
+        void reset();
 
         bool resize(int nw, int nh)
         {
