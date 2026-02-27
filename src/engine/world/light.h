@@ -34,10 +34,7 @@ class PackNode final
 
         bool resize(int nw, int nh);
 
-        ~PackNode()
-        {
-            discardchildren();
-        }
+        ~PackNode();
 
         bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
         void reserve(ushort tx, ushort ty, ushort tw, ushort th);

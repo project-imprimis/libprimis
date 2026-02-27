@@ -492,6 +492,11 @@ bool PackNode::resize(int nw, int nh)
     return true;
 }
 
+PackNode::~PackNode()
+{
+    discardchildren();
+}
+
 bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
 {
     if((available < tw && available < th) || w < tw || h < th)
