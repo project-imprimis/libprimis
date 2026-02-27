@@ -479,6 +479,19 @@ void PackNode::reset()
     available = std::min(w, h);
 }
 
+bool PackNode::resize(int nw, int nh)
+{
+    if(w == nw && h == nw)
+    {
+        return false;
+    }
+    discardchildren();
+    w = nw;
+    h = nh;
+    available = std::min(w, h);
+    return true;
+}
+
 bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
 {
     if((available < tw && available < th) || w < tw || h < th)

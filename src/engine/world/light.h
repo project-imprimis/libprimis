@@ -32,18 +32,7 @@ class PackNode final
 
         void reset();
 
-        bool resize(int nw, int nh)
-        {
-            if(w == nw && h == nw)
-            {
-                return false;
-            }
-            discardchildren();
-            w = nw;
-            h = nh;
-            available = std::min(w, h);
-            return true;
-        }
+        bool resize(int nw, int nh);
 
         ~PackNode()
         {
