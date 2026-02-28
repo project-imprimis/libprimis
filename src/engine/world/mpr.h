@@ -305,7 +305,7 @@ namespace mpr
                 }
                 n.normalize();
                 // Find the support point in the direction of the portal's normal
-                vec v4 = p2.supportpoint(n).sub(p1.supportpoint(vec(n).neg()));
+                const vec v4 = p2.supportpoint(n).sub(p1.supportpoint(vec(n).neg()));
                 // If the origin is outside the support plane or the boundary is thin enough, we have a miss
                 if(v4.dot(n) <= 0 || vec(v4).sub(v3).dot(n) <= boundarytolerance || j > 100)
                 {
