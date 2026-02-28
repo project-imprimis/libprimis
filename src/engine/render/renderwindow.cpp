@@ -1,4 +1,5 @@
-/* renderwindow: screen rendering functionality
+/**
+ * @brief screen rendering functionality
  *
  * screen rendering functions, such as background, progress bar
  * also handles stuff such as main menu rendering and other non-intensive rendering
