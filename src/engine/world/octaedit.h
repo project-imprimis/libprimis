@@ -15,6 +15,12 @@ extern int orient;
 
 extern void makeundo(selinfo &s);
 extern void forcenextundo();
+
+/**
+ * @brief Prints warning message to console to warn user about a feature being singleplayer only.
+ *
+ * Tells the user via the console that the action being performed is not available in multiplayer.
+ */
 extern void multiplayerwarn();
 
 /**
