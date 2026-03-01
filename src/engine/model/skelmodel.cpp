@@ -1,4 +1,5 @@
-/* skelmodel.cpp: implementation for the skeletal animation object
+/**
+ * @brief implementation for the skeletal animation object
  *
  * the skelmodel object handles the behavior of animated skeletal models -- such
  * as the ones used by the player and bots
