@@ -42,8 +42,10 @@ static VARP(maxfps, 0, 240, 1000);  //maximum framerate while world is being ren
 
 VAR(desktopw, 1, 0, 0); //used in iengine.h
 VAR(desktoph, 1, 0, 0); //used in iengine.h
+
 int screenw = 0,
     screenh = 0;
+
 SDL_Window   *screen    = nullptr;
 static SDL_GLContext glcontext = nullptr;
 
