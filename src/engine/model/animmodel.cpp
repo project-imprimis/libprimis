@@ -36,7 +36,7 @@
 #include "animmodel.h"
 
 //animmodel
-VARP(fullbrightmodels, 0, 0, 200); //sets minimum amount of brightness for a model: 200 is 100% brightness
+static VARP(fullbrightmodels, 0, 0, 200); //sets minimum amount of brightness for a model: 200 is 100% brightness
 VAR(testtags, 0, 0, 1);            //not used by animmodel object, used by children vert/skelmodel
 VARF(debugcolmesh, 0, 0, 1,
 {
