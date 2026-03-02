@@ -1439,7 +1439,7 @@ struct skelcommands : modelcommands<MDL>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *static_cast<part *>(MDL::loading->parts.back());
+        const part &mdl = *static_cast<part *>(MDL::loading->parts.back());
         if(!name[0])
         {
             return;
