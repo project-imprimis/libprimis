@@ -1,4 +1,5 @@
-/* animmodel.cpp: implementation for animated models
+/**
+ * @brief implementation for animated models
  *
  * animmodel.cpp implements the animmodel object in animmodel.h and is the
  * working form of an an animated model loaded from a file. The animmodel object
