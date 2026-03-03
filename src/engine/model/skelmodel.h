@@ -1470,7 +1470,7 @@ struct skelcommands : modelcommands<MDL>
             return;
         }
         const part *p = static_cast<part *>(MDL::loading->parts.back());
-        meshgroup *m = static_cast<meshgroup *>(p->meshes);
+        const meshgroup *m = static_cast<meshgroup *>(p->meshes);
         if(!m)
         {
             return;
