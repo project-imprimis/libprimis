@@ -1528,7 +1528,7 @@ struct skelcommands : modelcommands<MDL>
         {
             return nullptr;
         }
-        skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
+        const skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.back()->meshes);
         if(!meshes)
         {
             return nullptr;
