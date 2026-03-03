@@ -1469,7 +1469,7 @@ struct skelcommands : modelcommands<MDL>
             conoutf("invalid hit zone id %d", *id);
             return;
         }
-        part *p = static_cast<part *>(MDL::loading->parts.back());
+        const part *p = static_cast<part *>(MDL::loading->parts.back());
         meshgroup *m = static_cast<meshgroup *>(p->meshes);
         if(!m)
         {
