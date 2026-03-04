@@ -680,6 +680,19 @@ void PackNode::print(int i) const
     std::printf("%d: %d %d\n", i, w, h);
 }
 
+void PackNode::discardchildren()
+{
+    if(child1)
+    {
+        delete child1;
+        child1 = nullptr;
+    }
+    if(child2)
+    {
+        delete child2;
+        child2 = nullptr;
+    }
+}
 
 static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 

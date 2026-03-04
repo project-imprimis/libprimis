@@ -62,19 +62,7 @@ class PackNode final
          * Frees the heap allocated child1 and child2 pointers. If those packnodes
          * point to other children, that memory will be leaked.
          */
-        void discardchildren()
-        {
-            if(child1)
-            {
-                delete child1;
-                child1 = nullptr;
-            }
-            if(child2)
-            {
-                delete child2;
-                child2 = nullptr;
-            }
-        }
+        void discardchildren();
 
         void forceempty()
         {
