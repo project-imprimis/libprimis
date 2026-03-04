@@ -64,11 +64,7 @@ class PackNode final
          */
         void discardchildren();
 
-        void forceempty()
-        {
-            discardchildren();
-            available = 0;
-        }
+        void forceempty();
 };
 
 extern PackNode shadowatlaspacker;
