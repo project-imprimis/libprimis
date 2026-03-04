@@ -473,6 +473,10 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
     }
 }
 
+PackNode::PackNode(ushort x, ushort y, ushort w, ushort h) :  w(w), h(h), child1(0), child2(0), x(x), y(y), available(std::min(w, h))
+{
+}
+
 void PackNode::reset()
 {
     discardchildren();

@@ -28,7 +28,7 @@ extern void setsurface(cube &c, int orient, const surfaceinfo &surf, const verti
 class PackNode final
 {
     public:
-        PackNode(ushort x, ushort y, ushort w, ushort h) :  w(w), h(h), child1(0), child2(0), x(x), y(y), available(std::min(w, h)) {}
+        PackNode(ushort x, ushort y, ushort w, ushort h);
 
         void reset();
 
