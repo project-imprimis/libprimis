@@ -1149,7 +1149,7 @@ static bool insideface(const ivec2 *p, int nump, const ivec2 *o, int numo)
     return bounds>=3;
 }
 
-static int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, ivec2 *rvecs)
+static int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, std::array<ivec2, 8> &rvecs)
 {
     cx <<= 3;
     cy <<= 3;
@@ -1225,7 +1225,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
         {
             if(nmat != Mat_Air && (c.material&matmask) == nmat)
             {
-                ivec2 nf[8];
+                std::array<ivec2, 8> nf;
                 return clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, nf) < 3;
             }
             if(vmat != Mat_Air && ((c.material&matmask) == vmat || (IS_LIQUID(vmat) && IS_CLIPPED(c.material&MatFlag_Volume))))
@@ -1242,7 +1242,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
             return true;
         }
         std::array<ivec2, 8> cf;
-        int numc = clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, cf.data());
+        int numc = clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, cf);
         if(numc < 3)
         {
             return true;
