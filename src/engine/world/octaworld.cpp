@@ -1211,7 +1211,10 @@ static bool collapsedface(const cube &c, int orient)
            !ivec().cross(v2, v3.sub(v0));
 }
 
-#define OCTA_COORD(d, i)     (((i)&octadim(d))>>(d))
+static int octacoord(int d, int i)
+{
+    return ((i)&octadim(d))>>(d);
+}
 
 static bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
 {
@@ -1256,7 +1259,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
     int coord = DIM_COORD(orient);
     for(int i = 0; i < 8; ++i)
     {
-        if(OCTA_COORD(dim, i) == coord)
+        if(octacoord(dim, i) == coord)
         {
             if(!occludesface((*c.children)[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv))
             {
@@ -1755,7 +1758,7 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
         int coord = DIM_COORD(orient);
         for(int i = 0; i < 8; ++i)
         {
-            if(OCTA_COORD(dim, i) == coord)
+            if(octacoord(dim, i) == coord)
             {
                 mincubeface((*cu.children)[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
             }
