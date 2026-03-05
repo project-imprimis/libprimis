@@ -1211,6 +1211,8 @@ static bool collapsedface(const cube &c, int orient)
            !ivec().cross(v2, v3.sub(v0));
 }
 
+#define OCTA_COORD(d, i)     (((i)&octadim(d))>>(d))
+
 static bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
 {
     int dim = DIMENSION(orient);
