@@ -1,7 +1,7 @@
 
 #include "libprimis.h"
 
-#include "../src/engine/render/renderlights.h"
+#include "../src/engine/world/light.h"
 
 namespace
 {
