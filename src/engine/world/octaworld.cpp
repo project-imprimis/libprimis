@@ -1430,7 +1430,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask&2 && solid)
                     {
                         numc = genfacevecs(c, orient, vo, size, true, cf);
-                        if(!insideface(&cf[0], numc, &of[0], numo))
+                        if(!insideface(cf.data(), numc, of.data(), numo))
                         {
                             forcevis |= 2;
                         }
@@ -1439,7 +1439,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                     if(vismask)
                     {
                         numc = genfacevecs(c, orient, vo, size, false, cf);
-                        if(!insideface(&cf[0], numc, &of[0], numo))
+                        if(!insideface(cf.data(), numc, of.data(), numo))
                         {
                             forcevis |= vismask;
                         }
