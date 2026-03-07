@@ -183,10 +183,10 @@ int orient = 0,
 static ivec lastcur;
 ivec cor, lastcor, cur; //used in iengine
 
-bool editmode     = false,
-     multiplayer  = false,
-     allowediting = false,
-     havesel      = false;
+bool editmode     = false, //used in iengine
+     multiplayer  = false, //used in iengine
+     allowediting = false, //used in iengine
+     havesel      = false; //used in iengine
 int horient  = 0,
     entmoving = 0;
 
@@ -228,7 +228,7 @@ VARF(dragging, 0, 0, 1,
     sel.orient = orient;
 );
 
-int moving = 0;
+int moving = 0; //used in iengine
 
 VARF(gridpower, 0, 3, 12,
 {
