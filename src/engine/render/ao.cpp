@@ -347,7 +347,7 @@ void GBuffer::renderao() const
     {
         std::array<float, maxblurradius+1> blurweights,
                                            bluroffsets;
-        setupblurkernel(aoblur, blurweights.data(), bluroffsets.data());
+        setupblurkernel(aoblur, blurweights, bluroffsets);
         for(int i = 0; i < 2+2*aoiter; ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);

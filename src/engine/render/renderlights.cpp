@@ -2819,7 +2819,7 @@ void GBuffer::rendervolumetric()
         {
             std::array<float, maxblurradius+1> blurweights,
                                                bluroffsets;
-            setupblurkernel(volblur, blurweights.data(), bluroffsets.data());
+            setupblurkernel(volblur, blurweights, bluroffsets);
             for(int i = 0; i < 2; ++i)
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, volfbo[(i+1)%2]);

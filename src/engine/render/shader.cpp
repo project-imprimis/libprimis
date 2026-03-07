@@ -2238,7 +2238,7 @@ void resetshaders()
 
 FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
-void setupblurkernel(int radius, float *weights, float *offsets)
+void setupblurkernel(int radius, std::array<float, maxblurradius + 1> &weights, std::array<float, maxblurradius + 1> &offsets)
 {
     if(radius<1 || radius>maxblurradius)
     {

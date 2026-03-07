@@ -471,7 +471,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     {
         std::array<float, maxblurradius+1> blurweights,
                                            bluroffsets;
-        setupblurkernel(bloomblur, blurweights.data(), bluroffsets.data());
+        setupblurkernel(bloomblur, blurweights, bluroffsets);
         for(int i = 0; i < (2 + 2*bloomiter); ++i)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
