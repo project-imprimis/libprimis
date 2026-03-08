@@ -994,9 +994,9 @@ void Shader::cleanup(bool full)
     }
     else
     {
-        for(size_t i = 0; i < defaultparams.size(); i++)
+        for(SlotShaderParamState &i : defaultparams)
         {
-            defaultparams[i].loc = -1;
+            i.loc = -1;
         }
     }
 }
