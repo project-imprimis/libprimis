@@ -38,7 +38,7 @@ extern size_t getlocalparam(const std::string &name);
  * @param offsets array of length at least radius + 1
  */
 extern void setupblurkernel(int radius, std::array<float, maxblurradius + 1> &weights, std::array<float, maxblurradius + 1> &offsets);
-extern void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target = GL_TEXTURE_2D);
+extern void setblurshader(int pass, int size, int radius, std::array<float, maxblurradius + 1> &weights, std::array<float, maxblurradius + 1> &offsets, GLenum target = GL_TEXTURE_2D);
 
 /**
  * @brief Attempts to get a shader from the shaders map.

@@ -476,7 +476,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, b1w, b1h);
-            setblurshader(i%2, 1, bloomblur, blurweights.data(), bluroffsets.data(), GL_TEXTURE_RECTANGLE);
+            setblurshader(i%2, 1, bloomblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
             screenquad(b0w, b0h);
             std::swap(b0w, b1w);

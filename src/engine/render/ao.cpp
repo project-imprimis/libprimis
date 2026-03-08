@@ -352,7 +352,7 @@ void GBuffer::renderao() const
         {
             glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
             glViewport(0, 0, aow, aoh);
-            setblurshader(i%2, 1, aoblur, blurweights.data(), bluroffsets.data(), GL_TEXTURE_RECTANGLE);
+            setblurshader(i%2, 1, aoblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
             screenquad(aow, aoh);
         }

@@ -2270,7 +2270,7 @@ void setupblurkernel(int radius, std::array<float, maxblurradius + 1> &weights, 
     }
 }
 
-void setblurshader(int pass, int size, int radius, const float *weights, const float *offsets, GLenum target)
+void setblurshader(int pass, int size, int radius, std::array<float, maxblurradius + 1> &weights, std::array<float, maxblurradius + 1> &offsets, GLenum target)
 {
     if(radius<1 || radius>maxblurradius)
     {
@@ -2285,13 +2285,13 @@ void setblurshader(int pass, int size, int radius, const float *weights, const f
         s = lookupshaderbyname(name);
     }
     s->set();
-    LOCALPARAMV(weights, weights, maxblurradius+1);
+    LOCALPARAMV(weights.data(), weights.data(), maxblurradius+1);
     std::array<float, maxblurradius+1> scaledoffsets;
     for(int k = 0; k < maxblurradius+1; ++k)
     {
         scaledoffsets[k] = offsets[k]/size;
     }
-    LOCALPARAMV(offsets, scaledoffsets.data(), maxblurradius+1);
+    LOCALPARAMV(offsets.data(), scaledoffsets.data(), maxblurradius+1);
 }
 
 void initshadercmds()

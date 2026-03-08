@@ -2824,7 +2824,7 @@ void GBuffer::rendervolumetric()
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, volfbo[(i+1)%2]);
                 glViewport(0, 0, volw, volh);
-                setblurshader(i%2, 1, volblur, blurweights.data(), bluroffsets.data(), GL_TEXTURE_RECTANGLE);
+                setblurshader(i%2, 1, volblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
                 glBindTexture(GL_TEXTURE_RECTANGLE, voltex[i%2]);
                 screenquad(volw, volh);
             }
