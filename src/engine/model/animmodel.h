@@ -1270,7 +1270,7 @@ struct modelcommands
     static void setspec(const char *meshname, const float *percent)
     {
         float spec = *percent > 0 ? *percent/100.0f : 0.0f;
-        auto skinlist = getskins(meshname);
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = getskins(meshname);
         for(auto s : skinlist)
         {
             (*s).spec = spec;
