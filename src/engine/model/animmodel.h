@@ -1271,7 +1271,7 @@ struct modelcommands
     {
         float spec = *percent > 0 ? *percent/100.0f : 0.0f;
         std::vector<std::vector<animmodel::skin>::iterator> skinlist = getskins(meshname);
-        for(auto s : skinlist)
+        for(std::vector<animmodel::skin>::iterator s : skinlist)
         {
             (*s).spec = spec;
         }
@@ -1279,8 +1279,8 @@ struct modelcommands
 
     static void setgloss(const char *meshname, const int *gloss)
     {
-        auto skinlist = getskins(meshname);
-        for(auto s : skinlist)
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = getskins(meshname);
+        for(std::vector<animmodel::skin>::iterator s : skinlist)
         {
             (*s).gloss = std::clamp(*gloss, 0, 2);
         }
