@@ -1256,8 +1256,8 @@ struct modelcommands
 
     static void setskin(const char *meshname, const char *tex, const char *masks)
     {
-        auto skinlist = getskins(meshname);
-        for(auto s : skinlist)
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = getskins(meshname);
+        for(std::vector<animmodel::skin>::iterator s : skinlist)
         {
             (*s).tex = textureload(makerelpath(MDL::dir.c_str(), tex), 0, true, false);
             if(*masks)
