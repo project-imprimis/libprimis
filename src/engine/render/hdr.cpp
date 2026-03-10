@@ -150,20 +150,20 @@ void cleanupbloom()
         glDeleteBuffers(1, &bloompbo);
         bloompbo = 0;
     }
-    for(size_t i = 0; i < bloomfbo.size(); ++i)
+    for(GLuint &i : bloomfbo)
     {
-        if(bloomfbo[i])
+        if(i)
         {
-            glDeleteFramebuffers(1, &bloomfbo[i]);
-            bloomfbo[i] = 0;
+            glDeleteFramebuffers(1, &i);
+            i = 0;
         }
     }
-    for(size_t i = 0; i < bloomtex.size(); ++i)
+    for(GLuint &i : bloomtex)
     {
-        if(bloomtex[i])
+        if(i)
         {
-            glDeleteTextures(1, &bloomtex[i]);
-            bloomtex[i] = 0;
+            glDeleteTextures(1, &i);
+            i = 0;
         }
     }
     bloomw = bloomh = -1;
