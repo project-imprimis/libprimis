@@ -985,7 +985,7 @@ struct modelcommands
             return;
         }
         MDL::loading->collidemodel.clear();
-        const char *end = nullptr;
+        char *end = nullptr;
         int val = std::strtol(collide, &end, 0);
         if(*end)
         {
