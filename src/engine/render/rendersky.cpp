@@ -67,7 +67,7 @@ namespace
         }};
 
         const char *wildcard = std::strchr(basename, '*');
-        for(int i = 0; i < 6; ++i) //six sides for a cubemap
+        for(size_t i = 0; i < cubemapsides.size(); ++i)
         {
             const char *side = cubemapsides[i].name;
             string name;
