@@ -19,6 +19,14 @@ extern GLenum hdrformat;
  * @return a GL texture format number
  */
 extern int  gethdrformat(int prec, int fallback = GL_RGB);
+
+/**
+ * @brief Cleans up the bloom buffers.
+ *
+ * Frees the buffers and textures related to the bloom effect. There are six
+ * bloom PBOs and six bloom textures. Their bound objects are freed and the values
+ * of their GL object handle uints are set to zero.
+ */
 extern void cleanupbloom();
 
 /**
