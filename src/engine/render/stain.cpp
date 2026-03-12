@@ -876,7 +876,7 @@ class StainRenderer final
         void genmmtris(const octaentities &oe)
         {
             const std::vector<extentity *> &ents = entities::getents();
-            for(uint i = 0; i < oe.mapmodels.size(); i++)
+            for(size_t i = 0; i < oe.mapmodels.size(); i++)
             {
                 const extentity &e = *ents[oe.mapmodels[i]];
                 model *m = loadmapmodel(e.attr1);
@@ -1099,7 +1099,7 @@ void initstains()
     {
         i.init(maxstaintris);
     }
-    for(uint i = 0; i < stains.size(); ++i)
+    for(size_t i = 0; i < stains.size(); ++i)
     {
         loadprogress = static_cast<float>(i+1)/stains.size();
         stains[i].preload();
