@@ -2888,12 +2888,12 @@ static void viewlightscissor()
         size_t idx = entgroup[i];
         if((ents.size() > idx) && ents[idx]->type == EngineEnt_Light)
         {
-            extentity &e = *ents[idx];
+            const extentity &e = *ents[idx];
             for(size_t j = 0; j < lights.size(); j++)
             {
                 if(lights[j].o == e.o)
                 {
-                    lightinfo &l = lights[j];
+                    const lightinfo &l = lights[j];
                     if(!l.validscissor())
                     {
                         break;
