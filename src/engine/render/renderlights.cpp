@@ -2885,8 +2885,8 @@ static void viewlightscissor()
     gle::defvertex(2);
     for(size_t i = 0; i < entgroup.size(); i++)
     {
-        int idx = entgroup[i];
-        if((static_cast<long>(ents.size()) > idx) && ents[idx]->type == EngineEnt_Light)
+        size_t idx = entgroup[i];
+        if((ents.size() > idx) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
             for(size_t j = 0; j < lights.size(); j++)

@@ -16,7 +16,7 @@ constexpr float defaulttexscale = 16.0f;
 extern char *maptitle;
 
 extern std::vector<int> entgroup;
-extern std::vector<int> outsideents;
+extern std::vector<size_t> outsideents;
 
 /**
  * @brief Cleans up and then removes ent information from cubeext.
