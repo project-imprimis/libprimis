@@ -32,7 +32,7 @@
 SVARR(maptitle, "Untitled Map by Unknown");
 
 std::vector<int> outsideents;
-std::vector<int> entgroup;
+std::vector<size_t> entgroup;
 
 namespace entities
 {
