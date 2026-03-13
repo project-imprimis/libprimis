@@ -4447,11 +4447,11 @@ namespace UI
                     Slot &slot = *vslot.slot;
                     if(slot.texmask&(1 << Tex_Glow))
                     {
-                        for(uint j = 0; j < slot.sts.size(); j++)
+                        for(size_t i = 0; i < slot.sts.size(); i++)
                         {
-                            if(slot.sts[j].type == Tex_Glow)
+                            if(slot.sts[i].type == Tex_Glow)
                             {
-                                glowtex = slot.sts[j].t;
+                                glowtex = slot.sts[i].t;
                                 break;
                             }
                         }
