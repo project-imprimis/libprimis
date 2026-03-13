@@ -1571,15 +1571,6 @@ namespace UI
         }
     };
 
-    #define BUILDCOLUMNS(type, o, setup, columndata, contents) do { \
-        if(buildparent) \
-        { \
-            type *o = buildparent->buildtype<type>(); \
-            setup; \
-            o->buildchildren(columndata, contents); \
-        } \
-    } while(0)
-
     struct Table final : Object
     {
         float spacew, spaceh, subw, subh;
@@ -4957,6 +4948,16 @@ namespace UI
         {
             BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children);
         }), "iffe", Id_Command);
+
+        #define BUILDCOLUMNS(type, o, setup, columndata, contents) do { \
+            if(buildparent) \
+            { \
+                type *o = buildparent->buildtype<type>(); \
+                setup; \
+                o->buildchildren(columndata, contents); \
+            } \
+        } while(0)
+
         addcommand("uitableheader", reinterpret_cast<identfun>(+[] (const uint *columndata, const uint *children)
         {
             BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children);
@@ -4965,6 +4966,9 @@ namespace UI
         {
             BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children);
         }), "ee", Id_Command);
+
+        #undef BUILDCOLUMNS
+
         addcommand("uitable", reinterpret_cast<identfun>(+[] (const float *spacew, const float *spaceh, const uint *children)
         {
             BUILD(Table, o, o->setup(*spacew, *spaceh), children);
