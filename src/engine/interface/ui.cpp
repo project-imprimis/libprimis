@@ -1041,7 +1041,7 @@ namespace UI
         }
 
         #define LOOP_WINDOWS(o, body) do { \
-            for(uint i = 0; i < children.size(); i++) \
+            for(size_t i = 0; i < children.size(); i++) \
             { \
                 Window *o = static_cast<Window *>(children[i]); \
                 body; \
