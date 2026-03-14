@@ -2678,22 +2678,6 @@ namespace UI
     static VARP(uitextrows, 1, 24, 200);
     static FVAR(uitextscale, 1, 0, 0);
 
-    static void setstring(char*& dst, const char* src)
-    {
-        if(dst)
-        {
-            if(dst != src && std::strcmp(dst, src))
-            {
-                delete[] dst;
-                dst = newstring(src);
-            }
-        }
-        else
-        {
-            dst = newstring(src);
-        }
-    }
-
     struct Text : Object
     {
         public:
