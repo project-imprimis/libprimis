@@ -4357,13 +4357,12 @@ namespace UI
 
             ~PrefabPreview()
             {
-                delete[] name;
             }
 
             void setup(const char *name_, int color_, float minw_, float minh_)
             {
                 Preview::setup(minw_, minh_);
-                setstring(name, name_);
+                name = std::string(name_);
                 color = vec::hexcolor(color_);
             }
 
@@ -4384,7 +4383,7 @@ namespace UI
                 int sx1, sy1, sx2, sy2;
                 window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
                 modelpreview.start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
-                previewprefab(name, color);
+                previewprefab(name.c_str(), color);
                 if(clipstack.size())
                 {
                     clipstack.back().scissor();
@@ -4392,7 +4391,7 @@ namespace UI
                 modelpreview.end();
             }
         private:
-            char *name;
+            std::string name;
             vec color;
     };
 
