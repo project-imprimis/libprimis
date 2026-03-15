@@ -1048,26 +1048,26 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
             {
                 case Id_Var:
                 {
-                    const int i = val.getint();
-                    if(id->val.i.min <= id->val.i.max && i >= id->val.i.min && i <= id->val.i.max)
+                    const int ival = val.getint();
+                    if(id->val.i.min <= id->val.i.max && ival >= id->val.i.min && ival <= id->val.i.max)
                     {
-                        setvar(name, i);
+                        setvar(name, ival);
                         if(debugvars)
                         {
-                            conoutf(Console_Debug, "read var %s: %d", name, i);
+                            conoutf(Console_Debug, "read var %s: %d", name, ival);
                         }
                     }
                     break;
                 }
                 case Id_FloatVar:
                 {
-                    const float f = val.getfloat();
-                    if(id->val.f.min <= id->val.f.max && f >= id->val.f.min && f <= id->val.f.max)
+                    const float fval = val.getfloat();
+                    if(id->val.f.min <= id->val.f.max && fval >= id->val.f.min && fval <= id->val.f.max)
                     {
-                        setfvar(name, f);
+                        setfvar(name, fval);
                         if(debugvars)
                         {
-                            conoutf(Console_Debug, "read fvar %s: %f", name, f);
+                            conoutf(Console_Debug, "read fvar %s: %f", name, fval);
                         }
                     }
                     break;
