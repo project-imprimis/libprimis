@@ -672,7 +672,7 @@ void savevslots(stream *f, int numvslots)
         }
         for(;;)
         {
-            VSlot *cur = vs;
+            VSlot *curslot = vs;
             do
             {
                 vs = vs->next;
@@ -681,7 +681,7 @@ void savevslots(stream *f, int numvslots)
             {
                 break;
             }
-            prev[vs->index] = cur->index;
+            prev[vs->index] = curslot->index;
         }
     }
     int lastroot = 0;
