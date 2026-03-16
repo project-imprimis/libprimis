@@ -134,7 +134,7 @@ class Shader final
         {
             const char *name;
             int loc;
-            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
+            AttribLoc(const char *newname = nullptr, int newloc = -1) : name(newname), loc(newloc) {}
         };
         std::vector<AttribLoc> attriblocs;
         GLuint vsobj, psobj;
