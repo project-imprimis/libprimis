@@ -604,17 +604,17 @@ static void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
-                        vertinfo &v = verts[k];
+                        vertinfo &vi = verts[k];
                         if(hasxyz)
                         {
                             ivec xyz;
                             xyz[vc] = f->get<ushort>(); xyz[vr] = f->get<ushort>();
                             xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                            v.setxyz(xyz);
+                            vi.setxyz(xyz);
                         }
                         if(hasnorm)
                         {
-                            v.norm = f->get<ushort>();
+                            vi.norm = f->get<ushort>();
                         }
                     }
                 }
