@@ -145,28 +145,28 @@ void setmapname(const char * newname)
     clientmap = std::string(newname);
 }
 
-bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr) const
+bool cubeworld::loadmapheader(stream *f, const char *ogzfilename, mapheader &hdr, octaheader &ohdr) const
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
     {
-        conoutf(Console_Error, "map %s has malformatted header", ogzname);
+        conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
         return false;
     }
     if(!std::memcmp(hdr.magic, "TMAP", 4))
     {
         if(hdr.version>currentmapversion)
         {
-            conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname);
+            conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzfilename);
             return false;
         }
         if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int))
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         if(hdr.worldsize <= 0|| hdr.numents < 0)
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
     }
@@ -174,17 +174,17 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     {
         if(hdr.version!=octaversion)
         {
-            conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname);
+            conoutf(Console_Error, "map %s uses an unsupported map format version", ogzfilename);
             return false;
         }
         if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int))
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         if(ohdr.worldsize <= 0|| ohdr.numents < 0)
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         std::memcpy(hdr.magic, "TMAP", 4);
@@ -197,7 +197,7 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     }
     else
     {
-        conoutf(Console_Error, "map %s uses an unsupported map type", ogzname);
+        conoutf(Console_Error, "map %s uses an unsupported map type", ogzfilename);
         return false;
     }
 
