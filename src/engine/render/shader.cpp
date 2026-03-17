@@ -1025,80 +1025,80 @@ void GlobalShaderParamUse::flush()
         case GL_BOOL:
         case GL_FLOAT:
         {
-            glUniform1fv(loc, size, param->fval);
+            glUniform1fv(loc, size, param->fval.data());
             break;
         }
         case GL_BOOL_VEC2:
         case GL_FLOAT_VEC2:
         {
-            glUniform2fv(loc, size, param->fval);
+            glUniform2fv(loc, size, param->fval.data());
             break;
         }
         case GL_BOOL_VEC3:
         case GL_FLOAT_VEC3:
         {
-            glUniform3fv(loc, size, param->fval);
+            glUniform3fv(loc, size, param->fval.data());
             break;
         }
         case GL_BOOL_VEC4:
         case GL_FLOAT_VEC4:
         {
-            glUniform4fv(loc, size, param->fval);
+            glUniform4fv(loc, size, param->fval.data());
             break;
         }
         case GL_INT:
         {
-            glUniform1iv(loc, size, param->ival);
+            glUniform1iv(loc, size, param->ival.data());
             break;
         }
         case GL_INT_VEC2:
         {
-            glUniform2iv(loc, size, param->ival);
+            glUniform2iv(loc, size, param->ival.data());
             break;
         }
         case GL_INT_VEC3:
         {
-            glUniform3iv(loc, size, param->ival);
+            glUniform3iv(loc, size, param->ival.data());
             break;
         }
         case GL_INT_VEC4:
         {
-            glUniform4iv(loc, size, param->ival);
+            glUniform4iv(loc, size, param->ival.data());
             break;
         }
         case GL_UNSIGNED_INT:
         {
-            glUniform1uiv(loc, size, param->uval);
+            glUniform1uiv(loc, size, param->uval.data());
             break;
         }
         case GL_UNSIGNED_INT_VEC2:
         {
-            glUniform2uiv(loc, size, param->uval);
+            glUniform2uiv(loc, size, param->uval.data());
             break;
         }
         case GL_UNSIGNED_INT_VEC3:
         {
-            glUniform3uiv(loc, size, param->uval);
+            glUniform3uiv(loc, size, param->uval.data());
             break;
         }
         case GL_UNSIGNED_INT_VEC4:
         {
-            glUniform4uiv(loc, size, param->uval);
+            glUniform4uiv(loc, size, param->uval.data());
             break;
         }
         case GL_FLOAT_MAT2:
         {
-            glUniformMatrix2fv(loc, 1, GL_FALSE, param->fval);
+            glUniformMatrix2fv(loc, 1, GL_FALSE, param->fval.data());
             break;
         }
         case GL_FLOAT_MAT3:
         {
-            glUniformMatrix3fv(loc, 1, GL_FALSE, param->fval);
+            glUniformMatrix3fv(loc, 1, GL_FALSE, param->fval.data());
             break;
         }
         case GL_FLOAT_MAT4:
         {
-            glUniformMatrix4fv(loc, 1, GL_FALSE, param->fval);
+            glUniformMatrix4fv(loc, 1, GL_FALSE, param->fval.data());
             break;
         }
     }
