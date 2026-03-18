@@ -62,7 +62,7 @@ struct octaentities final
     int size;
     ivec bbmin, bbmax;
 
-    octaentities(const ivec &o, int size) : query(0), o(o), size(size), bbmin(o), bbmax(o)
+    octaentities(const ivec &neworigin, int newsize) : query(0), o(neworigin), size(newsize), bbmin(neworigin), bbmax(neworigin)
     {
         bbmin.add(size);
     }
