@@ -452,5 +452,8 @@ int smoothangle(int id, int angle)
 
 void initnormalcmds()
 {
-    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (const int *id, const int *angle) {intret(smoothangle(*id, *angle));}), "ib", Id_Command);
+    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (const int *id, const int *angle)
+    {
+        intret(smoothangle(*id, *angle));
+    }), "ib", Id_Command);
 }
