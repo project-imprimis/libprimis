@@ -115,7 +115,7 @@ struct surfaceinfo final
     surfaceinfo() : verts(0), numverts(BlendLayer_Top)
     {
     }
-    surfaceinfo(uchar verts, uchar num) : verts(verts), numverts(num)
+    surfaceinfo(uchar newverts, uchar newnum) : verts(newverts), numverts(newnum)
     {
     }
 
