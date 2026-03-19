@@ -433,7 +433,7 @@ int smoothangle(int id, int angle)
 {
     if(id < 0)
     {
-        id = smoothgroups.size();
+        id = static_cast<int>(smoothgroups.size());
     }
     if(id >= maxsmoothgroups)
     {
