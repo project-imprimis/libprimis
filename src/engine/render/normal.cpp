@@ -167,7 +167,7 @@ namespace //internal functionality not seen by other files
 
         for(int cur = g.normals; cur >= 0;)
         {
-            Normal &o = normals[cur];
+            const Normal &o = normals[cur];
             if(o.surface.dot(surface) >= lerpthreshold)
             {
                 v.add(o.surface);
