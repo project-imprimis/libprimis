@@ -1,6 +1,11 @@
 #ifndef CS_H_
 #define CS_H_
-// cs.h: low level cubscript functionality beyond script binding in command.h
+
+/**
+ * @file Internal CubeScript functionality
+ *
+ * low level cubescript functionality beyond script binding in command.h
+ */
 
 enum
 {
