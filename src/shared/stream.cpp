@@ -3,7 +3,6 @@
  * stream.cpp defines character handling to enable character streams to be written
  * into and out of files
  * also included is utilities for gz archive support
- *
  */
 #include <sstream>
 
@@ -207,7 +206,6 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
     }
     return tmp;
 }
-
 
 char *path(char *s)
 {
@@ -1324,6 +1322,7 @@ class gzstream final : public stream
             crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(buf)), len - zfile.avail_in);
             return len - zfile.avail_in;
         }
+
     private:
         enum GzHeader
         {
