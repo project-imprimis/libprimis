@@ -9,12 +9,35 @@ struct streambuf
 
     streambuf(stream *s) : s(s) {}
 
-    T get() { return s->get<T>(); }
-    size_t get(T *vals, size_t numvals) { return s->get(vals, numvals); }
-    void put(const T &val) { s->put(&val, 1); }
-    void put(const T *vals, size_t numvals) { s->put(vals, numvals); }
-    void push_back(const T &val) { put(val); }
-    size_t length() { return s->size(); }
+    T get()
+    {
+        return s->get<T>();
+    }
+
+    size_t get(T *vals, size_t numvals)
+    {
+        return s->get(vals, numvals);
+    }
+
+    void put(const T &val)
+    {
+        s->put(&val, 1);
+    }
+
+    void put(const T *vals, size_t numvals)
+    {
+        s->put(vals, numvals);
+    }
+
+    void push_back(const T &val)
+    {
+        put(val);
+    }
+
+    size_t length()
+    {
+        return s->size();
+    }
 };
 
 enum
