@@ -400,9 +400,9 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
                     oe.bbmin.add(oe.size);
                     for(size_t j = 0; j < oe.decals.size(); j++)
                     {
-                        extentity &e = *entities::getents()[oe.decals[j]];
+                        extentity &ext = *entities::getents()[oe.decals[j]];
                         ivec eo, er;
-                        if(getentboundingbox(e, eo, er))
+                        if(getentboundingbox(ext, eo, er))
                         {
                             oe.bbmin.min(eo);
                             oe.bbmax.max(er);
@@ -436,9 +436,9 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
                         oe.bbmin.add(oe.size);
                         for(const int &j : oe.mapmodels)
                         {
-                            extentity &e = *entities::getents()[j];
+                            extentity &ext = *entities::getents()[j];
                             ivec eo, er;
-                            if(getentboundingbox(e, eo, er))
+                            if(getentboundingbox(ext, eo, er))
                             {
                                 oe.bbmin.min(eo);
                                 oe.bbmax.max(er);
