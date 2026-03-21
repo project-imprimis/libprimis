@@ -167,7 +167,7 @@ namespace //internal functionality not seen by other files
 
         for(int cur = g.normals; cur >= 0;)
         {
-            Normal &o = normals[cur];
+            const Normal &o = normals[cur];
             if(o.surface.dot(surface) >= lerpthreshold)
             {
                 v.add(o.surface);
@@ -354,7 +354,7 @@ namespace //internal functionality not seen by other files
                     const int origin  =  static_cast<int>(std::min(v1[axis], v2[axis])*8)&~0x7FFF,
                               offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
                               offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
-                    const vec o = vec(v1).sub(vec(d).mul(offset1/8.0f));
+                    const vec o2 = vec(v1).sub(vec(d).mul(offset1/8.0f));
                     vec n1, n2;
                     const float doffset = 1.0f / (offset2 - offset1);
                     while(tj >= 0)
@@ -365,7 +365,7 @@ namespace //internal functionality not seen by other files
                             break;
                         }
                         const float offset = (t.offset - offset1) * doffset;
-                        const vec tpos = vec(d).mul(t.offset/8.0f).add(o);
+                        const vec tpos = vec(d).mul(t.offset/8.0f).add(o2);
                         addtnormal(tpos, smooth, offset, norms[e1], norms[e2], v1, v2);
                         tj = t.next;
                     }
@@ -433,7 +433,7 @@ int smoothangle(int id, int angle)
 {
     if(id < 0)
     {
-        id = smoothgroups.size();
+        id = static_cast<int>(smoothgroups.size());
     }
     if(id >= maxsmoothgroups)
     {
@@ -452,5 +452,8 @@ int smoothangle(int id, int angle)
 
 void initnormalcmds()
 {
-    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (const int *id, const int *angle) {intret(smoothangle(*id, *angle));}), "ib", Id_Command);
+    addcommand("smoothangle", reinterpret_cast<identfun>(+[] (const int *id, const int *angle)
+    {
+        intret(smoothangle(*id, *angle));
+    }), "ib", Id_Command);
 }

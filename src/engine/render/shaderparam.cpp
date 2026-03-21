@@ -72,12 +72,12 @@ void GlobalShaderParam::set(const vec2 &v, float z, float w)
 
 void GlobalShaderParam::set(const matrix3 &m)
 {
-    std::memcpy(resolve().fval, m.a.data(), sizeof(m));
+    std::memcpy(resolve().fval.data(), m.a.data(), sizeof(m));
 }
 
 void GlobalShaderParam::set(const matrix4 &m)
 {
-    std::memcpy(resolve().fval, m.a.data(), sizeof(m));
+    std::memcpy(resolve().fval.data(), m.a.data(), sizeof(m));
 }
 
 std::map<std::string, GlobalShaderParamState> globalparams;

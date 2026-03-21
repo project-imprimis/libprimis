@@ -145,28 +145,28 @@ void setmapname(const char * newname)
     clientmap = std::string(newname);
 }
 
-bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr) const
+bool cubeworld::loadmapheader(stream *f, const char *ogzfilename, mapheader &hdr, octaheader &ohdr) const
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
     {
-        conoutf(Console_Error, "map %s has malformatted header", ogzname);
+        conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
         return false;
     }
     if(!std::memcmp(hdr.magic, "TMAP", 4))
     {
         if(hdr.version>currentmapversion)
         {
-            conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname);
+            conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzfilename);
             return false;
         }
         if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int))
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         if(hdr.worldsize <= 0|| hdr.numents < 0)
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
     }
@@ -174,17 +174,17 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     {
         if(hdr.version!=octaversion)
         {
-            conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname);
+            conoutf(Console_Error, "map %s uses an unsupported map format version", ogzfilename);
             return false;
         }
         if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int))
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         if(ohdr.worldsize <= 0|| ohdr.numents < 0)
         {
-            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            conoutf(Console_Error, "map %s has malformatted header", ogzfilename);
             return false;
         }
         std::memcpy(hdr.magic, "TMAP", 4);
@@ -197,7 +197,7 @@ bool cubeworld::loadmapheader(stream *f, const char *ogzname, mapheader &hdr, oc
     }
     else
     {
-        conoutf(Console_Error, "map %s uses an unsupported map type", ogzname);
+        conoutf(Console_Error, "map %s uses an unsupported map type", ogzfilename);
         return false;
     }
 
@@ -604,17 +604,17 @@ static void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
-                        vertinfo &v = verts[k];
+                        vertinfo &vi = verts[k];
                         if(hasxyz)
                         {
                             ivec xyz;
                             xyz[vc] = f->get<ushort>(); xyz[vr] = f->get<ushort>();
                             xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                            v.setxyz(xyz);
+                            vi.setxyz(xyz);
                         }
                         if(hasnorm)
                         {
-                            v.norm = f->get<ushort>();
+                            vi.norm = f->get<ushort>();
                         }
                     }
                 }
@@ -672,7 +672,7 @@ void savevslots(stream *f, int numvslots)
         }
         for(;;)
         {
-            VSlot *cur = vs;
+            VSlot *curslot = vs;
             do
             {
                 vs = vs->next;
@@ -681,7 +681,7 @@ void savevslots(stream *f, int numvslots)
             {
                 break;
             }
-            prev[vs->index] = cur->index;
+            prev[vs->index] = curslot->index;
         }
     }
     int lastroot = 0;
@@ -1048,26 +1048,26 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
             {
                 case Id_Var:
                 {
-                    const int i = val.getint();
-                    if(id->val.i.min <= id->val.i.max && i >= id->val.i.min && i <= id->val.i.max)
+                    const int ival = val.getint();
+                    if(id->val.i.min <= id->val.i.max && ival >= id->val.i.min && ival <= id->val.i.max)
                     {
-                        setvar(name, i);
+                        setvar(name, ival);
                         if(debugvars)
                         {
-                            conoutf(Console_Debug, "read var %s: %d", name, i);
+                            conoutf(Console_Debug, "read var %s: %d", name, ival);
                         }
                     }
                     break;
                 }
                 case Id_FloatVar:
                 {
-                    const float f = val.getfloat();
-                    if(id->val.f.min <= id->val.f.max && f >= id->val.f.min && f <= id->val.f.max)
+                    const float fval = val.getfloat();
+                    if(id->val.f.min <= id->val.f.max && fval >= id->val.f.min && fval <= id->val.f.max)
                     {
-                        setfvar(name, f);
+                        setfvar(name, fval);
                         if(debugvars)
                         {
-                            conoutf(Console_Debug, "read fvar %s: %f", name, f);
+                            conoutf(Console_Debug, "read fvar %s: %f", name, fval);
                         }
                     }
                     break;

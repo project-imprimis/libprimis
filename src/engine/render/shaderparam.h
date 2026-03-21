@@ -8,16 +8,16 @@ struct UniformLoc final
     int version, binding, stride, offset;
     GLint size;
     const void *data;
-    UniformLoc(const char *name = nullptr, const char *blockname = nullptr, int binding = -1, int stride = -1) : name(name), blockname(blockname), loc(-1), version(-1), binding(binding), stride(stride), offset(-1), size(-1), data(nullptr) {}
+    UniformLoc(const char *newname = nullptr, const char *newblockname = nullptr, int newbinding = -1, int newstride = -1) : name(newname), blockname(newblockname), loc(-1), version(-1), binding(newbinding), stride(newstride), offset(-1), size(-1), data(nullptr) {}
 };
 
 struct GlobalShaderParamState final
 {
     union
     {
-        GLfloat fval[32];
-        GLint ival[32];
-        GLuint uval[32];
+        std::array<GLfloat, 32> fval;
+        std::array<GLint, 32> ival;
+        std::array<GLuint, 32> uval;
         std::array<uchar, 32*sizeof(float)> buf;
     };
     int version;
@@ -134,7 +134,7 @@ class Shader final
         {
             const char *name;
             int loc;
-            AttribLoc(const char *name = nullptr, int loc = -1) : name(name), loc(loc) {}
+            AttribLoc(const char *newname = nullptr, int newloc = -1) : name(newname), loc(newloc) {}
         };
         std::vector<AttribLoc> attriblocs;
         GLuint vsobj, psobj;

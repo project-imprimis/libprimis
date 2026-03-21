@@ -96,8 +96,8 @@ struct stringslice final
     const char *str;
     int len;
     stringslice() {}
-    stringslice(const char *str, int len) : str(str), len(len) {}
-    stringslice(const char *str, const char *end) : str(str), len(static_cast<int>(end-str)) {}
+    stringslice(const char *newstr, int newlen) : str(newstr), len(newlen) {}
+    stringslice(const char *newstr, const char *newend) : str(newstr), len(static_cast<int>(newend-newstr)) {}
 
     const char *end() const
     {

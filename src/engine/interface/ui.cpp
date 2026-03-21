@@ -4335,7 +4335,7 @@ namespace UI
     class PrefabPreview final : public Preview
     {
         public:
-            PrefabPreview() : name(nullptr)
+            PrefabPreview()
             {
             }
 
