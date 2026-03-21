@@ -7,7 +7,7 @@ struct streambuf
 {
     stream *s;
 
-    streambuf(stream *s) : s(s) {}
+    streambuf(stream *in) : s(in) {}
 
     T get()
     {
