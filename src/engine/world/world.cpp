@@ -175,22 +175,22 @@ enum ModOctaEnt
 
 static void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll)
 {
-    matrix3 orient;
-    orient.identity();
+    matrix3 orientation;
+    orientation.identity();
     if(yaw)
     {
-        orient.rotate_around_z(sincosmod360(yaw));
+        orientation.rotate_around_z(sincosmod360(yaw));
     }
     if(pitch)
     {
-        orient.rotate_around_x(sincosmod360(pitch));
+        orientation.rotate_around_x(sincosmod360(pitch));
     }
     if(roll)
     {
-        orient.rotate_around_y(sincosmod360(-roll));
+        orientation.rotate_around_y(sincosmod360(-roll));
     }
-    center = orient.transform(center);
-    radius = orient.abstransform(radius);
+    center = orientation.transform(center);
+    radius = orientation.abstransform(radius);
 }
 
 static void transformbb(const entity &e, vec &center, vec &radius)
