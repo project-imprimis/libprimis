@@ -348,8 +348,8 @@ CollisionInfo plcollide(const physent *d, const vec &dir, bool insideplayercol) 
     const physent *insideplayer = nullptr;
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
-        const std::vector<const physent *> &dynents = checkdynentcache(x, y);
-        for(const physent* const& o: dynents)
+        const std::vector<const physent *> &dynentlist = checkdynentcache(x, y);
+        for(const physent* const& o: dynentlist)
         {
             if(o==d || d->o.reject(o->o, d->radius+o->radius))
             {
