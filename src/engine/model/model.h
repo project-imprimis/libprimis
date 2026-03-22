@@ -135,7 +135,7 @@ class model
          *
          * The string passed will be consumed by the constructor.
          */
-        model(std::string name) : orientation(0, 0, 0),
+        model(std::string modelname) : orientation(0, 0, 0),
                                   shadow(true),
                                   alphashadow(true),
                                   depthoffset(false),
@@ -149,7 +149,7 @@ class model
                                   translate(0, 0, 0),
                                   spin(0, 0, 0),
                                   scale(1.0f),
-                                  name(std::move(name)),
+                                  name(std::move(modelname)),
                                   bbcenter(0, 0, 0),
                                   bbradius(-1, -1, -1),
                                   collidecenter(0, 0, 0),
