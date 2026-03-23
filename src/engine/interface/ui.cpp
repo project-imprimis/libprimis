@@ -4427,14 +4427,14 @@ namespace UI
                     {
                         return;
                     }
-                    Slot &slot = *vslot.slot;
-                    if(slot.texmask&(1 << Tex_Glow))
+                    Slot &subslot = *vslot.slot;
+                    if(subslot.texmask&(1 << Tex_Glow))
                     {
-                        for(size_t i = 0; i < slot.sts.size(); i++)
+                        for(size_t i = 0; i < subslot.sts.size(); i++)
                         {
-                            if(slot.sts[i].type == Tex_Glow)
+                            if(subslot.sts[i].type == Tex_Glow)
                             {
-                                glowtex = slot.sts[i].t;
+                                glowtex = subslot.sts[i].t;
                                 break;
                             }
                         }
