@@ -4128,7 +4128,7 @@ namespace UI
 
         Field() : id(nullptr), changed(false) {}
 
-        void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = nullptr)
+        void setup(ident *id_, int length, uint *onchange, float newscale = 1, const char *keyfilter_ = nullptr)
         {
             if(isfocus() && !hasstate(State_Hover))
             {
@@ -4144,7 +4144,7 @@ namespace UI
             }
             bool shouldfree = false;
             const char *initval = id != id_ || !isfocus() ? getsval(id_, shouldfree) : nullptr;
-            TextEditor::setup(id_->name, length, 0, scale, initval, Editor_Focused, keyfilter_);
+            TextEditor::setup(id_->name, length, 0, newscale, initval, Editor_Focused, keyfilter_);
             if(shouldfree)
             {
                 delete[] initval;
