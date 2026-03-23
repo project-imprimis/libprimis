@@ -1808,13 +1808,13 @@ namespace UI
         Color() {}
 
         //converts an int color to components
-        Color(uint c) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(c>>24 ? c>>24 : 0xFF) {}
+        Color(uint color) : r((color>>16)&0xFF), g((color>>8)&0xFF), b(color&0xFF), a(color>>24 ? color>>24 : 0xFF) {}
 
         //converts an int color w/o alpha and alpha channel to components
-        Color(uint c, uchar a) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(a) {}
+        Color(uint color, uchar alpha) : r((color>>16)&0xFF), g((color>>8)&0xFF), b(color&0xFF), a(alpha) {}
 
         //assigns components normally
-        Color(uchar r, uchar g, uchar b, uchar a = 255) : r(r), g(g), b(b), a(a) {}
+        Color(uchar red, uchar green, uchar blue, uchar alpha = 255) : r(red), g(green), b(blue), a(alpha) {}
 
         void init() { gle::colorub(r, g, b, a); }
         void attrib() { gle::attribub(r, g, b, a); }
