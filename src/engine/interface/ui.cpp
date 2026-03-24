@@ -4412,7 +4412,7 @@ namespace UI
         protected:
             int index;
 
-            void previewslot(Slot &slot, VSlot &vslot, float x, float y)
+            void previewslot(Slot &slot, VSlot &vslot, float sx, float sy)
             {
                 if(slot.sts.empty())
                 {
@@ -4511,13 +4511,13 @@ namespace UI
                 {
                     gle::colorf(1, 1, 1);
                 }
-                quad(x, y, w, h, tc);
+                quad(sx, sy, w, h, tc);
                 if(glowtex)
                 {
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
                     glBindTexture(GL_TEXTURE_2D, glowtex->id);
                     gle::color(vslot.glowcolor);
-                    quad(x, y, w, h, tc);
+                    quad(sx, sy, w, h, tc);
                     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 }
             }
