@@ -129,38 +129,38 @@ namespace //internal functionality not seen by other files
         //note the assignments to the int n are bitshifted to pack all three axes within a single int
         if(surface.x >= lerpthreshold)
         {
-            int n = (g.flat>>4)&0xF;
+            const int n = (g.flat>>4)&0xF;
             v.x += n; total += n;
         }
         else if(surface.x <= -lerpthreshold)
         {
-            int n = g.flat&0xF;
+            const int n = g.flat&0xF;
             v.x -= n;
             total += n;
         }
         //ditto y component
         if(surface.y >= lerpthreshold)
         {
-            int n = (g.flat>>12)&0xF;
+            const int n = (g.flat>>12)&0xF;
             v.y += n;
             total += n;
         }
         else if(surface.y <= -lerpthreshold)
         {
-            int n = (g.flat>>8)&0xF;
+            const int n = (g.flat>>8)&0xF;
             v.y -= n;
             total += n;
         }
         //ditto z component
         if(surface.z >= lerpthreshold)
         {
-            int n = (g.flat>>20)&0xF;
+            const int n = (g.flat>>20)&0xF;
             v.z += n;
             total += n;
         }
         else if(surface.z <= -lerpthreshold)
         {
-            int n = (g.flat>>16)&0xF;
+            const int n = (g.flat>>16)&0xF;
             v.z -= n;
             total += n;
         }
