@@ -628,7 +628,7 @@ namespace
         km.name = newstring(key);
     }
 
-    void searchbinds(char *action, int type)
+    void searchbinds(const char *action, int type)
     {
         std::vector<char> names;
         for(auto &[k, km] : keyms)
@@ -1358,19 +1358,19 @@ void initconsolecmds()
     };
     addcommand("geteditbind", reinterpret_cast<identfun>(+geteditbind), "s", Id_Command);
 
-    static auto searchbindscmd = [] (char *action)
+    static auto searchbindscmd = [] (const char *action)
     {
         searchbinds(action, KeyMap::Action_Default);
     };
     addcommand("searchbinds", reinterpret_cast<identfun>(+searchbindscmd), "s", Id_Command);
 
-    static auto searchspecbinds = [] (char *action)
+    static auto searchspecbinds = [] (const char *action)
     {
         searchbinds(action, KeyMap::Action_Spectator);
     };
     addcommand("searchspecbinds", reinterpret_cast<identfun>(+searchspecbinds), "s", Id_Command);
 
-    static auto searcheditbinds = [] (char *action)
+    static auto searcheditbinds = [] (const char *action)
     {
         searchbinds(action, KeyMap::Action_Editing);
     };
