@@ -2514,7 +2514,7 @@ Texture *Slot::loadthumbnail()
         }
     }
     name.push_back('\0');
-    auto itr = textures.find(path(name.data()));
+    std::unordered_map<std::string, Texture>::iterator itr = textures.find(path(name.data()));
     if(itr != textures.end())
     {
         thumbnail = &(*itr).second;
@@ -2522,7 +2522,7 @@ Texture *Slot::loadthumbnail()
     }
     else
     {
-        auto insert = textures.insert( { std::string(name.data()), Texture() } ).first;
+        std::unordered_map<std::string, Texture>::iterator insert = textures.insert( { std::string(name.data()), Texture() } ).first;
         Texture *t = &(*insert).second;
         ImageData s, g, l, d;
         s.texturedata(*this, sts[0], false);
