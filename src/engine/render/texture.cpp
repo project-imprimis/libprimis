@@ -2330,14 +2330,10 @@ void Slot::load()
         {
             continue;
         }
-        switch(t.type)
-        {
-            default:
-            {
-                load(i, t);
-                break;
-            }
-        }
+
+        load(i, t);
+        break;
+
     }
     loaded = true;
 }
