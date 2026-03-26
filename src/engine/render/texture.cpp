@@ -2458,7 +2458,7 @@ static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
     s.forcergbimage();
     uchar *dstrow = &d.data[d.pitch*y + d.depth()*x],
           *srcrow = s.data;
-    for(int y = 0; y < s.height(); ++y)
+    for(int h = 0; h < s.height(); ++h)
     {
         for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.width()*s.depth()]; src < end; dst += d.depth(), src += s.depth())
         {
