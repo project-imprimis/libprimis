@@ -2340,15 +2340,15 @@ void Slot::load()
 
 // VSlot
 
-void VSlot::addvariant(Slot *slot)
+void VSlot::addvariant(Slot *parent)
 {
-    if(!slot->variants)
+    if(!parent->variants)
     {
-        slot->variants = this;
+        parent->variants = this;
     }
     else
     {
-        VSlot *prev = slot->variants;
+        VSlot *prev = parent->variants;
         while(prev->next)
         {
             prev = prev->next;
