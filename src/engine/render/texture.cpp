@@ -246,9 +246,9 @@ static void reorienttexture(const uchar * RESTRICT src, int sw, int sh, int stri
     for(int i = 0; i < sh; ++i)
     {
         uchar* curdst;
-        const uchar* src;
+        const uchar* source;
         const uchar* end;
-        for(curdst = dst, src = srcrow, end = &srcrow[sw*BPP]; src < end;)
+        for(curdst = dst, source = srcrow, end = &srcrow[sw*BPP]; source < end;)
         {
             for(int k = 0; k < BPP; ++k)
             {
