@@ -58,8 +58,10 @@ class RadianceHints final
         {
             float nearplane, farplane;
             vec offset, scale;
-            vec center; float bounds;
-            vec cached; bool copied;
+            vec center;
+            float bounds;
+            vec cached;
+            bool copied;
 
             SplitInfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
             {
