@@ -1010,8 +1010,8 @@ static VARP(softexplosionblend, 1, 16, 64);
 class fireballrenderer final : public listrenderer
 {
     public:
-        fireballrenderer(const char *texname)
-            : listrenderer(texname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
+        fireballrenderer(const char *newtexname)
+            : listrenderer(newtexname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
         {}
 
         static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
