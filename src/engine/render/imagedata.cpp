@@ -823,8 +823,8 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
             }
             return false;
         }
-        int bpp = s->format->BitsPerPixel;
-        if(bpp%8 || !texformat(bpp/8))
+        int surfacebpp = s->format->BitsPerPixel;
+        if(surfacebpp%8 || !texformat(surfacebpp/8))
         {
             SDL_FreeSurface(s); conoutf(Console_Error, "texture must be 8, 16, 24, or 32 bpp: %s", file);
             return false;
