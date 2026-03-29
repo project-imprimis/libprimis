@@ -299,10 +299,10 @@ void ImageData::swizzleimage()
     }
 }
 
-void ImageData::scaleimage(int w, int h)
+void ImageData::scaleimage(int newwidth, int newheight)
 {
-    ImageData d(w, h, bpp);
-    scaletexture(data, w, h, bpp, pitch, d.data, w, h);
+    ImageData d(newwidth, newheight, bpp);
+    scaletexture(data, newwidth, newheight, bpp, pitch, d.data, newwidth, newheight);
     replace(d);
 }
 
