@@ -175,6 +175,15 @@ void ImageData::wraptex(SDL_Surface *s)
     freefunc = reinterpret_cast<void (*)(void *)>(SDL_FreeSurface);
 }
 
+/**
+ * @brief Manpulates a texture pixel-by-pixel
+ *
+ * For each pixel in the source, executes an arbitrary effect, passed as the body
+ * parameter.
+ *
+ * @param t imagedata object, destination of texture write
+ * @param body code to execute
+ */
 #define WRITE_TEX(t, body) do \
     { \
         uchar *dstrow = t.data; \
