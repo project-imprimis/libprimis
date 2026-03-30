@@ -2600,14 +2600,14 @@ static bool compileblockstr(std::vector<uint> &code, const char *str, const char
             }
             case '\"':
             {
-                const char *start = str;
+                const char *startstring = str;
                 str = parsestring(str+1);
                 if(*str=='\"')
                 {
                     str++;
                 }
-                std::memcpy(&buf[len], start, str-start);
-                len += str-start;
+                std::memcpy(&buf[len], startstring, str-startstring);
+                len += str-startstring;
                 break;
             }
             case '/':
