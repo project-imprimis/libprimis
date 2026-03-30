@@ -4120,9 +4120,9 @@ void callcom(const ident *id, tagval args[], int n, int offset=0)
      * @brief Return the n-th argument. The lambda expression captures the `id`
      * and `args` so only the parameter number `n` needs to be passed.
      */
-    auto a = [id, args, offset](int n)
+    auto a = [id, args, offset](int numargs)
     {
-        return arg(id, args, n, offset);
+        return arg(id, args, numargs, offset);
     };
 
     switch(n)
