@@ -46,7 +46,7 @@ struct triangle
 {
     vec a, b, c;
 
-    triangle(const vec &a, const vec &b, const vec &c) : a(a), b(b), c(c) {}
+    triangle(const vec &a0, const vec &b0, const vec &c0) : a(a0), b(b0), c(c0) {}
     triangle() {}
 
     triangle &add(const vec &o)
@@ -89,7 +89,7 @@ struct quat : vec4<float>
 {
     public:
         quat() {}
-        quat(float x, float y, float z, float w) : vec4<float>(x, y, z, w) {}
+        quat(float x0, float y0, float z0, float w0) : vec4<float>(x0, y0, z0, w0) {}
         quat(const vec &axis, float angle)
         {
             w = cosf(angle/2);
@@ -463,7 +463,7 @@ struct matrix2
     vec2 a, b;
 
     matrix2() {}
-    matrix2(const vec2 &a, const vec2 &b) : a(a), b(b) {}
+    matrix2(const vec2 &a0, const vec2 &b0) : a(a0), b(b0) {}
     explicit matrix2(const matrix4 &m) : a(m.a), b(m.b) {}
     explicit matrix2(const matrix3 &m) : a(m.a), b(m.b) {}
 };
