@@ -5708,98 +5708,86 @@ void initcscmds()
 
     addcommand("defvar", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name);
-                return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
-        };
+            debugcode("cannot redefine %s as a variable", name);
+            return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
     }), "siiis", Id_Command);
     addcommand("defvarp", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name);
-                return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
-        };
+            debugcode("cannot redefine %s as a variable", name);
+            return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "siiis", Id_Command);
     addcommand("deffvar", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name);
-                return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
-        };
+            debugcode("cannot redefine %s as a variable", name);
+            return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
     }), "sfffs", Id_Command);
     addcommand("deffvarp", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name);
-                return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
-        };
+            debugcode("cannot redefine %s as a variable", name);
+            return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "sfffs", Id_Command);
     addcommand("defsvar", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name);
-                return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
-        };
+            debugcode("cannot redefine %s as a variable", name);
+            return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
     }), "sss", Id_Command);
     addcommand("defsvarp", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
+        std::unordered_map<std::string, ident>::const_iterator itr = idents.find(std::string(name));
+        if(itr != idents.end())
         {
-            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(std::string(name));
-            if(itr != idents.end())
-            {
-                debugcode("cannot redefine %s as a variable", name); return;
-            }
-            auto insert = defvars.insert( { std::string(name), DefVar() } );
-            DefVar &def = (*(insert.first)).second;
-            def.name = newstring(name);
-            def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-            def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
-        };
+            debugcode("cannot redefine %s as a variable", name); return;
+        }
+        auto insert = defvars.insert( { std::string(name), DefVar() } );
+        DefVar &def = (*(insert.first)).second;
+        def.name = newstring(name);
+        def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
+        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "sss", Id_Command);
     addcommand("getvarmin", reinterpret_cast<identfun>(+[] (const char *s) { intret(getvarmin(s)); }), "s", Id_Command);
     addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (const char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
