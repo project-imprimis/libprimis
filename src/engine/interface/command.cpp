@@ -5709,7 +5709,7 @@ void initcscmds()
     addcommand("defvar", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
-            const auto itr = idents.find(name);
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5725,7 +5725,7 @@ void initcscmds()
     addcommand("defvarp", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
     {
         {
-            const auto itr = idents.find(name);
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5741,7 +5741,7 @@ void initcscmds()
     addcommand("deffvar", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
-            const auto itr = idents.find(name);
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5757,7 +5757,7 @@ void initcscmds()
     addcommand("deffvarp", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
     {
         {
-            const auto itr = idents.find(name);
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5773,7 +5773,7 @@ void initcscmds()
     addcommand("defsvar", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
         {
-            const auto itr = idents.find(name);
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name);
@@ -5789,7 +5789,7 @@ void initcscmds()
     addcommand("defsvarp", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
     {
         {
-            const auto itr = idents.find(std::string(name));
+            std::unordered_map<std::string, ident>::const_iterator itr = idents.find(std::string(name));
             if(itr != idents.end())
             {
                 debugcode("cannot redefine %s as a variable", name); return;
