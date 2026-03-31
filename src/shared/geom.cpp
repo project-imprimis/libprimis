@@ -1,4 +1,15 @@
-#include "../libprimis-headers/cube.h"
+
+#include <cstring>
+#include <functional>
+#include <stdexcept>
+#include <string>
+
+#include <SDL.h>
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/geom.h"
+
 #include "geomexts.h"
 
 bool raysphereintersect(const vec &center, float radius, const vec &o, const vec &ray, float &dist)
