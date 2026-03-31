@@ -5706,7 +5706,7 @@ void initcscmds()
 {
     addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
 
-    addcommand("defvar", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
+    addcommand("defvar", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *initval, int *max, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
         if(itr != idents.end())
@@ -5718,9 +5718,9 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
+        def.i = variable(name, *min, *initval, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0);
     }), "siiis", Id_Command);
-    addcommand("defvarp", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *cur, int *max, char *onchange)
+    addcommand("defvarp", reinterpret_cast<identfun>(+[] (const char *name, int *min, int *initval, int *max, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
         if(itr != idents.end())
@@ -5732,9 +5732,9 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        def.i = variable(name, *min, *initval, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "siiis", Id_Command);
-    addcommand("deffvar", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
+    addcommand("deffvar", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *initval, float *max, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
         if(itr != idents.end())
@@ -5746,9 +5746,9 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
+        def.f = fvariable(name, *min, *initval, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0);
     }), "sfffs", Id_Command);
-    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *cur, float *max, char *onchange)
+    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (const char *name, float *min, float *initval, float *max, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
         if(itr != idents.end())
@@ -5760,9 +5760,9 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        def.f = fvariable(name, *min, *initval, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "sfffs", Id_Command);
-    addcommand("defsvar", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
+    addcommand("defsvar", reinterpret_cast<identfun>(+[] (const char *name, char *initval, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(name);
         if(itr != idents.end())
@@ -5774,9 +5774,9 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
+        def.s = svariable(name, initval, &def.s, def.onchange ? DefVar::changed : nullptr, 0);
     }), "sss", Id_Command);
-    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (const char *name, char *cur, char *onchange)
+    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (const char *name, char *initval, char *onchange)
     {
         std::unordered_map<std::string, ident>::const_iterator itr = idents.find(std::string(name));
         if(itr != idents.end())
@@ -5787,7 +5787,7 @@ void initcscmds()
         DefVar &def = (*(insert.first)).second;
         def.name = newstring(name);
         def.onchange = onchange[0] ? compilecode(onchange) : nullptr;
-        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
+        def.s = svariable(name, initval, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist);
     }), "sss", Id_Command);
     addcommand("getvarmin", reinterpret_cast<identfun>(+[] (const char *s) { intret(getvarmin(s)); }), "s", Id_Command);
     addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (const char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
