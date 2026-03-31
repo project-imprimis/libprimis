@@ -4,7 +4,21 @@
  * This file replicates some of the functionality of the long since removed glBegin/glEnd
  * features from extremely outdated versions of OpenGL.
  */
-#include "../libprimis-headers/cube.h"
+
+#include <cstring>
+#include <algorithm>
+#include <vector>
+#include <string>
+
+#include <SDL.h>
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/geom.h"
 
 #include "glemu.h"
 #include "glexts.h"
