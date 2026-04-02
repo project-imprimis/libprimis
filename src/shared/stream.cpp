@@ -1297,13 +1297,13 @@ class gzstream final : public stream
             return flushbuf(true);
         }
 
-        size_t write(const void *buf, size_t len) override final
+        size_t write(const void *newbuf, size_t len) override final
         {
-            if(!writing || !buf || !len)
+            if(!writing || !newbuf || !len)
             {
                 return 0;
             }
-            zfile.next_in = static_cast<Bytef *>(const_cast<void *>(buf)); //cast away constness, then to Bytef
+            zfile.next_in = static_cast<Bytef *>(const_cast<void *>(newbuf)); //cast away constness, then to Bytef
             zfile.avail_in = len;
             while(zfile.avail_in > 0)
             {
@@ -1319,7 +1319,7 @@ class gzstream final : public stream
                     break;
                 }
             }
-            crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(buf)), len - zfile.avail_in);
+            crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(newbuf)), len - zfile.avail_in);
             return len - zfile.avail_in;
         }
 
