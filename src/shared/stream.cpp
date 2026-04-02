@@ -1237,13 +1237,13 @@ class gzstream final : public stream
             return true;
         }
 
-        size_t read(void *buf, size_t len) override final
+        size_t read(void *outbuf, size_t len) override final
         {
-            if(!reading || !buf || !len)
+            if(!reading || !outbuf || !len)
             {
                 return 0;
             }
-            zfile.next_out = static_cast<Bytef *>(buf);
+            zfile.next_out = static_cast<Bytef *>(outbuf);
             zfile.avail_out = len;
             while(zfile.avail_out > 0)
             {
@@ -1259,7 +1259,7 @@ class gzstream final : public stream
                 int err = inflate(&zfile, Z_NO_FLUSH);
                 if(err == Z_STREAM_END)
                 {
-                    crc = crc32(crc, static_cast<Bytef *>(buf), len - zfile.avail_out);
+                    crc = crc32(crc, static_cast<Bytef *>(outbuf), len - zfile.avail_out);
                     finishreading();
                     stopreading();
                     return len - zfile.avail_out;
@@ -1270,7 +1270,7 @@ class gzstream final : public stream
                     break;
                 }
             }
-            crc = crc32(crc, reinterpret_cast<Bytef *>(buf), len - zfile.avail_out);
+            crc = crc32(crc, reinterpret_cast<Bytef *>(outbuf), len - zfile.avail_out);
             return len - zfile.avail_out;
         }
 
