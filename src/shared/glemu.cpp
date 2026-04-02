@@ -606,10 +606,10 @@ namespace gle
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void bindvbo(GLuint vbo)
+    void bindvbo(GLuint bindvbo)
     {
         disable();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, bindvbo);
     }
 
     void clearvbo()
