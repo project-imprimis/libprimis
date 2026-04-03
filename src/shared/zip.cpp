@@ -398,6 +398,7 @@ class zipstream final : public stream
         {
             Buffer_Size  = 16384
         };
+
         zipstream() : arch(nullptr), info(nullptr), buf(nullptr), reading(~0U), ended(false)
         {
             zfile.zalloc = nullptr;
@@ -406,10 +407,12 @@ class zipstream final : public stream
             zfile.next_in = zfile.next_out = nullptr;
             zfile.avail_in = zfile.avail_out = 0;
         }
+
         ~zipstream()
         {
             close();
         }
+
         void readbuf(uint size = Buffer_Size)
         {
             if(!zfile.avail_in)
@@ -497,14 +500,17 @@ class zipstream final : public stream
         {
             return info->size;
         }
+
         bool end() final
         {
             return reading == ~0U || ended;
         }
+
         offset tell() const final
         {
             return reading != ~0U ? (info->compressedsize ? zfile.total_out : reading - info->offset) : offset(-1);
         }
+
         bool seek(offset pos, int whence) final
         {
             if(reading == ~0U)
@@ -616,6 +622,7 @@ class zipstream final : public stream
             ended = false;
             return true;
         }
+
         size_t read(void *inbuf, size_t len) final
         {
             if(reading == ~0U || !inbuf || !len)
@@ -670,6 +677,7 @@ class zipstream final : public stream
             }
             return len - zfile.avail_out;
         }
+
     private:
         ziparchive *arch;
         const zipfile *info;
