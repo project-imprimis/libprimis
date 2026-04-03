@@ -616,9 +616,9 @@ class zipstream final : public stream
             ended = false;
             return true;
         }
-        size_t read(void *buf, size_t len) final
+        size_t read(void *inbuf, size_t len) final
         {
-            if(reading == ~0U || !buf || !len)
+            if(reading == ~0U || !inbuf || !len)
             {
                 return 0;
             }
@@ -634,7 +634,7 @@ class zipstream final : public stream
                     }
                     arch->owner = this;
                 }
-                size_t n = std::fread(buf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
+                size_t n = std::fread(inbuf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
                 reading += n;
                 if(n < len)
                 {
@@ -642,7 +642,7 @@ class zipstream final : public stream
                 }
                 return n;
             }
-            zfile.next_out = static_cast<Bytef *>(buf);
+            zfile.next_out = static_cast<Bytef *>(inbuf);
             zfile.avail_out = len;
             while(zfile.avail_out > 0)
             {
