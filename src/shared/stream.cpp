@@ -1222,11 +1222,11 @@ class gzstream final : public stream
                 crc = crc32(0, nullptr, 0);
             }
 
-            uchar skip[512];
+            std::array<uchar, 512> skip;
             while(pos > 0)
             {
-                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
-                if(read(skip, skipped) != skipped)
+                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(skip.size())));
+                if(read(skip.data(), skipped) != skipped)
                 {
                     stopreading();
                     return false;
