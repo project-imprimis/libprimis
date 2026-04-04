@@ -189,12 +189,12 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         pname[namelen] = '\0';
         path(pname);
         char *name = newstring(pname);
-        zipfile f;
-        f.name = name;
-        f.header = hdr.offset;
-        f.size = hdr.uncompressedsize;
-        files.push_back(f);
-        f.compressedsize = hdr.compression ? hdr.compressedsize : 0;
+        zipfile zf;
+        zf.name = name;
+        zf.header = hdr.offset;
+        zf.size = hdr.uncompressedsize;
+        files.push_back(zf);
+        zf.compressedsize = hdr.compression ? hdr.compressedsize : 0;
         if(debugzip)
         {
             conoutf(Console_Debug, "%s: file %s, size %d, compress %d, flags %x", archname, name, hdr.uncompressedsize, hdr.compression, hdr.flags);
