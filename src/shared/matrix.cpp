@@ -1,4 +1,13 @@
-#include "../libprimis-headers/cube.h"
+#include <cstring>
+#include <functional>
+#include <stdexcept>
+
+#include <SDL.h>
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/geom.h"
+
 #include "geomexts.h"
 
 /* This file defines matrix3, matrix4, and matrix4x3's member functions.
