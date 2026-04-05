@@ -1,4 +1,22 @@
-#include "../libprimis-headers/cube.h"
+
+#include <cstring>
+#include <functional>
+#include <string>
+#include <queue>
+#include <map>
+
+#include <SDL.h>
+
+#include <GL/glew.h>
+
+#include <GL/gl.h>
+
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/command.h"
+#include "../libprimis-headers/consts.h"
+
 #include "stream.h"
 
 #include "../engine/interface/console.h"
