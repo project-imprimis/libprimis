@@ -6,7 +6,23 @@
  */
 #include <sstream>
 
-#include "../libprimis-headers/cube.h"
+#include <cstring>
+#include <functional>
+#include <queue>
+#include <stack>
+
+#include <SDL.h>
+
+#include <GL/glew.h>
+
+#include <GL/gl.h>
+
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/command.h"
+#include "../libprimis-headers/consts.h"
+
 #include "stream.h"
 
 #include "../engine/interface/console.h"
