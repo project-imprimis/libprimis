@@ -1845,8 +1845,8 @@ void rendertexturepanel(int w, int h)
                       yoff = vslot.offset.y();
                 if(vslot.rotation)
                 {
-                    const TexRotation &r = texrotations[vslot.rotation];
-                    if(r.swapxy)
+                    const TexRotation &rot = texrotations[vslot.rotation];
+                    if(rot.swapxy)
                     {
                         std::swap(xoff, yoff);
                         for(int k = 0; k < 4; ++k)
@@ -1854,7 +1854,7 @@ void rendertexturepanel(int w, int h)
                             std::swap(tc[k].x, tc[k].y);
                         }
                     }
-                    if(r.flipx)
+                    if(rot.flipx)
                     {
                         xoff *= -1;
                         for(int k = 0; k < 4; ++k)
@@ -1862,7 +1862,7 @@ void rendertexturepanel(int w, int h)
                             tc[k].x *= -1;
                         }
                     }
-                    if(r.flipy)
+                    if(rot.flipy)
                     {
                         yoff *= -1;
                         for(int k = 0; k < 4; ++k)
