@@ -1695,9 +1695,9 @@ void compactmruvslots()
     reptex = (vslots.size() > static_cast<size_t>(reptex)) ? vslots[reptex]->index : -1;
 }
 
-void edittexcube(cube &c, int tex, int orient, bool &findrep)
+void edittexcube(cube &c, int tex, int orientation, bool &findrep)
 {
-    if(orient<0)
+    if(orientation<0)
     {
         for(int i = 0; i < 6; ++i) //for each face
         {
@@ -1706,7 +1706,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
     }
     else
     {
-        int i = visibleorient(c, orient);
+        int i = visibleorient(c, orientation);
         if(findrep)
         {
             if(reptex < 0)
@@ -1725,7 +1725,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
     {
         for(int i = 0; i < 8; ++i)
         {
-            edittexcube((*c.children)[i], tex, orient, findrep);
+            edittexcube((*c.children)[i], tex, orientation, findrep);
         }
     }
 }
