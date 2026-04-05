@@ -1605,19 +1605,19 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
     return edit;
 }
 
-void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep, VSlot *&findedit)
+void remapvslots(cube &c, bool delta, const VSlot &ds, int orientation, bool &findrep, VSlot *&findedit)
 {
     //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
         {
-            remapvslots((*c.children)[i], delta, ds, orient, findrep, findedit);
+            remapvslots((*c.children)[i], delta, ds, orientation, findrep, findedit);
         }
         return;
     }
     static VSlot ms;
-    if(orient<0)
+    if(orientation<0)
     {
         for(int i = 0; i < 6; ++i) //for each face
         {
@@ -1634,7 +1634,7 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
     }
     else
     {
-        int i = visibleorient(c, orient);
+        int i = visibleorient(c, orientation);
         VSlot *edit = remapvslot(c.texture[i], delta, ds);
         if(edit)
         {
