@@ -1,6 +1,15 @@
 // implementation of generic tools
 
-#include "../libprimis-headers/cube.h"
+#include <cstring>
+#include <functional>
+#include <string>
+
+#include <SDL.h>
+#include <zlib.h>
+
+#include "../libprimis-headers/tools.h"
+#include "../libprimis-headers/geom.h"
+
 #include "stream.h"
 
 ////////////////////////// strings ////////////////////////////////////////
