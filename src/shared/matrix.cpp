@@ -1,6 +1,7 @@
 #include <cstring>
 #include <functional>
 #include <stdexcept>
+#include <algorithm>
 
 #include <SDL.h>
 #include <zlib.h>

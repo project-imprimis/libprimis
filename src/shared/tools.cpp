@@ -3,6 +3,8 @@
 #include <cstring>
 #include <functional>
 #include <string>
+#include <algorithm>
+#include <array>
 
 #include <SDL.h>
 #include <zlib.h>

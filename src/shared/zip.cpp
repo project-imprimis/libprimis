@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include <map>
+#include <algorithm>
 
 #include <SDL.h>
 
