@@ -3,6 +3,7 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <algorithm>
 
 #include <SDL.h>
 #include <zlib.h>
