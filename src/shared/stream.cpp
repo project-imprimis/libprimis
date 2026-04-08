@@ -84,7 +84,7 @@ size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srcl
                 {
                     goto done;
                 }
-                const uchar *end = std::min(srcend, &src[dstend-dst]);
+                const uchar *end = std::min<const uchar *>(srcend, &src[dstend-dst]);
                 do
                 {
                     if(uni == '\f')
@@ -204,7 +204,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
         if(end)
         {
             size_t len = std::strlen(tmp);
-            copystring(&tmp[len], file, std::min(sizeof(tmp)-len, static_cast<size_t>(end+2-file)));
+            copystring(&tmp[len], file, std::min<size_t>(sizeof(tmp)-len, static_cast<size_t>(end+2-file)));
             file = end+1;
         }
     }
@@ -888,7 +888,7 @@ struct filestream final : stream
         va_start(v, fmt);
         int result = std::vfprintf(file, fmt, v);
         va_end(v);
-        return std::max(result, 0);
+        return std::max<int>(result, 0);
     }
 };
 
@@ -923,7 +923,7 @@ class gzstream final : public stream
             {
                 zfile.next_in = static_cast<Bytef *>(buf);
             }
-            size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+            size = std::min<size_t>(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
             size_t n = file->read(zfile.next_in + zfile.avail_in, size);
             if(n > 0)
             {
@@ -949,7 +949,7 @@ class gzstream final : public stream
         {
             while(n > 0 && zfile.avail_in > 0)
             {
-                size_t skipped = std::min(n, static_cast<size_t>(zfile.avail_in));
+                size_t skipped = std::min<size_t>(n, static_cast<size_t>(zfile.avail_in));
                 zfile.avail_in -= skipped;
                 zfile.next_in += skipped;
                 n -= skipped;
@@ -1028,7 +1028,7 @@ class gzstream final : public stream
                     reading = false;
                 }
             }
-            else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, std::min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
+            else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, std::min<int>(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
             {
                 writing = false;
             }
@@ -1242,7 +1242,7 @@ class gzstream final : public stream
             std::array<uchar, 512> skip;
             while(pos > 0)
             {
-                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(skip.size())));
+                size_t skipped = static_cast<size_t>(std::min<offset>(pos, static_cast<offset>(skip.size())));
                 if(read(skip.data(), skipped) != skipped)
                 {
                     stopreading();
