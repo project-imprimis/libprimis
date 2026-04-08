@@ -10,6 +10,7 @@
 #include <functional>
 #include <queue>
 #include <stack>
+#include <array>
 #include <algorithm>
 
 #include <SDL.h>
