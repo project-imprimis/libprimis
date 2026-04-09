@@ -108,12 +108,12 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     }
     uchar buf[1024],
           *src = nullptr;
-    long end = std::max(offset - 0xFFFFL - Zip_DirectorySize, 0L);
+    long end = std::max<long>(offset - 0xFFFFL - Zip_DirectorySize, 0L);
     size_t len = 0;
     const uint signature = static_cast<uint>(Zip_DirectorySignature);
     while(offset > end)
     {
-        size_t carry = std::min(len, static_cast<size_t>(Zip_DirectorySize-1)), next = std::min(sizeof(buf) - carry, static_cast<size_t>(offset - end));
+        size_t carry = std::min<size_t>(len, static_cast<size_t>(Zip_DirectorySize-1)), next = std::min<size_t>(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
         std::memmove(&buf[next], buf, carry);
         if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, next, f) != next)
@@ -203,7 +203,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
             break;
         }
         string pname;
-        int namelen = std::min(static_cast<int>(hdr.namelength), static_cast<int>(sizeof(pname)-1));
+        int namelen = std::min<int>(static_cast<int>(hdr.namelength), static_cast<int>(sizeof(pname)-1));
         std::memcpy(pname, src, namelen);
         pname[namelen] = '\0';
         path(pname);
@@ -440,7 +440,7 @@ class zipstream final : public stream
             {
                 zfile.next_in = static_cast<Bytef *>(buf);
             }
-            size = std::min(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
+            size = std::min<uint>(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
             if(arch->owner != this)
             {
                 arch->owner = nullptr;
@@ -454,7 +454,7 @@ class zipstream final : public stream
                 }
             }
             uint remaining = info->offset + info->compressedsize - reading,
-                 n = arch->owner == this ? std::fread(zfile.next_in + zfile.avail_in, 1, std::min(size, remaining), arch->data) : 0U;
+                 n = arch->owner == this ? std::fread(zfile.next_in + zfile.avail_in, 1, std::min<uint>(size, remaining), arch->data) : 0U;
             zfile.avail_in += n;
             reading += n;
         }
@@ -632,7 +632,7 @@ class zipstream final : public stream
             uchar skip[512];
             while(pos > 0)
             {
-                size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
+                size_t skipped = static_cast<size_t>(std::min<offset>(pos, static_cast<offset>(sizeof(skip))));
                 if(read(skip, skipped) != skipped)
                 {
                     return false;
@@ -662,7 +662,7 @@ class zipstream final : public stream
                     }
                     arch->owner = this;
                 }
-                size_t n = std::fread(inbuf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
+                size_t n = std::fread(inbuf, 1, std::min<size_t>(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
                 reading += n;
                 if(n < len)
                 {
