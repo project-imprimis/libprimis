@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include <map>
+#include <array>
 #include <algorithm>
 
 #include <SDL.h>
@@ -106,8 +107,8 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         return false;
     }
-    uchar buf[1024],
-          *src = nullptr;
+    std::array<uchar, 1024> buf;
+    uchar *src = nullptr;
     long end = std::max<long>(offset - 0xFFFFL - Zip_DirectorySize, 0L);
     size_t len = 0;
     const uint signature = static_cast<uint>(Zip_DirectorySignature);
@@ -115,21 +116,21 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         size_t carry = std::min<size_t>(len, static_cast<size_t>(Zip_DirectorySize-1)), next = std::min<size_t>(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
-        std::memmove(&buf[next], buf, carry);
-        if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, next, f) != next)
+        std::memmove(&buf[next], buf.data(), carry);
+        if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || std::fread(buf.data(), 1, next, f) != next)
         {
             return false;
         }
         len = next + carry;
         uchar *search = &buf[next-1];
-        for(; search >= buf; search--)
+        for(; search >= buf.data(); search--)
         {
             if(*reinterpret_cast<uint *>(search) == signature)
             {
                 break;
             }
         }
-        if(search >= buf)
+        if(search >= buf.data())
         {
             src = search;
             break;
