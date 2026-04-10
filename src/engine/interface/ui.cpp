@@ -4976,13 +4976,13 @@ namespace UI
         {
             BUILD(Clipper, o, o->setup(*clipw, *cliph), children);
         }), "ffe", Id_Command);
-        addcommand("uiscroll", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Scroller, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
+        addcommand("uiscroll", reinterpret_cast<identfun>(+[] (const float *clipw, const float *cliph, const uint *children) { BUILD(Scroller, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
         addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { const Scroller *scroller = static_cast<const Scroller *>(buildparent); floatret(scroller->offsetx);} }), "", Id_Command);
         addcommand("uivscrolloffset", reinterpret_cast<identfun>(+[] () { if(buildparent && buildparent->istype<Scroller>()) { const Scroller *scroller = static_cast<const Scroller *>(buildparent); floatret(scroller->offsety);} }), "", Id_Command);
-        addcommand("uihscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(HorizontalScrollBar, o, o->setup(), children); }), "e", Id_Command);
-        addcommand("uivscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(VerticalScrollBar, o, o->setup(), children); }), "e", Id_Command);
-        addcommand("uiscrollarrow", reinterpret_cast<identfun>(+[] (float *dir, uint *children) { BUILD(ScrollArrow, o, o->setup(*dir), children); }), "fe", Id_Command);
-        addcommand("uiscrollbutton", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(ScrollButton, o, o->setup(), children); }), "e", Id_Command);
+        addcommand("uihscrollbar", reinterpret_cast<identfun>(+[] (const uint *children) { BUILD(HorizontalScrollBar, o, o->setup(), children); }), "e", Id_Command);
+        addcommand("uivscrollbar", reinterpret_cast<identfun>(+[] (const uint *children) { BUILD(VerticalScrollBar, o, o->setup(), children); }), "e", Id_Command);
+        addcommand("uiscrollarrow", reinterpret_cast<identfun>(+[] (const float *dir, const uint *children) { BUILD(ScrollArrow, o, o->setup(*dir), children); }), "fe", Id_Command);
+        addcommand("uiscrollbutton", reinterpret_cast<identfun>(+[] (const uint *children) { BUILD(ScrollButton, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uihslider", reinterpret_cast<identfun>(+[] (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children) { BUILD(HorizontalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children); }), "rfffee", Id_Command);
         addcommand("uivslider", reinterpret_cast<identfun>(+[] (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children) { BUILD(VerticalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children); }), "rfffee", Id_Command);
         addcommand("uisliderarrow", reinterpret_cast<identfun>(+[] (float *dir, uint *children) { BUILD(SliderArrow, o, o->setup(*dir), children); }), "fe", Id_Command);
