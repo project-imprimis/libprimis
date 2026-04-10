@@ -318,16 +318,19 @@ void ImageData::scaleimage(int newwidth, int newheight)
 void ImageData::texreorient(bool flipx, bool flipy, bool swapxy, int type)
 {
     ImageData d(swapxy ? h : w, swapxy ? w : h, bpp, levels, align, compressed);
-
-    if(type == Tex_Normal && bpp >= 3)
+    switch(compressed)
     {
-        reorientnormals(data, w, h, bpp, pitch, d.data, flipx, flipy, swapxy);
+        default:
+            if(type == Tex_Normal && bpp >= 3)
+            {
+                reorientnormals(data, w, h, bpp, pitch, d.data, flipx, flipy, swapxy);
+            }
+            else
+            {
+                reorienttexture(data, w, h, bpp, pitch, d.data, flipx, flipy, swapxy);
+            }
+            break;
     }
-    else
-    {
-        reorienttexture(data, w, h, bpp, pitch, d.data, flipx, flipy, swapxy);
-    }
-
     replace(d);
 }
 
