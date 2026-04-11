@@ -339,6 +339,7 @@ struct plane : vec
             throw std::invalid_argument("cannot create plane with no normal vector");
         }
     }
+
     plane(const vec4<float> &p) : vec(p), offset(p.w)
     {
         if(x == 0 && y == 0 && z == 0)
@@ -346,6 +347,7 @@ struct plane : vec
             throw std::invalid_argument("cannot create plane with no normal vector");
         }
     }
+
     plane(int d, float off)
     {
         if(d < 0 || d > 2)
@@ -356,6 +358,7 @@ struct plane : vec
         (*this)[d] = 1.0f;
         offset = -off;
     }
+
     plane(float a, float b, float c, float d) : vec(a, b, c), offset(d)
     {
         if(x == 0 && y == 0 && z == 0)
