@@ -218,7 +218,12 @@ struct dualquat
     explicit dualquat(const quat &q) : real(q), dual(0, 0, 0, 0) {}
     explicit dualquat(const matrix4x3 &m);
 
-    dualquat &mul(float k) { real.mul(k); dual.mul(k); return *this; }
+    dualquat &mul(float k)
+    {
+        real.mul(k);
+        dual.mul(k);
+        return *this;
+    }
 
     dualquat &invert()
     {
@@ -233,7 +238,11 @@ struct dualquat
         real.mul(p.real, o.real);
         dual.mul(p.real, o.dual).add(quat().mul(p.dual, o.real));
     }
-    void mul(const dualquat &o) { mul(dualquat(*this), o); }
+
+    void mul(const dualquat &o)
+    {
+        mul(dualquat(*this), o);
+    }
 
     void mulorient(const quat &q)
     {
