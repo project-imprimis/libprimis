@@ -201,6 +201,18 @@ enum
  * @return a std::array<cube, 8> pointer pointing to an array containing the created cubes
  */
 extern std::array<cube, 8> *newcubes(uint face = faceempty, int mat = Mat_Air);
+
+/**
+ * @brief Moves the cubeext to a new one with the specified vertex array size
+ *
+ * Does not necessarily create a larger cubeext, if the maxverts passed is smaller
+ * the previously allocated size. The new cubeext is allocated on the heap.
+ *
+ * @param the cubeext to replace
+ * @param maxverts the size of the vertex array to allocate
+ *
+ * @return the new cubeext with the new specified vertex array size.
+ */
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 
 /**
