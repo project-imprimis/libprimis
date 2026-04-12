@@ -554,7 +554,7 @@ static ident *addident(const ident &id)
         identinits->push_back(id);
         return nullptr;
     }
-    const auto itr = idents.find(id.name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(id.name);
     if(itr == idents.end())
     {
         //we need to make a new entry
@@ -800,7 +800,7 @@ static bool checknumber(const char *s)
 ident *newident(const char *name, int flags)
 {
     ident *id = nullptr;
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr == idents.end())
     {
         if(checknumber(name))
@@ -858,7 +858,7 @@ ident *writeident(const char *name, int flags)
 
 static void resetvar(char *name)
 {
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr == idents.end())
     {
         return;
@@ -908,7 +908,7 @@ void setalias(ident &id, tagval &v)
 
 static void setalias(const char *name, tagval &v)
 {
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         ident *id = &(*(itr)).second;
@@ -1022,7 +1022,7 @@ struct DefVar : identval
  */
 ident* getvar(int vartype, const char *name)
 {
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         ident *id = &(*(itr)).second;
@@ -1222,7 +1222,7 @@ bool identexists(const char *name)
 
 ident *getident(const char *name)
 {
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         return &(*(itr)).second;
@@ -1232,7 +1232,7 @@ ident *getident(const char *name)
 
 void touchvar(const char *name)
 {
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         ident* id = &(*(itr)).second;
@@ -1252,7 +1252,7 @@ void touchvar(const char *name)
 const char *getalias(const char *name)
 {
     ident *i = nullptr;
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         i = &(*(itr)).second;
@@ -3230,7 +3230,7 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
         {
             ident *id = nullptr;
             std::string lookupsubstr = std::string(idname.str).substr(0, idname.len);
-            const auto itr = idents.find(lookupsubstr);
+            std::unordered_map<std::string, ident>::iterator itr = idents.find(lookupsubstr);
             if(itr != idents.end())
             {
                 id = &(*(itr)).second;
@@ -4954,7 +4954,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         continue; \
                     } \
-                    const auto itr = idents.find(arg.s); \
+                    std::unordered_map<std::string, ident>::iterator itr = idents.find(arg.s); \
                     if(itr != idents.end()) \
                     { \
                         ident* id = &(*(itr)).second; \
@@ -5391,7 +5391,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     continue;
                 }
                 ident *id = nullptr;
-                const auto itr = idents.find(idarg.s);
+                std::unordered_map<std::string, ident>::iterator itr = idents.find(idarg.s);
                 if(itr != idents.end())
                 {
                     id = &(*(itr)).second;
@@ -5660,7 +5660,7 @@ int execute(ident *id, tagval *args, int numargs, bool lookup)
 int execident(const char *name, int noid, bool lookup)
 {
     ident *id = nullptr;
-    const auto itr = idents.find(name);
+    std::unordered_map<std::string, ident>::iterator itr = idents.find(name);
     if(itr != idents.end())
     {
         id = &(*(itr)).second;
