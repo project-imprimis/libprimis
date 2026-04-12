@@ -579,7 +579,7 @@ bool initidents()
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
     {
-        for(uint i = 0; i < (*identinits).size(); i++)
+        for(size_t i = 0; i < (*identinits).size(); i++)
         {
             addident((*identinits)[i]);
         }
@@ -1932,7 +1932,7 @@ static void compilestr(std::vector<uint> &code, const char *word, int len, bool 
     }
     code.push_back((macro ? Code_Macro : Code_Val|Ret_String));
     code.back() |= len << 8;
-    for(uint i = 0; i < len/sizeof(uint); ++i)
+    for(size_t i = 0; i < len/sizeof(uint); ++i)
     {
         code.push_back((reinterpret_cast<const uint *>(word))[i]);
     }
