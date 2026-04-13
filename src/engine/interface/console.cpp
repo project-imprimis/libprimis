@@ -287,7 +287,7 @@ void CompletionFinder::addcomplete(const char *command, int type, char *dir, cha
     }
     if(!dir[0])
     {
-        auto hasfilesitr = completions.find(command);
+        std::unordered_map<const char *, FilesVal *>::iterator hasfilesitr = completions.find(command);
         if(hasfilesitr != completions.end())
         {
             (*hasfilesitr).second = nullptr;
@@ -314,7 +314,7 @@ void CompletionFinder::addcomplete(const char *command, int type, char *dir, cha
         }
     }
     FilesKey key(type, dir ? dir : "", dir ? dir : "");
-    auto itr = completefiles.find(key);
+    std::unordered_map<FilesKey, FilesVal *>::const_iterator itr = completefiles.find(key);
     if(itr == completefiles.end())
     {
         FilesVal *f = new FilesVal(type, dir ? dir : "", ext ? ext : "");
@@ -325,7 +325,7 @@ void CompletionFinder::addcomplete(const char *command, int type, char *dir, cha
         FilesKey newfile = FilesKey(type, f->dir, f->ext);
         itr = completefiles.insert(std::pair<FilesKey, FilesVal *>(newfile, f)).first;
     }
-    auto hasfilesitr = completions.find(std::string(command).c_str());
+    std::unordered_map<const char *, FilesVal *>::iterator hasfilesitr = completions.find(std::string(command).c_str());
     if(hasfilesitr != completions.end())
     {
         (*hasfilesitr).second = (*itr).second;
