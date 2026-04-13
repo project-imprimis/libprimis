@@ -21,17 +21,17 @@ namespace
 
     void writelog(FILE *file, const char *buf)
     {
-        static uchar ubuf[logstrlen];
+        static std::array<uchar, logstrlen> ubuf;
         size_t len = std::strlen(buf),
                carry = 0;
         while(carry < len)
         {
-            size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
+            size_t numu = encodeutf8(ubuf.data(), ubuf.size() - 1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
             if(carry >= len)
             {
                 ubuf[numu++] = '\n';
             }
-            fwrite(ubuf, 1, numu, file);
+            fwrite(ubuf.data(), 1, numu, file);
         }
     }
 
