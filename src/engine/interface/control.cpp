@@ -37,9 +37,9 @@ namespace
 
     void writelogv(FILE *file, const char *fmt, va_list args)
     {
-        static char buf[logstrlen];
-        vformatstring(buf, fmt, args, sizeof(buf));
-        writelog(file, buf);
+        static std::array<char, logstrlen> buf;
+        vformatstring(buf.data(), fmt, args, buf.size());
+        writelog(file, buf.data());
     }
 
     int clockrealbase = 0,
