@@ -296,7 +296,7 @@ void CompletionFinder::addcomplete(const char *command, int type, char *dir, cha
     }
     if(type==Files_Directory)
     {
-        int dirlen = static_cast<int>(std::strlen(dir));
+        size_t dirlen = std::strlen(dir);
         while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
         {
             dir[--dirlen] = '\0';
