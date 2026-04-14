@@ -65,7 +65,9 @@ namespace //internal functionality not seen by other files
     struct grassgroup final
     {
         const grasstri *tri;
-        int tex, offset, numquads;
+        int tex,
+            offset,
+            numquads;
     };
 
     std::vector<grassgroup> grassgroups;
