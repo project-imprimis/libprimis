@@ -1098,7 +1098,7 @@ static void findfile_(char *name)
 
 static void sortlist(const char *list, ident *x, ident *y, const uint *body, const uint *unique)
 {
-    struct SortItem
+    struct SortItem final
     {
         const char *str, *quotestart, *quoteend;
 
@@ -1108,7 +1108,7 @@ static void sortlist(const char *list, ident *x, ident *y, const uint *body, con
         }
     };
 
-    struct SortFunction
+    struct SortFunction final
     {
         ident *x, *y;
         const uint *body;
