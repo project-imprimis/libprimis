@@ -253,7 +253,7 @@ void CompletionFinder::writecompletions(std::fstream& f) const
     std::sort(cmds.begin(), cmds.end());
     for(std::string &k : cmds)
     {
-        auto itr = completions.find(k.c_str());
+        std::unordered_map<const char *, FilesVal *>::const_iterator itr = completions.find(k.c_str());
         if(itr == completions.end())
         {
             conoutf("could not write completion");
