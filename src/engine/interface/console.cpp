@@ -639,7 +639,7 @@ namespace
                 {
                     names.push_back(' ');
                 }
-                for(uint i = 0; i < std::strlen(km.name); ++i)
+                for(size_t i = 0; i < std::strlen(km.name); ++i)
                 {
                     names.push_back(km.name[i]);
                 }
@@ -690,7 +690,7 @@ namespace
         {
             action++;
         }
-        int len = std::strlen(action);
+        size_t len = std::strlen(action);
         while(len>0 && iscubespace(action[len-1]))
         {
             len--;
@@ -963,9 +963,9 @@ namespace
             return false;
         }
         ::cfinder.resetcomplete();
-        int cmdlen = static_cast<int>(std::strlen(commandbuf)),
-            cmdspace = static_cast<int>(sizeof(commandbuf)) - (cmdlen+1);
-        len = std::min(len, cmdspace);
+        size_t cmdlen = std::strlen(commandbuf),
+               cmdspace = sizeof(commandbuf) - (cmdlen+1);
+        len = std::min(len, static_cast<int>(cmdspace));
         if(commandpos<0)
         {
             std::memcpy(&commandbuf[cmdlen], str, len);
