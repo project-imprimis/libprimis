@@ -401,7 +401,7 @@ namespace
         conlines.push_front(cl);
     }
 
-    void fullconsole(int *val, int *numargs, ident *id)
+    void fullconsole(const int *val, const int *numargs, const ident *id)
     {
         if(*numargs > 0)
         {
