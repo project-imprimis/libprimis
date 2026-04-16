@@ -987,7 +987,7 @@ char *svariable(const char *name, const char *cur, char **storage, identfun fun,
     return newstring(cur);
 }
 
-struct DefVar : identval
+struct DefVar final : identval
 {
     char *name;
     uint *onchange;
