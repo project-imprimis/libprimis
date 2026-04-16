@@ -306,13 +306,13 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     {
         vertsize = sizeof(vvert);
 
-        for(auto i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             vlen += static_cast<vertmesh *>(*i)->genvbo(idxs, vlen);
         }
         delete[] vdata;
         vdata = new uchar[vlen*vertsize];
-        for(auto i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             static_cast<vertmesh *>(*i)->fillverts(reinterpret_cast<vvert *>(vdata));
         }
@@ -323,7 +323,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         gle::bindvbo(vc.vbuf);
         size_t numverts = 0,
                htlen = 128;
-        for(auto i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             numverts += static_cast<vertmesh *>(*i)->numverts;
         }
@@ -338,7 +338,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
         int *htdata = new int[htlen];
         std::memset(htdata, -1, htlen*sizeof(int));
         std::vector<vvertg> vverts;
-        for(auto i : rendermeshes)
+        for(std::vector<animmodel::Mesh *>::const_iterator i : rendermeshes)
         {
             vlen += static_cast<vertmesh *>(*i)->genvbo(idxs, vlen, vverts, htdata, htlen);
         }
