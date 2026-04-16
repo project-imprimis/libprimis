@@ -454,8 +454,8 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         {
             vc->as = *as;
             vc->millis = lastmillis;
-            auto rendermeshes = getrendermeshes();
-            for(auto i : rendermeshes)
+            std::vector<std::vector<animmodel::Mesh *>::iterator> rendermeshes = getrendermeshes();
+            for(std::vector<animmodel::Mesh *>::iterator i : rendermeshes)
             {
                 static_cast<vertmesh *>(*i)->interpverts(*as, reinterpret_cast<vvert *>(vdata));
             }
