@@ -5428,7 +5428,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     }
                     case Id_Local:
                     {
-                        identstack locals[Max_Args];
+                        std::array<identstack, Max_Args> locals;
                         freearg(idarg);
                         for(int j = 0; j < callargs; ++j)
                         {
