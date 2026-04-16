@@ -21,7 +21,7 @@
 
 // editline
 
-inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
+static void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
 {
     float widthf, heightf;
     text_boundsf(str, widthf, heightf, maxwidth);
@@ -29,7 +29,7 @@ inline void text_bounds(const char *str, int &width, int &height, int maxwidth =
     height = static_cast<int>(std::ceil(heightf));
 }
 
-inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
+static void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
 {
     float cxf, cyf;
     text_posf(str, cursor, cxf, cyf, maxwidth);
