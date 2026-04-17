@@ -1,4 +1,6 @@
-/* obj.cpp: wavefront model support
+/**
+ * @file obj.cpp
+ * @brief wavefront model support
  *
  * Libprimis supports the Wavefront (obj) model format for simple static models.
  * This file contains the implementation functions, while the class for the obj
