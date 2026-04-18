@@ -41,7 +41,7 @@ VAR(testtags, 0, 0, 1);            //not used by animmodel object, used by child
 VARF(debugcolmesh, 0, 0, 1,
 {
     cleanupmodels();
-});
+}); //toggles debugging collide mesh
 
 static VAR(animationinterpolationtime, 0, 200, 1000);
 
