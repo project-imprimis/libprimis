@@ -1,5 +1,6 @@
 
 /**
+ * @file gltfloader.cpp
  * @brief GLTF 2.0 loading functionality
  *
  * This file handles the loading of GLTF 2.0 files, converting them into data
