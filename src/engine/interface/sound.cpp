@@ -223,7 +223,6 @@ void SoundEngine::stopmusic()
     }
 }
 
-//SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
 void SoundEngine::setaudiodriver(const char * f)
 {
     audiodriver = std::string(f);
@@ -246,7 +245,6 @@ int SoundEngine::getsound()
     return 0;
 }
 
-//VARF(soundchans, 1, 32, 128, initwarning("sound configuration", Init_Reset, Change_Sound));
 void SoundEngine::setsoundchans(const int * const val)
 {
     soundchans = std::clamp(*val, 1, 128);
