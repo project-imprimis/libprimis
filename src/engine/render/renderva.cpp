@@ -3214,8 +3214,8 @@ int calcspheresidemask(const vec &p, float radius, float bias)
 
 int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, float border)
 {
-    int sides = 0x3F,
-        masks[6] = { 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 };
+    int sides = 0x3F;
+    std::array<int, 6> masks = {{ 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 }};
     float scale = (size - 2*border)/size,
           bias = border / static_cast<float>(size - border);
     // check if cone enclosing side would cross frustum plane
