@@ -3110,7 +3110,7 @@ void genshadowmeshes()
 
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
-    auto itr = shadowmeshes.find(idx);
+    std::unordered_map<int, shadowmesh>::iterator itr = shadowmeshes.find(idx);
     if(itr == shadowmeshes.end()
     || (*itr).second.type != shadowmapping
     || (*itr).second.origin != shadoworigin
