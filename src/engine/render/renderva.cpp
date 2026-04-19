@@ -3154,7 +3154,8 @@ void rendershadowmesh(const shadowmesh *m)
         if(vbuf != d.vbuf)
         {
             gle::bindvbo(d.vbuf);
-            vbuf = d.vbuf; gle::vertexpointer(sizeof(vec), 0);
+            vbuf = d.vbuf;
+            gle::vertexpointer(sizeof(vec), 0);
         }
         drawtris(3*d.tris, static_cast<ushort *>(nullptr) + d.offset, d.minvert, d.maxvert);
         xtravertsva += 3*d.tris;
