@@ -1,4 +1,10 @@
-// sound.cpp: basic positional sound using sdl_mixer
+/**
+ * @file sound.cpp
+ * @brief basic positional sound using sdl_mixer
+ *
+ * Sound functionality exposed to the game interface. Not used by anything in the
+ * engine itself.
+ */
 
 #include "../libprimis-headers/cube.h"
 #include "../libprimis-headers/sound.h"
