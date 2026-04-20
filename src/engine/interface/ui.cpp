@@ -1,5 +1,6 @@
 /**
- * @file cubescript user interfaces and menu functionality
+ * @file ui.cpp
+ * @brief cubescript user interfaces and menu functionality
  *
  * ui.cpp defines a series of convenient objects that can be created and destroyed
  * as groups to be used as interfaces by programs. They can be configured to grab
