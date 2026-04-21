@@ -52,8 +52,8 @@ namespace
         clockvirtbase = totalmillis;
     }
 
-    VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
-    VARFP(clockfix, 0, 0, 1, clockreset());
+    VARFP(clockerror, 990000, 1000000, 1010000, clockreset()); //used by getclockmillis()
+    VARFP(clockfix, 0, 0, 1, clockreset()); //whether to use clockerror, used by getclockmillis()
 
     void logoutfv(const char *fmt, va_list args, FILE *f)
     {
