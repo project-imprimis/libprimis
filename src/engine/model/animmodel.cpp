@@ -1094,7 +1094,8 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
         for(int i = 0; i < numanimparts; ++i)
         {
             animinfo info;
-            int interp = d && index+numanimparts<=maxanimparts ? index+i : -1, animinterptime = animationinterpolationtime;
+            int interp = d && index+numanimparts<=maxanimparts ? index+i : -1,
+                animinterptime = animationinterpolationtime;
             if(!calcanim(i, anim, basetime, basetime2, d, interp, info, animinterptime))
             {
                 return;
