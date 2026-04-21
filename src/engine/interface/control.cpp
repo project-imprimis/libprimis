@@ -1,4 +1,5 @@
 /**
+ * @file control.cpp
  * @brief misc engine utilities for program control
  *
  * control.cpp defines a handful of useful utilities for creating a useful program
