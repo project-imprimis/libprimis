@@ -1802,7 +1802,7 @@ namespace UI
         }
     };
 
-    struct Color
+    struct Color final
     {
         uchar r, g, b, a;
 
