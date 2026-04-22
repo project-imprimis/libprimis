@@ -1,4 +1,6 @@
-/* aa.cpp
+/**
+ * @file aa.cpp
+ * @brief Screenspace antialiasing
  *
  * screenspace antialiasing methods (does NOT include multisample [MSAA]):
  * TQAA (temporal quincunx antialiasing)
