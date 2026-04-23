@@ -1,4 +1,5 @@
 /**
+ * @file skelmodel.cpp
  * @brief implementation for the skeletal animation object
  *
  * the skelmodel object handles the behavior of animated skeletal models -- such
