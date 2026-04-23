@@ -40,7 +40,7 @@
 #include "animmodel.h"
 #include "skelmodel.h"
 
-VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
+static VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
 //animcacheentry child classes
 
