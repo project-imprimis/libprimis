@@ -868,12 +868,12 @@ namespace UI
             return "#Window";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        const char *getname() const override final
+        const char *getname() const final
         {
             return name.c_str();
         }
@@ -906,7 +906,7 @@ namespace UI
             px = py = pw = ph = 0;
         }
 
-        void layout() override final
+        void layout() final
         {
             if(state & State_Hidden)
             {
@@ -918,7 +918,7 @@ namespace UI
             window = nullptr;
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             if(state & State_Hidden)
             {
@@ -951,7 +951,7 @@ namespace UI
             draw(x, y);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             if(state & State_Hidden)
             {
@@ -971,7 +971,7 @@ namespace UI
         }
 
         #define DOSTATE(flags, func) \
-            void func##children(float cx, float cy, int mask, bool inside, int setflags) override final \
+            void func##children(float cx, float cy, int mask, bool inside, int setflags) final \
             { \
                 if(!allowinput || state&State_Hidden || pw <= 0 || ph <= 0) \
                 { \
@@ -987,7 +987,7 @@ namespace UI
         DOSTATES
         #undef DOSTATE
 
-        void escrelease(float cx, float cy) override final;
+        void escrelease(float cx, float cy) final;
 
         void projection()
         {
@@ -1036,7 +1036,7 @@ namespace UI
             return "#World";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -1057,13 +1057,13 @@ namespace UI
             } \
         } while(0)
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             LOOP_WINDOWS(w, w->adjustlayout());
         }
 
         #define DOSTATE(flags, func) \
-            void func##children(float cx, float cy, int mask, bool inside, int setflags) override final \
+            void func##children(float cx, float cy, int mask, bool inside, int setflags) final \
             { \
                 LOOP_WINDOWS_REV(w, \
                 { \
@@ -1190,7 +1190,7 @@ namespace UI
             return false;
         }
 
-        void draw(float, float) override final //note unnamed function parameters
+        void draw(float, float) final //note unnamed function parameters
         {
         }
 
@@ -1250,7 +1250,7 @@ namespace UI
             return "#HorizontalList";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -1261,12 +1261,12 @@ namespace UI
             space = space_;
         }
 
-        uchar childalign() const override final
+        uchar childalign() const final
         {
             return Align_VCenter;
         }
 
-        void layout() override final
+        void layout() final
         {
             subw = h = 0;
             for(Object *o : children)
@@ -1280,7 +1280,7 @@ namespace UI
             w = subw + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             if(children.empty())
             {
@@ -1312,7 +1312,7 @@ namespace UI
             return "#VerticalList";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -1323,12 +1323,12 @@ namespace UI
             space = space_;
         }
 
-        uchar childalign() const override final
+        uchar childalign() const final
         {
             return Align_HCenter;
         }
 
-        void layout() override final
+        void layout() final
         {
             w = subh = 0;
             for(Object *o : children)
@@ -1342,7 +1342,7 @@ namespace UI
             h = subh + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             if(children.empty())
             {
@@ -1377,7 +1377,7 @@ namespace UI
             return "#Grid";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -1390,12 +1390,12 @@ namespace UI
             spaceh = spaceh_;
         }
 
-        uchar childalign() const override final
+        uchar childalign() const final
         {
             return 0;
         }
 
-        void layout() override final
+        void layout() final
         {
             widths.clear();
             heights.clear();
@@ -1441,7 +1441,7 @@ namespace UI
             h = subh + spaceh*std::max(static_cast<int>(heights.size()) - 1, 0);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             if(children.empty())
             {
@@ -1490,12 +1490,12 @@ namespace UI
             return typestr();
         }
 
-        uchar childalign() const override final
+        uchar childalign() const final
         {
             return columns < 0 ? Align_VCenter : Align_HCenter | Align_VCenter;
         }
 
-        int childcolumns() const override final
+        int childcolumns() const final
         {
             return columns;
         }
@@ -1528,12 +1528,12 @@ namespace UI
             resetstate();
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o, o->adjustlayout(0, 0, w, h));
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o,
             {
@@ -1561,12 +1561,12 @@ namespace UI
             return "#TableRow";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        bool target(float, float) override final //note unnamed function parameters
+        bool target(float, float) final //note unnamed function parameters
         {
             return true;
         }
@@ -1581,7 +1581,7 @@ namespace UI
             return "#Table";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -1593,12 +1593,12 @@ namespace UI
             spaceh = spaceh_;
         }
 
-        uchar childalign() const override final
+        uchar childalign() const final
         {
             return 0;
         }
 
-        void layout() override final
+        void layout() final
         {
             widths.clear();
 
@@ -1632,7 +1632,7 @@ namespace UI
             h = subh + spaceh*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             if(children.empty())
             {
@@ -1688,12 +1688,12 @@ namespace UI
             return "#Spacer";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void layout() override final
+        void layout() final
         {
             w = spacew;
             h = spaceh;
@@ -1709,7 +1709,7 @@ namespace UI
             h += spaceh;
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             adjustchildrento(spacew, spaceh, w - 2*spacew, h - 2*spaceh);
         }
@@ -1731,12 +1731,12 @@ namespace UI
             return "#Offsetter";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void layout() override final
+        void layout() final
         {
             Object::layout();
 
@@ -1750,7 +1750,7 @@ namespace UI
             h += offsety;
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             adjustchildrento(offsetx, offsety, w - offsetx, h - offsety);
         }
@@ -1777,7 +1777,7 @@ namespace UI
             return typestr();
         }
 
-        void layout() override final
+        void layout() final
         {
             Object::layout();
             w = std::max(w, minw);
@@ -1796,7 +1796,7 @@ namespace UI
         {
             return typestr();
         }
-        bool target(float, float) override final //note unnamed function parameters
+        bool target(float, float) final //note unnamed function parameters
         {
             return true;
         }
@@ -1903,12 +1903,12 @@ namespace UI
             }
 
         protected:
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
 
-            void startdraw() const override final
+            void startdraw() const final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
@@ -1918,7 +1918,7 @@ namespace UI
         private:
             Color color2;
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 changedraw(Change_Shader | Change_Color | Change_Blend);
                 if(type==MODULATE)
@@ -1954,19 +1954,19 @@ namespace UI
                 return "#Line";
             }
 
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
 
         protected:
-            void startdraw() const override final
+            void startdraw() const final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
             }
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 changedraw(Change_Shader | Change_Color);
 
@@ -1993,7 +1993,7 @@ namespace UI
                 color = color_;
             }
 
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
@@ -2003,7 +2003,7 @@ namespace UI
                 return "#Outline";
             }
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 changedraw(Change_Shader | Change_Color);
 
@@ -2018,7 +2018,7 @@ namespace UI
                 Object::draw(sx, sy);
             }
         protected:
-            void startdraw() const override final
+            void startdraw() const final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
@@ -2093,7 +2093,7 @@ namespace UI
                 }
             }
 
-            void startdraw() const override final
+            void startdraw() const final
             {
                 lasttex = nullptr;
 
@@ -2102,7 +2102,7 @@ namespace UI
                 gle::begin(GL_TRIANGLE_STRIP);
             }
 
-            void enddraw() const override final
+            void enddraw() const final
             {
                 gle::end();
             }
@@ -2131,12 +2131,12 @@ namespace UI
             }
 
         private:
-            bool target(float cx, float cy) override final
+            bool target(float cx, float cy) final
             {
                 return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cropx + cx/w*cropw, cropy + cy/h*croph);
             }
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 if(tex == notexture)
                 {
@@ -2150,7 +2150,7 @@ namespace UI
                 Object::draw(sx, sy);
             }
 
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
@@ -2165,12 +2165,12 @@ namespace UI
             return "#StretchedImage";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        bool target(float cx, float cy) override final
+        bool target(float cx, float cy) final
         {
             if(!(tex->type&Texture::ALPHA))
             {
@@ -2213,7 +2213,7 @@ namespace UI
             return checkalphamask(tex, mx, my);
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             if(tex == notexture)
             {
@@ -2331,12 +2331,12 @@ namespace UI
             return "#BorderedImage";
         }
 
-        const char *gettype() const  override final
+        const char *gettype() const  final
         {
             return typestr();
         }
 
-        bool target(float cx, float cy) override final
+        bool target(float cx, float cy) final
         {
             if(!(tex->type&Texture::ALPHA))
             {
@@ -2370,7 +2370,7 @@ namespace UI
             return checkalphamask(tex, mx, my);
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             if(tex == notexture)
             {
@@ -2462,12 +2462,12 @@ namespace UI
             return "#TiledImage";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        bool target(float cx, float cy) override final
+        bool target(float cx, float cy) final
         {
             if(!(tex->type&Texture::ALPHA))
             {
@@ -2477,7 +2477,7 @@ namespace UI
             return checkalphamask(tex, std::fmod(cx/tilew, 1), std::fmod(cy/tileh, 1));
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             if(tex == notexture)
             {
@@ -2527,7 +2527,7 @@ namespace UI
             int type;
             Color color;
 
-            void startdraw() const override final
+            void startdraw() const final
             {
                 hudnotextureshader->set();
                 gle::defvertex(2);
@@ -2565,12 +2565,12 @@ namespace UI
             return "#Triangle";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        bool target(float cx, float cy) override final
+        bool target(float cx, float cy) final
         {
             if(type == OUTLINE)
             {
@@ -2581,7 +2581,7 @@ namespace UI
                    (vec2(cx, cy).sub(a).cross(vec2(c).sub(a)) < 0) == side;
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             Object::draw(sx, sy);
 
@@ -2619,12 +2619,12 @@ namespace UI
             return "#Circle";
         }
 
-        const char *gettype() const  override final
+        const char *gettype() const  final
         {
             return typestr();
         }
 
-        bool target(float cx, float cy) override final
+        bool target(float cx, float cy) final
         {
             if(type == OUTLINE)
             {
@@ -2634,7 +2634,7 @@ namespace UI
             return vec2(cx, cy).sub(r).squaredlen() <= r*r;
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             Object::draw(sx, sy);
 
@@ -2703,7 +2703,7 @@ namespace UI
                 return typestr();
             }
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 Object::draw(sx, sy);
 
@@ -2721,7 +2721,7 @@ namespace UI
                 textscale = oldscale;
             }
 
-            void layout() override final
+            void layout() final
             {
                 Object::layout();
 
@@ -2771,12 +2771,12 @@ namespace UI
             return "#TextString";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        const char *getstr() const override final
+        const char *getstr() const final
         {
             return str.c_str();
         }
@@ -2805,12 +2805,12 @@ namespace UI
             return "#TextInt";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        const char *getstr() const override final
+        const char *getstr() const final
         {
             return str.data();
         }
@@ -2839,12 +2839,12 @@ namespace UI
             return "#TextFloat";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        const char *getstr() const override final
+        const char *getstr() const final
         {
             return str.data();
         }
@@ -2861,7 +2861,7 @@ namespace UI
             Object::setup();
         }
 
-        void layout() override final
+        void layout() final
         {
             pushfont();
             setfont(font);
@@ -2869,7 +2869,7 @@ namespace UI
             popfont();
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             pushfont();
             setfont(font);
@@ -2886,7 +2886,7 @@ namespace UI
         }
 
         #define DOSTATE(flags, func) \
-            void func##children(float cx, float cy, int mask, bool inside, int setflags) override final \
+            void func##children(float cx, float cy, int mask, bool inside, int setflags) final \
             { \
                 pushfont(); \
                 setfont(font); \
@@ -2896,7 +2896,7 @@ namespace UI
         DOSTATES
         #undef DOSTATE
 
-        bool rawkey(int code, bool isdown) override final
+        bool rawkey(int code, bool isdown) final
         {
             pushfont();
             setfont(font);
@@ -2905,7 +2905,7 @@ namespace UI
             return result;
         }
 
-        bool key(int code, bool isdown) override final
+        bool key(int code, bool isdown) final
         {
             pushfont();
             setfont(font);
@@ -2914,7 +2914,7 @@ namespace UI
             return result;
         }
 
-        bool textinput(const char *str, int len) override final
+        bool textinput(const char *str, int len) final
         {
             pushfont();
             setfont(font);
@@ -2943,7 +2943,7 @@ namespace UI
             return "#Console";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -2953,7 +2953,7 @@ namespace UI
             return uicontextscale;
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             Object::draw(sx, sy);
 
@@ -3024,7 +3024,7 @@ namespace UI
                 return typestr();
             }
 
-            void adjustchildren() override final
+            void adjustchildren() final
             {
                 adjustchildrento(0, 0, virtw, virth);
             }
@@ -3047,12 +3047,12 @@ namespace UI
             return "#Scroller";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void layout() override final
+        void layout() final
         {
             Clipper::layout();
             offsetx = std::min(offsetx, hlimit());
@@ -3060,7 +3060,7 @@ namespace UI
         }
 
         #define DOSTATE(flags, func) \
-            void func##children(float cx, float cy, int mask, bool inside, int setflags) override final \
+            void func##children(float cx, float cy, int mask, bool inside, int setflags) final \
             { \
                 cx += offsetx; \
                 cy += offsety; \
@@ -3072,7 +3072,7 @@ namespace UI
         DOSTATES
         #undef DOSTATE
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             if((clipw && virtw > clipw) || (cliph && virth > cliph))
             {
@@ -3138,9 +3138,9 @@ namespace UI
             offsety = std::clamp(vscroll, 0.0f, vlimit());
         }
 
-        void scrollup(float cx, float cy) override final;
+        void scrollup(float cx, float cy) final;
 
-        void scrolldown(float cx, float cy) override final;
+        void scrolldown(float cx, float cy) final;
     };
 
     class ScrollButton final : public Object
@@ -3152,7 +3152,7 @@ namespace UI
             }
 
         protected:
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
@@ -3169,7 +3169,7 @@ namespace UI
                 return "#ScrollBar";
             }
 
-            void hold(float cx, float cy) override final
+            void hold(float cx, float cy) final
             {
                 ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
                 if(button && button->haschildstate(State_Hold))
@@ -3178,7 +3178,7 @@ namespace UI
                 }
             }
 
-            void press(float cx, float cy) override final
+            void press(float cx, float cy) final
             {
                 ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
                 if(button && button->haschildstate(State_Press))
@@ -3208,12 +3208,12 @@ namespace UI
                 return typestr();
             }
 
-            const char *gettypename() const override final
+            const char *gettypename() const final
             {
                 return typestr();
             }
 
-            bool target(float, float) override final //note unnamed function parameters
+            bool target(float, float) final //note unnamed function parameters
             {
                 return true;
             }
@@ -3268,12 +3268,12 @@ namespace UI
             return "#ScrollArrow";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void hold(float, float) override final //note unnamed function parameters
+        void hold(float, float) final //note unnamed function parameters
         {
             ScrollBar *scrollbar = static_cast<ScrollBar *>(findsibling(ScrollBar::typestr()));
             if(scrollbar)
@@ -3301,17 +3301,17 @@ namespace UI
             return "#HorizontalScrollBar";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void addscroll(Scroller *scroller, float dir) override final
+        void addscroll(Scroller *scroller, float dir) final
         {
             scroller->addhscroll(dir);
         }
 
-        void scrollto(float cx, float, bool closest = false) override final //note unnamed function parameter
+        void scrollto(float cx, float, bool closest = false) final //note unnamed function parameter
         {
             Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
@@ -3328,7 +3328,7 @@ namespace UI
             scroller->sethscroll(offset*scroller->virtw);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
@@ -3349,7 +3349,7 @@ namespace UI
             ScrollBar::adjustchildren();
         }
 
-        void movebutton(Object *o, float fromx, float, float tox, float toy) override final //note unnamed function parameter
+        void movebutton(Object *o, float fromx, float, float tox, float toy) final //note unnamed function parameter
         {
             scrollto(o->x + tox - fromx, o->y + toy);
         }
@@ -3362,17 +3362,17 @@ namespace UI
             return "#VerticalScrollBar";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void addscroll(Scroller *scroller, float dir) override final
+        void addscroll(Scroller *scroller, float dir) final
         {
             scroller->addvscroll(dir);
         }
 
-        void scrollto(float, float cy, bool closest = false) override final //note unnamed function parameter
+        void scrollto(float, float cy, bool closest = false) final //note unnamed function parameter
         {
             Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
@@ -3389,7 +3389,7 @@ namespace UI
             scroller->setvscroll(offset*scroller->virth);
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
@@ -3410,12 +3410,12 @@ namespace UI
             ScrollBar::adjustchildren();
         }
 
-        void movebutton(Object *o, float, float fromy, float tox, float toy) override final //note unnamed function parameter
+        void movebutton(Object *o, float, float fromy, float tox, float toy) final //note unnamed function parameter
         {
             scrollto(o->x + tox, o->y + toy - fromy);
         }
 
-        int wheelscrolldirection() const override final
+        int wheelscrolldirection() const final
         {
             return -1;
         }
@@ -3428,7 +3428,7 @@ namespace UI
             return "#SliderButton";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
@@ -3562,12 +3562,12 @@ namespace UI
             return typestr();
         }
 
-        const char *gettypename() const override final
+        const char *gettypename() const final
         {
             return typestr();
         }
 
-        bool target(float, float) override final //note unnamed function parameters
+        bool target(float, float) final //note unnamed function parameters
         {
             return true;
         }
@@ -3590,19 +3590,19 @@ namespace UI
             return 1;
         }
 
-        void scrollup(float, float) override final //note unnamed function parameters
+        void scrollup(float, float) final //note unnamed function parameters
         {
             wheelscroll(-wheelscrolldirection());
         }
 
-        void scrolldown(float, float) override final //note unnamed function parameters
+        void scrolldown(float, float) final //note unnamed function parameters
         {
             wheelscroll(wheelscrolldirection());
         }
 
         virtual void scrollto(float, float) {} //note unnamed function parameters
 
-        void hold(float cx, float cy) override final
+        void hold(float cx, float cy) final
         {
             scrollto(cx, cy);
         }
@@ -3641,12 +3641,12 @@ namespace UI
             return "#SliderArrow";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void press(float, float) override final //note unnamed function parameters
+        void press(float, float) final //note unnamed function parameters
         {
             laststep = totalmillis + 2*uislidersteptime;
 
@@ -3657,7 +3657,7 @@ namespace UI
             }
         }
 
-        void hold(float, float) override final //note unnamed function parameters
+        void hold(float, float) final //note unnamed function parameters
         {
             if(totalmillis < laststep + uislidersteptime)
             {
@@ -3690,12 +3690,12 @@ namespace UI
             return "#HorizontalSlider";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void scrollto(float cx, float) override final //note unnamed function parameter
+        void scrollto(float cx, float) final //note unnamed function parameter
         {
             SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
@@ -3711,7 +3711,7 @@ namespace UI
             }
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
@@ -3737,12 +3737,12 @@ namespace UI
             return "#VerticalSlider";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void scrollto(float, float cy) override final //note unnamed function parameter
+        void scrollto(float, float cy) final //note unnamed function parameter
         {
             SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
@@ -3758,7 +3758,7 @@ namespace UI
             }
         }
 
-        void adjustchildren() override final
+        void adjustchildren() final
         {
             SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
@@ -3776,7 +3776,7 @@ namespace UI
             Slider::adjustchildren();
         }
 
-        int wheelscrolldirection() const override final
+        int wheelscrolldirection() const final
         {
             return -1;
         }
@@ -3876,7 +3876,7 @@ namespace UI
             return typestr();
         }
 
-        bool target(float, float) override final//note unnamed function parameters
+        bool target(float, float) final//note unnamed function parameters
         {
             return true;
         }
@@ -3886,7 +3886,7 @@ namespace UI
             return scale / FONTH;
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             changedraw(Change_Shader | Change_Color);
 
@@ -3902,7 +3902,7 @@ namespace UI
             Object::draw(sx, sy);
         }
 
-        void layout() override final
+        void layout() final
         {
             Object::layout();
 
@@ -3918,13 +3918,13 @@ namespace UI
             offsety = cy;
         }
 
-        void press(float cx, float cy) override final
+        void press(float cx, float cy) final
         {
             setfocus();
             resetmark(cx, cy);
         }
 
-        void hold(float cx, float cy) override final
+        void hold(float cx, float cy) final
         {
             if(isfocus())
             {
@@ -3934,12 +3934,12 @@ namespace UI
             }
         }
 
-        void scrollup(float, float) override final //note unnamed function parameters
+        void scrollup(float, float) final //note unnamed function parameters
         {
             edit->scrollup();
         }
 
-        void scrolldown(float, float) override final //note unnamed function parameters
+        void scrolldown(float, float) final //note unnamed function parameters
         {
             edit->scrolldown();
         }
@@ -3954,7 +3954,7 @@ namespace UI
             clearfocus();
         }
 
-        bool key(int code, bool isdown) override final
+        bool key(int code, bool isdown) final
         {
             if(Object::key(code, isdown))
             {
@@ -4004,7 +4004,7 @@ namespace UI
             return true;
         }
 
-        bool textinput(const char *str, int len) override final
+        bool textinput(const char *str, int len) final
         {
             if(Object::textinput(str, len))
             {
@@ -4163,13 +4163,13 @@ namespace UI
             return typestr();
         }
 
-        void commit() override final
+        void commit() final
         {
             TextEditor::commit();
             changed = true;
         }
 
-        void cancel() override final
+        void cancel() final
         {
             TextEditor::cancel();
             changed = false;
@@ -4183,12 +4183,12 @@ namespace UI
             return "#KeyField";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void resetmark(float cx, float cy) override final
+        void resetmark(float cx, float cy) final
         {
             edit->clear();
             Field::resetmark(cx, cy);
@@ -4207,7 +4207,7 @@ namespace UI
             }
         }
 
-        bool rawkey(int code, bool isdown) override final
+        bool rawkey(int code, bool isdown) final
         {
             if(Object::rawkey(code, isdown))
             {
@@ -4228,7 +4228,7 @@ namespace UI
             return true;
         }
 
-        bool allowtextinput() const override final
+        bool allowtextinput() const final
         {
             return false;
         }
@@ -4236,7 +4236,7 @@ namespace UI
 
     struct Preview : Target
     {
-        void startdraw() const override final
+        void startdraw() const final
         {
             glDisable(GL_BLEND);
 
@@ -4246,7 +4246,7 @@ namespace UI
             }
         }
 
-        void enddraw() const override final
+        void enddraw() const final
         {
             glEnable(GL_BLEND);
 
@@ -4302,12 +4302,12 @@ namespace UI
             return "#ModelPreview";
         }
 
-        const char *gettype() const override final
+        const char *gettype() const final
         {
             return typestr();
         }
 
-        void draw(float sx, float sy) override final
+        void draw(float sx, float sy) final
         {
             Object::draw(sx, sy);
 
@@ -4356,12 +4356,12 @@ namespace UI
                 return "#PrefabPreview";
             }
 
-            const char *gettype() const override final
+            const char *gettype() const final
             {
                 return typestr();
             }
 
-            void draw(float sx, float sy) override final
+            void draw(float sx, float sy) final
             {
                 Object::draw(sx, sy);
                 changedraw(Change_Shader);
