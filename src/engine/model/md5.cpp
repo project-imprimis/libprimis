@@ -123,13 +123,13 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
         animframes = 0;
     float *animdata = nullptr;
     dualquat *animbones = nullptr;
-    char buf[512]; //presumably lines over 512 char long will break this loader
+    std::array<char, 512> buf; //presumably lines over 512 char long will break this loader
     //for each line in the opened file
     skelanimspec *sas = nullptr;
-    while(f->getline(buf, sizeof(buf)))
+    while(f->getline(buf.data(), buf.size()))
     {
         int tmp;
-        if(std::sscanf(buf, " MD5Version %d", &tmp) == 1)
+        if(std::sscanf(buf.data(), " MD5Version %d", &tmp) == 1)
         {
             if(tmp != md5version)
             {
@@ -137,7 +137,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
                 return nullptr;
             }
         }
-        else if(std::sscanf(buf, " numJoints %d", &tmp) == 1)
+        else if(std::sscanf(buf.data(), " numJoints %d", &tmp) == 1)
         {
             if(tmp != static_cast<int>(skel->numbones))
             {
@@ -145,7 +145,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
                 return nullptr;
             }
         }
-        else if(std::sscanf(buf, " numFrames %d", &animframes) == 1)
+        else if(std::sscanf(buf.data(), " numFrames %d", &animframes) == 1)
         {
             if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
             {
@@ -154,43 +154,43 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
             }
         }
         //apparently, do nothing with respect to framerate
-        else if(std::sscanf(buf, " frameRate %d", &tmp) == 1)
+        else if(std::sscanf(buf.data(), " frameRate %d", &tmp) == 1)
         {
             //(empty body)
         }
         //create animdata if there is some relevant info in file
-        else if(std::sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
+        else if(std::sscanf(buf.data(), " numAnimatedComponents %d", &animdatalen)==1)
         {
             if(animdatalen > 0)
             {
                 animdata = new float[animdatalen];
             }
         }
-        else if(std::strstr(buf, "bounds {"))
+        else if(std::strstr(buf.data(), "bounds {"))
         {
-            while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+            while(f->getline(buf.data(), buf.size()) && buf[0]!='}') //loop until end of {} block
             {
                 //(empty body)
             }
         }
-        else if(std::strstr(buf, "hierarchy {"))
+        else if(std::strstr(buf.data(), "hierarchy {"))
         {
-            while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+            while(f->getline(buf.data(), buf.size()) && buf[0]!='}') //loop until end of {} block
             {
                 md5hierarchy h;
-                if(std::sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
+                if(std::sscanf(buf.data(), " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
                 {
                     hierarchy.push_back(std::move(h));
                 }
             }
         }
-        else if(std::strstr(buf, "baseframe {"))
+        else if(std::strstr(buf.data(), "baseframe {"))
         {
-            while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+            while(f->getline(buf.data(), buf.size()) && buf[0]!='}') //loop until end of {} block
             {
                 md5joint j;
                 //pick up pos/orient 3-vectors within
-                if(std::sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
+                if(std::sscanf(buf.data(), " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
                 {
                     j.pos.y = -j.pos.y;
                     j.orient.x = -j.orient.x;
@@ -221,11 +221,11 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
 
             skel->numframes += animframes;
         }
-        else if(std::sscanf(buf, " frame %d", &tmp)==1)
+        else if(std::sscanf(buf.data(), " frame %d", &tmp)==1)
         {
-            for(int numdata = 0; f->getline(buf, sizeof(buf)) && buf[0]!='}';)
+            for(int numdata = 0; f->getline(buf.data(), buf.size()) && buf[0]!='}';)
             {
-                for(char *src = buf, *next = src; numdata < animdatalen; numdata++, src = next)
+                for(char *src = buf.data(), *next = src; numdata < animdatalen; numdata++, src = next)
                 {
                     animdata[numdata] = std::strtod(src, &next);
                     if(next <= src)
