@@ -1,4 +1,9 @@
-/* vertmodel.cpp: vertex model support
+/**
+ * @file vertmodel.cpp
+ * @brief Vertex model support
+ *
+ * Support for vertex animated or static vertex models (as opposed to skeletal models
+ * in skelmodel)
  */
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
