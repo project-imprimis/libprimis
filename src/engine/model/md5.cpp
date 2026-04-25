@@ -311,12 +311,12 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
     {
         return false;
     }
-    char buf[512]; //presumably this will fail with lines over 512 char long
+    std::array<char, 512> buf; //presumably this will fail with lines over 512 char long
     std::vector<md5joint> basejoints;
-    while(f->getline(buf, sizeof(buf)))
+    while(f->getline(buf.data(), buf.size()))
     {
         int tmp;
-        if(std::sscanf(buf, " MD5Version %d", &tmp)==1)
+        if(std::sscanf(buf.data(), " MD5Version %d", &tmp)==1)
         {
             if(tmp!=10)
             {
@@ -324,7 +324,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
                 return false;
             }
         }
-        else if(std::sscanf(buf, " numJoints %d", &tmp)==1)
+        else if(std::sscanf(buf.data(), " numJoints %d", &tmp)==1)
         {
             if(tmp<1)
             {
@@ -337,7 +337,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
             }
             skel->createbones(tmp);
         }
-        else if(std::sscanf(buf, " numMeshes %d", &tmp)==1)
+        else if(std::sscanf(buf.data(), " numMeshes %d", &tmp)==1)
         {
             if(tmp<1)
             {
@@ -345,14 +345,14 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
                 return false;
             }
         }
-        else if(std::strstr(buf, "joints {"))
+        else if(std::strstr(buf.data(), "joints {"))
         {
             string name;
             int parent;
             md5joint j;
-            while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
+            while(f->getline(buf.data(), buf.size()) && buf[0]!='}')
             {
-                const char *curbuf = buf;
+                const char *curbuf = buf.data();
                       char *curname = name;
                 bool allowspace = false;
                 while(*curbuf && std::isspace(*curbuf))
@@ -402,14 +402,14 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
             }
         }
         //load up meshes
-        else if(std::strstr(buf, "mesh {"))
+        else if(std::strstr(buf.data(), "mesh {"))
         {
             md5mesh *m = new md5mesh("", this); //we will set its name later
             meshes.push_back(m);
 
             std::string modeldir(filename);
             modeldir.resize(modeldir.rfind("/")); //truncate to file's directory
-            m->load(f, buf, sizeof(buf), p, modeldir);
+            m->load(f, buf.data(), buf.size(), p, modeldir);
             if(!m->tricount() || !m->vertcount()) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename.data());
