@@ -413,7 +413,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
             if(!m->tricount() || !m->vertcount()) //if no content in the mesh
             {
                 conoutf("empty mesh in %s", filename.data());
-                auto itr = std::find(meshes.begin(), meshes.end(), m);
+                std::vector<animmodel::Mesh *>::iterator itr = std::find(meshes.begin(), meshes.end(), m);
                 if(itr != meshes.end())
                 {
                     meshes.erase(itr);
