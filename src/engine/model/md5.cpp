@@ -1,5 +1,6 @@
 
 /**
+ * @file md5.cpp
  * @brief md5 (id tech 4) model support
  *
  * Libprimis supports the md5 (id Tech 4) skeletal model format for animated
