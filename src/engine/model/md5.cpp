@@ -491,7 +491,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 {
     for(int i = 0; i < numverts; ++i)
     {
-        md5vert &v = vertinfo[i];
+        const md5vert &v = vertinfo[i];
         vec pos(0, 0, 0);
         for(size_t k = 0; k < v.count; ++k)
         {
