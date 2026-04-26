@@ -1817,10 +1817,20 @@ namespace UI
         //assigns components normally
         Color(uchar red, uchar green, uchar blue, uchar alpha = 255) : r(red), g(green), b(blue), a(alpha) {}
 
-        void init() { gle::colorub(r, g, b, a); }
-        void attrib() { gle::attribub(r, g, b, a); }
+        void init()
+        {
+            gle::colorub(r, g, b, a);
+        }
 
-        static void def() { gle::defcolor(4, GL_UNSIGNED_BYTE); }
+        void attrib()
+        {
+            gle::attribub(r, g, b, a);
+        }
+
+        static void def()
+        {
+            gle::defcolor(4, GL_UNSIGNED_BYTE);
+        }
     };
 
 #undef LOOP_CHILDREN_REV
