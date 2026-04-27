@@ -27,5 +27,4 @@ extern bool grabinput, minimized;
 
 extern void inputgrab(bool on);
 extern bool interceptkey(int sym);
-extern void pushevent(const SDL_Event &e);
 #endif

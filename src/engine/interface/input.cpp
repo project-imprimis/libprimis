@@ -103,7 +103,7 @@ void inputgrab(bool on)
 
 static std::vector<SDL_Event> events;
 
-void pushevent(const SDL_Event &e)
+static void pushevent(const SDL_Event &e)
 {
     events.push_back(e);
 }
