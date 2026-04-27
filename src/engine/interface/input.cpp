@@ -101,7 +101,7 @@ void inputgrab(bool on)
     shouldgrab = false;
 }
 
-std::vector<SDL_Event> events;
+static std::vector<SDL_Event> events;
 
 void pushevent(const SDL_Event &e)
 {
