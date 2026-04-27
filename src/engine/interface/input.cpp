@@ -137,6 +137,7 @@ static bool pollevent(SDL_Event &event)
     return false;
 }
 
+//used in iengine
 bool interceptkey(int sym)
 {
     static int lastintercept = SDLK_UNKNOWN;

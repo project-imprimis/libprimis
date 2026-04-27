@@ -26,5 +26,4 @@ extern void textinput(bool on, int mask = ~0);
 extern bool grabinput, minimized;
 
 extern void inputgrab(bool on);
-extern bool interceptkey(int sym);
 #endif
