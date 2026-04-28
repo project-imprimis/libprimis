@@ -1449,7 +1449,7 @@ void initstrcmds()
     addcommand("format", reinterpret_cast<identfun>(format), "V", Id_Command);
 }
 
-struct sleepcmd
+struct sleepcmd final
 {
     int delay, millis, flags;
     std::string command;
