@@ -18,12 +18,13 @@
 
 #include "render/hud.h"
 
-/* execfile
+/**
+ * @brief executes the cubescript in a file located at a relative path to the game's home dir
  *
- * executes the cubescript in a file located at a relative path to the game's home dir
+ * @param cfgfile a pointer to the name of the file
+ * @param if true, prints out a message if there is no file found
  *
- * *cfgfile: a pointer to the name of the file
- * msg: if true, prints out a message if there is no file found
+ * @return true if file was read for execution, false if this fails
  */
 bool execfile(const char *cfgfile, bool msg)
 {
