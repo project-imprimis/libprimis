@@ -1713,7 +1713,7 @@ void initcontrolcmds()
     addcommand("listsplice", reinterpret_cast<identfun>(listsplice), "ssii", Id_Command);
     addcommand("findfile", reinterpret_cast<identfun>(findfile_), "s", Id_Command);
     addcommand("sortlist", reinterpret_cast<identfun>(sortlist), "srree", Id_Command);
-    addcommand("uniquelist", reinterpret_cast<identfun>(+[] (char *list, ident *x, ident *y, const uint *body) { sortlist(list, x, y, nullptr, body); }), "srre", Id_Command);
+    addcommand("uniquelist", reinterpret_cast<identfun>(+[] (const char *list, ident *x, ident *y, const uint *body) { sortlist(list, x, y, nullptr, body); }), "srre", Id_Command);
     addcommand("getmillis", reinterpret_cast<identfun>(+[] (const int *total) { intret(*total ? totalmillis : lastmillis); }), "i", Id_Command);
     addcommand("sleep", reinterpret_cast<identfun>(addsleep), "is", Id_Command);
     addcommand("clearsleep", reinterpret_cast<identfun>(clearsleep_), "i", Id_Command);
