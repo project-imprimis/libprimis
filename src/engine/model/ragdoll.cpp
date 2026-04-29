@@ -1,4 +1,5 @@
 /**
+ * @file ragdoll.cpp
  * @brief ragdoll physics support
  *
  * Libprimis supports limited client-side ragdolls to simulate corpses. Ragdolls
