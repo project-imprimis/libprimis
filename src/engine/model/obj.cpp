@@ -86,7 +86,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     name = filename;
     numframes = 1;
     std::array<std::vector<vec>, 3> attrib;
-    char buf[512];
+    std::array<char, 512> buf;
     std::unordered_map<ivec, uint> verthash;
     std::vector<vert> verts;
     std::vector<tcvert> tcverts;
@@ -94,9 +94,9 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
 
     string meshname = "";
     vertmesh *curmesh = nullptr;
-    while(file->getline(buf, sizeof(buf)))
+    while(file->getline(buf.data(), buf.size()))
     {
-        char *c = buf;
+        char *c = buf.data();
         while(std::isspace(*c))
         {
             c++;
