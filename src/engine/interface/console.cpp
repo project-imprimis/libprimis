@@ -862,7 +862,7 @@ namespace
 
     VARP(maxhistory, 0, 1000, 10000);
 
-    void historycmd(int *n)
+    void historycmd(const int *n)
     {
         static bool inhistory = false;
         if(!inhistory && static_cast<int>(history.size()) > *n)
