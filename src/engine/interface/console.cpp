@@ -138,7 +138,7 @@ void CompletionFinder::FilesVal::update()
     //generate new one
     listfiles(dir.c_str(), ext.c_str(), files);
     std::sort(files.begin(), files.end());
-    for(uint i = 0; i < files.size(); i++)
+    for(size_t i = 0; i < files.size(); i++)
     {
         if(i && !std::strcmp(files[i], files[i-1]))
         {
@@ -908,7 +908,7 @@ namespace
 
     void execbind(KeyMap &k, bool isdown, int map)
     {
-        for(uint i = 0; i < releaseactions.size(); i++)
+        for(size_t i = 0; i < releaseactions.size(); i++)
         {
             releaseaction &ra = releaseactions[i];
             if(ra.key==&k)
@@ -1117,7 +1117,7 @@ namespace
                     {
                         if(maxhistory && static_cast<int>(history.size()) >= maxhistory)
                         {
-                            for(uint i = 0; i < (history.size()-maxhistory+1); ++i)
+                            for(size_t i = 0; i < (history.size()-maxhistory+1); ++i)
                             {
                                 delete history[i];
                             }
