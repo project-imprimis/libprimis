@@ -28,7 +28,7 @@ int aow  = -1,
     aoh  = -1;
 static std::array<GLuint, 4> aofbo = { 0, 0, 0, 0 };
 std::array<GLuint, 4> aotex = { 0, 0, 0, 0 };
-GLuint aonoisetex = 0;
+static GLuint aonoisetex = 0;
 
 VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); }); //toggles ao use in general
 static FVARR(aoradius, 0, 5, 256);
