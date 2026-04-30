@@ -1296,7 +1296,8 @@ void writebinds(std::fstream& f)
     }
 }
 
-extern void writecompletions(std::fstream& f)
+//used in cubestd.cpp
+void writecompletions(std::fstream& f)
 {
     ::cfinder.writecompletions(f);
 }
