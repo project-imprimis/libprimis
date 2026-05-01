@@ -1,4 +1,6 @@
-/* ao.cpp: screenspace ambient occlusion
+/**
+ * @file ao.cpp
+ * @brief screenspace ambient occlusion
  *
  * Screenspace ambient occlusion is a way to simulate darkening of corners which
  * do not recieve as much diffuse light as other areas. SSAO relies on the depth
