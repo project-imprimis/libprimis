@@ -8,8 +8,6 @@ enum Bonemask
     Bonemask_Bone = 0x7FFF
 };
 
-class skelhitdata; //defined in hitzone.h
-
 /* skelmodel: implementation of model object for a skeletally rigged model
  *
  * skelmodel implements most of what is required to render a skeletally rigged
