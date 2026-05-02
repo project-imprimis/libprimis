@@ -1,4 +1,5 @@
 /**
+ * @file octacube.cpp
  * @brief cube object member functions
  *
  * This file implements the methods applying to the cube object, the individual
