@@ -820,7 +820,7 @@ void loadvslots(stream *f, int numvslots)
             numvslots--;
         }
     }
-    for(uint i = 0; i < vslots.size(); i++)
+    for(size_t i = 0; i < vslots.size(); i++)
     {
         if(vslots.size() > prev[i])
         {
