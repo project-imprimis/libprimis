@@ -3593,7 +3593,9 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
                             {
                                 int start2 = code.size();
                                 more = compilearg(code, p, Value_Code, prevargs+2);
-                                uint inst1 = code[start1], op1 = inst1&~Code_RetMask, len1 = start2 - (start1+1);
+                                uint inst1 = code[start1],
+                                     op1 = inst1&~Code_RetMask,
+                                     len1 = start2 - (start1+1);
                                 if(!more)
                                 {
                                     if(op1 == (Code_Block|(len1<<8)))
@@ -3607,7 +3609,9 @@ static void compilestatements(std::vector<uint> &code, const char *&p, int retty
                                 }
                                 else
                                 {
-                                    uint inst2 = code[start2], op2 = inst2&~Code_RetMask, len2 = code.size() - (start2+1);
+                                    uint inst2 = code[start2],
+                                         op2 = inst2&~Code_RetMask,
+                                         len2 = code.size() - (start2+1);
                                     if(op2 == (Code_Block|(len2<<8)))
                                     {
                                         if(op1 == (Code_Block|(len1<<8)))
