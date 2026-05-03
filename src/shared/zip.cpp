@@ -33,7 +33,7 @@ enum ZipFlags
     Zip_DirectorySize       = 22
 };
 
-struct ziplocalfileheader
+struct ziplocalfileheader final
 {
     uint signature;
     ushort version, flags, compression, modtime, moddate;
@@ -41,7 +41,7 @@ struct ziplocalfileheader
     ushort namelength, extralength;
 };
 
-struct zipfileheader
+struct zipfileheader final
 {
     uint signature;
     ushort version, needversion, flags, compression, modtime, moddate;
@@ -50,7 +50,7 @@ struct zipfileheader
     uint externalattribs, offset;
 };
 
-struct zipdirectoryheader
+struct zipdirectoryheader final
 {
     uint signature;
     ushort disknumber, directorydisk, diskentries, entries;
@@ -58,7 +58,7 @@ struct zipdirectoryheader
     ushort commentlength;
 };
 
-struct zipfile
+struct zipfile final
 {
     char *name;
     uint header, offset, size, compressedsize;
@@ -74,7 +74,7 @@ struct zipfile
 
 class zipstream;
 
-struct ziparchive
+struct ziparchive final
 {
     char *name;
     FILE *data;
