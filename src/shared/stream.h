@@ -3,7 +3,7 @@
 #define STREAM_H_
 
 template<class T>
-struct streambuf
+struct streambuf final
 {
     stream *s;
 
