@@ -155,7 +155,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     return true;
 }
 
-VAR(debugzip, 0, 0, 1);
+static VAR(debugzip, 0, 0, 1);
 
 static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, std::vector<zipfile> &files)
 {
