@@ -38,10 +38,23 @@ static double det2x2(double a, double b, double c, double d)
 }
 
 //needed to invert matrix below
-/* det3x3()
+/**
+ * @brief 3x3 matrix determinant
  *
- * returns the determinant of a 3x3 matrix, provided a set of nine doubles
- * (rather than as a matrix3 object)
+ * Returns the determinant of a 3x3 matrix, provided a set of nine doubles
+ * (rather than as a matrix3 object).
+ *
+ * @param a1 top left element
+ * @param a2 top center element
+ * @param a3 top right element
+ * @param b1 middle left element
+ * @param b2 middle center element
+ * @param b3 middle right element
+ * @param c1 bottom left element
+ * @param c2 bottom center element
+ * @param c3 bottom right element
+ *
+ * @return determinant of the matrix
  */
 static double det3x3(double a1, double a2, double a3,
                             double b1, double b2, double b3,
