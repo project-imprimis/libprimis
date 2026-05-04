@@ -11,7 +11,11 @@
 
 #include "geomexts.h"
 
-/* This file defines matrix3, matrix4, and matrix4x3's member functions.
+/**
+ * @file matrix.cpp
+ * @brief Matrix math functions
+ *
+ * This file defines matrix3, matrix4, and matrix4x3's member functions.
  * The definitions of the classes themselves are in geom.h (one of the shared
  * header files)
  *
