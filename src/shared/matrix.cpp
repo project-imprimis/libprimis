@@ -18,10 +18,19 @@
  */
 
 //needed for det3
-/* det2x2()
+
+/**
+ * @brief 2x2 matrix determinant
  *
- * returns the determinant of a 2x2 matrix, provided a set of four doubles
- * (rather than as a matrix2 object)
+ * Returns the determinant of a 2x2 matrix, provided a set of four doubles
+ * (rather than as a matrix2 object).
+ *
+ * @param a top left element
+ * @param b top right element
+ * @param c bottom left element
+ * @param d bottom right element
+ *
+ * @return determinant of the matrix
  */
 static double det2x2(double a, double b, double c, double d)
 {
