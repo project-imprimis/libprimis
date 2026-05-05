@@ -1,4 +1,6 @@
-/* stream.cpp: utilities for character streams
+/**
+ * @file stream.cpp
+ * @brief utilities for character streams
  *
  * stream.cpp defines character handling to enable character streams to be written
  * into and out of files
