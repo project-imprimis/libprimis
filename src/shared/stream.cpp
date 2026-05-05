@@ -806,7 +806,7 @@ struct filestream final : stream
             return file!=nullptr;
         }
     #endif
-    void close() override final
+    void close() final
     {
         if(file)
         {
@@ -815,12 +815,12 @@ struct filestream final : stream
         }
     }
 
-    bool end() override final
+    bool end() final
     {
         return feof(file)!=0;
     }
 
-    offset tell() const override final
+    offset tell() const final
     {
 #ifdef WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__)
@@ -835,7 +835,7 @@ struct filestream final : stream
         return off + 1 >= 0 ? off : -1;
     }
 
-    bool seek(offset pos, int whence) override final
+    bool seek(offset pos, int whence) final
     {
 #ifdef WIN32
 #if defined(__GNUC__) && !defined(__MINGW32__)
@@ -848,42 +848,42 @@ struct filestream final : stream
 #endif
     }
 
-    size_t read(void *buf, size_t len) override final
+    size_t read(void *buf, size_t len) final
     {
         return fread(buf, 1, len, file);
     }
 
-    size_t write(const void *buf, size_t len) override final
+    size_t write(const void *buf, size_t len) final
     {
         return fwrite(buf, 1, len, file);
     }
 
-    bool flush() override final
+    bool flush() final
     {
         return !fflush(file);
     }
 
-    int getchar() override final
+    int getchar() final
     {
         return fgetc(file);
     }
 
-    bool putchar(int c) override final
+    bool putchar(int c) final
     {
         return fputc(c, file)!=EOF;
     }
 
-    bool getline(char *str, size_t len) override final
+    bool getline(char *str, size_t len) final
     {
         return fgets(str, len, file)!=nullptr;
     }
 
-    bool putstring(const char *str) override final
+    bool putstring(const char *str) final
     {
         return fputs(str, file)!=EOF;
     }
 
-    size_t printf(const char *fmt, ...) override final
+    size_t printf(const char *fmt, ...) final
     {
         va_list v;
         va_start(v, fmt);
@@ -1056,7 +1056,7 @@ class gzstream final : public stream
             return true;
         }
 
-        uint getcrc() override final
+        uint getcrc() final
         {
             return crc;
         }
@@ -1137,7 +1137,7 @@ class gzstream final : public stream
             writing = false;
         }
 
-        void close() override final
+        void close() final
         {
             if(reading)
             {
@@ -1161,22 +1161,22 @@ class gzstream final : public stream
             }
         }
 
-        bool end() override final
+        bool end() final
         {
             return !reading && !writing;
         }
 
-        offset tell() const override final
+        offset tell() const final
         {
             return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
         }
 
-        offset rawtell() const override final
+        offset rawtell() const final
         {
             return file ? file->tell() : offset(-1);
         }
 
-        offset size() override final
+        offset size() final
         {
             if(!file)
             {
@@ -1191,12 +1191,12 @@ class gzstream final : public stream
             return file->seek(pos, SEEK_SET) ? isize : offset(-1);
         }
 
-        offset rawsize() override final
+        offset rawsize() final
         {
             return file ? file->size() : offset(-1);
         }
 
-        bool seek(offset pos, int whence) override final
+        bool seek(offset pos, int whence) final
         {
             if(writing || !reading)
             {
@@ -1255,7 +1255,7 @@ class gzstream final : public stream
             return true;
         }
 
-        size_t read(void *outbuf, size_t len) override final
+        size_t read(void *outbuf, size_t len) final
         {
             if(!reading || !outbuf || !len)
             {
@@ -1310,12 +1310,12 @@ class gzstream final : public stream
             return true;
         }
 
-        bool flush() override final
+        bool flush() final
         {
             return flushbuf(true);
         }
 
-        size_t write(const void *newbuf, size_t len) override final
+        size_t write(const void *newbuf, size_t len) final
         {
             if(!writing || !newbuf || !len)
             {
