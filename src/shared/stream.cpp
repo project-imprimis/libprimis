@@ -893,7 +893,7 @@ struct filestream final : stream
     }
 };
 
-VAR(debuggz, 0, 0, 1); //toggles gz checking routines
+static VAR(debuggz, 0, 0, 1); //toggles gz checking routines
 
 class gzstream final : public stream
 {
