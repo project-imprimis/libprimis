@@ -281,7 +281,7 @@ bool GLTFModelInfo::operator==(const GLTFModelInfo &m) const
     {
         return false;
     }
-    for(std::string s : names)
+    for(const std::string &s : names)
     {
         if( !( getpositions(s) == m.getpositions(s)
             && getnormals(s) == m.getnormals(s)
