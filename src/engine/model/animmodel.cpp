@@ -1,4 +1,5 @@
 /**
+ * @file animmodel.cpp
  * @brief implementation for animated models
  *
  * animmodel.cpp implements the animmodel object in animmodel.h and is the
