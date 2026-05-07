@@ -172,7 +172,7 @@ enum ParticleProperties
     PT_FLIP      = PT_HFLIP | PT_VFLIP | PT_ROT
 };
 
-const std::string partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
+const std::array<std::string, 8> partnames = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
 
 struct particle
 {
