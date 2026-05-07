@@ -91,7 +91,7 @@ class animmodel : public model
             private:
                 const part *owner;
                 Shader *rsmshader;
-                class ShaderParamsKey
+                class ShaderParamsKey final
                 {
                     public:
                         static std::unordered_map<shaderparams, ShaderParamsKey> keys;
