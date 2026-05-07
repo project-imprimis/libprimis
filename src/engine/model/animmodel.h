@@ -6,7 +6,7 @@ extern int testtags, debugcolmesh;
 const std::string modelpath = "media/model/";
 
 /**
- * @brief Animated model object/
+ * @brief Animated model object
  *
  * Generic class for an animated model object, derived from the very
  * general model structure
