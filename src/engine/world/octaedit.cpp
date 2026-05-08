@@ -612,9 +612,9 @@ static int undosize(undoblock *u)
     }
 }
 
-std::deque<undoblock *> undos, redos;
-VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
-int totalundos = 0;
+std::deque<undoblock *> undos, redos; //used in iengine
+static VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
+static int totalundos = 0;
 
 void pruneundos(int maxremain)                          // bound memory
 {
