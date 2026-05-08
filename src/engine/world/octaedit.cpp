@@ -666,7 +666,7 @@ void addundo(undoblock *u)
     pruneundos(undomegs<<20);
 }
 
-VARP(nompedit, 0, 1, 1);
+VARP(nompedit, 0, 1, 1); //used in iengine
 
 static int countblock(const cube * const c, int n = 8)
 {
@@ -690,7 +690,7 @@ int countblock(block3 *b)
     return countblock(b->getcube(), b->size());
 }
 
-std::vector<editinfo *> editinfos;
+std::vector<editinfo *> editinfos; //used in iengine
 
 template<class B>
 static void packcube(const cube &c, B &buf)
@@ -1127,7 +1127,7 @@ void pasteundoblock(block3 *b, const uchar *g)
  * @brief Unpacks an undocube into a uchar buffer
  *
  * used in client prefab unpacking, handles the octree unpacking (not the entities,
- * which are game-dependent)
+ * which are game-dependent). Used in iengine.
  *
  * @param buf the buffer to unpack
  * @param outbuf output buffer of the buf intput
