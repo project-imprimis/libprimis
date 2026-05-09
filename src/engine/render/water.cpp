@@ -311,6 +311,15 @@ namespace
         }
     }
 
+    /**
+     * @brief Draws type of water appropriate to conditions.
+     *
+     * Draws vertex water if drawing water in the world and within the LOD distance.
+     * Otherwise, draws flat water with no dynamic effects.
+     *
+     * @param m the material surface to use
+     * @param mat the type of water to draw
+     */
     void renderwater(const materialsurface &m, int mat = Mat_Water)
     {
         if(!vertwater || drawtex == Draw_TexMinimap)
