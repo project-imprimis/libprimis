@@ -80,7 +80,11 @@ namespace
         GLOBALPARAMF(causticsblend, blendscale*(1-frac), blendscale*frac, blendoffset - causticoffset*blendscale);
     }
 
-    VARFP(caustics, 0, 1, 1, { loadcaustics(false); preloadwatershaders(); });
+    VARFP(caustics, 0, 1, 1,
+    {
+        loadcaustics(false);
+        preloadwatershaders();
+    });
 
     void rendercaustics(float surface, float syl, float syr)
     {
