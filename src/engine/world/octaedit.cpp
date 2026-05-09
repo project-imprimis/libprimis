@@ -1915,14 +1915,9 @@ void rendertexturepanel(int w, int h)
     }
 }
 
-static int bounded(int n)
-{
-    return n<0 ? 0 : (n>8 ? 8 : n);
-}
-
 static void pushedge(uchar &edge, int dir, int dc)
 {
-    int ne = bounded(EDGE_GET(edge, dc)+dir);
+    int ne = std::clamp(EDGE_GET(edge, dc)+dir, 0, 8);
     EDGE_SET(edge, dc, ne);
     int oe = EDGE_GET(edge, 1-dc);
     if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne))
