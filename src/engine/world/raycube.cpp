@@ -232,6 +232,18 @@ namespace
     }
 
     // optimized shadow version
+    /**
+     * @brief Shadow optimized entity distance check
+     *
+     * @param oc octaentities object containing list of ent indices to use
+     * @param o intersect start location
+     * @param ray intersect ray direction
+     * @param radius maximum radius
+     * @param mode type of intersection to use (not necessarily Ray_Shadow)
+     * @param t entity to exclude checking (e.g. self)
+     *
+     * @return distance to entity, or radius if distance out of bounds or no intersection
+     */
     float shadowent(const octaentities *oc, const vec &o, const vec &ray, float radius, int mode, const extentity *t)
     {
         float dist = radius,
