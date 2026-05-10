@@ -38,6 +38,19 @@ extern int findmaterial(const char *name);
  * @return C string containing the human readable name of that material
  */
 extern const char *findmaterialname(int mat);
+
+/**
+ * @brief Given a material id, returns the description of the material.
+ *
+ * Returns string containing names of the materials in a material bitmask id.
+ * Return format is the prefix string followed by a comma separated list of material
+ * names.
+ *
+ * @param mat the material id to query
+ * @param prefix string to put at beginning of output
+ *
+ * @return prefix followed by material information
+ */
 extern const char *getmaterialdesc(int mat, const char *prefix = "");
 extern void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs);
 extern void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materialsurface> &matsurfs);

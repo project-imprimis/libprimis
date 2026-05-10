@@ -1001,10 +1001,6 @@ const char *findmaterialname(int mat)
     return nullptr;
 }
 
-/* getmaterialdesc
- *
- * given a material id, returns the description of the material (char *)
- */
 const char *getmaterialdesc(int mat, const char *prefix)
 {
     static const std::array<ushort, 4> matmasks = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
