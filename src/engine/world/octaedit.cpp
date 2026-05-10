@@ -1,4 +1,5 @@
 /**
+ * @file octaedit.cpp
  * @brief world modification core functionality
  *
  * modifying the octree grid can be done by changing the states of cube nodes within
