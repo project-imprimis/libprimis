@@ -1,4 +1,7 @@
-// worldio.cpp: loading & saving of maps and savegames
+/**
+ * @file worldio.cpp
+ * @brief loading & saving of maps and savegames
+ */
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
