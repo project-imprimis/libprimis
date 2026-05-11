@@ -47,7 +47,13 @@ class PackNode final
         //i: recursion depth
         void printchildren(int i = 0) const;
 
-        //i: depth to print out
+        /**
+         * @brief Prints the depth passed along with this node's width and height.
+         *
+         * Prints to stdout. Used by printchildren() to recursively print node sizes.
+         *
+         * @param i depth to print out
+         */
         void print(int i) const;
 
     private:
