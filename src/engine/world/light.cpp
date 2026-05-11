@@ -694,12 +694,6 @@ void PackNode::discardchildren()
     }
 }
 
-void PackNode::forceempty()
-{
-    discardchildren();
-    available = 0;
-}
-
 static VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
 void clearlightcache(int id)

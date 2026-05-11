@@ -63,8 +63,6 @@ class PackNode final
          * point to other children, that memory will be leaked.
          */
         void discardchildren();
-
-        void forceempty();
 };
 
 extern PackNode shadowatlaspacker;
