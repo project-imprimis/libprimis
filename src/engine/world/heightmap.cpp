@@ -1,4 +1,5 @@
 /**
+ * @file heightmap.cpp
  * @brief terrain-like cube pushing functionality
  *
  * to help the creation of natural terrain like geometry with cubes, heightmapping
