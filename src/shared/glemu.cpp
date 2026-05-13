@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <array>
 
 #include <SDL.h>
 
@@ -44,7 +45,8 @@ namespace gle
     };
     ucharbuf attribbuf;
     static uchar *attribdata;
-    static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
+    static std::array<attribinfo, Attribute_NumAttributes> attribdefs,
+                                                           lastattribs;
     static int enabled = 0;
     static int numattribs = 0,
                attribmask = 0,
