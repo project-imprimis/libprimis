@@ -155,8 +155,8 @@ class hmap final
                              maxbrushc = 63;
 
         std::array<std::array<int, maxbrush>, maxbrush> brush;//2d array of heights for heightmap brushs
-        static int brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &brushx, nullptr, 0), //max width for a brush
-                   brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &brushy, nullptr, 0); //max length for a brush
+        static int brushx,
+                   brushy;
         bool paintbrush = false;
         int brushmaxx = 0,
             brushminx = maxbrush,
@@ -541,6 +541,8 @@ class hmap final
         }
 } heightmapper;
 
+int hmap::brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &hmap::brushx, nullptr, 0); //max width for a brush
+int hmap::brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &hmap::brushy, nullptr, 0); //max length for a brush
 // free functions wrappers of member functions to bind commands to
 //imply existence of singleton instance of hmap
 void hmapcancel()
