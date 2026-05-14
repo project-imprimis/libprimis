@@ -233,7 +233,7 @@ dynent *iterdynents(int i)
     return nullptr;
 }
 
-VARF(dynentsize, 4, 7, 12, cleardynentcache());
+static VARF(dynentsize, 4, 7, 12, cleardynentcache());
 
 static int dynenthash(int x, int y)
 {
