@@ -1310,14 +1310,15 @@ bool movecamera(physent *pl, const vec &dir, float dist, float stepdist)
 
 static bool droptofloor(vec &o, float radius, float height)
 {
-    static struct dropent final : physent
+    struct dropent final : physent
     {
         dropent()
         {
             type = PhysEnt_Bounce;
             vel = vec(0, 0, -1);
         }
-    } d;
+    };
+    static dropent d;
     d.o = o;
     if(!insideworld(d.o))
     {
