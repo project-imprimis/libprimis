@@ -195,12 +195,14 @@ static constexpr int dynentcachesize = 1024;
 
 static size_t dynentframe = 0;
 
-static struct dynentcacheentry final
+struct dynentcacheentry final
 {
     int x, y;
     size_t frame;
     std::vector<const physent *> dynents;
-} dynentcache[dynentcachesize];
+};
+
+static std::array<dynentcacheentry, dynentcachesize> dynentcache;
 
 //resets the dynentcache[] array entries
 //used in iengine
