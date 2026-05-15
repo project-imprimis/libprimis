@@ -1,4 +1,6 @@
-/* bounding interval hierarchy (BIH)
+/**
+ * @file bih.cpp
+ * @brief bounding interval hierarchy (BIH)
  *
  * the BIH code is used to calculate the intersection of models with other models
  * and the world, specifically for physics collision calculations. BIH methods
