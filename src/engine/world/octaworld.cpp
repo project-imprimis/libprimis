@@ -1615,15 +1615,15 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         for(int i = 0; i < 2; ++i)
         {
             const int *verts = triverts[order][coord][i];
-            ivec2 tf[3] = { cf[verts[0]], cf[verts[1]], cf[verts[2]] };
+            std::array<ivec2, 3> tf = {{ cf[verts[0]], cf[verts[1]], cf[verts[2]] }};
             if(numo > 0)
             {
-                if(!insideface(tf, 3, &of[0], numo))
+                if(!insideface(tf.data(), tf.size(), &of[0], numo))
                 {
                     continue;
                 }
             }
-            else if(!occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, tf, 3))
+            else if(!occludesface(o, opp, no, nsize, vo, size, vmat, nmat, matmask, tf.data(), tf.size()))
             {
                 continue;
             }
