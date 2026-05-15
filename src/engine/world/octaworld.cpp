@@ -630,7 +630,7 @@ int visibleorient(const cube &c, int orient)
     return orient;
 }
 
-VAR(mipvis, 0, 0, 1);
+static VAR(mipvis, 0, 0, 1);
 
 static bool remip(cube &c, const ivec &co, int size)
 {
