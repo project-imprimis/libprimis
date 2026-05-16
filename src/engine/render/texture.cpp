@@ -2233,7 +2233,7 @@ void Slot::load(int index, Slot::Tex &t)
         }
     }
     key.push_back('\0');
-    auto itr = textures.find(key.data());
+    std::unordered_map<std::string, Texture>::iterator itr = textures.find(key.data());
     if(itr != textures.end())
     {
         t.t = &(*itr).second;
@@ -2611,7 +2611,7 @@ void cleanuptextures()
     {
         i->cleanup();
     }
-    for(auto itr = textures.begin(); itr != textures.end(); ++itr)
+    for(std::unordered_map<std::string, Texture>::iterator itr = textures.begin(); itr != textures.end(); ++itr)
     {
         Texture &t = (*itr).second;
         delete[] t.alphamask;
@@ -2630,7 +2630,7 @@ void cleanuptextures()
 
 bool reloadtexture(const char *name)
 {
-    auto itr = textures.find(path(std::string(name)));
+    std::unordered_map<std::string, Texture>::iterator itr = textures.find(path(std::string(name)));
     if(itr != textures.end())
     {
         return (*itr).second.reload();
@@ -2662,7 +2662,7 @@ bool Texture::reload()
 
 void reloadtex(const char *name)
 {
-    auto itr = textures.find(path(std::string(name)));
+    std::unordered_map<std::string, Texture>::iterator itr = textures.find(path(std::string(name)));
     if(itr == textures.end())
     {
         conoutf(Console_Error, "texture %s is not loaded", name);
