@@ -1909,7 +1909,7 @@ static void fixinsidefaces(std::array<cube, 8> &c, const ivec &o, int size, int 
 int findslottex(const char *name)
 {
 
-    const struct SlotTex
+    const struct SlotTex final
     {
         const char *name;
         int id;
