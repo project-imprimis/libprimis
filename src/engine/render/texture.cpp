@@ -1858,7 +1858,7 @@ static VSlot *clonevslot(const VSlot &src, const VSlot &delta)
     return dst;
 }
 
-VARP(autocompactvslots, 0, 256, 0x10000);
+static VARP(autocompactvslots, 0, 256, 0x10000);
 
 VSlot *editvslot(const VSlot &src, const VSlot &delta)
 {
