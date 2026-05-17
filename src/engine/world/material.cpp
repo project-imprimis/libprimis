@@ -1,5 +1,6 @@
 /**
- * @file octree handled volume-based region flagging
+ * @file material.cpp
+ * @brief handled volume-based region flagging
  *
  * the material system in libprimis relies on the octree system; as a result all
  * material volumes are compositions of rectangular prisms
