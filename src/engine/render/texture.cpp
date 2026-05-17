@@ -1996,7 +1996,7 @@ static void texture(const char *type, const char *name, const int *rot, const in
     }
 }
 
-void texgrass(const char *name)
+static void texgrass(const char *name)
 {
     if(!defslot)
     {
@@ -2007,7 +2007,7 @@ void texgrass(const char *name)
     s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : nullptr;
 }
 
-void texscroll(const float *scrollS, const float *scrollT)
+static void texscroll(const float *scrollS, const float *scrollT)
 {
     if(!defslot)
     {
@@ -2018,7 +2018,7 @@ void texscroll(const float *scrollS, const float *scrollT)
     propagatevslot(s.variants, 1 << VSlot_Scroll);
 }
 
-void texoffset_(const int *xoffset, const int *yoffset)
+static void texoffset_(const int *xoffset, const int *yoffset)
 {
     if(!defslot)
     {
@@ -2029,7 +2029,7 @@ void texoffset_(const int *xoffset, const int *yoffset)
     propagatevslot(s.variants, 1 << VSlot_Offset);
 }
 
-void texrotate_(const int *rot)
+static void texrotate_(const int *rot)
 {
     if(!defslot)
     {
@@ -2040,7 +2040,7 @@ void texrotate_(const int *rot)
     propagatevslot(s.variants, 1 << VSlot_Rotation);
 }
 
-void texangle_(const float *a)
+static void texangle_(const float *a)
 {
     if(!defslot)
     {
@@ -2051,7 +2051,7 @@ void texangle_(const float *a)
     propagatevslot(s.variants, 1 << VSlot_Angle);
 }
 
-void texscale(const float *scale)
+static void texscale(const float *scale)
 {
     if(!defslot)
     {
@@ -2062,7 +2062,7 @@ void texscale(const float *scale)
     propagatevslot(s.variants, 1 << VSlot_Scale);
 }
 
-void texalpha(const float *front, const float *back)
+static void texalpha(const float *front, const float *back)
 {
     if(!defslot)
     {
@@ -2074,7 +2074,7 @@ void texalpha(const float *front, const float *back)
     propagatevslot(s.variants, 1 << VSlot_Alpha);
 }
 
-void texcolor(const float *r, const float *g, const float *b)
+static void texcolor(const float *r, const float *g, const float *b)
 {
     if(!defslot)
     {
@@ -2085,7 +2085,7 @@ void texcolor(const float *r, const float *g, const float *b)
     propagatevslot(s.variants, 1 << VSlot_Color);
 }
 
-void texrefract(const float *k, const float *r, const float *g, const float *b)
+static void texrefract(const float *k, const float *r, const float *g, const float *b)
 {
     if(!defslot)
     {
@@ -2104,7 +2104,7 @@ void texrefract(const float *k, const float *r, const float *g, const float *b)
     propagatevslot(s.variants, 1 << VSlot_Refract);
 }
 
-void texsmooth(const int *id, const int *angle)
+static void texsmooth(const int *id, const int *angle)
 {
     if(!defslot)
     {
