@@ -2114,7 +2114,7 @@ static void texsmooth(const int *id, const int *angle)
     s.smooth = smoothangle(*id, *angle);
 }
 
-void decaldepth(const float *depth, const float *fade)
+static void decaldepth(const float *depth, const float *fade)
 {
     if(!defslot || defslot->type() != Slot::SlotType_Decal)
     {
