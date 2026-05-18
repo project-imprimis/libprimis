@@ -190,6 +190,13 @@ static VAR(debugexts, 0, 0, 1);
 
 static std::unordered_set<std::string> glexts;
 
+/**
+ * @brief Adds available GL extensions to glexts vector.
+ *
+ * This populates glexts with the string names for the available extensions on the
+ * current running system. If called multiple times, creates duplicate entries in
+ * glexts.
+ */
 static void parseglexts()
 {
     GLint numexts = 0;
