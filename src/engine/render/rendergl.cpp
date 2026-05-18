@@ -194,8 +194,8 @@ static std::unordered_set<std::string> glexts;
  * @brief Adds available GL extensions to glexts vector.
  *
  * This populates glexts with the string names for the available extensions on the
- * current running system. If called multiple times, creates duplicate entries in
- * glexts.
+ * current running system. If called multiple times, fails to insert any duplicate
+ * values (which should mean no entries in most circumstances).
  */
 static void parseglexts()
 {
@@ -210,11 +210,11 @@ static void parseglexts()
 }
 
 /**
- * @brief Searches for the specified extension in the glexts vector.
+ * @brief Searches for the specified extension in the glexts map.
  *
  * @param ext the extension to search for
  *
- * @return true if the string is in the glexts vector, false otherwise
+ * @return true if the string is in the glexts map, false otherwise
  */
 static bool hasext(const char *ext)
 {
