@@ -202,6 +202,13 @@ static void parseglexts()
     }
 }
 
+/**
+ * @brief Searches for the specified extension in the glexts vector.
+ *
+ * @param ext the extension to search for
+ *
+ * @return true if the string is in the glexts vector, false otherwise
+ */
 static bool hasext(const char *ext)
 {
     return glexts.find(ext)!=glexts.end();
