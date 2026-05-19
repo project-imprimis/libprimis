@@ -203,6 +203,8 @@ namespace mpr
          * @return copy of o
          */
         vec center() const;
+
+        virtual ~Model() = 0;
     };
 
     struct ModelOBB final : Model
