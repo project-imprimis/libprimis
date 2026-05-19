@@ -910,7 +910,7 @@ const skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(const vec &
 
 GLint skelmodel::skeleton::getblendoffset(const UniformLoc &u)
 {
-    auto itr = blendoffsets.find(Shader::lastshader->program);
+    std::unordered_map<GLuint, GLint>::iterator itr = blendoffsets.find(Shader::lastshader->program);
     if(itr == blendoffsets.end())
     {
         itr = blendoffsets.insert( { Shader::lastshader->program, -1 } ).first;
