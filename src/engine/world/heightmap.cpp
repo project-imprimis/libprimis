@@ -19,7 +19,6 @@
 #include "octaworld.h"
 #include "world.h"
 
-
 class hmap final
 {
     public:
@@ -148,6 +147,7 @@ class hmap final
             changes.s.sub(changes.o).shr(gridpower).add(1);
             rootworld.changed(changes);
         }
+
     private:
         std::vector<int> textures;
         //max brush consts: number of cubes on end that can be heightmap brushed at once
