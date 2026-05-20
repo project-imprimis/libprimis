@@ -283,6 +283,13 @@ VARF(trilinear,     0,   1,      1,     initwarning("texture filtering", Init_Lo
 VARF(bilinear,      0,   1,      1,     initwarning("texture filtering", Init_Load));
 VARFP(aniso,        0,   0,      16,    initwarning("texture filtering", Init_Load));
 
+/**
+ * @brief Returns number of bytes per pixel for the format passed.
+ *
+ * @param format a GL format enum value
+ *
+ * @return number of bytes, or 4 if format not listed
+ */
 static int formatsize(GLenum format)
 {
     switch(format)
