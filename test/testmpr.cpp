@@ -381,9 +381,9 @@ namespace
         }
     }
 
-    void test_model_ctor()
+    void test_modelellipse_ctor()
     {
-        std::printf("testing model::model\n");
+        std::printf("testing modelellipse::modelellipse\n");
         {
             vec ent(1,1,1);
             vec center(1,1,1);
@@ -391,7 +391,7 @@ namespace
             int yaw = 0;
             int pitch = 0;
             int roll = 0;
-            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            mpr::ModelEllipse m(ent,center,radius,yaw,pitch,roll);
             assert(m.o == vec(2,2,2));
             assert(m.radius == vec(1,1,1));
             assert(m.orient.a == vec(1,0,0));
@@ -405,7 +405,7 @@ namespace
             int yaw = 90;
             int pitch = 0;
             int roll = 0;
-            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            mpr::ModelEllipse m(ent,center,radius,yaw,pitch,roll);
             assert(m.o.x < tolerance);
             assert(m.o.y - 2 < tolerance);
             assert(m.o.z - 2 < tolerance);
@@ -416,7 +416,7 @@ namespace
         }
     }
 
-    void test_model_center()
+    void test_modelellipse_center()
     {
         std::printf("testing model::center\n");
         {
@@ -426,7 +426,7 @@ namespace
             int yaw = 0;
             int pitch = 0;
             int roll = 0;
-            mpr::Model m(ent,center,radius,yaw,pitch,roll);
+            mpr::ModelEllipse m(ent,center,radius,yaw,pitch,roll);
             assert(m.center() == vec(2,2,2));
         }
     }
@@ -459,6 +459,6 @@ testing mpr functionality\n\
     test_entfuzzy_back();
     test_entfuzzy_bottom();
     test_entfuzzy_top();
-    test_model_ctor();
-    test_model_center();
+    test_modelellipse_ctor();
+    test_modelellipse_center();
 }
