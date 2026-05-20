@@ -214,6 +214,7 @@ namespace mpr
     }
 
     //Model
+    Model::~Model() {}
 
     Model::Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) : o(ent), radius(radius)
     {
