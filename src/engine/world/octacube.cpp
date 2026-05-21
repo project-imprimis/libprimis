@@ -466,7 +466,7 @@ bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const p
      *  |  P |
      *  b----a
      */
-    pvert mergeverts[2*Face_MaxVerts];
+    std::array<pvert, 2*Face_MaxVerts> mergeverts;
     int nummergeverts = 0,
         index = pe+2; // starts at A = T+1, ends at F = T+this.numverts
     for(int i = 0; i < numverts-1; ++i)
@@ -521,7 +521,7 @@ bool cube::poly::mergepolys(std::unordered_set<plink> &links, std::deque<const p
     q.numverts = 0;
     merged = true;
     numverts = nummergeverts;
-    std::memcpy(verts, mergeverts, nummergeverts*sizeof(pvert));
+    std::memcpy(verts, mergeverts.data(), nummergeverts*sizeof(pvert));
     int prev = numverts-1;
     for(int j = 0; j < numverts; ++j)
     {
