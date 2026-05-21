@@ -1,4 +1,7 @@
-// texture.cpp: texture slot management
+/**
+ * @file texture.cpp
+ * @brief texture slot management
+ */
 
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
