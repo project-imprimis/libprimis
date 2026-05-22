@@ -332,11 +332,6 @@ namespace //internal functionality not seen by other files
     {
         hasgrassshader = false;
     }
-
-    Shader *loadgrassshader()
-    {
-        return generateshader("grass", "grassshader ");
-    }
 }
 
 /* externally relevant functions */
@@ -399,7 +394,7 @@ void generategrass()
 
 void loadgrassshaders()
 {
-    hasgrassshader = (loadgrassshader() != nullptr);
+    hasgrassshader = (generateshader("grass", "grassshader ") != nullptr);
 }
 
 void rendergrass()
