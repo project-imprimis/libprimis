@@ -327,11 +327,6 @@ namespace //internal functionality not seen by other files
     }
 
     bool hasgrassshader = false;
-
-    void cleargrassshaders()
-    {
-        hasgrassshader = false;
-    }
 }
 
 /* externally relevant functions */
@@ -450,5 +445,5 @@ void cleanupgrass()
     }
     grassvbosize = 0;
 
-    cleargrassshaders();
+    hasgrassshader = false;
 }
