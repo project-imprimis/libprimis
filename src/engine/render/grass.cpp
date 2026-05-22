@@ -81,7 +81,11 @@ namespace //internal functionality not seen by other files
     VARR(grassanimmillis, 0, 3000, 60000);      //sets the characteristic rate of grass animation change
     FVARR(grassanimscale, 0, 0.03f, 1);         //sets the intensity of the animation (size of waviness)
 
-    //updates the grass animation offset values based on the current time
+    /**
+     * @brief Updates the grass animation offset values based on the current time
+     *
+     * Uses lastmillis and grasanimmillis to find the phase of the grass animation.
+     */
     void animategrass()
     {
         for(int i = 0; i < numgrassoffsets; ++i)
