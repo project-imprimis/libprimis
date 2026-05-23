@@ -229,12 +229,12 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
 
 static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
 {
-    uchar buf[Zip_LocalFileSize];
-    if(fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, Zip_LocalFileSize, f) != Zip_LocalFileSize)
+    std::array<uchar, Zip_LocalFileSize> buf;
+    if(fseek(f, offset, SEEK_SET) < 0 || std::fread(buf.data(), 1, Zip_LocalFileSize, f) != Zip_LocalFileSize)
     {
         return false;
     }
-    uchar *src = buf;
+    uchar *src = buf.data();
     h.signature = *reinterpret_cast<uint *>(src); src += 4; //src is incremented by the size of the field (int is 4 bytes e.g)
     h.version = *reinterpret_cast<ushort *>(src); src += 2;
     h.flags = *reinterpret_cast<ushort *>(src); src += 2;
