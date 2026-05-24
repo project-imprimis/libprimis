@@ -113,12 +113,6 @@ namespace //internal functionality
 
     Shader *radiancehintsshader = nullptr;
 
-    Shader *loadradiancehintsshader()
-    {
-        std::string name = std::string("radiancehints").append(std::to_string(rhtaps));
-        return generateshader(name, "radiancehintsshader %d", rhtaps);
-    }
-
     void loadrhshaders()
     {
         if(rhborder)
@@ -130,7 +124,8 @@ namespace //internal functionality
             useshaderbyname("radiancehintscached");
         }
         useshaderbyname("radiancehintsdisable");
-        radiancehintsshader = loadradiancehintsshader();
+        std::string name = std::string("radiancehints").append(std::to_string(rhtaps));
+        radiancehintsshader = generateshader(name, "radiancehintsshader %d", rhtaps);
         rsmworldshader = useshaderbyname("rsmworld");
         useshaderbyname("rsmsky");
     }
