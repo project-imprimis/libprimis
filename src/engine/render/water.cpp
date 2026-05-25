@@ -373,7 +373,6 @@ GETMATIDXVAR(water, refract, float)
 GETMATIDXVAR(water, fallspec, int)
 GETMATIDXVAR(water, fallrefract, float)
 
-
 void GBuffer::renderwaterfog(int mat, float surface)
 {
     glDepthFunc(GL_NOTEQUAL);
