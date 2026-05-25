@@ -1,4 +1,5 @@
 /**
+ * @file radiancehints.cpp
  * @brief radiance hints global illumination
  *
  * Libprimis supports global illumination via the Radiance Hints algorithm. This
