@@ -980,7 +980,15 @@ static void prettylist(const char *s, const char *conj)
     commandret->setstr(arr);
 }
 
-//returns the int position of the needle inside the passed list
+/**
+ * @brief Returns the int position of the needle inside the passed list
+ *
+ * @param list string to seach for
+ * @param needle substring to locate inside the list
+ * @param needlelen length of the substring
+ *
+ * @return starting position of the first instance of the needle substring in the list, or -1 if not found
+ */
 static int listincludes(const char *list, const char *needle, int needlelen)
 {
     int offset = 0;
