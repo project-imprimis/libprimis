@@ -1086,6 +1086,13 @@ static void loopfiles(ident *id, const char *dir, const char *ext, const uint *b
     }
 }
 
+/**
+ * @brief Searches for a file at the specified location.
+ *
+ * Searches for a file at the specified path. If one exists, returns 1 to CubeScript.
+ *
+ * @param name the path to search for
+ */
 static void findfile_(char *name)
 {
     string fname;
