@@ -1093,7 +1093,7 @@ static void loopfiles(ident *id, const char *dir, const char *ext, const uint *b
  *
  * @param name the path to search for
  */
-static void findfile_(char *name)
+static void findfile_(const char *name)
 {
     string fname;
     copystring(fname, name);
