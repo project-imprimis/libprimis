@@ -60,7 +60,15 @@ namespace
         }
     }
 
-    //returns if there are pending changes or not enqueued
+    /**
+     * @brief returns if there are pending changes or not enqueued
+     *
+     * If idx is specified, and specifies a valid pending change index, prints out
+     * the description of that pending change to CubeScript. If no idx is specified,
+     * prints out how many changes there are enqueued to CubeScript.
+     *
+     * @param idx index to query, or nullptr if querying number of pending changes
+     */
     void pendingchanges(const int *idx)
     {
         if(idx)
