@@ -1,4 +1,5 @@
 /**
+ * @file csm.cpp
  * @brief Cascaded shadow maps for sunlight rendering
  *
  * The cascaded shadow maps are used to provide levels of detail for sunlight
