@@ -1,5 +1,6 @@
-/*
- * menus.cpp
+/**
+ * @file menus.cpp
+ * @brief UI triggers for menu functionality
  *
  * automatic triggers for certain UIs in game
  * does not implement menus, just some low level bindings for main menu functionality
