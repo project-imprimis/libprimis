@@ -16,7 +16,7 @@
 
 #include "world/octaedit.h"
 
-int commandmillis = -1;
+static int commandmillis = -1;
 
 struct FilesKey final
 {
