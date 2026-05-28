@@ -25,14 +25,14 @@
 //sets SDL relative mouse mode to enabled if 1, 0 otherwise
 static VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
-bool grabinput  = false,
-     minimized  = false;
+bool grabinput  = false, //used in iengine
+     minimized  = false; //used in iengine
 static bool shouldgrab = false,
             canrelativemouse = true,
             relativemouse    = false;
-int keyrepeatmask = 0,
-    textinputmask = 0;
-Uint32 textinputtime = 0;
+static int keyrepeatmask = 0,
+           textinputmask = 0;
+static Uint32 textinputtime = 0;
 
 static VAR(textinputfilter, 0, 5, 1000); //delay in ms between text input events
 
