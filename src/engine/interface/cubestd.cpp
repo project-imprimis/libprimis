@@ -110,12 +110,12 @@ const char *escapestring(const char *s)
     return buf.data();
 }
 
-static void escapecmd(char *s)
+static void escapecmd(const char *s)
 {
     result(escapestring(s));
 }
 
-static void unescapecmd(char *s)
+static void unescapecmd(const char *s)
 {
     int len = std::strlen(s);
     char *d = newstring(len);
