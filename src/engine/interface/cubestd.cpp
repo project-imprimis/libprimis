@@ -1210,7 +1210,7 @@ static void sortlist(const char *list, ident *x, ident *y, const uint *body, con
             SortItem &item = items[i];
             for(size_t j = 0; j < i; ++j)
             {
-                SortItem &prev = items[j];
+                const SortItem &prev = items[j];
                 if(prev.quotestart && f(item, prev))
                 {
                     item.quotestart = nullptr;
