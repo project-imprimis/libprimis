@@ -201,7 +201,7 @@ bool skelmodel::skeleton::addtag(std::string_view name, int bone, const matrix4x
 void skelmodel::skeleton::calcantipodes()
 {
     antipodes.clear();
-    std::vector<uint> schedule;
+    std::vector<size_t> schedule;
     for(size_t i = 0; i < numbones; ++i)
     {
         if(bones[i].group >= static_cast<int>(numbones))
@@ -216,7 +216,7 @@ void skelmodel::skeleton::calcantipodes()
     }
     for(size_t i = 0; i < schedule.size(); i++)
     {
-        const uint bone = schedule[i];
+        const size_t bone = schedule[i];
         const BoneInfo &info = bones[bone];
         for(size_t j = 0; j < numbones; ++j)
         {
