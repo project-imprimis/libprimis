@@ -1,4 +1,6 @@
-/* rendergl.cpp: core opengl rendering stuff
+/**
+ * @file rendergl.cpp
+ * @brief Core OpenGL rendering
  *
  * rendergl.cpp handles the main rendering functions, which render the scene
  * using OpenGL features aliased in this file. This file also handles the
