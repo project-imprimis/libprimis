@@ -138,6 +138,16 @@ class Editor final
          * @return char array of this editor's contents
          */
         char *tostring() const;
+
+        /**
+         * @brief Returns heap-allocated char array containing selected contents of this editor.
+         *
+         * Creates a char array with size equal to the sum of the selected content's
+         * values, then copies the contents of those lines to the return array.
+         * Separates each line with a `\n` newline character.
+         *
+         * @return char array of this editor's contents
+         */
         char *selectiontostring();
         void insert(const char *s);
         void insertallfrom(const Editor *b);
