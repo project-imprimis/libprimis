@@ -338,8 +338,6 @@ void Editor::selectall()
     cx = cy = 0;
 }
 
-// constrain results to within buffer - s=start, e=end, return true if a selection range
-// also ensures that cy is always within lines[] and cx is valid
 bool Editor::region(int &sx, int &sy, int &ex, int &ey)
 {
     size_t n = lines.size();

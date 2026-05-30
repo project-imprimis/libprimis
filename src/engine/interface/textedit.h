@@ -169,6 +169,20 @@ class Editor final
         int scrolly; // vertical scroll offset
 
         void removelines(int start, int count);
+
+        /**
+         * @brief Constrain results to within buffer area
+         *
+         * constrain results (cx, cy) to within buffer - s=start, e=end, return true if a selection range
+         * also ensures that cy is always within lines[] and cx is valid
+         *
+         * @param sx start x
+         * @param sy start y
+         * @param ex end x
+         * @param ey end y
+         *
+         * @return true if start and end do not match, false if both starts and ends match
+         */
         bool region(int &sx, int &sy, int &ex, int &ey);
         bool del(); // removes the current selection (if any)
         void insert(char ch);
