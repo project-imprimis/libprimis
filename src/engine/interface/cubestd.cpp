@@ -1,4 +1,6 @@
-/* cubescript commands
+/**
+ * @file cubestd.cpp
+ * @brief cubescript commands
  *
  * these functions & assignment macros define standard functions used with the language
  * the language does not otherwise define special operators (besides bracket semantics)
