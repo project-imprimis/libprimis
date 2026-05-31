@@ -1,4 +1,5 @@
 /**
+ * @file renderwindow.cpp
  * @brief screen rendering functionality
  *
  * screen rendering functions, such as background, progress bar
