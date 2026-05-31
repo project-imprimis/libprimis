@@ -29,7 +29,7 @@ class vfc final
         std::array<plane, numvfc> vfcP;  // perpindictular vectors to view frustrum bounding planes
         float vfcDfog;  // far plane culling distance (fog limit).
         std::array<float, numvfc> vfcDnear,
-                             vfcDfar;
+                                  vfcDfar;
 };
 
 extern vfc view;
@@ -88,7 +88,6 @@ class Occluder final
 };
 
 extern Occluder occlusionengine;
-
 
 extern int oqfrags;
 
