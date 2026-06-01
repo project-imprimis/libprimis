@@ -74,6 +74,20 @@ namespace //internal functionality not seen by other files
 
     bool usetnormals = true;
 
+    /**
+     * @brief Adds normal to the normals vector
+     *
+     * Only adds value if the NormalKey defined by the pos and smooth values does
+     * not correspond to an existing normalgroup in the normalgroups map. Adds a
+     * value to normalgroups corresponding to the pos/smooth values and adds a value
+     * to normals corresponding to the surface vector.
+     *
+     * @param pos location of the normal
+     * @param smooth smooth value of the normal
+     * @param surface surface vector of the normal to add
+     *
+     * @return size of normals vector minus one
+     */
     int addnormal(const vec &pos, int smooth, const vec &surface)
     {
         NormalKey key = { pos, smooth };
