@@ -48,6 +48,15 @@ extern void cleanupbloom();
  * @param h height of bloom buffer
  */
 extern void setupbloom(int w, int h);
+
+/**
+ * @brief Loads shaders for the specified AA type
+ *
+ * The shaders loaded are specified by the AA type enumerated.
+ * The enum values are in the AAFlag enum in aa.h.
+ *
+ * @param aa enum value for which aa shader to load
+ */
 extern void loadhdrshaders(int aa);
 extern void copyhdr(int sw, int sh, GLuint fbo);
 
