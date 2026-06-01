@@ -5,6 +5,12 @@ class md5 final : public skelloader<md5>
 {
     public:
         //ordinary methods
+
+        /**
+         * @brief Builds a new md5 object using a model at the specified path.
+         *
+         * @param name the path for this model
+         */
         md5(std::string name);
 
         //method overrides
