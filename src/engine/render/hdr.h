@@ -58,6 +58,14 @@ extern void setupbloom(int w, int h);
  * @param aa enum value for which aa shader to load
  */
 extern void loadhdrshaders(int aa);
+
+/**
+ * @brief Copies HDR to the specified framebuffer.
+ *
+ * @param sw width of the destination in pixels
+ * @param sh height of the destination in pixels
+ * @param fbo framebuffer object to use
+ */
 extern void copyhdr(int sw, int sh, GLuint fbo);
 
 #endif
