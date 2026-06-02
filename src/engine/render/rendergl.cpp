@@ -1354,7 +1354,7 @@ float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, c
     }
 }
 
-void clearminimap()
+static void clearminimap()
 {
     if(minimaptex)
     {
