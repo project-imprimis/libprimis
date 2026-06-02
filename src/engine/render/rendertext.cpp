@@ -44,7 +44,7 @@ int fontwidth()
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(const char *name, const char *tex, const int *defaultw, const int *defaulth, const int *scale)
 {
-    auto insert = fonts.insert( {name, Font()} ).first;
+    std::unordered_map<std::string, Font>::iterator insert = fonts.insert( {name, Font()} ).first;
     Font *f = &((*insert).second);
     f->name = std::string(name);
     f->texs.clear();
@@ -179,7 +179,7 @@ static void fontskip(const int *n)
 
 bool setfont(const char *name)
 {
-    auto itr = fonts.find(name);
+    std::unordered_map<std::string, Font>::iterator itr = fonts.find(name);
     if(itr == fonts.end())
     {
         return false;
