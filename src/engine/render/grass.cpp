@@ -47,7 +47,9 @@ namespace //internal functionality not seen by other files
         {
             across.div(-across.dot(bound1));
         }
-    } grasswedges[numgrasswedges] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    };
+
+    std::array<grasswedge, numgrasswedges> grasswedges = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
     struct grassvert final
     {
