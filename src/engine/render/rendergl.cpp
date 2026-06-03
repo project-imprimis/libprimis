@@ -558,7 +558,7 @@ static void setcammatrix()
     }
 }
 
-void setcamprojmatrix(bool init = true, bool flush = false)
+static void setcamprojmatrix(bool init = true, bool flush = false)
 {
     if(init)
     {
