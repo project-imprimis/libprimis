@@ -50,7 +50,7 @@ class RadianceHints final
         //copies dynmin/max to prevdynmin/max
         void rotatedynlimits();
         //checks if prevmin's z value is less than prevmax
-        bool checkprevbounds();
+        bool checkprevbounds() const;
     private:
         vec prevdynmin, prevdynmax;
         //splits are used to LOD global illumination (more detail near camera)

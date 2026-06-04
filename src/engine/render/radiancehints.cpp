@@ -468,7 +468,7 @@ void RadianceHints::rotatedynlimits()
     prevdynmax = dynmax;
 }
 
-bool RadianceHints::checkprevbounds()
+bool RadianceHints::checkprevbounds() const
 {
     return prevdynmin.z < rh.prevdynmax.z;
 }
