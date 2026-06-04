@@ -953,8 +953,6 @@ void ReflectiveShadowMap::setup()
     gencullplanes();
 }
 
-// sets the reflectiveshadowmap's model to the global viewmatrix, then points it
-// to be oriented like the sun
 void ReflectiveShadowMap::getmodelmatrix()
 {
     model = viewmatrix;                             //copy global view matrix

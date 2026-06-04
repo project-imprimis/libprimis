@@ -29,6 +29,12 @@ class ReflectiveShadowMap final
         void setup();
     private:
         vec center, bounds;
+        /**
+         * @brief Sets the RSM matrix to sunlight direction
+         *
+         * Sets the reflectiveshadowmap's model to the global viewmatrix, then
+         * points it to be oriented like the sun.
+         */
         void getmodelmatrix();
         void getprojmatrix();
         void gencullplanes();
