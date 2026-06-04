@@ -569,7 +569,7 @@ namespace
 
         int code;                           //unique bind code assigned to the key
         char *name;                         //name to use to access this key
-        char *actions[Action_NumActions];   //array of strings to execute depending on what mode is being used
+        std::array<char *, Action_NumActions> actions;   //array of strings to execute depending on what mode is being used
         bool pressed;                       //whether this key is currently depressed
 
         KeyMap() : code(-1), name(nullptr), pressed(false)
