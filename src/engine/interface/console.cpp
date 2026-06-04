@@ -61,7 +61,11 @@ class CompletionFinder final
 
         void complete(char *s, size_t maxlen, const char *cmdprefix);
 
-        //print to a stream f the listcompletions in the completions filesval
+        /**
+         * @brief print to a stream f the listcompletions in the completions filesval
+         *
+         * @param f the stream to print to
+         */
         void writecompletions(std::fstream& f) const;
 
     private:
