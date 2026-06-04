@@ -76,7 +76,7 @@ class CompletionFinder final
             Files_List,
         };
 
-        struct FilesVal
+        struct FilesVal final
         {
             public:
                 int type;
