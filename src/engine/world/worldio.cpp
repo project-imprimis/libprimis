@@ -235,6 +235,7 @@ void cubeworld::setmapfilenames(const char *fname, const char *cname)
     path(picname);
 }
 
+//used in iengine
 void mapcfgname()
 {
     const char *mname = clientmap.c_str();
