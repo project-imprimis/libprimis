@@ -246,7 +246,7 @@ void mapcfgname()
     result(cfgname.c_str());
 }
 
-void backup(const char *name, const char *backupname)
+static void backup(const char *name, const char *backupname)
 {
     string backupfile;
     copystring(backupfile, findfile(backupname, "wb"));
