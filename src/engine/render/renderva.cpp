@@ -210,12 +210,12 @@ namespace
         {
             glGenBuffers(1, &bbvbo);
             gle::bindvbo(bbvbo);
-            vec verts[8];
-            for(int i = 0; i < 8; ++i)
+            std::array<vec, 8> verts;
+            for(int i = 0; i < verts.size(); ++i)
             {
                 verts[i] = vec(i&1, (i>>1)&1, (i>>2)&1);
             }
-            glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, verts.size(), verts.data(), GL_STATIC_DRAW);
             gle::clearvbo();
         }
         if(!bbebo)
