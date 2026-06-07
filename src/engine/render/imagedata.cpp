@@ -838,12 +838,14 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
         int surfacebpp = s->format->BitsPerPixel;
         if(surfacebpp%8 || !texformat(surfacebpp/8))
         {
-            SDL_FreeSurface(s); conoutf(Console_Error, "texture must be 8, 16, 24, or 32 bpp: %s", file);
+            SDL_FreeSurface(s);
+            conoutf(Console_Error, "texture must be 8, 16, 24, or 32 bpp: %s", file);
             return false;
         }
         if(std::max(s->w, s->h) > (1<<12))
         {
-            SDL_FreeSurface(s); conoutf(Console_Error, "texture size exceeded %dx%d pixels: %s", 1<<12, 1<<12, file);
+            SDL_FreeSurface(s);
+            conoutf(Console_Error, "texture size exceeded %dx%d pixels: %s", 1<<12, 1<<12, file);
             return false;
         }
         wraptex(s);
