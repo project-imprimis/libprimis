@@ -38,8 +38,6 @@
 #include "world/bih.h"
 #include "world/world.h"
 
-static VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
-
 std::vector<std::string> animnames; //set by game at runtime
 
 //need the above vars inited before these headers will load properly
@@ -950,6 +948,8 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     b.attached = -1;
     batching::addbatchedmodel(m, b, batching::batchedmodels.size()-1);
 }
+
+static VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 
 void rendermodel(std::string_view mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4<float> &color)
 {
