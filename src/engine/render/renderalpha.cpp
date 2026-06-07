@@ -1,4 +1,5 @@
 /**
+ * @file renderalpha.cpp
  * @brief alpha geoemtry rendering
  *
  * Libprimis has support for a single level of alpha geometry, which is rendered
