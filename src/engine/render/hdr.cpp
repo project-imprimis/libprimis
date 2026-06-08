@@ -29,7 +29,6 @@
 
 #include "interface/control.h"
 
-
 GLenum hdrformat = 0;
 
 int bloomw = -1,
