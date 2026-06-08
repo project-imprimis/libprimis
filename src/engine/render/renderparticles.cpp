@@ -320,6 +320,7 @@ class partrenderer
         {
             return type;
         }
+
     protected:
         const Texture *tex;
     private:
