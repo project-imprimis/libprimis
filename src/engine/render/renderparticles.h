@@ -1,8 +1,6 @@
 #ifndef RENDERPARTICLES_H_
 #define RENDERPARTICLES_H_
 
-extern int particlelayers;
-
 enum
 {
     ParticleLayer_All = 0,

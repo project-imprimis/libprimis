@@ -35,6 +35,8 @@
 FVAR(GBuffer::refractmargin, 0, 0.1f, 1);     //margin for gl scissoring around refractive materials
 FVAR(GBuffer::refractdepth, 1e-3f, 16, 1e3f); //sets depth for refract shader effect
 
+static VARP(particlelayers, 0, 1, 1);    //used in renderalpha
+
 //sets up alpha handling as needed then executes main particle rendering routine
 //private method of gbuffer
 void GBuffer::alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const
