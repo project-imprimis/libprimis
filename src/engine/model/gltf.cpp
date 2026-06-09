@@ -1,5 +1,6 @@
 
 /**
+ * @file gltf.cpp
  * @brief Khronos GL Transmission Format
  *
  * This is the implementation file for the GL Transmission Format (GLTF) model
