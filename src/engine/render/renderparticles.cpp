@@ -41,8 +41,8 @@ static Shader *particleshader          = nullptr,
               *particlesoftshader      = nullptr,
               *particletextshader      = nullptr;
 
-FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
-VARP(particlesize, 20, 100, 500); //particle size factor
+static FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
+static VARP(particlesize, 20, 100, 500); //particle size factor
 
 VARP(softparticleblend, 1, 8, 64); //inverse of blend factor for soft particle blending
 
