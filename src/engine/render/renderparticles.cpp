@@ -59,7 +59,7 @@ static bool canemitparticles()
 {
     return canemit || emitoffset;
 }
-std::vector<std::string> entnames;
+std::vector<std::string> entnames; //used in iengine
 
 VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded particles
 VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
