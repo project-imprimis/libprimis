@@ -44,11 +44,11 @@ static Shader *particleshader          = nullptr,
 static FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
 static VARP(particlesize, 20, 100, 500); //particle size factor
 
-VARP(softparticleblend, 1, 8, 64); //inverse of blend factor for soft particle blending
+static VARP(softparticleblend, 1, 8, 64); //inverse of blend factor for soft particle blending
 
 // Check canemitparticles() to limit the rate that paricles can be emitted for models/sparklies
 // Automatically stops particles being emitted when paused or in reflective drawing
-VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
+static VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
 
 static int emitoffset     = 0;
 static bool canemit       = false,
