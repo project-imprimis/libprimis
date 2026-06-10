@@ -61,12 +61,12 @@ static bool canemitparticles()
 }
 std::vector<std::string> entnames; //used in iengine
 
-VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded particles
-VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
-VAR(replayparticles, 0, 1, 1);                  //toggles re-rendering previously generated particles
+static VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded particles
+static VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
+static VAR(replayparticles, 0, 1, 1);                  //toggles re-rendering previously generated particles
 static int seedmillis = variable("seedparticles", 0, 3000, 10000, &seedmillis, nullptr, 0);//sets the time between seeding particles
-VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
-VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
+static VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
+static VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
 
 class ParticleEmitter final
 {
