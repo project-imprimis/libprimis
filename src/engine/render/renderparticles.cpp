@@ -125,7 +125,7 @@ void clearparticleemitters()
     regenemitters = true;
 }
 
-void addparticleemitters()
+static void addparticleemitters()
 {
     emitters.clear();
     const std::vector<extentity *> &ents = entities::getents();
