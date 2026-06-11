@@ -1,4 +1,6 @@
-/* renderparticles.cpp: billboard particle rendering
+/**
+ * @file renderparticles.cpp
+ * @brief billboard particle rendering
  *
  * renderparticles.cpp handles rendering of entity-and-weapon defined billboard particle
  * rendering. Particle entities spawn particles randomly (is not synced between different
