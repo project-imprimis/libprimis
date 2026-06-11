@@ -125,6 +125,15 @@ void clearparticleemitters()
     regenemitters = true;
 }
 
+/**
+ * @brief Populates the emitters vector with entries corresponding to particle ents.
+ *
+ * Clears the emitters vector, then parses the entities vector for any particle-containing
+ * entities and creates a particle emitter corresponding to that entity.
+ *
+ * Clears the regenemitters flag to indicate that the particle emitters vector no
+ * longer needs regenerating.
+ */
 static void addparticleemitters()
 {
     emitters.clear();
