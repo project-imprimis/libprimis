@@ -1,4 +1,6 @@
-/** @brief SDL2_TTF text renderer
+/**
+ * @file renderttf.cpp
+ * @brief SDL2_TTF text renderer
  *
  * This file implements the wrapper functions needed to use SDL_TTF in the applications
  * where Tessfont/rendertext.cpp would have been used, allowing for any TTF font and
