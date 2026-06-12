@@ -114,11 +114,13 @@ class ParticleEmitter final
 static std::vector<ParticleEmitter> emitters;
 static ParticleEmitter *seedemitter = nullptr;
 
+//used in iengine
 const char * getentname(int i)
 {
     return i>=0 && static_cast<size_t>(i) < entnames.size() ? entnames[i].c_str() : "";
 }
 
+//used in world
 void clearparticleemitters()
 {
     emitters.clear();
