@@ -1971,7 +1971,8 @@ void cubeworld::updateparticles()
         const std::vector<extentity *> &ents = entities::getents();
         for(extentity * const &e : ents)
         {
-            regular_particle_splash(Part_Edit, 2, 40, e->o, 0x3232FF, 0.32f*particlesize/100.0f);
+                                    //type  num  fade  p   color       size                  radius grav delay
+            regular_particle_splash(Part_Edit, 2, 40, e->o, 0x3232FF, 0.32f*particlesize/100.0f, 150, 2, 0);
         }
     }
 }
