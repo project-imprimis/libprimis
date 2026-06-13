@@ -1296,6 +1296,7 @@ void initparticles(); //need to prototype either the vars or the the function
 static VARFP(maxparticles, 10, 4000, 10000, initparticles()); //maximum number of particle objects to create
 static VARFP(fewparticles, 10, 100, 10000, initparticles()); //if PT_FEW enabled, # of particles to create
 
+//used in iengine
 void initparticles()
 {
     if(initing)
@@ -1330,6 +1331,7 @@ void initparticles()
     loadprogress = 0;
 }
 
+//used in world
 void clearparticles()
 {
     for(size_t i = 0; i < numparts(); ++i)
@@ -1339,6 +1341,7 @@ void clearparticles()
     clearparticleemitters();
 }
 
+//used in renderwindow
 void cleanupparticles()
 {
     for(size_t i = 0; i < numparts(); ++i)
@@ -1347,6 +1350,7 @@ void cleanupparticles()
     }
 }
 
+//used in iengine
 void removetrackedparticles(physent *owner)
 {
     for(size_t i = 0; i < numparts(); ++i)
