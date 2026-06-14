@@ -1,4 +1,5 @@
 /**
+ * @file rendersky.cpp
  * @brief skybox and sky environment rendering
  *
  * Libprimis supports standard static cubemap skyboxes as well as cloud layers,
