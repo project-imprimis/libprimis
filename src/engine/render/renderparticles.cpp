@@ -1285,7 +1285,13 @@ static partrenderer *parts[] =
     &metervs,                                                                                               // meter vs.
 };
 
-//helper function to return int with # of entries in *parts[]
+/**
+ * @brief Gets number of entries in the parts array.
+ *
+ * This function will return the same value at all times.
+ *
+ * @return number of entries in the parts array.
+ */
 static constexpr size_t numparts()
 {
     return sizeof(parts)/sizeof(parts[0]);
