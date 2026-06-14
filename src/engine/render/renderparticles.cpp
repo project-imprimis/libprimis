@@ -1506,7 +1506,7 @@ static particle *newparticle(const vec &o, const vec &d, int fade, int type, int
     return parts[type]->addpart(o, d, fade, color, size, gravity);
 }
 
-VARP(maxparticledistance, 256, 1024, 4096); //cubits before particles stop rendering (1024 = 128m) (note that text particles have their own var)
+static VARP(maxparticledistance, 256, 1024, 4096); //cubits before particles stop rendering (1024 = 128m) (note that text particles have their own var)
 
 static void splash(int type, int color, int radius, int num, int fade, const vec &p, float size, int gravity)
 {
