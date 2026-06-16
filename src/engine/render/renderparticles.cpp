@@ -1586,7 +1586,7 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
     }
 }
 
-VARP(particletext, 0, 1, 1);
+static VARP(particletext, 0, 1, 1);
 
 void particle_icon(const vec &s, int ix, int iy, int type, int fade, int color, float size, int gravity)
 {
