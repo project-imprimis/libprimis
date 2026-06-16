@@ -7,6 +7,12 @@ extern int lastmillis;                  // last time
 extern int elapsedtime;                 // elapsed frame time
 extern int totalmillis;                 // total elapsed time
 
+/**
+ * @brief Returns handle to location that logging is being printed to.
+ *
+ * For Windows, this is the logfile set by the application. For Linux this is either
+ * an application defined logfile, or stdout if none is set.
+ */
 extern FILE *getlogfile();
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 
