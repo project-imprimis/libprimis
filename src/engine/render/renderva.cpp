@@ -211,7 +211,7 @@ namespace
             glGenBuffers(1, &bbvbo);
             gle::bindvbo(bbvbo);
             std::array<vec, 8> verts;
-            for(int i = 0; i < verts.size(); ++i)
+            for(size_t i = 0; i < verts.size(); ++i)
             {
                 verts[i] = vec(i&1, (i>>1)&1, (i>>2)&1);
             }
