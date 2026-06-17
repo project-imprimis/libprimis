@@ -59,12 +59,6 @@ namespace
         d[slen] = 0;
         return d;
     }
-
-    template<size_t N>
-    char *copystring(char (&d)[N], const stringslice &s)
-    {
-        return copystring(d, s, N);
-    }
 }
 
 ImageData::ImageData()
@@ -938,8 +932,8 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
         {
             ImageData src, mask;
             string srcname, maskname;
-            copystring(srcname, stringslice(arg[0], std::strcspn(arg[0], ":,><")));
-            copystring(maskname, stringslice(arg[1], std::strcspn(arg[1], ":,><")));
+            copystring(srcname, stringslice(arg[0], std::strcspn(arg[0], ":,><")), 260);
+            copystring(maskname, stringslice(arg[1], std::strcspn(arg[1], ":,><")), 260);
             if(srcname[0] && src.texturedata(srcname, false, nullptr, nullptr, tdir, ttype) && (!maskname[0] || mask.texturedata(maskname, false, nullptr, nullptr, tdir, ttype)))
             {
                 texblend(src, maskname[0] ? mask : src);
