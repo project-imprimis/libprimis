@@ -105,20 +105,6 @@ struct stringslice final
     }
 };
 
-inline char *copystring(char *d, const stringslice &s, size_t len)
-{
-    size_t slen = min(size_t(s.len), len-1);
-    std::memcpy(d, s.str, slen);
-    d[slen] = 0;
-    return d;
-}
-
-template<size_t N>
-inline char *copystring(char (&d)[N], const stringslice &s)
-{
-    return copystring(d, s, N);
-}
-
 // not all platforms (windows) can parse hexadecimal integers via strtod
 inline float parsefloat(const char *s)
 {
