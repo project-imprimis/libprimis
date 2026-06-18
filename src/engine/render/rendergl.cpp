@@ -513,7 +513,7 @@ void gl_init()
     gl_resize();
 }
 
-VAR(wireframe, 0, 0, 1); //used in rendergl.h
+VAR(wireframe, 0, 0, 1); //used in renderalpha and renderlights
 
 vec worldpos; //used in iengine
 
