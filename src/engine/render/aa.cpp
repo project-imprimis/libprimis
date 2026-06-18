@@ -26,7 +26,6 @@
 #include "interface/control.h"
 
 //externally used vars
-VAR(tqaaresolvegather, 1, 0, 0);
 matrix4 nojittermatrix;
 
 namespace //internal functions incl. AA implementations

@@ -251,7 +251,7 @@ constexpr int shadowatlassize = 4096;
 
 extern int smborder, smborder2;
 
-extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
+extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather;
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 extern int spotlights;       /// the number of spotlights in the world
 extern int volumetriclights; /// the number of volumetric lights in the world

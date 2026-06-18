@@ -461,7 +461,6 @@ void gl_checkextensions()
     {
         mesa_swap_bug = 1;
     }
-    tqaaresolvegather = 1;
 }
 
 /**
