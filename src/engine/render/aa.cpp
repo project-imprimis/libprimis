@@ -29,8 +29,6 @@
 VAR(tqaaresolvegather, 1, 0, 0);
 matrix4 nojittermatrix;
 
-bool multisampledaa();
-
 namespace //internal functions incl. AA implementations
 {
     /* TQAA: Temporal Quincunx Anti Aliasing */
@@ -49,6 +47,8 @@ namespace //internal functions incl. AA implementations
            tqaafbo[2] = { 0, 0 };
     matrix4 tqaaprevscreenmatrix;
     int tqaatype = -1;
+
+    bool multisampledaa();
 
     void loadtqaashaders()
     {
@@ -495,6 +495,13 @@ namespace //internal functions incl. AA implementations
     };
 
     subpixelaa smaarenderer(gbuf);
+
+    bool multisampledaa()
+    {
+        return msaasamples == 2 &&
+              (smaarenderer.getsmaaproperty(subpixelaa::SMAA).get_int() ? msaalight &&
+               smaarenderer.getsmaaproperty(subpixelaa::Spatial).get_int() : tqaa);
+    }
 
     bool subpixelaa::setsmaaproperty(std::string name, int value)
     {
@@ -1375,13 +1382,6 @@ namespace aamask
             aamask = -1;
         }
     }
-}
-
-bool multisampledaa()
-{
-    return msaasamples == 2 &&
-          (smaarenderer.getsmaaproperty(subpixelaa::SMAA).get_int() ? msaalight &&
-           smaarenderer.getsmaaproperty(subpixelaa::Spatial).get_int() : tqaa);
 }
 
 //used by rendergl
