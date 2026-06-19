@@ -130,7 +130,7 @@ class Shader final
     private:
         char *vsstr, //a pointer to a `v`ertex `s`hader `str`ing
              *psstr; //a pointer to a `p`ixel `s`hader `str`ing
-        struct AttribLoc
+        struct AttribLoc final
         {
             const char *name;
             int loc;
