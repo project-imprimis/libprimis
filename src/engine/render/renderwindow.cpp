@@ -409,12 +409,14 @@ static void setfullscreen(bool enable)
 
 VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
-/* screenres: sets the window size to w * h pixels, or reduces fullscreen
- * resolution to w * h pixels
+/**
+ * @brief Sets the screen resolution
  *
- * arguments:
- *    w: width of new screen res
- *    h: height of new screen res
+ * Sets the window size to w * h pixels, or reduces fullscreen resolution to
+ * w * h pixels.
+ *
+ * @param w width of new screen res
+ * @param h height of new screen res
  */
 void screenres(int w, int h)
 {
