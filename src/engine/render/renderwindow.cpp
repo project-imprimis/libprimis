@@ -713,12 +713,14 @@ static constexpr int maxfpshistory = 60;
 int fpspos = 0;
 std::array<int, maxfpshistory> fpshistory;
 
+//used only in iengine
 void resetfpshistory()
 {
     fpshistory.fill(1);
     fpspos = 0;
 }
 
+//used only in iengine
 void updatefpshistory(int millis)
 {
     fpshistory[fpspos++] = std::max(1, std::min(1000, millis));
