@@ -710,8 +710,8 @@ void limitfps(int &millis, int curmillis)
 
 static constexpr int maxfpshistory = 60;
 
-int fpspos = 0;
-std::array<int, maxfpshistory> fpshistory;
+static int fpspos = 0;
+static std::array<int, maxfpshistory> fpshistory;
 
 //used only in iengine
 void resetfpshistory()
