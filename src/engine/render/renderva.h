@@ -54,10 +54,7 @@ class Occluder final
         bool checkquery(occludequery *query, bool nowait = false);
         void resetqueries();
         int getnumqueries() const;
-        occludequery *newquery(const void *owner)
-        {
-            return queryframes[flipquery].newquery(owner);
-        }
+        occludequery *newquery(const void *owner);
     private:
         class QueryFrame final
         {

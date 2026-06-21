@@ -2392,6 +2392,11 @@ int Occluder::getnumqueries() const
     return queryframes[flipquery].cur;
 }
 
+occludequery *Occluder::newquery(const void *owner)
+{
+    return queryframes[flipquery].newquery(owner);
+}
+
 void Occluder::QueryFrame::flip()
 {
     for(int i = 0; i < cur; ++i)
