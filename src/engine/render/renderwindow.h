@@ -1,8 +1,6 @@
 #ifndef RENDERWINDOW_H_
 #define RENDERWINDOW_H_
 
-extern int fullscreen;
-
 extern SDL_Window *screen;
 extern int scr_w, scr_h;
 extern int screenw, screenh;
