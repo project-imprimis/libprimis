@@ -85,8 +85,5 @@ extern void text_boundsf(const char *str, float &width, float &height, int maxwi
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
 extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
-inline int text_width(const char *str)
-{
-    return static_cast<int>(std::ceil(text_widthf(str)));
-}
+extern int text_width(const char *str);
 #endif

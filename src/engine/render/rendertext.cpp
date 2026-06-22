@@ -451,6 +451,11 @@ void reloadfonts()
     }
 }
 
+int text_width(const char *str)
+{
+    return static_cast<int>(std::ceil(text_widthf(str)));
+}
+
 void initrendertextcmds()
 {
     addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
