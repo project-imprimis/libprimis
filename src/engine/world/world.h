@@ -35,6 +35,17 @@ extern void freeoctaentities(cube &c);
  * This contains the current working set of entities.
  */
 extern void entcancel();
+
+/**
+ * @brief Queries the selection box of the specified entity.
+ *
+ * `eo` and `es` are opposite corners of the bounding box, and are equally far from
+ * the model center.
+ *
+ * @param e the entity to query
+ * @param eo the minimum coordinates of the bounding box
+ * @param es the maximum coordinates of the bounding box
+ */
 extern void entselectionbox(const entity &e, vec &eo, vec &es);
 
 namespace entities
