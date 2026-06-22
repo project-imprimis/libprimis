@@ -26,14 +26,7 @@ struct GlobalShaderParamState final
 
     void resetversions();
 
-    void changed()
-    {
-        if(++nextversion < 0)
-        {
-            resetversions();
-        }
-        version = nextversion;
-    }
+    void changed();
 };
 
 extern std::map<std::string, GlobalShaderParamState> globalparams;

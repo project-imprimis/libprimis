@@ -552,6 +552,15 @@ void GlobalShaderParamState::resetversions()
     }
 }
 
+void GlobalShaderParamState::changed()
+{
+    if(++nextversion < 0)
+    {
+        resetversions();
+    }
+    version = nextversion;
+}
+
 static const float *findslotparam(const Slot &s, const char *name, const float *noval = nullptr)
 {
     for(const SlotShaderParam &param : s.params)
