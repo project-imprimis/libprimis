@@ -68,6 +68,14 @@ namespace entities
      * @param e the entity to delete
      */
     extern void deleteentity(extentity *e);
+
+    /**
+     * @brief Returns the ents global.
+     *
+     * This global is in world.cpp and consists of ent objects added by the game code.
+     *
+     * @return vector of extentity object pointers.
+     */
     extern std::vector<extentity *> &getents();
 }
 
