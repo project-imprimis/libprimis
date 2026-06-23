@@ -50,6 +50,14 @@ extern void entselectionbox(const entity &e, vec &eo, vec &es);
 
 namespace entities
 {
+    /**
+     * @brief Returns new heap-allocated extentity object.
+     *
+     * Must be freed with `delete` at the end of its lifespan. This can
+     * be done with `deleteentity()`, for example.
+     *
+     * @return a new heap allocated entity
+     */
     extern extentity *newentity();
     extern void deleteentity(extentity *e);
     extern std::vector<extentity *> &getents();
