@@ -59,6 +59,14 @@ namespace entities
      * @return a new heap allocated entity
      */
     extern extentity *newentity();
+
+    /**
+     * @brief Frees heap allocated extentity object.
+     *
+     * Frees an entity created with `new` or via e.g. newentity().
+     *
+     * @param e the entity to delete
+     */
     extern void deleteentity(extentity *e);
     extern std::vector<extentity *> &getents();
 }
