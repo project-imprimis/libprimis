@@ -32,6 +32,8 @@ namespace
 
     std::string clientmap = "";
 
+    SVARR(maptitle, "Untitled Map by Unknown");
+
     void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
     {
         if(prefix)

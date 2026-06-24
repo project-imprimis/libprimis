@@ -13,8 +13,6 @@ enum MaterialSurfaces
 
 constexpr float defaulttexscale = 16.0f;
 
-extern char *maptitle;
-
 extern std::vector<size_t> entgroup;
 extern std::vector<int> outsideents;
 

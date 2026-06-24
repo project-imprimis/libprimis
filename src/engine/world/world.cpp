@@ -29,8 +29,6 @@
 #include "render/stain.h"
 #include "render/texture.h"
 
-SVARR(maptitle, "Untitled Map by Unknown");
-
 std::vector<int> outsideents;
 std::vector<size_t> entgroup;
 
