@@ -407,6 +407,7 @@ static void setfullscreen(bool enable)
     }
 }
 
+//used in iengine only
 VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
 /**
