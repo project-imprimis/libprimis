@@ -1755,7 +1755,7 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
     if(cu.children)
     {
         size >>= 1;
-        int coord = DIM_COORD(orient);
+        const int coord = DIM_COORD(orient);
         for(int i = 0; i < 8; ++i)
         {
             if(octacoord(dim, i) == coord)
@@ -1765,10 +1765,10 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
         }
         return;
     }
-    int c = C[dim],
-        r = R[dim];
-    ushort uco = (o[c]&0xFFF)<<3,
-           vco = (o[r]&0xFFF)<<3;
+    const int c = C[dim],
+              r = R[dim];
+    const ushort uco = (o[c]&0xFFF)<<3,
+                 vco = (o[r]&0xFFF)<<3;
     ushort uc1 = uco,
            vc1 = vco,
            uc2 = static_cast<ushort>(size<<3)+uco,
@@ -1779,10 +1779,10 @@ void cube::mincubeface(const cube &cu, int orient, const ivec &o, int size, cons
     vc2 = std::min(vc2, orig.v2);
     if(!(cu.isempty()) && touchingface(cu, orient) && !(nmat!=Mat_Air && (cu.material&matmask)==nmat))
     {
-        uchar r1 = cu.edges[faceedgesidx[orient][0]],
-              r2 = cu.edges[faceedgesidx[orient][1]],
-              c1 = cu.edges[faceedgesidx[orient][2]],
-              c2 = cu.edges[faceedgesidx[orient][3]];
+        const uchar r1 = cu.edges[faceedgesidx[orient][0]],
+                    r2 = cu.edges[faceedgesidx[orient][1]],
+                    c1 = cu.edges[faceedgesidx[orient][2]],
+                    c2 = cu.edges[faceedgesidx[orient][3]];
         ushort u1 = std::max(c1&0xF, c2&0xF)*size+uco,
                u2 = std::min(c1>>4, c2>>4)*size+uco,
                v1 = std::max(r1&0xF, r2&0xF)*size+vco,
