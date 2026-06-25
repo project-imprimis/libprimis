@@ -27,7 +27,7 @@ GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullp
 
 GlobalShaderParamState &GlobalShaderParam::getglobalparam(const std::string &name) const
 {
-    auto itr = globalparams.find(name);
+    std::map<std::string, GlobalShaderParamState>::iterator itr = globalparams.find(name);
     if(itr != globalparams.end())
     {
         return (*itr).second;
