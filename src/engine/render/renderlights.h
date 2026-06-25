@@ -359,6 +359,18 @@ extern void initgbuffer();
  * @return true if normals are to be packed into the alpha channel
  */
 extern bool usepacknorm();
+
+/**
+ * @brief Calls gldrawBuffers with the buffers specified.
+ *
+ * The value of the mask intput determines which of the buffers are activated.
+ * The buffers 0-3 are set by the chars 'c' 'n' 'g' 'd' respectively. The depth
+ * buffer 'd' will only be activated if gdepthformat is enabled.
+ *
+ * For example, maskgbuffer("cnd") will enable the buffers GL_COLOR_ATTACHMENT0,1,3.
+ *
+ * @param mask string determining which buffers to use
+ */
 extern void maskgbuffer(const char *mask);
 extern void shadegbuffer();
 extern void setuplights(GBuffer &buf);
