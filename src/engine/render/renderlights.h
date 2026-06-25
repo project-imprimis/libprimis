@@ -129,6 +129,14 @@ class GBuffer final
         void renderlightbatches(Shader &s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask);
         void rendergeom();
 
+        /**
+         * @brief Renders alpha particles.
+         *
+         * @param allsx1 bottom left scissor corner x coordinate
+         * @param allsy1 bottom left scissor corner y coordinate
+         * @param allsx2 top right scissor corner y coordinate
+         * @param allsy2 top right scissor corner y coordinate
+         */
         void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2) const;
 
         void rendermaterialmask() const;
