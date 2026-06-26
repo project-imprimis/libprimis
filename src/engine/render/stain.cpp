@@ -663,7 +663,7 @@ class StainRenderer final
                     return (maxverts - 3 - availverts)/3;
                 }
             private:
-                stainvert *verts;
+                stainvert *verts; //array of vertices; size equal to maxverts (tris passed in init plus 3)
                 int startvert;
                 GLuint vbo;
                 bool dirty;
