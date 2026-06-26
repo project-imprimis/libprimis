@@ -83,6 +83,14 @@ class GBuffer final
         void viewrefract();
         void doscale(GLuint outfbo = 0) const;
         void setupscale(int sw, int sh, int w, int h);
+
+        /**
+         * @brief Returns the scale fbo if available.
+         *
+         * Otherwise, returns 0.
+         *
+         * @return scale buffer or 0
+         */
         GLuint shouldscale() const;
         void workinoq();
 
