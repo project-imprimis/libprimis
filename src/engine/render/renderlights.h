@@ -96,6 +96,16 @@ class GBuffer final
          * @param gamefxn pointer to a function for game-specific rendering
          */
         void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
+
+        /**
+         * @brief Returns whether a transparency layer is being rendered.
+         *
+         * This will only be true within GBuffer::rendertransparent(), which sets
+         * this value > 0 while rendering transparency and then value = 0 when
+         * finished.
+         *
+         * @return whether rendertransparent() is rendering transparency
+         */
         bool istransparentlayer() const;
         void rendermodelbatches();
         void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 = 1, const uint *tilemask = nullptr, int stencilmask = 0, int msaapass = 0, bool transparent = false);
