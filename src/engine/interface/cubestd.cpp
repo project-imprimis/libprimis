@@ -337,9 +337,10 @@ void floatret(float v)
 
 const char *numberstr(double v)
 {
-    auto numberformat = [] (char *buf, double v, int len = 20)
+    auto numberformat = [] (char *buf, double v)
     {
         int i = static_cast<int>(v);
+        constexpr int len = 20;
         if(v == i)
         {
             nformatstring(buf, len, "%d", i);
