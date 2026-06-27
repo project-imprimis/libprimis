@@ -124,6 +124,13 @@ inline double parsenumber(const char *s)
         || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
 }
 
+/**
+ * @brief Sets the buffer to the int value provided.
+ *
+ * @param buf the output buffer to set
+ * @param v the int value to set
+ * @param len the maximum size of the output string
+ */
 inline void intformat(char *buf, int v, int len = 20)
 {
     nformatstring(buf, len, "%d", v);
