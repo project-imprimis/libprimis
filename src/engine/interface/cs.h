@@ -131,10 +131,7 @@ inline double parsenumber(const char *s)
  * @param v the int value to set
  * @param len the maximum size of the output string
  */
-inline void intformat(char *buf, int v, int len = 20)
-{
-    nformatstring(buf, len, "%d", v);
-}
+extern void intformat(char *buf, int v, int len = 20);
 
 inline void floatformat(char *buf, float v, int len = 20)
 {

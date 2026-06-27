@@ -305,6 +305,12 @@ static void changedvars()
 static std::array<string, 4> retbuf;
 static int retidx = 0;
 
+//cs.h
+void intformat(char *buf, int v, int len)
+{
+    nformatstring(buf, len, "%d", v);
+}
+
 const char *intstr(int v)
 {
     retidx = (retidx + 1)%4;
