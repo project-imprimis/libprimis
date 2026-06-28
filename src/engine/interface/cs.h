@@ -133,6 +133,16 @@ inline double parsenumber(const char *s)
  */
 extern void intformat(char *buf, int v, int len = 20);
 
+/**
+ * @brief Sets the buffer to the float value provided.
+ *
+ * If the value passed is an integer, returns to buf a truncated version without
+ * extra trailing zeros.
+ *
+ * @param buf the output buffer to set
+ * @param v the float value to set
+ * @param len the maximum size of the output string
+ */
 inline void floatformat(char *buf, float v, int len = 20)
 {
     nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v);
