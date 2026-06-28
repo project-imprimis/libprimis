@@ -194,7 +194,13 @@ class Editor final
          * @return true if start and end do not match, false if both starts and ends match
          */
         bool region(int &sx, int &sy, int &ex, int &ey);
-        bool del(); // removes the current selection (if any)
+
+        /**
+         * @brief Removes the current selection (if any)
+         *
+         * @return true if region was deleted, false if no selection to delete
+         */
+        bool del();
         void insert(char ch);
         bool readback(std::fstream& file);
 };
