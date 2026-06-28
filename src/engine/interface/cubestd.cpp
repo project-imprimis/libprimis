@@ -311,6 +311,12 @@ void intformat(char *buf, int v, int len)
     nformatstring(buf, len, "%d", v);
 }
 
+//cs.h
+void floatformat(char *buf, float v, int len)
+{
+    nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v);
+}
+
 const char *intstr(int v)
 {
     retidx = (retidx + 1)%4;
