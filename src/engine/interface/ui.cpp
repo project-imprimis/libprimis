@@ -1115,7 +1115,7 @@ namespace UI
             return true;
         }
 
-        void hide(Window *w, int index)
+        void hide(Window &w, int index)
         {
             children.erase(children.begin() + index);
             childstate = 0;
@@ -1123,7 +1123,7 @@ namespace UI
             {
                 childstate |= o->state | o->childstate;
             }
-            w->hide();
+            w.hide();
         }
 
         bool hide(Window *w)
@@ -1138,7 +1138,7 @@ namespace UI
             }
             else if(std::find(children.begin(), children.end(), w) != children.end())
             {
-                hide(w, std::distance(children.begin(), std::find(children.begin(), children.end(), w)));
+                hide(*w, std::distance(children.begin(), std::find(children.begin(), children.end(), w)));
                 return true;
             }
             else
@@ -1153,7 +1153,7 @@ namespace UI
             {
                 if(w->allowinput && !(w->state & State_Hidden))
                 {
-                    hide(w, i);
+                    hide(*w, i);
                     return true;
                 }
             });
@@ -1165,7 +1165,7 @@ namespace UI
             int hidden = 0;
             LOOP_WINDOWS_REV(w,
             {
-                hide(w, i);
+                hide(*w, i);
                 hidden++;
             });
             return hidden;
