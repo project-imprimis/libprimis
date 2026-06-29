@@ -1102,16 +1102,16 @@ namespace UI
             resetstate();
         }
 
-        bool show(Window *w)
+        bool show(Window &w)
         {
             //if w is not found anywhere
-            if(std::find(children.begin(), children.end(), w) != children.end())
+            if(std::find(children.begin(), children.end(), &w) != children.end())
             {
                 return false;
             }
-            w->resetchildstate();
-            children.push_back(w);
-            w->show();
+            w.resetchildstate();
+            children.push_back(&w);
+            w.show();
             return true;
         }
 
@@ -4607,7 +4607,7 @@ namespace UI
             return false;
         }
         std::unordered_map<std::string, Window *>::const_iterator itr = windows.find(name);
-        return (itr != windows.end()) && world->show((*itr).second);
+        return (itr != windows.end()) && world->show(*(*itr).second);
     }
 
     //used in iengine
