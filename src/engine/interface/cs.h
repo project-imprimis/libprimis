@@ -172,30 +172,7 @@ extern const char *intstr(int v);
  *
  * @return pointer to the retbuf with the formatted int string inside it
  */
-inline const char *getstr(const identval &v, int type)
-{
-    switch(type)
-    {
-        case Value_String:
-        case Value_Macro:
-        case Value_CString:
-        {
-            return v.s;
-        }
-        case Value_Integer:
-        {
-            return intstr(v.i);
-        }
-        case Value_Float:
-        {
-            return floatstr(v.f);
-        }
-        default:
-        {
-            return "";
-        }
-    }
-}
+extern const char *getstr(const identval &v, int type);
 
 inline const char *tagval::getstr() const
 {

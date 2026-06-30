@@ -324,6 +324,31 @@ const char *intstr(int v)
     return retbuf[retidx];
 }
 
+const char *getstr(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return v.s;
+        }
+        case Value_Integer:
+        {
+            return intstr(v.i);
+        }
+        case Value_Float:
+        {
+            return floatstr(v.f);
+        }
+        default:
+        {
+            return "";
+        }
+    }
+}
+
 void intret(int v)
 {
     commandret->setint(v);
