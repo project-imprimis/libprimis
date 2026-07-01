@@ -174,16 +174,6 @@ extern const char *intstr(int v);
  */
 extern const char *getstr(const identval &v, int type);
 
-inline const char *tagval::getstr() const
-{
-    return ::getstr(*this, type);
-}
-
-inline const char *ident::getstr() const
-{
-    return ::getstr(alias.val, valtype);
-}
-
 inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)

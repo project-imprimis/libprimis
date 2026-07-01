@@ -349,6 +349,16 @@ const char *getstr(const identval &v, int type)
     }
 }
 
+const char *tagval::getstr() const
+{
+    return ::getstr(*this, type);
+}
+
+const char *ident::getstr() const
+{
+    return ::getstr(alias.val, valtype);
+}
+
 void intret(int v)
 {
     commandret->setint(v);
