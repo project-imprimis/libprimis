@@ -338,7 +338,7 @@ const char *intstr(int v)
  *
  * @return pointer to the retbuf with the formatted int string inside it
  */
-const char *getstr(const identval &v, int type)
+static const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
