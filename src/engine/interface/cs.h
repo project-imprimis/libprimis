@@ -157,23 +157,6 @@ extern void floatformat(char *buf, float v, int len = 20);
  */
 extern const char *intstr(int v);
 
-
-/**
- * @brief Returns the value of the specified type inside the given identval.
- *
- * The return value for int/float is not heap allocated, but instead a circular
- * buffer that remains allocated for the life of the program.
- *
- * The buffer is formatted by intformat/floatformat if the type enclosed is an
- * int/float, or is just returned directly in the case of a string.
- *
- * @param v the identval to extract a string from
- * @param type the value type inside the identval
- *
- * @return pointer to the retbuf with the formatted int string inside it
- */
-extern const char *getstr(const identval &v, int type);
-
 inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
