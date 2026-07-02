@@ -324,6 +324,35 @@ const char *intstr(int v)
     return retbuf[retidx];
 }
 
+void getval(const identval &v, int type, tagval &r)
+{
+    switch(type)
+    {
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            r.setstr(newstring(v.s));
+            break;
+        }
+        case Value_Integer:
+        {
+            r.setint(v.i);
+            break;
+        }
+        case Value_Float:
+        {
+            r.setfloat(v.f);
+            break;
+        }
+        default:
+        {
+            r.setnull();
+            break;
+        }
+    }
+}
+
 /**
  * @brief Returns the value of the specified type inside the given identval.
  *
