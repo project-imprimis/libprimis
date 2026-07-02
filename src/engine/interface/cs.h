@@ -2,7 +2,8 @@
 #define CS_H_
 
 /**
- * @file Internal CubeScript functionality
+ * @file cs.h
+ * @brief Internal CubeScript functionality
  *
  * low level cubescript functionality beyond script binding in command.h
  */
