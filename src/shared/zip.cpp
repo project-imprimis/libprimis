@@ -386,7 +386,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     return true;
 }
 
-bool removezip(const char *name)
+static bool removezip(const char *name)
 {
     string pname;
     copystring(pname, name);
