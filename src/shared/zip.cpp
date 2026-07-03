@@ -76,7 +76,7 @@ class zipstream;
 
 struct ziparchive final
 {
-    char *name;
+    const char *name;
     FILE *data;
     std::map<std::string, zipfile> files;
     int openfiles;
