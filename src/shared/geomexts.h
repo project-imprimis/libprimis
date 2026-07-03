@@ -470,7 +470,7 @@ class squat
         }
 };
 
-struct matrix2
+struct matrix2 final
 {
     vec2 a, b;
 
