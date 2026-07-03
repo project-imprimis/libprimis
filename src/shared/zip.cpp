@@ -60,7 +60,7 @@ struct zipdirectoryheader final
 
 struct zipfile final
 {
-    char *name;
+    const char *name;
     uint header, offset, size, compressedsize;
 
     zipfile() : name(nullptr), header(0), offset(~0U), size(0), compressedsize(0)
