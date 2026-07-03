@@ -146,7 +146,6 @@ void boxsgrid(int orient, vec origin, vec s, int g, bool boxoutline)
 }
 
 selinfo sel, lastsel; //lastsel is used only in iengine
-static selinfo savedsel;
 
 bool selinfo::validate()
 {
@@ -1945,6 +1944,8 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
         }
     }
 }
+
+static selinfo savedsel;
 
 void initoctaeditcmds()
 {
