@@ -379,14 +379,17 @@ vec matrix3::rowz() const
 //  matrix4 (4x4) object
 // =============================================================================
 
-/* invert()
+/**
+ * @brief Sets the matrix to its inverse
  *
  * sets the matrix values to the inverse of the provided matrix A*A^-1 = I
  * returns false if singular (or nearly singular to within tolerance of mindet)
  * or true if matrix was inverted successfully
  *
- * &m: a matrix4 object to be inverted and assigned to the object
- * mindet: the minimum value at which matrices are considered
+ * @param m a matrix4 object to be inverted and assigned to the object
+ * @param mindet the minimum value at which matrices are considered
+ *
+ * @return true if the matrix was invertable
  */
 bool matrix4::invert(const matrix4 &m, double mindet)
 {
