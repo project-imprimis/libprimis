@@ -32,7 +32,7 @@ struct VSlot;
 
 struct Texture final
 {
-    enum
+    enum TextureType
     {
         IMAGE      = 0,
         TYPE       = 0xFF,
