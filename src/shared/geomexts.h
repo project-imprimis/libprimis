@@ -442,7 +442,7 @@ struct plane : vec
 };
 
 //short integer quaternion
-class squat
+class squat final
 {
     public:
         short x, y, z, w;
