@@ -1678,8 +1678,8 @@ namespace
 
         int add(const vec &v)
         {
-            auto vechash = std::hash<vec>();
-            uint h = vechash(v)&(tablesize-1);
+            const auto vechash = std::hash<vec>();
+            size_t h = vechash(v)&(tablesize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 if(verts[i] == v)
