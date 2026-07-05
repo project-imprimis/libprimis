@@ -802,7 +802,10 @@ int listzipfiles(const char *dir, const char *ext, std::vector<char *> &files)
 
 void initzipcmds()
 {
-    addcommand("addzip", reinterpret_cast<identfun>(+[](const char *name, const char *mount, const char *strip){addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);}), "sss", Id_Command);
+    addcommand("addzip", reinterpret_cast<identfun>(+[](const char *name, const char *mount, const char *strip)
+    {
+        addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);
+    }), "sss", Id_Command);
     addcommand("removezip", reinterpret_cast<identfun>(removezip), "s", Id_Command);
 }
 
