@@ -1302,8 +1302,8 @@ class prefabmesh final
         std::array<int, prefabmeshsize> table;
         int addvert(const vertex &v)
         {
-            auto vechash = std::hash<vec>();
-            uint h = vechash(v.pos)&(prefabmeshsize-1);
+            const auto vechash = std::hash<vec>();
+            size_t h = vechash(v.pos)&(prefabmeshsize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 const vertex &c = verts[i];
