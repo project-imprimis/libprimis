@@ -34,7 +34,7 @@ struct streambuf final
         put(val);
     }
 
-    size_t length()
+    size_t length() const
     {
         return s->size();
     }
