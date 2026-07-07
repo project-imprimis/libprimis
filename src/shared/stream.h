@@ -9,7 +9,7 @@ struct streambuf final
 
     streambuf(stream *in) : s(in) {}
 
-    T get()
+    T get() const
     {
         return s->get<T>();
     }
