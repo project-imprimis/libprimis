@@ -14,7 +14,7 @@ struct streambuf final
         return s->get<T>();
     }
 
-    size_t get(T *vals, size_t numvals)
+    size_t get(T *vals, size_t numvals) const
     {
         return s->get(vals, numvals);
     }
