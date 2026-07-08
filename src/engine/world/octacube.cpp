@@ -707,7 +707,7 @@ struct std::hash<cube::cfkey>
 {
     size_t operator()(const cube::cfkey &k) const
     {
-        auto ivechash = std::hash<ivec>();
+        const auto ivechash = std::hash<ivec>();
         return ivechash(k.n)^k.offset^k.tex^k.orient^k.material;
     }
 };
