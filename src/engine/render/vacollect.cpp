@@ -259,11 +259,16 @@ static void genvbo(int type, std::vector<uchar> &buf, std::vector<vtxarray *> &v
     }
 }
 
-//default type = -1: flush every vbo
-//otherwise type specifies which of the VBOs to flush
-
-//flushvbo: flushes data out of the specified VBO object and calls genvbo()
-//then destroys the data in the relevant VBO
+/**
+ * @brief Flushes data out of a VBO object.
+ *
+ * flushes data out of the specified VBO object and calls genvbo()
+ * then destroys the data in the relevant VBO
+ *
+ * default type = -1 flushes every vbo
+ *
+ * @param type location in the vbodata array to flush, or -1 for all
+ */
 static void flushvbo(int type = -1)
 {
     if(type < 0)
