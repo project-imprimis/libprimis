@@ -665,7 +665,7 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::deque<poly> &p
                 std::swap(e.from, e.to);
             }
             plink l;
-            auto itr = links.find(e);
+            std::unordered_set<plink>::const_iterator itr = links.find(e);
             if(itr != links.end())
             {
                 l = *itr;
