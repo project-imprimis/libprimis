@@ -523,7 +523,7 @@ int SoundEngine::SoundType::findsound(const char *name, int vol) const
 int SoundEngine::SoundType::addslot(const char *name, int vol)
 {
     SoundSample * sample = nullptr;
-    auto itr = samples.find(std::string(name));
+    std::map<std::string, SoundSample>::iterator itr = samples.find(std::string(name));
     if(itr == samples.end())
     {
         SoundSample s(*parent);
