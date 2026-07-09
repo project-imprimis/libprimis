@@ -536,7 +536,7 @@ int SoundEngine::SoundType::addslot(const char *name, int vol)
     {
         sample = &(*(itr)).second;
     }
-    soundslot *oldslots = slots.data();
+    const soundslot *oldslots = slots.data();
     int oldlen = slots.size();
     slots.emplace_back();
     soundslot &slot = slots.back();
