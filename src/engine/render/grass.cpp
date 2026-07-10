@@ -4,7 +4,7 @@
  *
  * grass can be rendered on the top side of geometry, in an "X" shape atop cubes
  * grass is billboarded, and faces the camera, and can be modified as to its draw
- * distance
+ * distance to accomodate different hardware setups.
  */
 #include "../libprimis-headers/cube.h"
 #include "../../shared/geomexts.h"
