@@ -86,6 +86,13 @@ namespace
 
     ///////// view frustrum culling ///////////////////////
 
+
+    /**
+     * @brief Returns distance to the specified vertex array.
+     *
+     * @param va the vertex array to query
+     * @param p the location to query the distance from
+     */
     float vadist(const vtxarray &va, const vec &p)
     {
         return p.dist_to_bb(va.bbmin, va.bbmax);
