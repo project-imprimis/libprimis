@@ -38,7 +38,15 @@ namespace
     //when 0: change UI does not appear and applychanges must be used manually
     VAR(showchanges, 0, 1, 1);
 
-    //goes through and applies changes that are enqueued
+    /**
+     * @brief Applies enqueued changes that require reloading parts of the engine
+     *
+     * These are settings that cannot be applied immediately and require reloading
+     * parts of the engine (disrupting the currently rendered scene). Settings that
+     * require resetting the GL configuration, the shader configuration or sound
+     * configuration are added to the change buffer and are flushed when this function
+     * is called.
+     */
     void applychanges()
     {
         int changetypes = 0;
