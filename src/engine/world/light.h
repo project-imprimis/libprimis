@@ -40,6 +40,13 @@ class PackNode final
         void reserve(ushort tx, ushort ty, ushort tw, ushort th);
 
         int availablespace() const;
+
+        /**
+         * @brief Returns the total dimensions of the PackNode object.
+         *
+         * This number does not vary when nodes are added or removed. The values
+         * returned are always integral values (since the node dimensions are integers).
+         */
         vec2 dimensions() const;
 
         //debugging printouts, not used in program logic
