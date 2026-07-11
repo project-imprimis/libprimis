@@ -66,6 +66,12 @@ namespace
                 }
             }
 
+            /**
+             * @brief Updates the color of this dynamic light.
+             *
+             * Sets the curcolor and intensity fields depending on the current timestamp
+             * and the object's flags.
+             */
             void calccolor()
             {
                 if(flags&DynLight_Flash || peak <= 0)
