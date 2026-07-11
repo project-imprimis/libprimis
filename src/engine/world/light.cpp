@@ -28,6 +28,12 @@
 
 namespace
 {
+    /**
+     * @brief Sets the sunlight direction from the sunlightyaw/pitch variables.
+     *
+     * Clears the radiance hints cache after resetting the sunlight directory, so
+     * old GI buffers are cleared and new dynamic sunlight can be calculated
+     */
     void setsunlightdir()
     {
         sunlightdir = vec(sunlightyaw/RAD, sunlightpitch/RAD);
