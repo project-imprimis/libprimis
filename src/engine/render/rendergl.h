@@ -63,6 +63,15 @@ extern float calcfrustumboundsphere(float nearplane, float farplane,  const vec 
 extern void zerofogcolor();
 extern void resetfogcolor();
 extern float calcfogdensity(float dist);
+
+/**
+ * @brief Returns the fog culling distance.
+ *
+ * This is the distance beyond which the fog effects will cause objects beyond to
+ * be invisible. The distance returned is in cube units.
+ *
+ * @return distance of fog culling
+ */
 extern float calcfogcull();
 extern vec calcmodelpreviewpos(const vec &radius, float &yaw);
 
