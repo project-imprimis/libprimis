@@ -62,6 +62,17 @@ extern void debugquad(float x, float y, float w, float h, float tx = 0, float ty
 extern float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center);
 extern void zerofogcolor();
 extern void resetfogcolor();
+
+/**
+ * @brief Returns the fog intensity at a given distance from the camera.
+ *
+ * This value will increase the farther the distance is, and the higher the fog intensity
+ * is set.
+ *
+ * @param dist distance in cube units to query fog intensity
+ *
+ * @return intensity value at the specified distance
+ */
 extern float calcfogdensity(float dist);
 
 /**
