@@ -60,6 +60,12 @@ extern void screenquadoffset(float x, float y, float w, float h);
 extern void hudquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1);
 extern void debugquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1);
 extern float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center);
+
+/**
+ * @brief Sets the fog color to zero (black).
+ *
+ * This directly sets the uniform in the fog shader.
+ */
 extern void zerofogcolor();
 extern void resetfogcolor();
 
