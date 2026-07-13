@@ -55,6 +55,8 @@ bool hasFBMSBS = false,
      hasES3    = false,
      hasCI     = false;
 
+const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
+
 //used in iengine
 VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
 

@@ -33,7 +33,7 @@ extern float nearplane;
 extern int farplane;
 extern int drawtex;
 
-inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
+extern const matrix4 viewmatrix;
 
 extern matrix4 cammatrix, projmatrix, camprojmatrix;
 extern int wireframe;
