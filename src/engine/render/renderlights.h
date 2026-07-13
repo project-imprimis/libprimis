@@ -12,7 +12,7 @@ const int lighttilemaxheight = 16;
 class GBuffer final
 {
     public:
-        GBuffer()
+        GBuffer() : msaadepthblit(false)
         {
             //set all of the textures to 0/null
             scalew       = 0;
@@ -42,7 +42,6 @@ class GBuffer final
             scaletex.fill(0);
             gdepthinit   = false;
             hdrfloat     = false;
-            msaadepthblit= false;
             msaatonemapblit = false;
             inoq = false;
             transparentlayer = 0;
@@ -211,7 +210,7 @@ class GBuffer final
         bool inoq = false;
         bool gdepthinit;
         bool hdrfloat;
-        bool msaadepthblit; //no way to change this outside constructor atm
+        const bool msaadepthblit; //no way to change this outside constructor atm
         bool msaatonemapblit;
 
         int scalew,
