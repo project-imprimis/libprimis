@@ -67,6 +67,12 @@ extern float calcfrustumboundsphere(float nearplane, float farplane,  const vec 
  * This directly sets the uniform in the fog shader.
  */
 extern void zerofogcolor();
+
+/**
+ * @brief Resets the fog color uniform.
+ *
+ * Sets the fog color uniform to the value in curfogcolor.
+ */
 extern void resetfogcolor();
 
 /**
