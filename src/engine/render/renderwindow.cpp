@@ -463,8 +463,10 @@ static VARFNP(gamma, reqgamma, 30, 100, 300,
     setgamma(curgamma);
 });
 
-/* restoregamma: sets gamma to the previous set value, useful for reverting bad-
- * looking gamma trial settings
+/**
+ * @brief Sets gamma to the previous set value.
+ *
+ * Useful for reverting bad-ooking gamma trial settings.
  *
  * used in iengine.h
  */
