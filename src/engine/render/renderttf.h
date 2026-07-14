@@ -90,6 +90,16 @@ class TTFRenderer final
         TTF_Font* f;                         //the current working font
         std::map<int, TTF_Font *> fontcache; //different sizes of the font are cached in a map which maps them to their size in pt
         const char * path;                   //the path which the font was originally found, so it can load other font sizes if needed
+
+        /**
+         * @brief Draws a message to a GL buffer.
+         *
+         * The buffer handle is returned in the TTFSurface object returned.
+         *
+         * @param message string to draw
+         * @param col color of text to draw
+         * @param wrap number of pixels before the text should wrap to more lines
+         */
         TTFSurface renderttfgl(const char* message, SDL_Color col, uint wrap = 0) const;
 
         /**
