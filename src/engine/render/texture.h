@@ -101,6 +101,11 @@ struct MatSlot final : Slot, VSlot
      */
     VSlot &emptyvslot() final;
 
+    /**
+     * @brief Returns that this type of slot cannot be combined.
+     *
+     * Always returns -1. Other slot objects can be combined, but material slots cannot.
+     */
     int cancombine(int) const final;
 
     void reset();
