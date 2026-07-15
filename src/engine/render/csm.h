@@ -45,7 +45,14 @@ class cascadedshadowmap final
          * effect if there is global sunlight to use for global illumination.
          */
         void setup();
-        void bindparams();              // bind any shader params necessary for lighting
+
+        /**
+         * @brief Binds shader parameters needed for CSM lighting.
+         *
+         * The shader paremeters needed are the `csmmatrix`, `csmtc`, `csmoffset`,
+         * and `csmz`.
+         */
+        void bindparams();
         int calcbbsplits(const ivec &bbmin, const ivec &bbmax);
         int calcspheresplits(const vec &center, float radius) const;
 
