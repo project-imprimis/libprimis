@@ -38,7 +38,13 @@ class cascadedshadowmap final
         };
         std::array<SplitInfo, csmmaxsplits> splits; // per-split parameters
 
-        void setup();                   // insert shadowmaps for each split frustum if there is sunlight
+        /**
+         * @brief Inserts shadowmaps for each split frustrum.
+         *
+         * The number of frustum splits is set by the csmsplits var. Only has an
+         * effect if there is global sunlight to use for global illumination.
+         */
+        void setup();
         void bindparams();              // bind any shader params necessary for lighting
         int calcbbsplits(const ivec &bbmin, const ivec &bbmax);
         int calcspheresplits(const vec &center, float radius) const;
