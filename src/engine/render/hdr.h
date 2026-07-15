@@ -25,7 +25,8 @@ extern int  gethdrformat(int prec, int fallback = GL_RGB);
  *
  * Frees the buffers and textures related to the bloom effect. There are six
  * bloom PBOs and six bloom textures. Their bound objects are freed and the values
- * of their GL object handle uints are set to zero.
+ * of their GL object handle uints are set to zero. Also resets the `bloomw` and `bloomh`
+ * buffer size variables to -1 and the `lasthdraccum` var to 0.
  */
 extern void cleanupbloom();
 
