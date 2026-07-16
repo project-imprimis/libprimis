@@ -207,10 +207,10 @@ class GBuffer final
         std::array<uint, lighttilemaxheight> alphatiles;
 
         bool transparentlayer;
-        bool inoq = false;
-        bool gdepthinit;
-        bool hdrfloat;
-        bool msaatonemapblit;
+             inoq,
+             gdepthinit,
+             hdrfloat,
+             msaatonemapblit;
 
         int scalew,
             scaleh;
