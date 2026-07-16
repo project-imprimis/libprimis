@@ -812,52 +812,30 @@ void GBuffer::resolvemsaadepth(int w, int h) const
 
     timer *resolvetimer = drawtex ? nullptr : begintimer("msaa depth resolve");
 
-    if(msaadepthblit)
-    {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, msfbo);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gfbo);
-        if(ghasstencil)
-        {
-            glClear(GL_STENCIL_BUFFER_BIT);
-        }
-        glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    }
-    if(!msaadepthblit || gdepthformat)
+    if(gdepthformat)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, gfbo);
         glViewport(0, 0, w, h);
         maskgbuffer("d");
-        if(!msaadepthblit)
+
+        if(ghasstencil)
         {
-            if(ghasstencil)
-            {
-                glStencilFunc(GL_ALWAYS, 0, ~0);
-                glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-                glEnable(GL_STENCIL_TEST);
-            }
-            glDepthFunc(GL_ALWAYS);
-            SETSHADER(msaaresolvedepth);
+            glStencilFunc(GL_ALWAYS, 0, ~0);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+            glEnable(GL_STENCIL_TEST);
         }
-        else
-        {
-             glDisable(GL_DEPTH_TEST);
-             SETSHADER(msaaresolve);
-        }
+        glDepthFunc(GL_ALWAYS);
+        SETSHADER(msaaresolvedepth);
+
+
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
         screenquad();
         maskgbuffer("cnd");
-        if(!msaadepthblit)
+        if(ghasstencil)
         {
-            if(ghasstencil)
-            {
-                glDisable(GL_STENCIL_TEST);
-            }
-            glDepthFunc(GL_LESS);
+            glDisable(GL_STENCIL_TEST);
         }
-        else
-        {
-            glEnable(GL_DEPTH_TEST);
-        }
+        glDepthFunc(GL_LESS);
     }
 
     endtimer(resolvetimer);
