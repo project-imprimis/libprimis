@@ -287,7 +287,7 @@ extern int msaatonemap;
 extern float ldrscale;
 
 /**
- * @brief Returns ldrscale, but scaled down  by 255
+ * @brief Returns ldrscale, but scaled down by 255
  *
  * @return ldrscale divided by 255
  */
