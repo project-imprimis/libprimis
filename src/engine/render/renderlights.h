@@ -136,6 +136,12 @@ class GBuffer final
     private:
         void bindmsdepth() const;
         void bindlighttexs(int msaapass, bool transparent) const; //only used in renderlights
+        /**
+         * @brief Clears scale buffers and textures.
+         *
+         * The elements that are deleted are the scalefbo array and scaletex array.
+         * The values inside these arrays are also zeroed out.
+         */
         void cleanupscale();
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
