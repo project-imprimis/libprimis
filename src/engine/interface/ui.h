@@ -65,6 +65,13 @@ namespace UI
      */
     void cleanup();
 
+    /**
+     * @brief Shows the ui window with the specified name
+     *
+     * @param name name of the ui window to show
+     *
+     * @return true if window was shown, false otherwise
+     */
     bool showui(const char *name);
     bool hideui(const char *name);
     bool toggleui(const char *name);
