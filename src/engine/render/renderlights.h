@@ -143,6 +143,14 @@ class GBuffer final
          * The values inside these arrays are also zeroed out.
          */
         void cleanupscale();
+
+        /**
+         * @brief Clears multisample buffers.
+         *
+         * These are the msfbo, msdepthtex, mscolortex, msnormaltex, msglowtex,
+         * msdepthrb, msstencilrb, mshdrfbo, mshdrtex, msrefractfbo, msrefracttex
+         * handles. They are all set to zero afterwards as well.
+         */
         void cleanupmsbuffer();
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps() const;
