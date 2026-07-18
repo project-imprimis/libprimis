@@ -5799,7 +5799,13 @@ void initcscmds()
     addcommand("identexists", reinterpret_cast<identfun>(+[] (const char *s) { intret(identexists(s) ? 1 : 0); }), "s", Id_Command);
     addcommand("getalias", reinterpret_cast<identfun>(+[] (const char *s) { result(getalias(s)); }), "s", Id_Command);
 
-    addcommand("nodebug", reinterpret_cast<identfun>(+[] (const uint *body){nodebug++; executeret(body, *commandret); nodebug--;}), "e", Id_Command);
+    addcommand("nodebug", reinterpret_cast<identfun>(+[] (const uint *body)
+    {
+        nodebug++;
+        executeret(body, *commandret);
+        nodebug--;
+    }), "e", Id_Command);
+
     addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
     addcommand("alias", reinterpret_cast<identfun>(+[] (const char *name, tagval *v){ setalias(name, *v); v->type = Value_Null;}), "sT", Id_Command);
     addcommand("resetvar", reinterpret_cast<identfun>(resetvar), "s", Id_Command);
