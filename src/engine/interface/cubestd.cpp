@@ -58,8 +58,12 @@ static void exec(const char *file, int *msg)
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
 
-//excapes strings by converting \<special char> to ^<special char>
-// ^ is the escape char in cubescript
+/**
+ * @brief Converts a string to use CubeScript escape characters
+ *
+ * Escapes strings by converting \<special char> to ^<special char>
+ * (^ is the escape char in cubescript)
+ */
 const char *escapestring(const char *s)
 {
     stridx = (stridx + 1)%4;
