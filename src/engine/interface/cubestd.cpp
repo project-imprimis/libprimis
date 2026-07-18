@@ -63,6 +63,10 @@ static void exec(const char *file, int *msg)
  *
  * Escapes strings by converting \<special char> to ^<special char>
  * (^ is the escape char in cubescript)
+ *
+ * @param s the string to convert
+ *
+ * @return an entry in the strbuf containing the converted string
  */
 const char *escapestring(const char *s)
 {
