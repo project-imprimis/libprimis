@@ -1,7 +1,7 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
-enum
+enum ModelType
 {
     MDL_MD5 = 0,
     MDL_OBJ,
