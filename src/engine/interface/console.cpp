@@ -1,5 +1,7 @@
-// console.cpp: the console buffer, its display, and command line control
-
+/**
+ * @file console.cpp
+ * @brief Console buffer, console buffer display, and command line console buffer control
+ */
 #include "../libprimis-headers/cube.h"
 #include "../../shared/stream.h"
 
