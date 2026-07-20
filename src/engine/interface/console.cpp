@@ -555,9 +555,11 @@ namespace
 
     // keymap is defined externally in keymap.cfg
 
-    /*
-     * defines a mapping for a single key
-     * multiple keymap objects are aggregated in keyms to create the entire bindings list
+    /**
+     * @brief Defines a mapping for a single key.
+     *
+     * Multiple keymap objects are aggregated in the keyms map to create the entire
+     * bindings list.
      */
     struct KeyMap final
     {
