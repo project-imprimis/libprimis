@@ -36,7 +36,7 @@ extern int drawtex;
 extern const matrix4 viewmatrix;
 
 extern matrix4 cammatrix, projmatrix, camprojmatrix;
-extern int wireframe;
+extern int wireframe; /// Toggles drawing solid surfaces (0) or edges only (1) (bool-like variable)
 extern int usetexgather;
 
 extern int intel_texalpha_bug;
