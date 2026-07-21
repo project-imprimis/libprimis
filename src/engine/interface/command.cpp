@@ -5807,7 +5807,11 @@ void initcscmds()
     }), "e", Id_Command);
 
     addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
-    addcommand("alias", reinterpret_cast<identfun>(+[] (const char *name, tagval *v){ setalias(name, *v); v->type = Value_Null;}), "sT", Id_Command);
+    addcommand("alias", reinterpret_cast<identfun>(+[] (const char *name, tagval *v)
+    {
+        setalias(name, *v);
+        v->type = Value_Null;
+    }), "sT", Id_Command);
     addcommand("resetvar", reinterpret_cast<identfun>(resetvar), "s", Id_Command);
     addcommand("doargs", reinterpret_cast<identfun>(doargs), "e", Id_DoArgs);
 }
