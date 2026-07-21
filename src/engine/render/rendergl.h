@@ -45,6 +45,13 @@ extern void glerror();
 
 extern void mousemove(int dx, int dy);
 extern void gl_init();
+
+/**
+ * @brief Sets the frame to the size specified in the hud settings.
+ *
+ * Resets the viewport size to dimensions of `hudw()` by `hudh()`. These sizes
+ * are set by the `screenw` and `screenh` globals.
+ */
 extern void gl_resize();
 extern void gl_setupframe(bool force = false);
 extern void cleanupgl();
