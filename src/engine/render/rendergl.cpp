@@ -480,7 +480,6 @@ static void glext(const char *ext)
     intret(hasext(ext) ? 1 : 0);
 }
 
-
 void gl_resize()
 {
     gl_setupframe();
