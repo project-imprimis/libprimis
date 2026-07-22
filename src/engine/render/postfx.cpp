@@ -1,5 +1,7 @@
-// postfx.cpp: screenspace shader post effects
-
+/**
+ * @file postfx.cpp
+ * @brief screenspace shader post effects
+ */
 #include "../libprimis-headers/cube.h"
 
 #include "rendergl.h"
