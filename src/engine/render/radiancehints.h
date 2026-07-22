@@ -53,7 +53,13 @@ class RadianceHints final
         void bindparams() const;
         void clearcache();
         bool allcached() const;
-        //copies dynmin/max to prevdynmin/max
+        /**
+         * @brief Rotates out dynmin/max to prevdynmin/max.
+         *
+         * The values of dynmin/max and prevdynmin/max are both equal to the previous
+         * value of dynmin/max after this function is called. The previous value in
+         * prevdynmin/max is deleted.
+         */
         void rotatedynlimits();
         //checks if prevmin's z value is less than prevmax
         bool checkprevbounds() const;
