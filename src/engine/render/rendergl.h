@@ -2,6 +2,14 @@
 #define RENDERGL_H_
 
 extern int xtraverts, xtravertsva;
+
+/**
+ * @brief Returns the width of the rendered buffer.
+ *
+ * This may be equal to hudw() or smaller if scr_w is a lower value (subscale rendering).
+ *
+ * @return width of rendered buffer
+ */
 extern int renderw();
 extern int renderh();
 extern bool hasFBMSBS,  //GL_EXT_framebuffer_multisample_blit_scaled
