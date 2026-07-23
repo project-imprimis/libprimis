@@ -11,6 +11,14 @@ extern int xtraverts, xtravertsva;
  * @return width of rendered buffer
  */
 extern int renderw();
+
+/**
+ * @brief Returns the height of the rendered buffer.
+ *
+ * This may be equal to hudh() or smaller if scr_h is a lower value (subscale rendering).
+ *
+ * @return height of rendered buffer
+ */
 extern int renderh();
 extern bool hasFBMSBS,  //GL_EXT_framebuffer_multisample_blit_scaled
             hasTQ,
