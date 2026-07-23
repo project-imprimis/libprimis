@@ -1193,7 +1193,7 @@ void ShadowAtlas::setcomparemode()
 
 static bool usegatherforsm()
 {
-    return smfilter > 1 && smgather && usetexgather;
+    return smfilter > 1 && smgather;
 }
 
 bool ShadowAtlas::usesmcomparemode()
