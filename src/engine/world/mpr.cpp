@@ -1,4 +1,8 @@
-/*This code is based off the Minkowski Portal Refinement algorithm by Gary Snethen
+/**
+ * @file mpr.cpp
+ * @brief Minkowski Portal Refinement implementation
+ *
+ * This code is based off the Minkowski Portal Refinement algorithm by Gary Snethen
  * in XenoCollide & Game Programming Gems 7.
  *
  * Minkowski Portal Refinement is a way of finding whether two hulls intersect
