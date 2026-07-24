@@ -5,6 +5,15 @@ extern vec hitsurface; ///orientation of collision by raycube function (0,0,0 if
 
 extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
 extern float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent);
+
+/**
+ * @brief Calculates collision in the -z direction.
+ *
+ * @param o the location to raytrace from
+ * @param floor return floor collision vector (== hitsurface)
+ * @param mode raytracing mode (see consts.h)
+ * @param radius near collision radius
+ */
 extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
 
 /**
