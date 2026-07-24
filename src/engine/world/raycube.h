@@ -1,7 +1,7 @@
 #ifndef RAYCUBE_H_
 #define RAYCUBE_H_
 
-extern vec hitsurface;
+extern vec hitsurface; ///orientation of collision by raycube function (0,0,0 if no collision)
 
 extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
 extern float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent);
