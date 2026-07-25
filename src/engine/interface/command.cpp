@@ -663,6 +663,15 @@ static int nodebug = 0;
 
 static void debugcode(const char *fmt, ...) PRINTFARGS(1, 2);
 
+/**
+ * @brief Prints out a debug message to the console.
+ *
+ * Prints out the debug message, unless nodebug value is set. Only prints out a
+ * debug message and not the line that caused the error.
+ *
+ * @param fmt string for printf style variadic arguments
+ * @param ... variadic printf style arguments for fmt
+ */
 static void debugcode(const char *fmt, ...)
 {
     if(nodebug)
