@@ -679,6 +679,12 @@ static void debugcode(const char *fmt, ...)
 
 static void debugcodeline(const char *p, const char *fmt, ...) PRINTFARGS(2, 3);
 
+/**
+ * @brief Prints out a debug message to the console.
+ *
+ * @param p the string to print out
+ * @param fmt printf style variadic arguments
+ */
 static void debugcodeline(const char *p, const char *fmt, ...)
 {
     if(nodebug)
