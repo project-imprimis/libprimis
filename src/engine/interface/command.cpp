@@ -1014,7 +1014,7 @@ char *svariable(const char *name, const char *cur, char **storage, identfun fun,
 
 struct DefVar final : identval
 {
-    char *name;
+    const char *name;
     uint *onchange;
 
     DefVar() : name(nullptr), onchange(nullptr) {}
