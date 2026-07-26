@@ -19,7 +19,6 @@
 
 namespace mpr
 {
-
     //CubePlanes
 
     vec CubePlanes::center() const
