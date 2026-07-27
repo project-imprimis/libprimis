@@ -80,6 +80,8 @@ FILE *getlogfile() //used in iengine.h
  *
  * returns false on failure, true on success
  * used in iengine.h
+ *
+ * @return true if SDL inited, false otherwise
  */
 bool initsdl()
 {
