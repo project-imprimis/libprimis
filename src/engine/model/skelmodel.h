@@ -1521,7 +1521,7 @@ struct skelcommands : modelcommands<MDL>
             conoutf(Console_Error, "not loading a skeletal model");
             return nullptr;
         }
-        skelmodel *m = static_cast<skelmodel *>(MDL::loading);
+        const skelmodel *m = static_cast<skelmodel *>(MDL::loading);
         if(m->parts.empty())
         {
             return nullptr;
