@@ -279,6 +279,28 @@ extern void alias(const char *name, const char *action);
  * @param limit maximum size of the elems vector allowed
  */
 extern void explodelist(const char *s, std::vector<char *> &elems, int limit = -1);
+
+/**
+ * @brief Converts a list of delimited strings into a vector of elements.
+ *
+ * List elements in the input string are added to the vector of strings passed
+ * as elems.
+ *
+ * The list is parsed according to the CubeScript list formatting.
+ * Tokens in the list are delimited by spaces, unless those tokens are themselves
+ * delimited by [] "" or () characters.
+ *
+ * Existing elements in the elems vector will not be modified. The limit parameter
+ * sets the maximum number of elements in the vector, regardless of whether they
+ * were added by this function.
+ *
+ * Elements added to this vector are standard std::strings and do not need special
+ * memory management.
+ *
+ * @param s the list to explode
+ * @param elems the vector to fill with elements
+ * @param limit maximum size of the elems vector allowed
+ */
 extern void explodelist(const char *s, std::vector<std::string> &elems, int limit = -1);
 
 extern void result(tagval &v);
