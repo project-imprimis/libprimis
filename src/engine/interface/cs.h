@@ -232,6 +232,19 @@ extern void setfvarchecked(ident *id, float val);
 extern void setsvarchecked(ident *id, const char *val);
 
 extern void printvar(const ident *id);
+
+/**
+ * @brief Prints out a value using an ident's properties
+ *
+ * If i is negative, prints out the value of i directly. If id is a color, prints
+ * out the three color bytes composing the color. If id is a hex value, prints out
+ * i in hex form. Otherwise prints out the value of i directly.
+ *
+ * Used by `printvar(const ident*)`, which fetches the value of i from the ident.
+ *
+ * @param id the ident to parse
+ * @param i value to print out
+ */
 extern void printvar(const ident *id, int i);
 
 extern void clearoverrides();
