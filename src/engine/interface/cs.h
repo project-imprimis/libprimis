@@ -116,14 +116,7 @@ inline float parsefloat(const char *s)
         || (*end!='x' && *end!='X') ? static_cast<float>(val) : static_cast<float>(parseint(s));
 }
 
-inline double parsenumber(const char *s)
-{
-    char *end;
-    double val = std::strtod(s, &end);
-    return val
-        || end==s
-        || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
-}
+extern double parsenumber(const char *s);
 
 /**
  * @brief Sets the buffer to the int value provided.

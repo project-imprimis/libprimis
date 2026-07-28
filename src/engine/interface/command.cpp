@@ -253,6 +253,15 @@ float ident::getfloat() const
     return ::getfloat(alias.val, valtype);
 }
 
+double parsenumber(const char *s)
+{
+    char *end;
+    double val = std::strtod(s, &end);
+    return val
+        || end==s
+        || (*end!='x' && *end!='X') ? static_cast<double>(val) : static_cast<double>(parseint(s));
+}
+
 static double getnumber(const identval &v, int type)
 {
     switch(type)
