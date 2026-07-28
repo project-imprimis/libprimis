@@ -231,6 +231,15 @@ extern void setvarchecked(ident *id, int val);
 extern void setfvarchecked(ident *id, float val);
 extern void setsvarchecked(ident *id, const char *val);
 
+/**
+ * @brief Prints out the value inside in ident.
+ *
+ * Formats output using `printvar(const ident*, int)` for an integral value, `printfvar()`
+ * for a float value, or `printsvar()` for a stirng. Uses the stored value inside
+ * of the given ident as the printed value.
+ *
+ * @param id the ident to parse
+ */
 extern void printvar(const ident *id);
 
 /**
