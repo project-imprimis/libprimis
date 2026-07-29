@@ -107,14 +107,7 @@ struct stringslice final
 };
 
 // not all platforms (windows) can parse hexadecimal integers via strtod
-inline float parsefloat(const char *s)
-{
-    char *end;
-    double val = std::strtod(s, &end);
-    return val
-        || end==s
-        || (*end!='x' && *end!='X') ? static_cast<float>(val) : static_cast<float>(parseint(s));
-}
+extern float parsefloat(const char *s);
 
 extern double parsenumber(const char *s);
 
