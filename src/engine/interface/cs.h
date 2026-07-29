@@ -109,6 +109,13 @@ struct stringslice final
 // not all platforms (windows) can parse hexadecimal integers via strtod
 extern float parsefloat(const char *s);
 
+/**
+ * @brief Returns a double parsed from the provided string.
+ *
+ * @param s the string to parse
+ *
+ * @return the number as a double if parsable, or parseint(s) if not
+ */
 extern double parsenumber(const char *s);
 
 /**
