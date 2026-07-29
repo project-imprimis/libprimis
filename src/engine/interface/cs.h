@@ -106,7 +106,15 @@ struct stringslice final
     }
 };
 
-// not all platforms (windows) can parse hexadecimal integers via strtod
+// parsefloat/parsenumber: not all platforms (windows) can parse hexadecimal integers via strtod
+
+/**
+ * @brief Returns a float parsed from the provided string.
+ *
+ * @param s the string to parse
+ *
+ * @return the number as a float if parsable, or parseint(s) if not
+ */
 extern float parsefloat(const char *s);
 
 /**
