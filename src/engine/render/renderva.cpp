@@ -2046,6 +2046,7 @@ namespace
         shadowmapping = 0;
     }
 
+    // toggles whether to generate shadow meshes in genshadowmeshes()
     VARF(smmesh, 0, 1, 1,
     {
         if(!smmesh)
