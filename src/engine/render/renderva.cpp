@@ -1306,6 +1306,17 @@ namespace
 
         void renderdecalbatch();
 
+        /**
+         * @brief Compares this decalbatch to another.
+         *
+         * Compares va vbuf, then slot shader, then elementset texture, then number
+         * of slot parameters, then reuse. If all of these are equal, they return
+         * equal (0).
+         *
+         * @param b the batch to compare to
+         *
+         * @return -1 if this object compares smaller to b, +1 if this object compares larger, 0 otherwise
+         */
         int compare(const decalbatch &b) const
         {
             if(va.vbuf < b.va.vbuf)
