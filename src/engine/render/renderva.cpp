@@ -1291,7 +1291,7 @@ namespace
 
     CVARP(explicitskycolor, 0x800080);
 
-    struct decalbatch final
+    struct DecalBatch final
     {
         const ElementSet &es;
         DecalSlot &slot;
@@ -1299,7 +1299,7 @@ namespace
         const vtxarray &va;
         int next, batch;
 
-        decalbatch(const ElementSet &es, int offset, const vtxarray &va)
+        DecalBatch(const ElementSet &es, int offset, const vtxarray &va)
           : es(es), slot(lookupdecalslot(es.texture)), offset(offset), va(va),
             next(-1), batch(-1)
         {}
@@ -1307,7 +1307,7 @@ namespace
         void renderdecalbatch();
 
         /**
-         * @brief Compares this decalbatch to another.
+         * @brief Compares this DecalBatch to another.
          *
          * Compares va vbuf, then slot shader, then elementset texture, then number
          * of slot parameters, then reuse. If all of these are equal, they return
@@ -1317,7 +1317,7 @@ namespace
          *
          * @return -1 if this object compares smaller to b, +1 if this object compares larger, 0 otherwise
          */
-        int compare(const decalbatch &b) const
+        int compare(const DecalBatch &b) const
         {
             if(va.vbuf < b.va.vbuf)
             {
@@ -1363,7 +1363,7 @@ namespace
         }
     };
 
-    std::vector<decalbatch> decalbatches;
+    std::vector<DecalBatch> decalbatches;
 
     class decalrenderer final
     {
@@ -1389,7 +1389,7 @@ namespace
             void changebatchtmus();
             void bindslottex(int type, const Texture *tex, GLenum target = GL_TEXTURE_2D);
             void changeslottmus(DecalSlot &slot);
-            void changeshader(int pass, const decalbatch &b);
+            void changeshader(int pass, const DecalBatch &b);
     };
 
     void mergedecals(const vtxarray &va)
@@ -1404,11 +1404,11 @@ namespace
             numbatches = numtexs;
             for(int i = 0; i < numtexs-1; ++i)
             {
-                decalbatches.emplace_back(decalbatch(texs[i], offset, va));
+                decalbatches.emplace_back(DecalBatch(texs[i], offset, va));
                 decalbatches.back().next = i+1;
                 offset += texs[i].length;
             }
-            decalbatches.emplace_back(decalbatch(texs[numtexs-1], offset, va));
+            decalbatches.emplace_back(DecalBatch(texs[numtexs-1], offset, va));
             return;
         }
 
@@ -1417,7 +1417,7 @@ namespace
             curtex = 0;
         do
         {
-            decalbatch b = decalbatch(texs[curtex], offset, va);
+            DecalBatch b = DecalBatch(texs[curtex], offset, va);
             offset += texs[curtex].length;
             int dir = -1;
             while(curbatch >= 0)
@@ -1559,7 +1559,7 @@ namespace
         slot = &dslot;
     }
 
-    void decalrenderer::changeshader(int pass, const decalbatch &b)
+    void decalrenderer::changeshader(int pass, const DecalBatch &b)
     {
         DecalSlot &slot = b.slot;
         if(b.es.reuse)
@@ -1585,10 +1585,10 @@ namespace
         globals = GlobalShaderParamState::nextversion;
     }
 
-    void decalbatch::renderdecalbatch()
+    void DecalBatch::renderdecalbatch()
     {
         gbatches++;
-        for(decalbatch *curbatch = this;; curbatch = &decalbatches[curbatch->batch])
+        for(DecalBatch *curbatch = this;; curbatch = &decalbatches[curbatch->batch])
         {
             ushort len = curbatch->es.length;
             if(len)
@@ -1609,7 +1609,7 @@ namespace
         int curbatch = firstbatch;
         while(curbatch >= 0)
         {
-            decalbatch &b = decalbatches[curbatch];
+            DecalBatch &b = decalbatches[curbatch];
             curbatch = b.next;
 
             if(pass && !b.slot.shader->numvariants(0))
