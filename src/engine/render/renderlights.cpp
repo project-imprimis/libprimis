@@ -1284,28 +1284,28 @@ VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
 int shadowmapping = 0;
 
 //not final: batchstack/batchrect derived
-class lightrect
+class LightRect
 {
     public:
         uchar x1, y1, x2, y2;
 
-        lightrect() {}
-        lightrect(const lightinfo &l)
+        LightRect() {}
+        LightRect(const lightinfo &l)
         {
             calctilebounds(l.sx1, l.sy1, l.sx2, l.sy2, x1, y1, x2, y2);
         }
 
-        bool outside(const lightrect &o) const
+        bool outside(const LightRect &o) const
         {
             return x1 >= o.x2 || x2 <= o.x1 || y1 >= o.y2 || y2 <= o.y1;
         }
 
-        bool inside(const lightrect &o) const
+        bool inside(const LightRect &o) const
         {
             return x1 >= o.x1 && x2 <= o.x2 && y1 >= o.y1 && y2 <= o.y2;
         }
 
-        void intersect(const lightrect &o)
+        void intersect(const LightRect &o)
         {
             x1 = std::max(x1, o.x1);
             y1 = std::max(y1, o.y1);
@@ -1335,7 +1335,7 @@ class lightrect
         }
     protected:
         //only called by child batchstack object
-        lightrect(uchar x1, uchar y1, uchar x2, uchar y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
+        LightRect(uchar x1, uchar y1, uchar x2, uchar y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
 };
 
 //batchflag enum is local to this file
@@ -1351,7 +1351,7 @@ struct lightbatch
     uchar flags, numlights;
     ushort lights[LightTile_MaxBatch];
 
-    std::vector<lightrect> rects;
+    std::vector<LightRect> rects;
 
     void reset()
     {
@@ -2336,7 +2336,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
         gle::begin(GL_TRIANGLES);
         for(size_t j = 0; j < batch.rects.size(); j++)
         {
-            const lightrect &r = batch.rects[j];
+            const LightRect &r = batch.rects[j];
             int x1 = std::max(static_cast<int>(r.x1), btx1),
                 y1 = std::max(static_cast<int>(r.y1), bty1),
                 x2 = std::min(static_cast<int>(r.x2), btx2),
@@ -3068,26 +3068,26 @@ bool shouldworkinoq()
     return !drawtex && oqfrags && (!wireframe || !editmode);
 }
 
-struct BatchRect final : lightrect
+struct BatchRect final : LightRect
 {
     uchar group;
     ushort idx;
 
     BatchRect() {}
     BatchRect(const lightinfo &l, ushort idx)
-      : lightrect(l),
+      : LightRect(l),
         group((l.shadowmap < 0 ? BatchFlag_NoShadow : 0) | (l.spot > 0 ? BatchFlag_Spotlight : 0)),
         idx(idx)
     {}
 };
 
-struct batchstack final : lightrect
+struct batchstack final : LightRect
 {
     ushort offset, numrects;
     uchar flags;
 
     batchstack() {}
-    batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : lightrect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
+    batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : LightRect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
 static void batchlights(const batchstack &initstack, std::vector<BatchRect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
@@ -3107,7 +3107,7 @@ static void batchlights(const batchstack &initstack, std::vector<BatchRect> &bat
         }
         ++lightbatchstacksused;
         int groups[BatchFlag_NoSun] = { 0 };
-        lightrect split(s);
+        LightRect split(s);
         ushort splitidx = USHRT_MAX;
         int outside = s.offset,
             inside  = s.offset + s.numrects;
