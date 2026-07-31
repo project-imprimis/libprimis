@@ -1265,8 +1265,8 @@ void ShadowAtlas::setup()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-const matrix4 cubeshadowviewmatrix[6] =
-{
+const std::array<matrix4, 6> cubeshadowviewmatrix =
+{{
     // sign-preserving cubemap projections
     matrix4(vec(0, 0, 1), vec(0, 1, 0), vec(-1, 0, 0)), // +X
     matrix4(vec(0, 0, 1), vec(0, 1, 0), vec( 1, 0, 0)), // -X
@@ -1274,7 +1274,7 @@ const matrix4 cubeshadowviewmatrix[6] =
     matrix4(vec(1, 0, 0), vec(0, 0, 1), vec(0,  1, 0)), // -Y
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0, -1)), // +Z
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0,  1))  // -Z
-};
+}};
 
 static constexpr int LightTile_MaxBatch = 8; //also used in lightbatchkey below
 
