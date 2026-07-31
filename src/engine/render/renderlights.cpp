@@ -3081,24 +3081,24 @@ struct BatchRect final : LightRect
     {}
 };
 
-struct batchstack final : LightRect
+struct BatchStack final : LightRect
 {
     ushort offset, numrects;
     uchar flags;
 
-    batchstack() {}
-    batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : LightRect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
+    BatchStack() {}
+    BatchStack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : LightRect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
-static void batchlights(const batchstack &initstack, std::vector<BatchRect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
+static void batchlights(const BatchStack &initstack, std::vector<BatchRect> &batchrects, int &lightbatchstacksused, int &lightbatchrectsused)
 {
     constexpr size_t stacksize = 32;
-    std::stack<batchstack> stack;
+    std::stack<BatchStack> stack;
     stack.push(initstack);
 
     while(stack.size() > 0)
     {
-        const batchstack s = stack.top();
+        const BatchStack s = stack.top();
         stack.pop();
         if(stack.size() + 5 > stacksize)
         {
@@ -3178,20 +3178,20 @@ static void batchlights(const batchstack &initstack, std::vector<BatchRect> &bat
 
             if(split.y1 > s.y1)
             {
-                stack.push(batchstack(s.x1, s.y1, s.x2, split.y1, outside, numoverlap, flags));
+                stack.push(BatchStack(s.x1, s.y1, s.x2, split.y1, outside, numoverlap, flags));
             }
             if(split.x1 > s.x1)
             {
-                stack.push(batchstack(s.x1, split.y1, split.x1, split.y2, outside, numoverlap, flags));
+                stack.push(BatchStack(s.x1, split.y1, split.x1, split.y2, outside, numoverlap, flags));
             }
-            stack.push(batchstack(split.x1, split.y1, split.x2, split.y2, outside, numoverlap, flags));
+            stack.push(BatchStack(split.x1, split.y1, split.x2, split.y2, outside, numoverlap, flags));
             if(split.x2 < s.x2)
             {
-                stack.push(batchstack(split.x2, split.y1, s.x2, split.y2, outside, numoverlap, flags));
+                stack.push(BatchStack(split.x2, split.y1, s.x2, split.y2, outside, numoverlap, flags));
             }
             if(split.y2 < s.y2)
             {
-                stack.push(batchstack(s.x1, split.y2, s.x2, s.y2, outside, numoverlap, flags));
+                stack.push(BatchStack(s.x1, split.y2, s.x2, s.y2, outside, numoverlap, flags));
             }
         }
     }
@@ -3218,7 +3218,7 @@ static void batchlights(std::vector<BatchRect> &batchrects, int &lightbatchstack
 
     if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
-        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects, lightbatchstacksused, lightbatchrectsused);
+        batchlights(BatchStack(0, 0, lighttilew, lighttileh, 0, batchrects.size()), batchrects, lightbatchstacksused, lightbatchrectsused);
         std::sort(lightbatches.begin(), lightbatches.end(), sortlightbatches);
     }
 
