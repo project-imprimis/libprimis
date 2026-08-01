@@ -215,18 +215,18 @@ struct partvert final
 
 static constexpr float collideradius = 8.0f;
 static constexpr float collideerror  = 1.0f;
-class partrenderer
+class PartRenderer
 {
     public:
-        partrenderer(const char *texname, int texclamp, int type, int stain = -1)
+        PartRenderer(const char *texname, int texclamp, int type, int stain = -1)
             : tex(nullptr), type(type), stain(stain), texname(texname), texclamp(texclamp)
         {
         }
-        partrenderer(int type, int stain = -1)
+        PartRenderer(int type, int stain = -1)
             : tex(nullptr), type(type), stain(stain), texname(""), texclamp(0)
         {
         }
-        virtual ~partrenderer()
+        virtual ~PartRenderer()
         {
         }
 
@@ -350,15 +350,15 @@ struct listparticle final : particle
 
 static VARP(outlinemeters, 0, 0, 1);
 
-class listrenderer : public partrenderer
+class listrenderer : public PartRenderer
 {
     public:
         listrenderer(const char *texname, int texclamp, int type, int stain = -1)
-            : partrenderer(texname, texclamp, type, stain), list(nullptr)
+            : PartRenderer(texname, texclamp, type, stain), list(nullptr)
         {
         }
         listrenderer(int type, int stain = -1)
-            : partrenderer(type, stain), list(nullptr)
+            : PartRenderer(type, stain), list(nullptr)
         {
         }
 
@@ -732,11 +732,11 @@ static void setcolor(float r, float g, float b, float a, partvert * vs)
 };
 
 template<int T>
-class varenderer final : public partrenderer
+class varenderer final : public PartRenderer
 {
     public:
         varenderer(const char *texname, int type, int stain = -1)
-            : partrenderer(texname, 3, type, stain),
+            : PartRenderer(texname, 3, type, stain),
               verts(nullptr), parts(nullptr), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
         {
             if(type & PT_HFLIP)
@@ -1260,7 +1260,7 @@ static FireballRenderer fireballs("media/particle/explosion.png"), pulsebursts("
 
 //end explosion code
 
-static partrenderer *parts[] =
+static PartRenderer *parts[] =
 {
     //unary pluses to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
     new varenderer<+PT_PART>("<grey>media/particle/blood.png", +PT_PART|+PT_FLIP|+PT_MOD|+PT_RND4|+PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
@@ -1387,7 +1387,7 @@ void GBuffer::renderparticles(int layer) const
 
     for(size_t i = 0; i < numparts(); ++i)
     {
-        partrenderer *p = parts[i];
+        PartRenderer *p = parts[i];
         if((p->parttype()&PT_NOLAYER) == excludemask || !p->haswork())
         {
             continue;
