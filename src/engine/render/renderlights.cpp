@@ -1346,7 +1346,7 @@ enum
     BatchFlag_NoSun     = 1<<2
 };
 
-struct lightbatch
+struct LightBatch
 {
     uchar flags, numlights;
     ushort lights[LightTile_MaxBatch];
@@ -1377,7 +1377,7 @@ struct lightbatch
 
 static std::vector<lightinfo> lights;
 static std::vector<int> lightorder;
-static std::vector<lightbatch> lightbatches;
+static std::vector<LightBatch> lightbatches;
 std::vector<ShadowMapInfo> shadowmaps;
 
 void clearshadowcache()
@@ -2274,7 +2274,7 @@ void GBuffer::renderlightbatches(Shader &s, int stencilref, bool transparent, fl
     static LightParamInfo li;
     for(size_t i = 0; i < lightbatches.size(); i++)
     {
-        const lightbatch &batch = lightbatches[i];
+        const LightBatch &batch = lightbatches[i];
         if(!batch.overlaps(btx1, bty1, btx2, bty2, tilemask))
         {
             continue;
@@ -3140,7 +3140,7 @@ static void batchlights(const BatchStack &initstack, std::vector<BatchRect> &bat
         {
             while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BatchFlag_NoSun))))
             {
-                lightbatch key;
+                LightBatch key;
                 key.flags = flags | g;
                 flags |= BatchFlag_NoSun;
 
@@ -3197,7 +3197,7 @@ static void batchlights(const BatchStack &initstack, std::vector<BatchRect> &bat
     }
 }
 
-static bool sortlightbatches(const lightbatch &x, const lightbatch &y)
+static bool sortlightbatches(const LightBatch &x, const LightBatch &y)
 {
     if(x.flags < y.flags)
     {
