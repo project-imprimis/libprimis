@@ -1020,10 +1020,10 @@ class varenderer final : public partrenderer
 static VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
 static VARP(softexplosionblend, 1, 16, 64);
 
-class fireballrenderer final : public listrenderer
+class FireballRenderer final : public listrenderer
 {
     public:
-        fireballrenderer(const char *newtexname)
+        FireballRenderer(const char *newtexname)
             : listrenderer(newtexname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
         {}
 
@@ -1256,7 +1256,7 @@ class fireballrenderer final : public listrenderer
         sphererenderer sr;
 
 };
-static fireballrenderer fireballs("media/particle/explosion.png"), pulsebursts("media/particle/pulse_burst.png");
+static FireballRenderer fireballs("media/particle/explosion.png"), pulsebursts("media/particle/pulse_burst.png");
 
 //end explosion code
 
