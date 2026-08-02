@@ -1129,7 +1129,7 @@ class FireballRenderer final : public listrenderer
         }
 
     private:
-        class sphererenderer final
+        class SphereRenderer final
         {
             public:
                 void cleanup()
@@ -1253,7 +1253,7 @@ class FireballRenderer final : public listrenderer
                     indices = nullptr;
                 }
         };
-        sphererenderer sr;
+        SphereRenderer sr;
 
 };
 static FireballRenderer fireballs("media/particle/explosion.png"), pulsebursts("media/particle/pulse_burst.png");
