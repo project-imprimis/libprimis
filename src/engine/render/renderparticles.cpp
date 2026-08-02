@@ -343,9 +343,9 @@ class PartRenderer
 
 };
 
-struct listparticle final : particle
+struct ListParticle final : particle
 {
-    listparticle *next;
+    ListParticle *next;
 };
 
 static VARP(outlinemeters, 0, 0, 1);
@@ -370,14 +370,14 @@ class ListRenderer : public PartRenderer
 
         virtual void startrender() = 0;
         virtual void endrender() = 0;
-        virtual void renderpart(const listparticle &p, const vec &o, int blend, int ts) = 0;
+        virtual void renderpart(const ListParticle &p, const vec &o, int blend, int ts) = 0;
 
         bool haswork() const final
         {
             return (list != nullptr);
         }
 
-        bool renderpart(listparticle *p)
+        bool renderpart(ListParticle *p)
         {
             vec o, d;
             int blend, ts;
@@ -399,7 +399,7 @@ class ListRenderer : public PartRenderer
             }
             if(canstep)
             {
-                for(listparticle **prev = &list, *p = list; p; p = *prev)
+                for(ListParticle **prev = &list, *p = list; p; p = *prev)
                 {
                     if(renderpart(p))
                     {
@@ -415,7 +415,7 @@ class ListRenderer : public PartRenderer
             }
             else
             {
-                for(listparticle *p = list; p; p = p->next)
+                for(ListParticle *p = list; p; p = p->next)
                 {
                     renderpart(p);
                 }
@@ -428,7 +428,7 @@ class ListRenderer : public PartRenderer
             {
                 return;
             }
-            listparticle *p = list;
+            ListParticle *p = list;
             for(;;)
             {
                 if(p->next)
@@ -451,7 +451,7 @@ class ListRenderer : public PartRenderer
             {
                 return;
             }
-            for(listparticle **prev = &list, *cur = list; cur; cur = *prev)
+            for(ListParticle **prev = &list, *cur = list; cur; cur = *prev)
             {
                 if(!owner || cur->owner==owner)
                 {
@@ -470,7 +470,7 @@ class ListRenderer : public PartRenderer
         {
             if(!parempty)
             {
-                listparticle *ps = new listparticle[256];
+                ListParticle *ps = new ListParticle[256];
                 for(int i = 0; i < 255; ++i)
                 {
                     ps[i].next = &ps[i+1];
@@ -478,7 +478,7 @@ class ListRenderer : public PartRenderer
                 ps[255].next = parempty;
                 parempty = ps;
             }
-            listparticle *p = parempty;
+            ListParticle *p = parempty;
             parempty = p->next;
             p->next = list;
             list = p;
@@ -497,18 +497,18 @@ class ListRenderer : public PartRenderer
         int count() const final
         {
             int num = 0;
-            const listparticle *lp;
+            const ListParticle *lp;
             for(lp = list; lp; lp = lp->next)
             {
                 num++;
             }
             return num;
         }
-        static listparticle *parempty;
-        listparticle *list;
+        static ListParticle *parempty;
+        ListParticle *list;
 };
 
-listparticle *ListRenderer::parempty = nullptr;
+ListParticle *ListRenderer::parempty = nullptr;
 
 class meterrenderer final : public ListRenderer
 {
@@ -538,7 +538,7 @@ class meterrenderer final : public ListRenderer
             glEnable(GL_BLEND);
         }
 
-        void renderpart(const listparticle &p, const vec &o, int, int) final
+        void renderpart(const ListParticle &p, const vec &o, int, int) final
         {
             int basetype = parttype()&0xFF;
             float scale  = FONTH*p.size/80.0f,
@@ -1058,7 +1058,7 @@ class FireballRenderer final : public ListRenderer
             pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
         }
 
-        void renderpart(const listparticle &p, const vec &o, int blend, int ts) final
+        void renderpart(const ListParticle &p, const vec &o, int blend, int ts) final
         {
             float pmax = p.val,
                   size = p.fade ? static_cast<float>(ts)/p.fade : 1,
