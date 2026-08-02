@@ -350,19 +350,19 @@ struct listparticle final : particle
 
 static VARP(outlinemeters, 0, 0, 1);
 
-class listrenderer : public PartRenderer
+class ListRenderer : public PartRenderer
 {
     public:
-        listrenderer(const char *texname, int texclamp, int type, int stain = -1)
+        ListRenderer(const char *texname, int texclamp, int type, int stain = -1)
             : PartRenderer(texname, texclamp, type, stain), list(nullptr)
         {
         }
-        listrenderer(int type, int stain = -1)
+        ListRenderer(int type, int stain = -1)
             : PartRenderer(type, stain), list(nullptr)
         {
         }
 
-        virtual ~listrenderer()
+        virtual ~ListRenderer()
         {
         }
 
@@ -508,13 +508,13 @@ class listrenderer : public PartRenderer
         listparticle *list;
 };
 
-listparticle *listrenderer::parempty = nullptr;
+listparticle *ListRenderer::parempty = nullptr;
 
-class meterrenderer final : public listrenderer
+class meterrenderer final : public ListRenderer
 {
     public:
         meterrenderer(int type)
-            : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
+            : ListRenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
         {
         }
 
@@ -1020,11 +1020,11 @@ class varenderer final : public PartRenderer
 static VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
 static VARP(softexplosionblend, 1, 16, 64);
 
-class FireballRenderer final : public listrenderer
+class FireballRenderer final : public ListRenderer
 {
     public:
         FireballRenderer(const char *newtexname)
-            : listrenderer(newtexname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
+            : ListRenderer(newtexname, 0, +PT_FIREBALL|+PT_SHADER) //unary plus to promote to an integer, c++20 deprecates arithmetic conversion on enums (see C++ doc P2864R2)
         {}
 
         static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
