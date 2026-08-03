@@ -4,6 +4,13 @@
 namespace lightsphere
 {
     extern void cleanup();
+
+    /**
+     * @brief Enables the lightsphere drawing mode.
+     *
+     * Sets up the lightsphere GL configuration. This should be called before `draw()`
+     * and should be cleaned up with `disable()`.
+     */
     extern void enable();
     extern void draw();
 
