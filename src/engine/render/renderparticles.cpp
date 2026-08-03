@@ -510,10 +510,10 @@ class ListRenderer : public PartRenderer
 
 ListParticle *ListRenderer::parempty = nullptr;
 
-class meterrenderer final : public ListRenderer
+class MeterRenderer final : public ListRenderer
 {
     public:
-        meterrenderer(int type)
+        MeterRenderer(int type)
             : ListRenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
         {
         }
@@ -608,7 +608,7 @@ class meterrenderer final : public ListRenderer
             gle::end();
         }
 };
-static meterrenderer meters(PT_METER),
+static MeterRenderer meters(PT_METER),
                      metervs(PT_METERVS);
 
 template<int T>
