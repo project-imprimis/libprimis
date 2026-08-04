@@ -18,6 +18,14 @@ namespace lightsphere
      * and should be cleaned up with `disable()`.
      */
     extern void enable();
+
+    /**
+     * @brief Draws the lightsphere effects setup in enable()
+     *
+     * The vertices rendered with draw() are counted in the extra verts var (`xtraverts`)
+     *
+     * This function should be called after `enable()` and followed by `disable()`.
+     */
     extern void draw();
 
     /**
