@@ -3,6 +3,12 @@
 
 namespace lightsphere
 {
+
+    /**
+     * @brief Frees the vbuf and ebuf objects used for lightsphere.
+     *
+     * The vbuf is the vertex buffer and the ebuf is the element buffer.
+     */
     extern void cleanup();
 
     /**
