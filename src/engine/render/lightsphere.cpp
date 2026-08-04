@@ -77,6 +77,7 @@ namespace lightsphere
             indices = nullptr;
         }
     }
+
     void cleanup()
     {
         if(vbuf)
