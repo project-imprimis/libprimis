@@ -33,12 +33,12 @@ namespace //internal functionality not seen by other files
 
     constexpr int numgrasswedges = 8;
 
-    struct grasswedge final
+    struct GrassWedge final
     {
         vec dir, across, edge1, edge2;
         plane bound1, bound2;
 
-        grasswedge(int i) :
+        GrassWedge(int i) :
           dir(2*M_PI*(i+0.5f)/static_cast<float>(numgrasswedges), 0),
           across(2*M_PI*((i+0.5f)/static_cast<float>(numgrasswedges) + 0.25f), 0),
           edge1(vec(2*M_PI*i/static_cast<float>(numgrasswedges), 0).div(std::cos(M_PI/numgrasswedges))),
@@ -50,7 +50,7 @@ namespace //internal functionality not seen by other files
         }
     };
 
-    std::array<grasswedge, numgrasswedges> grasswedges = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    std::array<GrassWedge, numgrasswedges> grasswedges = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
     struct grassvert final
     {
@@ -112,7 +112,7 @@ namespace //internal functionality not seen by other files
      * @brief w grass wedge geometry information
      * @brief tex the grass texture to apply
      */
-    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, const Texture *tex)
+    void gengrassquads(grassgroup *&group, const GrassWedge &w, const grasstri &g, const Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
         int tstep = static_cast<int>(std::ceil(t/grassstep));
@@ -318,7 +318,7 @@ namespace //internal functionality not seen by other files
                 s.grasstex = textureload(s.grass, 2);
             }
             grassgroup *group = nullptr;
-            for(const grasswedge &w : grasswedges)
+            for(const GrassWedge &w : grasswedges)
             {
                 if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
                 {
@@ -352,7 +352,7 @@ void generategrass()
         }
     }
 
-    for(grasswedge &w : grasswedges)
+    for(GrassWedge &w : grasswedges)
     {
         w.bound1.offset = -camera1->o.dot(w.bound1);
         w.bound2.offset = -camera1->o.dot(w.bound2);
