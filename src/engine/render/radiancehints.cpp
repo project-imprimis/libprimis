@@ -378,7 +378,7 @@ void clearradiancehintscache()
 
 bool useradiancehints()
 {
-    return !sunlight.iszero() && csm.getcsmproperty(cascadedshadowmap::ShadowMap) && gi && giscale && gidist;
+    return !sunlight.iszero() && csm.getcsmproperty(CascadedShadowMap::ShadowMap) && gi && giscale && gidist;
 }
 
 //============================= radiance hints object ==========================//

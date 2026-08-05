@@ -1,7 +1,7 @@
 #ifndef CSM_H_
 #define CSM_H_
 
-class cascadedshadowmap final
+class CascadedShadowMap final
 {
     public:
         static const int csmmaxsplits = 8;
@@ -90,7 +90,7 @@ class cascadedshadowmap final
          */
          const vec &getlightview() const;
 
-        cascadedshadowmap();
+        CascadedShadowMap();
 
     private:
         void updatesplitdist();         // compute split frustum distances
@@ -119,6 +119,6 @@ class cascadedshadowmap final
               csmpolyoffset2;
 };
 
-extern cascadedshadowmap csm;
+extern CascadedShadowMap csm;
 
 #endif

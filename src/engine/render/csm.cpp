@@ -23,11 +23,11 @@
 
 #include "world/light.h"
 
-cascadedshadowmap csm;
+CascadedShadowMap csm;
 
 //====================== cascaded shadow map object ============================//
 
-cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
+CascadedShadowMap::CascadedShadowMap() : csmmaxsize(768), csmnearplane(1),
     csmfarplane(1024), csmsplits(3), csmcull(true), csmshadowmap(true),
     csmsplitweight(0.75f), csmpradiustweak(1.f), csmdepthrange(1024.f),
     csmdepthmargin(0.1f), csmbias(1e-4f), csmbias2(2e-4f),
@@ -35,7 +35,7 @@ cascadedshadowmap::cascadedshadowmap() : csmmaxsize(768), csmnearplane(1),
 {
 }
 
-bool cascadedshadowmap::setcsmproperty(int index, float value)
+bool CascadedShadowMap::setcsmproperty(int index, float value)
 {
 
     switch(index)
@@ -128,7 +128,7 @@ bool cascadedshadowmap::setcsmproperty(int index, float value)
     }
 }
 
-float cascadedshadowmap::getcsmproperty(int index) const
+float CascadedShadowMap::getcsmproperty(int index) const
 {
     switch(index)
     {
@@ -203,17 +203,17 @@ float cascadedshadowmap::getcsmproperty(int index) const
     }
 }
 
-const matrix4 &cascadedshadowmap::getmodel() const
+const matrix4 &CascadedShadowMap::getmodel() const
 {
     return model;
 }
 
-const vec &cascadedshadowmap::getlightview() const
+const vec &CascadedShadowMap::getlightview() const
 {
     return lightview;
 }
 
-int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
+int CascadedShadowMap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull)
@@ -222,7 +222,7 @@ int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::SplitInfo &split = splits[i];
+        const CascadedShadowMap::SplitInfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
@@ -286,7 +286,7 @@ int cascadedshadowmap::calcbbsplits(const ivec &bbmin, const ivec &bbmax)
     return mask;
 }
 
-int cascadedshadowmap::calcspheresplits(const vec &center, float radius) const
+int CascadedShadowMap::calcspheresplits(const vec &center, float radius) const
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull)
@@ -295,7 +295,7 @@ int cascadedshadowmap::calcspheresplits(const vec &center, float radius) const
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::SplitInfo &split = splits[i];
+        const CascadedShadowMap::SplitInfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
@@ -328,7 +328,7 @@ int cascadedshadowmap::calcspheresplits(const vec &center, float radius) const
     return mask;
 }
 
-void cascadedshadowmap::updatesplitdist()
+void CascadedShadowMap::updatesplitdist()
 {
     const float lambda = csmsplitweight,
                 nd     = csmnearplane,
@@ -344,14 +344,14 @@ void cascadedshadowmap::updatesplitdist()
     splits[csmsplits-1].farplane = fd;
 }
 
-void cascadedshadowmap::getmodelmatrix()
+void CascadedShadowMap::getmodelmatrix()
 {
     model = viewmatrix;
     model.rotate_around_x(sunlightpitch/RAD);
     model.rotate_around_z((180-sunlightyaw)/RAD);
 }
 
-void cascadedshadowmap::getprojmatrix()
+void CascadedShadowMap::getprojmatrix()
 {
     lightview = vec(sunlightdir).neg();
 
@@ -401,7 +401,7 @@ void cascadedshadowmap::getprojmatrix()
     }
 }
 
-void cascadedshadowmap::gencullplanes()
+void CascadedShadowMap::gencullplanes()
 {
     for(int i = 0; i < csmsplits; ++i)
     {
@@ -418,7 +418,7 @@ void cascadedshadowmap::gencullplanes()
     }
 }
 
-void cascadedshadowmap::bindparams()
+void CascadedShadowMap::bindparams()
 {
     GLOBALPARAM(csmmatrix, matrix3(model));
 
@@ -428,7 +428,7 @@ void cascadedshadowmap::bindparams()
     vec  *csmoffsetv = csmoffset.reserve<vec>();
     for(int i = 0; i < csmsplits; ++i)
     {
-        cascadedshadowmap::SplitInfo &split = splits[i];
+        CascadedShadowMap::SplitInfo &split = splits[i];
         if(split.idx < 0)
         {
             continue;
@@ -443,7 +443,7 @@ void cascadedshadowmap::bindparams()
     GLOBALPARAMF(csmz, splits[0].center.z*-splits[0].scale.z, splits[0].scale.z);
 }
 
-void cascadedshadowmap::setup()
+void CascadedShadowMap::setup()
 {
     int size = (csmmaxsize * shadowatlaspacker.dimensions().x) / shadowatlassize;
     for(int i = 0; i < csmsplits; i++)
