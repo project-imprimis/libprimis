@@ -169,8 +169,11 @@ class ragdolldata final
         void init(const dynent *d);
 
     private:
-        int collisions, floating, unsticks;
-        float timestep, scale;
+        int collisions,
+            floating,
+            unsticks;
+        float timestep,
+              scale;
 
         std::vector<matrix3> rotfrictions;
 
