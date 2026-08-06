@@ -197,7 +197,7 @@ namespace batching
         int flags, batched;
     };
 
-    struct batchedmodel final
+    struct BatchedModel final
     {
         //orient = yaw, pitch, roll
         vec pos, orient, center;
@@ -213,14 +213,14 @@ namespace batching
         int next;
 
         void renderbatchedmodel(const model &m) const;
-        //sets bbmin and bbmax to the min/max of itself and the batchedmodel's bb
+        //sets bbmin and bbmax to the min/max of itself and the BatchedModel's bb
         void applybb(vec &bbmin, vec &bbmax) const;
         bool shadowmask(bool dynshadow);
 
         int rendertransparentmodel(const modelbatch &b, bool &rendered);
     };
 
-    static std::vector<batchedmodel> batchedmodels;
+    static std::vector<BatchedModel> batchedmodels;
     static std::vector<modelbatch> batches;
     static std::vector<modelattach> modelattached;
 
@@ -232,13 +232,13 @@ namespace batching
     }
 
     /**
-     * @brief Adds or modifies a batchedmodel with the specified model
+     * @brief Adds or modifies a BatchedModel with the specified model
      *
      * @param m the model to potentially assign to the batched model
      * @param bm the batched model to modify
      * @param idx the index value to set, if model `m` is already the model assigned to `bm`
      */
-    static void addbatchedmodel(model *m, batchedmodel &bm, int idx)
+    static void addbatchedmodel(model *m, BatchedModel &bm, int idx)
     {
         modelbatch *b = nullptr;
         if(batches.size() > static_cast<size_t>(m->batch))
@@ -262,7 +262,7 @@ namespace batching
         b->batched = idx;
     }
 
-    void batchedmodel::renderbatchedmodel(const model &m) const
+    void BatchedModel::renderbatchedmodel(const model &m) const
     {
         modelattach *a = nullptr;
         if(attached>=0)
@@ -285,7 +285,7 @@ namespace batching
         m.render(tempanim, basetime, basetime2, pos, orient.x, orient.y, orient.z, d, a, sizescale, colorscale);
     }
 
-    bool batchedmodel::shadowmask(bool dynshadow)
+    bool BatchedModel::shadowmask(bool dynshadow)
     {
         if(flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
         {
@@ -297,7 +297,7 @@ namespace batching
 
     void shadowmaskbatchedmodels(bool dynshadow)
     {
-        for(batchedmodel &b : batchedmodels)
+        for(BatchedModel &b : batchedmodels)
         {
             if(!b.shadowmask(dynshadow))
             {
@@ -309,7 +309,7 @@ namespace batching
     int batcheddynamicmodels()
     {
         int visible = 0;
-        for(const batchedmodel &b : batchedmodels)
+        for(const BatchedModel &b : batchedmodels)
         {
             if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
             {
@@ -325,7 +325,7 @@ namespace batching
             }
             for(int j = b.batched; j >= 0;)
             {
-                const batchedmodel &bm = batchedmodels[j];
+                const BatchedModel &bm = batchedmodels[j];
                 j = bm.next;
                 visible |= bm.visible;
             }
@@ -333,7 +333,7 @@ namespace batching
         return visible;
     }
 
-    void batchedmodel::applybb(vec &bbmin, vec &bbmax) const
+    void BatchedModel::applybb(vec &bbmin, vec &bbmax) const
     {
         bbmin.min(vec(center).sub(radius));
         bbmax.max(vec(center).add(radius));
@@ -342,7 +342,7 @@ namespace batching
     int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
     {
         int vis = 0;
-        for(const batchedmodel &b : batchedmodels)
+        for(const BatchedModel &b : batchedmodels)
         {
             if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
             {
@@ -362,7 +362,7 @@ namespace batching
             }
             for(int j = b.batched; j >= 0;)
             {
-                const batchedmodel &bm = batchedmodels[j];
+                const BatchedModel &bm = batchedmodels[j];
                 j = bm.next;
                 if(bm.visible&mask)
                 {
@@ -385,7 +385,7 @@ namespace batching
             bool rendered = false;
             for(int j = b.batched; j >= 0;)
             {
-                const batchedmodel &bm = batchedmodels[j];
+                const BatchedModel &bm = batchedmodels[j];
                 j = bm.next;
                 if(!(bm.visible&(1<<shadowside)))
                 {
@@ -418,7 +418,7 @@ namespace batching
             aamask::set(b.m->animated());
             for(int j = b.batched; j >= 0;)
             {
-                const batchedmodel &bm = batchedmodels[j];
+                const BatchedModel &bm = batchedmodels[j];
                 bm.renderbatchedmodel(*b.m);
                 j = bm.next;
             }
@@ -427,7 +427,7 @@ namespace batching
         aamask::disable();
     }
 
-    int batchedmodel::rendertransparentmodel(const modelbatch &b, bool &rendered)
+    int BatchedModel::rendertransparentmodel(const modelbatch &b, bool &rendered)
     {
         int j = next;
         culled = cullmodel(center, radius, flags, d);
@@ -468,7 +468,7 @@ namespace batching
             bool rendered = false;
             for(int j = b.batched; j >= 0;)
             {
-                batchedmodel &bm = batchedmodels[j];
+                BatchedModel &bm = batchedmodels[j];
                 bm.rendertransparentmodel(b, rendered);
             }
             if(rendered)
@@ -768,7 +768,7 @@ void GBuffer::rendermodelbatches()
         bool rendered = false;
         for(int j = b.batched; j >= 0;)
         {
-            batching::batchedmodel &bm = batching::batchedmodels[j];
+            batching::BatchedModel &bm = batching::batchedmodels[j];
             j = bm.next;
             bm.culled = cullmodel(bm.center, bm.radius, bm.flags, bm.d);
             if(bm.culled || bm.flags&Model_OnlyShadow)
@@ -817,7 +817,7 @@ void GBuffer::rendermodelbatches()
             bool queried = false;
             for(int j = b.batched; j >= 0;)
             {
-                batching::batchedmodel &bm = batching::batchedmodels[j];
+                batching::BatchedModel &bm = batching::batchedmodels[j];
                 j = bm.next;
                 if(bm.culled&(Model_CullOccluded|Model_CullQuery) && bm.flags&Model_CullQuery)
                 {
@@ -871,7 +871,7 @@ void Occluder::endmodelquery()
         aamask::set(!(b.flags&Model_Mapmodel) || b.m->animated());
         do
         {
-            const batching::batchedmodel &bm = batching::batchedmodels[j];
+            const batching::BatchedModel &bm = batching::batchedmodels[j];
             bm.renderbatchedmodel(*b.m);
             j = bm.next;
         } while(j >= modelquerymodels);
@@ -932,7 +932,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
         return;
     }
     batching::batchedmodels.emplace_back();
-    batching::batchedmodel &b = batching::batchedmodels.back();
+    batching::BatchedModel &b = batching::batchedmodels.back();
     b.pos = o;
     b.center = center;
     b.radius = radius;
@@ -1060,7 +1060,7 @@ hasboundbox:
     }
 
     batching::batchedmodels.emplace_back();
-    batching::batchedmodel &b = batching::batchedmodels.back();
+    batching::BatchedModel &b = batching::batchedmodels.back();
     b.pos = o;
     b.center = center;
     b.radius = radius;
