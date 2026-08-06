@@ -3132,6 +3132,14 @@ void genshadowmeshes()
     }
 }
 
+/**
+ * @brief Attemps to find a shadow mesh corresponding to the given index.
+ *
+ * The second parameter is ignored if the shadowmesh is not associated with a spotlight.
+ *
+ * @param idx the index associated with the shadowmesh
+ * @param e the associated extentity with the shadowmesh (if the shadowmesh is a spotlight)
+ */
 shadowmesh *findshadowmesh(int idx, const extentity &e)
 {
     std::unordered_map<int, shadowmesh>::iterator itr = shadowmeshes.find(idx);
