@@ -19,7 +19,7 @@
 #include "octaworld.h"
 #include "world.h"
 
-class hmap final
+class HeightMap final
 {
     public:
         void cancel()
@@ -541,10 +541,10 @@ class hmap final
         }
 } heightmapper;
 
-int hmap::brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &hmap::brushx, nullptr, 0); //max width for a brush
-int hmap::brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &hmap::brushy, nullptr, 0); //max length for a brush
+int HeightMap::brushx = variable("hbrushx", 0, maxbrush/2, maxbrush, &HeightMap::brushx, nullptr, 0); //max width for a brush
+int HeightMap::brushy = variable("hbrushy", 0, maxbrush/2, maxbrush, &HeightMap::brushy, nullptr, 0); //max length for a brush
 // free functions wrappers of member functions to bind commands to
-//imply existence of singleton instance of hmap
+//imply existence of singleton instance of HeightMap
 void hmapcancel()
 {
     heightmapper.cancel();
