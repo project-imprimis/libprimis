@@ -109,7 +109,7 @@ class StainRenderer final
         void clearstains()
         {
             startstain = endstain = 0;
-            for(stainbuffer &i : verts)
+            for(StainBuffer &i : verts)
             {
                 i.clear();
             }
@@ -133,7 +133,7 @@ class StainRenderer final
             startstain = d - stains;
             if(startstain == endstain)
             {
-                for(stainbuffer &i : verts)
+                for(StainBuffer &i : verts)
                 {
                     i.clear();
                 }
@@ -287,7 +287,7 @@ class StainRenderer final
 
         void cleanup()
         {
-            for(stainbuffer &i : verts)
+            for(StainBuffer &i : verts)
             {
                 i.cleanup();
             }
@@ -387,7 +387,7 @@ class StainRenderer final
             gentris(*world.worldroot, ivec(0, 0, 0), rootworld.mapsize()>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
-                stainbuffer &buf = verts[i];
+                StainBuffer &buf = verts[i];
                 if(buf.endvert == buf.lastvert)
                 {
                     continue;
@@ -453,7 +453,7 @@ class StainRenderer final
             stainvert dv1 = { v2[0], staincolor, vec2(pt.dot(v2[0]) + tu, pb.dot(v2[0]) + tv) },
                       dv2 = { v2[1], staincolor, vec2(pt.dot(v2[1]) + tu, pb.dot(v2[1]) + tv) };
             int totalverts = 3*(numv-2);
-            stainbuffer &buf = verts[StainBuffer_Mapmodel];
+            StainBuffer &buf = verts[StainBuffer_Mapmodel];
             if(totalverts > buf.maxverts-3)
             {
                 return;
@@ -502,14 +502,14 @@ class StainRenderer final
         };
         staininfo *stains;
 
-        class stainbuffer final
+        class StainBuffer final
         {
             public:
                 int maxverts, endvert, lastvert, availverts;
-                stainbuffer() : maxverts(0), endvert(0), lastvert(0), availverts(0), verts(nullptr), startvert(0), vbo(0), dirty(false)
+                StainBuffer() : maxverts(0), endvert(0), lastvert(0), availverts(0), verts(nullptr), startvert(0), vbo(0), dirty(false)
                 {}
 
-                ~stainbuffer()
+                ~StainBuffer()
                 {
                     delete[] verts;
                 }
@@ -675,7 +675,7 @@ class StainRenderer final
                 }
         };
 
-        std::array<stainbuffer, StainBuffer_Number> verts;
+        std::array<StainBuffer, StainBuffer_Number> verts;
 
         const char *texname;
 
@@ -987,7 +987,7 @@ class StainRenderer final
                 return;
             }
 
-            stainbuffer &buf = verts[mat || cu.material&Mat_Alpha ? StainBuffer_Transparent : StainBuffer_Opaque];
+            StainBuffer &buf = verts[mat || cu.material&Mat_Alpha ? StainBuffer_Transparent : StainBuffer_Opaque];
             for(int l = 0; l < numplanes; ++l) //note this is a loop l (level 4)
             {
                 const vec &n = planes[l];
