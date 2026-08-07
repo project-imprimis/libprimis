@@ -45,6 +45,12 @@ class ImageData final
          */
         int calclevelsize(int level) const;
 
+        /**
+         * @brief Ads a glow color to an existing imagedata object.
+         *
+         * @param g the imagedata to modify
+         * @param glowcolor the glow color to add
+         */
         void addglow(const ImageData &g, const vec &glowcolor);
 
         /**
