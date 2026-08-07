@@ -52,14 +52,14 @@ namespace //internal functionality not seen by other files
 
     std::array<GrassWedge, numgrasswedges> grasswedges = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-    struct grassvert final
+    struct GrassVert final
     {
         vec pos;
         vec4<uchar> color;
         vec2 tc;
     };
 
-    std::vector<grassvert> grassverts;
+    std::vector<GrassVert> grassverts;
     GLuint grassvbo = 0;
     int grassvbosize = 0;
 
@@ -276,7 +276,7 @@ namespace //internal functionality not seen by other files
             vec4<uchar> color(grasscolor, 255);
     //=====================================================================GRASSVERT
             #define GRASSVERT(n, tcv, modify) { \
-                grassvert gv; \
+                GrassVert gv; \
                 gv.pos = p##n; \
                 gv.color = color; \
                 gv.tc = vec2(tc##n, tcv); \
@@ -380,7 +380,7 @@ void generategrass()
         glGenBuffers(1, &grassvbo);
     }
     gle::bindvbo(grassvbo);
-    int size = grassverts.size()*sizeof(grassvert);
+    int size = grassverts.size()*sizeof(GrassVert);
     grassvbosize = std::max(grassvbosize, size);
     glBufferData(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : nullptr, GL_STREAM_DRAW);
     if(size != grassvbosize)
@@ -405,10 +405,10 @@ void rendergrass()
 
     gle::bindvbo(grassvbo);
 
-    const grassvert *ptr = nullptr;
-    gle::vertexpointer(sizeof(grassvert), ptr->pos.data());
-    gle::colorpointer(sizeof(grassvert), ptr->color.data());
-    gle::texcoord0pointer(sizeof(grassvert), ptr->tc.data());
+    const GrassVert *ptr = nullptr;
+    gle::vertexpointer(sizeof(GrassVert), ptr->pos.data());
+    gle::colorpointer(sizeof(GrassVert), ptr->color.data());
+    gle::texcoord0pointer(sizeof(GrassVert), ptr->tc.data());
     gle::enablevertex();
     gle::enablecolor();
     gle::enabletexcoord0();
