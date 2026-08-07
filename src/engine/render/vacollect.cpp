@@ -354,7 +354,7 @@ class vacollect final
         vec skymin, skymax;
         vec alphamin, alphamax;
         vec refractmin, refractmax;
-        std::vector<grasstri> grasstris;
+        std::vector<GrassTri> grasstris;
         int worldtris, skytris;
         std::vector<ushort> skyindices;
         std::unordered_map<SortKey, sortval> indices;
@@ -1268,7 +1268,7 @@ void vacollect::addtris(const VSlot &vslot, int orient, const SortKey &key, vert
 void vacollect::addgrasstri(int face, const vertex *verts, int numv, ushort texture)
 {
     grasstris.emplace_back();
-    grasstri &g = grasstris.back();
+    GrassTri &g = grasstris.back();
     int i1, i2, i3, i4;
     if(numv <= 3 && face%2)
     {

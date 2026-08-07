@@ -34,7 +34,7 @@ struct ElementSet final
     ushort length, minvert, maxvert;
 };
 
-struct grasstri final
+struct GrassTri final
 {
     std::array<vec, 4> v;
     int numv;
@@ -84,7 +84,7 @@ class vtxarray final
         uchar curvfc, occluded;
         occludequery *query;
         std::vector<octaentities *> mapmodels, decals;
-        std::vector<grasstri> grasstris;
+        std::vector<GrassTri> grasstris;
         int hasmerges, mergelevel;
         int shadowmask;
         void updatevabb(bool force = false);

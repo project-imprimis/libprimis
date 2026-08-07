@@ -67,7 +67,7 @@ namespace //internal functionality not seen by other files
 
     struct grassgroup final
     {
-        const grasstri *tri;
+        const GrassTri *tri;
         int tex,
             offset,
             numquads;
@@ -112,7 +112,7 @@ namespace //internal functionality not seen by other files
      * @brief w grass wedge geometry information
      * @brief tex the grass texture to apply
      */
-    void gengrassquads(grassgroup *&group, const GrassWedge &w, const grasstri &g, const Texture *tex)
+    void gengrassquads(grassgroup *&group, const GrassWedge &w, const GrassTri &g, const Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
         int tstep = static_cast<int>(std::ceil(t/grassstep));
@@ -297,7 +297,7 @@ namespace //internal functionality not seen by other files
     // generates grass geometry for a given vertex array
     void gengrassquads(const vtxarray &va)
     {
-        for(const grasstri &g : va.grasstris)
+        for(const GrassTri &g : va.grasstris)
         {
             if(view.isfoggedsphere(g.radius, g.center))
             {
