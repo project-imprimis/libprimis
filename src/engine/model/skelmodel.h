@@ -435,16 +435,16 @@ struct skelmodel : animmodel
             };
             std::vector<pitchtarget> pitchtargets; //vector of pitch target objects, added to models via pitchtarget command
 
-            struct pitchcorrect final
+            struct PitchCorrect final
             {
                 int bone, parent;
                 size_t target; //an index in skeleton::pitchtargets vector
                 float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
-                pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
-                pitchcorrect();
+                PitchCorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
+                PitchCorrect();
             };
-            std::vector<pitchcorrect> pitchcorrects; //vector pitch correct objects, added to models via pitchcorrect command
+            std::vector<PitchCorrect> pitchcorrects; //vector pitch correct objects, added to models via PitchCorrect command
 
             std::vector<skelcacheentry> skelcache;
 
@@ -509,7 +509,7 @@ struct skelmodel : animmodel
             bool addtag(std::string_view name, int bone, const matrix4x3 &matrix);
 
             /**
-             * @brief Returns the first pitchcorrect index in skeleton::pitchcorrects with matching bone
+             * @brief Returns the first PitchCorrect index in skeleton::pitchcorrects with matching bone
              *
              * @param bone the bone to search for
              *
@@ -1098,7 +1098,7 @@ struct skelcommands : modelcommands<MDL>
     typedef class  MDL::skelpart part;
     typedef struct MDL::skelanimspec animspec;
     typedef struct MDL::skeleton::pitchtarget pitchtarget;
-    typedef struct MDL::skeleton::pitchcorrect pitchcorrect;
+    typedef struct MDL::skeleton::PitchCorrect PitchCorrect;
 
     //unused second param
     static void loadpart(const char *meshfile, const char *, const float *smooth)
@@ -1257,7 +1257,7 @@ struct skelcommands : modelcommands<MDL>
      *
      * @param name the name of the bone to pitch correct
      * @param targetname the name of the bone to target
-     * @param scale the scale to apply to the pitchcorrect
+     * @param scale the scale to apply to the PitchCorrect
      * @param pitchmin the minimum pitch to apply
      * @param pitchmax the maximum pitch to apply
      */
@@ -1303,7 +1303,7 @@ struct skelcommands : modelcommands<MDL>
             conoutf("could not find pitch target %s to pitch correct %s", targetname, name);
             return;
         }
-        pitchcorrect c(*bone, *target, *pitchmin, *pitchmax, *scale);
+        PitchCorrect c(*bone, *target, *pitchmin, *pitchmax, *scale);
         size_t pos = skel->pitchcorrects.size();
         for(size_t i = 0; i < skel->pitchcorrects.size(); i++)
         {

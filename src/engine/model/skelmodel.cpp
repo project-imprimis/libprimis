@@ -92,15 +92,15 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
     return !(*this == c);
 }
 
-//pitchcorrect
+//PitchCorrect
 
-skelmodel::skeleton::pitchcorrect::pitchcorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax) :
+skelmodel::skeleton::PitchCorrect::PitchCorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax) :
     bone(bone), parent (-1), target(target), pitchmin(pitchmin), pitchmax(pitchmax),
     pitchscale(pitchscale), pitchangle(0), pitchtotal(0)
 {
 }
 
-skelmodel::skeleton::pitchcorrect::pitchcorrect() : parent(-1), pitchangle(0), pitchtotal(0)
+skelmodel::skeleton::PitchCorrect::PitchCorrect() : parent(-1), pitchangle(0), pitchtotal(0)
 {
 }
 
@@ -472,7 +472,7 @@ void skelmodel::skeleton::initpitchdeps()
     }
     for(size_t i = 0; i < pitchcorrects.size(); i++)
     {
-        pitchcorrect &c = pitchcorrects[i];
+        PitchCorrect &c = pitchcorrects[i];
         bones[c.bone].correctindex = i;
         c.parent = -1;
         for(int parent = c.bone;;)
@@ -583,7 +583,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
     {
         t.deviated = calcdeviation(axis, forward, t.pose, pitchdeps[t.deps].pose);
     }
-    for(pitchcorrect &c : pitchcorrects)
+    for(PitchCorrect &c : pitchcorrects)
     {
         c.pitchangle = c.pitchtotal = 0;
     }
@@ -599,7 +599,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         {
             tpitch = std::clamp(tpitch, t.pitchmin, t.pitchmax);
         }
-        for(pitchcorrect& c : pitchcorrects)
+        for(PitchCorrect& c : pitchcorrects)
         {
             if(c.target != j)
             {
