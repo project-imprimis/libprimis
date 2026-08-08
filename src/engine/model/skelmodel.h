@@ -426,14 +426,14 @@ struct skelmodel : animmodel
             std::vector<skelanimspec> skelanims;
             ragdollskel *ragdoll; //optional ragdoll object if ragdoll is in effect
 
-            struct pitchtarget final
+            struct PitchTarget final
             {
                 size_t bone; //an index in skeleton::bones
                 int frame, corrects, deps;
                 float pitchmin, pitchmax, deviated;
                 dualquat pose;
             };
-            std::vector<pitchtarget> pitchtargets; //vector of pitch target objects, added to models via pitchtarget command
+            std::vector<PitchTarget> pitchtargets; //vector of pitch target objects, added to models via PitchTarget command
 
             struct PitchCorrect final
             {
@@ -1097,7 +1097,7 @@ struct skelcommands : modelcommands<MDL>
     typedef class  MDL::skelmeshgroup meshgroup;
     typedef class  MDL::skelpart part;
     typedef struct MDL::skelanimspec animspec;
-    typedef struct MDL::skeleton::pitchtarget pitchtarget;
+    typedef struct MDL::skeleton::PitchTarget PitchTarget;
     typedef struct MDL::skeleton::PitchCorrect PitchCorrect;
 
     //unused second param
@@ -1237,14 +1237,14 @@ struct skelcommands : modelcommands<MDL>
             conoutf("could not find bone %s to pitch target", name);
             return;
         }
-        for(const pitchtarget &i : skel->pitchtargets)
+        for(const PitchTarget &i : skel->pitchtargets)
         {
             if(i.bone == *bone)
             {
                 return;
             }
         }
-        pitchtarget t;
+        PitchTarget t;
         t.bone = *bone;
         t.frame = sa->frame + std::clamp(*frameoffset, 0, sa->range-1);
         t.pitchmin = *pitchmin;

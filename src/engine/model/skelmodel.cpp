@@ -433,7 +433,7 @@ void skelmodel::skeleton::initpitchdeps()
     {
         return;
     }
-    for(pitchtarget &t : pitchtargets)
+    for(PitchTarget &t : pitchtargets)
     {
         t.deps = -1;
         addpitchdep(t.bone, t.frame);
@@ -451,7 +451,7 @@ void skelmodel::skeleton::initpitchdeps()
             }
         }
     }
-    for(pitchtarget &t : pitchtargets)
+    for(PitchTarget &t : pitchtargets)
     {
         std::optional<size_t> j = findpitchdep(t.bone);
         if(j)
@@ -579,7 +579,7 @@ float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, co
 
 void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const vec &forward)
 {
-    for(pitchtarget &t : pitchtargets)
+    for(PitchTarget &t : pitchtargets)
     {
         t.deviated = calcdeviation(axis, forward, t.pose, pitchdeps[t.deps].pose);
     }
@@ -589,7 +589,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
     }
     for(size_t j = 0; j < pitchtargets.size(); j++)
     {
-        const pitchtarget &t = pitchtargets[j];
+        const PitchTarget &t = pitchtargets[j];
         float tpitch = pitch - t.deviated;
         for(int parent = t.corrects; parent >= 0; parent = pitchcorrects[parent].parent)
         {
