@@ -68,7 +68,7 @@ struct obj final : vertloader<obj>
          * it only exists to call its constructor which adds commands to the cubescript
          * ident hash table of the given template type (obj)
          */
-        static vertcommands<obj> objcommands;
+        static VertCommands<obj> objcommands;
 };
 
 #endif
