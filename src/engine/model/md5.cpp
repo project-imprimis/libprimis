@@ -115,7 +115,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
     // skel->bones, this->adjustments, this->frame, skel->framebones
     struct md5hierarchy final
     {
-        string name;
+        std::string name;
         int parent, flags, start;
     };
     std::vector<md5hierarchy> hierarchy; //metadata used only within this function
@@ -179,9 +179,11 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
             while(f->getline(buf.data(), buf.size()) && buf[0]!='}') //loop until end of {} block
             {
                 md5hierarchy h;
-                if(std::sscanf(buf.data(), " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
+                char name[260];
+                if(std::sscanf(buf.data(), " %100s %d %d %d", name, &h.parent, &h.flags, &h.start)==4)
                 {
-                    hierarchy.push_back(std::move(h));
+                    h.name = std::string(name);
+                    hierarchy.push_back(h);
                 }
             }
         }
