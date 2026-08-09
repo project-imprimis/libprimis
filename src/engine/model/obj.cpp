@@ -92,7 +92,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     std::vector<tcvert> tcverts;
     std::vector<tri> tris;
 
-    string meshname = "";
+    std::string meshname = "";
     vertmesh *curmesh = nullptr;
     while(file->getline(buf.data(), buf.size()))
     {
@@ -139,7 +139,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 {
                     namelen--;
                 }
-                copystring(meshname, name, std::min(namelen+1, sizeof(meshname)));
+                meshname = std::string(name);
                 if(curmesh)
                 {
                     flushmesh(*curmesh, verts, tcverts, tris, attrib[2], smooth);
@@ -152,7 +152,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 if(!curmesh)
                 {
                     //startmesh
-                    vertmesh &m = *new vertmesh(meshname[0] ? std::string(meshname) : "", this);
+                    vertmesh &m = *new vertmesh(meshname.empty() ? meshname : "", this);
                     meshes.push_back(&m);
                     curmesh = &m;
                     verthash.clear();
