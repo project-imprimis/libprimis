@@ -42,7 +42,7 @@
 
 skelcommands<gltf> gltf::gltfcommands;
 
-gltf::gltf(std::string name) : skelloader(name)
+gltf::gltf(std::string name) : SkelLoader(name)
 {
 }
 
