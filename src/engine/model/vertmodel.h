@@ -269,9 +269,9 @@ class vertmodel : public animmodel
 };
 
 template<class MDL>
-struct vertloader : modelloader<MDL, vertmodel>
+struct VertLoader : modelloader<MDL, vertmodel>
 {
-    vertloader(std::string name) : modelloader<MDL, vertmodel>(name) {}
+    VertLoader(std::string name) : modelloader<MDL, vertmodel>(name) {}
 };
 
 template<class MDL>

@@ -1,7 +1,7 @@
 #ifndef OBJ_H_
 #define OBJ_H_
 
-struct obj final : vertloader<obj>
+struct obj final : VertLoader<obj>
 {
     obj(std::string name);
 

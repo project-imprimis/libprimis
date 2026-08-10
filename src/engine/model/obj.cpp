@@ -42,7 +42,7 @@
 
 VertCommands<obj> obj::objcommands;
 
-obj::obj(std::string name) : vertloader(name)
+obj::obj(std::string name) : VertLoader(name)
 {
 }
 
