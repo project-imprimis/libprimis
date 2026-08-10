@@ -1067,19 +1067,19 @@ class skeladjustment final
 };
 
 template<class MDL>
-struct skelloader : modelloader<MDL, skelmodel>
+struct SkelLoader : modelloader<MDL, skelmodel>
 {
     static std::vector<skeladjustment> adjustments;
     static std::vector<uchar> hitzones;
 
-    skelloader(std::string name) : modelloader<MDL, skelmodel>(name) {}
+    SkelLoader(std::string name) : modelloader<MDL, skelmodel>(name) {}
 };
 
 template<class MDL>
-std::vector<skeladjustment> skelloader<MDL>::adjustments;
+std::vector<skeladjustment> SkelLoader<MDL>::adjustments;
 
 template<class MDL>
-std::vector<uchar> skelloader<MDL>::hitzones;
+std::vector<uchar> SkelLoader<MDL>::hitzones;
 
 /**
  * @brief Defines skeletal commands for a chosen type of skeletal model format.

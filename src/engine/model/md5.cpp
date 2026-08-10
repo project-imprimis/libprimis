@@ -46,7 +46,7 @@ static constexpr int md5version = 10;
 
 skelcommands<md5> md5::md5commands;
 
-md5::md5(std::string name) : skelloader(name) {}
+md5::md5(std::string name) : SkelLoader(name) {}
 
 const char *md5::formatname()
 {

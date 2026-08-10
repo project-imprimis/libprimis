@@ -43,7 +43,7 @@ enum ModelType
  *              |                 |
  *              v                 v
  *          /------------\        /------------\
- *          | skelloader |        | vertloader |
+ *          | SkelLoader |        | vertloader |
  *          \------------/        \------------/
  *     _______|    |                           |
  *    |            v     /---------------\     v

@@ -852,7 +852,7 @@ class animmodel : public model
  * object from a transactional format, it is intended to be a child template class
  * of an animmodel derivative (the BASE template parameter)
  *
- * skelloader is a specialization of this class which uses modelloader to load
+ * SkelLoader is a specialization of this class which uses modelloader to load
  * a skeletal model
  *
  */
