@@ -124,7 +124,7 @@ void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) con
 {
     for(int j = 0; j < numverts; ++j)
     {
-        vec v = m.transform(verts[j].pos);
+        const vec v = m.transform(verts[j].pos);
         bbmin.min(v);
         bbmax.max(v);
     }
