@@ -34,13 +34,13 @@ class vertmodel : public animmodel
             std::array<uint, 3> vert;
         };
 
-        struct vbocacheentry final
+        struct VBOCacheEntry final
         {
             GLuint vbuf;
             AnimState as;
             int millis;
 
-            vbocacheentry();
+            VBOCacheEntry();
         };
 
         struct vertmesh : Mesh
@@ -188,7 +188,7 @@ class vertmodel : public animmodel
             size_t numtags;
 
             static constexpr size_t maxvbocache = 16;
-            std::array<vbocacheentry, 16> vbocache;
+            std::array<VBOCacheEntry, 16> vbocache;
 
             GLuint ebuf;
             int vlen, vertsize;
@@ -209,10 +209,10 @@ class vertmodel : public animmodel
             int totalframes() const final;
             void calctagmatrix(const part *p, int i, const AnimState &as, matrix4 &matrix) const;
 
-            void genvbo(vbocacheentry &vc);
+            void genvbo(VBOCacheEntry &vc);
 
             template<class T>
-            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
+            void bindvbo(const AnimState *as, const part *p, const VBOCacheEntry &vc)
             {
                 const T *vverts = 0;
                 bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -242,7 +242,7 @@ class vertmodel : public animmodel
                 }
             }
 
-            void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
+            void bindvbo(const AnimState *as, const part *p, const VBOCacheEntry &vc);
             /**
              * @brief Returns a pointer to this object.
              *

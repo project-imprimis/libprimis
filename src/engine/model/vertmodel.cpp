@@ -67,10 +67,10 @@ vertmodel::vertmodel(std::string name) : animmodel(std::move(name))
 }
 
 //==============================================================================
-// vertmodel::vbocacheentry object
+// vertmodel::VBOCacheEntry object
 //==============================================================================
 
-vertmodel::vbocacheentry::vbocacheentry() : vbuf(0)
+vertmodel::VBOCacheEntry::VBOCacheEntry() : vbuf(0)
 {
     as.cur.fr1 = as.prev.fr1 = -1;
 }
@@ -293,7 +293,7 @@ void vertmodel::vertmeshgroup::calctagmatrix(const part *p, int i, const AnimSta
     matrix = matrix4(tag);
 }
 
-void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
+void vertmodel::vertmeshgroup::genvbo(VBOCacheEntry &vc)
 {
     if(!vc.vbuf)
     {
@@ -359,7 +359,7 @@ void vertmodel::vertmeshgroup::genvbo(vbocacheentry &vc)
     gle::clearebo();
 }
 
-void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
+void vertmodel::vertmeshgroup::bindvbo(const AnimState *as, const part *p, const VBOCacheEntry &vc)
 {
     if(numframes>1)
     {
@@ -380,7 +380,7 @@ void vertmodel::vertmeshgroup::cleanup()
 {
     for(size_t i = 0; i < maxvbocache; ++i)
     {
-        vbocacheentry &c = vbocache[i];
+        VBOCacheEntry &c = vbocache[i];
         if(c.vbuf)
         {
             glDeleteBuffers(1, &c.vbuf);
@@ -417,7 +417,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
         }
         return;
     }
-    vbocacheentry *vc = nullptr;
+    VBOCacheEntry *vc = nullptr;
     if(numframes<=1)
     {
         vc = vbocache.data();
@@ -426,7 +426,7 @@ void vertmodel::vertmeshgroup::render(const AnimState *as, float, const vec &, c
     {
         for(size_t i = 0; i < maxvbocache; ++i)
         {
-            vbocacheentry &c = vbocache[i];
+            VBOCacheEntry &c = vbocache[i];
             if(!c.vbuf)
             {
                 continue;
