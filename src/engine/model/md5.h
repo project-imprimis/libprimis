@@ -90,6 +90,8 @@ class md5 final : public SkelLoader<md5>
                  * @param filename path to the md5 file to open
                  * @param smooth if set, factor for normal smoothing
                  * @param p model part to load to
+                 *
+                 * @return true if the mesh loaded, false otherwise
                  */
                 bool loadmesh(std::string_view filename, float smooth, part &p);
 
