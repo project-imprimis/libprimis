@@ -84,6 +84,13 @@ class md5 final : public SkelLoader<md5>
                 const skelanimspec * loadanim(const std::string &filename) final;
 
             private:
+                /**
+                 * @brief Loads an MD5 file into a mesh.
+                 *
+                 * @param filename path to the md5 file to open
+                 * @param smooth if set, factor for normal smoothing
+                 * @param p model part to load to
+                 */
                 bool loadmesh(std::string_view filename, float smooth, part &p);
                 bool load(std::string_view meshfile, float smooth, part &p) final;
         };
