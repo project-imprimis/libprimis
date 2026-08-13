@@ -195,14 +195,14 @@ static constexpr int dynentcachesize = 1024;
 
 static size_t dynentframe = 0;
 
-struct dynentcacheentry final
+struct DynEntCacheEntry final
 {
     int x, y;
     size_t frame;
     std::vector<const physent *> dynents;
 };
 
-static std::array<dynentcacheentry, dynentcachesize> dynentcache;
+static std::array<DynEntCacheEntry, dynentcachesize> dynentcache;
 
 //resets the dynentcache[] array entries
 //used in iengine
@@ -242,7 +242,7 @@ static int dynenthash(int x, int y)
 
 static const std::vector<const physent *> &checkdynentcache(int x, int y)
 {
-    dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
+    DynEntCacheEntry &dec = dynentcache[dynenthash(x, y)];
     if(dec.x == x && dec.y == y && dec.frame == dynentframe)
     {
         return dec.dynents;
@@ -279,7 +279,7 @@ void updatedynentcache(physent *d)
 {
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
-        dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
+        DynEntCacheEntry &dec = dynentcache[dynenthash(x, y)];
         if(dec.x != x || dec.y != y || dec.frame != dynentframe || (std::find(dec.dynents.begin(), dec.dynents.end(), d) != dec.dynents.end()))
         {
             continue;
