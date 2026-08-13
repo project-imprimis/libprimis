@@ -1090,7 +1090,7 @@ std::vector<uchar> SkelLoader<MDL>::hitzones;
  *
  */
 template<class MDL>
-struct skelcommands : modelcommands<MDL>
+struct SkelCommands : modelcommands<MDL>
 {
     typedef modelcommands<MDL> commands;
     typedef class  MDL::skeleton skeleton;
@@ -1649,7 +1649,7 @@ struct skelcommands : modelcommands<MDL>
         ragdoll->animjoints = *on!=0;
     }
 
-    skelcommands()
+    SkelCommands()
     {
         if(MDL::multiparted())
         {

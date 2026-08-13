@@ -52,17 +52,17 @@ enum ModelType
  * \----/  |  \-----/        |        |       \-----/ |
  *  ^ |    |   |             v        v            |  |
  *  | |    |   | /--------------\ /--------------\ |  |
- *  | |    |   | | skelcommands | | VertCommands | |  |
+ *  | |    |   | | SkelCommands | | VertCommands | |  |
  *  | |    |   | \--------------/ \--------------/ |  |
  *  | |    |   |   |           |               |   |  |
  *  | |    |   v   v           |               v   v  |
  *  | | /-------------------\  | /-------------------\
- *  | | | skelcommands<md5> |  | | VertCommands<obj> |
+ *  | | | SkelCommands<md5> |  | | VertCommands<obj> |
  *  | | | md5::md5commands  |  | | obj::objcommands  |
  *  | | \---static field----/  | \---static field----/
  *  | v                       /
  *  /--------------------\   /
- *  | skelcommands<gltf> |<-/
+ *  | SkelCommands<gltf> |<-/
  *  | gltf::gltfcommands |
  *  \----static field----/
  */

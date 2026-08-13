@@ -142,7 +142,7 @@ class md5 final : public SkelLoader<md5>
                 int numweights;
                 md5vert *vertinfo;
         };
-        static skelcommands<md5> md5commands;
+        static SkelCommands<md5> md5commands;
 
         skelmeshgroup *newmeshes() final;
 };

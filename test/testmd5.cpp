@@ -36,9 +36,9 @@ namespace
         m->startload();
         assert(md5::loading == m);
         std::printf("model dir: %s\n", md5::dir.c_str());
-        skelcommands<md5>::setdir("pulserifle");
+        SkelCommands<md5>::setdir("pulserifle");
         float smooth = 0;
-        skelcommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
+        SkelCommands<md5>::loadpart("pulserifle.md5mesh", nullptr, &smooth);
 
         return m;
     }
@@ -164,11 +164,11 @@ namespace
 
         float pos = 0;
 
-        skelcommands<md5>::settag("X_pulse_muzzle", "tag_muzzle", &pos, &pos, &pos, &pos, &pos, &pos);
+        SkelCommands<md5>::settag("X_pulse_muzzle", "tag_muzzle", &pos, &pos, &pos, &pos, &pos, &pos);
         skelmodel::skeleton *s = static_cast<skelmodel::skelmeshgroup *>(&(m->parts[0]->meshes[0]))->skel;
         assert(s->findtag("tag_muzzle") == 0);
 
-        skelcommands<md5>::settag("X_pulse_base", "base", &pos, &pos, &pos, &pos, &pos, &pos);
+        SkelCommands<md5>::settag("X_pulse_base", "base", &pos, &pos, &pos, &pos, &pos, &pos);
         s = static_cast<skelmodel::skelmeshgroup *>(&(m->parts[0]->meshes[0]))->skel;
         assert(s->findtag("base") == 1);
 
@@ -188,7 +188,7 @@ namespace
         float speed = 30;
         int priority = 0;
         int offsets = 0;
-        skelcommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
+        SkelCommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         assert(m->animated() == true);
         assert(p->animated() == true);
@@ -215,8 +215,8 @@ namespace
         int frameoffset = 1;
         float pitchmin = 1.f,
               pitchmax = 2.f;
-        skelcommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
-        skelcommands<md5>::setpitchtarget("X_pulse_muzzle", "pulserifle.md5anim", &frameoffset, &pitchmin, &pitchmax);
+        SkelCommands<md5>::setanim("pulserifle", "pulserifle.md5anim", &speed, &priority, &offsets, &offsets);
+        SkelCommands<md5>::setpitchtarget("X_pulse_muzzle", "pulserifle.md5anim", &frameoffset, &pitchmin, &pitchmax);
         m->loaded();
         m->endload();
 
@@ -239,7 +239,7 @@ namespace
         assert(p->numanimparts == 1);
         assert(p->partmask.size() == 0);
 
-        skelcommands<md5>::setanimpart("X_pulse_base");
+        SkelCommands<md5>::setanimpart("X_pulse_base");
 
         assert(p->numanimparts == 2);
         assert(p->partmask.size() == 0);
@@ -261,10 +261,10 @@ namespace
         md5 *m = generate_md5_model();
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         p->initskins();
-        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+        SkelCommands<md5>::setskin("*", "blank.png", "blank.png");
 
         assert(p->skins.size() == 1);
-        auto skinlist = skelcommands<md5>::getskins("*");
+        auto skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).tex != nullptr);
         assert((*skinlist[0]).tex->w == 8);
@@ -290,9 +290,9 @@ namespace
 
         md5 *m = generate_md5_model();
 
-        skelcommands<md5>::setbumpmap("*", "blank.png");
+        SkelCommands<md5>::setbumpmap("*", "blank.png");
 
-        auto skinlist = skelcommands<md5>::getskins("*");
+        auto skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).normalmap != nullptr);
         assert((*skinlist[0]).normalmap->w == 8);
@@ -316,9 +316,9 @@ namespace
 
         md5 *m = generate_md5_model();
 
-        skelcommands<md5>::setdecal("*", "blank.png");
+        SkelCommands<md5>::setdecal("*", "blank.png");
 
-        auto skinlist = skelcommands<md5>::getskins("*");
+        auto skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).decal != nullptr);
         assert((*skinlist[0]).decal->w == 8);
@@ -339,7 +339,7 @@ namespace
         md5 *m = generate_md5_model();
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         p->initskins();
-        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+        SkelCommands<md5>::setskin("*", "blank.png", "blank.png");
 
         m->preloadBIH(); //needs a mask texture to run
 
@@ -355,7 +355,7 @@ namespace
         md5 *m = generate_md5_model();
         skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(m->parts[0]);
         p->initskins();
-        skelcommands<md5>::setskin("*", "blank.png", "blank.png");
+        SkelCommands<md5>::setskin("*", "blank.png", "blank.png");
 
         m->setBIH(); //needs a mask texture to run
 

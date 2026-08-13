@@ -89,7 +89,7 @@ class gltf final : public SkelLoader<gltf>
                 void load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir);
         };
 
-        static skelcommands<gltf> gltfcommands;
+        static SkelCommands<gltf> gltfcommands;
 
         skelmeshgroup *newmeshes() final;
 };

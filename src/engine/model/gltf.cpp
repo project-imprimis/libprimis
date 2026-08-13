@@ -40,7 +40,7 @@
 #include "gltf.h"
 #include "gltfloader.h"
 
-skelcommands<gltf> gltf::gltfcommands;
+SkelCommands<gltf> gltf::gltfcommands;
 
 gltf::gltf(std::string name) : SkelLoader(name)
 {
