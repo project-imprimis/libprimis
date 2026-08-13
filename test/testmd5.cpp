@@ -264,7 +264,7 @@ namespace
         SkelCommands<md5>::setskin("*", "blank.png", "blank.png");
 
         assert(p->skins.size() == 1);
-        auto skinlist = SkelCommands<md5>::getskins("*");
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).tex != nullptr);
         assert((*skinlist[0]).tex->w == 8);
@@ -292,7 +292,7 @@ namespace
 
         SkelCommands<md5>::setbumpmap("*", "blank.png");
 
-        auto skinlist = SkelCommands<md5>::getskins("*");
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).normalmap != nullptr);
         assert((*skinlist[0]).normalmap->w == 8);
@@ -318,7 +318,7 @@ namespace
 
         SkelCommands<md5>::setdecal("*", "blank.png");
 
-        auto skinlist = SkelCommands<md5>::getskins("*");
+        std::vector<std::vector<animmodel::skin>::iterator> skinlist = SkelCommands<md5>::getskins("*");
         assert(skinlist.size() == 1);
         assert((*skinlist[0]).decal != nullptr);
         assert((*skinlist[0]).decal->w == 8);
