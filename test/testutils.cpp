@@ -125,7 +125,7 @@ namespace
     void test_cpath()
     {
         //note: <command> tests do not behave the same way as std::string path
-        static const char * test_cases[][2] =
+        static std::array<const char *, 2> test_cases[] =
         {
             {
                 "data/textures/image.png",
