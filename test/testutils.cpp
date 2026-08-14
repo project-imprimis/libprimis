@@ -233,7 +233,7 @@ namespace
 
     void test_fixpackagedir()
     {
-        static const char * test_cases[][2] =
+        static std::array<const char *, 2> test_cases[] =
         {
             {
                 "data/textures",
