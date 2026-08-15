@@ -65,7 +65,7 @@ int md5::type() const
 
 md5::skelmeshgroup *md5::newmeshes()
 {
-    return new md5meshgroup;
+    return new MD5MeshGroup;
 }
 
 bool md5::loaddefaultparts()
@@ -88,16 +88,16 @@ bool md5::loaddefaultparts()
     mdl.initskins();
     std::string animname = modelpath;
     animname.append(modelname()).append("/").append(fname).append(".md5anim");
-    static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
+    static_cast<MD5MeshGroup *>(mdl.meshes)->loadanim(path(animname));
     return true;
 }
 
-md5::md5meshgroup::md5meshgroup()
+md5::MD5MeshGroup::MD5MeshGroup()
 {
 }
 
 //main anim loading functionality
-const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename)
+const md5::skelanimspec *md5::MD5MeshGroup::loadanim(const std::string &filename)
 {
     {
         const skelanimspec *sa = skel->findskelanim(filename);
@@ -307,7 +307,7 @@ const md5::skelanimspec *md5::md5meshgroup::loadanim(const std::string &filename
     return sas;
 }
 
-bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &p)
+bool md5::MD5MeshGroup::loadmesh(std::string_view filename, float smooth, part &p)
 {
     stream *f = openfile(filename.data(), "r");
     if(!f) //immediately bail if no file present
@@ -458,7 +458,7 @@ bool md5::md5meshgroup::loadmesh(std::string_view filename, float smooth, part &
     return true;
 }
 
-bool md5::md5meshgroup::load(std::string_view meshfile, float smooth, part &p)
+bool md5::MD5MeshGroup::load(std::string_view meshfile, float smooth, part &p)
 {
     name = meshfile;
 

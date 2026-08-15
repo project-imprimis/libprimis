@@ -76,10 +76,10 @@ class md5 final : public SkelLoader<md5>
             uint start, count;
         };
 
-        class md5meshgroup final : public skelmeshgroup
+        class MD5MeshGroup final : public skelmeshgroup
         {
             public:
-                md5meshgroup();
+                MD5MeshGroup();
                 //main anim loading functionality
                 const skelanimspec * loadanim(const std::string &filename) final;
 
