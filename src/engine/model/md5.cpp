@@ -407,7 +407,7 @@ bool md5::MD5MeshGroup::loadmesh(std::string_view filename, float smooth, part &
         //load up meshes
         else if(std::strstr(buf.data(), "mesh {"))
         {
-            md5mesh *m = new md5mesh("", this); //we will set its name later
+            MD5Mesh *m = new MD5Mesh("", this); //we will set its name later
             meshes.push_back(m);
 
             std::string modeldir(filename);
@@ -438,7 +438,7 @@ bool md5::MD5MeshGroup::loadmesh(std::string_view filename, float smooth, part &
     }
     for(size_t i = 0; i < meshes.size(); i++)
     {
-        md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
+        MD5Mesh &m = *static_cast<MD5Mesh *>(meshes[i]);
         m.buildverts(basejoints);
         if(smooth <= 1)
         {
@@ -469,7 +469,7 @@ bool md5::MD5MeshGroup::load(std::string_view meshfile, float smooth, part &p)
     return true;
 }
 
-md5::md5mesh::md5mesh(std::string_view name, meshgroup *m) :
+md5::MD5Mesh::MD5Mesh(std::string_view name, meshgroup *m) :
     skelmesh(name, nullptr, 0, nullptr, 0, m),
     weightinfo(nullptr),
     numweights(0),
@@ -477,12 +477,12 @@ md5::md5mesh::md5mesh(std::string_view name, meshgroup *m) :
 {
 }
 
-md5::md5mesh::~md5mesh()
+md5::MD5Mesh::~MD5Mesh()
 {
     cleanup();
 }
 
-void md5::md5mesh::cleanup()
+void md5::MD5Mesh::cleanup()
 {
     delete[] weightinfo;
     delete[] vertinfo;
@@ -490,7 +490,7 @@ void md5::md5mesh::cleanup()
     weightinfo = nullptr;
 }
 
-void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
+void md5::MD5Mesh::buildverts(const std::vector<md5joint> &joints)
 {
     for(int i = 0; i < numverts; ++i)
     {
@@ -522,7 +522,7 @@ void md5::md5mesh::buildverts(const std::vector<md5joint> &joints)
 }
 
 //md5 model loader
-void  md5::md5mesh::load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir)
+void  md5::MD5Mesh::load(stream *f, char *buf, size_t bufsize, part &p, const std::string &modeldir)
 {
     md5weight w;
     md5vert v;

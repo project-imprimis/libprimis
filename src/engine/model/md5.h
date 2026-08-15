@@ -36,11 +36,11 @@ class md5 final : public SkelLoader<md5>
         int type() const final;
 
         /**
-         * @brief Attempts to load an md5mesh with default parameters.
+         * @brief Attempts to load an MD5Mesh with default parameters.
          *
          * - adds a skelpart to the current model
-         * - attempts to add the md5mesh file at the path indicated by the model's name
-         * - the path and md5mesh file name should be the same (e.g. foo/foo.md5mesh)
+         * - attempts to add the MD5Mesh file at the path indicated by the model's name
+         * - the path and MD5Mesh file name should be the same (e.g. foo/foo.MD5Mesh)
          *
          * @return true if the mesh was successfully added
          * @return false if no mesh was added (such as if no file found)
@@ -112,11 +112,11 @@ class md5 final : public SkelLoader<md5>
 
 
         //extensions to skelmesh objects for md5 specifically
-        class md5mesh final : public skelmesh
+        class MD5Mesh final : public skelmesh
         {
             public:
-                md5mesh(std::string_view name, meshgroup *m);
-                ~md5mesh();
+                MD5Mesh(std::string_view name, meshgroup *m);
+                ~MD5Mesh();
                 /**
                  * @brief Cleans up the heap allocated vertex and weight information
                  *
