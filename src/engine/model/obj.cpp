@@ -71,7 +71,7 @@ bool obj::skeletal() const
     return false;
 }
 
-bool obj::objmeshgroup::load(const char *filename, float smooth)
+bool obj::OBJMeshGroup::load(const char *filename, float smooth)
 {
     int len = std::strlen(filename);
     if(len < 4 || strcasecmp(&filename[len-4], ".obj")) //note: strcasecmp is not in std namespace, it is POSIX
@@ -242,7 +242,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     return true;
 }
 
-void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
+void obj::OBJMeshGroup::parsevert(char *s, std::vector<vec> &out)
 {
     out.emplace_back(0, 0, 0);
     vec &v = out.back();
@@ -264,7 +264,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(vertmesh &curmesh,
+void obj::OBJMeshGroup::flushmesh(vertmesh &curmesh,
                                   const std::vector<vert> &verts,
                                   const std::vector<tcvert> &tcverts,
                                   const std::vector<tri> &tris,
@@ -326,5 +326,5 @@ bool obj::loaddefaultparts()
 
 vertmodel::vertmeshgroup *obj::newmeshes()
 {
-    return new objmeshgroup;
+    return new OBJMeshGroup;
 }

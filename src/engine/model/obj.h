@@ -42,7 +42,7 @@ struct obj final : VertLoader<obj>
      */
     bool skeletal() const final;
 
-    struct objmeshgroup final : vertmeshgroup
+    struct OBJMeshGroup final : vertmeshgroup
     {
         public:
             bool load(const char *filename, float smooth) final;
