@@ -205,7 +205,7 @@ class ImageData final
         void texreorient(bool flipx, bool flipy, bool swapxy, int type = 0);
         void texrotate(int numrots, int type = 0);
         void texoffset(int xoffset, int yoffset);
-        void texcrop(int x, int y, int w, int h);
+        void texcrop(int xpos, int ypos, int width, int height);
         void texcolorify(const vec &color, vec weights);
         void texcolormask(const vec &color1, const vec &color2);
         void texdup(int srcchan, int dstchan);

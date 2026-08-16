@@ -374,22 +374,22 @@ void ImageData::texoffset(int xoffset, int yoffset)
     replace(d);
 }
 
-void ImageData::texcrop(int x, int y, int w, int h)
+void ImageData::texcrop(int xpos, int ypos, int width, int height)
 {
-    x = std::clamp(x, 0, w);
-    y = std::clamp(y, 0, h);
-    w = std::min(w < 0 ? w : w, w - x);
-    h = std::min(h < 0 ? h : h, h - y);
-    if(!w || !h)
+    xpos = std::clamp(xpos, 0, width);
+    ypos = std::clamp(ypos, 0, height);
+    width = std::min(width < 0 ? width : width, width - xpos);
+    height = std::min(height < 0 ? height : height, height - ypos);
+    if(!width || !height)
     {
         return;
     }
-    ImageData d(w, h, bpp);
-    uchar *src = data + y*pitch + x*bpp,
+    ImageData d(width, height, bpp);
+    uchar *src = data + ypos*pitch + xpos*bpp,
           *dst = d.data;
-    for(int y = 0; y < h; ++y)
+    for(int ypos = 0; ypos < height; ++ypos)
     {
-        std::memcpy(dst, src, w*bpp);
+        std::memcpy(dst, src, width*bpp);
         src += pitch;
         dst += d.pitch;
     }
