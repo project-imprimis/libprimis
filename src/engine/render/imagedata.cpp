@@ -1029,9 +1029,10 @@ void ImageData::reorientnormals(uchar * RESTRICT src, int sw, int sh, int surfac
     uchar *srcrow = src;
     for(int i = 0; i < sh; ++i)
     {
-        for(uchar *curdst = dst, *src = srcrow, *end = &srcrow[sw*surfacebpp]; src < end;)
+        for(uchar *curdst = dst, *cursrc = srcrow, *end = &srcrow[sw*surfacebpp]; cursrc < end;)
         {
-            uchar nx = *src++, ny = *src++;
+            uchar nx = *cursrc++,
+                  ny = *cursrc++;
             if(flipx)
             {
                 nx = 255-nx;
@@ -1046,10 +1047,10 @@ void ImageData::reorientnormals(uchar * RESTRICT src, int sw, int sh, int surfac
             }
             curdst[0] = nx;
             curdst[1] = ny;
-            curdst[2] = *src++;
+            curdst[2] = *cursrc++;
             if(surfacebpp > 3)
             {
-                curdst[3] = *src++;
+                curdst[3] = *cursrc++;
             }
             curdst += stridex;
         }
