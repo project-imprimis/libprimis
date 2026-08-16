@@ -514,6 +514,13 @@ void ImageData::texgrey()
     replace(d);
 }
 
+/**
+ * @brief Applies alpha intensity onto color channel(s).
+ *
+ * Applies to the grayscale channel if there is two channels, and applies to the
+ * R,G,B channels if there are four channels. Scales down the values in the non-
+ * alpha channels, scaled by the value of the alpha channel for that pixel.
+ */
 void ImageData::texpremul()
 {
     switch(bpp)
