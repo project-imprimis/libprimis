@@ -387,7 +387,7 @@ void ImageData::texcrop(int xpos, int ypos, int width, int height)
     ImageData d(width, height, bpp);
     uchar *src = data + ypos*pitch + xpos*bpp,
           *dst = d.data;
-    for(int ypos = 0; ypos < height; ++ypos)
+    for(int yrow = 0; yrow < height; ++yrow)
     {
         std::memcpy(dst, src, width*bpp);
         src += pitch;
