@@ -253,12 +253,12 @@ namespace //internal functionality not seen by other files
 
             if(!group)
             {
-                grassgroup group;
-                group.tri = &g;
-                group.tex = tex->id;
-                group.offset = grassverts.size()/4;
-                group.numquads = 0;
-                grassgroups.push_back(group);
+                grassgroup newgroup;
+                newgroup.tri = &g;
+                newgroup.tex = tex->id;
+                newgroup.offset = grassverts.size()/4;
+                newgroup.numquads = 0;
+                grassgroups.push_back(newgroup);
                 if(lastgrassanim!=lastmillis)
                 {
                     animategrass();
