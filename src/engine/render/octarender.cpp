@@ -493,10 +493,10 @@ void destroyva(vtxarray *va, bool reparent)
     {
         if(va->parent)
         {
-            std::vector<vtxarray *>::iterator itr = std::find(va->parent->children.begin(), va->parent->children.end(), va);
-            if(itr != va->parent->children.end())
+            std::vector<vtxarray *>::iterator vaitr = std::find(va->parent->children.begin(), va->parent->children.end(), va);
+            if(vaitr != va->parent->children.end())
             {
-                va->parent->children.erase(itr);
+                va->parent->children.erase(vaitr);
             }
         }
         for(size_t i = 0; i < va->children.size(); i++)
