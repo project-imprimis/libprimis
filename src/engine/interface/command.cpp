@@ -1658,7 +1658,7 @@ static char *conc(std::vector<char> &buf, const tagval *v, int n, bool space, co
         {
             buf.push_back(s[j]);
         }
-        if(j == n-1)
+        if(i == n-1)
         {
             break;
         }
