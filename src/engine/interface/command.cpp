@@ -1012,22 +1012,22 @@ void alias(const char *name, const char *str)
 
 // variables and commands are registered through globals, see cube.h
 
-int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags)
+int variable(const char *name, int min, int curval, int max, int *storage, identfun fun, int flags)
 {
     addident(ident(Id_Var, name, min, max, storage, reinterpret_cast<void *>(fun), flags));
-    return cur;
+    return curval;
 }
 
-float fvariable(const char *name, float min, float cur, float max, float *storage, identfun fun, int flags)
+float fvariable(const char *name, float min, float curval, float max, float *storage, identfun fun, int flags)
 {
     addident(ident(Id_FloatVar, name, min, max, storage, reinterpret_cast<void *>(fun), flags));
-    return cur;
+    return curval;
 }
 
-char *svariable(const char *name, const char *cur, char **storage, identfun fun, int flags)
+char *svariable(const char *name, const char *curval, char **storage, identfun fun, int flags)
 {
     addident(ident(Id_StringVar, name, storage, reinterpret_cast<void *>(fun), flags));
-    return newstring(cur);
+    return newstring(curval);
 }
 
 struct DefVar final : identval
