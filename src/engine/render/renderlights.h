@@ -220,7 +220,7 @@ class GBuffer final
 
         std::array<uint, lighttilemaxheight> alphatiles;
 
-        bool transparentlayer;
+        bool transparentlayer,
              inoq,
              gdepthinit,
              hdrfloat,
