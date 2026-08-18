@@ -1654,11 +1654,11 @@ static char *conc(std::vector<char> &buf, const tagval *v, int n, bool space, co
         }
         len = static_cast<int>(std::strlen(s));
     haslen:
-        for(int i = 0; i < len; ++i)
+        for(int j = 0; j < len; ++j)
         {
-            buf.push_back(s[i]);
+            buf.push_back(s[j]);
         }
-        if(i == n-1)
+        if(j == n-1)
         {
             break;
         }
