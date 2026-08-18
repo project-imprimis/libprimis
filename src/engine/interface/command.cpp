@@ -5359,13 +5359,13 @@ static const uint *runcode(const uint *code, tagval &result)
                     { \
                         id->alias.code = compilecode(id->getstr()); \
                     } \
-                    uint *code = id->alias.code; \
-                    code[0] += 0x100; \
-                    runcode(code+1, result); \
-                    code[0] -= 0x100; \
-                    if(static_cast<int>(code[0]) < 0x100) \
+                    uint *callcode = id->alias.code; \
+                    callcode[0] += 0x100; \
+                    runcode(callcode+1, result); \
+                    callcode[0] -= 0x100; \
+                    if(static_cast<int>(callcode[0]) < 0x100) \
                     { \
-                        delete[] code; \
+                        delete[] callcode; \
                     } \
                     aliasstack = aliaslink.next; \
                     identflags = oldflags; \
