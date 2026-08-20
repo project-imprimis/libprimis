@@ -796,9 +796,9 @@ void explodelist(const char *s, std::vector<std::string> &elems, int limit)
     const char *start, *end, *qstart;
     while((limit < 0 || static_cast<int>(elems.size()) < limit) && parselist(s, start, end, qstart))
     {
-        char *s = listelem(start, end, qstart);
-        elems.push_back(std::string(s));
-        delete[] s;
+        char *elem = listelem(start, end, qstart);
+        elems.push_back(std::string(elem));
+        delete[] elem;
     }
 }
 
