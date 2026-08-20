@@ -417,11 +417,11 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
         b.v1 = b.v2 = p.verts[0].y;
         for(int i = 1; i < p.numverts; i++)
         {
-            const pvert &v = p.verts[i];
-            b.u1 = std::min(b.u1, v.x);
-            b.u2 = std::max(b.u2, v.x);
-            b.v1 = std::min(b.v1, v.y);
-            b.v2 = std::max(b.v2, v.y);
+            const pvert &pv = p.verts[i];
+            b.u1 = std::min(b.u1, pv.x);
+            b.u2 = std::max(b.u2, pv.x);
+            b.v1 = std::min(b.v1, pv.y);
+            b.v2 = std::max(b.v2, pv.y);
         }
         if(mincubeface(*this, orient, o, size, b) && p.clippoly(b))
         {
