@@ -477,13 +477,13 @@ namespace
         }
     }
 
-    float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
+    float drawconlines(int skip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
     {
         int numl = conlines.size(),
-            offsetlines = std::min(conskip, numl);
+            offsetlines = std::min(skip, numl);
         if(confade)
         {
-            if(!conskip)
+            if(!skip)
             {
                 numl = 0;
                 for(int i = conlines.size(); --i >=0;) //note reverse iteration
