@@ -118,7 +118,7 @@ class CompletionFinder final
         char *prependstring(char *d, const char *s, size_t len) const;
 };
 
-CompletionFinder::FilesVal::FilesVal(int type, std::string dir, std::string ext) : type(type), dir(dir), ext(ext[0] ? std::string(ext) : ""), millis(-1)
+CompletionFinder::FilesVal::FilesVal(int newtype, std::string newdir, std::string newext) : type(newtype), dir(newdir), ext(newext[0] ? std::string(newext) : ""), millis(-1)
 {
 }
 
