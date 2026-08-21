@@ -429,17 +429,17 @@ void floatret(float v)
 
 const char *numberstr(double v)
 {
-    auto numberformat = [] (char *buf, double v)
+    auto numberformat = [] (char *buf, double val)
     {
-        int i = static_cast<int>(v);
+        int i = static_cast<int>(val);
         constexpr int len = 20;
-        if(v == i)
+        if(val == i)
         {
             nformatstring(buf, len, "%d", i);
         }
         else
         {
-            nformatstring(buf, len, "%.7g", v);
+            nformatstring(buf, len, "%.7g", val);
         }
     };
 
