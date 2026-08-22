@@ -26,7 +26,7 @@ struct FilesKey final
     const std::string dir,
                       ext;
 
-    FilesKey(int type, const std::string &dir, const std::string &ext) : type(type), dir(dir), ext(ext) {}
+    FilesKey(int newtype, const std::string &newdir, const std::string &newext) : type(newtype), dir(newdir), ext(newext) {}
 
     bool operator==(const FilesKey &y) const
     {
