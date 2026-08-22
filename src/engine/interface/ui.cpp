@@ -2549,11 +2549,11 @@ namespace UI
     {
         vec2 a, b, c;
 
-        void setup(const Color &color_, float w = 0, float h = 0, int angle = 0, int type_ = SOLID)
+        void setup(const Color &color_, float width = 0, float height = 0, int angle = 0, int type_ = SOLID)
         {
-            a = vec2(0, -h*2.0f/3);
-            b = vec2(-w/2, h/3);
-            c = vec2(w/2, h/3);
+            a = vec2(0, -height*2.0f/3);
+            b = vec2(-width/2, height/3);
+            c = vec2(width/2, height/3);
             if(angle)
             {
                 vec2 rot = sincosmod360(-angle);
