@@ -139,15 +139,15 @@ bool gltf::GLTFMeshGroup::loadmesh(const char *filename, float, part &p)
                 tris[i].vert[1] = indices[i][1];
                 tris[i].vert[2] = indices[i][2];
             }
-            //if able to create the verts/tris arrays without throwing, create new gltfmesh
-            gltfmesh *m = new gltfmesh(newstring(meshname.c_str()), verts, numverts, tris, numtris, this);
+            //if able to create the verts/tris arrays without throwing, create new GLTFMesh
+            GLTFMesh *m = new GLTFMesh(newstring(meshname.c_str()), verts, numverts, tris, numtris, this);
             meshes.push_back(m);
             p.initskins(notexture, notexture, meshes.size());
 
         }
         for(size_t i = 0; i < meshes.size(); i++)
         {
-            gltfmesh &m = *static_cast<gltfmesh *>(meshes[i]);
+            GLTFMesh &m = *static_cast<GLTFMesh *>(meshes[i]);
             m.buildnorms();
             m.calctangents();
             m.cleanup();
@@ -179,16 +179,16 @@ bool gltf::GLTFMeshGroup::load(std::string_view meshfile, float smooth, part &p)
     return true;
 }
 
-gltf::gltfmesh::gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) :
+gltf::GLTFMesh::GLTFMesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) :
     skelmesh(name, verts, numverts, tris, numtris, m)
 {
 }
 
-gltf::gltfmesh::~gltfmesh()
+gltf::GLTFMesh::~GLTFMesh()
 {
     cleanup();
 }
 
-void gltf::gltfmesh::cleanup()
+void gltf::GLTFMesh::cleanup()
 {
 }

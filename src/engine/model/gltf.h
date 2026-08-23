@@ -78,11 +78,11 @@ class gltf final : public SkelLoader<gltf>
 
 
         //extensions to skelmesh objects for gltf specifically
-        class gltfmesh final : public skelmesh
+        class GLTFMesh final : public skelmesh
         {
             public:
-                gltfmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
-                ~gltfmesh();
+                GLTFMesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
+                ~GLTFMesh();
                 void cleanup();
                 void buildverts(const std::vector<GLTFJoint> &joints);
                 //gltf model loader
