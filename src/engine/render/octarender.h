@@ -134,6 +134,15 @@ extern void clearvas(std::array<cube, 8> &c);
  * @param reparent whether to reassign child arrays to va's parent
  */
 extern void destroyva(vtxarray *va, bool reparent = true);
+
+/**
+ * @brief Updates vertex array bounding boxes.
+ *
+ * Updates vertex array bounding boxes recursively from the root va object down
+ * to all children.
+ *
+ * @param force if true, resets the worldmin/max globals and passes true to updatevabb
+ */
 extern void updatevabbs(bool force = false);
 
 #endif

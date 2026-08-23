@@ -590,7 +590,6 @@ void vtxarray::updatevabb(bool force)
     worldmax.max(bbmax);
 }
 
-//update vertex array bounding boxes recursively from the root va object down to all children
 void updatevabbs(bool force)
 {
     if(force)
