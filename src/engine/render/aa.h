@@ -16,6 +16,17 @@ extern matrix4 nojittermatrix; /// matrix without aa jitter applied
  * @param h height of aa buffer in pixels
  */
 extern void setupaa(GBuffer &buf, int w, int h);
+
+
+/**
+ * @brief Shifts the projection matrix for use in TQAA.
+ *
+ * Quincunx AA requires offsetting pixels by half a pixel to create the cross shape
+ * used in that algorithm.
+ *
+ * This function copies the old projection matrix to the nojittermatrix global, to
+ * allow resetting the projection matrix at a later time.
+ */
 extern void jitteraa();
 
 namespace aamask
