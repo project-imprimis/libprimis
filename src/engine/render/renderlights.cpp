@@ -977,6 +977,13 @@ class lightinfo final
             return (flags&LightEnt_NoSpecular) != 0;
         }
 
+        /**
+         * @brief Returns whether this lightinfo has the volumetric flag set.
+         *
+         * Checks the flags field against the LightEnt_Volumetric bitfield.
+         *
+         * @return true if the volumetric field is present, false otherwise
+         */
         bool volumetric() const
         {
             return (flags&LightEnt_Volumetric) != 0;
