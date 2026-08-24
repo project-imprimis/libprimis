@@ -967,6 +967,16 @@ class lightinfo final
             calcscissor();
         }
 
+        /**
+         * @brief Returns whether this lightinfo should have shadows enabled.
+         *
+         * Checks the flags field against the LightEnt_NoShadow bitfield. Also checks
+         * if the radius of the light is below the shadow map minimum radius. If
+         * the light has noshadow enabled or the radius of the light is too low,
+         * returns true.
+         *
+         * @return true if noshadow should be enabled.
+         */
         bool noshadow() const
         {
             return flags&LightEnt_NoShadow || radius <= smminradius;
