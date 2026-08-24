@@ -972,6 +972,13 @@ class lightinfo final
             return flags&LightEnt_NoShadow || radius <= smminradius;
         }
 
+        /**
+         * @brief Returns whether this lightinfo has the specular flag set.
+         *
+         * Checks the flags field against the LightEnt_NoSpecular bitfield.
+         *
+         * @return true if the nospecular field is present, false otherwise
+         */
         bool nospec() const
         {
             return (flags&LightEnt_NoSpecular) != 0;
