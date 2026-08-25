@@ -30,6 +30,11 @@ extern int mesa_swap_bug;
 extern int maxdualdrawbufs;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
+/**
+ * @brief Returns the width of the screen.
+ *
+ * @return screen width
+ */
 extern int hudw();
 extern int hudh();
 
