@@ -433,6 +433,13 @@ extern void setuplights(GBuffer &buf);
  * @return true if any debug buffer was drawn, false otherwise.
  */
 extern bool debuglights();
+
+/**
+ * @brief Cleans up light related effects.
+ *
+ * Cleans up bloom, AO, volumetrics, the shadow atlas, radiance hints, lightsphere,
+ * and antialiasing effects.
+ */
 extern void cleanuplights();
 
 extern int avatarmask;
