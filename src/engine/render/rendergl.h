@@ -36,6 +36,12 @@ extern physent *camera1;                // special ent that acts as camera, same
  * @return screen width
  */
 extern int hudw();
+
+/**
+ * @brief Returns the height of the screen.
+ *
+ * @return screen height
+ */
 extern int hudh();
 
 extern vec camdir();
