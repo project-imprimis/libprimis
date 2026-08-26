@@ -189,7 +189,7 @@ class GlobalShaderParam final
 class LocalShaderParam final
 {
     public:
-        LocalShaderParam(const char *name);
+        LocalShaderParam(const char *newname);
         void setf(float x = 0, float y = 0, float z = 0, float w = 0) const;
         void set(const vec &v, float w = 0) const;
         void set(const vec4<float> &v) const;

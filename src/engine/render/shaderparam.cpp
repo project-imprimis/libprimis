@@ -84,7 +84,7 @@ std::map<std::string, GlobalShaderParamState> globalparams;
 
 //localshaderparam
 
-LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1)
+LocalShaderParam::LocalShaderParam(const char *newname) : name(newname), loc(-1)
 {
 }
 
