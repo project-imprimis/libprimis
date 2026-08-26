@@ -30,7 +30,7 @@ struct GlobalShaderParamState final
 };
 
 extern std::map<std::string, GlobalShaderParamState> globalparams;
-extern GlobalShaderParamState *getglobalparam(const char *name);
+extern GlobalShaderParamState *getglobalparam(const char *paramname);
 
 struct ShaderParamBinding
 {
