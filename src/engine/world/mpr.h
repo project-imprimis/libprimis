@@ -143,7 +143,7 @@ namespace mpr
      */
     struct EntFuzzy : Ent
     {
-        EntFuzzy(const physent *ent) : Ent(ent) {}
+        EntFuzzy(const physent *newent) : Ent(newent) {}
 
         float left()   const;
         float right()  const;
@@ -155,7 +155,7 @@ namespace mpr
 
     struct EntCylinder final : EntFuzzy
     {
-        EntCylinder(const physent *ent) : EntFuzzy(ent) {}
+        EntCylinder(const physent *newent) : EntFuzzy(newent) {}
 
         vec contactface(const vec &n, const vec &dir) const;
         vec supportpoint(const vec &n) const;
@@ -163,14 +163,14 @@ namespace mpr
 
     struct EntCapsule final : EntFuzzy
     {
-        EntCapsule(const physent *ent) : EntFuzzy(ent) {}
+        EntCapsule(const physent *newent) : EntFuzzy(newent) {}
 
         vec supportpoint(const vec &n) const;
     };
 
     struct EntEllipsoid final : EntFuzzy
     {
-        EntEllipsoid(const physent *ent) : EntFuzzy(ent) {}
+        EntEllipsoid(const physent *newent) : EntFuzzy(newent) {}
 
         vec supportpoint(const vec &dir) const;
     };
