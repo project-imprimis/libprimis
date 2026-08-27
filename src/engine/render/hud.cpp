@@ -421,6 +421,7 @@ FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 VAR(statrate, 1, 200, 1000);  //update time for fps and edit stats
 VAR(showhud, 0, 1, 1); //toggles display of hud interface
 
+// used in iengine.h
 void vectoryawpitch(const vec &v, float &yaw, float &pitch)
 {
     if(v.iszero())
@@ -466,6 +467,7 @@ void damagecompass(int n, const vec &loc)
     }
 }
 
+//used in iengine
 void damageblend(int n)
 {
     if(!damagescreen || minimized)
