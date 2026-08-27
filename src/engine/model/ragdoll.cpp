@@ -293,10 +293,10 @@ void ragdolldata::constraindist()
         {
             dir = vec(0, 0, cdist*0.5f*scale);
         }
-        const vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
-        v1.newpos.add(vec(center).sub(dir));
+        const vec centerpos = vec(v1.pos).add(v2.pos).mul(0.5f);
+        v1.newpos.add(vec(centerpos).sub(dir));
         v1.weight++;
-        v2.newpos.add(vec(center).add(dir));
+        v2.newpos.add(vec(centerpos).add(dir));
         v2.weight++;
     }
 }
