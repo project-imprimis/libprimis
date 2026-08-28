@@ -883,15 +883,15 @@ void Editor::draw(int x, int y, int color)
         int psx, psy, pex, pey;
         text_pos(lines[sy].text, sx, psx, psy, maxwidth);
         text_pos(lines[ey].text, ex, pex, pey, maxwidth);
-        int maxy = static_cast<int>(lines.size()),
+        int ymax = static_cast<int>(lines.size()),
             h = 0;
-        for(int i = scrolly; i < maxy; i++)
+        for(int i = scrolly; i < ymax; i++)
         {
             int width, height;
             text_bounds(lines[i].text, width, height, maxwidth);
             if(h + height > pixelheight)
             {
-                maxy = i;
+                ymax = i;
                 break;
             }
             if(i == sy)
@@ -905,8 +905,8 @@ void Editor::draw(int x, int y, int color)
             }
             h += height;
         }
-        maxy--;
-        if(ey >= scrolly && sy <= maxy)
+        ymax--;
+        if(ey >= scrolly && sy <= ymax)
         {
             // crop top/bottom within window
             if(sy < scrolly)
@@ -915,9 +915,9 @@ void Editor::draw(int x, int y, int color)
                 psy = 0;
                 psx = 0;
             }
-            if(ey > maxy)
+            if(ey > ymax)
             {
-                ey = maxy;
+                ey = ymax;
                 pey = pixelheight - FONTH;
                 pex = pixelwidth;
             }
