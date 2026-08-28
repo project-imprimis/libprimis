@@ -510,9 +510,9 @@ char *Editor::selectiontostring()
         {
             len = ex;
         }
-        for(int i = 0; i < len; ++i)
+        for(int j = 0; j < len; ++j)
         {
-            buf.push_back(line[i]);
+            buf.push_back(line[j]);
         }
         buf.push_back('\n');
     }
