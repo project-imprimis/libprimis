@@ -151,8 +151,8 @@ void ragdollskel::addreljoint(int bone, int parent)
 }
 /*                  ragdolldata                   */
 
-ragdolldata::ragdolldata(const ragdollskel *skel, float scale)
-    : skel(skel),
+ragdolldata::ragdolldata(const ragdollskel *newskel, float newscale)
+    : skel(newskel),
       millis(lastmillis),
       collidemillis(0),
       lastmove(lastmillis),
@@ -165,7 +165,7 @@ ragdolldata::ragdolldata(const ragdollskel *skel, float scale)
       floating(0),
       unsticks(INT_MAX),
       timestep(0),
-      scale(scale),
+      scale(newscale),
       rotfrictions(skel->rotfrictions.size())
 {
 }
