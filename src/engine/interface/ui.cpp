@@ -1205,15 +1205,15 @@ namespace UI
 
         float abovehud()
         {
-            float y = 1;
-            LOOP_WINDOWS(w,
+            float aboveheight = 1;
+            LOOP_WINDOWS(win,
             {
-                if(w->abovehud && !(w->state & State_Hidden))
+                if(win->abovehud && !(win->state & State_Hidden))
                 {
-                    y = std::min(y, w->calcabovehud());
+                    aboveheight = std::min(y, win->calcabovehud());
                 }
             });
-            return y;
+            return aboveheight;
         }
     };
 
