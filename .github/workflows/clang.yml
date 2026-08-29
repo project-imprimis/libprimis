@@ -22,7 +22,7 @@ jobs:
       run: make CXX=clang CPP_VERSION=20 -C src -j4
 
     - name: Upload libprimis.so artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: libprimis-linux
         path: ./src/libprimis.so
