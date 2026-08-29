@@ -1200,7 +1200,7 @@ namespace UI
             {
                 return;
             }
-            LOOP_WINDOWS(w, w->draw());
+            LOOP_WINDOWS(win, win->draw());
         }
 
         float abovehud()
