@@ -1180,9 +1180,9 @@ namespace UI
          */
         bool allowinput() const
         {
-            LOOP_WINDOWS(w,
+            LOOP_WINDOWS(win,
             {
-                if(w->allowinput && !(w->state & State_Hidden))
+                if(win->allowinput && !(win->state & State_Hidden))
                 {
                     return true;
                 }
