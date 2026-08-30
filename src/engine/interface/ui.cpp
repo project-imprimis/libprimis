@@ -1163,9 +1163,9 @@ namespace UI
         int hideall()
         {
             int hidden = 0;
-            LOOP_WINDOWS_REV(w,
+            LOOP_WINDOWS_REV(win,
             {
-                hide(*w, i);
+                hide(*win, i);
                 hidden++;
             });
             return hidden;
