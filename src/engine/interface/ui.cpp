@@ -1126,9 +1126,9 @@ namespace UI
             w.hide();
         }
 
-        bool hide(Window *w)
+        bool hide(Window *win)
         {
-            if(!w) //check that a window was passed
+            if(!win) //check that a window was passed
             {
                 return false;
             }
@@ -1136,9 +1136,9 @@ namespace UI
             {
                 return false;
             }
-            else if(std::find(children.begin(), children.end(), w) != children.end())
+            else if(std::find(children.begin(), children.end(), win) != children.end())
             {
-                hide(*w, std::distance(children.begin(), std::find(children.begin(), children.end(), w)));
+                hide(*win, std::distance(children.begin(), std::find(children.begin(), children.end(), win)));
                 return true;
             }
             else
