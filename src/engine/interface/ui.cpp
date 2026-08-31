@@ -1087,14 +1087,14 @@ namespace UI
         {
             reset();
             setup();
-            LOOP_WINDOWS(w,
+            LOOP_WINDOWS(win,
             {
-                w->build();
+                win->build();
                 if(children.size() <= i )
                 {
                     break;
                 }
-                if(children.at(i) != w)
+                if(children.at(i) != win)
                 {
                     i--;
                 }
