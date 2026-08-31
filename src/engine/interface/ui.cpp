@@ -1149,11 +1149,11 @@ namespace UI
 
         bool hidetop()
         {
-            LOOP_WINDOWS_REV(w,
+            LOOP_WINDOWS_REV(win,
             {
-                if(w->allowinput && !(w->state & State_Hidden))
+                if(win->allowinput && !(win->state & State_Hidden))
                 {
-                    hide(*w, i);
+                    hide(*win, i);
                     return true;
                 }
             });
