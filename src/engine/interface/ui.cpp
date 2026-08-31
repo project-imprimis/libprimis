@@ -1115,7 +1115,7 @@ namespace UI
             return true;
         }
 
-        void hide(Window &w, int index)
+        void hide(Window &win, int index)
         {
             children.erase(children.begin() + index);
             childstate = 0;
@@ -1123,7 +1123,7 @@ namespace UI
             {
                 childstate |= o->state | o->childstate;
             }
-            w.hide();
+            win.hide();
         }
 
         bool hide(Window *win)
