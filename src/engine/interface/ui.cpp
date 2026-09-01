@@ -3921,6 +3921,14 @@ namespace UI
             h = std::max(h, edit->pixelheight*k);
         }
 
+        /**
+         * @brief Resets the cursor offsetx/offsety values to 0
+         *
+         * Also disables the cursor marker.
+         *
+         * @param cx value to reset x to
+         * @param cy value to reset y to
+         */
         virtual void resetmark(float cx, float cy)
         {
             edit->mark(false);
