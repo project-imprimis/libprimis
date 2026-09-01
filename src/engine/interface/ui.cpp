@@ -1102,16 +1102,16 @@ namespace UI
             resetstate();
         }
 
-        bool show(Window &w)
+        bool show(Window &win)
         {
             //if w is not found anywhere
-            if(std::find(children.begin(), children.end(), &w) != children.end())
+            if(std::find(children.begin(), children.end(), &win) != children.end())
             {
                 return false;
             }
             w.resetchildstate();
-            children.push_back(&w);
-            w.show();
+            children.push_back(&win);
+            win.show();
             return true;
         }
 
