@@ -2,6 +2,16 @@
 #ifndef INPUT_H_
 #define INPUT_H_
 
+/**
+ * @brief Manipulates the key repeat mask.
+ *
+ * If on is true, sets keyrepeat mask to the bitwise OR sum of the mask and the
+ * keyrepeat mask. Otherwise sets the mask to the values that the keyrepeat mask
+ * has that the mask value does not.
+ *
+ * @param on sets mask modification mode
+ * @param mask the mask value to set
+ */
 extern void keyrepeat(bool on, int mask = ~0);
 
 enum
