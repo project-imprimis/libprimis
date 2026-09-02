@@ -20,6 +20,12 @@ namespace
     // logging
     constexpr int logstrlen = 512;
 
+    /**
+     * @brief Writes the specified string to the specified file.
+     *
+     * @param file the file to write to
+     * @param buf string to write to file
+     */
     void writelog(FILE *file, const char *buf)
     {
         static std::array<uchar, logstrlen> ubuf;
