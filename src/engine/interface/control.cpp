@@ -70,6 +70,15 @@ namespace
     VARFP(clockerror, 990000, 1000000, 1010000, clockreset()); //used by getclockmillis()
     VARFP(clockfix, 0, 0, 1, clockreset()); //whether to use clockerror, used by getclockmillis()
 
+    /**
+     * @brief Writes the formatted string to the specified file.
+     *
+     * Checks whether the file exists. If it does not, no action is performed.
+     *
+     * @param file file to write to
+     * @param fmt string containing printf-style formatting
+     * @param args variadic arguments to use in printf fmt string
+     */
     void logoutfv(const char *fmt, va_list args, FILE *f)
     {
         if(f)
