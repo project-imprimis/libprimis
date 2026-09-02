@@ -36,6 +36,15 @@ namespace
         }
     }
 
+    /**
+     * @brief Writes the formatted string to the specified file.
+     *
+     * Assumes that the file exists.
+     *
+     * @param file file to write to
+     * @param fmt string containing printf-style formatting
+     * @param args variadic arguments to use in printf fmt string
+     */
     void writelogv(FILE *file, const char *fmt, va_list args)
     {
         static std::array<char, logstrlen> buf;
