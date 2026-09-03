@@ -9,6 +9,15 @@
 extern void processkey(int code, bool isdown, int map);
 extern void processtextinput(const char *str, int len);
 extern float rendercommand(float x, float y, float w);
+
+
+/**
+ * @brief Renders the full sized console.
+ *
+ * The size of the actual console will be w*h less any console padding (conpad).
+ * @param w width of the console area
+ * @param h height of the console area
+ */
 extern float renderfullconsole(float w, float h);
 extern float renderconsole(float w, float h, float abovehud);
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
