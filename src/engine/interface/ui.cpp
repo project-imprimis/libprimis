@@ -1065,14 +1065,14 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) final \
             { \
-                LOOP_WINDOWS_REV(w, \
+                LOOP_WINDOWS_REV(win, \
                 { \
-                    if(((w->state | w->childstate) & mask) != mask) \
+                    if(((win->state | win->childstate) & mask) != mask) \
                     { \
                         continue; \
                     } \
-                    w->func##children(cx, cy, mask, inside, setflags); \
-                    int wflags = (w->state | w->childstate) & (setflags); \
+                    win->func##children(cx, cy, mask, inside, setflags); \
+                    int wflags = (win->state | win->childstate) & (setflags); \
                     if(wflags) \
                     { \
                         childstate |= wflags; \
