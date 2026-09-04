@@ -1059,7 +1059,7 @@ namespace UI
 
         void adjustchildren() final
         {
-            LOOP_WINDOWS(w, w->adjustlayout());
+            LOOP_WINDOWS(win, win->adjustlayout());
         }
 
         #define DOSTATE(flags, func) \
