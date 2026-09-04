@@ -846,11 +846,11 @@ namespace UI
         float px, py, pw, ph;
         vec2 sscale, soffset;
 
-        Window(const char *name, const char *contents, const char *onshow, const char *onhide) :
-            name(name),
-            contents(compilecode(contents)),
-            onshow(onshow && onshow[0] ? compilecode(onshow) : nullptr),
-            onhide(onhide && onhide[0] ? compilecode(onhide) : nullptr),
+        Window(const char *initname, const char *initcontents, const char *initonshow, const char *initonhide) :
+            name(initname),
+            contents(compilecode(initcontents)),
+            onshow(initonshow && initonshow[0] ? compilecode(initonshow) : nullptr),
+            onhide(initonhide && initonhide[0] ? compilecode(initonhide) : nullptr),
             allowinput(true), eschide(true), abovehud(false),
             px(0), py(0), pw(0), ph(0),
             sscale(1, 1), soffset(0, 0)
