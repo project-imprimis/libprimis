@@ -449,9 +449,9 @@ namespace UI
                 DOSTATE(State_ScrollUp, scrollup) \
                 DOSTATE(State_ScrollDown, scrolldown)
 
-            bool setstate(int state, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
+            bool setstate(int newstate, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
             {
-                switch(state)
+                switch(newstate)
                 {
                 #define DOSTATE(flags, func) case flags: func##children(cx, cy, mask, inside, setflags | flags); return haschildstate(flags);
                 DOSTATES
