@@ -707,7 +707,7 @@ class animmodel : public model
          * @return a transformation matrix corresponding to the model's transformations
          */
         matrix4x3 initmatrix() const;
-        void genBIH(std::vector<BIH::mesh> &bih);
+        void genBIH(std::vector<BIH::mesh> &bihs);
         bool link(part *p, std::string_view tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr) const;
         void loaded();
         bool unlink(const part *p) const;

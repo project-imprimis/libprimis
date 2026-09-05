@@ -1580,7 +1580,7 @@ matrix4x3 animmodel::initmatrix() const
     return m;
 }
 
-void animmodel::genBIH(std::vector<BIH::mesh> &bih)
+void animmodel::genBIH(std::vector<BIH::mesh> &bihs)
 {
     if(parts.empty())
     {
@@ -1602,7 +1602,7 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
                 {
                     s.tex->loadalphamask();
                 }
-                p->genBIH(bih, m, scale);
+                p->genBIH(bihs, m, scale);
                 break;
             }
         }
