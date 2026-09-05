@@ -862,7 +862,7 @@ struct modelloader : BASE
     static MDL *loading;
     static std::string dir;
 
-    modelloader(std::string name) : BASE(name)
+    modelloader(std::string initname) : BASE(initname)
     {
     }
 
