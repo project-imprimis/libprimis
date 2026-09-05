@@ -630,7 +630,7 @@ class animmodel : public model
                  */
                 void genBIH(std::vector<BIH::mesh> &bih, const matrix4x3 &m, float modelscale) const;
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m, float modelscale) const;
-                bool link(part *p, std::string_view tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
+                bool link(part *p, std::string_view tag, const vec &newtranslate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
 
                 /**
                  * @brief Removes from this part's linkedpart list the linkedpart corresponding to the passed part

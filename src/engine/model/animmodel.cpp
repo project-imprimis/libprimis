@@ -1609,13 +1609,13 @@ void animmodel::genBIH(std::vector<BIH::mesh> &bih)
     }
 }
 
-bool animmodel::link(part *p, std::string_view tag, const vec &translate, int anim, int basetime, vec *pos) const
+bool animmodel::link(part *p, std::string_view tag, const vec &newtranslate, int anim, int basetime, vec *pos) const
 {
     if(parts.empty())
     {
         return false;
     }
-    return parts[0]->link(p, tag, translate, anim, basetime, pos);
+    return parts[0]->link(p, tag, newtranslate, anim, basetime, pos);
 }
 
 void animmodel::loaded()
