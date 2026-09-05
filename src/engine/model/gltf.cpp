@@ -179,7 +179,7 @@ bool gltf::GLTFMeshGroup::load(std::string_view meshfile, float smooth, part &p)
     return true;
 }
 
-gltf::GLTFMesh::GLTFMesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) :
+gltf::GLTFMesh::GLTFMesh(std::string_view initname, vert *initverts, uint initnumverts, tri *inittris, uint initnumtris, meshgroup *initm) :
     skelmesh(name, verts, numverts, tris, numtris, m)
 {
 }
