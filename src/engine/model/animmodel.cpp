@@ -773,9 +773,9 @@ bool animmodel::part::link(part *p, std::string_view tag, const vec &translate, 
     std::optional<size_t> i = meshes ? meshes->findtag(tag) : std::nullopt;
     if(i<0)
     {
-        for(const linkedpart &i : links)
+        for(const linkedpart &j : links)
         {
-            if(i.p && i.p->link(p, tag, translate, anim, basetime, pos))
+            if(j.p && j.p->link(p, tag, translate, anim, basetime, pos))
             {
                 return true;
             }
