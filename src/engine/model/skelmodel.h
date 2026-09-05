@@ -1058,7 +1058,7 @@ struct skelmodel : animmodel
 class skeladjustment final
 {
     public:
-        skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
+        skeladjustment(float inityaw, float initpitch, float initroll, const vec &inittranslate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
         void adjust(dualquat &dq) const;
 
     private:
