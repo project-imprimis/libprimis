@@ -1055,10 +1055,10 @@ struct skelmodel : animmodel
 
 };
 
-class skeladjustment final
+class SkelAdjustment final
 {
     public:
-        skeladjustment(float inityaw, float initpitch, float initroll, const vec &inittranslate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
+        SkelAdjustment(float inityaw, float initpitch, float initroll, const vec &inittranslate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
         void adjust(dualquat &dq) const;
 
     private:
@@ -1069,14 +1069,14 @@ class skeladjustment final
 template<class MDL>
 struct SkelLoader : modelloader<MDL, skelmodel>
 {
-    static std::vector<skeladjustment> adjustments;
+    static std::vector<SkelAdjustment> adjustments;
     static std::vector<uchar> hitzones;
 
     SkelLoader(std::string name) : modelloader<MDL, skelmodel>(name) {}
 };
 
 template<class MDL>
-std::vector<skeladjustment> SkelLoader<MDL>::adjustments;
+std::vector<SkelAdjustment> SkelLoader<MDL>::adjustments;
 
 template<class MDL>
 std::vector<uchar> SkelLoader<MDL>::hitzones;
@@ -1450,9 +1450,9 @@ struct SkelCommands : modelcommands<MDL>
         }
         while(!(static_cast<int>(MDL::adjustments.size()) > *i))
         {
-            MDL::adjustments.push_back(skeladjustment(0, 0, 0, vec(0, 0, 0)));
+            MDL::adjustments.push_back(SkelAdjustment(0, 0, 0, vec(0, 0, 0)));
         }
-        MDL::adjustments[*i] = skeladjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
+        MDL::adjustments[*i] = SkelAdjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
     }
 
     static void sethitzone(const int *id, const char *maskstr)

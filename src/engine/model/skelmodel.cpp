@@ -1908,10 +1908,10 @@ bool skelmodel::skeletal() const
     return true;
 }
 
-/*    ====    skeladjustment    ====    */
+/*    ====    SkelAdjustment    ====    */
 /*======================================*/
 
-void skeladjustment::adjust(dualquat &dq) const
+void SkelAdjustment::adjust(dualquat &dq) const
 {
     if(yaw)
     {
