@@ -295,6 +295,12 @@ struct skelmodel : animmodel
         GLuint vbuf; //GL_ARRAY_BUFFER (gle::bindvbo)
         int owner;
 
+
+        /**
+         * @brief Checks whether there is a vbo present in this cache entry.
+         *
+         * @return true if vbuf does not exist, false otherwise
+         */
         bool check() const;
         vbocacheentry();
     };
