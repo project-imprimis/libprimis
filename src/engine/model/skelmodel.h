@@ -311,6 +311,13 @@ struct skelmodel : animmodel
         int version; //caching version
 
         skelcacheentry();
+
+        /**
+         * @brief Sets this cache entry's shader version.
+         *
+         * Gets the value from Shader::uniformlocversion() and assigns it to
+         * the version field of this object.
+         */
         void nextversion();
     };
 
