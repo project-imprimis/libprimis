@@ -1029,6 +1029,14 @@ struct skelmodel : animmodel
 
     //ordinary methods
     skelmodel(std::string name);
+
+    /**
+     * @brief Adds a skelpart to this skelmodel's parts vector.
+     *
+     * The new skelpart is heap-allocated.
+     *
+     * @return reference to the created skelpart
+     */
     skelpart &addpart();
     meshgroup *loadmeshes(const std::string &name, float smooth = 2);
     meshgroup *sharemeshes(const std::string &name, float smooth = 2);
