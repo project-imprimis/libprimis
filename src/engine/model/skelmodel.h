@@ -1041,7 +1041,7 @@ struct skelmodel : animmodel
     };
 
     //ordinary methods
-    skelmodel(std::string name);
+    skelmodel(std::string initname);
 
     /**
      * @brief Adds a skelpart to this skelmodel's parts vector.

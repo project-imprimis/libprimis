@@ -1855,7 +1855,7 @@ void skelmodel::skelpart::loaded()
 
 //skelmodel
 
-skelmodel::skelmodel(std::string name) : animmodel(std::move(name))
+skelmodel::skelmodel(std::string initname) : animmodel(std::move(initname))
 {
 }
 
