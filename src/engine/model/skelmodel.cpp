@@ -1866,12 +1866,12 @@ skelmodel::skelpart &skelmodel::addpart()
     return *p;
 }
 
-animmodel::meshgroup * skelmodel::loadmeshes(const std::string &name, float smooth)
+animmodel::meshgroup * skelmodel::loadmeshes(const std::string &key, float smooth)
 {
     skelmeshgroup *group = newmeshes();
     group->skel = new skeleton(group);
     part &p = *parts.back();
-    if(!group->load(name, smooth, p))
+    if(!group->load(key, smooth, p))
     {
         delete group;
         return nullptr;
