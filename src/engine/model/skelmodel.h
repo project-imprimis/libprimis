@@ -1052,7 +1052,7 @@ struct skelmodel : animmodel
      */
     skelpart &addpart();
     meshgroup *loadmeshes(const std::string &name, float smooth = 2);
-    meshgroup *sharemeshes(const std::string &name, float smooth = 2);
+    meshgroup *sharemeshes(const std::string &key, float smooth = 2);
 
     //override methods
 

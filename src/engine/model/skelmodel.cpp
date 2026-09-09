@@ -1879,18 +1879,18 @@ animmodel::meshgroup * skelmodel::loadmeshes(const std::string &name, float smoo
     return group;
 }
 
-animmodel::meshgroup * skelmodel::sharemeshes(const std::string &name, float smooth)
+animmodel::meshgroup * skelmodel::sharemeshes(const std::string &key, float smooth)
 {
-    if(meshgroups.find(name) == meshgroups.end())
+    if(meshgroups.find(key) == meshgroups.end())
     {
-        meshgroup *group = loadmeshes(name, smooth);
+        meshgroup *group = loadmeshes(key, smooth);
         if(!group)
         {
             return nullptr;
         }
         meshgroups[group->groupname()] = group;
     }
-    return meshgroups[name];
+    return meshgroups[key];
 }
 
 //skelmodel overrides
