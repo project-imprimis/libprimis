@@ -1037,6 +1037,16 @@ struct skelmodel : animmodel
              */
             std::vector<uchar> &sharepartmask(std::vector<uchar> &o);
             std::vector<uchar> newpartmask();
+
+
+            /**
+             * @brief Transfers the building partmask to the usable partmask.
+             *
+             * Shares any elements in the buildingpartmask, and sets the partmask using shared
+             * elements found in sharepartmask().
+             *
+             * Optimizes any mesh groups in the model.
+             */
             void endanimparts();
     };
 
