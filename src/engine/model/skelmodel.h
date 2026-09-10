@@ -1036,6 +1036,13 @@ struct skelmodel : animmodel
              * @return the passed value o, or the equivalent entry in the internal cache
              */
             std::vector<uchar> &sharepartmask(std::vector<uchar> &o);
+
+
+            /**
+             * @brief Returns an empty partmask vector with entries equal number the number of bones
+             *
+             * @return vector with a 0 entry for each bone present in meshes
+             */
             std::vector<uchar> newpartmask();
 
 
