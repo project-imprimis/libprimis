@@ -94,8 +94,8 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
 
 //PitchCorrect
 
-skelmodel::skeleton::PitchCorrect::PitchCorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax) :
-    bone(bone), parent (-1), target(target), pitchmin(pitchmin), pitchmax(pitchmax),
+skelmodel::skeleton::PitchCorrect::PitchCorrect(int initbone, size_t inittarget, float initpitchscale, float initpitchmin, float initpitchmax) :
+    bone(initbone), parent (-1), target(inittarget), pitchmin(initpitchmin), pitchmax(initpitchmax),
     pitchscale(pitchscale), pitchangle(0), pitchtotal(0)
 {
 }

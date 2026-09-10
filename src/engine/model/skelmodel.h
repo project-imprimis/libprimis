@@ -454,7 +454,7 @@ struct skelmodel : animmodel
                 size_t target; //an index in skeleton::pitchtargets vector
                 float pitchmin, pitchmax, pitchscale, pitchangle, pitchtotal;
 
-                PitchCorrect(int bone, size_t target, float pitchscale, float pitchmin, float pitchmax);
+                PitchCorrect(int initbone, size_t inittarget, float initpitchscale, float initpitchmin, float initpitchmax);
                 PitchCorrect();
             };
             std::vector<PitchCorrect> pitchcorrects; //vector pitch correct objects, added to models via PitchCorrect command
