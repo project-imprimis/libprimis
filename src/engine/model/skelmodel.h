@@ -939,8 +939,8 @@ struct skelmodel : animmodel
             template<class T>
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
             {
-                T *vverts = nullptr;
-                bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
+                T *vboverts = nullptr;
+                bindpos(ebuf, vc.vbuf, &vboverts->pos, vertsize);
                 if(as->cur.anim & Anim_NoSkin)
                 {
                     if(enabletangents)
@@ -949,7 +949,7 @@ struct skelmodel : animmodel
                     }
                     if(p->alphatested())
                     {
-                        bindtc(&vverts->tc, vertsize);
+                        bindtc(&vboverts->tc, vertsize);
                     }
                     else if(enabletc)
                     {
@@ -958,11 +958,11 @@ struct skelmodel : animmodel
                 }
                 else
                 {
-                    bindtangents(&vverts->tangent, vertsize);
+                    bindtangents(&vboverts->tangent, vertsize);
 
-                    bindtc(&vverts->tc, vertsize);
+                    bindtc(&vboverts->tc, vertsize);
                 }
-                bindbones(vverts);
+                bindbones(vboverts);
             }
 
             void makeskeleton();
