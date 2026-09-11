@@ -486,7 +486,7 @@ struct skelmodel : animmodel
              *
              * @return a reference to the added skelanimspec
              */
-            skelanimspec &addskelanim(std::string_view name, int numframes, int animframes);
+            skelanimspec &addskelanim(std::string_view name, int numanimframes, int animframes);
 
             /**
              * @brief Returns the first bone index in skeleton::bones with matching name field
