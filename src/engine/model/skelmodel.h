@@ -912,6 +912,14 @@ struct skelmodel : animmodel
              * Returns the pointer to the skeleton object associated with this object.
              */
             void *animkey() final;
+
+            /**
+             * @brief Returns the number of frames in this skelmeshgroup's skel object.
+             *
+             * Always returns at least 1, even if no frames are present.
+             *
+             * @return number of frames in the skeleton
+             */
             int totalframes() const final;
             void concattagtransform(int i, const matrix4x3 &m, matrix4x3 &n) const final;
             void preload() final;
