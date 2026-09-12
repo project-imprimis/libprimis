@@ -1522,15 +1522,15 @@ void skelmodel::skelmesh::assignvert(vvertgw &vv, const vert &v, const blendcomb
     c.serialize(vv);
 }
 
-int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vverts)
+int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vboverts)
 {
     voffset = offset;
     eoffset = idxs.size();
     for(int i = 0; i < numverts; ++i)
     {
         const vert &v = verts[i];
-        vverts.emplace_back(vvertgw());
-        assignvert(vverts.back(), v, bcs[v.blend]);
+        vboverts.emplace_back(vvertgw());
+        assignvert(vboverts.back(), v, bcs[v.blend]);
     }
     for(int i = 0; i < numtris; ++i)
     {

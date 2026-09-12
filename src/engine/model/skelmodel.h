@@ -368,7 +368,7 @@ struct skelmodel : animmodel
              * genvbo(std::vector<GLuint>&, int, std::vector<vvertg>&, int, int) is for no animation frames
              */
             int genvbo(const std::vector<blendcombo> &bcs, std::vector<GLuint> &idxs, int offset, std::vector<vvertgw> &vboverts);
-            int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen);
+            int genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vboverts, int *htdata, int htlen);
 
             void setshader(Shader *s, bool usegpuskel, int vweights, int row) const final;
             void render() const;
