@@ -1217,9 +1217,9 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     }
 }
 
-void skelmodel::skelmeshgroup::bindbones(const vvertgw *vverts)
+void skelmodel::skelmeshgroup::bindbones(const vvertgw *vboverts)
 {
-    meshgroup::bindbones(vverts->weights.data(), vverts->bones.data(), vertsize);
+    meshgroup::bindbones(vboverts->weights.data(), vboverts->bones.data(), vertsize);
 }
 
 //blendcombo

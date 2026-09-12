@@ -934,7 +934,7 @@ struct skelmodel : animmodel
              * (this function can be called if no <> specifier is provided, because
              * of partial ordering rules -- see C++20 N4849 13.10.2.4)
              */
-            void bindbones(const vvertgw *vverts);
+            void bindbones(const vvertgw *vboverts);
 
             template<class T>
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc)
