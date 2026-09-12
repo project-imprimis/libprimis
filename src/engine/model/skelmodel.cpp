@@ -1545,7 +1545,7 @@ int skelmodel::skelmesh::genvbo(const std::vector<blendcombo> &bcs, std::vector<
     return numverts;
 }
 
-int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vverts, int *htdata, int htlen)
+int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vector<vvertg> &vboverts, int *htdata, int htlen)
 {
     voffset = offset;
     eoffset = idxs.size();
@@ -1566,11 +1566,11 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
                 int &vidx = htdata[(htidx+k)&(htlen-1)];
                 if(vidx < 0)
                 {
-                    vidx = idxs.emplace_back(static_cast<GLuint>(vverts.size()));
-                    vverts.push_back(vv);
+                    vidx = idxs.emplace_back(static_cast<GLuint>(vboverts.size()));
+                    vboverts.push_back(vv);
                     break;
                 }
-                else if(!std::memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                else if(!std::memcmp(&vboverts[vidx], &vv, sizeof(vv)))
                 {
                     minvert = std::min(minvert, idxs.emplace_back(static_cast<GLuint>(vidx)));
                     break;
@@ -1580,8 +1580,8 @@ int skelmodel::skelmesh::genvbo(std::vector<GLuint> &idxs, int offset, std::vect
     }
     elen = idxs.size()-eoffset;
     minvert = std::min(minvert, static_cast<GLuint>(voffset));
-    maxvert = std::max(minvert, static_cast<GLuint>(vverts.size()-1));
-    return vverts.size()-voffset;
+    maxvert = std::max(minvert, static_cast<GLuint>(vboverts.size()-1));
+    return vboverts.size()-voffset;
 }
 
 void skelmodel::skelmesh::setshader(Shader *s, bool usegpuskel, int vweights, int row) const
