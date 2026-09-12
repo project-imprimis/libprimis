@@ -1017,7 +1017,7 @@ struct skelmodel : animmodel
         public:
             std::vector<uchar> partmask;
 
-            skelpart(animmodel *model, int index = 0);
+            skelpart(animmodel *initmodel, int initindex = 0);
             virtual ~skelpart();
 
             void initanimparts();
