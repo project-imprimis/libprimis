@@ -925,9 +925,14 @@ struct skelmodel : animmodel
             void preload() final;
             void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) final;
 
-            //for vvert, vvertg and vvertgw (also for vvertgw see below function),
-            //disable bones if active
-            //must have same const-qualification to properly interact with bindbones() below
+            /**
+             * @brief Disable bones, if active
+             *
+             * For vvert, vvertg and vvertgw (also for vvertgw see below function),
+             * must have same const-qualification to properly interact with bindbones() below
+             *
+             * @param unused, only present for signature compatibility
+             */
             template<class T>
             void bindbones(const T *)
             {
