@@ -996,7 +996,11 @@ struct skelmodel : animmodel
             void genvbo(vbocacheentry &vc);
             void bindvbo(const AnimState *as, const part *p, const vbocacheentry &vc);
             int addblendcombo(const blendcombo &c);
-            //sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
+            /**
+             * @brief Sorts blendcombos.
+             *
+             * Sorts the blendcombos by its comparison function, then applies this new order to associated skelmesh verts
+             */
             void sortblendcombos();
             void blendbones(const skelcacheentry &sc, blendcacheentry &bc) const;
             void cleanup() final;
