@@ -504,7 +504,7 @@ struct skelmodel : animmodel
              *
              * @return the index in skeleton::tags if found, nullopt if not
              */
-            std::optional<size_t> findtag(std::string_view name) const;
+            std::optional<size_t> findtag(std::string_view tagname) const;
 
             /**
              * @brief Modifies or sets a tag in the `skeleton::tags`

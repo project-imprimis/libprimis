@@ -1657,9 +1657,9 @@ skelmodel::skeleton::BoneInfo::BoneInfo() :
 
 // skelmeshgroup
 
-std::optional<size_t> skelmodel::skelmeshgroup::findtag(std::string_view name)
+std::optional<size_t> skelmodel::skelmeshgroup::findtag(std::string_view tagname)
 {
-    return skel->findtag(name);
+    return skel->findtag(tagname);
 }
 
 void *skelmodel::skelmeshgroup::animkey()
