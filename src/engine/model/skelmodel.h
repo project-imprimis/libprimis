@@ -338,13 +338,13 @@ struct skelmodel : animmodel
             /**
              * @brief Constructs a skelmesh object.
              *
-             * @param name name of the underlying Mesh object
-             * @param verts a heap-allocated array of vertices
-             * @param numverts size of verts array
-             * @param tris a heap-allocated array of tris
-             * @param numtris size of tris array
+             * @param initname name of the underlying Mesh object
+             * @param initverts a heap-allocated array of vertices
+             * @param initnumverts size of verts array
+             * @param inittris a heap-allocated array of tris
+             * @param initnumtris size of tris array
              */
-            skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m);
+            skelmesh(std::string_view initname, vert *initverts, uint initnumverts, tri *inittris, uint initnumtris, meshgroup *initm);
 
             virtual ~skelmesh();
 

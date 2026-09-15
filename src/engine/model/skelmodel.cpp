@@ -1442,11 +1442,11 @@ skelmodel::skelmesh::skelmesh() : tris(nullptr), numtris(0), verts(nullptr), num
 {
 }
 
-skelmodel::skelmesh::skelmesh(std::string_view name, vert *verts, uint numverts, tri *tris, uint numtris, meshgroup *m) : Mesh(name, m),
-    tris(tris),
-    numtris(numtris),
-    verts(verts),
-    numverts(numverts),
+skelmodel::skelmesh::skelmesh(std::string_view initname, vert *initverts, uint initnumverts, tri *inittris, uint initnumtris, meshgroup *initm) : Mesh(initname, initm),
+    tris(inittris),
+    numtris(initnumtris),
+    verts(initverts),
+    numverts(initnumverts),
     maxweights(0)
 {
 }
