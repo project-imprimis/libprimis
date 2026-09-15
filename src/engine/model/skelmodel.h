@@ -754,7 +754,7 @@ struct skelmodel : animmodel
                 int bone;
                 matrix4x3 matrix;
 
-                tag(std::string_view name, int bone, matrix4x3 matrix) : name(name), bone(bone), matrix(matrix) {}
+                tag(std::string_view initname, int initbone, matrix4x3 initmatrix) : name(initname), bone(initbone), matrix(initmatrix) {}
             };
             std::vector<tag> tags;
 
