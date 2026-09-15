@@ -27,6 +27,13 @@ extern int vertwater; //used like a bool, will only ever be 0 or 1; toggles vert
  * @return color vec (byte vec) containing the color of that water material
  */
 extern const bvec &getwatercolor(int mat);
+/**
+ * @brief Gets the deep water color for the given water material
+ *
+ * @param mat the water number 0..3
+ *
+ * @return color vec (byte vec) containing the deep color of that water material
+ */
 extern const bvec &getwaterdeepcolor(int mat);
 extern const bvec &getwaterfallcolor(int mat);
 
