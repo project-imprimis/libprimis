@@ -35,6 +35,14 @@ extern const bvec &getwatercolor(int mat);
  * @return color vec (byte vec) containing the deep color of that water material
  */
 extern const bvec &getwaterdeepcolor(int mat);
+
+/**
+ * @brief Gets the waterfall color for the given water material
+ *
+ * @param mat the water number 0..3
+ *
+ * @return color vec (byte vec) containing the waterfall color of that water material
+ */
 extern const bvec &getwaterfallcolor(int mat);
 
 /**
