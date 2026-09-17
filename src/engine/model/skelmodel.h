@@ -744,7 +744,7 @@ struct skelmodel : animmodel
             {
                 int parent, child;
 
-                antipode(int parent, int child) : parent(parent), child(child) {}
+                antipode(int initparent, int initchild) : parent(initparent), child(initchild) {}
             };
             std::vector<antipode> antipodes;
 
