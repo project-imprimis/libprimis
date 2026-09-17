@@ -67,14 +67,14 @@ class animmodel : public model
                 Shader *shader;
                 int cullface;
 
-                skin(const part *owner, Texture *tex, const Texture *masks) :
-                    tex(tex),
+                skin(const part *initowner, Texture *inittex, const Texture *initmasks) :
+                    tex(inittex),
                     decal(nullptr),
-                    masks(masks),
+                    masks(initmasks),
                     normalmap(nullptr),
                     shader(nullptr),
                     cullface(1),
-                    owner(owner),
+                    owner(initowner),
                     rsmshader(nullptr),
                     key(nullptr)
                 {
