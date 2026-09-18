@@ -565,8 +565,8 @@ class animmodel : public model
                     matrix4 matrix;
 
                     linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
-                    linkedpart(part *p, int tag, int anim, int basetime, vec translate, vec *post, matrix4 matrix) :
-                        p(p), tag(tag), anim(anim), basetime(basetime), translate(translate), pos(post), matrix(matrix) {}
+                    linkedpart(part *initp, int inittag, int initanim, int initbasetime, vec inittranslate, vec *initpost, matrix4 initmatrix) :
+                        p(initp), tag(inittag), anim(initanim), basetime(initbasetime), translate(inittranslate), pos(initpost), matrix(initmatrix) {}
                 };
                 std::vector<linkedpart> links;
                 std::vector<skin> skins;
