@@ -1286,16 +1286,16 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
                 hasmats |= 4|1;
                 if(m.orient == Orient_Top)
                 {
-                    for(int i = 0; i < 1 + m.skip; ++i)
+                    for(int j = 0; j < 1 + m.skip; ++j)
                     {
-                        watersurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                        watersurfs[m.material&MatFlag_Index].push_back((&m)[j]);
                     }
                 }
                 else
                 {
-                    for(int i = 0; i < 1 + m.skip; ++i)
+                    for(int j = 0; j < 1 + m.skip; ++j)
                     {
-                        waterfallsurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                        waterfallsurfs[m.material&MatFlag_Index].push_back((&m)[j]);
                     }
                 }
                 i += m.skip;
