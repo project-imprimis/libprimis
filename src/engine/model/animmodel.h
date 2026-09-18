@@ -163,12 +163,12 @@ class animmodel : public model
                 {
                 }
 
-                Mesh(std::string_view name, meshgroup *m) :
-                    name(name),
+                Mesh(std::string_view initname, meshgroup *initm) :
+                    name(initname),
                     cancollide(true),
                     canrender(true),
                     noclip(false),
-                    group(m)
+                    group(initm)
                 {
                 }
 
