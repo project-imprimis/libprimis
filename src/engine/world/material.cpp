@@ -47,7 +47,7 @@ namespace
     class QuadNode final
     {
         public:
-            QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
+            QuadNode(int initx, int inity, int initsize) : x(initx), y(inity), size(initsize), filled(0)
             {
                 for(int i = 0; i < 4; ++i)
                 {
