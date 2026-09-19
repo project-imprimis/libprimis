@@ -1321,9 +1321,9 @@ GBuffer::MaterialInfo GBuffer::findmaterials() const
                     continue;
                 }
                 hasmats |= 4|2;
-                for(int i = 0; i < 1 + m.skip; ++i)
+                for(int j = 0; j < 1 + m.skip; ++j)
                 {
-                    glasssurfs[m.material&MatFlag_Index].push_back((&m)[i]);
+                    glasssurfs[m.material&MatFlag_Index].push_back((&m)[j]);
                 }
                 i += m.skip;
             }
