@@ -1089,32 +1089,32 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, const std::vector<materia
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     std::sort(matbuf, matbuf+matsurfs, optmatcmp);
-    const materialsurface *cur = matbuf,
+    const materialsurface *cursurf = matbuf,
                           *end = matbuf+matsurfs;
-    while(cur < end)
+    while(cursurf < end)
     {
-         const materialsurface *start = cur++;
+         const materialsurface *start = cursurf++;
          int dim = DIMENSION(start->orient);
-         while(cur < end &&
-               cur->material == start->material &&
-               cur->orient == start->orient &&
-               cur->visible == start->visible &&
-               cur->o[dim] == start->o[dim])
+         while(cursurf < end &&
+               cursurf->material == start->material &&
+               cursurf->orient == start->orient &&
+               cursurf->visible == start->visible &&
+               cursurf->o[dim] == start->o[dim])
         {
-            ++cur;
+            ++cursurf;
         }
         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != Orient_Top || !vertwater)
         {
             if(start!=matbuf)
             {
-                std::memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+                std::memmove(matbuf, start, (cursurf-start)*sizeof(materialsurface));
             }
-            matbuf += mergemats(matbuf, cur-start);
+            matbuf += mergemats(matbuf, cursurf-start);
         }
-        else if(cur-start>=4)
+        else if(cursurf-start>=4)
         {
             QuadNode vmats(0, 0, rootworld.mapsize());
-            for(int i = 0; i < cur-start; ++i)
+            for(int i = 0; i < cursurf-start; ++i)
             {
                 vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);
             }
@@ -1124,9 +1124,9 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         {
             if(start!=matbuf)
             {
-                std::memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+                std::memmove(matbuf, start, (cursurf-start)*sizeof(materialsurface));
             }
-            matbuf += cur-start;
+            matbuf += cursurf-start;
         }
     }
     return matsurfs - (end-matbuf);
