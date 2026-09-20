@@ -851,7 +851,7 @@ struct vslotmap final
     VSlot *vslot;
 
     vslotmap() {}
-    vslotmap(int index, VSlot *vslot) : index(index), vslot(vslot) {}
+    vslotmap(int initindex, VSlot *initvslot) : index(initindex), vslot(initvslot) {}
 };
 
 static std::vector<vslotmap> remappedvslots;
