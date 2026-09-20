@@ -147,18 +147,18 @@ namespace
                 }
             }
 
-            void genmatsurf(ushort mat, uchar orient, uchar visible, int x, int y, int z, int size, materialsurface *&matbuf)
+            void genmatsurf(ushort mat, uchar orient, uchar visible, int msurfx, int msurfy, int msurfz, int msurfsize, materialsurface *&matbuf)
             {
                 materialsurface &m = *matbuf++;
                 m.material = mat;
                 m.orient = orient;
                 m.visible = visible;
-                m.csize = size;
-                m.rsize = size;
+                m.csize = msurfsize;
+                m.rsize = msurfsize;
                 int dim = DIMENSION(orient);
-                m.o[C[dim]] = x;
-                m.o[R[dim]] = y;
-                m.o[dim] = z;
+                m.o[C[dim]] = msurfx;
+                m.o[R[dim]] = msurfy;
+                m.o[dim] = msurfz;
             }
     };
 
