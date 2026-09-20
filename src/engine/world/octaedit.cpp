@@ -1405,9 +1405,9 @@ void cubeworld::genprefabmesh(prefab &p)
     prefabmesh r;
     neighborstack[++neighbordepth] = &(*worldroot)[0];
     //recursively apply to children
-    for(int i = 0; i < 8; ++i)
+    for(int j = 0; j < 8; ++j)
     {
-        ::genprefabmesh(r, (*worldroot)[i], ivec(i, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
+        ::genprefabmesh(r, (*worldroot)[j], ivec(j, ivec(0, 0, 0), mapsize()/2), mapsize()/2);
     }
     --neighbordepth;
     r.setup(p);
