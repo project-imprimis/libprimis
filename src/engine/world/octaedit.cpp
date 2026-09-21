@@ -988,8 +988,7 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
     ucharbuf buf(outbuf, outlen);
     if(!e)
     {
-        editinfo *e = nullptr;
-        editinfos.push_back(e);
+        editinfos.push_back(nullptr);
     }
     if(!unpackblock(e->copy, buf))
     {
