@@ -1032,12 +1032,12 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
         const undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            for(uint i = 0; i < sizeof(ushort); ++i)
+            for(uint j = 0; j < sizeof(ushort); ++j)
             {
                 buf.emplace_back();
             }
             *reinterpret_cast<ushort *>(&(*buf.end()) - sizeof(ushort)) = static_cast<ushort>(ue[i].i);
-            for(uint i = 0; i < sizeof(entity); ++i)
+            for(uint j = 0; j < sizeof(entity); ++j)
             {
                 buf.emplace_back();
             }
