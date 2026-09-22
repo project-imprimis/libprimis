@@ -220,8 +220,8 @@ namespace mpr
 
     struct ModelEllipse final : Model
     {
-        ModelEllipse(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) :
-            Model(ent, center, radius, yaw, pitch, roll)
+        ModelEllipse(const vec &ent, const vec &center, const vec &entradius, int yaw, int pitch, int roll) :
+            Model(ent, center, entradius, yaw, pitch, roll)
         {}
 
         vec contactface(const vec &wn, const vec &wdir) const;
