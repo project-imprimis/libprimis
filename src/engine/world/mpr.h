@@ -39,7 +39,7 @@ namespace mpr
 
         SolidCube(float x, float y, float z, int size) : o(x, y, z), size(size) {}
         SolidCube(const vec &o, int size) : o(o), size(size) {}
-        SolidCube(const ivec &o, int size) : o(o), size(size) {}
+        SolidCube(const ivec &inito, int initsize) : o(inito), size(initsize) {}
 
         /**
          * @brief Returns SolidCube::o plus half of size.
