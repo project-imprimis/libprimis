@@ -67,7 +67,7 @@ namespace mpr
     {
         const physent *ent;
 
-        Ent(const physent *ent) : ent(ent) {}
+        Ent(const physent *initent) : ent(initent) {}
 
         /**
          * @brief Returns the center of this ent, modified by the ent's height.
