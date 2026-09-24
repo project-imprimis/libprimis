@@ -20,14 +20,14 @@ namespace
     struct Change final
     {
         int type;
-        const char *desc;
+        std::string desc;
 
         Change() {}
         Change(int inittype, const char *initdesc) : type(inittype), desc(initdesc) {}
 
         bool operator==(const Change & c) const
         {
-            return type == c.type && std::strcmp(desc, c.desc) == 0;
+            return type == c.type && (desc == c.desc) == 0;
         }
     };
     std::vector<Change> needsapply;
@@ -83,7 +83,7 @@ namespace
         {
             if((needsapply.size()) > static_cast<uint>(*idx))
             {
-                result(needsapply.at(*idx).desc);
+                result(needsapply.at(*idx).desc.c_str());
             }
             else if(*idx < 0)
             {
@@ -106,7 +106,7 @@ void addchange(const char *desc, int type)
     }
     for(const Change &i : needsapply)
     {
-        if(!std::strcmp(i.desc, desc))
+        if(!std::strcmp(i.desc.c_str(), desc))
         {
             return;
         }
