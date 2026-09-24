@@ -19,8 +19,8 @@ namespace
 {
     struct Change final
     {
-        int type;
-        std::string desc;
+        int type; /// one of the values in control.h Control enum
+        std::string desc; /// text description of the thing that is requesting a change
 
         Change() {}
         Change(int inittype, const char *initdesc) : type(inittype), desc(initdesc) {}
