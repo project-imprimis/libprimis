@@ -23,7 +23,7 @@ namespace
         const char *desc;
 
         Change() {}
-        Change(int type, const char *desc) : type(type), desc(desc) {}
+        Change(int inittype, const char *initdesc) : type(inittype), desc(initdesc) {}
 
         bool operator==(const Change & c) const
         {
