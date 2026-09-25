@@ -42,6 +42,8 @@ namespace
     };
     std::vector<Change> needsapply;
 
+    //toggles showing of dialog to apply engine changes
+    // if 0, changes are not prompted and therefore never applied
     VARP(applydialog, 0, 1, 1);
 
     //when 1: change UI shows up whenever a pending change is added
