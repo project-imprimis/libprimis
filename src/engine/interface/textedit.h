@@ -21,6 +21,13 @@ class EditLine final
          * @return true if the line has at least one character
          */
         bool empty() const;
+
+        /**
+         * @brief Clears the text associated with this line.
+         *
+         * Frees the string associated with this line from the heap, and sets the
+         * length and maxlength of the line to 0.
+         */
         void clear();
         void set(const char *str, int slen = -1);
         void prepend(const char *str);
