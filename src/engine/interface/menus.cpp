@@ -17,6 +17,16 @@
 //internally relevant functionality
 namespace
 {
+    /**
+     * @brief Object containing information about an event that requires a change.
+     *
+     * This stores events which will require the engine to restart some components
+     * in order to apply them to the currently running application instance.
+     *
+     * Settings that are changed that will require some kind of update will enqueue
+     * changes such that all relevant changes will be applied after prompting upon
+     * closing of the settings menu.
+     */
     struct Change final
     {
         int type; /// one of the values in control.h Control enum
