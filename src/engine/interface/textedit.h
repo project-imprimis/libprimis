@@ -46,6 +46,14 @@ class EditLine final
          * @param newlen index to truncate the string at
          */
         void chop(int newlen);
+
+        /**
+         * @brief Inserts a string into this line's text.
+         *
+         * @param str the string to insert
+         * @param start the index in the line to insert at
+         * @param count length of the string to insert
+         */
         void insert(char *str, int start, int count = 0);
         void combinelines(std::vector<EditLine> &src);
     private:
