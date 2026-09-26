@@ -34,6 +34,17 @@ class EditLine final
         void append(const char *str);
         bool read(std::fstream& f, int chop = -1);
         void del(int start, int count);
+
+        /**
+         * @brief Truncates this line's text to the specified length.
+         *
+         * Inserts a null terminator at the specified index in this line. If the
+         * specified length is longer than the current string or less than zero,
+         * the modified element is clamped to within the bounds of the existing
+         * string.
+         *
+         * @param newlen index to truncate the string at
+         */
         void chop(int newlen);
         void insert(char *str, int start, int count = 0);
         void combinelines(std::vector<EditLine> &src);
