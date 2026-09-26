@@ -31,6 +31,14 @@ class EditLine final
         void clear();
         void set(const char *str, int slen = -1);
         void prepend(const char *str);
+
+        /**
+         * @brief Adds a string to the end of this line.
+         *
+         * Assumes the passed string is properly null terminated.
+         *
+         * @param str the string to append to this line
+         */
         void append(const char *str);
         bool read(std::fstream& f, int chop = -1);
         void del(int start, int count);
