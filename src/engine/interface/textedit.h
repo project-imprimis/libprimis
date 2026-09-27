@@ -142,6 +142,12 @@ class Editor final
         bool empty() const;
         void clear(const char *init = "");
         void init(const char *inittext);
+
+        /**
+         * @brief Recalculates width and pixelheight fields.
+         *
+         * Uses text_boundsf to recalculate this object's width and height fields.
+         */
         void updateheight();
         void setfile(const char *fname);
         void load();
