@@ -49,6 +49,16 @@ class EditLine final
          */
         void append(const char *str);
         bool read(std::fstream& f, int chop = -1);
+
+        /**
+         * @brief Removes the specified characters from this line.
+         *
+         * No effect if the count is zero or less. If start is negative, sets
+         * start to zero; if above the size of the string, no effect.
+         *
+         * @param start starting index to delete
+         * @param count number of indices to delete sequentially after start
+         */
         void del(int start, int count);
 
         /**
