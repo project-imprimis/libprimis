@@ -30,6 +30,14 @@ class EditLine final
          */
         void clear();
         void set(const char *str, int slen = -1);
+
+        /**
+         * @brief Adds a string to the beginning of this line.
+         *
+         * Assumes the passed string is properly null terminated
+         *
+         * @param str the string to prepend to this line
+         */
         void prepend(const char *str);
 
         /**
