@@ -160,6 +160,14 @@ class Editor final
          * @param fname the filename to set
          */
         void setfile(const char *fname);
+
+        /**
+         * @brief Loads the file specified in the filename field.
+         *
+         * This name is set by the `setfile()` method. If this name is set to nullptr,
+         * no effect is performed. Otherwise, clears the existing editor contents
+         * and loads the lines in the file pointed to by `filename`.
+         */
         void load();
 
         /**
