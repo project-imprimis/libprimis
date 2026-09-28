@@ -149,6 +149,16 @@ class Editor final
          * Uses text_boundsf to recalculate this object's width and height fields.
          */
         void updateheight();
+
+        /**
+         * @brief Sets the file that this editor is reading.
+         *
+         * Frees the existing file handle if it exists, and creates a new heap string to
+         * contain the new file's name. If the file name is null, no allocation is performed
+         * and the filename field is set to nullptr.
+         *
+         * @param fname the filename to set
+         */
         void setfile(const char *fname);
         void load();
 
