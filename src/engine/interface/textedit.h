@@ -141,6 +141,13 @@ class Editor final
          */
         bool empty() const;
         void clear(const char *init = "");
+
+        /**
+         * @brief Clears and sets the editor's contents to the provided string.
+         *
+         * If the first line of the text is identical to that of the inittext message,
+         * no changes will be performed.
+         */
         void init(const char *inittext);
 
         /**
