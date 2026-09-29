@@ -140,6 +140,12 @@ class Editor final
          * @return true if any line other than the ctor's "" has been added
          */
         bool empty() const;
+
+        /**
+         * @brief Clears and sets the editor's contents to the provided string.
+         *
+         * If no string is provided, the editor will be set to have no text.
+         */
         void clear(const char *init = "");
 
         /**
