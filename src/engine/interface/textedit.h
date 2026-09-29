@@ -297,6 +297,15 @@ class Editor final
          * @return true if region was deleted, false if no selection to delete
          */
         bool del();
+
+        /**
+         * @brief Inserts a single character.
+         *
+         * Inserts a character at the current cursor location.
+         * Removes the current selection, if any.
+         *
+         * @param ch the char to insert
+         */
         void insert(char ch);
         bool readback(std::fstream& file);
 };
