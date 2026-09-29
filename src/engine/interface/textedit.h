@@ -214,6 +214,13 @@ class Editor final
          */
         void selectall();
         bool region();
+
+        /**
+         * @brief Returns a handle to the currently selected line, cy.
+         *
+         * Also ensures that cy is always within lines[] and cx is valid.
+         * (cy is the cursor y position).
+         */
         EditLine &currentline();
         void copyselectionto(Editor *b);
 
