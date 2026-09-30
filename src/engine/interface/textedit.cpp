@@ -404,7 +404,6 @@ bool Editor::region()
     return region(sx, sy, ex, ey);
 }
 
-// also ensures that cy is always within lines[] and cx is valid
 EditLine &Editor::currentline()
 {
     size_t n = lines.size();
