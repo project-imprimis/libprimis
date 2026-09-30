@@ -245,6 +245,15 @@ class Editor final
          * @return char array of this editor's contents
          */
         char *selectiontostring();
+
+        /**
+         * @brief Inserts a string.
+         *
+         * Inserts string at the current cursor location.
+         * Removes the current selection, if any.
+         *
+         * @param s the string to insert
+         */
         void insert(const char *s);
         void insertallfrom(const Editor *b);
 
