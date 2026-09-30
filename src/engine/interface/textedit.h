@@ -275,6 +275,17 @@ class Editor final
          */
         void scrolldown();
         void key(int code);
+
+        /**
+         * @brief Inserts a string.
+         *
+         * Inserts string at the current cursor location.
+         * Removes the current selection, if any.
+         * `len` must be greater than zero and less than the `str` length.
+         *
+         * @param str the string to insert
+         * @param len the number of characters from str to insert.
+         */
         void input(const char *str, int len);
         void hit(int hitx, int hity, bool dragged);
         void draw(int x, int y, int color);
