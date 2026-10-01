@@ -61,7 +61,11 @@ class RadianceHints final
          * prevdynmin/max is deleted.
          */
         void rotatedynlimits();
-        //checks if prevmin's z value is less than prevmax
+        /**
+         * @brief Checks if prevmin's z value is less than prevmax.
+         *
+         * @return true if the min value is less than the max value
+         */
         bool checkprevbounds() const;
     private:
         vec prevdynmin, prevdynmax;
