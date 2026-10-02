@@ -28,7 +28,20 @@ namespace batching
 extern std::vector<std::string> animnames; //set by game at runtime
 
 extern void loadskin(const std::string &dir, const std::string &altdir, Texture *&skin, Texture *&masks);
-extern model *loadmodel(std::string_view, int i = -1, bool msg = false);
+
+/**
+ * @brief Loads a model by name or index.
+ *
+ * Searches for the model located at the modelpath if name is present. If not, searches
+ * the index in the mapmodels vector.
+ *
+ * @param name the name to look up, or empty string if searching by index
+ * @param i the index to look up if no name is provided
+ * @param msg toggles display in renderprogress dialog of model loading
+ *
+ * @return the model that was loaded, or nullptr if it failed
+ */
+extern model *loadmodel(std::string_view name, int i = -1, bool msg = false);
 extern void rendermodel(std::string_view mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = nullptr, modelattach *a = nullptr, int basetime = 0, int basetime2 = 0, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1));
 extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 
