@@ -66,6 +66,14 @@ extern void cleanupmodels();
  * @return pointer to the model at index n, or nullptr
  */
 extern model *loadmapmodel(int n);
+
+/**
+ * @brief Finds animations that match the pattern provided.
+ *
+ * The pattern must match an entry in the animnames vector exactly to be included.
+ *
+ * @param pattern the pattern to search for
+ */
 extern std::vector<size_t> findanims(std::string_view pattern);
 
 #endif

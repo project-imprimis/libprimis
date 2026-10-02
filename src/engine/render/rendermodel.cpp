@@ -1128,13 +1128,6 @@ void abovemodel(vec &o, const char *mdl)
     o.z += center.z + radius.z;
 }
 
-/**
- * @brief Finds animations that match the pattern provided.
- *
- * The pattern must match an entry in the animnames vector exactly to be included.
- *
- * @param pattern the pattern to search for
- */
 std::vector<size_t> findanims(std::string_view pattern)
 {
     std::vector<size_t> anims;
