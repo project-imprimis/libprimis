@@ -45,6 +45,11 @@ extern model *loadmodel(std::string_view name, int i = -1, bool msg = false);
 extern void rendermodel(std::string_view mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = nullptr, modelattach *a = nullptr, int basetime = 0, int basetime2 = 0, float size = 1, const vec4<float> &color = vec4<float>(1, 1, 1, 1));
 extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 
+/**
+ * @brief Calls the cleanup method for all models present.
+ *
+ * Entries to this hash table are added whenever loadmodel() is called.
+ */
 extern void cleanupmodels();
 
 /**
