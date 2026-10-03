@@ -210,6 +210,14 @@ class ImageData final
 
         void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
 
+        /**
+         * @brief Replaces this texture with one transformed by mirroring.
+         *
+         * @param flipx whether to flip the texture's x coordinates
+         * @param flipy whether to flip the texture's y coordinates
+         * @param flipxy whether to transpose the x and y coordinates
+         * @param type if `Tex_Normal`, preserves normal mapping, otherwise direct coordinate swapping
+         */
         void texreorient(bool flipx, bool flipy, bool swapxy, int type = 0);
         void texrotate(int numrots, int type = 0);
         void texoffset(int xoffset, int yoffset);
