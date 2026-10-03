@@ -128,6 +128,14 @@ class ImageData final
          */
         void scaleimage(int w, int h);
         void texmad(const vec &mul, const vec &add);
+
+        /**
+         * @brief Applies alpha intensity onto color channel(s).
+         *
+         * Applies to the grayscale channel if there is two channels, and applies to the
+         * R,G,B channels if there are four channels. Scales down the values in the non-
+         * alpha channels, scaled by the value of the alpha channel for that pixel.
+         */
         void texpremul();
 
         bool texturedata(const char *tname, bool msg = true, int * compress = nullptr, int * wrap = nullptr, const char *tdir = nullptr, int ttype = 0);
