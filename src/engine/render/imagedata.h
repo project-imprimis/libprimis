@@ -226,6 +226,14 @@ class ImageData final
         void texcolormask(const vec &color1, const vec &color2);
         void texdup(int srcchan, int dstchan);
         void texmix(int c1, int c2, int c3, int c4);
+
+        /**
+         * @brief Replaces this texture with a grayscale version.
+         *
+         * If there is 1 or 2 channels, no effect.
+         * Copies the first color channel to the grayscale channel and the alpha channel
+         * (if available) to the alpha channel of the new texture.
+         */
         void texgrey();
         void texagrad(float x2, float y2, float x1, float y1);
         void texblend(const ImageData &s0, const ImageData &m0);
