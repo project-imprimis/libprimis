@@ -229,6 +229,13 @@ class ImageData final
          * @param type if 'Tex_Normal', preserves normal mapping
          */
         void texrotate(int numrots, int type = 0);
+
+        /**
+         * @brief Replaces this texture with an offset version of this texture.
+         *
+         * @param xoffset number of pixels in x direction to offset
+         * @param yoffset number of pixels in y direction to offset
+         */
         void texoffset(int xoffset, int yoffset);
         void texcrop(int xpos, int ypos, int width, int height);
         void texcolorify(const vec &color, vec weights);
