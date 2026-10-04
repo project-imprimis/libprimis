@@ -219,6 +219,15 @@ class ImageData final
          * @param type if `Tex_Normal`, preserves normal mapping, otherwise direct coordinate swapping
          */
         void texreorient(bool flipx, bool flipy, bool swapxy, int type = 0);
+
+        /**
+         * @brief Performs a specific texrotate based on the index passed.
+         *
+         * See texrotations in texture.cpp/h for rotation mappings.
+         *
+         * @param numrots the rotation index to use
+         * @param type if 'Tex_Normal', preserves normal mapping
+         */
         void texrotate(int numrots, int type = 0);
         void texoffset(int xoffset, int yoffset);
         void texcrop(int xpos, int ypos, int width, int height);
