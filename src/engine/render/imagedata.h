@@ -240,6 +240,16 @@ class ImageData final
         void texcrop(int xpos, int ypos, int width, int height);
         void texcolorify(const vec &color, vec weights);
         void texcolormask(const vec &color1, const vec &color2);
+
+        /**
+         * @brief Copies one of the color channels to another channel
+         *
+         * For example, setting srchan = 0 and dstchan = 1 means that the R channel
+         * gets copied to the B channel of the image.
+         *
+         * @param srcchan the channel to copy from
+         * @param dstchan the channel to copy to.
+         */
         void texdup(int srcchan, int dstchan);
         void texmix(int c1, int c2, int c3, int c4);
 
