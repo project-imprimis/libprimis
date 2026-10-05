@@ -108,7 +108,7 @@ extern std::vector<vtxarray *> varoot;
  */
 extern std::vector<vtxarray *> valist;
 extern int filltjoints; /// bool-like, toggles whether to fill t joints to avoid sparklies
-extern int allocva;
+extern int allocva; /// number of allocated vertex array
 
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
 extern void reduceslope(ivec &n);
