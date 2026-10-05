@@ -107,7 +107,7 @@ extern std::vector<vtxarray *> varoot;
  * element should always be `varoot[7]`.
  */
 extern std::vector<vtxarray *> valist;
-extern int filltjoints;
+extern int filltjoints; /// bool-like, toggles whether to fill t joints to avoid sparklies
 extern int allocva;
 
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
