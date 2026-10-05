@@ -237,6 +237,15 @@ class ImageData final
          * @param yoffset number of pixels in y direction to offset
          */
         void texoffset(int xoffset, int yoffset);
+
+        /**
+         * @brief Replaces this texture with a cropped subset
+         *
+         * @param xpos the starting x position
+         * @param ypos the starting y position
+         * @param width number of pixels in x direction to use
+         * @param height number of pixels in y direction to use
+         */
         void texcrop(int xpos, int ypos, int width, int height);
         void texcolorify(const vec &color, vec weights);
         void texcolormask(const vec &color1, const vec &color2);
