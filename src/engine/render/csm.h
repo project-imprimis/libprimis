@@ -93,7 +93,12 @@ class CascadedShadowMap final
         CascadedShadowMap();
 
     private:
-        void updatesplitdist();         // compute split frustum distances
+        /**
+         * @brief Computes split frustum distances.
+         *
+         * This sets the nearplane and farplane values for each element in the splits array.
+         */
+        void updatesplitdist();
         void getmodelmatrix();          // compute the shared model matrix
         void getprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
