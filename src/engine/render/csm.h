@@ -99,7 +99,13 @@ class CascadedShadowMap final
          * This sets the nearplane and farplane values for each element in the splits array.
          */
         void updatesplitdist();
-        void getmodelmatrix();          // compute the shared model matrix
+
+        /**
+         * @brief Computes the shared model matrix.
+         *
+         * This sets the model transformation matrix field.
+         */
+        void getmodelmatrix();
         void getprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
 
