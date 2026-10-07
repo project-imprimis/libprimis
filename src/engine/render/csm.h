@@ -113,7 +113,7 @@ class CascadedShadowMap final
          * Calculates each split dist (updatesplitdist) and then sets the cropped
          * projection matrix for each split.
          */
-        void getprojmatrix();           // compute each cropped projection matrix
+        void calcprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
 
         matrix4 model;                  // model view is shared by all splits

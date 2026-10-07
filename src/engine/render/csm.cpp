@@ -351,7 +351,7 @@ void CascadedShadowMap::getmodelmatrix()
     model.rotate_around_z((180-sunlightyaw)/RAD);
 }
 
-void CascadedShadowMap::getprojmatrix()
+void CascadedShadowMap::calcprojmatrix()
 {
     lightview = vec(sunlightdir).neg();
 
@@ -457,6 +457,6 @@ void CascadedShadowMap::setup()
         }
     }
     getmodelmatrix();
-    getprojmatrix();
+    calcprojmatrix();
     gencullplanes();
 }
