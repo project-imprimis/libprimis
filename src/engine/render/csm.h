@@ -106,6 +106,13 @@ class CascadedShadowMap final
          * This sets the model transformation matrix field.
          */
         void getmodelmatrix();
+
+        /**
+         * @brief Computes each projection matrix.
+         *
+         * Calculates each split dist (updatesplitdist) and then sets the cropped
+         * projection matrix for each split.
+         */
         void getprojmatrix();           // compute each cropped projection matrix
         void gencullplanes();           // generate culling planes for the mvp matrix
 
