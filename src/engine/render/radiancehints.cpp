@@ -949,7 +949,7 @@ void GBuffer::renderradiancehints() const
 void ReflectiveShadowMap::setup()
 {
     getmodelmatrix();
-    getprojmatrix();
+    calcprojmatrix();
     gencullplanes();
 }
 
@@ -960,7 +960,7 @@ void ReflectiveShadowMap::getmodelmatrix()
     model.rotate_around_z((180-sunlightyaw)/RAD);   //orient camera in same pitch as sunlight
 }
 
-void ReflectiveShadowMap::getprojmatrix()
+void ReflectiveShadowMap::calcprojmatrix()
 {
     lightview = vec(sunlightdir).neg();
     // find z extent

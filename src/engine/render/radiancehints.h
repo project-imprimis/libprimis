@@ -36,7 +36,7 @@ class ReflectiveShadowMap final
          * points it to be oriented like the sun.
          */
         void getmodelmatrix();
-        void getprojmatrix();
+        void calcprojmatrix();
         void gencullplanes();
 };
 
