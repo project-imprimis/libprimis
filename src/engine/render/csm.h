@@ -105,7 +105,7 @@ class CascadedShadowMap final
          *
          * This sets the model transformation matrix field.
          */
-        void getmodelmatrix();
+        void calcmodelmatrix();
 
         /**
          * @brief Computes each projection matrix.

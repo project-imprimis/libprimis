@@ -344,7 +344,7 @@ void CascadedShadowMap::updatesplitdist()
     splits[csmsplits-1].farplane = fd;
 }
 
-void CascadedShadowMap::getmodelmatrix()
+void CascadedShadowMap::calcmodelmatrix()
 {
     model = viewmatrix;
     model.rotate_around_x(sunlightpitch/RAD);
@@ -456,7 +456,7 @@ void CascadedShadowMap::setup()
             addshadowmap(smx, smy, size, splits[i].idx);
         }
     }
-    getmodelmatrix();
+    calcmodelmatrix();
     calcprojmatrix();
     gencullplanes();
 }
