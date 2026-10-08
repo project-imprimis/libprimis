@@ -948,12 +948,12 @@ void GBuffer::renderradiancehints() const
 //hints algorithm: it needs to know how bright the surfaces the sun is shining on
 void ReflectiveShadowMap::setup()
 {
-    getmodelmatrix();
+    calcmodelmatrix();
     calcprojmatrix();
     gencullplanes();
 }
 
-void ReflectiveShadowMap::getmodelmatrix()
+void ReflectiveShadowMap::calcmodelmatrix()
 {
     model = viewmatrix;                             //copy global view matrix
     model.rotate_around_x(sunlightpitch/RAD);       //orient camera in same yaw as sunlight

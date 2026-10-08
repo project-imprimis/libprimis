@@ -35,7 +35,7 @@ class ReflectiveShadowMap final
          * Sets the reflectiveshadowmap's model to the global viewmatrix, then
          * points it to be oriented like the sun.
          */
-        void getmodelmatrix();
+        void calcmodelmatrix();
         void calcprojmatrix();
         void gencullplanes();
 };
