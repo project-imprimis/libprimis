@@ -96,6 +96,12 @@ class RadianceHints final
         };
         std::array<SplitInfo, rhmaxsplits> splits;
 
+        /**
+         * @brief Recalculates the near and farplane split locations.
+         *
+         * Applies for each split in this radiance hints object. The farplane of a near split
+         * is set to align with the nearplane of the next farthest object.
+         */
         void updatesplitdist();
 };
 
