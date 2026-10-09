@@ -114,7 +114,13 @@ class CascadedShadowMap final
          * projection matrix for each split.
          */
         void calcprojmatrix();
-        void gencullplanes();           // generate culling planes for the mvp matrix
+
+        /**
+         * @brief Computes culling planes for the mvp matrix.
+         *
+         * This is the model view projection matrix.
+         */
+        void gencullplanes();
 
         matrix4 model;                  // model view is shared by all splits
         vec lightview;                  // view vector for light
