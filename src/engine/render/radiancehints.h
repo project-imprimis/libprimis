@@ -51,6 +51,12 @@ class RadianceHints final
         void setup();
         void renderslices();
         void bindparams() const;
+
+        /**
+         * @brief Clears the cache for each radiance hints split.
+         *
+         * This resets the boundary to an arbitrarily large negative value for each split.
+         */
         void clearcache();
         bool allcached() const;
         /**
