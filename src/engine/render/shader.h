@@ -90,6 +90,15 @@ extern Shader *generateshader(std::string_view name, const char *cmd, ...);
  * Clears all associated params with that slotshader.
  */
 extern void resetslotshader();
+
+/**
+ * @brief Sets up a slot's shader with global data.
+ *
+ * Uses slotshader/slotparams to set the slot settings for a particular slot object.
+ * If there is no global slotshader, the default stdworldshader will be used.
+ *
+ * @param s the slot to configure
+ */
 extern void setslotshader(Slot &s);
 extern void linkslotshader(Slot &s, bool load = true);
 extern void linkvslotshader(VSlot &s, bool load = true);
