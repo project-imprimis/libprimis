@@ -16,7 +16,7 @@ enum
 
 extern float blursigma;
 extern Shader *nullshader, *hudshader, *hudnotextureshader, *nocolorshader, *foggednotextureshader, *ldrnotextureshader;
-constexpr int maxblurradius = 7;
+constexpr int maxblurradius = 7; /// maximum radius in pixels to blur in blur shader
 
 /**
  * @brief Gets or creates a local shader param.
