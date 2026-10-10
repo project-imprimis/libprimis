@@ -78,6 +78,8 @@ extern Shader *useshaderbyname(std::string_view name);
  * @param name the key to associate with the shader object
  * @param cmd the command to execute
  * @param ... values to insert into format specifiers in cmd
+ *
+ * @return pointer to the found or created shader
  */
 extern Shader *generateshader(std::string_view name, const char *cmd, ...);
 
