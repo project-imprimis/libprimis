@@ -91,6 +91,16 @@ extern bool popfont();
  */
 extern void gettextres(int &w, int &h);
 
+/**
+ * @brief Finds text with using text_boundsf().
+ *
+ * Creates dummy return values for width and height, and returns only the width.
+ * maxwidth in text_boundsf is set to -1.
+ *
+ * @param str the string to get text width of
+ *
+ * @return the width of the string using text_boundsf()"
+ */
 extern float text_widthf(const char *str);
 extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
