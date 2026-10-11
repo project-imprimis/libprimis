@@ -78,6 +78,17 @@ extern void pushfont();
  * @return true if curfont was assigned, false if no elements to assign
  */
 extern bool popfont();
+
+/**
+ * @brief Clamps input sizes to minimum sizes.
+ *
+ * Scales the width and height to maintain existing proportions while keeping
+ * both w and h larger than the minimum sizes. If the width and height are already
+ * larger than minres width and height, no effect.
+ *
+ * @param w width to check/change
+ * @param h height to check/change
+ */
 extern void gettextres(int &w, int &h);
 
 extern float text_widthf(const char *str);
