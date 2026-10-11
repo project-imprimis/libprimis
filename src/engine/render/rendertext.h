@@ -106,5 +106,15 @@ extern void text_boundsf(const char *str, float &width, float &height, int maxwi
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
 extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
+/**
+ * @brief Finds text with using text_boundsf().
+ *
+ * Creates dummy return values for width and height, and returns only the width.
+ * maxwidth in text_boundsf is set to -1. The resulting value is cast to an integer.
+ *
+ * @param str the string to get text width of
+ *
+ * @return the width of the string using text_boundsf(), rounded to nearest int"
+ */
 extern int text_width(const char *str);
 #endif
