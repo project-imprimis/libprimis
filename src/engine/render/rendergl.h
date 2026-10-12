@@ -143,6 +143,14 @@ extern void resethudmatrix();
 extern void pushhudmatrix();
 extern void flushhudmatrix(bool flushparams = true);
 extern void pophudmatrix(bool flush = true, bool flushparams = true);
+
+/**
+ * @brief Adds a new hud matrix to the matrix stack.
+ *
+ * Applies the scale factor specified in the scale parameter.
+ *
+ * @param scale factor to multiply hud scale by
+ */
 extern void pushhudscale(float scale);
 extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 
