@@ -133,6 +133,12 @@ extern float calcfogcull();
 extern vec calcmodelpreviewpos(const vec &radius, float &yaw);
 
 extern matrix4 hudmatrix;
+
+/**
+ * @brief Resets the hud matrix and the index location.
+ *
+ * The index location is changed when pushhudmatrix/pophudmatrix is called.
+ */
 extern void resethudmatrix();
 extern void pushhudmatrix();
 extern void flushhudmatrix(bool flushparams = true);
