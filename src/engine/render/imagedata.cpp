@@ -758,9 +758,10 @@ void ImageData::texnormal(int emphasis)
     replace(d);
 }
 
-bool ImageData::matchstring(std::string_view s, size_t len, std::string_view d)
+
+bool ImageData::matchstring(std::string_view s, std::string_view d)
 {
-    return len == d.size() && !std::memcmp(s.data(), d.data(), d.size());
+    return s == d;
 }
 
 bool ImageData::texturedata(const char *tname, bool msg, int * const compress, int * const wrap, const char *tdir, int ttype)
@@ -824,7 +825,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
             break;
         }
 
-        if(matchstring(cmd, len, "stub"))
+        if(matchstring(cmd, "stub"))
         {
             return canloadsurface(file);
         }
@@ -875,60 +876,60 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
         {
             goto compressed; //see `compressed` nested between else & if (yes it's ugly)
         }
-        if(matchstring(cmd, len, "mad"))
+        if(matchstring(cmd, "mad"))
         {
             texmad(parsevec(arg[0]), parsevec(arg[1]));
         }
-        else if(matchstring(cmd, len, "colorify"))
+        else if(matchstring(cmd, "colorify"))
         {
             texcolorify(parsevec(arg[0]), parsevec(arg[1]));
         }
-        else if(matchstring(cmd, len, "colormask"))
+        else if(matchstring(cmd, "colormask"))
         {
             texcolormask(parsevec(arg[0]), *arg[1] ? parsevec(arg[1]) : vec(1, 1, 1));
         }
-        else if(matchstring(cmd, len, "normal"))
+        else if(matchstring(cmd, "normal"))
         {
             int emphasis = std::atoi(arg[0]);
             texnormal(emphasis > 0 ? emphasis : 3);
         }
-        else if(matchstring(cmd, len, "dup"))
+        else if(matchstring(cmd, "dup"))
         {
             texdup(std::atoi(arg[0]), std::atoi(arg[1]));
         }
-        else if(matchstring(cmd, len, "offset"))
+        else if(matchstring(cmd, "offset"))
         {
             texoffset(std::atoi(arg[0]), std::atoi(arg[1]));
         }
-        else if(matchstring(cmd, len, "rotate"))
+        else if(matchstring(cmd, "rotate"))
         {
             texrotate(std::atoi(arg[0]), ttype);
         }
-        else if(matchstring(cmd, len, "reorient"))
+        else if(matchstring(cmd, "reorient"))
         {
             texreorient(std::atoi(arg[0])>0, std::atoi(arg[1])>0, std::atoi(arg[2])>0, ttype);
         }
-        else if(matchstring(cmd, len, "crop"))
+        else if(matchstring(cmd, "crop"))
         {
             texcrop(std::atoi(arg[0]), std::atoi(arg[1]), *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
         }
-        else if(matchstring(cmd, len, "mix"))
+        else if(matchstring(cmd, "mix"))
         {
             texmix(*arg[0] ? std::atoi(arg[0]) : -1, *arg[1] ? std::atoi(arg[1]) : -1, *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
         }
-        else if(matchstring(cmd, len, "grey"))
+        else if(matchstring(cmd, "grey"))
         {
             texgrey();
         }
-        else if(matchstring(cmd, len, "premul"))
+        else if(matchstring(cmd, "premul"))
         {
             texpremul();
         }
-        else if(matchstring(cmd, len, "agrad"))
+        else if(matchstring(cmd, "agrad"))
         {
             texagrad(std::atof(arg[0]), std::atof(arg[1]), std::atof(arg[2]), std::atof(arg[3]));
         }
-        else if(matchstring(cmd, len, "blend"))
+        else if(matchstring(cmd, "blend"))
         {
             ImageData src, mask;
             string srcname, maskname;
@@ -939,7 +940,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
                 texblend(src, maskname[0] ? mask : src);
             }
         }
-        else if(matchstring(cmd, len, "thumbnail"))
+        else if(matchstring(cmd, "thumbnail"))
         {
             int xdim = std::atoi(arg[0]),
                 ydim = std::atoi(arg[1]);
@@ -956,7 +957,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
                 scaleimage(xdim, ydim);
             }
         }
-        else if(matchstring(cmd, len, "compress"))
+        else if(matchstring(cmd, "compress"))
         {
             int scale = std::atoi(arg[0]);
             if(compress)
@@ -964,7 +965,7 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
                 *compress = scale;
             }
         }
-        else if(matchstring(cmd, len, "nocompress"))
+        else if(matchstring(cmd, "nocompress"))
         {
             if(compress)
             {
@@ -974,14 +975,14 @@ bool ImageData::texturedata(const char *tname, bool msg, int * const compress, i
         // note that the else/if in else-if is separated by a goto breakpoint
         else
     compressed:
-        if(matchstring(cmd, len, "mirror"))
+        if(matchstring(cmd, "mirror"))
         {
             if(wrap)
             {
                 *wrap |= 0x300;
             }
         }
-        else if(matchstring(cmd, len, "noswizzle"))
+        else if(matchstring(cmd, "noswizzle"))
         {
             if(wrap)
             {

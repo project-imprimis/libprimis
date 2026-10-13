@@ -272,9 +272,10 @@ class ImageData final
         void texgrey();
         void texagrad(float x2, float y2, float x1, float y1);
         void texblend(const ImageData &s0, const ImageData &m0);
+
         void texnormal(int emphasis);
 
-        static bool matchstring(std::string_view s, size_t len, std::string_view d);
+        static bool matchstring(std::string_view s, std::string_view d);
 };
 
 #endif
