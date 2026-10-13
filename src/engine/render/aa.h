@@ -17,7 +17,6 @@ extern matrix4 nojittermatrix; /// matrix without aa jitter applied
  */
 extern void setupaa(GBuffer &buf, int w, int h);
 
-
 /**
  * @brief Shifts the projection matrix for use in TQAA.
  *
