@@ -58,7 +58,16 @@ class RadianceHints final
          * This resets the boundary to an arbitrarily large negative value for each split.
          */
         void clearcache();
+
+        /**
+         * @brief Checks that every split has a cached value.
+         *
+         * This will return false if any split has mismached cached/center fields.
+         *
+         * @return true if all splits are cached
+         */
         bool allcached() const;
+
         /**
          * @brief Rotates out dynmin/max to prevdynmin/max.
          *
