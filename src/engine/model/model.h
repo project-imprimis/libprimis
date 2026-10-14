@@ -93,7 +93,11 @@ class model
         virtual bool animated() const = 0;
         //true if any of the model's parts have a pitchscale set
         virtual bool pitched() const = 0;
-        //true if any of the model's skin textures are alpha (see-through)
+        /**
+         * @brief Returns whether the model contains alpha textures.
+         *
+         * @return true if any of the model's skin textures are alpha (see-through)
+         */
         virtual bool alphatested() const = 0;
 
         virtual void setshader(Shader *) = 0;
