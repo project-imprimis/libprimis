@@ -772,7 +772,7 @@ class animmodel : public model
          * @brief Sets the alphatest value for each skin in each part of this model
          *
          * alphatest is one of the shader parameters for the skin shader. Each skin
-         * in this model will recieve the same alphatest value.
+         * in this model will receive the same alphatest value.
          *
          * @param alphatest the alphatest value to set
          */
