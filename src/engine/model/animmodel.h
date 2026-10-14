@@ -758,6 +758,13 @@ class animmodel : public model
          * @param shader the shader to set
          */
         void setshader(Shader *shader) final;
+
+        /**
+         * @brief Sets the specular value for each skin in each part of this model.
+         *
+         * Sets how shiny the model is. Each skin in this model will receive the
+         * same specular value.
+         */
         void setspec(float spec) final;
         void setgloss(int gloss) final;
         void setglow(float glow, float delta, float pulse) final;
