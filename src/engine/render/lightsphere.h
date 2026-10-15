@@ -3,7 +3,6 @@
 
 namespace lightsphere
 {
-
     /**
      * @brief Frees the vbuf and ebuf objects used for lightsphere.
      *
