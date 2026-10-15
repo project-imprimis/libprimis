@@ -643,6 +643,15 @@ class animmodel : public model
                  */
                 bool unlink(const part *p);
                 void initskins(Texture *tex = notexture, Texture *masks = notexture, uint limit = 0);
+
+                /**
+                 * @brief Returns whether this part has an alpha texture enabled.
+                 *
+                 * The alphatest shader parameter must be enabled and this part
+                 * must contain an alpha skin.
+                 *
+                 * @return true if this part has alpha enabled
+                 */
                 bool alphatested() const;
                 void preloadBIH() const;
                 void preloadshaders();
