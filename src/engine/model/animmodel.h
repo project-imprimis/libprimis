@@ -553,9 +553,11 @@ class animmodel : public model
                 int index;
                 meshgroup *meshes; //pointer to a single meshgroup in animmodel::meshgroups
 
-                //a pointer to another part object dependent on this part.
-                //pointed part may be modified in case it is necessary to link/unlink
-                //the pointed part to other dependent parts
+                /**
+                 * @brief Points to another part object dependent on this part.
+                 * The pointed part may be modified in case it is necessary to
+                 * link/unlink the pointed part to other dependent parts.
+                 */
                 struct linkedpart
                 {
                     part *p;
