@@ -36,6 +36,12 @@ enum
     Key_X2         = -7,
 };
 
+/**
+ * @brief Toggles text input.
+ *
+ * @param on if true, enables SDL text input; disables with false
+ * @param mask value to add to the text input bitmask
+ */
 extern void textinput(bool on, int mask = ~0);
 
 extern bool grabinput, minimized;
