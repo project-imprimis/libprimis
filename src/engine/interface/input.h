@@ -14,10 +14,15 @@
  */
 extern void keyrepeat(bool on, int mask = ~0);
 
+/**
+ * @brief Enumerates location of text input.
+ *
+ * This will determine whether the input is directed to a ui window or a console window.
+ */
 enum
 {
-    TextInput_Console = 1<<0,
-    TextInput_GUI     = 1<<1,
+    TextInput_Console = 1<<0, //used in console.cpp
+    TextInput_GUI     = 1<<1, //used in ui.cpp
 };
 
 enum
