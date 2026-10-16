@@ -155,6 +155,8 @@ extern void floatformat(char *buf, float v, int len = 20);
  * remains allocated for the lifetime of the program. The buffer is formatted
  * by intformat().
  *
+ * @param v the value to format and present
+ *
  * @return pointer to the retbuf with the formatted int string inside it
  */
 extern const char *intstr(int v);
