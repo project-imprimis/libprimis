@@ -679,8 +679,6 @@ static void dodebugalias()
 
 static int nodebug = 0;
 
-static void debugcode(const char *fmt, ...) PRINTFARGS(1, 2);
-
 /**
  * @brief Prints out a debug message to the console.
  *
@@ -690,6 +688,7 @@ static void debugcode(const char *fmt, ...) PRINTFARGS(1, 2);
  * @param fmt string for printf style variadic arguments
  * @param ... variadic printf style arguments for fmt
  */
+static void debugcode(const char *fmt, ...) PRINTFARGS(1, 2);  //sets attributes not allowed in definition
 static void debugcode(const char *fmt, ...)
 {
     if(nodebug)
@@ -704,7 +703,6 @@ static void debugcode(const char *fmt, ...)
     dodebugalias();
 }
 
-static void debugcodeline(const char *p, const char *fmt, ...) PRINTFARGS(2, 3);
 
 /**
  * @brief Prints out a debug message to the console.
@@ -713,6 +711,7 @@ static void debugcodeline(const char *p, const char *fmt, ...) PRINTFARGS(2, 3);
  * @param fmt string for printf style variadic arguments
  * @param ... variadic printf style arguments for fmt
  */
+static void debugcodeline(const char *p, const char *fmt, ...) PRINTFARGS(2, 3); //sets attributes not allowed in definition
 static void debugcodeline(const char *p, const char *fmt, ...)
 {
     if(nodebug)
