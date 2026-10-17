@@ -220,6 +220,18 @@ extern char *conc(const tagval *v, int n, bool space);
 extern char *conc(const tagval *v, int n, bool space, const char *prefix);
 extern void freearg(tagval &v);
 extern int unescapestring(char *dst, const char *src, const char *end);
+
+/**
+ * @brief Returns escape location in this string.
+ *
+ * If the escaped chars codes \r \n \" are provided, returns the first location
+ * of such an instance. If the CubeScript escape symbol ^ is found, returns next
+ * char unless the ^ is the end of the string.
+ *
+ * @return p string to parse
+ *
+ * @return pointer within string p where first escape is found, or end of string if not
+ */
 extern const char *parsestring(const char *p);
 extern void setarg(ident &id, tagval &v);
 extern void setalias(ident &id, tagval &v);
