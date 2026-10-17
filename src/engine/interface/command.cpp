@@ -504,7 +504,7 @@ void clear_command()
     }
 }
 
-void clearoverride(ident &i)
+static void clearoverride(ident &i)
 {
     if(!(i.flags&Idf_Overridden))
     {
