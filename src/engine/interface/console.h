@@ -23,6 +23,16 @@ extern float renderconsole(float w, float h, float abovehud);
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void conoutfv(int type, const char *fmt, va_list args);
+
+/**
+ * @brief Gets the key name in the key map associated with the provided code.
+ *
+ * This depends on the mapping loaded in the keyms map.
+ *
+ * @brief keycode to query
+ *
+ * @return name associated in the current keymap
+ */
 const char *getkeyname(int code);
 extern tagval *addreleaseaction(ident *id, int numargs);
 extern void writebinds(std::fstream& f);
