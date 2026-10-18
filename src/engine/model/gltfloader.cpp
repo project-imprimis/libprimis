@@ -1,4 +1,3 @@
-
 /**
  * @file gltfloader.cpp
  * @brief GLTF 2.0 loading functionality
