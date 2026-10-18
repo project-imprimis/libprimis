@@ -10,7 +10,6 @@ extern void processkey(int code, bool isdown, int map);
 extern void processtextinput(const char *str, int len);
 extern float rendercommand(float x, float y, float w);
 
-
 /**
  * @brief Renders the full sized console.
  *
