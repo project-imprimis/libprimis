@@ -91,6 +91,14 @@ class gltf final : public SkelLoader<gltf>
 
         static SkelCommands<gltf> gltfcommands;
 
+        /**
+         * @brief Creates a new mesh group.
+         *
+         * This is created as a GLTFMeshGroup but returned as a skelmeshgroup pointer.
+         * The mesh group is allocated on the heap.
+         *
+         * @return pointer to heap allocated GLTFMeshGroup object
+         */
         skelmeshgroup *newmeshes() final;
 };
 
