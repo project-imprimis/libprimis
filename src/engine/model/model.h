@@ -91,7 +91,11 @@ class model
         //true if the model will move itself in any way (including translation/rotation)
         //dynamic models require different rendering handling
         virtual bool animated() const = 0;
-        //true if any of the model's parts have a pitchscale set
+        /**
+         * @brief Returns whether the model contains any set pitchscale values.
+         *
+         * @return true if any of the model's parts have a pitchscale set
+         */
         virtual bool pitched() const = 0;
         /**
          * @brief Returns whether the model contains alpha textures.
