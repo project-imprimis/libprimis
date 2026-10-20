@@ -88,8 +88,15 @@ class model
 
         //true if the derived model type supports skeletal animation, false otherwise
         virtual bool skeletal() const = 0;
-        //true if the model will move itself in any way (including translation/rotation)
-        //dynamic models require different rendering handling
+        /**
+         * @brief Returns whether the model moves with respect to time
+         *
+         * Returns true if the model will move itself in any way (including
+         * translation/rotation). This will trigger separate renderer handling,
+         * since dynamic models require different rendering handling.
+         *
+         * @return true if the model is animated or moves
+         */
         virtual bool animated() const = 0;
         /**
          * @brief Returns whether the model contains any set pitchscale values.
