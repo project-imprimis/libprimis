@@ -86,7 +86,14 @@ class model
         virtual int type() const = 0;
         virtual void setBIH() = 0;
 
-        //true if the derived model type supports skeletal animation, false otherwise
+        /**
+         * @brief Returns whether the model supports skeletal rigging.
+         *
+         * Returns true if the derived model type supports skeletal animation; false
+         * otherwise. This is implemented by the skelmodel object and its derivatives.
+         *
+         * @return true if the model has skeletal animation capability
+         */
         virtual bool skeletal() const = 0;
         /**
          * @brief Returns whether the model moves with respect to time
